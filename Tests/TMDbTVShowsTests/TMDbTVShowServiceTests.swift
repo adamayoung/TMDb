@@ -1,6 +1,6 @@
 //
 //  TMDbTVShowServiceTests.swift
-//  TMDbTVShowTests
+//  TMDbTVShowsTests
 //
 //  Created by Adam Young on 30/03/2020.
 //
