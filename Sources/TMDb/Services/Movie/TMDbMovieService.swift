@@ -24,8 +24,7 @@ extension TMDbMovieService: MovieService {
     apiClient.get(endpoint: MoviesEndpoint.discover(page: page))
   }
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
-                            page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType, page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
     apiClient.get(endpoint: MoviesEndpoint.trending(timeWindow: timeWindow, page: page))
   }
 
@@ -33,8 +32,7 @@ extension TMDbMovieService: MovieService {
     apiClient.get(endpoint: MoviesEndpoint.movie(movieID: id))
   }
 
-  public func fetchRecommendations(forMovie movieID: Int,
-                                   page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+  public func fetchRecommendations(forMovie movieID: Int, page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
     apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
   }
 

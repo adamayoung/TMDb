@@ -16,8 +16,7 @@ public protocol MovieRecommendationsService {
 
 extension MovieRecommendationsService {
 
-  public func fetchRecommendations(forMovie movieID: Int,
-                                   page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+  public func fetchRecommendations(forMovie movieID: Int, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
     fetchRecommendations(forMovie: movieID, page: page)
   }
 

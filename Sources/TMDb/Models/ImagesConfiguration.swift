@@ -17,8 +17,7 @@ public struct ImagesConfiguration: Decodable {
   public let profileSizes: [String]
   public let stillSizes: [String]
 
-  public init(baseUrl: URL, secureBaseUrl: URL, backdropSizes: [String], logoSizes: [String], posterSizes: [String],
-              profileSizes: [String], stillSizes: [String]) {
+  public init(baseUrl: URL, secureBaseUrl: URL, backdropSizes: [String], logoSizes: [String], posterSizes: [String], profileSizes: [String], stillSizes: [String]) {
     self.baseUrl = baseUrl
     self.secureBaseUrl = secureBaseUrl
     self.backdropSizes = backdropSizes

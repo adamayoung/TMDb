@@ -23,9 +23,7 @@ public struct Person: Identifiable, Decodable {
   public let imdbId: String
   public let homepage: URL?
 
-  public init(id: Int, name: String, alsoKnownAs: [String] = [], knownForDepartment: String? = nil, biography: String,
-              birthday: Date, deathday: Date? = nil, gender: Gender = .unknown, placeOfBirth: String? = nil,
-              profilePath: URL? = nil, popularity: Float, imdbId: String, homepage: URL? = nil) {
+  public init(id: Int, name: String, alsoKnownAs: [String] = [], knownForDepartment: String? = nil, biography: String, birthday: Date, deathday: Date? = nil, gender: Gender = .unknown, placeOfBirth: String? = nil, profilePath: URL? = nil, popularity: Float, imdbId: String, homepage: URL? = nil) {
     self.id = id
     self.name = name
     self.alsoKnownAs = alsoKnownAs

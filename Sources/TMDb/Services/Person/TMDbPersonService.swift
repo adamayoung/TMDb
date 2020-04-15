@@ -24,8 +24,7 @@ extension TMDbPersonService: PersonService {
     apiClient.get(endpoint: PeopleEndpoint.person(personID: id))
   }
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
-                            page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError> {
+  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType, page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError> {
     apiClient.get(endpoint: PeopleEndpoint.trending(timeWindow: timeWindow, page: page))
   }
 

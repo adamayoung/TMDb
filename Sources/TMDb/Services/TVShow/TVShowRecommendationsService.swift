@@ -16,8 +16,7 @@ public protocol TVShowRecommendationsService {
 
 extension TVShowRecommendationsService {
 
-  public func fetchRecommendations(forTVShow tvShowID: Int,
-                                   page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+  public func fetchRecommendations(forTVShow tvShowID: Int, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
     fetchRecommendations(forTVShow: tvShowID, page: page)
   }
 

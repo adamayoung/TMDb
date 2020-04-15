@@ -16,8 +16,7 @@ public protocol TVShowSearchService {
 
 extension TVShowSearchService {
 
-  public func search(query: String, firstAirDateYear: Int? = nil,
-                     page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+  public func search(query: String, firstAirDateYear: Int? = nil, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
     search(query: query, firstAirDateYear: firstAirDateYear, page: page)
   }
 

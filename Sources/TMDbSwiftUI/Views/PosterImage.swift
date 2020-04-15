@@ -44,7 +44,7 @@ public struct PosterImage: View {
     .clipped()
     .onAppear(perform: fetchConfiguration)
   }
-  
+
   private var placeholder: some View {
     ZStack {
       Rectangle()
@@ -76,8 +76,8 @@ struct PosterView_Previews: PreviewProvider {
       URL(string: "https://image.tmdb.org/t/p/w780/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg")
     return Group {
       PosterImage(path: url, title: "Some title 1", size: 100)
-      PosterImage(path: url, title: "Some title 2",size: 150)
-      PosterImage(path: url, title: "Some title 3",size: 200)
+      PosterImage(path: url, title: "Some title 2", size: 150)
+      PosterImage(path: url, title: "Some title 3", size: 200)
     }
   }
 

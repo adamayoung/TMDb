@@ -26,7 +26,7 @@ public struct TVShowSeason: Identifiable, Decodable {
     self.posterPath = posterPath
     self.episodes = episodes
   }
-  
+
 }
 
 extension TVShowSeason {

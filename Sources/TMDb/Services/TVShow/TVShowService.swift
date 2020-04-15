@@ -7,5 +7,4 @@
 
 import Foundation
 
-public typealias TVShowService = DiscoverTVShowsService & TrendingTVShowsService & TVShowFetchService
-  & TVShowRecommendationsService & SimilarTVShowsService & TVShowSearchService & TVShowSeasonService
+public typealias TVShowService = DiscoverTVShowsService & TrendingTVShowsService & TVShowFetchService & TVShowRecommendationsService & SimilarTVShowsService & TVShowSearchService & TVShowSeasonService

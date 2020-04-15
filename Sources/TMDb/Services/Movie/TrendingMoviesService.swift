@@ -17,8 +17,7 @@ public protocol TrendingMoviesService {
 
 extension TrendingMoviesService {
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default,
-                            page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
     fetchTrending(timeWindow: timeWindow, page: page)
   }
 

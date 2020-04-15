@@ -10,15 +10,13 @@ import Foundation
 
 public protocol TrendingTVShowsService {
 
-  func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
+  func fetchTrending(timeWindow: TrendingTimeWindowFilterType, page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
 
 }
 
 extension TrendingTVShowsService {
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default,
-                            page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
     fetchTrending(timeWindow: timeWindow, page: page)
   }
 

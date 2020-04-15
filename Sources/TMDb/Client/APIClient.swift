@@ -26,8 +26,7 @@ extension APIClient {
 
 extension APIClient {
 
-  func get<Response: Decodable>(endpoint: Endpoint,
-                                httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
+  func get<Response: Decodable>(endpoint: Endpoint, httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
     get(path: endpoint.url, httpHeaders: httpHeaders)
   }
 

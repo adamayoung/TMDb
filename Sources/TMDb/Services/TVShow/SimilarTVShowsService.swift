@@ -16,8 +16,7 @@ public protocol SimilarTVShowsService {
 
 extension SimilarTVShowsService {
 
-  public func fetchSimilar(toTVShow tvShowID: Int,
-                           page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+  public func fetchSimilar(toTVShow tvShowID: Int, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
     fetchSimilar(toTVShow: tvShowID, page: page)
   }
 

@@ -23,10 +23,7 @@ public struct TVShowListResultItem: Identifiable, Decodable {
   public let voteAverage: Float?
   public let voteCount: Int?
 
-  public init(id: Int, name: String, originalName: String? = nil, originalLanguage: String? = nil,
-              overview: String? = nil, genreIds: [Int]? = nil, firstAirDate: Date? = nil,
-              originCountry: [String]? = nil, posterPath: URL? = nil, backdropPath: URL? = nil,
-              popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil) {
+  public init(id: Int, name: String, originalName: String? = nil, originalLanguage: String? = nil, overview: String? = nil, genreIds: [Int]? = nil, firstAirDate: Date? = nil, originCountry: [String]? = nil, posterPath: URL? = nil, backdropPath: URL? = nil, popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil) {
     self.id = id
     self.name = name
     self.originalName = originalName

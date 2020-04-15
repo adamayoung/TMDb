@@ -66,12 +66,14 @@ public struct PersonProfileImage: View {
           .frame(width: size * 0.8)
           .foregroundColor(.init(white: 0.7))
       } else {
+        #if os(iOS) || os(watchOS) || os(tvOS)
         Image(systemName: "person")
           .resizable()
           .aspectRatio(contentMode: .fit)
           .foregroundColor(.init(white: 0.7))
           .padding(size / 5)
           .scaledToFit()
+        #endif
       }
     }
   }

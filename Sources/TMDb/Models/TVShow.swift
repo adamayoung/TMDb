@@ -43,13 +43,7 @@ public struct TVShow: Identifiable, Decodable {
   public let voteAverage: Float
   public let voteCount: Int
 
-  public init(id: Int, name: String, originalName: String, originalLanguage: String, overview: String,
-              episodeRuntime: [Int]? = nil, numberOfSeasons: Int, numberOfEpisodes: Int, seasons: [TVShow.Season],
-              genres: [Genre], firstAirDate: Date? = nil, originCountry: [String] = [], posterPath: URL? = nil,
-              backdropPath: URL? = nil, homepageURL: URL?, inProduction: Bool, languages: [String] = [],
-              lastAirDate: Date? = nil, lastEpisodeToAir: TVShow.Episode? = nil, networks: [TVShow.Network] = [],
-              productionCompanies: [TVShow.ProductionCompany], status: String, type: String, popularity: Float,
-              voteAverage: Float, voteCount: Int) {
+  public init(id: Int, name: String, originalName: String, originalLanguage: String, overview: String, episodeRuntime: [Int]? = nil, numberOfSeasons: Int, numberOfEpisodes: Int, seasons: [TVShow.Season], genres: [Genre], firstAirDate: Date? = nil, originCountry: [String] = [], posterPath: URL? = nil, backdropPath: URL? = nil, homepageURL: URL?, inProduction: Bool, languages: [String] = [], lastAirDate: Date? = nil, lastEpisodeToAir: TVShow.Episode? = nil, networks: [TVShow.Network] = [], productionCompanies: [TVShow.ProductionCompany], status: String, type: String, popularity: Float, voteAverage: Float, voteCount: Int) {
     self.id = id
     self.name = name
     self.originalName = originalName
@@ -96,8 +90,7 @@ extension TVShow {
     public let voteAverage: Float
     public let voteCount: Int
 
-    public init(id: Int, name: String, overview: String, seasonNumber: Int, episodeNumber: Int, airDate: Date,
-                productionCode: String, showId: Int, stillPath: URL? = nil, voteAverage: Float, voteCount: Int) {
+    public init(id: Int, name: String, overview: String, seasonNumber: Int, episodeNumber: Int, airDate: Date, productionCode: String, showId: Int, stillPath: URL? = nil, voteAverage: Float, voteCount: Int) {
       self.id = id
       self.name = name
       self.overview = overview
@@ -127,8 +120,7 @@ extension TVShow {
     public let airDate: Date?
     public let posterPath: URL?
 
-    public init(id: Int, name: String, overview: String? = nil, seasonNumber: Int, episodeCount: Int, airDate: Date? = nil,
-                posterPath: URL? = nil) {
+    public init(id: Int, name: String, overview: String? = nil, seasonNumber: Int, episodeCount: Int, airDate: Date? = nil, posterPath: URL? = nil) {
       self.id = id
       self.name = name
       self.overview = overview

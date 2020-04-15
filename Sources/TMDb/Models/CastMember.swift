@@ -18,8 +18,7 @@ public struct CastMember: Identifiable, Decodable {
   public let profilePath: URL?
   public let order: Int
 
-  public init(id: Int, castID: Int? = nil, creditID: String, name: String, character: String, gender: Gender? = nil,
-              profilePath: URL? = nil, order: Int) {
+  public init(id: Int, castID: Int? = nil, creditID: String, name: String, character: String, gender: Gender? = nil, profilePath: URL? = nil, order: Int) {
     self.id = id
     self.castID = castID
     self.creditID = creditID

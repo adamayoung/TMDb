@@ -44,15 +44,14 @@ extension URLSession.DataTaskPublisher {
 
 extension Publisher where Output == URLSession.DataTaskPublisher.Output {
 
-  func mapResponse<Output: Decodable>(to outputType: Output.Type, decoder: JSONDecoder)
-    -> AnyPublisher<Output, TMDbError> {
-      self
-        .map { $0.data }
-        .decode(type: outputType, decoder: decoder)
-        .mapError {
-          .decode($0)
-        }
-        .eraseToAnyPublisher()
+  func mapResponse<Output: Decodable>(to outputType: Output.Type, decoder: JSONDecoder) -> AnyPublisher<Output, TMDbError> {
+    self
+      .map { $0.data }
+      .decode(type: outputType, decoder: decoder)
+      .mapError {
+        .decode($0)
+    }
+    .eraseToAnyPublisher()
   }
 
 }

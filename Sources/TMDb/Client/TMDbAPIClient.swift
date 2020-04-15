@@ -32,8 +32,7 @@ public final class TMDbAPIClient: APIClient {
 
 extension TMDbAPIClient {
 
-  public func get<Response: Decodable>(path: URL,
-                                       httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
+  public func get<Response: Decodable>(path: URL, httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
     let url = urlFromPath(path)
     var urlRequest = URLRequest(url: url)
 

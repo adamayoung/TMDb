@@ -10,18 +10,17 @@ jobs:
   build:
     runs-on: macos-latest
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4_beta.app/Contents/Developer
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Prepare Build
+      - name: Prepare
         run: brew reinstall swiftlint
-
-      - name: Build
-        run: swift build -v
 
       - name: Lint
         run: swiftlint
 
-      - name: Run tests
-        run: swift test -v --enable-code-coverage
+      - name: Test
+        run: xcrun swift test --enable-test-discovery --enable-code-coverage --sanitize=thread

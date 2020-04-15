@@ -10,14 +10,12 @@ import Foundation
 
 public protocol TrendingPeopleService {
 
-  func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError>
+  func fetchTrending(timeWindow: TrendingTimeWindowFilterType, page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError>
 }
 
 extension TrendingPeopleService {
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default,
-                            page: Int? = nil) -> AnyPublisher<PersonPageableListResult, TMDbError> {
+  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil) -> AnyPublisher<PersonPageableListResult, TMDbError> {
     fetchTrending(timeWindow: timeWindow, page: page)
   }
 

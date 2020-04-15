@@ -7,5 +7,4 @@
 
 import Foundation
 
-public typealias MovieService = DiscoverMoviesService & TrendingMoviesService & MovieFetchService
-  & MovieRecommendationsService & SimilarMoviesService & MovieSearchService
+public typealias MovieService = DiscoverMoviesService & TrendingMoviesService & MovieFetchService & MovieRecommendationsService & SimilarMoviesService & MovieSearchService
