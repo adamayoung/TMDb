@@ -12,11 +12,9 @@ addons:
     - swiftlint
 
 env:
-- SWIFT_VERSION=5.2.2
+- SWIFT_VERSION=5.2
 
 script:
 - set -o pipefail
-- swift -version
 - swiftlint
-- xcrun swift build
-- xcrun swift test
+- swift build
