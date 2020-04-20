@@ -20,5 +20,5 @@ env:
 script:
 - set -o pipefail
 - swiftlint
-- swift build
-- swift test
+- xcrun swift build
+- xcrun swift test
