@@ -17,13 +17,8 @@ addons:
 env:
 - SWIFT_VERSION=5.2.2
 
-jobs:
-  include:
-  - name: Validation
-    script:
-    - set -o pipefail
-    - swiftlint
-  - name: "Run Unit tests"
-    script:
-    - swift test
-
+script:
+- set -o pipefail
+- swiftlint
+- swift build
+- swift test
