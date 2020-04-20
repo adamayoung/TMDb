@@ -14,15 +14,16 @@ addons:
     packages:
     - swiftlint
 
+env:
+- SWIFT_VERSION=5.2.2
+
 jobs:
   include:
-  - stage: validation
-    name: "Validation"
+  - name: Validation
     script:
     - set -o pipefail
     - swiftlint
-  - stage: "Test"
-    name: "Run Unit tests"
+  - name: "Run Unit tests"
     script:
     - swift test
 
