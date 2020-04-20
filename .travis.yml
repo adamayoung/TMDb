@@ -3,7 +3,7 @@ os:
 
 language: generic
 
-osx_image: xcode11.4
+osx_image: xcode11.3
 
 branches:
   only:
@@ -17,7 +17,12 @@ addons:
 jobs:
   include:
   - stage: "Test"
-    name: "Run Unit tests"
+    name: "Validation"
+    script:
+    - set -o pipefail
+    - swiftlint
+    - swift test --enable-code-coverage
+    - name: "Run Unit tests"
     script:
     - set -o pipefail
     - swiftlint
