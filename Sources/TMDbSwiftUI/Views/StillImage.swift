@@ -36,6 +36,7 @@ public struct StillImage: View {
         placeholder
       }
     }
+    .transition(.fadeIn)
     .scaledToFill()
     .frame(width: size, height: (size / 2))
     .cornerRadius(size / 50)

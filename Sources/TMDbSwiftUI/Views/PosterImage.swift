@@ -38,6 +38,7 @@ public struct PosterImage: View {
         placeholder
       }
     }
+    .transition(.fadeIn)
     .scaledToFill()
     .frame(width: size, height: (size * 1.5))
     .cornerRadius(size / 50)
