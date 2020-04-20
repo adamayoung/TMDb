@@ -42,11 +42,11 @@ public struct PersonProfileImage: View {
         WebImage(url: configurationManager.imagesConfiguration?.imageURL(forPersonProfilePath: self.path, size: self.size))
           .resizable()
           .placeholder { placeholder }
-          .transition(.fade)
       } else {
         placeholder
       }
     }
+    .transition(.fadeIn)
     .scaledToFill()
     .frame(width: size, height: size)
     .clipped()

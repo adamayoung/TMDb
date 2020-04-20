@@ -22,14 +22,17 @@ public struct BackdropImage: View {
 
   public var body: some View {
     Group {
-      if configurationManager.imagesConfiguration != nil {
+      if path?.scheme != nil {
+        WebImage(url: path)
+          .resizable()
+      } else if configurationManager.imagesConfiguration != nil {
         WebImage(url: configurationManager.imagesConfiguration?.imageURL(forBackdropPath: self.path))
           .resizable()
-          .transition(.fade)
       } else {
         EmptyView()
       }
     }
+    .transition(.fadeIn)
     .scaledToFill()
     .onAppear(perform: fetchConfiguration)
   }

@@ -1,0 +1,21 @@
+language: objective-c
+osx_image: "xcode11.4"
+
+branches:
+  only:
+  - master
+
+addons:
+  homebrew:
+    packages:
+    - swiftlint
+
+jobs:
+  include:
+  - stage: "Test"
+    name: "Unit tests"
+    script:
+    - set -o pipefail
+    - swiftlint
+    - swift test --enable-code-coverage
+
