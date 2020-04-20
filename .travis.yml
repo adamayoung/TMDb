@@ -16,10 +16,13 @@ addons:
 
 jobs:
   include:
-  - stage: "Test"
-    name: "Run Unit tests"
+  - stage: validation
+    name: "Validation"
     script:
     - set -o pipefail
     - swiftlint
-    - swift test --enable-code-coverage
+  - stage: "Test"
+    name: "Run Unit tests"
+    script:
+    - swift test
 
