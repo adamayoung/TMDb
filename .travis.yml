@@ -1,9 +1,6 @@
-os:
-  - osx
-
-language: generic
-
+os: osx
 osx_image: xcode11.4
+language: generic
 
 branches:
   only:
@@ -19,6 +16,7 @@ env:
 
 script:
 - set -o pipefail
+- swift -version
 - swiftlint
 - xcrun swift build
 - xcrun swift test
