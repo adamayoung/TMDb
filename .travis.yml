@@ -1,5 +1,9 @@
-language: objective-c
-osx_image: "xcode11.4"
+os:
+  - osx
+
+language: generic
+
+osx_image: xcode11.4
 
 branches:
   only:
@@ -13,7 +17,7 @@ addons:
 jobs:
   include:
   - stage: "Test"
-    name: "Unit tests"
+    name: "Run Unit tests"
     script:
     - set -o pipefail
     - swiftlint
