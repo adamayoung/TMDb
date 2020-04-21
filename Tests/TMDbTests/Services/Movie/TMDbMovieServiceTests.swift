@@ -15,11 +15,3 @@ final class TMDbMovieServiceTests: XCTestCase {
   }
 
 }
-
-extension TMDbMovieServiceTests {
-
-  static var allTests = [
-    ("test", test)
-  ]
-
-}

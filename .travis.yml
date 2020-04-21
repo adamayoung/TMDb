@@ -18,3 +18,4 @@ script:
 - set -o pipefail
 - swiftlint
 - swift build
+- swift test --enable-code-coverage

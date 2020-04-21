@@ -15,11 +15,3 @@ final class TMDbConfigurationServiceTests: XCTestCase {
   }
 
 }
-
-extension TMDbConfigurationServiceTests {
-
-  static var allTests = [
-    ("test", test)
-  ]
-
-}

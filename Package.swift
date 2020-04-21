@@ -23,6 +23,7 @@ let package = Package(
     .target(name: "TMDb"),
     .testTarget(name: "TMDbTests", dependencies: ["TMDb"]),
 
-    .target(name: "TMDbSwiftUI", dependencies: ["TMDb", "SDWebImageSwiftUI"])
+    .target(name: "TMDbSwiftUI", dependencies: ["TMDb", "SDWebImageSwiftUI"]),
+    .testTarget(name: "TMDbSwiftUITests", dependencies: ["TMDbSwiftUI", "SDWebImageSwiftUI"])
   ]
 )

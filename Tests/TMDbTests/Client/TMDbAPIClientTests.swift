@@ -15,11 +15,3 @@ final class TMDbAPIClientTests: XCTestCase {
   }
 
 }
-
-extension TMDbAPIClientTests {
-
-  static var allTests = [
-    ("test", test)
-  ]
-
-}
