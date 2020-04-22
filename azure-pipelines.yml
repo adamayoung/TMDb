@@ -1,0 +1,31 @@
+#
+# TMDb
+# Azure Pipeline
+#
+
+name: tmdb-$(Build.BuildId)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - README.md
+
+variables:
+  DEVELOPER_DIR: /Applications/Xcode_11.4.app
+
+pool:
+  vmImage: macOS-latest
+
+steps:
+- script: brew reinstall swiftlint
+  displayName: 'Install swiftlint'
+- script: swiftlint
+  displayName: 'Lint'
+- script: swift build
+  displayName: Build
+- script: swift test --enable-code-coverage
+  displayName: Test
