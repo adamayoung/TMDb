@@ -1,6 +1,6 @@
 # TMDb - The Movie Database
 
-[![Build Status](https://travis-ci.com/adamayoung/TMDb.svg?branch=master)](https://travis-ci.com/adamayoung/TMDb) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-333333.svg)
+[![Build Status](https://dev.azure.com/adamayoung/Movies/_apis/build/status/adamayoung.TMDb?branchName=master)](https://dev.azure.com/adamayoung/Movies/_build/latest?definitionId=76&branchName=master) [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS-333333.svg)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
