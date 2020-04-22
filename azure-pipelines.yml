@@ -26,8 +26,15 @@ pool:
 steps:
 - script: brew reinstall swiftlint
   displayName: 'Install swiftlint'
-- script: swiftlint
+- script: |
+    set -o pipefail
+    swiftlint
   displayName: 'Lint'
+- task: Cache@2
+  displayName: 'Restore Cache'
+  inputs:
+    key: 'tmdb|swift'
+    path: '$(System.DefaultWorkingDirectory)/.build'
 - script: swift build
   displayName: Build
 - script: swift test --enable-code-coverage
