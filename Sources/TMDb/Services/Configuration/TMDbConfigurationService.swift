@@ -10,20 +10,20 @@ import Foundation
 
 public final class TMDbConfigurationService {
 
-  private var configuration: Configuration?
+    private var configuration: Configuration?
 
-  private let apiClient: APIClient
+    private let apiClient: APIClient
 
-  public init(apiClient: APIClient = TMDbAPIClient.shared) {
-    self.apiClient = apiClient
-  }
+    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+        self.apiClient = apiClient
+    }
 
 }
 
 extension TMDbConfigurationService: ConfigurationService {
 
-  public func fetch() -> AnyPublisher<Configuration, TMDbError> {
-    apiClient.get(endpoint: ConfigurationEndpoint.configuration)
-  }
+    public func fetch() -> AnyPublisher<Configuration, TMDbError> {
+        apiClient.get(endpoint: ConfigurationEndpoint.configuration)
+    }
 
 }

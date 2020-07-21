@@ -10,15 +10,15 @@ import Foundation
 
 public protocol TrendingMoviesService {
 
-  func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError>
+    func fetchTrending(timeWindow: TrendingTimeWindowFilterType,
+                       page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError>
 
 }
 
 extension TrendingMoviesService {
 
-  public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
-    fetchTrending(timeWindow: timeWindow, page: page)
-  }
+    public func fetchTrending(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+        fetchTrending(timeWindow: timeWindow, page: page)
+    }
 
 }

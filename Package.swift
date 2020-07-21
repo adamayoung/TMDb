@@ -11,18 +11,11 @@ let package = Package(
   ],
 
   products: [
-    .library(name: "TMDb", targets: ["TMDb"]),
-    .library(name: "TMDbSwiftUI", targets: ["TMDbSwiftUI"])
-  ],
-
-  dependencies: [
-    .package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", from: "1.0.0")
+    .library(name: "TMDb", targets: ["TMDb"])
   ],
 
   targets: [
     .target(name: "TMDb"),
-    .testTarget(name: "TMDbTests", dependencies: ["TMDb"]),
-
-    .target(name: "TMDbSwiftUI", dependencies: ["TMDb", "SDWebImageSwiftUI"])
+    .testTarget(name: "TMDbTests", dependencies: ["TMDb"])
   ]
 )

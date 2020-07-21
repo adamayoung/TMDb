@@ -9,12 +9,12 @@ import Foundation
 
 public struct Configuration: Decodable {
 
-  public let images: ImagesConfiguration
-  public let changeKeys: [String]
+    public let images: ImagesConfiguration
+    public let changeKeys: [String]
 
-  public init(images: ImagesConfiguration, changeKeys: [String]) {
-    self.images = images
-    self.changeKeys = changeKeys
-  }
+    public init(images: ImagesConfiguration, changeKeys: [String]) {
+        self.images = images
+        self.changeKeys = changeKeys
+    }
 
 }

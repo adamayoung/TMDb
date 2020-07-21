@@ -10,6 +10,6 @@ import Foundation
 
 public protocol TVShowCreditsService {
 
-  func fetch(forTVShow tvShowID: Int) -> AnyPublisher<Credits, TMDbError>
+    func fetch(forTVShow tvShowID: Int) -> AnyPublisher<Credits, TMDbError>
 
 }

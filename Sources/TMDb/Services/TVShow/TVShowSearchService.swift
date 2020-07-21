@@ -10,14 +10,14 @@ import Foundation
 
 public protocol TVShowSearchService {
 
-  func search(query: String, firstAirDateYear: Int?, page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
+    func search(query: String, firstAirDateYear: Int?, page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
 
 }
 
 extension TVShowSearchService {
 
-  public func search(query: String, firstAirDateYear: Int? = nil, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
-    search(query: query, firstAirDateYear: firstAirDateYear, page: page)
-  }
+    public func search(query: String, firstAirDateYear: Int? = nil, page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+        search(query: query, firstAirDateYear: firstAirDateYear, page: page)
+    }
 
 }

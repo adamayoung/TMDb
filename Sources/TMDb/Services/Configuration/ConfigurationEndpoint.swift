@@ -9,17 +9,17 @@ import Foundation
 
 enum ConfigurationEndpoint {
 
-  case configuration
+    case configuration
 
 }
 
 extension ConfigurationEndpoint: Endpoint {
 
-  var url: URL {
-    switch self {
-    case .configuration:
-      return URL(string: "/configuration")!
+    var url: URL {
+        switch self {
+        case .configuration:
+            return URL(string: "/configuration")!
+        }
     }
-  }
 
 }

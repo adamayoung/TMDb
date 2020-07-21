@@ -10,22 +10,22 @@ import Foundation
 
 public final class TMDbReviewService {
 
-  private let apiClient: APIClient
+    private let apiClient: APIClient
 
-  public init(apiClient: APIClient = TMDbAPIClient.shared) {
-    self.apiClient = apiClient
-  }
+    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+        self.apiClient = apiClient
+    }
 
 }
 
 extension TMDbReviewService: ReviewService {
 
-  public func fetch(forMovie movieID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
-    apiClient.get(endpoint: ReviewsEndpoint.movieReviews(movieID: movieID, page: page))
-  }
+    public func fetch(forMovie movieID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
+        apiClient.get(endpoint: ReviewsEndpoint.movieReviews(movieID: movieID, page: page))
+    }
 
-  public func fetch(forTVShow tvShowID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
-    apiClient.get(endpoint: ReviewsEndpoint.tvShowReviews(tvShowID: tvShowID, page: page))
-  }
+    public func fetch(forTVShow tvShowID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
+        apiClient.get(endpoint: ReviewsEndpoint.tvShowReviews(tvShowID: tvShowID, page: page))
+    }
 
 }

@@ -10,6 +10,6 @@ import Foundation
 
 public protocol MovieVideoService {
 
-  func fetch(forMovie movieID: Int) -> AnyPublisher<VideoCollection, TMDbError>
+    func fetch(forMovie movieID: Int) -> AnyPublisher<VideoCollection, TMDbError>
 
 }

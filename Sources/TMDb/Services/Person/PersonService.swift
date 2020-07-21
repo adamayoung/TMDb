@@ -7,4 +7,4 @@
 
 import Foundation
 
-public typealias PersonService = TrendingPeopleService & PersonFetchService
+public typealias PersonService = TrendingPeopleService & PersonFetchService & PersonSearchService

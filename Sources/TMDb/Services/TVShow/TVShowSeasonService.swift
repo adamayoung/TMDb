@@ -10,6 +10,6 @@ import Foundation
 
 public protocol TVShowSeasonService {
 
-  func fetchSeason(_ seasonNumber: Int, forTVShow tvShowID: Int) -> AnyPublisher<TVShowSeason, TMDbError>
+    func fetchSeason(_ seasonNumber: Int, forTVShow tvShowID: Int) -> AnyPublisher<TVShowSeason, TMDbError>
 
 }

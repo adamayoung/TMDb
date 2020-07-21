@@ -9,9 +9,9 @@ import Foundation
 
 public enum VideoSize: Int, Decodable {
 
-  case s360 = 360
-  case s480 = 480
-  case s720 = 720
-  case s1080 = 1080
+    case s360 = 360
+    case s480 = 480
+    case s720 = 720
+    case s1080 = 1080
 
 }

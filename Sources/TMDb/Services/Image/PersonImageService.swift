@@ -10,6 +10,6 @@ import Foundation
 
 public protocol PersonImageService {
 
-  func fetch(forPerson personID: Int) -> AnyPublisher<PersonImageCollection, TMDbError>
+    func fetch(forPerson personID: Int) -> AnyPublisher<PersonImageCollection, TMDbError>
 
 }

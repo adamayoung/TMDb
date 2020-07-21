@@ -9,17 +9,17 @@ import Foundation
 
 public enum TrendingTimeWindowFilterType: String {
 
-  case day
-  case week
+    case day
+    case week
 
-  public static var `default`: Self = .week
+    public static var `default`: Self = .week
 
 }
 
 extension TrendingTimeWindowFilterType: CustomStringConvertible {
 
-  public var description: String {
-    rawValue
-  }
+    public var description: String {
+        rawValue
+    }
 
 }

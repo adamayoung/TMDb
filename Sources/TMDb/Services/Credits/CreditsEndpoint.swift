@@ -9,21 +9,21 @@ import Foundation
 
 enum CreditsEndpoint {
 
-  case movieCredits(movieID: Int)
-  case tvShowCredits(tvShowID: Int)
+    case movieCredits(movieID: Int)
+    case tvShowCredits(tvShowID: Int)
 
 }
 
 extension CreditsEndpoint: Endpoint {
 
-  var url: URL {
-    switch self {
-    case .movieCredits(let movieID):
-      return URL(string: "/movie/\(movieID)/credits")!
+    var url: URL {
+        switch self {
+        case .movieCredits(let movieID):
+            return URL(string: "/movie/\(movieID)/credits")!
 
-    case .tvShowCredits(let tvShowID):
-      return URL(string: "/tv/\(tvShowID)/credits")!
+        case .tvShowCredits(let tvShowID):
+            return URL(string: "/tv/\(tvShowID)/credits")!
+        }
     }
-  }
 
 }

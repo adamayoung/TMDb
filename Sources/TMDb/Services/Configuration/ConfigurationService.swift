@@ -10,6 +10,6 @@ import Foundation
 
 public protocol ConfigurationService {
 
-  func fetch() -> AnyPublisher<Configuration, TMDbError>
+    func fetch() -> AnyPublisher<Configuration, TMDbError>
 
 }

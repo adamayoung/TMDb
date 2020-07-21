@@ -10,6 +10,6 @@ import Foundation
 
 public protocol TVShowSeaonImageService {
 
-  func fetch(forTVShow tvShowID: Int, seasonNumber: Int) -> AnyPublisher<ImageCollection, TMDbError>
+    func fetch(forTVShow tvShowID: Int, seasonNumber: Int) -> AnyPublisher<ImageCollection, TMDbError>
 
 }

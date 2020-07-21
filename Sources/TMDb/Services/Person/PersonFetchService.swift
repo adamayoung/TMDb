@@ -10,6 +10,6 @@ import Foundation
 
 public protocol PersonFetchService {
 
-  func fetch(id: Int) -> AnyPublisher<Person, TMDbError>
+    func fetch(id: Int) -> AnyPublisher<Person, TMDbError>
 
 }

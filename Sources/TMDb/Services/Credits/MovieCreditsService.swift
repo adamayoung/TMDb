@@ -10,6 +10,6 @@ import Foundation
 
 public protocol MovieCreditsService {
 
-  func fetch(forMovie movieID: Int) -> AnyPublisher<Credits, TMDbError>
+    func fetch(forMovie movieID: Int) -> AnyPublisher<Credits, TMDbError>
 
 }

@@ -9,15 +9,11 @@ import Foundation
 
 extension JSONDecoder {
 
-  public static var theMovieDatabase: JSONDecoder {
-    let decoder = JSONDecoder()
-    decoder.keyDecodingStrategy = .convertFromSnakeCase
-
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-ddd"
-    decoder.dateDecodingStrategy = .formatted(dateFormatter)
-
-    return decoder
-  }
+    static var theMovieDatabase: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .formatted(.theMovieDatabase)
+        return decoder
+    }
 
 }

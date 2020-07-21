@@ -10,14 +10,14 @@ import Foundation
 
 public protocol SimilarMoviesService {
 
-  func fetchSimilar(toMovie movieID: Int, page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError>
+    func fetchSimilar(toMovie movieID: Int, page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError>
 
 }
 
 extension SimilarMoviesService {
 
-  public func fetchSimilar(toMovie movieID: Int, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
-    fetchSimilar(toMovie: movieID, page: page)
-  }
+    public func fetchSimilar(toMovie movieID: Int, page: Int? = nil) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+        fetchSimilar(toMovie: movieID, page: page)
+    }
 
 }

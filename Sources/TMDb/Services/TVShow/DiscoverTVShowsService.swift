@@ -10,14 +10,14 @@ import Foundation
 
 public protocol DiscoverTVShowsService {
 
-  func fetchDiscover(page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
+    func fetchDiscover(page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError>
 
 }
 
 extension DiscoverTVShowsService {
 
-  public func fetchDiscover(page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
-    fetchDiscover(page: page)
-  }
+    public func fetchDiscover(page: Int? = nil) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+        fetchDiscover(page: page)
+    }
 
 }

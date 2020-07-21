@@ -10,14 +10,14 @@ import Foundation
 
 public protocol TVShowReviewService {
 
-  func fetch(forTVShow tvShowID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError>
+    func fetch(forTVShow tvShowID: Int, page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError>
 
 }
 
 extension TVShowReviewService {
 
-  public func fetch(forTVShow tvShowID: Int, page: Int? = nil) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
-    fetch(forTVShow: tvShowID, page: page)
-  }
+    public func fetch(forTVShow tvShowID: Int, page: Int? = nil) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
+        fetch(forTVShow: tvShowID, page: page)
+    }
 
 }
