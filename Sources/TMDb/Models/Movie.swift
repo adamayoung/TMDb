@@ -1,10 +1,3 @@
-//
-//  Movie.swift
-//  TMDb
-//
-//  Created by Adam Young on 23/01/2020.
-//
-
 import Foundation
 
 public struct Movie: Identifiable, Decodable {
@@ -34,7 +27,13 @@ public struct Movie: Identifiable, Decodable {
     public let video: Bool
     public let adult: Bool
 
-    public init(id: Int, title: String, tagline: String? = nil, originalTitle: String, originalLanguage: String, overview: String? = nil, runtime: Int? = nil, genres: [Genre], releaseDate: Date, posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float, revenue: Float, homepageURL: URL? = nil, imdbId: String? = nil, status: Status, productionCompanies: [ProductionCompany], productionCountries: [ProductionCountry], spokenLanguages: [SpokenLanguage], popularity: Float, voteAverage: Float, voteCount: Int, video: Bool, adult: Bool) {
+    public init(id: Int, title: String, tagline: String? = nil, originalTitle: String, originalLanguage: String,
+                overview: String? = nil, runtime: Int? = nil, genres: [Genre], releaseDate: Date,
+                posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float, revenue: Float,
+                homepageURL: URL? = nil, imdbId: String? = nil, status: Status,
+                productionCompanies: [ProductionCompany], productionCountries: [ProductionCountry],
+                spokenLanguages: [SpokenLanguage], popularity: Float, voteAverage: Float, voteCount: Int, video: Bool,
+                adult: Bool) {
         self.id = id
         self.title = title
         self.tagline = tagline

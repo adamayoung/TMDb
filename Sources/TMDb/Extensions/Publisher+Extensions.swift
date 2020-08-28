@@ -1,10 +1,3 @@
-//
-//  Publisher+Extensions.swift
-//  TMDb
-//
-//  Created by Adam Young on 30/03/2020.
-//
-
 import Combine
 import Foundation
 
@@ -44,7 +37,8 @@ extension URLSession.DataTaskPublisher {
 
 extension Publisher where Output == URLSession.DataTaskPublisher.Output {
 
-    func mapResponse<Output: Decodable>(to outputType: Output.Type, decoder: JSONDecoder) -> AnyPublisher<Output, TMDbError> {
+    func mapResponse<Output: Decodable>(to outputType: Output.Type,
+                                        decoder: JSONDecoder) -> AnyPublisher<Output, TMDbError> {
         self
             .map { $0.data }
             .decode(type: outputType, decoder: decoder)

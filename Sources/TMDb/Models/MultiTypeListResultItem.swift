@@ -1,10 +1,3 @@
-//
-//  MultiTypeListResultItem.swift
-//  TMDb
-//
-//  Created by Adam Young on 20/07/2020.
-//
-
 import Foundation
 
 public enum MultiTypeListResultItem: Identifiable {

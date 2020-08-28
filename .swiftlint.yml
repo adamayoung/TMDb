@@ -1,9 +1,6 @@
 excluded:
   - .build
 
-disabled_rules:
-  - line_length
-
 opt_in_rules:
   - attributes
   - closure_spacing
@@ -22,6 +19,8 @@ identifier_name:
     error: 4
   max_length: 60
   excluded:
+    - all
+    - api
     - day
     - id
     - job

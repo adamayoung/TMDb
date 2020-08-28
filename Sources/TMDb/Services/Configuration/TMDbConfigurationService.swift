@@ -1,16 +1,7 @@
-//
-//  TMDbConfigurationService.swift
-//  TMDb
-//
-//  Created by Adam Young on 16/03/2020.
-//
-
 import Combine
 import Foundation
 
-public final class TMDbConfigurationService {
-
-    private var configuration: Configuration?
+public final class TMDbConfigurationService: ConfigurationService {
 
     private let apiClient: APIClient
 
@@ -18,12 +9,8 @@ public final class TMDbConfigurationService {
         self.apiClient = apiClient
     }
 
-}
-
-extension TMDbConfigurationService: ConfigurationService {
-
-    public func fetch() -> AnyPublisher<Configuration, TMDbError> {
-        apiClient.get(endpoint: ConfigurationEndpoint.configuration)
+    public func fetchAPIConfiguration() -> AnyPublisher<APIConfiguration, TMDbError> {
+        apiClient.get(endpoint: ConfigurationEndpoint.api)
     }
 
 }
