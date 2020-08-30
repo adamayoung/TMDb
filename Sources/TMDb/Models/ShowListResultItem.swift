@@ -12,6 +12,26 @@ public enum ShowListResultItem: Identifiable {
         }
     }
 
+    var popularity: Float? {
+        switch self {
+        case .movie(let movie):
+            return movie.popularity
+
+        case .tvShow(let tvShow):
+            return tvShow.popularity
+        }
+    }
+
+    var date: Date? {
+        switch self {
+        case .movie(let movie):
+            return movie.releaseDate
+
+        case .tvShow(let tvShow):
+            return tvShow.firstAirDate
+        }
+    }
+
     case movie(MovieListResultItem)
     case tvShow(TVShowListResultItem)
 

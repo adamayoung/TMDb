@@ -9,8 +9,9 @@ public final class TMDbMovieService: MovieService {
         self.apiClient = apiClient
     }
 
-    public func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError> {
-        apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
+    public func fetchDetails(forMovie id: Movie.ID,
+                             include: [MovieDetailsIncludeKey]?) -> AnyPublisher<Movie, TMDbError> {
+        apiClient.get(endpoint: MoviesEndpoint.details(movieID: id, include: include))
     }
 
     public func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError> {

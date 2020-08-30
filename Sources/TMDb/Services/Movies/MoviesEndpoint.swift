@@ -4,7 +4,7 @@ enum MoviesEndpoint {
 
     static let basePath = URL(string: "/movie")!
 
-    case details(movieID: Movie.ID)
+    case details(movieID: Movie.ID, include: [MovieDetailsIncludeKey]?)
     case credits(movieID: Movie.ID)
     case reviews(movieID: Movie.ID, page: Int?)
     case images(movieID: Movie.ID)
@@ -19,9 +19,10 @@ extension MoviesEndpoint: Endpoint {
 
     var url: URL {
         switch self {
-        case .details(let movieID):
+        case .details(let movieID, let include):
             return Self.basePath
                 .appendingPathComponent(movieID)
+                .appendingWithAppendToResponse(include)
 
         case .credits(let movieID):
             return Self.basePath

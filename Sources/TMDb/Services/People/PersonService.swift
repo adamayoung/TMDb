@@ -13,6 +13,8 @@ public protocol PersonService {
 
     func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError>
 
+    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[ShowListResultItem], TMDbError>
+
     func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError>
 
 }

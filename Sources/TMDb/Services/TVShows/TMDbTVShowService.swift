@@ -9,8 +9,9 @@ public final class TMDbTVShowService: TVShowService {
         self.apiClient = apiClient
     }
 
-    public func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
-        apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
+    public func fetchDetails(forTVShow id: TVShow.ID,
+                             include: [TVShowDetailsIncludeKey]?) -> AnyPublisher<TVShow, TMDbError> {
+        apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id, include: include))
     }
 
     public func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError> {

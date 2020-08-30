@@ -3,7 +3,7 @@ import Foundation
 
 public protocol MovieService {
 
-    func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError>
+    func fetchDetails(forMovie id: Movie.ID, include: [MovieDetailsIncludeKey]?) -> AnyPublisher<Movie, TMDbError>
 
     func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
@@ -23,6 +23,11 @@ public protocol MovieService {
 }
 
 extension MovieService {
+
+    public func fetchDetails(forMovie id: Movie.ID,
+                             include: [MovieDetailsIncludeKey]? = nil) -> AnyPublisher<Movie, TMDbError> {
+        fetchDetails(forMovie: id, include: include)
+    }
 
     public func fetchReviews(forMovie movieID: Movie.ID,
                              page: Int? = nil) -> AnyPublisher<ReviewPageableListResult, TMDbError> {

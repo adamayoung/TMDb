@@ -27,13 +27,21 @@ public struct Movie: Identifiable, Decodable {
     public let video: Bool
     public let adult: Bool
 
+    public let credits: Credits?
+    public let recommendations: MoviePageableListResult?
+    public let similar: MoviePageableListResult?
+    public let images: ImageCollection?
+    public let videos: VideoCollection?
+
     public init(id: Int, title: String, tagline: String? = nil, originalTitle: String, originalLanguage: String,
                 overview: String? = nil, runtime: Int? = nil, genres: [Genre], releaseDate: Date,
                 posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float, revenue: Float,
                 homepageURL: URL? = nil, imdbId: String? = nil, status: Status,
                 productionCompanies: [ProductionCompany], productionCountries: [ProductionCountry],
                 spokenLanguages: [SpokenLanguage], popularity: Float, voteAverage: Float, voteCount: Int, video: Bool,
-                adult: Bool) {
+                adult: Bool, credits: Credits? = nil, recommendations: MoviePageableListResult? = nil,
+                similar: MoviePageableListResult? = nil, images: ImageCollection? = nil,
+                videos: VideoCollection? = nil) {
         self.id = id
         self.title = title
         self.tagline = tagline
@@ -58,6 +66,11 @@ public struct Movie: Identifiable, Decodable {
         self.voteCount = voteCount
         self.video = video
         self.adult = adult
+        self.credits = credits
+        self.recommendations = recommendations
+        self.similar = similar
+        self.images = images
+        self.videos = videos
     }
 
 }
@@ -70,6 +83,17 @@ extension Movie {
         }
 
         return URL(string: homepage)
+    }
+
+}
+
+extension Movie {
+
+    public struct Credits: Decodable {
+
+        public let cast: [CastMember]
+        public let crew: [CrewMember]
+
     }
 
 }

@@ -3,7 +3,7 @@ import Foundation
 
 public protocol TVShowService {
 
-    func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError>
+    func fetchDetails(forTVShow id: TVShow.ID, include: [TVShowDetailsIncludeKey]?) -> AnyPublisher<TVShow, TMDbError>
 
     func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
@@ -23,6 +23,11 @@ public protocol TVShowService {
 }
 
 extension TVShowService {
+
+    public func fetchDetails(forTVShow id: TVShow.ID,
+                             include: [TVShowDetailsIncludeKey]? = nil) -> AnyPublisher<TVShow, TMDbError> {
+        fetchDetails(forTVShow: id, include: include)
+    }
 
     public func fetchReviews(forTVShow tvShowID: TVShow.ID,
                              page: Int? = nil) -> AnyPublisher<ReviewPageableListResult, TMDbError> {

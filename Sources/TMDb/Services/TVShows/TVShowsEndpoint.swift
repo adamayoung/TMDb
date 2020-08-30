@@ -4,7 +4,7 @@ enum TVShowsEndpoint {
 
     static let basePath = URL(string: "/tv")!
 
-    case details(tvShowID: TVShow.ID)
+    case details(tvShowID: TVShow.ID, include: [TVShowDetailsIncludeKey]?)
     case credits(tvShowID: TVShow.ID)
     case reviews(tvShowID: TVShow.ID, page: Int?)
     case images(tvShowID: TVShow.ID)
@@ -19,9 +19,10 @@ extension TVShowsEndpoint: Endpoint {
 
     var url: URL {
         switch self {
-        case .details(let tvShowID):
+        case .details(let tvShowID, let include):
             return Self.basePath
                 .appendingPathComponent(tvShowID)
+                .appendingWithAppendToResponse(include)
 
         case .credits(let tvShowID):
             return Self.basePath
