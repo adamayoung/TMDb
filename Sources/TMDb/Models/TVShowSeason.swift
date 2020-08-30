@@ -1,10 +1,3 @@
-//
-//  TVShowSeason.swift
-//  TMDb
-//
-//  Created by Adam Young on 15/04/2020.
-//
-
 import Foundation
 
 public struct TVShowSeason: Identifiable, Decodable {
@@ -17,7 +10,8 @@ public struct TVShowSeason: Identifiable, Decodable {
     public let posterPath: URL?
     public let episodes: [Episode]
 
-    public init(id: Int, name: String, seasonNumber: Int, overview: String, airDate: Date? = nil, posterPath: URL? = nil, episodes: [TVShowSeason.Episode] = []) {
+    public init(id: Int, name: String, seasonNumber: Int, overview: String, airDate: Date? = nil,
+                posterPath: URL? = nil, episodes: [TVShowSeason.Episode] = []) {
         self.id = id
         self.name = name
         self.seasonNumber = seasonNumber
@@ -47,7 +41,9 @@ extension TVShowSeason {
         public let voteAverage: Float
         public let voteCount: Int
 
-        public init(id: Int, name: String, episodeNumber: Int, seasonNumber: Int, showId: Int, overview: String?, airDate: Date?, productionCode: String?, stillPath: URL?, crew: [CrewMember], guestStars: [CastMember], voteAverage: Float, voteCount: Int) {
+        public init(id: Int, name: String, episodeNumber: Int, seasonNumber: Int, showId: Int, overview: String?,
+                    airDate: Date?, productionCode: String?, stillPath: URL?, crew: [CrewMember],
+                    guestStars: [CastMember], voteAverage: Float, voteCount: Int) {
             self.id = id
             self.name = name
             self.episodeNumber = episodeNumber

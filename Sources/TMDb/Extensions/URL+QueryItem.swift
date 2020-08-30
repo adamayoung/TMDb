@@ -1,13 +1,10 @@
-//
-//  URL+QueryItem.swift
-//  TMDb
-//
-//  Created by Adam Young on 21/01/2020.
-//
-
 import Foundation
 
 extension URL {
+
+    func appendingPathComponent(_ value: Int) -> Self {
+        appendingPathComponent(String(value))
+    }
 
     func appendingQueryItem(name: String, value: CustomStringConvertible) -> Self {
         var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false)!
@@ -47,6 +44,42 @@ extension URL {
         }
 
         return appendingQueryItem(name: "year", value: year)
+    }
+
+    func appendingWithPeople(_ withPeople: [Person.ID]?) -> Self {
+        guard let withPeople = withPeople else {
+            return self
+        }
+
+        let value = withPeople
+            .map(String.init)
+            .joined(separator: ",")
+
+        return appendingQueryItem(name: "with_people", value: value)
+    }
+
+    func appendingWithAppendToResponse(_ includes: [MovieDetailsIncludeKey]?) -> Self {
+        guard let includes = includes else {
+            return self
+        }
+
+        let value = includes
+            .map(\.rawValue)
+            .joined(separator: ",")
+
+        return appendingQueryItem(name: "append_to_response", value: value)
+    }
+
+    func appendingWithAppendToResponse(_ includes: [TVShowDetailsIncludeKey]?) -> Self {
+        guard let includes = includes else {
+            return self
+        }
+
+        let value = includes
+            .map(\.rawValue)
+            .joined(separator: ",")
+
+        return appendingQueryItem(name: "append_to_response", value: value)
     }
 
 }

@@ -1,10 +1,3 @@
-//
-//  ImageMetadata.swift
-//  TMDb
-//
-//  Created by Adam Young on 23/01/2020.
-//
-
 import Foundation
 
 public struct ImageMetadata: Identifiable, Decodable {

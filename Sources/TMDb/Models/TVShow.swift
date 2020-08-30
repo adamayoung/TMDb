@@ -1,10 +1,3 @@
-//
-//  TVShow.swift
-//  TMDb
-//
-//  Created by Adam Young on 23/01/2020.
-//
-
 import Foundation
 
 public struct TVShow: Identifiable, Decodable {
@@ -43,7 +36,21 @@ public struct TVShow: Identifiable, Decodable {
     public let voteAverage: Float
     public let voteCount: Int
 
-    public init(id: Int, name: String, originalName: String, originalLanguage: String, overview: String, episodeRuntime: [Int]? = nil, numberOfSeasons: Int, numberOfEpisodes: Int, seasons: [TVShow.Season], genres: [Genre], firstAirDate: Date? = nil, originCountry: [String] = [], posterPath: URL? = nil, backdropPath: URL? = nil, homepageURL: URL?, inProduction: Bool, languages: [String] = [], lastAirDate: Date? = nil, lastEpisodeToAir: TVShow.Episode? = nil, networks: [TVShow.Network] = [], productionCompanies: [TVShow.ProductionCompany], status: String, type: String, popularity: Float, voteAverage: Float, voteCount: Int) {
+    public let credits: Credits?
+    public let recommendations: TVShowPageableListResult?
+    public let similar: TVShowPageableListResult?
+    public let images: ImageCollection?
+    public let videos: VideoCollection?
+
+    public init(id: Int, name: String, originalName: String, originalLanguage: String, overview: String,
+                episodeRuntime: [Int]? = nil, numberOfSeasons: Int, numberOfEpisodes: Int, seasons: [TVShow.Season],
+                genres: [Genre], firstAirDate: Date? = nil, originCountry: [String] = [], posterPath: URL? = nil,
+                backdropPath: URL? = nil, homepageURL: URL?, inProduction: Bool, languages: [String] = [],
+                lastAirDate: Date? = nil, lastEpisodeToAir: TVShow.Episode? = nil, networks: [TVShow.Network] = [],
+                productionCompanies: [TVShow.ProductionCompany], status: String, type: String, popularity: Float,
+                voteAverage: Float, voteCount: Int, credits: Credits? = nil,
+                recommendations: TVShowPageableListResult? = nil, similar: TVShowPageableListResult? = nil,
+                images: ImageCollection? = nil, videos: VideoCollection? = nil) {
         self.id = id
         self.name = name
         self.originalName = originalName
@@ -70,6 +77,11 @@ public struct TVShow: Identifiable, Decodable {
         self.popularity = popularity
         self.voteAverage = voteAverage
         self.voteCount = voteCount
+        self.credits = credits
+        self.recommendations = recommendations
+        self.similar = similar
+        self.images = images
+        self.videos = videos
     }
 
 }
@@ -90,7 +102,8 @@ extension TVShow {
         public let voteAverage: Float
         public let voteCount: Int
 
-        public init(id: Int, name: String, overview: String, seasonNumber: Int, episodeNumber: Int, airDate: Date, productionCode: String, showId: Int, stillPath: URL? = nil, voteAverage: Float, voteCount: Int) {
+        public init(id: Int, name: String, overview: String, seasonNumber: Int, episodeNumber: Int, airDate: Date,
+                    productionCode: String, showId: Int, stillPath: URL? = nil, voteAverage: Float, voteCount: Int) {
             self.id = id
             self.name = name
             self.overview = overview
@@ -120,7 +133,8 @@ extension TVShow {
         public let airDate: Date?
         public let posterPath: URL?
 
-        public init(id: Int, name: String, overview: String? = nil, seasonNumber: Int, episodeCount: Int, airDate: Date? = nil, posterPath: URL? = nil) {
+        public init(id: Int, name: String, overview: String? = nil, seasonNumber: Int, episodeCount: Int,
+                    airDate: Date? = nil, posterPath: URL? = nil) {
             self.id = id
             self.name = name
             self.overview = overview
@@ -169,6 +183,17 @@ extension TVShow {
             self.logoPath = logoPath
             self.originCountry = originCountry
         }
+
+    }
+
+}
+
+extension TVShow {
+
+    public struct Credits: Decodable {
+
+        public let cast: [CastMember]
+        public let crew: [CrewMember]
 
     }
 

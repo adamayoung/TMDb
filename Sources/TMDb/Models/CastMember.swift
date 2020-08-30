@@ -1,10 +1,3 @@
-//
-//  CastMember.swift
-//  TMDb
-//
-//  Created by Adam Young on 29/01/2020.
-//
-
 import Foundation
 
 public struct CastMember: Identifiable, Decodable {
@@ -18,7 +11,8 @@ public struct CastMember: Identifiable, Decodable {
     public let profilePath: URL?
     public let order: Int
 
-    public init(id: Int, castID: Int? = nil, creditID: String, name: String, character: String, gender: Gender? = nil, profilePath: URL? = nil, order: Int) {
+    public init(id: Int, castID: Int? = nil, creditID: String, name: String, character: String, gender: Gender? = nil,
+                profilePath: URL? = nil, order: Int) {
         self.id = id
         self.castID = castID
         self.creditID = creditID

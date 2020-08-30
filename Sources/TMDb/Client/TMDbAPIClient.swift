@@ -1,10 +1,3 @@
-//
-//  TMDbAPIClient.swift
-//  TMDb
-//
-//  Created by Adam Young on 16/03/2020.
-//
-
 import Combine
 import Foundation
 
@@ -23,7 +16,8 @@ public final class TMDbAPIClient: APIClient {
         shared.apiKey = apiKey
     }
 
-    init(urlSession: URLSession = URLSession(configuration: URLSessionConfiguration.default), jsonDecoder: JSONDecoder = .theMovieDatabase) {
+    init(urlSession: URLSession = URLSession(configuration: URLSessionConfiguration.default),
+         jsonDecoder: JSONDecoder = .theMovieDatabase) {
         self.urlSession = urlSession
         self.jsonDecoder = jsonDecoder
     }
@@ -32,7 +26,8 @@ public final class TMDbAPIClient: APIClient {
 
 extension TMDbAPIClient {
 
-    public func get<Response: Decodable>(path: URL, httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
+    public func get<Response: Decodable>(path: URL,
+                                         httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
         let url = urlFromPath(path)
         var urlRequest = URLRequest(url: url)
 

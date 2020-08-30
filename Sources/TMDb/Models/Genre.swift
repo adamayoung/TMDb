@@ -1,10 +1,3 @@
-//
-//  Genre.swift
-//  TMDb
-//
-//  Created by Adam Young on 21/01/2020.
-//
-
 import Foundation
 
 public struct Genre: Identifiable, Decodable {

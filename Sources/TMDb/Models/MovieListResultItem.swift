@@ -1,11 +1,3 @@
-//
-//  MovieListResultItem.swift
-//  TMDb
-//
-//  Created by Adam Young on 07/01/2020.
-//  Copyright © 2020 Adam Young. All rights reserved.
-//
-
 import Foundation
 
 public struct MovieListResultItem: Identifiable, Decodable {
@@ -33,7 +25,10 @@ public struct MovieListResultItem: Identifiable, Decodable {
     public let video: Bool?
     public let adult: Bool?
 
-    public init(id: Int, title: String, originalTitle: String? = nil, originalLanguage: String? = nil, overview: String? = nil, genreIDs: [Int]? = nil, releaseDate: Date? = nil, posterPath: URL? = nil, backdropPath: URL? = nil, popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil, video: Bool? = nil, adult: Bool? = nil) {
+    public init(id: Int, title: String, originalTitle: String? = nil, originalLanguage: String? = nil,
+                overview: String? = nil, genreIDs: [Int]? = nil, releaseDate: Date? = nil, posterPath: URL? = nil,
+                backdropPath: URL? = nil, popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil,
+                video: Bool? = nil, adult: Bool? = nil) {
         self.id = id
         self.title = title
         self.originalTitle = originalTitle

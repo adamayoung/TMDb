@@ -1,10 +1,3 @@
-//
-//  CrewMember.swift
-//  TMDb
-//
-//  Created by Adam Young on 29/01/2020.
-//
-
 import Foundation
 
 public struct CrewMember: Identifiable, Decodable {
@@ -17,7 +10,8 @@ public struct CrewMember: Identifiable, Decodable {
     public let gender: Gender?
     public let profilePath: URL?
 
-    public init(id: Int, creditID: String, name: String, job: String, department: String, gender: Gender? = nil, profilePath: URL? = nil) {
+    public init(id: Int, creditID: String, name: String, job: String, department: String, gender: Gender? = nil,
+                profilePath: URL? = nil) {
         self.id = id
         self.creditID = creditID
         self.name = name
