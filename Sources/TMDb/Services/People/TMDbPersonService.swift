@@ -84,24 +84,36 @@ extension TMDbPersonService {
 extension TMDbPersonService {
 
     private static func showSort(lhs: ShowListResultItem, rhs: ShowListResultItem) -> Bool {
-        guard let lhsDate = lhs.date, let rhsDate = rhs.date else {
+        guard let lhsDate = lhs.date else {
             return false
+        }
+
+        guard let rhsDate = rhs.date else {
+            return true
         }
 
         return lhsDate > rhsDate
     }
 
     private static func movieSort(lhs: MovieListResultItem, rhs: MovieListResultItem) -> Bool {
-        guard let lhsDate = lhs.releaseDate, let rhsDate = rhs.releaseDate else {
+        guard let lhsDate = lhs.releaseDate else {
             return false
+        }
+
+        guard let rhsDate = rhs.releaseDate else {
+            return true
         }
 
         return lhsDate > rhsDate
     }
 
     private static func tvShowSort(lhs: TVShowListResultItem, rhs: TVShowListResultItem) -> Bool {
-        guard let lhsDate = lhs.firstAirDate, let rhsDate = rhs.firstAirDate else {
+        guard let lhsDate = lhs.firstAirDate else {
             return false
+        }
+
+        guard let rhsDate = rhs.firstAirDate else {
+            return true
         }
 
         return lhsDate > rhsDate
