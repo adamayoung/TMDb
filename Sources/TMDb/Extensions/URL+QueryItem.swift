@@ -58,28 +58,4 @@ extension URL {
         return appendingQueryItem(name: "with_people", value: value)
     }
 
-    func appendingWithAppendToResponse(_ includes: [MovieDetailsIncludeKey]?) -> Self {
-        guard let includes = includes else {
-            return self
-        }
-
-        let value = includes
-            .map(\.rawValue)
-            .joined(separator: ",")
-
-        return appendingQueryItem(name: "append_to_response", value: value)
-    }
-
-    func appendingWithAppendToResponse(_ includes: [TVShowDetailsIncludeKey]?) -> Self {
-        guard let includes = includes else {
-            return self
-        }
-
-        let value = includes
-            .map(\.rawValue)
-            .joined(separator: ",")
-
-        return appendingQueryItem(name: "append_to_response", value: value)
-    }
-
 }

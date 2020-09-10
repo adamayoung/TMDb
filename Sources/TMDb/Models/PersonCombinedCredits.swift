@@ -3,10 +3,10 @@ import Foundation
 public struct PersonCombinedCredits: Identifiable, Decodable {
 
     public let id: Int
-    public let cast: [ShowListResultItem]
-    public let crew: [ShowListResultItem]
+    public let cast: [Show]
+    public let crew: [Show]
 
-    public init(id: Int, cast: [ShowListResultItem], crew: [ShowListResultItem]) {
+    public init(id: Int, cast: [Show], crew: [Show]) {
         self.id = id
         self.cast = cast
         self.crew = crew

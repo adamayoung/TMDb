@@ -47,13 +47,13 @@ public final class TMDbPersonService: PersonService {
         apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
     }
 
-    public func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[ShowListResultItem], TMDbError> {
+    public func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError> {
         fetchCombinedCredits(forPerson: personID)
             .map(Self.knownForIn)
             .eraseToAnyPublisher()
     }
 
-    public func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError> {
+    public func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
     }
 
@@ -61,7 +61,7 @@ public final class TMDbPersonService: PersonService {
 
 extension TMDbPersonService {
 
-    private static func knownForIn(credits: PersonCombinedCredits) -> [ShowListResultItem] {
+    private static func knownForIn(credits: PersonCombinedCredits) -> [Show] {
         let topCastShows = Array(credits.cast.prefix(10))
         let topCrewShows = Array(credits.crew.prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -83,7 +83,7 @@ extension TMDbPersonService {
 
 extension TMDbPersonService {
 
-    private static func showSort(lhs: ShowListResultItem, rhs: ShowListResultItem) -> Bool {
+    private static func showSort(lhs: Show, rhs: Show) -> Bool {
         guard let lhsDate = lhs.date else {
             return false
         }
@@ -95,7 +95,7 @@ extension TMDbPersonService {
         return lhsDate > rhsDate
     }
 
-    private static func movieSort(lhs: MovieListResultItem, rhs: MovieListResultItem) -> Bool {
+    private static func movieSort(lhs: Movie, rhs: Movie) -> Bool {
         guard let lhsDate = lhs.releaseDate else {
             return false
         }
@@ -107,7 +107,7 @@ extension TMDbPersonService {
         return lhsDate > rhsDate
     }
 
-    private static func tvShowSort(lhs: TVShowListResultItem, rhs: TVShowListResultItem) -> Bool {
+    private static func tvShowSort(lhs: TVShow, rhs: TVShow) -> Bool {
         guard let lhsDate = lhs.firstAirDate else {
             return false
         }

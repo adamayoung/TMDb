@@ -9,9 +9,8 @@ public final class TMDbMovieService: MovieService {
         self.apiClient = apiClient
     }
 
-    public func fetchDetails(forMovie id: Movie.ID,
-                             include: [MovieDetailsIncludeKey]?) -> AnyPublisher<Movie, TMDbError> {
-        apiClient.get(endpoint: MoviesEndpoint.details(movieID: id, include: include))
+    public func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError> {
+        apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
     }
 
     public func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError> {
@@ -19,7 +18,7 @@ public final class TMDbMovieService: MovieService {
     }
 
     public func fetchReviews(forMovie movieID: Movie.ID,
-                             page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
+                             page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.reviews(movieID: movieID, page: page))
     }
 
@@ -32,16 +31,16 @@ public final class TMDbMovieService: MovieService {
     }
 
     public func fetchRecommendations(forMovie movieID: Movie.ID,
-                                     page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+                                     page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
     }
 
     public func fetchSimilar(toMovie movieID: Movie.ID,
-                             page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+                             page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page))
     }
 
-    public func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableListResult, TMDbError> {
+    public func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
     }
 

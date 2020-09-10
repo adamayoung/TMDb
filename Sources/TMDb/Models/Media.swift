@@ -1,27 +1,27 @@
 import Foundation
 
-public enum MultiTypeListResultItem: Identifiable {
+public enum Media: Identifiable {
 
-    public var id: String {
+    public var id: Int {
         switch self {
         case .movie(let movie):
-            return "movie-\(movie.id)"
+            return movie.id
 
         case .tvShow(let tvShow):
-            return "tvShow-\(tvShow.id)"
+            return tvShow.id
 
         case .person(let person):
-            return "person-\(person.id)"
+            return person.id
         }
     }
 
-    case movie(MovieListResultItem)
-    case tvShow(TVShowListResultItem)
-    case person(PersonListResultItem)
+    case movie(Movie)
+    case tvShow(TVShow)
+    case person(Person)
 
 }
 
-extension MultiTypeListResultItem: Decodable {
+extension Media: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case mediaType
@@ -39,13 +39,13 @@ extension MultiTypeListResultItem: Decodable {
 
         switch mediaType {
         case .movie:
-            self = .movie(try MovieListResultItem(from: decoder))
+            self = .movie(try Movie(from: decoder))
 
         case .tvShow:
-            self = .tvShow(try TVShowListResultItem(from: decoder))
+            self = .tvShow(try TVShow(from: decoder))
 
         case .person:
-            self = .person(try PersonListResultItem(from: decoder))
+            self = .person(try Person(from: decoder))
         }
     }
 

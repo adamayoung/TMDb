@@ -9,9 +9,8 @@ public final class TMDbTVShowService: TVShowService {
         self.apiClient = apiClient
     }
 
-    public func fetchDetails(forTVShow id: TVShow.ID,
-                             include: [TVShowDetailsIncludeKey]?) -> AnyPublisher<TVShow, TMDbError> {
-        apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id, include: include))
+    public func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
+        apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
     }
 
     public func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError> {
@@ -19,7 +18,7 @@ public final class TMDbTVShowService: TVShowService {
     }
 
     public func fetchReviews(forTVShow tvShowID: TVShow.ID,
-                             page: Int?) -> AnyPublisher<ReviewPageableListResult, TMDbError> {
+                             page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
     }
 
@@ -32,16 +31,16 @@ public final class TMDbTVShowService: TVShowService {
     }
 
     public func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
-                                     page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+                                     page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
     }
 
     public func fetchSimilar(toTVShow tvShowID: TVShow.ID,
-                             page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+                             page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
     }
 
-    public func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableListResult, TMDbError> {
+    public func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
     }
 

@@ -5,43 +5,36 @@ public struct Movie: Identifiable, Decodable {
     public let id: Int
     public let title: String
     public let tagline: String?
-    public let originalTitle: String
-    public let originalLanguage: String
+    public let originalTitle: String?
+    public let originalLanguage: String?
     public let overview: String?
     public let runtime: Int?
-    public let genres: [Genre]
-    public let releaseDate: Date
+    public let genres: [Genre]?
     public let posterPath: URL?
     public let backdropPath: URL?
-    public let budget: Float
-    public let revenue: Float
-    private let homepage: String?
+    public let budget: Float?
+    public let revenue: Float?
     public let imdbId: String?
-    public let status: Status
-    public let productionCompanies: [ProductionCompany]
-    public let productionCountries: [ProductionCountry]
-    public let spokenLanguages: [SpokenLanguage]
-    public let popularity: Float
-    public let voteAverage: Float
-    public let voteCount: Int
-    public let video: Bool
-    public let adult: Bool
+    public let status: Status?
+    public let productionCompanies: [ProductionCompany]?
+    public let productionCountries: [ProductionCountry]?
+    public let spokenLanguages: [SpokenLanguage]?
+    public let popularity: Float?
+    public let voteAverage: Float?
+    public let voteCount: Int?
+    public let video: Bool?
+    public let adult: Bool?
 
-    public let credits: Credits?
-    public let recommendations: MoviePageableListResult?
-    public let similar: MoviePageableListResult?
-    public let images: ImageCollection?
-    public let videos: VideoCollection?
+    private let releaseDateString: String?
+    private let homepage: String?
 
-    public init(id: Int, title: String, tagline: String? = nil, originalTitle: String, originalLanguage: String,
-                overview: String? = nil, runtime: Int? = nil, genres: [Genre], releaseDate: Date,
-                posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float, revenue: Float,
-                homepageURL: URL? = nil, imdbId: String? = nil, status: Status,
-                productionCompanies: [ProductionCompany], productionCountries: [ProductionCountry],
-                spokenLanguages: [SpokenLanguage], popularity: Float, voteAverage: Float, voteCount: Int, video: Bool,
-                adult: Bool, credits: Credits? = nil, recommendations: MoviePageableListResult? = nil,
-                similar: MoviePageableListResult? = nil, images: ImageCollection? = nil,
-                videos: VideoCollection? = nil) {
+    public init(id: Int, title: String, tagline: String? = nil, originalTitle: String? = nil,
+                originalLanguage: String? = nil, overview: String? = nil, runtime: Int? = nil, genres: [Genre]? = nil,
+                releaseDate: Date? = nil, posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float? = nil,
+                revenue: Float? = nil, homepageURL: URL? = nil, imdbId: String? = nil, status: Status? = nil,
+                productionCompanies: [ProductionCompany]? = nil, productionCountries: [ProductionCountry]? = nil,
+                spokenLanguages: [SpokenLanguage]? = nil, popularity: Float? = nil, voteAverage: Float? = nil,
+                voteCount: Int? = nil, video: Bool? = nil, adult: Bool? = nil) {
         self.id = id
         self.title = title
         self.tagline = tagline
@@ -50,7 +43,13 @@ public struct Movie: Identifiable, Decodable {
         self.overview = overview
         self.runtime = runtime
         self.genres = genres
-        self.releaseDate = releaseDate
+        self.releaseDateString = {
+            guard let releaseDate = releaseDate else {
+                return nil
+            }
+
+            return DateFormatter.theMovieDatabase.string(from: releaseDate)
+        }()
         self.posterPath = posterPath
         self.backdropPath = backdropPath
         self.budget = budget
@@ -66,16 +65,19 @@ public struct Movie: Identifiable, Decodable {
         self.voteCount = voteCount
         self.video = video
         self.adult = adult
-        self.credits = credits
-        self.recommendations = recommendations
-        self.similar = similar
-        self.images = images
-        self.videos = videos
     }
 
 }
 
 extension Movie {
+
+    public var releaseDate: Date? {
+        guard let releaseDateString = releaseDateString else {
+            return nil
+        }
+
+        return DateFormatter.theMovieDatabase.date(from: releaseDateString)
+    }
 
     public var homepageURL: URL? {
         guard let homepage = homepage else {
@@ -94,6 +96,37 @@ extension Movie {
         public let cast: [CastMember]
         public let crew: [CrewMember]
 
+    }
+
+}
+
+extension Movie {
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case tagline
+        case originalTitle
+        case originalLanguage
+        case overview
+        case runtime
+        case genres
+        case releaseDateString = "releaseDate"
+        case posterPath
+        case backdropPath
+        case budget
+        case revenue
+        case imdbId
+        case status
+        case homepage
+        case productionCompanies
+        case productionCountries
+        case spokenLanguages
+        case popularity
+        case voteAverage
+        case voteCount
+        case video
+        case adult
     }
 
 }
