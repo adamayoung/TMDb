@@ -13,15 +13,15 @@ public protocol PersonService {
 
     func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError>
 
-    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[ShowListResultItem], TMDbError>
+    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError>
 
-    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListResult, TMDbError>
+    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 
 }
 
 extension PersonService {
 
-    public func fetchPopular(page: Int? = nil) -> AnyPublisher<PersonPageableListResult, TMDbError> {
+    public func fetchPopular(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
         fetchPopular(page: page)
     }
 

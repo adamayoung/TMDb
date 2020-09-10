@@ -1,14 +1,14 @@
 import Foundation
 
-public enum ShowListResultItem: Identifiable {
+public enum Show: Identifiable {
 
-    public var id: String {
+    public var id: Int {
         switch self {
         case .movie(let movie):
-            return "movie-\(movie.id)"
+            return movie.id
 
         case .tvShow(let tvShow):
-            return "tvShow-\(tvShow.id)"
+            return tvShow.id
         }
     }
 
@@ -32,12 +32,12 @@ public enum ShowListResultItem: Identifiable {
         }
     }
 
-    case movie(MovieListResultItem)
-    case tvShow(TVShowListResultItem)
+    case movie(Movie)
+    case tvShow(TVShow)
 
 }
 
-extension ShowListResultItem: Decodable {
+extension Show: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case mediaType
@@ -54,10 +54,10 @@ extension ShowListResultItem: Decodable {
 
         switch mediaType {
         case .movie:
-            self = .movie(try MovieListResultItem(from: decoder))
+            self = .movie(try Movie(from: decoder))
 
         case .tvShow:
-            self = .tvShow(try TVShowListResultItem(from: decoder))
+            self = .tvShow(try TVShow(from: decoder))
         }
     }
 
