@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImageMetadata: Identifiable, Decodable {
+public struct ImageMetadata: Identifiable, Decodable, Equatable {
 
     public let filePath: URL
     public let width: Int

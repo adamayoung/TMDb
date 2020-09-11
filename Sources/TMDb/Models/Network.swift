@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Network: Identifiable, Decodable {
+public struct Network: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let name: String

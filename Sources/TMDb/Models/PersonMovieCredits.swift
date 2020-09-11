@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PersonMovieCredits: Identifiable, Decodable {
+public struct PersonMovieCredits: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let cast: [Movie]

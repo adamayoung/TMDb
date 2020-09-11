@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Certification: Identifiable, Decodable {
+public struct Certification: Identifiable, Decodable, Equatable {
 
     public var id: String {
         code

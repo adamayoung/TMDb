@@ -4,10 +4,10 @@ enum SearchEndpoint {
 
     static let basePath = URL(string: "/search")!
 
-    case all(query: String, page: Int?)
-    case movies(query: String, year: Int?, page: Int?)
-    case tvShows(query: String, firstAirDateYear: Int?, page: Int?)
-    case people(query: String, page: Int?)
+    case multi(query: String, page: Int? = nil)
+    case movies(query: String, year: Int? = nil, page: Int? = nil)
+    case tvShows(query: String, firstAirDateYear: Int? = nil, page: Int? = nil)
+    case people(query: String, page: Int? = nil)
 
 }
 
@@ -16,7 +16,7 @@ extension SearchEndpoint: Endpoint {
     var url: URL {
         switch self {
 
-        case .all(let query, let page):
+        case .multi(let query, let page):
             return Self.basePath
                 .appendingPathComponent("multi")
                 .appendingQueryItem(name: "query", value: query)

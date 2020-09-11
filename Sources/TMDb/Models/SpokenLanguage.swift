@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SpokenLanguage: Identifiable, Decodable {
+public struct SpokenLanguage: Identifiable, Decodable, Equatable {
 
     public let iso6391: String
     public let name: String

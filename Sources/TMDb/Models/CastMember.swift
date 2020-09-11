@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CastMember: Identifiable, Decodable {
+public struct CastMember: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let castID: Int?

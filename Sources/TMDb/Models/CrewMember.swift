@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CrewMember: Identifiable, Decodable {
+public struct CrewMember: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let creditID: String

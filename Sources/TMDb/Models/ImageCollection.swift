@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImageCollection: Decodable {
+public struct ImageCollection: Decodable, Equatable {
 
     public let id: Int
     public let posters: [ImageMetadata]

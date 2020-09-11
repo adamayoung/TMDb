@@ -1,6 +1,6 @@
 import Foundation
 
-public struct APIConfiguration: Decodable {
+public struct APIConfiguration: Decodable, Equatable {
 
     public let images: ImagesConfiguration
     public let changeKeys: [String]

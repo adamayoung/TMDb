@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Movie: Identifiable, Decodable {
+public struct Movie: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let title: String
@@ -85,17 +85,6 @@ extension Movie {
         }
 
         return URL(string: homepage)
-    }
-
-}
-
-extension Movie {
-
-    public struct Credits: Decodable {
-
-        public let cast: [CastMember]
-        public let crew: [CrewMember]
-
     }
 
 }

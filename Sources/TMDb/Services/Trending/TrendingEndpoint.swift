@@ -4,9 +4,9 @@ enum TrendingEndpoint {
 
     static let basePath = URL(string: "/trending")!
 
-    case movies(timeWindow: TrendingTimeWindowFilterType, page: Int?)
-    case tvShows(timeWindow: TrendingTimeWindowFilterType, page: Int?)
-    case people(timeWindow: TrendingTimeWindowFilterType, page: Int?)
+    case movies(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
+    case tvShows(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
+    case people(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
 
 }
 

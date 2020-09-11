@@ -10,7 +10,7 @@ public final class TMDbSearchService: SearchService {
     }
 
     public func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError> {
-        apiClient.get(endpoint: SearchEndpoint.all(query: query, page: page))
+        apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
     }
 
     public func searchMovies(query: String, year: Int?,

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct VideoMetadata: Identifiable, Decodable {
+public struct VideoMetadata: Identifiable, Decodable, Equatable {
 
     public let id: String
     public let name: String

@@ -9,7 +9,7 @@ enum PeopleEndpoint {
     case movieCredits(personID: Person.ID)
     case tvShowCredits(personID: Person.ID)
     case images(personID: Person.ID)
-    case popular(page: Int?)
+    case popular(page: Int? = nil)
 
 }
 
