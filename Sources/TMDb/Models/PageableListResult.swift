@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PageableListResult<Result: Decodable & Identifiable>: Decodable {
+public struct PageableListResult<Result: Decodable & Identifiable & Equatable>: Decodable, Equatable {
 
     public let page: Int?
     public let results: [Result]

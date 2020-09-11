@@ -6,12 +6,12 @@ enum MoviesEndpoint {
 
     case details(movieID: Movie.ID)
     case credits(movieID: Movie.ID)
-    case reviews(movieID: Movie.ID, page: Int?)
+    case reviews(movieID: Movie.ID, page: Int? = nil)
     case images(movieID: Movie.ID)
     case videos(movieID: Movie.ID)
-    case recommendations(movieID: Movie.ID, page: Int?)
-    case similar(movieID: Movie.ID, page: Int?)
-    case popular(page: Int?)
+    case recommendations(movieID: Movie.ID, page: Int? = nil)
+    case similar(movieID: Movie.ID, page: Int? = nil)
+    case popular(page: Int? = nil)
 
 }
 

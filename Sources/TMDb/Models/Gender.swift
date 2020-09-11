@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Gender: Int, Decodable {
+public enum Gender: Int, Decodable, Equatable {
 
     case unknown = 0
     case female = 1

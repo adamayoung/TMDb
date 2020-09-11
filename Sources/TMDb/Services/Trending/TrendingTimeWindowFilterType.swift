@@ -9,14 +9,6 @@ public enum TrendingTimeWindowFilterType: String {
 
 }
 
-extension TrendingTimeWindowFilterType: CustomStringConvertible {
-
-    public var description: String {
-        rawValue
-    }
-
-}
-
 extension URL {
 
     func appendingPathComponent(_ filterType: TrendingTimeWindowFilterType) -> Self {

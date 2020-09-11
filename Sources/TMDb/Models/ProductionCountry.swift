@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ProductionCountry: Identifiable, Decodable {
+public struct ProductionCountry: Identifiable, Decodable, Equatable {
 
     public let iso31661: String
     public let name: String

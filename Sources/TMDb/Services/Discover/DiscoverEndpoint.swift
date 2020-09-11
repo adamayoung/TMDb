@@ -4,8 +4,8 @@ enum DiscoverEndpoint {
 
     static let basePath = URL(string: "/discover")!
 
-    case movies(sortBy: MovieSortBy?, withPeople: [Person.ID]?, page: Int?)
-    case tvShows(sortBy: TVShowSortBy?, page: Int?)
+    case movies(sortBy: MovieSortBy? = nil, withPeople: [Person.ID]? = nil, page: Int? = nil)
+    case tvShows(sortBy: TVShowSortBy? = nil, page: Int? = nil)
 
 }
 

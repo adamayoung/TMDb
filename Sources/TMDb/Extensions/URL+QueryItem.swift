@@ -23,19 +23,14 @@ extension URL {
     }
 
     func appendingPage(_ page: Int?) -> Self {
-        guard let page = page else {
+        guard var page = page else {
             return self
         }
 
-        return appendingQueryItem(name: "page", value: page <= 1000 ? page : 1000)
-    }
+        page = max(page, 1)
+        page = min(page, 1000)
 
-    func appendingFirstAirDateYear(_ year: Int?) -> Self {
-        guard let year = year else {
-            return self
-        }
-
-        return appendingQueryItem(name: "first_air_date_year", value: year)
+        return appendingQueryItem(name: "page", value:page)
     }
 
     func appendingYear(_ year: Int?) -> Self {
@@ -44,6 +39,14 @@ extension URL {
         }
 
         return appendingQueryItem(name: "year", value: year)
+    }
+
+    func appendingFirstAirDateYear(_ year: Int?) -> Self {
+        guard let year = year else {
+            return self
+        }
+
+        return appendingQueryItem(name: "first_air_date_year", value: year)
     }
 
     func appendingWithPeople(_ withPeople: [Person.ID]?) -> Self {

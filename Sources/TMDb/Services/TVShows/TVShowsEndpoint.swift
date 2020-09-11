@@ -6,12 +6,12 @@ enum TVShowsEndpoint {
 
     case details(tvShowID: TVShow.ID)
     case credits(tvShowID: TVShow.ID)
-    case reviews(tvShowID: TVShow.ID, page: Int?)
+    case reviews(tvShowID: TVShow.ID, page: Int? = nil)
     case images(tvShowID: TVShow.ID)
     case videos(tvShowID: TVShow.ID)
-    case recommendations(tvShowID: TVShow.ID, page: Int?)
-    case similar(tvShowID: TVShow.ID, page: Int?)
-    case popular(page: Int?)
+    case recommendations(tvShowID: TVShow.ID, page: Int? = nil)
+    case similar(tvShowID: TVShow.ID, page: Int? = nil)
+    case popular(page: Int? = nil)
 
 }
 

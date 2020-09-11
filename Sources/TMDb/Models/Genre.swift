@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Genre: Identifiable, Decodable {
+public struct Genre: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let name: String

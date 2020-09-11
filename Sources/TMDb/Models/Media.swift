@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Media: Identifiable {
+public enum Media: Identifiable, Equatable {
 
     public var id: Int {
         switch self {
@@ -27,7 +27,7 @@ extension Media: Decodable {
         case mediaType
     }
 
-    private enum MediaType: String, Decodable {
+    private enum MediaType: String, Decodable, Equatable {
         case movie
         case tvShow = "tv"
         case person

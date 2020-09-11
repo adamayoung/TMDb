@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Status: String, Decodable {
+public enum Status: String, Decodable, Equatable {
 
     case rumored = "Rumored"
     case planned = "Planned"

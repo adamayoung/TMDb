@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ProductionCompany: Identifiable, Decodable {
+public struct ProductionCompany: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let name: String

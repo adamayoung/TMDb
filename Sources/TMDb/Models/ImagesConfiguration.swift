@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImagesConfiguration: Decodable {
+public struct ImagesConfiguration: Decodable, Equatable {
 
     public let baseUrl: URL
     public let secureBaseUrl: URL

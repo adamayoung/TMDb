@@ -2,14 +2,14 @@ import Foundation
 
 public enum TVShowSortBy: String {
 
-    case voteAverageAscending = "vote_average.asc"
-    case voteAverageDescending = "vote_average.desc"
+    case popularityAscending = "popularity.asc"
+    case popularityDescending = "popularity.desc"
 
     case firstAirDateAscending = "first_air_date.asc"
     case firstAirDateDescending = "first_air_date.desc"
 
-    case popularityAscending = "popularity.asc"
-    case popularityDescending = "popularity.desc"
+    case voteAverageAscending = "vote_average.asc"
+    case voteAverageDescending = "vote_average.desc"
 
     public static var `default`: Self = .popularityDescending
 

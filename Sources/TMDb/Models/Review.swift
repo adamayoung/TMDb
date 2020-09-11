@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Review: Identifiable, Decodable {
+public struct Review: Identifiable, Decodable, Equatable {
 
     public let id: String
     public let author: String

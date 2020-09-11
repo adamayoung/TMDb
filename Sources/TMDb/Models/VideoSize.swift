@@ -1,6 +1,6 @@
 import Foundation
 
-public enum VideoSize: Int, Decodable {
+public enum VideoSize: Int, Decodable, Equatable {
 
     case s360 = 360
     case s480 = 480

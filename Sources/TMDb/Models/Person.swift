@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Person: Identifiable, Decodable {
+public struct Person: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let name: String
