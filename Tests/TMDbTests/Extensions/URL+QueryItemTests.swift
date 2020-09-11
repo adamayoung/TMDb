@@ -171,8 +171,6 @@ class URLQueryItemTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-
-
     func testAppendingWithPeople_whenNoQueryItemsAndWithPeopleIsNil_returnsURL() {
         let expectedResult = URL(string: "/some/path")!
 

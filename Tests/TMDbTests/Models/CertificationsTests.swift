@@ -16,6 +16,7 @@ class CertificationsTests: XCTestCase {
         XCTAssertEqual(result, certifications)
     }
 
+    // swiftlint:disable line_length
     private let json = """
     {
       "certifications": {
@@ -94,7 +95,7 @@ class CertificationsTests: XCTestCase {
 
     private let certifications = Certifications(
         certifications: [
-            "US" : [
+            "US": [
                 Certification(
                     code: "G",
                     meaning: "All ages admitted. There is no content that would be objectionable to most parents. This is one of only two ratings dating back to 1968 that still exists today.",
@@ -165,5 +166,6 @@ class CertificationsTests: XCTestCase {
             ]
         ]
     )
+    // swiftlint:enable line_length
 
 }

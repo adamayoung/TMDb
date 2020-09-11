@@ -30,7 +30,7 @@ extension URL {
         page = max(page, 1)
         page = min(page, 1000)
 
-        return appendingQueryItem(name: "page", value:page)
+        return appendingQueryItem(name: "page", value: page)
     }
 
     func appendingYear(_ year: Int?) -> Self {

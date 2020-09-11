@@ -10,7 +10,11 @@ class JSONDecoderTMDbTests: XCTestCase {
     }
 
     func testTheMovieDatabaseDecoder_decodesObject() throws {
-        let expectedResult = SomeThing(id: "abc123", firstName: "Adam", dateOfBirth: Self.dateFormatter.date(from: "1990-01-02")!)
+        let expectedResult = SomeThing(
+            id: "abc123",
+            firstName: "Adam",
+            dateOfBirth: Self.dateFormatter.date(from: "1990-01-02")!
+        )
 
         let jsonString = """
         {
