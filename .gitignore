@@ -120,4 +120,7 @@ xcuserdata
 ### Xcode Patch ###
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# swiftlint
+swiftlint.json
+
 # End of https://www.gitignore.io/api/xcode,macos,swift,swiftpm,swiftpackagemanager
