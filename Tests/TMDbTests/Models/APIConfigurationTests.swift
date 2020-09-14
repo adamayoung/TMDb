@@ -3,11 +3,12 @@ import XCTest
 
 class APIConfigurationTests: XCTestCase {
 
-    func testDecode_returnsObject() throws {
+    func testDecode_returnsAPIConfiguration() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(APIConfiguration.self, from: data)
 
-        XCTAssertEqual(result, apiConfiguration)
+        XCTAssertEqual(result.images, apiConfiguration.images)
+        XCTAssertEqual(result.changeKeys, apiConfiguration.changeKeys)
     }
 
     private let json = """

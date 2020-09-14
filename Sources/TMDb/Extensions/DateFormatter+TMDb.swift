@@ -4,7 +4,7 @@ extension DateFormatter {
 
     static var theMovieDatabase: DateFormatter {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-ddd"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter
     }
 

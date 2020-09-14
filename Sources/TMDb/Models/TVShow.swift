@@ -4,10 +4,10 @@ public struct TVShow: Identifiable, Decodable, Equatable {
 
     public let id: Int
     public let name: String
-    public let originalName: String
+    public let originalName: String?
     public let originalLanguage: String?
     public let overview: String?
-    public let episodeRuntime: [Int]?
+    public let episodeRunTime: [Int]?
     public let numberOfSeasons: Int?
     public let numberOfEpisodes: Int?
     public let seasons: [TVShowSeason]?
@@ -29,20 +29,20 @@ public struct TVShow: Identifiable, Decodable, Equatable {
     private let firstAirDateString: String?
     private let homepage: String?
 
-    public init(id: Int, name: String, originalName: String, originalLanguage: String? = nil, overview: String? = nil,
-                episodeRuntime: [Int]? = nil, numberOfSeasons: Int? = nil, numberOfEpisodes: Int? = nil,
-                seasons: [TVShowSeason]? = nil, genres: [Genre]? = nil, firstAirDate: Date? = nil,
-                originCountry: [String]? = nil, posterPath: URL? = nil, backdropPath: URL? = nil,
-                homepageURL: URL? = nil, inProduction: Bool? = nil, languages: [String]? = nil,
-                lastAirDate: Date? = nil, networks: [Network]? = nil, productionCompanies: [ProductionCompany]? = nil,
-                status: String? = nil, type: String? = nil, popularity: Float? = nil, voteAverage: Float? = nil,
-                voteCount: Int? = nil) {
+    public init(id: Int, name: String, originalName: String? = nil, originalLanguage: String? = nil,
+                overview: String? = nil, episodeRunTime: [Int]? = nil, numberOfSeasons: Int? = nil,
+                numberOfEpisodes: Int? = nil, seasons: [TVShowSeason]? = nil, genres: [Genre]? = nil,
+                firstAirDate: Date? = nil, originCountry: [String]? = nil, posterPath: URL? = nil,
+                backdropPath: URL? = nil, homepageURL: URL? = nil, inProduction: Bool? = nil,
+                languages: [String]? = nil, lastAirDate: Date? = nil, networks: [Network]? = nil,
+                productionCompanies: [ProductionCompany]? = nil, status: String? = nil, type: String? = nil,
+                popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil) {
         self.id = id
         self.name = name
         self.originalName = originalName
         self.originalLanguage = originalLanguage
         self.overview = overview
-        self.episodeRuntime = episodeRuntime
+        self.episodeRunTime = episodeRunTime
         self.numberOfSeasons = numberOfSeasons
         self.numberOfEpisodes = numberOfEpisodes
         self.seasons = seasons
@@ -100,7 +100,7 @@ extension TVShow {
         case originalName
         case originalLanguage
         case overview
-        case episodeRuntime
+        case episodeRunTime
         case numberOfSeasons
         case numberOfEpisodes
         case seasons

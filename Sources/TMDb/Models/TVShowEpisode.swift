@@ -31,4 +31,5 @@ public struct TVShowEpisode: Identifiable, Decodable, Equatable {
         self.voteAverage = voteAverage
         self.voteCount = voteCount
     }
+
 }

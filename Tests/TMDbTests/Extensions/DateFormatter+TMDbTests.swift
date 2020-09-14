@@ -4,7 +4,7 @@ import XCTest
 class DataFormatterTMDbTests: XCTestCase {
 
     func testTheMovieDatabaseFormatter_hasCorrectDateFormat() {
-        let expectedResult = "yyyy-MM-ddd"
+        let expectedResult = "yyyy-MM-dd"
 
         let result = DateFormatter.theMovieDatabase.dateFormat
 
