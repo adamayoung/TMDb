@@ -7,7 +7,7 @@ class CertificationTests: XCTestCase {
         XCTAssertEqual(certification.id, certification.code)
     }
 
-    func testDecode_returnsCertification() throws {
+    func testDecodeReturnsCertification() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Certification.self, from: data)
 
