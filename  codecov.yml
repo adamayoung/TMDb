@@ -1,0 +1,6 @@
+codecov:
+  branch: main
+  require_ci_to_pass: yes
+
+  ignore:
+    - Tests/**/*
