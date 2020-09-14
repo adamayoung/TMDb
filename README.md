@@ -47,7 +47,6 @@ Set your API key
 TMDbAPIClient.setAPIKey("ahb4334n43nj34jk43nklkg4")
 ```
 
-
 ## References
 
 * [https://www.themoviedb.org](https://www.themoviedb.org)
