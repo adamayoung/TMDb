@@ -95,7 +95,7 @@ iOSInjectionProject/
 Packages
 xcuserdata
 *.xcodeproj
-
+info.lcov
 
 ### SwiftPM ###
 
