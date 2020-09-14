@@ -2,14 +2,14 @@
 import XCTest
 
 class TVShowSeasonTests: XCTestCase {
-    
+
     func testDecode_returnsTVShowSeason() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(TVShowSeason.self, from: data)
-        
+
         XCTAssertEqual(result, tvShowSeason)
     }
-    
+
     // swiftlint:disable line_length
     private let json = """
     {
@@ -22,7 +22,7 @@ class TVShowSeasonTests: XCTestCase {
         "season_number": 1
     }
     """
-    
+
     private let tvShowSeason = TVShowSeason(
         id: 3624,
         name: "Season 1",
@@ -33,5 +33,5 @@ class TVShowSeasonTests: XCTestCase {
         episodes: nil
     )
     // swiftlint:enable line_length
-    
+
 }

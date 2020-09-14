@@ -40,7 +40,7 @@ class MoviePageableListTests: XCTestCase {
         results: [
             Movie(id: 1, title: "Movie 1"),
             Movie(id: 2, title: "Movie 2"),
-            Movie(id: 3, title: "Movie 3"),
+            Movie(id: 3, title: "Movie 3")
         ],
         totalResults: 3,
         totalPages: 1

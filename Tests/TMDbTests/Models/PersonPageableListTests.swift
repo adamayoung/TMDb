@@ -45,7 +45,6 @@ class PersonPageableListTests: XCTestCase {
     }
     """
 
-
     private let list = PersonPageableList(
         page: 1,
         results: [

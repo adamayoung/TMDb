@@ -10,6 +10,7 @@ class TVShowEpisodeTests: XCTestCase {
         XCTAssertEqual(result, tvShowEpisode)
     }
 
+    // swiftlint:disable line_length
     private let json = """
     {
         "air_date": "2011-04-17",
@@ -77,5 +78,6 @@ class TVShowEpisodeTests: XCTestCase {
         voteAverage: 7.11904761904762,
         voteCount: 21
     )
+    // swiftlint:enable line_length
 
 }

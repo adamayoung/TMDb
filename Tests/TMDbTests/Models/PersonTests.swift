@@ -35,7 +35,6 @@ class PersonTests: XCTestCase {
     }
     """
 
-
     private let person = Person(
         id: 287,
         name: "Brad Pitt",

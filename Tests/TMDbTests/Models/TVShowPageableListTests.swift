@@ -40,7 +40,7 @@ class TVShowPageableListTests: XCTestCase {
         results: [
             TVShow(id: 1, name: "TV Show 1"),
             TVShow(id: 2, name: "TV Show 2"),
-            TVShow(id: 3, name: "TV Show 3"),
+            TVShow(id: 3, name: "TV Show 3")
         ],
         totalResults: 3,
         totalPages: 1
