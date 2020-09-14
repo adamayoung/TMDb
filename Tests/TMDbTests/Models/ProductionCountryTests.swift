@@ -7,7 +7,7 @@ class ProductionCountryTests: XCTestCase {
         XCTAssertEqual(productionCountry.id, productionCountry.iso31661)
     }
 
-    func testDecode_returnsProductionCountry() throws {
+    func testDecodeReturnsProductionCountry() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(ProductionCountry.self, from: data)
 

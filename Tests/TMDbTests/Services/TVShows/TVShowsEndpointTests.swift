@@ -3,7 +3,7 @@ import XCTest
 
 class TVShowsEndpointTests: XCTestCase {
 
-    func testTVShowDetailsEndpoint_ReturnsURL() {
+    func testTVShowDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1")!
 
         let url = TVShowsEndpoint.details(tvShowID: 1).url
