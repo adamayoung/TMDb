@@ -13,8 +13,8 @@ public struct Movie: Identifiable, Decodable, Equatable {
     public let posterPath: URL?
     public let backdropPath: URL?
     public let budget: Float?
-    public let revenue: Float?
-    public let imdbId: String?
+    public let revenue: Double?
+    public let imdbID: String?
     public let status: Status?
     public let productionCompanies: [ProductionCompany]?
     public let productionCountries: [ProductionCountry]?
@@ -31,7 +31,7 @@ public struct Movie: Identifiable, Decodable, Equatable {
     public init(id: Int, title: String, tagline: String? = nil, originalTitle: String? = nil,
                 originalLanguage: String? = nil, overview: String? = nil, runtime: Int? = nil, genres: [Genre]? = nil,
                 releaseDate: Date? = nil, posterPath: URL? = nil, backdropPath: URL? = nil, budget: Float? = nil,
-                revenue: Float? = nil, homepageURL: URL? = nil, imdbId: String? = nil, status: Status? = nil,
+                revenue: Double? = nil, homepageURL: URL? = nil, imdbID: String? = nil, status: Status? = nil,
                 productionCompanies: [ProductionCompany]? = nil, productionCountries: [ProductionCountry]? = nil,
                 spokenLanguages: [SpokenLanguage]? = nil, popularity: Float? = nil, voteAverage: Float? = nil,
                 voteCount: Int? = nil, video: Bool? = nil, adult: Bool? = nil) {
@@ -55,7 +55,7 @@ public struct Movie: Identifiable, Decodable, Equatable {
         self.budget = budget
         self.revenue = revenue
         self.homepage = homepageURL?.absoluteString
-        self.imdbId = imdbId
+        self.imdbID = imdbID
         self.status = status
         self.productionCompanies = productionCompanies
         self.productionCountries = productionCountries
@@ -105,7 +105,7 @@ extension Movie {
         case backdropPath
         case budget
         case revenue
-        case imdbId
+        case imdbID = "imdbId"
         case status
         case homepage
         case productionCompanies

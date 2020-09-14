@@ -3,13 +3,11 @@ import XCTest
 
 class CertificationTests: XCTestCase {
 
-    func testID_returnsCode() {
-        let result = Certification(code: "AA", meaning: "Meaning", order: 1)
-
-        XCTAssertEqual(result.id, "AA")
+    func testIDReturnsCode() {
+        XCTAssertEqual(certification.id, certification.code)
     }
 
-    func testDecode_returnsObject() throws {
+    func testDecodeReturnsCertification() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Certification.self, from: data)
 

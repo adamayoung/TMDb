@@ -3,19 +3,19 @@ import XCTest
 
 class VideoSizeTests: XCTestCase {
 
-    func test360VideoSize_returnsRawValue() {
+    func test360VideoSizeReturnsRawValue() {
         XCTAssertEqual(VideoSize.s360.rawValue, 360)
     }
 
-    func test480VideoSize_returnsRawValue() {
+    func test480VideoSizeReturnsRawValue() {
         XCTAssertEqual(VideoSize.s480.rawValue, 480)
     }
 
-    func test720VideoSize_returnsRawValue() {
+    func test720VideoSizeReturnsRawValue() {
         XCTAssertEqual(VideoSize.s720.rawValue, 720)
     }
 
-    func test1080VideoSize_returnsRawValue() {
+    func test1080VideoSizeReturnsRawValue() {
         XCTAssertEqual(VideoSize.s1080.rawValue, 1080)
     }
 

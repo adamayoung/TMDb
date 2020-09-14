@@ -3,7 +3,7 @@ import XCTest
 
 class TVShowsEndpointTests: XCTestCase {
 
-    func testTVShowDetailsEndpoint_returnsURL() {
+    func testTVShowDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1")!
 
         let url = TVShowsEndpoint.details(tvShowID: 1).url
@@ -11,7 +11,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowCreditsEndpoint_returnsURL() {
+    func testTVShowCreditsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/credits")!
 
         let url = TVShowsEndpoint.credits(tvShowID: 1).url
@@ -19,7 +19,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowReviewsEndpoint_returnsURL() {
+    func testTVShowReviewsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/reviews")!
 
         let url = TVShowsEndpoint.reviews(tvShowID: 1).url
@@ -27,7 +27,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowReviewsEndpoint_withPage_returnsURL() {
+    func testTVShowReviewsEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/tv/1/reviews?page=2")!
 
         let url = TVShowsEndpoint.reviews(tvShowID: 1, page: 2).url
@@ -35,7 +35,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowImagesEndpoint_returnsURL() {
+    func testTVShowImagesEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/images")!
 
         let url = TVShowsEndpoint.images(tvShowID: 1).url
@@ -43,7 +43,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowVideosEndpoint_returnsURL() {
+    func testTVShowVideosEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/videos")!
 
         let url = TVShowsEndpoint.videos(tvShowID: 1).url
@@ -51,7 +51,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowRecommendationsEndpoint_returnsURL() {
+    func testTVShowRecommendationsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/recommendations")!
 
         let url = TVShowsEndpoint.recommendations(tvShowID: 1).url
@@ -59,7 +59,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowRecommendationsEndpoint_withPage_returnsURL() {
+    func testTVShowRecommendationsEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/tv/1/recommendations?page=2")!
 
         let url = TVShowsEndpoint.recommendations(tvShowID: 1, page: 2).url
@@ -67,7 +67,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowSimilarEndpoint_returnsURL() {
+    func testTVShowSimilarEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/similar")!
 
         let url = TVShowsEndpoint.similar(tvShowID: 1).url
@@ -75,7 +75,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowSimilarEndpoint_withPage_returnsURL() {
+    func testTVShowSimilarEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/tv/1/similar?page=2")!
 
         let url = TVShowsEndpoint.similar(tvShowID: 1, page: 2).url
@@ -83,7 +83,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowPopularEndpoint_returnsURL() {
+    func testTVShowPopularEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/popular")!
 
         let url = TVShowsEndpoint.popular().url
@@ -91,7 +91,7 @@ class TVShowsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowPopularEndpoint_withPage_returnsURL() {
+    func testTVShowPopularEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/tv/popular?page=1")!
 
         let url = TVShowsEndpoint.popular(page: 1).url

@@ -11,9 +11,8 @@ public protocol APIClient {
 
 extension APIClient {
 
-    func get<Response: Decodable>(path: URL,
-                                  httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
-        get(path: path, httpHeaders: httpHeaders)
+    func get<Response: Decodable>(path: URL) -> AnyPublisher<Response, TMDbError> {
+        get(path: path, httpHeaders: nil)
     }
 
 }

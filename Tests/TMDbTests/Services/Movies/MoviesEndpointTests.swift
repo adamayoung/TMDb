@@ -3,7 +3,7 @@ import XCTest
 
 class MoviesEndpointTests: XCTestCase {
 
-    func testMovieDetailsEndpoint_returnsURL() {
+    func testMovieDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1")!
 
         let url = MoviesEndpoint.details(movieID: 1).url
@@ -11,7 +11,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieCreditsEndpoint_returnsURL() {
+    func testMovieCreditsEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/credits")!
 
         let url = MoviesEndpoint.credits(movieID: 1).url
@@ -19,7 +19,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieReviewsEndpoint_returnsURL() {
+    func testMovieReviewsEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/reviews")!
 
         let url = MoviesEndpoint.reviews(movieID: 1).url
@@ -27,7 +27,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieReviewsEndpoint_withPage_returnsURL() {
+    func testMovieReviewsEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/movie/1/reviews?page=2")!
 
         let url = MoviesEndpoint.reviews(movieID: 1, page: 2).url
@@ -35,7 +35,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieImagesEndpoint_returnsURL() {
+    func testMovieImagesEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/images")!
 
         let url = MoviesEndpoint.images(movieID: 1).url
@@ -43,7 +43,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieVideosEndpoint_returnsURL() {
+    func testMovieVideosEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/videos")!
 
         let url = MoviesEndpoint.videos(movieID: 1).url
@@ -51,7 +51,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieRecommendationsEndpoint_returnsURL() {
+    func testMovieRecommendationsEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/recommendations")!
 
         let url = MoviesEndpoint.recommendations(movieID: 1).url
@@ -59,7 +59,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieRecommendationsEndpoint_withPage_returnsURL() {
+    func testMovieRecommendationsEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/movie/1/recommendations?page=2")!
 
         let url = MoviesEndpoint.recommendations(movieID: 1, page: 2).url
@@ -67,7 +67,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieSimilarEndpoint_returnsURL() {
+    func testMovieSimilarEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1/similar")!
 
         let url = MoviesEndpoint.similar(movieID: 1).url
@@ -75,7 +75,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieSimilarEndpoint_withPage_returnsURL() {
+    func testMovieSimilarEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/movie/1/similar?page=2")!
 
         let url = MoviesEndpoint.similar(movieID: 1, page: 2).url
@@ -83,7 +83,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviePopularEndpoint_returnsURL() {
+    func testMoviePopularEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/popular")!
 
         let url = MoviesEndpoint.popular().url
@@ -91,7 +91,7 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviePopularEndpoint_withPage_returnsURL() {
+    func testMoviePopularEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/movie/popular?page=1")!
 
         let url = MoviesEndpoint.popular(page: 1).url

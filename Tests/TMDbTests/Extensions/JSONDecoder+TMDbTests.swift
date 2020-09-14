@@ -9,7 +9,7 @@ class JSONDecoderTMDbTests: XCTestCase {
         return dateFormatter
     }
 
-    func testTheMovieDatabaseDecoder_decodesObject() throws {
+    func testTheMovieDatabaseDecoderDecodesObject() throws {
         let expectedResult = SomeThing(
             id: "abc123",
             firstName: "Adam",

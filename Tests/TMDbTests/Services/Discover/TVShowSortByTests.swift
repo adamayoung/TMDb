@@ -3,7 +3,7 @@ import XCTest
 
 class TVShowSortByTests: XCTestCase {
 
-    func testPopularityAscending_returnsRawValue() {
+    func testPopularityAscendingReturnsRawValue() {
         let expectedResult = "popularity.asc"
 
         let result = TVShowSortBy.popularityAscending.rawValue
@@ -11,7 +11,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPopularityDescending_returnsRawValue() {
+    func testPopularityDescendingReturnsRawValue() {
         let expectedResult = "popularity.desc"
 
         let result = TVShowSortBy.popularityDescending.rawValue
@@ -19,7 +19,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testFirstAirDateAscending_returnsRawValue() {
+    func testFirstAirDateAscendingReturnsRawValue() {
         let expectedResult = "first_air_date.asc"
 
         let result = TVShowSortBy.firstAirDateAscending.rawValue
@@ -27,7 +27,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testFirstAirDateDescending_returnsRawValue() {
+    func testFirstAirDateDescendingReturnsRawValue() {
         let expectedResult = "first_air_date.desc"
 
         let result = TVShowSortBy.firstAirDateDescending.rawValue
@@ -35,7 +35,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testVoteAverageAscending_returnsRawValue() {
+    func testVoteAverageAscendingReturnsRawValue() {
         let expectedResult = "vote_average.asc"
 
         let result = TVShowSortBy.voteAverageAscending.rawValue
@@ -43,7 +43,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testVoteAverageDescending_returnsRawValue() {
+    func testVoteAverageDescendingReturnsRawValue() {
         let expectedResult = "vote_average.desc"
 
         let result = TVShowSortBy.voteAverageDescending.rawValue
@@ -51,7 +51,7 @@ class TVShowSortByTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testDefault_returnsRawValue() {
+    func testDefaultReturnsRawValue() {
         let expectedResult = "popularity.desc"
 
         let result = TVShowSortBy.default.rawValue
@@ -63,7 +63,7 @@ class TVShowSortByTests: XCTestCase {
 
 extension TVShowSortByTests {
 
-    func testURLAppendingSortBy_returnsURL() {
+    func testURLAppendingSortByReturnsURL() {
         let expectedResult = URL(string: "/some/path?sort_by=popularity.asc")!
 
         let result = URL(string: "/some/path")!.appendingSortBy(TVShowSortBy.popularityAscending)
@@ -71,7 +71,7 @@ extension TVShowSortByTests {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testURLAppendingNilSortBy_returnsURL() {
+    func testURLAppendingNilSortByReturnsURL() {
         let expectedResult = URL(string: "/some/path")!
 
         let result = URL(string: "/some/path")!.appendingSortBy(nil as TVShowSortBy?)

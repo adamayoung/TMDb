@@ -3,27 +3,27 @@ import XCTest
 
 class StatusTests: XCTestCase {
 
-    func testRumoredStatus_returnsRawValue() {
+    func testRumoredStatusReturnsRawValue() {
         XCTAssertEqual(Status.rumored.rawValue, "Rumored")
     }
 
-    func testPlannedStatus_returnsRawValue() {
+    func testPlannedStatusReturnsRawValue() {
         XCTAssertEqual(Status.planned.rawValue, "Planned")
     }
 
-    func testInProductionStatus_returnsRawValue() {
+    func testInProductionStatusReturnsRawValue() {
         XCTAssertEqual(Status.inProduction.rawValue, "In Production")
     }
 
-    func testPostProductionStatus_returnsRawValue() {
+    func testPostProductionStatusReturnsRawValue() {
         XCTAssertEqual(Status.postProduction.rawValue, "Post Production")
     }
 
-    func testReleasedStatus_returnsRawValue() {
+    func testReleasedStatusReturnsRawValue() {
         XCTAssertEqual(Status.released.rawValue, "Released")
     }
 
-    func testCanceledStatus_returnsRawValue() {
+    func testCanceledStatusReturnsRawValue() {
         XCTAssertEqual(Status.canceled.rawValue, "Canceled")
     }
 

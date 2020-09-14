@@ -3,19 +3,19 @@ import XCTest
 
 class GenderTests: XCTestCase {
 
-    func testUnknownGender_returnsRawValue() {
+    func testUnknownGenderReturnsRawValue() {
         XCTAssertEqual(Gender.unknown.rawValue, 0)
     }
 
-    func testFemaleGender_returnsRawValue() {
+    func testFemaleGenderReturnsRawValue() {
         XCTAssertEqual(Gender.female.rawValue, 1)
     }
 
-    func testMaleGender_returnsRawValue() {
+    func testMaleGenderReturnsRawValue() {
         XCTAssertEqual(Gender.male.rawValue, 2)
     }
 
-    func testOtherGender_returnsRawValue() {
+    func testOtherGenderReturnsRawValue() {
         XCTAssertEqual(Gender.other.rawValue, 3)
     }
 
