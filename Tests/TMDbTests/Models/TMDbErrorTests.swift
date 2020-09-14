@@ -3,7 +3,7 @@ import XCTest
 
 class TMDbErrorTests: XCTestCase {
 
-    func testNetwork_returnsErrorDescription() {
+    func testNetworkReturnsErrorDescription() {
         let urlError = URLError(.badURL)
         let expectedResult = urlError.localizedDescription
 
@@ -12,19 +12,19 @@ class TMDbErrorTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testUnauthorized_returnsErrorDescription() {
+    func testUnauthorizedReturnsErrorDescription() {
         XCTAssertEqual(TMDbError.unauthorized.localizedDescription, "Unauthorised")
     }
 
-    func testNotFound_returnsErrorDescription() {
+    func testNotFoundReturnsErrorDescription() {
         XCTAssertEqual(TMDbError.notFound.localizedDescription, "Not Found")
     }
 
-    func testUnknown_returnsErrorDescription() {
+    func testUnknownReturnsErrorDescription() {
         XCTAssertEqual(TMDbError.unknown.localizedDescription, "Unknown Error")
     }
 
-    func testDecode_returnsErrorDescription() {
+    func testDecodeReturnsErrorDescription() {
         let error = URLError(.badURL)
 
         let result = TMDbError.decode(error).localizedDescription

@@ -3,7 +3,7 @@ import XCTest
 
 class SearchEndpointTests: XCTestCase {
 
-    func testMultiSearchEndpoint_returnsURL() {
+    func testMultiSearchEndpointReturnsURL() {
         let expectedURL = URL(string: "/search/multi?query=Game%20of%20Thrones")!
 
         let url = SearchEndpoint.multi(query: "Game of Thrones").url
@@ -11,7 +11,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMultiSearchEndpoint_withPage_returnsURL() {
+    func testMultiSearchEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/search/multi?query=Game%20of%20Thrones&page=2")!
 
         let url = SearchEndpoint.multi(query: "Game of Thrones", page: 2).url
@@ -19,7 +19,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviesSearchEndpoint_returnsURL() {
+    func testMoviesSearchEndpointReturnsURL() {
         let expectedURL = URL(string: "/search/movie?query=Back%20to%20the%20Future")!
 
         let url = SearchEndpoint.movies(query: "Back to the Future").url
@@ -27,7 +27,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviesSearchEndpoint_withYear_returnsURL() {
+    func testMoviesSearchEndpointWithYearReturnsURL() {
         let expectedURL = URL(string: "/search/movie?query=Back%20to%20the%20Future&year=1985")!
 
         let url = SearchEndpoint.movies(query: "Back to the Future", year: 1985).url
@@ -35,7 +35,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviesSearchEndpoint_withPage_returnsURL() {
+    func testMoviesSearchEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/search/movie?query=Back%20to%20the%20Future&page=2")!
 
         let url = SearchEndpoint.movies(query: "Back to the Future", page: 2).url
@@ -43,7 +43,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMoviesSearchEndpoint_withYearAndPage_returnsURL() {
+    func testMoviesSearchEndpointWithYearAndPageReturnsURL() {
         let expectedURL = URL(string: "/search/movie?query=Back%20to%20the%20Future&year=1985&page=2")!
 
         let url = SearchEndpoint.movies(query: "Back to the Future", year: 1985, page: 2).url
@@ -51,7 +51,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpoint_returnsURL() {
+    func testTVShowsSearchEndpointReturnsURL() {
         let expectedURL = URL(string: "/search/tv?query=The%20Boys")!
 
         let url = SearchEndpoint.tvShows(query: "The Boys").url
@@ -59,7 +59,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpoint_withFirstAirDateYear_returnsURL() {
+    func testTVShowsSearchEndpointWithFirstAirDateYearReturnsURL() {
         let expectedURL = URL(string: "/search/tv?query=The%20Boys&first_air_date_year=2020")!
 
         let url = SearchEndpoint.tvShows(query: "The Boys", firstAirDateYear: 2020).url
@@ -67,7 +67,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpoint_withPage_returnsURL() {
+    func testTVShowsSearchEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/search/tv?query=The%20Boys&page=2")!
 
         let url = SearchEndpoint.tvShows(query: "The Boys", page: 2).url
@@ -75,7 +75,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpoint_withYearAndPage_returnsURL() {
+    func testTVShowsSearchEndpointWithYearAndPageReturnsURL() {
         let expectedURL = URL(string: "/search/tv?query=The%20Boys&first_air_date_year=2020&page=2")!
 
         let url = SearchEndpoint.tvShows(query: "The Boys", firstAirDateYear: 2020, page: 2).url
@@ -83,7 +83,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPeopleSearchEndpoint_returnsURL() {
+    func testPeopleSearchEndpointReturnsURL() {
         let expectedURL = URL(string: "/search/person?query=Robert%20Downey")!
 
         let url = SearchEndpoint.people(query: "Robert Downey").url
@@ -91,7 +91,7 @@ class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPeopleSearchEndpoint_withPage_returnsURL() {
+    func testPeopleSearchEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/search/person?query=Robert%20Downey&page=2")!
 
         let url = SearchEndpoint.people(query: "Robert Downey", page: 2).url

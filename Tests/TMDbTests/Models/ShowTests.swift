@@ -3,40 +3,40 @@ import XCTest
 
 class ShowTests: XCTestCase {
 
-    func testID_whenMovie_returnsMovieID() {
+    func testIDWhenMovieReturnsMovieID() {
         XCTAssertEqual(movieShow.id, 109091)
     }
 
-    func testID_whenTVShow_returnsTVShowID() {
+    func testIDWhenTVShowReturnsTVShowID() {
         XCTAssertEqual(tvShowShow.id, 54)
     }
 
-    func testPopularity_whenMovie_returnsMoviePopularity() {
+    func testPopularityWhenMovieReturnsMoviePopularity() {
         XCTAssertEqual(movieShow.popularity, 3.597124)
     }
 
-    func testPopularity_whenTVShow_returnsTVShowPopularity() {
+    func testPopularityWhenTVShowReturnsTVShowPopularity() {
         XCTAssertEqual(tvShowShow.popularity, 2.883124)
     }
 
-    func testDate_whenMovie_returnsMovieReleaseDate() {
+    func testDateWhenMovieReturnsMovieReleaseDate() {
         let expectedResult = DateFormatter.theMovieDatabase.date(from: "2013-10-25")
         XCTAssertEqual(movieShow.date, expectedResult)
     }
 
-    func testDate_whenTVShow_returnsTVShowFirstAirDate() {
+    func testDateWhenTVShowReturnsTVShowFirstAirDate() {
         let expectedResult = DateFormatter.theMovieDatabase.date(from: "1985-09-24")
         XCTAssertEqual(tvShowShow.date, expectedResult)
     }
 
-    func testDecode_returnsMovie() throws {
+    func testDecodeReturnsMovie() throws {
         let data = movieJSON.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, from: data)
 
         XCTAssertEqual(result, movieShow)
     }
 
-    func testDecode_returnsTVShow() throws {
+    func testDecodeReturnsTVShow() throws {
         let data = tvShowJSON.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, from: data)
 

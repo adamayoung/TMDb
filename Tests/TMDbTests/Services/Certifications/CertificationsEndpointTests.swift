@@ -3,7 +3,7 @@ import XCTest
 
 class CertificationsEndpointTests: XCTestCase {
 
-    func testMovieEndpoint_returnsURL() {
+    func testMovieEndpointReturnsURL() {
         let expectedURL = URL(string: "/certification/movie/list")!
 
         let url = CertificationsEndpoint.movie.url
@@ -11,7 +11,7 @@ class CertificationsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowEndpoint_returnsURL() {
+    func testTVShowEndpointReturnsURL() {
         let expectedURL = URL(string: "/certification/tv/list")!
 
         let url = CertificationsEndpoint.tvShow.url

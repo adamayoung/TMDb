@@ -3,7 +3,7 @@ import XCTest
 
 class TrendingTimeWindowFilterTypeTests: XCTestCase {
 
-    func testDay_returnsRawValue() {
+    func testDayReturnsRawValue() {
         let expectedResult = "day"
 
         let result = TrendingTimeWindowFilterType.day.rawValue
@@ -11,7 +11,7 @@ class TrendingTimeWindowFilterTypeTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testWeek_returnsRawValue() {
+    func testWeekReturnsRawValue() {
         let expectedResult = "week"
 
         let result = TrendingTimeWindowFilterType.week.rawValue
@@ -19,7 +19,7 @@ class TrendingTimeWindowFilterTypeTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testDefault_returnsRawValue() {
+    func testDefaultReturnsRawValue() {
         let expectedResult = "day"
 
         let result = TrendingTimeWindowFilterType.default.rawValue

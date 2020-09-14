@@ -113,12 +113,19 @@ class TMDbConfigurationServiceTests: XCTestCase {
         service = TMDbConfigurationService(apiClient: apiClient)
     }
 
-    func testFetchAPIConfiguration_returnsAPIConfiguration() {
+    func testFetchAPIConfigurationReturnsAPIConfiguration() {
         apiClient.response = apiConfiguration
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchAPIConfiguration()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, self.apiConfiguration)
                 finished.fulfill()

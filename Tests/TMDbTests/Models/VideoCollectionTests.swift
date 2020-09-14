@@ -3,7 +3,7 @@ import XCTest
 
 class VideoCollectionTests: XCTestCase {
 
-    func testDecode_returnsVideoCollection() throws {
+    func testDecodeReturnsVideoCollection() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(VideoCollection.self, from: data)
 

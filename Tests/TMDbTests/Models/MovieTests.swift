@@ -3,26 +3,26 @@ import XCTest
 
 class MovieTests: XCTestCase {
 
-    func testReleaseDate_whenNil_returnsNil() {
-        let movie = Movie(id: 1, title: "Some title")
+    func testReleaseDateWhenNilReturnsNil() {
+        let someMovie = Movie(id: 1, title: "Some movie title 1")
 
-        XCTAssertNil(movie.releaseDate)
+        XCTAssertNil(someMovie.releaseDate)
     }
 
-    func testHomepageURL_whenNil_returnsNil() {
-        let movie = Movie(id: 1, title: "Some title")
+    func testHomepageURLWhenNilReturnsNil() {
+        let someMovie = Movie(id: 2, title: "Some movie title 2")
 
-        XCTAssertNil(movie.homepageURL)
+        XCTAssertNil(someMovie.homepageURL)
     }
 
-    func testHomepageURL_whenHasURL_returnsURL() {
+    func testHomepageURLWhenHasURLReturnsURL() {
         let expectedResult = URL(string: "https://some.domain.com")!
-        let movie = Movie(id: 1, title: "Some title", homepageURL: expectedResult)
+        let someMovie = Movie(id: 3, title: "Some movie title 3", homepageURL: expectedResult)
 
-        XCTAssertEqual(movie.homepageURL, expectedResult)
+        XCTAssertEqual(someMovie.homepageURL, expectedResult)
     }
 
-    func testDecode_returnsMovie() throws {
+    func testDecodeReturnsMovie() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Movie.self, from: data)
 

@@ -3,11 +3,11 @@ import XCTest
 
 class ImageMetadataTests: XCTestCase {
 
-    func testID_returnsFilePath() {
+    func testIDReturnsFilePath() {
         XCTAssertEqual(imageMetadata.id, imageMetadata.filePath)
     }
 
-    func testDecode_returnsImageMetadata() throws {
+    func testDecodeReturnsImageMetadata() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(ImageMetadata.self, from: data)
 

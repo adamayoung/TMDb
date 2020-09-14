@@ -3,26 +3,26 @@ import XCTest
 
 class TVShowTests: XCTestCase {
 
-    func testFirstAirDate_whenNil_returnsNil() {
-        let tvShow = TVShow(id: 1, name: "Some name", firstAirDate: nil)
+    func testFirstAirDateWhenNilReturnsNil() {
+        let someTVShow = TVShow(id: 1, name: "Some tv show name 1", firstAirDate: nil)
 
-        XCTAssertNil(tvShow.firstAirDate)
+        XCTAssertNil(someTVShow.firstAirDate)
     }
 
-    func testHomepageURL_whenNil_returnsNil() {
-        let tvShow = TVShow(id: 1, name: "Some name", homepageURL: nil)
+    func testHomepageURLWhenNilReturnsNil() {
+        let someTVShow = TVShow(id: 2, name: "Some tv show name 2", homepageURL: nil)
 
-        XCTAssertNil(tvShow.homepageURL)
+        XCTAssertNil(someTVShow.homepageURL)
     }
 
-    func testHomepageURL_whenHasURL_returnsURL() {
+    func testHomepageURLWhenHasURLReturnsURL() {
         let expectedResult = URL(string: "https://some.domain.com")!
-        let tvShow = TVShow(id: 1, name: "Some name", homepageURL: expectedResult)
+        let someTVShow = TVShow(id: 3, name: "Some tv show name 3", homepageURL: expectedResult)
 
-        XCTAssertEqual(tvShow.homepageURL, expectedResult)
+        XCTAssertEqual(someTVShow.homepageURL, expectedResult)
     }
 
-    func testDecode_returnsTVShow() throws {
+    func testDecodeReturnsTVShow() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(TVShow.self, from: data)
 

@@ -38,10 +38,10 @@ jobs:
       - name: Run tests
         run: swift test --enable-code-coverage
 
-      - name: Generate Code Coverage report
-        run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
+      # - name: Generate Code Coverage report
+      #   run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
-      - name: Uplaod to codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash) -J '^TMDb$'
+      # - name: Uplaod to codecov
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      #   run: bash <(curl -s https://codecov.io/bash) -J '^TMDb$'

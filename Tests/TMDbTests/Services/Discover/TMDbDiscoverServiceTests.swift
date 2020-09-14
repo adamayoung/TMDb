@@ -21,7 +21,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovies_returnsMovies() {
+    func testFetchMoviesReturnsMovies() {
         let expectedResult = MoviePageableList(
             page: 1,
             results: [
@@ -37,7 +37,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchMovies()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -49,7 +56,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
     }
 
-    func testFetchTVShows_returnsTVShows() {
+    func testFetchTVShowsReturnsTVShows() {
         let expectedResult = TVShowPageableList(
             page: 1,
             results: [
@@ -65,7 +72,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchTVShows()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()

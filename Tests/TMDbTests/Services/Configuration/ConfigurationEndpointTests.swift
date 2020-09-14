@@ -3,7 +3,7 @@ import XCTest
 
 class ConfigurationEndpointTests: XCTestCase {
 
-    func testAPIEndpoint_returnsURL() {
+    func testAPIEndpointReturnsURL() {
         let expectedURL = URL(string: "/configuration")!
 
         let url = ConfigurationEndpoint.api.url

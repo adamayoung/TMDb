@@ -21,7 +21,7 @@ class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertifications_returnsMovieCertifications() {
+    func testFetchMovieCertificationsReturnsMovieCertifications() {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -37,7 +37,14 @@ class TMDbCertificationServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchMovieCertifications()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -49,7 +56,7 @@ class TMDbCertificationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertifications_returnsMovieCertifications() {
+    func testFetchTVShowCertificationsReturnsMovieCertifications() {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -65,7 +72,14 @@ class TMDbCertificationServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchTVShowCertifications()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()

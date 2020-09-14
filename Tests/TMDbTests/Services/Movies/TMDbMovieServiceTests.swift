@@ -8,6 +8,17 @@ class TMDbMovieServiceTests: XCTestCase {
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
+    let moviePageableList = MoviePageableList(
+        page: 1,
+        results: [
+            Movie(id: 1, title: "Movie 1"),
+            Movie(id: 2, title: "Movie 2"),
+            Movie(id: 3, title: "Movie 3")
+        ],
+        totalResults: 3,
+        totalPages: 1
+    )
+
     override func setUp() {
         super.setUp()
 
@@ -21,7 +32,7 @@ class TMDbMovieServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetails_returnsMovie() {
+    func testFetchDetailsReturnsMovie() {
         let movieID = 1
         let expectedResult = Movie(id: movieID, title: "Some title")
 
@@ -29,7 +40,14 @@ class TMDbMovieServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchDetails(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -41,7 +59,7 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
     }
 
-    func testFetchCredits_returnsCredits() {
+    func testFetchCreditsReturnsCredits() {
         let movieID = 1
         let expectedResult = ShowCredits(
             id: movieID,
@@ -52,7 +70,14 @@ class TMDbMovieServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchCredits(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -64,7 +89,7 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
     }
 
-    func testFetchReviews_returnsReviews() {
+    func testFetchReviewsReturnsReviews() {
         let movieID = 1
         let expectedResult = ReviewPageableList(
             page: 1,
@@ -77,7 +102,14 @@ class TMDbMovieServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchReviews(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -89,7 +121,7 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
     }
 
-    func testFetchImages_returnsImageCollection() {
+    func testFetchImagesReturnsImageCollection() {
         let movieID = 1
         let expectedResult = ImageCollection(
             id: movieID,
@@ -101,7 +133,14 @@ class TMDbMovieServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchImages(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -113,7 +152,7 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
     }
 
-    func testFetchVideos_returnsVideoCollection() {
+    func testFetchVideosReturnsVideoCollection() {
         let movieID = 1
         let expectedResult = VideoCollection(
             id: movieID,
@@ -133,7 +172,14 @@ class TMDbMovieServiceTests: XCTestCase {
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchVideos(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -145,24 +191,21 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
     }
 
-    func testFetchRecommendations_returnsMovies() {
+    func testFetchRecommendationsReturnsMovies() {
         let movieID = 1
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
-
+        let expectedResult = moviePageableList
         apiClient.response = expectedResult
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchRecommendations(forMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -174,24 +217,21 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
     }
 
-    func testFetchSimilar_returnsMovies() {
+    func testFetchSimilarReturnsMovies() {
         let movieID = 1
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
-
+        let expectedResult = moviePageableList
         apiClient.response = expectedResult
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchSimilar(toMovie: movieID)
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()
@@ -203,23 +243,20 @@ class TMDbMovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
     }
 
-    func testFetchPopular_returnsMovies() {
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
-
+    func testFetchPopularReturnsMovies() {
+        let expectedResult = moviePageableList
         apiClient.response = expectedResult
 
         let finished = XCTestExpectation(description: "finished")
         service.fetchPopular()
-            .sink(receiveCompletion: { _ in
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure:
+                    XCTFail("Should not have failed")
+
+                default:
+                    break
+                }
             }, receiveValue: { result in
                 XCTAssertEqual(result, expectedResult)
                 finished.fulfill()

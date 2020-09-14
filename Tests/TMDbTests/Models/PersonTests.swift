@@ -3,7 +3,7 @@ import XCTest
 
 class PersonTests: XCTestCase {
 
-    func testDecode_returnsPerson() throws {
+    func testDecodeReturnsPerson() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(Person.self, from: data)
 

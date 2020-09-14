@@ -3,7 +3,7 @@ import XCTest
 
 class ProductionCountryTests: XCTestCase {
 
-    func testID_returnsISO31661() {
+    func testIDReturnsISO31661() {
         XCTAssertEqual(productionCountry.id, productionCountry.iso31661)
     }
 

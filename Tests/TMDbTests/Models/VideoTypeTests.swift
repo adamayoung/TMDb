@@ -3,31 +3,31 @@ import XCTest
 
 class VideoTypeTests: XCTestCase {
 
-    func testTrailerVideoType_returnsRawValue() {
+    func testTrailerVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.trailer.rawValue, "Trailer")
     }
 
-    func testTeaserVideoType_returnsRawValue() {
+    func testTeaserVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.teaser.rawValue, "Teaser")
     }
 
-    func testClipVideoType_returnsRawValue() {
+    func testClipVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.clip.rawValue, "Clip")
     }
 
-    func testOpeningCreditsVideoType_returnsRawValue() {
+    func testOpeningCreditsVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.openingCredits.rawValue, "Opening Credits")
     }
 
-    func testFeaturetteVideoType_returnsRawValue() {
+    func testFeaturetteVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.featurette.rawValue, "Featurette")
     }
 
-    func testBehindTheScenesVideoType_returnsRawValue() {
+    func testBehindTheScenesVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.behindTheScenes.rawValue, "Behind the Scenes")
     }
 
-    func testBloopersVideoType_returnsRawValue() {
+    func testBloopersVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.bloopers.rawValue, "Bloopers")
     }
 

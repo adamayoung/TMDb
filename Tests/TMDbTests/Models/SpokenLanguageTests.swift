@@ -3,11 +3,11 @@ import XCTest
 
 class SpokenLanguageTests: XCTestCase {
 
-    func testID_returnsISO6391() {
+    func testIDReturnsISO6391() {
         XCTAssertEqual(spokenLanguage.id, spokenLanguage.iso6391)
     }
 
-    func testDecode_returnsSpokenLanguage() throws {
+    func testDecodeReturnsSpokenLanguage() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(SpokenLanguage.self, from: data)
 

@@ -3,7 +3,7 @@ import XCTest
 
 class TVShowEpisodeTests: XCTestCase {
 
-    func testDecode_returnsTVShowEpisode() throws {
+    func testDecodeReturnsTVShowEpisode() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(TVShowEpisode.self, from: data)
 

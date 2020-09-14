@@ -3,7 +3,7 @@ import XCTest
 
 class CertificationTests: XCTestCase {
 
-    func testID_returnsCode() {
+    func testIDReturnsCode() {
         XCTAssertEqual(certification.id, certification.code)
     }
 

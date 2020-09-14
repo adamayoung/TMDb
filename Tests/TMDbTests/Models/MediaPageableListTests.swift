@@ -3,7 +3,7 @@ import XCTest
 
 class MediaPageableListTests: XCTestCase {
 
-    func testDecode_returnsMediaPageableList() throws {
+    func testDecodeReturnsMediaPageableList() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(MediaPageableList.self, from: data)
 

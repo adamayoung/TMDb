@@ -4,11 +4,15 @@ import XCTest
 
 class MockAPIClient: APIClient {
 
+    static let apiKey: String?
+
     var response: Any?
     private(set) var lastPath: URL?
     private(set) var lastHTTPHeaders: [String: String]?
 
-    static func setAPIKey(_ apiKey: String) { }
+    static func setAPIKey(_ apiKey: String) {
+        Self.apiKey = apiKey
+    }
 
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) -> AnyPublisher<Response, TMDbError> {
         self.lastPath = path

@@ -3,19 +3,19 @@ import XCTest
 
 class MediaTests: XCTestCase {
 
-    func testID_whenMovie_returnsID() {
+    func testIDWhenMovieReturnsID() {
         XCTAssertEqual(medias[0].id, 1)
     }
 
-    func testID_whenTVShow_returnsID() {
+    func testIDWhenTVShowReturnsID() {
         XCTAssertEqual(medias[1].id, 2)
     }
 
-    func testID_whenPerson_returnsID() {
+    func testIDWhenPersonReturnsID() {
         XCTAssertEqual(medias[2].id, 51329)
     }
 
-    func testDecode_returnsMedias() throws {
+    func testDecodeReturnsMedias() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode([Media].self, from: data)
 
