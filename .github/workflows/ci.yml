@@ -38,6 +38,9 @@ jobs:
       - name: Run tests
         run: swift test --enable-code-coverage
 
+      - name: Generate Code Coverage report
+        run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata > info.lcov
+
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
