@@ -4,7 +4,7 @@ import XCTest
 
 class MockAPIClient: APIClient {
 
-    static var apiKey: String? = nil
+    static var apiKey: String?
 
     var response: Any?
     private(set) var lastPath: URL?
