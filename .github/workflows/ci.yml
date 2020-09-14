@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'docs/**'
   pull_request:
     branches:
       - main
@@ -45,3 +49,9 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash) -J '^TMDb$'
+      
+      - name: Danger
+        if: ${{ github.event_name == 'pull_request' }}
+        run: danger-swift ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
