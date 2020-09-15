@@ -8,32 +8,6 @@ class TMDbConfigurationServiceTests: XCTestCase {
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
 
-    let apiConfiguration = APIConfiguration(
-        images: ImagesConfiguration(
-            baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
-            secureBaseUrl: URL(string: "https://image.tmdb.org/t/p/")!,
-            backdropSizes: [
-                "w300"
-            ],
-            logoSizes: [
-                "w45"
-            ],
-            posterSizes: [
-                "w92"
-            ],
-            profileSizes: [
-                "w45"
-            ],
-            stillSizes: [
-                "w92"
-            ]
-        ),
-        changeKeys: [
-            "air_date",
-            "also_known_as"
-        ]
-    )
-
     override func setUp() {
         super.setUp()
 
@@ -41,27 +15,37 @@ class TMDbConfigurationServiceTests: XCTestCase {
         service = TMDbConfigurationService(apiClient: apiClient)
     }
 
-    func testFetchAPIConfigurationReturnsAPIConfiguration() {
-        apiClient.response = apiConfiguration
+    func testFetchAPIConfigurationReturnsAPIConfiguration() throws {
+        let expectedResult = APIConfiguration(
+            images: ImagesConfiguration(
+                baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
+                secureBaseUrl: URL(string: "https://image.tmdb.org/t/p/")!,
+                backdropSizes: [
+                    "w300"
+                ],
+                logoSizes: [
+                    "w45"
+                ],
+                posterSizes: [
+                    "w92"
+                ],
+                profileSizes: [
+                    "w45"
+                ],
+                stillSizes: [
+                    "w92"
+                ]
+            ),
+            changeKeys: [
+                "air_date",
+                "also_known_as"
+            ]
+        )
+        apiClient.response = expectedResult
 
-        let finished = XCTestExpectation(description: "finished")
-        service.fetchAPIConfiguration()
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .failure:
-                    XCTFail("Should not have failed")
+        let result = try await(publisher: service.fetchAPIConfiguration(), storeIn: &cancellables)
 
-                default:
-                    break
-                }
-            }, receiveValue: { result in
-                XCTAssertEqual(result, self.apiConfiguration)
-                finished.fulfill()
-            })
-            .store(in: &cancellables)
-
-        wait(for: [finished], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
     }
 

@@ -24,10 +24,6 @@ public protocol TVShowService {
 
 extension TVShowService {
 
-    public func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
-        fetchDetails(forTVShow: id)
-    }
-
     public func fetchReviews(forTVShow tvShowID: TVShow.ID,
                              page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
         fetchReviews(forTVShow: tvShowID, page: page)

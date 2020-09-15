@@ -9,7 +9,7 @@ public protocol PersonService {
 
     func fetchMovieCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError>
 
-    func fetchTVCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError>
+    func fetchTVShowCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError>
 
     func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError>
 

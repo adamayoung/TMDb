@@ -44,4 +44,4 @@ jobs:
       - name: Upload to codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash) -J '^TMDb$'
+        run: bash <(curl -s https://codecov.io/bash)

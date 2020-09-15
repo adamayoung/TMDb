@@ -33,7 +33,7 @@ public final class TMDbPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    public func fetchTVCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError> {
+    public func fetchTVShowCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
             .map { (credits: PersonTVShowCredits) in
                 let sortedCast = credits.cast.sorted(by: Self.tvShowSort)

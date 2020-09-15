@@ -13,13 +13,17 @@ public final class TMDbAPIClient: APIClient {
     public static let shared = TMDbAPIClient()
 
     public static func setAPIKey(_ apiKey: String) {
-        shared.apiKey = apiKey
+        shared.setAPIKey(apiKey)
     }
 
     init(urlSession: URLSession = URLSession(configuration: URLSessionConfiguration.default),
          jsonDecoder: JSONDecoder = .theMovieDatabase) {
         self.urlSession = urlSession
         self.jsonDecoder = jsonDecoder
+    }
+
+    func setAPIKey(_ apiKey: String) {
+        self.apiKey = apiKey
     }
 
 }
