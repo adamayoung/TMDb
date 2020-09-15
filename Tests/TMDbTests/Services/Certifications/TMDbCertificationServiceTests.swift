@@ -21,7 +21,7 @@ class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertificationsReturnsMovieCertifications() {
+    func testFetchMovieCertificationsReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -32,31 +32,15 @@ class TMDbCertificationServiceTests: XCTestCase {
                 Certification(code: "4", meaning: "Meaning 4", order: 2)
             ]
         ]
-
         apiClient.response = expectedResult
 
-        let finished = XCTestExpectation(description: "finished")
-        service.fetchMovieCertifications()
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .failure:
-                    XCTFail("Should not have failed")
+        let result = try await(publisher: service.fetchMovieCertifications(), storeIn: &cancellables)
 
-                default:
-                    break
-                }
-            }, receiveValue: { result in
-                XCTAssertEqual(result, expectedResult)
-                finished.fulfill()
-            })
-            .store(in: &cancellables)
-
-        wait(for: [finished], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertificationsReturnsMovieCertifications() {
+    func testFetchTVShowCertificationsReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -67,27 +51,11 @@ class TMDbCertificationServiceTests: XCTestCase {
                 Certification(code: "4", meaning: "Meaning 4", order: 2)
             ]
         ]
-
         apiClient.response = expectedResult
 
-        let finished = XCTestExpectation(description: "finished")
-        service.fetchTVShowCertifications()
-            .sink(receiveCompletion: { result in
-                switch result {
-                case .failure:
-                    XCTFail("Should not have failed")
+        let result = try await(publisher: service.fetchTVShowCertifications(), storeIn: &cancellables)
 
-                default:
-                    break
-                }
-            }, receiveValue: { result in
-                XCTAssertEqual(result, expectedResult)
-                finished.fulfill()
-            })
-            .store(in: &cancellables)
-
-        wait(for: [finished], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
     }
 
