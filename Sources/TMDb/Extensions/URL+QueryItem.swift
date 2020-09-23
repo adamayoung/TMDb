@@ -49,7 +49,7 @@ extension URL {
         return appendingQueryItem(name: "first_air_date_year", value: year)
     }
 
-    func appendingWithPeople(_ withPeople: [Person.ID]?) -> Self {
+    func appendingWithPeople(_ withPeople: [PersonDTO.ID]?) -> Self {
         guard let withPeople = withPeople else {
             return self
         }

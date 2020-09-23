@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-public protocol APIClient {
+protocol APIClient {
 
     static func setAPIKey(_ apiKey: String)
 

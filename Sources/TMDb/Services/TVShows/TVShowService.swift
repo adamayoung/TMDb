@@ -1,46 +1,23 @@
 import Combine
 import Foundation
 
-public protocol TVShowService {
+protocol TVShowService {
 
-    func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError>
+    func fetchDetails(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError>
 
-    func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError>
+    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
-    func fetchReviews(forTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError>
+    func fetchReviews(forTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
 
-    func fetchImages(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError>
+    func fetchImages(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
 
-    func fetchVideos(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
+    func fetchVideos(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
 
-    func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
-                              page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
+    func fetchRecommendations(forTVShow tvShowID: TVShowDTO.ID,
+                              page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
-    func fetchSimilar(toTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
+    func fetchSimilar(toTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
-    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
-
-}
-
-extension TVShowService {
-
-    public func fetchReviews(forTVShow tvShowID: TVShow.ID,
-                             page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
-        fetchReviews(forTVShow: tvShowID, page: page)
-    }
-
-    public func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
-                                     page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        fetchRecommendations(forTVShow: tvShowID, page: page)
-    }
-
-    public func fetchSimilar(toTVShow tvShowID: TVShow.ID,
-                             page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        fetchSimilar(toTVShow: tvShowID, page: page)
-    }
-
-    public func fetchPopular(page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        fetchPopular(page: page)
-    }
+    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
 }

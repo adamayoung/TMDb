@@ -1,15 +1,15 @@
 import Combine
 import Foundation
 
-public protocol TVShowSeasonService {
+protocol TVShowSeasonService {
 
-    func fetchDetails(forSeasonNumber seasonNumber: Int,
-                      inTVShow tvShowID: TVShow.ID) -> AnyPublisher<TVShowSeason, TMDbError>
+    func fetchDetails(forSeason seasonNumber: Int,
+                      inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError>
 
-    func fetchImages(forSeasonNumber seasonNumber: Int,
-                     inTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError>
+    func fetchImages(forSeason seasonNumber: Int,
+                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
 
-    func fetchVideos(forSeasonNumber seasonNumber: Int,
-                     inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
+    func fetchVideos(forSeason seasonNumber: Int,
+                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
 
 }

@@ -4,13 +4,13 @@ enum TVShowsEndpoint {
 
     static let basePath = URL(string: "/tv")!
 
-    case details(tvShowID: TVShow.ID)
-    case credits(tvShowID: TVShow.ID)
-    case reviews(tvShowID: TVShow.ID, page: Int? = nil)
-    case images(tvShowID: TVShow.ID)
-    case videos(tvShowID: TVShow.ID)
-    case recommendations(tvShowID: TVShow.ID, page: Int? = nil)
-    case similar(tvShowID: TVShow.ID, page: Int? = nil)
+    case details(tvShowID: TVShowDTO.ID)
+    case credits(tvShowID: TVShowDTO.ID)
+    case reviews(tvShowID: TVShowDTO.ID, page: Int? = nil)
+    case images(tvShowID: TVShowDTO.ID)
+    case videos(tvShowID: TVShowDTO.ID)
+    case recommendations(tvShowID: TVShowDTO.ID, page: Int? = nil)
+    case similar(tvShowID: TVShowDTO.ID, page: Int? = nil)
     case popular(page: Int? = nil)
 
 }

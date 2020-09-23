@@ -5,22 +5,22 @@ public final class TMDbTVShowSeasonService: TVShowSeasonService {
 
     private let apiClient: APIClient
 
-    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient = TMDbAPIClient.shared) {
         self.apiClient = apiClient
     }
 
-    public func fetchDetails(forSeasonNumber seasonNumber: Int,
-                             inTVShow tvShowID: TVShow.ID) -> AnyPublisher<TVShowSeason, TMDbError> {
+    func fetchDetails(forSeason seasonNumber: Int,
+                      inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError> {
         apiClient.get(endpoint: TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 
-    public func fetchImages(forSeasonNumber seasonNumber: Int,
-                            inTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError> {
+    func fetchImages(forSeason seasonNumber: Int,
+                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
         apiClient.get(endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 
-    public func fetchVideos(forSeasonNumber seasonNumber: Int,
-                            inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError> {
+    func fetchVideos(forSeason seasonNumber: Int,
+                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
         apiClient.get(endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 

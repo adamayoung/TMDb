@@ -1,19 +1,19 @@
 import Combine
 import Foundation
 
-public final class TMDbCertificationService: CertificationService {
+final class TMDbCertificationService: CertificationService {
 
     private let apiClient: APIClient
 
-    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient = TMDbAPIClient.shared) {
         self.apiClient = apiClient
     }
 
-    public func fetchMovieCertifications() -> AnyPublisher<[String: [Certification]], TMDbError> {
+    func fetchMovieCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.movie)
     }
 
-    public func fetchTVShowCertifications() -> AnyPublisher<[String: [Certification]], TMDbError> {
+    func fetchTVShowCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.tvShow)
     }
 
