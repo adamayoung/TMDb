@@ -18,7 +18,7 @@ public final class TMDbTVShowService: TVShowService {
     }
 
     func fetchReviews(forTVShow tvShowID: TVShowDTO.ID,
-                             page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+                      page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
     }
 
@@ -31,12 +31,12 @@ public final class TMDbTVShowService: TVShowService {
     }
 
     func fetchRecommendations(forTVShow tvShowID: TVShowDTO.ID,
-                                     page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                              page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
     }
 
     func fetchSimilar(toTVShow tvShowID: TVShowDTO.ID,
-                             page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                      page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
     }
 

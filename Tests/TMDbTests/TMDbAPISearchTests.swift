@@ -48,6 +48,10 @@ class TMDbAPISearchTests: TMDbAPITestCase {
         XCTAssertEqual(searchService.lastSearchAllPage, expectedPage)
     }
 
+}
+
+extension TMDbAPISearchTests {
+
     func testSearchMoviesPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableListDTO(
             page: 2,
@@ -144,6 +148,10 @@ class TMDbAPISearchTests: TMDbAPITestCase {
         XCTAssertEqual(searchService.lastSearchMoviesPage, expectedPage)
     }
 
+}
+
+extension TMDbAPISearchTests {
+
     func testSearchTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableListDTO(
             page: 2,
@@ -206,7 +214,8 @@ class TMDbAPISearchTests: TMDbAPITestCase {
         let expectedQuery = "some query"
         let expectedPage = 2
 
-        let result = try await(publisher: tmdb.searchTVShowsPublisher(withQuery: expectedQuery, page: expectedPage), storeIn: &cancellables)
+        let result = try await(publisher: tmdb.searchTVShowsPublisher(withQuery: expectedQuery, page: expectedPage),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(searchService.lastSearchTVShowsQuery, expectedQuery)
@@ -240,6 +249,10 @@ class TMDbAPISearchTests: TMDbAPITestCase {
         XCTAssertEqual(searchService.lastSearchTVShowsFirstAirDateYear, expectedYear)
         XCTAssertEqual(searchService.lastSearchTVShowsPage, expectedPage)
     }
+
+}
+
+extension TMDbAPISearchTests {
 
     func testSearchPeoplePublisherReturnsPeople() throws {
         let expectedResult = PersonPageableListDTO(

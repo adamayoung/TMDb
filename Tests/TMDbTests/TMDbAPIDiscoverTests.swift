@@ -122,6 +122,10 @@ class TMDbAPIDiscoverTests: TMDbAPITestCase {
         XCTAssertEqual(discoverService.lastMoviesPage, expectedPage)
     }
 
+}
+
+extension TMDbAPIDiscoverTests {
+
     func testDiscoverTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableListDTO(
             page: 2,

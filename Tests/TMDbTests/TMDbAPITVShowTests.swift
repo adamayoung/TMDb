@@ -162,7 +162,8 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
         let expectedTVShowID: TVShowDTO.ID = 1
         let expectedPage = 2
 
-        let result = try await(publisher: tmdb.recommendationsPublisher(forTVShow: expectedTVShowID, page: expectedPage),
+        let result = try await(publisher: tmdb.recommendationsPublisher(forTVShow: expectedTVShowID,
+                                                                        page: expectedPage),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)

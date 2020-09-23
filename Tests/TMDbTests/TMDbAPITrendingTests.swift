@@ -93,6 +93,10 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
         XCTAssertEqual(trendingService.lastMoviesPage, expectedPage)
     }
 
+}
+
+extension TMDbAPITrendingTests {
+
     func testTrendingTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableListDTO(
             page: 2,
@@ -181,6 +185,10 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
         XCTAssertEqual(trendingService.lastTVShowsTimeWindow, expectedTimeWindow)
         XCTAssertEqual(trendingService.lastTVShowsPage, expectedPage)
     }
+
+}
+
+extension TMDbAPITrendingTests {
 
     func testTrendingPeoplePublisherReturnsPeople() throws {
         let expectedResult = PersonPageableListDTO(
