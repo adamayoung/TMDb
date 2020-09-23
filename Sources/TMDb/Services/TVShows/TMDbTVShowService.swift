@@ -13,7 +13,7 @@ public final class TMDbTVShowService: TVShowService {
         apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
     }
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCredits, TMDbError> {
+    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
     }
 

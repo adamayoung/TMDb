@@ -6,7 +6,7 @@ final class MockTVShowService: TVShowService {
 
     var tvShowDetails: TVShowDTO?
     private(set) var lastTVShowDetailsID: TVShowDTO.ID?
-    var credits: ShowCredits?
+    var credits: ShowCreditsDTO?
     private(set) var lastCreditsTVShowID: TVShowDTO.ID?
     var reviews: ReviewPageableListDTO?
     private(set) var lastReviewsTVShowID: TVShowDTO.ID?
@@ -37,7 +37,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCredits, TMDbError> {
+    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
         lastCreditsTVShowID = tvShowID
 
         guard let credits = credits else {

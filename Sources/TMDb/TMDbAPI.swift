@@ -83,7 +83,7 @@ extension TMDbAPI {
         movieService.fetchDetails(forMovie: id)
     }
 
-    public func creditsPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCredits, TMDbError> {
+    public func creditsPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
         movieService.fetchCredits(forMovie: movieID)
     }
 
@@ -200,7 +200,7 @@ extension TMDbAPI {
         tvShowService.fetchDetails(forTVShow: id)
     }
 
-    public func creditsPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCredits, TMDbError> {
+    public func creditsPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
         tvShowService.fetchCredits(forTVShow: tvShowID)
     }
 

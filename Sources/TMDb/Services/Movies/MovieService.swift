@@ -5,7 +5,7 @@ protocol MovieService {
 
     func fetchDetails(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError>
 
-    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCredits, TMDbError>
+    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
 
     func fetchReviews(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
 

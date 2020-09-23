@@ -5,7 +5,7 @@ protocol TVShowService {
 
     func fetchDetails(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError>
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCredits, TMDbError>
+    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
 
     func fetchReviews(forTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
 

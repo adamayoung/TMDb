@@ -6,7 +6,7 @@ final class MockMovieService: MovieService {
 
     var movieDetails: MovieDTO?
     private(set) var lastMovieDetailsID: MovieDTO.ID?
-    var credits: ShowCredits?
+    var credits: ShowCreditsDTO?
     private(set) var lastCreditsMovieID: MovieDTO.ID?
     var reviews: ReviewPageableListDTO?
     private(set) var lastReviewsMovieID: MovieDTO.ID?
@@ -37,7 +37,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCredits, TMDbError> {
+    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
         lastCreditsMovieID = movieID
 
         guard let credits = credits else {

@@ -5,7 +5,7 @@ class ShowCreditsDTOTests: XCTestCase {
 
     func testDecodeReturnsShowCredits() throws {
         let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(ShowCredits.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(ShowCreditsDTO.self, from: data)
 
         XCTAssertEqual(result.id, showCredits.id)
         XCTAssertEqual(result.cast, showCredits.cast)
@@ -70,7 +70,7 @@ class ShowCreditsDTOTests: XCTestCase {
     }
     """
 
-    private let showCredits = ShowCredits(
+    private let showCredits = ShowCreditsDTO(
         id: 550,
         cast: [
             CastMemberDTO(

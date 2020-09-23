@@ -16,7 +16,7 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testCreditsPublisherForMovieReturnsShowCredits() throws {
-        let expectedResult = ShowCredits(
+        let expectedResult = ShowCreditsDTO(
             id: 1,
             cast: [
                 CastMemberDTO(

@@ -34,7 +34,7 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchCreditsReturnsShowsCredits() throws {
         let tvShowID = 1
-        let expectedResult = ShowCredits(
+        let expectedResult = ShowCreditsDTO(
             id: 1,
             cast: [
                 CastMemberDTO(id: 1, creditID: "a", name: "Cast 1", character: "Character 1", order: 0),
