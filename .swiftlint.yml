@@ -8,7 +8,6 @@ opt_in_rules:
   - empty_count
   - first_where
   - operator_usage_whitespace
-  - private_outlet
   - sorted_imports
 
 type_name:
@@ -29,3 +28,10 @@ identifier_name:
     - rhs
     - tv
     - url
+
+file_length:
+  warning: 500
+  error: 800
+
+line_length:
+  ignores_urls: true

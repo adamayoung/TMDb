@@ -1,20 +1,20 @@
 import Combine
 import Foundation
 
-public final class TMDbDiscoverService: DiscoverService {
+final class TMDbDiscoverService: DiscoverService {
 
     private let apiClient: APIClient
 
-    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient = TMDbAPIClient.shared) {
         self.apiClient = apiClient
     }
 
-    public func fetchMovies(sortBy: MovieSortBy?, withPeople: [Person.ID]?,
-                            page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+    func fetchMovies(sortBy: MovieSortBy?, withPeople: [PersonDTO.ID]?,
+                     page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
         apiClient.get(endpoint: DiscoverEndpoint.movies(sortBy: sortBy, withPeople: withPeople, page: page))
     }
 
-    public func fetchTVShows(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+    func fetchTVShows(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
         apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortBy: sortBy, page: page))
     }
 

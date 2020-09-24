@@ -4,11 +4,11 @@ enum PeopleEndpoint {
 
     static let basePath = URL(string: "/person")!
 
-    case details(personID: Person.ID)
-    case combinedCredits(personID: Person.ID)
-    case movieCredits(personID: Person.ID)
-    case tvShowCredits(personID: Person.ID)
-    case images(personID: Person.ID)
+    case details(personID: PersonDTO.ID)
+    case combinedCredits(personID: PersonDTO.ID)
+    case movieCredits(personID: PersonDTO.ID)
+    case tvShowCredits(personID: PersonDTO.ID)
+    case images(personID: PersonDTO.ID)
     case popular(page: Int? = nil)
 
 }

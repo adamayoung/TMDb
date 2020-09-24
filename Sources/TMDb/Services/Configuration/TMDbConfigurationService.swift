@@ -1,15 +1,15 @@
 import Combine
 import Foundation
 
-public final class TMDbConfigurationService: ConfigurationService {
+final class TMDbConfigurationService: ConfigurationService {
 
     private let apiClient: APIClient
 
-    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient = TMDbAPIClient.shared) {
         self.apiClient = apiClient
     }
 
-    public func fetchAPIConfiguration() -> AnyPublisher<APIConfiguration, TMDbError> {
+    func fetchAPIConfiguration() -> AnyPublisher<APIConfigurationDTO, TMDbError> {
         apiClient.get(endpoint: ConfigurationEndpoint.api)
     }
 

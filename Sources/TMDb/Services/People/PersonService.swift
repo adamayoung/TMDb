@@ -1,28 +1,20 @@
 import Combine
 import Foundation
 
-public protocol PersonService {
+protocol PersonService {
 
-    func fetchDetails(forPerson id: Person.ID) -> AnyPublisher<Person, TMDbError>
+    func fetchDetails(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError>
 
-    func fetchCombinedCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonCombinedCredits, TMDbError>
+    func fetchCombinedCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError>
 
-    func fetchMovieCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError>
+    func fetchMovieCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError>
 
-    func fetchTVShowCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError>
+    func fetchTVShowCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError>
 
-    func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError>
+    func fetchImages(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError>
 
-    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError>
+    func fetchKnownFor(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError>
 
-    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
-
-}
-
-extension PersonService {
-
-    public func fetchPopular(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
-        fetchPopular(page: page)
-    }
+    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
 
 }

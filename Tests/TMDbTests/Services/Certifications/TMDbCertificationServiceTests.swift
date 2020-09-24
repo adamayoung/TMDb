@@ -24,12 +24,12 @@ class TMDbCertificationServiceTests: XCTestCase {
     func testFetchMovieCertificationsReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
-                Certification(code: "1", meaning: "Meaning 1", order: 1),
-                Certification(code: "2", meaning: "Meaning 2", order: 2)
+                CertificationDTO(code: "1", meaning: "Meaning 1", order: 1),
+                CertificationDTO(code: "2", meaning: "Meaning 2", order: 2)
             ],
             "B": [
-                Certification(code: "3", meaning: "Meaning 3", order: 1),
-                Certification(code: "4", meaning: "Meaning 4", order: 2)
+                CertificationDTO(code: "3", meaning: "Meaning 3", order: 1),
+                CertificationDTO(code: "4", meaning: "Meaning 4", order: 2)
             ]
         ]
         apiClient.response = expectedResult
@@ -43,12 +43,12 @@ class TMDbCertificationServiceTests: XCTestCase {
     func testFetchTVShowCertificationsReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
-                Certification(code: "1", meaning: "Meaning 1", order: 1),
-                Certification(code: "2", meaning: "Meaning 2", order: 2)
+                CertificationDTO(code: "1", meaning: "Meaning 1", order: 1),
+                CertificationDTO(code: "2", meaning: "Meaning 2", order: 2)
             ],
             "B": [
-                Certification(code: "3", meaning: "Meaning 3", order: 1),
-                Certification(code: "4", meaning: "Meaning 4", order: 2)
+                CertificationDTO(code: "3", meaning: "Meaning 3", order: 1),
+                CertificationDTO(code: "4", meaning: "Meaning 4", order: 2)
             ]
         ]
         apiClient.response = expectedResult

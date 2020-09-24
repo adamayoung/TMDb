@@ -23,7 +23,7 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchDetailsReturnsTVShow() throws {
         let tvShowID = 1
-        let expectedResult = TVShow(id: 1, name: "TV Show 1")
+        let expectedResult = TVShowDTO(id: 1, name: "TV Show 1")
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.fetchDetails(forTVShow: tvShowID), storeIn: &cancellables)
@@ -34,15 +34,15 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchCreditsReturnsShowsCredits() throws {
         let tvShowID = 1
-        let expectedResult = ShowCredits(
+        let expectedResult = ShowCreditsDTO(
             id: 1,
             cast: [
-                CastMember(id: 1, creditID: "a", name: "Cast 1", character: "Character 1", order: 0),
-                CastMember(id: 2, creditID: "b", name: "Cast 2", character: "Character 2", order: 1)
+                CastMemberDTO(id: 1, creditID: "a", name: "Cast 1", character: "Character 1", order: 0),
+                CastMemberDTO(id: 2, creditID: "b", name: "Cast 2", character: "Character 2", order: 1)
             ],
             crew: [
-                CrewMember(id: 3, creditID: "c", name: "Crew 1", job: "Job 1", department: "Department 1"),
-                CrewMember(id: 4, creditID: "d", name: "Crew 2", job: "Job 2", department: "Department 2")
+                CrewMemberDTO(id: 3, creditID: "c", name: "Crew 1", job: "Job 1", department: "Department 1"),
+                CrewMemberDTO(id: 4, creditID: "d", name: "Crew 2", job: "Job 2", department: "Department 2")
             ]
         )
         apiClient.response = expectedResult
@@ -55,19 +55,19 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchReviewsReturnsReviews() throws {
         let tvShowID = 1
-        let expectedResult = ReviewPageableList(
+        let expectedResult = ReviewPageableListDTO(
             page: 1,
             results: [
-                Review(id: "1", author: "Author 1", content: "Content 1"),
-                Review(id: "2", author: "Author 2", content: "Content 2"),
-                Review(id: "3", author: "Author 3", content: "Content 3")
+                ReviewDTO(id: "1", author: "Author 1", content: "Content 1"),
+                ReviewDTO(id: "2", author: "Author 2", content: "Content 2"),
+                ReviewDTO(id: "3", author: "Author 3", content: "Content 3")
             ],
             totalResults: 3,
             totalPages: 1
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchReviews(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try await(publisher: service.fetchReviews(forTVShow: tvShowID, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
@@ -76,12 +76,12 @@ class TMDbTVShowServiceTests: XCTestCase {
     func testFetchReviewsWithPageReturnsReviews() throws {
         let tvShowID = 1
         let page = 2
-        let expectedResult = ReviewPageableList(
+        let expectedResult = ReviewPageableListDTO(
             page: 2,
             results: [
-                Review(id: "4", author: "Author 4", content: "Content 4"),
-                Review(id: "5", author: "Author 5", content: "Content 5"),
-                Review(id: "6", author: "Author 6", content: "Content 6")
+                ReviewDTO(id: "4", author: "Author 4", content: "Content 4"),
+                ReviewDTO(id: "5", author: "Author 5", content: "Content 5"),
+                ReviewDTO(id: "6", author: "Author 6", content: "Content 6")
             ],
             totalResults: 6,
             totalPages: 2
@@ -96,15 +96,15 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchImagesReturnsImages() throws {
         let tvShowID = 1
-        let expectedResult = ImageCollection(
+        let expectedResult = ImageCollectionDTO(
             id: 1,
             posters: [
-                ImageMetadata(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
+                ImageMetadataDTO(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
+                ImageMetadataDTO(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
             ],
             backdrops: [
-                ImageMetadata(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
-                ImageMetadata(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
+                ImageMetadataDTO(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
+                ImageMetadataDTO(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
             ]
         )
         apiClient.response = expectedResult
@@ -117,12 +117,12 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchVideosReturnsVideos() throws {
         let tvShowID = 1
-        let expectedResult = VideoCollection(
+        let expectedResult = VideoCollectionDTO(
             id: 1,
             results: [
-                VideoMetadata(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
-                VideoMetadata(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
-                VideoMetadata(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
+                VideoMetadataDTO(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
+                VideoMetadataDTO(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
+                VideoMetadataDTO(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
             ]
         )
         apiClient.response = expectedResult
@@ -135,19 +135,20 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchRecommendationsReturnsTVShows() throws {
         let tvShowID = 1
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 1,
             results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2"),
-                TVShow(id: 3, name: "TV Show 3")
+                TVShowDTO(id: 1, name: "TV Show 1"),
+                TVShowDTO(id: 2, name: "TV Show 2"),
+                TVShowDTO(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchRecommendations(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try await(publisher: service.fetchRecommendations(forTVShow: tvShowID, page: nil),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
@@ -156,12 +157,12 @@ class TMDbTVShowServiceTests: XCTestCase {
     func testFetchRecommendationsWithPageReturnsTVShows() throws {
         let tvShowID = 1
         let page = 2
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 2,
             results: [
-                TVShow(id: 4, name: "TV Show 4"),
-                TVShow(id: 5, name: "TV Show 5"),
-                TVShow(id: 6, name: "TV Show 6")
+                TVShowDTO(id: 4, name: "TV Show 4"),
+                TVShowDTO(id: 5, name: "TV Show 5"),
+                TVShowDTO(id: 6, name: "TV Show 6")
             ],
             totalResults: 6,
             totalPages: 2
@@ -177,19 +178,19 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchSimilarReturnsTVShows() throws {
         let tvShowID = 1
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 1,
             results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2"),
-                TVShow(id: 3, name: "TV Show 3")
+                TVShowDTO(id: 1, name: "TV Show 1"),
+                TVShowDTO(id: 2, name: "TV Show 2"),
+                TVShowDTO(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchSimilar(toTVShow: tvShowID), storeIn: &cancellables)
+        let result = try await(publisher: service.fetchSimilar(toTVShow: tvShowID, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
@@ -198,12 +199,12 @@ class TMDbTVShowServiceTests: XCTestCase {
     func testFetchSimilarWithPageReturnsTVShows() throws {
         let tvShowID = 1
         let page = 2
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 2,
             results: [
-                TVShow(id: 4, name: "TV Show 4"),
-                TVShow(id: 5, name: "TV Show 5"),
-                TVShow(id: 6, name: "TV Show 6")
+                TVShowDTO(id: 4, name: "TV Show 4"),
+                TVShowDTO(id: 5, name: "TV Show 5"),
+                TVShowDTO(id: 6, name: "TV Show 6")
             ],
             totalResults: 6,
             totalPages: 2
@@ -217,19 +218,19 @@ class TMDbTVShowServiceTests: XCTestCase {
     }
 
     func testFetchPopularReturnsTVShows() throws {
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 1,
             results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2"),
-                TVShow(id: 3, name: "TV Show 3")
+                TVShowDTO(id: 1, name: "TV Show 1"),
+                TVShowDTO(id: 2, name: "TV Show 2"),
+                TVShowDTO(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(), storeIn: &cancellables)
+        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
@@ -237,12 +238,12 @@ class TMDbTVShowServiceTests: XCTestCase {
 
     func testFetchPopularWithPageReturnsTVShows() throws {
         let page = 2
-        let expectedResult = TVShowPageableList(
+        let expectedResult = TVShowPageableListDTO(
             page: 2,
             results: [
-                TVShow(id: 4, name: "TV Show 4"),
-                TVShow(id: 5, name: "TV Show 5"),
-                TVShow(id: 6, name: "TV Show 6")
+                TVShowDTO(id: 4, name: "TV Show 4"),
+                TVShowDTO(id: 5, name: "TV Show 5"),
+                TVShowDTO(id: 6, name: "TV Show 6")
             ],
             totalResults: 6,
             totalPages: 2

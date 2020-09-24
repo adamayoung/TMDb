@@ -24,14 +24,14 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     func testFetchDetailsReturnsTVShowSeason() throws {
         let seasonNumber = 1
         let tvShowID = 2
-        let expectedResult = TVShowSeason(
+        let expectedResult = TVShowSeasonDTO(
             id: 11,
             name: "Season 1",
             seasonNumber: seasonNumber
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forSeasonNumber: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -42,20 +42,20 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     func testFetchImagesReturnsImages() throws {
         let seasonNumber = 1
         let tvShowID = 2
-        let expectedResult = ImageCollection(
+        let expectedResult = ImageCollectionDTO(
             id: 1,
             posters: [
-                ImageMetadata(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
+                ImageMetadataDTO(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
+                ImageMetadataDTO(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
             ],
             backdrops: [
-                ImageMetadata(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
-                ImageMetadata(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
+                ImageMetadataDTO(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
+                ImageMetadataDTO(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
             ]
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forSeasonNumber: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -66,17 +66,17 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     func testFetchVideosReturnsVideos() throws {
         let seasonNumber = 1
         let tvShowID = 2
-        let expectedResult = VideoCollection(
+        let expectedResult = VideoCollectionDTO(
             id: 1,
             results: [
-                VideoMetadata(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
-                VideoMetadata(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
-                VideoMetadata(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
+                VideoMetadataDTO(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
+                VideoMetadataDTO(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
+                VideoMetadataDTO(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
             ]
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchVideos(forSeasonNumber: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)

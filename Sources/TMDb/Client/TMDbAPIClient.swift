@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-public final class TMDbAPIClient: APIClient {
+final class TMDbAPIClient: APIClient {
 
     private static let baseURL = URL(string: "https://api.themoviedb.org/3")!
 
@@ -10,7 +10,7 @@ public final class TMDbAPIClient: APIClient {
 
     private(set) var apiKey: String = ""
 
-    public static let shared = TMDbAPIClient()
+    static let shared = TMDbAPIClient()
 
     public static func setAPIKey(_ apiKey: String) {
         shared.setAPIKey(apiKey)
@@ -30,8 +30,8 @@ public final class TMDbAPIClient: APIClient {
 
 extension TMDbAPIClient {
 
-    public func get<Response: Decodable>(path: URL,
-                                         httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
+    func get<Response: Decodable>(path: URL,
+                                  httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
         let url = urlFromPath(path)
         var urlRequest = URLRequest(url: url)
 

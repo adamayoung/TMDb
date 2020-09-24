@@ -33,18 +33,50 @@ let package = Package(
 )
 ```
 
-## Usage
+## Setup
 
 ### Get an API Key
 
 Create an API Key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
-### Setup
+### Set you API Key
 
-Set your API key
+Set your API key before making any calls
 
 ```swift
-TMDbAPIClient.setAPIKey("ahb4334n43nj34jk43nklkg4")
+TMDbAPI.setAPIKey("ahb4334n43nj34jk43nklkg4")
+```
+
+## Examples
+
+### Discover Movies
+
+```swift
+TMDbAPI.shared.discoverMoviesPublisher()
+    .map(\.results)
+    .replaceError(with: [])
+    .assign(to: \.movies, on: self)
+    .store(in: &cancellables)
+```
+
+### Trending TV Shows this week, 2nd page
+
+```swift
+TMDbAPI.shared.trendingTVShowsPublisher(inTimeWindow: .week, page: 2)
+    .map(\.results)
+    .replaceError(with: [])
+    .assign(to: \.tvShows, on: self)
+    .store(in: &cancellables)
+```
+
+### Popular People
+
+```swift
+TMDbAPI.shared.popularPeoplePublisher()
+    .map(\.results)
+    .replaceError(with: [])
+    .assign(to: \.people, on: self)
+    .store(in: &cancellables)
 ```
 
 ## References

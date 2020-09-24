@@ -1,26 +1,26 @@
 import Combine
 import Foundation
 
-public final class TMDbTrendingService: TrendingService {
+final class TMDbTrendingService: TrendingService {
 
     private let apiClient: APIClient
 
-    public init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient = TMDbAPIClient.shared) {
         self.apiClient = apiClient
     }
 
-    public func fetchMovies(timeWindow: TrendingTimeWindowFilterType,
-                            page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+    func fetchMovies(timeWindow: TrendingTimeWindowFilterType,
+                     page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
     }
 
-    public func fetchTVShows(timeWindow: TrendingTimeWindowFilterType,
-                             page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType,
+                      page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
     }
 
-    public func fetchPeople(timeWindow: TrendingTimeWindowFilterType,
-                            page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
+    func fetchPeople(timeWindow: TrendingTimeWindowFilterType,
+                     page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
     }
 

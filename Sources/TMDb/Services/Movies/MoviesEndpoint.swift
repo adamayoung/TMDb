@@ -4,13 +4,13 @@ enum MoviesEndpoint {
 
     static let basePath = URL(string: "/movie")!
 
-    case details(movieID: Movie.ID)
-    case credits(movieID: Movie.ID)
-    case reviews(movieID: Movie.ID, page: Int? = nil)
-    case images(movieID: Movie.ID)
-    case videos(movieID: Movie.ID)
-    case recommendations(movieID: Movie.ID, page: Int? = nil)
-    case similar(movieID: Movie.ID, page: Int? = nil)
+    case details(movieID: MovieDTO.ID)
+    case credits(movieID: MovieDTO.ID)
+    case reviews(movieID: MovieDTO.ID, page: Int? = nil)
+    case images(movieID: MovieDTO.ID)
+    case videos(movieID: MovieDTO.ID)
+    case recommendations(movieID: MovieDTO.ID, page: Int? = nil)
+    case similar(movieID: MovieDTO.ID, page: Int? = nil)
     case popular(page: Int? = nil)
 
 }

@@ -23,7 +23,7 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchDetailsReturnsPerson() throws {
         let personID = 12
-        let expectedResult = Person(id: 1, name: "Edward Norton")
+        let expectedResult = PersonDTO(id: 1, name: "Edward Norton")
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.fetchDetails(forPerson: personID), storeIn: &cancellables)
@@ -34,15 +34,15 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchCombinedCreditsReturnsCombinedCredits() throws {
         let personID = 11
-        let expectedResult = PersonCombinedCredits(
+        let expectedResult = PersonCombinedCreditsDTO(
             id: 1,
             cast: [
-                .movie(Movie(id: 1, title: "Movie 1")),
-                .tvShow(TVShow(id: 2, name: "TV Show 2"))
+                .movie(MovieDTO(id: 1, title: "Movie 1")),
+                .tvShow(TVShowDTO(id: 2, name: "TV Show 2"))
             ],
             crew: [
-                .movie(Movie(id: 3, title: "Movie 3")),
-                .tvShow(TVShow(id: 4, name: "TV Show 4"))
+                .movie(MovieDTO(id: 3, title: "Movie 3")),
+                .tvShow(TVShowDTO(id: 4, name: "TV Show 4"))
             ]
         )
         apiClient.response = expectedResult
@@ -55,15 +55,15 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchMovieCreditsReturnsMovieCredits() throws {
         let personID = 11
-        let expectedResult = PersonMovieCredits(
+        let expectedResult = PersonMovieCreditsDTO(
             id: 2,
             cast: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2")
+                MovieDTO(id: 1, title: "Movie 1"),
+                MovieDTO(id: 2, title: "Movie 2")
             ],
             crew: [
-                Movie(id: 3, title: "Movie 3"),
-                Movie(id: 4, title: "Movie 4")
+                MovieDTO(id: 3, title: "Movie 3"),
+                MovieDTO(id: 4, title: "Movie 4")
             ]
         )
         apiClient.response = expectedResult
@@ -76,15 +76,15 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchTVShowCreditsReturnsTVShowCredits() throws {
         let personID = 11
-        let expectedResult = PersonTVShowCredits(
+        let expectedResult = PersonTVShowCreditsDTO(
             id: 1,
             cast: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2")
+                TVShowDTO(id: 1, name: "TV Show 1"),
+                TVShowDTO(id: 2, name: "TV Show 2")
             ],
             crew: [
-                TVShow(id: 3, name: "TV Show 3"),
-                TVShow(id: 4, name: "TV Show 4")
+                TVShowDTO(id: 3, name: "TV Show 3"),
+                TVShowDTO(id: 4, name: "TV Show 4")
             ]
         )
         apiClient.response = expectedResult
@@ -97,11 +97,11 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchImagesReturnsImageCollection() throws {
         let personID = 13
-        let expectedResult = PersonImageCollection(
+        let expectedResult = PersonImageCollectionDTO(
             id: personID,
             profiles: [
-                ImageMetadata(filePath: URL(string: "/some/path/image1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/image2.jpg")!, width: 150, height: 300)
+                ImageMetadataDTO(filePath: URL(string: "/some/path/image1.jpg")!, width: 100, height: 200),
+                ImageMetadataDTO(filePath: URL(string: "/some/path/image2.jpg")!, width: 150, height: 300)
             ]
         )
         apiClient.response = expectedResult
@@ -113,18 +113,18 @@ class TMDbPersonServiceTests: XCTestCase {
     }
 
     func testFetchPopularReturnsPeople() throws {
-        let expectedResult = PersonPageableList(
+        let expectedResult = PersonPageableListDTO(
             page: 1,
             results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2")
+                PersonDTO(id: 1, name: "Person 1"),
+                PersonDTO(id: 2, name: "Person 2")
             ],
             totalResults: 2,
             totalPages: 1
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(), storeIn: &cancellables)
+        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
@@ -132,11 +132,11 @@ class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchPopularWithPageReturnsPeople() throws {
         let page = 2
-        let expectedResult = PersonPageableList(
+        let expectedResult = PersonPageableListDTO(
             page: page,
             results: [
-                Person(id: 3, name: "Person 3"),
-                Person(id: 4, name: "Person 4")
+                PersonDTO(id: 3, name: "Person 3"),
+                PersonDTO(id: 4, name: "Person 4")
             ],
             totalResults: 5,
             totalPages: 2

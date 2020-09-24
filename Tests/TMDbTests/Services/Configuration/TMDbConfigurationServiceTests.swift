@@ -16,8 +16,8 @@ class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testFetchAPIConfigurationReturnsAPIConfiguration() throws {
-        let expectedResult = APIConfiguration(
-            images: ImagesConfiguration(
+        let expectedResult = APIConfigurationDTO(
+            images: ImagesConfigurationDTO(
                 baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
                 secureBaseUrl: URL(string: "https://image.tmdb.org/t/p/")!,
                 backdropSizes: [
