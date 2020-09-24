@@ -77,7 +77,7 @@ TMDbAPI.shared.popularPeoplePublisher()
     .replaceError(with: [])
     .assign(to: \.people, on: self)
     .store(in: &cancellables)
-
+```
 
 ## References
 
