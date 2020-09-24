@@ -7,9 +7,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      exclude:
-        - README.md
   workflow_dispatch:
 
 jobs:
