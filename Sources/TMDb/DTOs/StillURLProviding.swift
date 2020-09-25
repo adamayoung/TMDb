@@ -49,7 +49,7 @@ public extension StillURLProviding {
     }
 
     static var stillAspectRatio: Float {
-        100 / 150
+        500 / 281
     }
 
 }
