@@ -13,13 +13,14 @@ public struct PersonDTO: Identifiable, Decodable, Equatable, ProfileURLProviding
     public let placeOfBirth: String?
     public let profilePath: URL?
     public let popularity: Float?
-    public let imdbId: String?
-    public let homepage: URL?
+    public let imdbID: String?
+
+    private let homepage: String?
 
     public init(id: Int, name: String, alsoKnownAs: [String]? = nil, knownForDepartment: String? = nil,
                 biography: String? = nil, birthday: Date? = nil, deathday: Date? = nil, gender: GenderDTO? = nil,
-                placeOfBirth: String? = nil, profilePath: URL? = nil, popularity: Float? = nil, imdbId: String? = nil,
-                homepage: URL? = nil) {
+                placeOfBirth: String? = nil, profilePath: URL? = nil, popularity: Float? = nil, imdbID: String? = nil,
+                homepageURL: URL? = nil) {
         self.id = id
         self.name = name
         self.alsoKnownAs = alsoKnownAs
@@ -31,8 +32,40 @@ public struct PersonDTO: Identifiable, Decodable, Equatable, ProfileURLProviding
         self.placeOfBirth = placeOfBirth
         self.profilePath = profilePath
         self.popularity = popularity
-        self.imdbId = imdbId
-        self.homepage = homepage
+        self.imdbID = imdbID
+        self.homepage = homepageURL?.absoluteString
+    }
+
+}
+
+extension PersonDTO {
+
+    public var homepageURL: URL? {
+        guard let homepage = homepage else {
+            return nil
+        }
+
+        return URL(string: homepage)
+    }
+
+}
+
+extension PersonDTO {
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case alsoKnownAs
+        case knownForDepartment
+        case biography
+        case birthday
+        case deathday
+        case gender
+        case placeOfBirth
+        case profilePath
+        case popularity
+        case imdbID = "imdbId"
+        case homepage
     }
 
 }

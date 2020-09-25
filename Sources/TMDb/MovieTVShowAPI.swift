@@ -1,87 +1,29 @@
 import Combine
 import Foundation
 
-/// The Movie Database API.
-///
-/// - Note: [The Movie Database API Documentation](https://developers.themoviedb.org)
-public final class TMDbAPI: MovieTVShowAPI {
-
-    /// A shared instance of the TMDb API.
-    public static let shared = TMDbAPI()
-
-    private let certificationService: CertificationService
-    private let configurationService: ConfigurationService
-    private let discoverService: DiscoverService
-    private let movieService: MovieService
-    private let personService: PersonService
-    private let searchService: SearchService
-    private let trendingService: TrendingService
-    private let tvShowService: TVShowService
-    private let tvShowSeasonService: TVShowSeasonService
-
-    init(
-        certificationService: CertificationService = TMDbCertificationService(),
-        configurationService: ConfigurationService = TMDbConfigurationService(),
-        discoverService: DiscoverService = TMDbDiscoverService(),
-        movieService: MovieService = TMDbMovieService(),
-        personService: PersonService = TMDbPersonService(),
-        searchService: SearchService = TMDbSearchService(),
-        trendingService: TrendingService = TMDbTrendingService(),
-        tvShowService: TVShowService = TMDbTVShowService(),
-        tvShowSeasonService: TVShowSeasonService = TMDbTVShowSeasonService()
-    ) {
-        self.certificationService = certificationService
-        self.configurationService = configurationService
-        self.discoverService = discoverService
-        self.movieService = movieService
-        self.personService = personService
-        self.searchService = searchService
-        self.trendingService = trendingService
-        self.tvShowService = tvShowService
-        self.tvShowSeasonService = tvShowSeasonService
-    }
+public protocol MovieTVShowAPI {
 
     /// Sets the TMDb API Key to be used with requests to the TMDb API.
     ///
     /// - Note: [TMDb API - Getting Started: Authentication](https://developers.themoviedb.org/3/getting-started/authentication#api-key)
     ///
     /// - Parameter apiKey: The TMDb API Key.
-    public static func setAPIKey(_ apiKey: String) {
-        TMDbAPIClient.setAPIKey(apiKey)
-    }
-
-}
-
-extension TMDbAPI {
+    static func setAPIKey(_ apiKey: String)
 
     /// Publishes the officially supported movie certifications on TMDb.
     ///
     /// - Note: [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
-    public func movieCertificationsPublisher() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
-        certificationService.fetchMovieCertifications()
-    }
+    func movieCertificationsPublisher() -> AnyPublisher<[String: [CertificationDTO]], TMDbError>
 
     /// Publishes the officially supported TV show certifications on TMDb.
     ///
     /// - Note: [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
-    public func tvShowCertificationsPublisher() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
-        certificationService.fetchTVShowCertifications()
-    }
-
-}
-
-extension TMDbAPI {
+    func tvShowCertificationsPublisher() -> AnyPublisher<[String: [CertificationDTO]], TMDbError>
 
     /// Publishes the TMDb API system wide configuration information.
     ///
     /// - Note: [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
-    public func apiConfigurationPublisher() -> AnyPublisher<APIConfigurationDTO, TMDbError> {
-        configurationService.fetchAPIConfiguration()
-    }
-
-}
-
-extension TMDbAPI {
+    func apiConfigurationPublisher() -> AnyPublisher<APIConfigurationDTO, TMDbError>
 
     /// Publishes movies to be discovered.
     ///
@@ -90,10 +32,8 @@ extension TMDbAPI {
     /// - Parameter sortBy: How results should be sorted.
     /// - Parameter withPeople: A list of Person IDs which to return only movies they have appeared in.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func discoverMoviesPublisher(sortBy: MovieSortBy? = .default, withPeople: [PersonDTO.ID]? = nil,
-                                        page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        discoverService.fetchMovies(sortBy: sortBy, withPeople: withPeople, page: page)
-    }
+    func discoverMoviesPublisher(sortBy: MovieSortBy?, withPeople: [PersonDTO.ID]?,
+                                 page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes TV shows to be discovered.
     ///
@@ -101,32 +41,21 @@ extension TMDbAPI {
     ///
     /// - Parameter sortBy: How results should be sorted.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func discoverTVShowsPublisher(sortBy: TVShowSortBy? = .default,
-                                         page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        discoverService.fetchTVShows(sortBy: sortBy, page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func discoverTVShowsPublisher(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes the primary information about a movie.
     ///
     /// - Note: [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
     ///
     /// - Parameter id: The ID of the movie.
-    public func detailsPublisher(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError> {
-        movieService.fetchDetails(forMovie: id)
-    }
+    func detailsPublisher(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError>
 
     /// Publishes the cast and crew of a movie.
     ///
     /// - Note: [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
     ///
     /// - Parameter movieID: The ID of the movie.
-    public func creditsPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
-        movieService.fetchCredits(forMovie: movieID)
-    }
+    func creditsPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
 
     /// Publishes the user reviews for a movie.
     ///
@@ -134,28 +63,21 @@ extension TMDbAPI {
     ///
     /// - Parameter movieID: The ID of the movie.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func reviewsPublisher(forMovie movieID: MovieDTO.ID,
-                                 page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
-        movieService.fetchReviews(forMovie: movieID, page: page)
-    }
+    func reviewsPublisher(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
 
     /// Publishes the images that belong to a movie.
     ///
     /// - Note: [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
     ///
     /// - Parameter movieID: The ID of the movie.
-    public func imagesPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
-        movieService.fetchImages(forMovie: movieID)
-    }
+    func imagesPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
 
     /// Publishes the videos that have been added to a movie.
     ///
     /// - Note: [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
     ///
     /// - Parameter movieID: The ID of the movie.
-    public func videosPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
-        movieService.fetchVideos(forMovie: movieID)
-    }
+    func videosPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
 
     /// Publishes a list of recommended movies for a movie.
     ///
@@ -163,10 +85,8 @@ extension TMDbAPI {
     ///
     /// - Parameter movieID: The ID of the movie for get recommendations for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func recommendationsPublisher(forMovie movieID: MovieDTO.ID,
-                                         page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        movieService.fetchRecommendations(forMovie: movieID, page: page)
-    }
+    func recommendationsPublisher(forMovie movieID: MovieDTO.ID,
+                                  page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes a list of similar movies for a movie.
     ///
@@ -176,91 +96,63 @@ extension TMDbAPI {
     ///
     /// - Parameter movieID: The ID of the movie for get similar movies for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func moviesPublisher(similarToMovie movieID: MovieDTO.ID,
-                                page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        movieService.fetchSimilar(toMovie: movieID, page: page)
-    }
+    func moviesPublisher(similarToMovie movieID: MovieDTO.ID,
+                         page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes a list current popular movies.
     ///
     /// - Note: [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
     ///
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func popularMoviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        movieService.fetchPopular(page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func popularMoviesPublisher(page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes the primary information about a person.
     ///
     /// - Note: [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
     ///
     /// - Parameter id: The ID of the person.
-    public func detailsPublisher(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError> {
-        personService.fetchDetails(forPerson: id)
-    }
+    func detailsPublisher(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError>
 
     /// Publishes the combine movie and TV show credits of a person.
     ///
     /// - Note: [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
     ///
     /// - Parameter id: The ID of the person.
-    public func combinedCreditsPublisher(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError> {
-        personService.fetchCombinedCredits(forPerson: personID)
-    }
+    func combinedCreditsPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError>
 
     /// Publishes the movie credits of a person.
     ///
     /// - Note: [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
     ///
     /// - Parameter id: The ID of the person.
-    public func movieCreditsPublisher(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError> {
-        personService.fetchMovieCredits(forPerson: personID)
-    }
+    func movieCreditsPublisher(
+        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError>
 
     /// Publishes the TV show credits of a person.
     ///
     /// - Note: [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
     ///
     /// - Parameter id: The ID of the person.
-    public func tvShowCredits(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError> {
-        personService.fetchTVShowCredits(forPerson: personID)
-    }
+    func tvShowCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError>
 
     /// Publishes the images for a person.
     ///
     /// - Note: [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
     ///
     /// - Parameter id: The ID of the person.
-    public func imagesPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError> {
-        personService.fetchImages(forPerson: personID)
-    }
+    func imagesPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError>
 
     /// Publishes the list of known for shows for a person.
     ///
     /// - Parameter id: The ID of the person.
-    public func knownForPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError> {
-        personService.fetchKnownFor(forPerson: personID)
-    }
+    func knownForPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError>
 
     /// Publishes the list of popular people.
     ///
     /// - Note: [TMDb API - People: Popular](https://developers.themoviedb.org/3/people/get-popular-people)
     ///
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func popularPeoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
-        personService.fetchPopular(page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func popularPeoplePublisher(page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
 
     /// Publishes search results for movies, TV shows and people based on a query..
     ///
@@ -268,10 +160,7 @@ extension TMDbAPI {
     ///
     /// - Parameter query: A text query to search for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func searchPublisher(withQuery query: String,
-                                page: Int? = nil) -> AnyPublisher<MediaPageableListDTO, TMDbError> {
-        searchService.searchAll(query: query, page: page)
-    }
+    func searchPublisher(withQuery query: String, page: Int?) -> AnyPublisher<MediaPageableListDTO, TMDbError>
 
     /// Publishes search results for movies.
     ///
@@ -280,10 +169,8 @@ extension TMDbAPI {
     /// - Parameter query: A text query to search for.
     /// - Parameter year: The year to filter results for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func searchMoviesPublisher(withQuery query: String, year: Int? = nil,
-                                      page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        searchService.searchMovies(query: query, year: year, page: page)
-    }
+    func searchMoviesPublisher(withQuery query: String, year: Int?,
+                               page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes search results for TV shows.
     ///
@@ -292,10 +179,8 @@ extension TMDbAPI {
     /// - Parameter query: A text query to search for.
     /// - Parameter firstAirDateYear: The year of first air date to filter results for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int? = nil,
-                                       page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        searchService.searchTVShows(query: query, firstAirDateYear: firstAirDateYear, page: page)
-    }
+    func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int?,
+                                page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes search results for people.
     ///
@@ -303,14 +188,7 @@ extension TMDbAPI {
     ///
     /// - Parameter query: A text query to search for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func searchPeoplePublisher(withQuery query: String,
-                                      page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
-        searchService.searchPeople(query: query, page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func searchPeoplePublisher(withQuery query: String, page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
 
     /// Publishes a list of the daily or weekly trending movies.
     ///
@@ -321,10 +199,8 @@ extension TMDbAPI {
     ///
     /// - Parameter timeWindow: Daily or weekly time window.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func trendingMoviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                        page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
-        trendingService.fetchMovies(timeWindow: timeWindow, page: page)
-    }
+    func trendingMoviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+                                 page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
 
     /// Publishes a list of the daily or weekly trending TV shows.
     ///
@@ -335,10 +211,8 @@ extension TMDbAPI {
     ///
     /// - Parameter timeWindow: Daily or weekly time window.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func trendingTVShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                         page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        trendingService.fetchTVShows(timeWindow: timeWindow, page: page)
-    }
+    func trendingTVShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+                                  page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes a list of the daily or weekly trending people.
     ///
@@ -349,32 +223,22 @@ extension TMDbAPI {
     ///
     /// - Parameter timeWindow: Daily or weekly time window.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000) (Minimum: 1, Maximum: 1000)
-    public func trendingPeoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                        page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
-        trendingService.fetchPeople(timeWindow: timeWindow, page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func trendingPeoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+                                 page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
 
     /// Publishes the primary information about a TV show.
     ///
     /// - Note: [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
     ///
     /// - Parameter id: The ID of the TV show.
-    public func detailsPublisher(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError> {
-        tvShowService.fetchDetails(forTVShow: id)
-    }
+    func detailsPublisher(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError>
 
     /// Publishes the cast and crew of a TV show.
     ///
     /// - Note: [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
     ///
     /// - Parameter tvShowID: The ID of the TV show.
-    public func creditsPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
-        tvShowService.fetchCredits(forTVShow: tvShowID)
-    }
+    func creditsPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
 
     /// Publishes the user reviews for a TV show.
     ///
@@ -382,28 +246,22 @@ extension TMDbAPI {
     ///
     /// - Parameter tvShowID: The ID of the TV show.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func reviewsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                                 page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
-        tvShowService.fetchReviews(forTVShow: tvShowID, page: page)
-    }
+    func reviewsPublisher(forTVShow tvShowID: TVShowDTO.ID,
+                          page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
 
     /// Publishes the images that belong to a TV show.
     ///
     /// - Note: [TMDb API - TV Shows: Images](https://developers.themoviedb.org/3/tv/get-tv-images)
     ///
     /// - Parameter tvShowID: The ID of the TV show.
-    public func imagesPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
-        tvShowService.fetchImages(forTVShow: tvShowID)
-    }
+    func imagesPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
 
     /// Publishes the videos that belong to a TV show.
     ///
     /// - Note: [TMDb API - TV Shows: Videos](https://developers.themoviedb.org/3/tv/get-tv-videos)
     ///
     /// - Parameter tvShowID: The ID of the TV show.
-    public func videosPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
-        tvShowService.fetchVideos(forTVShow: tvShowID)
-    }
+    func videosPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
 
     /// Publishes a list of recommended TV shows for a TV show.
     ///
@@ -411,10 +269,8 @@ extension TMDbAPI {
     ///
     /// - Parameter tvShowID: The ID of the TV show.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func recommendationsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                                         page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        tvShowService.fetchRecommendations(forTVShow: tvShowID, page: page)
-    }
+    func recommendationsPublisher(forTVShow tvShowID: TVShowDTO.ID,
+                                  page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes a list of similar TV shows for a TV show.
     ///
@@ -424,23 +280,15 @@ extension TMDbAPI {
     ///
     /// - Parameter tvShowID: The ID of the TV show for get similar TV shows for.
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func tvShowsPublisher(similarToTVShow tvShowID: TVShowDTO.ID,
-                                 page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        tvShowService.fetchSimilar(toTVShow: tvShowID, page: page)
-    }
+    func tvShowsPublisher(similarToTVShow tvShowID: TVShowDTO.ID,
+                          page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes a list current popular TV shows.
     ///
     /// - Note: [TMDb API - TV: Popular](https://developers.themoviedb.org/3/tv/get-popular-tv)
     ///
     /// - Parameter page: The page of results to return. (Minimum: 1, Maximum: 1000)
-    public func popularTVShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
-        tvShowService.fetchPopular(page: page)
-    }
-
-}
-
-extension TMDbAPI {
+    func popularTVShowsPublisher(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
 
     /// Publishes the primary information about a TV show season.
     ///
@@ -448,10 +296,8 @@ extension TMDbAPI {
     ///
     /// - Parameter seasonNumber: The season number of a TV show.
     /// - Parameter tvShowID: The ID of the TV show.
-    public func detailsPublisher(forSeason seasonNumber: Int,
-                                 inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError> {
-        tvShowSeasonService.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID)
-    }
+    func detailsPublisher(forSeason seasonNumber: Int,
+                          inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError>
 
     /// Publishes the images that belong to a TV show season.
     ///
@@ -459,10 +305,8 @@ extension TMDbAPI {
     ///
     /// - Parameter seasonNumber: The season number of a TV show.
     /// - Parameter tvShowID: The ID of the TV show.
-    public func imagesPublisher(forSeason seasonNumber: Int,
-                                inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
-        tvShowSeasonService.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID)
-    }
+    func imagesPublisher(forSeason seasonNumber: Int,
+                         inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
 
     /// Publishes the videos that belong to a TV show season.
     ///
@@ -470,9 +314,98 @@ extension TMDbAPI {
     ///
     /// - Parameter seasonNumber: The season number of a TV show.
     /// - Parameter tvShowID: The ID of the TV show.
-    public func videosPublisher(forSeason seasonNumber: Int,
-                                inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
-        tvShowSeasonService.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID)
+    func videosPublisher(forSeason seasonNumber: Int,
+                         inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+
+}
+
+public extension MovieTVShowAPI {
+
+    func discoverMoviesPublisher(sortBy: MovieSortBy? = .default, withPeople: [PersonDTO.ID]? = nil,
+                                 page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        discoverMoviesPublisher(sortBy: sortBy, withPeople: withPeople, page: page)
+    }
+
+    func discoverTVShowsPublisher(sortBy: TVShowSortBy? = nil,
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        discoverTVShowsPublisher(sortBy: sortBy, page: page)
+
+    }
+
+    func reviewsPublisher(forMovie movieID: MovieDTO.ID,
+                          page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+        reviewsPublisher(forMovie: movieID, page: page)
+    }
+
+    func recommendationsPublisher(forMovie movieID: MovieDTO.ID,
+                                  page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        recommendationsPublisher(forMovie: movieID, page: page)
+    }
+
+    func moviesPublisher(similarToMovie movieID: MovieDTO.ID,
+                         page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        moviesPublisher(similarToMovie: movieID, page: page)
+    }
+
+    func popularMoviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        popularMoviesPublisher(page: page)
+    }
+
+    func popularPeoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+        popularPeoplePublisher(page: page)
+    }
+
+    func searchPublisher(withQuery query: String, page: Int? = nil) -> AnyPublisher<MediaPageableListDTO, TMDbError> {
+        searchPublisher(withQuery: query, page: page)
+    }
+
+    func searchMoviesPublisher(withQuery query: String, year: Int?,
+                               page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        searchMoviesPublisher(withQuery: query, year: year, page: page)
+    }
+
+    func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int?,
+                                page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        searchTVShowsPublisher(withQuery: query, firstAirDateYear: firstAirDateYear, page: page)
+    }
+
+    func searchPeoplePublisher(withQuery query: String,
+                               page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+        searchPeoplePublisher(withQuery: query, page: page)
+    }
+
+    func trendingMoviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                                 page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+        trendingMoviesPublisher(inTimeWindow: timeWindow, page: page)
+    }
+
+    func trendingTVShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        trendingTVShowsPublisher(inTimeWindow: timeWindow, page: page)
+    }
+
+    func trendingPeoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                                 page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+        trendingPeoplePublisher(inTimeWindow: timeWindow, page: page)
+    }
+
+    func reviewsPublisher(forTVShow tvShowID: TVShowDTO.ID,
+                          page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+        reviewsPublisher(forTVShow: tvShowID, page: page)
+    }
+
+    func recommendationsPublisher(forTVShow tvShowID: TVShowDTO.ID,
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        recommendationsPublisher(forTVShow: tvShowID, page: page)
+    }
+
+    func tvShowsPublisher(similarToTVShow tvShowID: TVShowDTO.ID,
+                          page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        tvShowsPublisher(similarToTVShow: tvShowID, page: page)
+    }
+
+    func popularTVShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+        popularTVShowsPublisher(page: page)
     }
 
 }

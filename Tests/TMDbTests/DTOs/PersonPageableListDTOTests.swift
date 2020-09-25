@@ -65,8 +65,8 @@ class PersonPageableListDTOTests: XCTestCase {
                 placeOfBirth: "Shawnee, Oklahoma, USA",
                 profilePath: URL(string: "/kU3B75TyRiCgE270EyZnHjfivoq.jpg"),
                 popularity: 10.647,
-                imdbId: "nm0000093",
-                homepage: nil
+                imdbID: "nm0000093",
+                homepageURL: nil
             )
         ],
         totalResults: 1,

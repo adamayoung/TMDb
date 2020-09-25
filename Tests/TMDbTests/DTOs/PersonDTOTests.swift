@@ -3,6 +3,19 @@ import XCTest
 
 class PersonDTOTests: XCTestCase {
 
+    func testHomepageURLWhenNilReturnsNil() {
+        let somePerson = PersonDTO(id: 1, name: "Name 1", homepageURL: nil)
+
+        XCTAssertNil(somePerson.homepageURL)
+    }
+
+    func testHomepageURLWhenHasURLReturnsURL() {
+        let expectedResult = URL(string: "https://some.domain.com")!
+        let somePerson = PersonDTO(id: 1, name: "Name 1", homepageURL: expectedResult)
+
+        XCTAssertEqual(somePerson.homepageURL, expectedResult)
+    }
+
     func testDecodeReturnsPerson() throws {
         let data = json.data(using: .utf8)!
         let result = try JSONDecoder.theMovieDatabase.decode(PersonDTO.self, from: data)
@@ -52,8 +65,8 @@ class PersonDTOTests: XCTestCase {
         placeOfBirth: "Shawnee, Oklahoma, USA",
         profilePath: URL(string: "/kU3B75TyRiCgE270EyZnHjfivoq.jpg"),
         popularity: 10.647,
-        imdbId: "nm0000093",
-        homepage: nil
+        imdbID: "nm0000093",
+        homepageURL: nil
     )
     // swiftlint:enable line_length
 

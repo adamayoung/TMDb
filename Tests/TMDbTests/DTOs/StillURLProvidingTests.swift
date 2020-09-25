@@ -88,7 +88,7 @@ class StillURLProvidingTests: XCTestCase {
     }
 
     func testStillAspectRatioReturnsAspectRatio() {
-        let expectedResult: Float = 100 / 150
+        let expectedResult: Float = 500 / 281
 
         let result = TestStillProvider.stillAspectRatio
 
