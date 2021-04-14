@@ -9,20 +9,20 @@ final class TMDbSearchService: SearchService {
         self.apiClient = apiClient
     }
 
-    func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableListDTO, TMDbError> {
+    func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError> {
         apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
     }
 
-    func searchMovies(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func searchMovies(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
     }
 
     func searchTVShows(query: String, firstAirDateYear: Int?,
-                       page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                       page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear, page: page))
     }
 
-    func searchPeople(query: String, page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+    func searchPeople(query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
     }
 

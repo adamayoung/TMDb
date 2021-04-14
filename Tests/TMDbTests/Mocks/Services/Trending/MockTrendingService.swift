@@ -4,18 +4,18 @@ import XCTest
 
 final class MockTrendingService: TrendingService {
 
-    var movies: MoviePageableListDTO?
+    var movies: MoviePageableList?
     private(set) var lastMoviesTimeWindow: TrendingTimeWindowFilterType?
     private(set) var lastMoviesPage: Int?
-    var tvShows: TVShowPageableListDTO?
+    var tvShows: TVShowPageableList?
     private(set) var lastTVShowsTimeWindow: TrendingTimeWindowFilterType?
     private(set) var lastTVShowsPage: Int?
-    var people: PersonPageableListDTO?
+    var people: PersonPageableList?
     private(set) var lastPeopleTimeWindow: TrendingTimeWindowFilterType?
     private(set) var lastPeoplePage: Int?
 
     func fetchMovies(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+                     page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastMoviesTimeWindow = timeWindow
         lastMoviesPage = page
 
@@ -30,7 +30,7 @@ final class MockTrendingService: TrendingService {
     }
 
     func fetchTVShows(timeWindow: TrendingTimeWindowFilterType,
-                      page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                      page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastTVShowsTimeWindow = timeWindow
         lastTVShowsPage = page
 
@@ -45,7 +45,7 @@ final class MockTrendingService: TrendingService {
     }
 
     func fetchPeople(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+                     page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         lastPeopleTimeWindow = timeWindow
         lastPeoplePage = page
 

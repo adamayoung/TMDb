@@ -14,7 +14,7 @@ public protocol SearchAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with movies, TV shows and people matching the query.
-    func searchPublisher(withQuery query: String, page: Int?) -> AnyPublisher<MediaPageableListDTO, TMDbError>
+    func searchPublisher(withQuery query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError>
 
     /// Publishes search results for movies.
     ///
@@ -29,7 +29,7 @@ public protocol SearchAPI {
     ///
     /// - Returns: A publisher with movies matching the query.
     func searchMoviesPublisher(withQuery query: String, year: Int?,
-                               page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+                               page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes search results for TV shows.
     ///
@@ -44,7 +44,7 @@ public protocol SearchAPI {
     ///
     /// - Returns: A publisher with TV shows matching the query.
     func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int?,
-                                page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+                                page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes search results for people.
     ///
@@ -57,28 +57,28 @@ public protocol SearchAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with people matching the query.
-    func searchPeoplePublisher(withQuery query: String, page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
+    func searchPeoplePublisher(withQuery query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 
 }
 
 public extension SearchAPI {
 
-    func searchPublisher(withQuery query: String, page: Int? = nil) -> AnyPublisher<MediaPageableListDTO, TMDbError> {
+    func searchPublisher(withQuery query: String, page: Int? = nil) -> AnyPublisher<MediaPageableList, TMDbError> {
         searchPublisher(withQuery: query, page: page)
     }
 
     func searchMoviesPublisher(withQuery query: String, year: Int?,
-                               page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+                               page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         searchMoviesPublisher(withQuery: query, year: year, page: page)
     }
 
     func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int?,
-                                page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                                page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         searchTVShowsPublisher(withQuery: query, firstAirDateYear: firstAirDateYear, page: page)
     }
 
     func searchPeoplePublisher(withQuery query: String,
-                               page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+                               page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
         searchPeoplePublisher(withQuery: query, page: page)
     }
 

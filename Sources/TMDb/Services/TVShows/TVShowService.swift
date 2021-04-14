@@ -3,21 +3,21 @@ import Foundation
 
 protocol TVShowService {
 
-    func fetchDetails(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError>
+    func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError>
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
+    func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
-    func fetchReviews(forTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
+    func fetchReviews(forTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError>
 
-    func fetchImages(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
+    func fetchImages(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError>
 
-    func fetchVideos(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+    func fetchVideos(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
 
-    func fetchRecommendations(forTVShow tvShowID: TVShowDTO.ID,
-                              page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
+                              page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
-    func fetchSimilar(toTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func fetchSimilar(toTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
-    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
 }

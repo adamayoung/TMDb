@@ -9,7 +9,7 @@ final class TMDbConfigurationService: ConfigurationService {
         self.apiClient = apiClient
     }
 
-    func fetchAPIConfiguration() -> AnyPublisher<APIConfigurationDTO, TMDbError> {
+    func fetchAPIConfiguration() -> AnyPublisher<APIConfiguration, TMDbError> {
         apiClient.get(endpoint: ConfigurationEndpoint.api)
     }
 

@@ -4,27 +4,27 @@ import XCTest
 
 final class MockTVShowService: TVShowService {
 
-    var tvShowDetails: TVShowDTO?
-    private(set) var lastTVShowDetailsID: TVShowDTO.ID?
-    var credits: ShowCreditsDTO?
-    private(set) var lastCreditsTVShowID: TVShowDTO.ID?
-    var reviews: ReviewPageableListDTO?
-    private(set) var lastReviewsTVShowID: TVShowDTO.ID?
+    var tvShowDetails: TVShow?
+    private(set) var lastTVShowDetailsID: TVShow.ID?
+    var credits: ShowCredits?
+    private(set) var lastCreditsTVShowID: TVShow.ID?
+    var reviews: ReviewPageableList?
+    private(set) var lastReviewsTVShowID: TVShow.ID?
     private(set) var lastReviewsPage: Int?
-    var images: ImageCollectionDTO?
-    private(set) var lastImagesTVShowID: TVShowDTO.ID?
-    var videos: VideoCollectionDTO?
-    private(set) var lastVideosTVShowID: TVShowDTO.ID?
-    var recommendations: TVShowPageableListDTO?
-    private(set) var lastRecommendationsTVShowID: TVShowDTO.ID?
+    var images: ImageCollection?
+    private(set) var lastImagesTVShowID: TVShow.ID?
+    var videos: VideoCollection?
+    private(set) var lastVideosTVShowID: TVShow.ID?
+    var recommendations: TVShowPageableList?
+    private(set) var lastRecommendationsTVShowID: TVShow.ID?
     private(set) var lastRecommendationsPage: Int?
-    var similar: TVShowPageableListDTO?
-    private(set) var lastSimilarTVShowID: TVShowDTO.ID?
+    var similar: TVShowPageableList?
+    private(set) var lastSimilarTVShowID: TVShow.ID?
     private(set) var lastSimilarPage: Int?
-    var popular: TVShowPageableListDTO?
+    var popular: TVShowPageableList?
     private(set) var lastPopularPage: Int?
 
-    func fetchDetails(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError> {
+    func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
         lastTVShowDetailsID = id
 
         guard let tvShowDetails = tvShowDetails else {
@@ -37,7 +37,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
+    func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         lastCreditsTVShowID = tvShowID
 
         guard let credits = credits else {
@@ -50,7 +50,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchReviews(forTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func fetchReviews(forTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         lastReviewsTVShowID = tvShowID
         lastReviewsPage = page
 
@@ -64,7 +64,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchImages(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
+    func fetchImages(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         lastImagesTVShowID = tvShowID
 
         guard let images = images else {
@@ -77,7 +77,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchVideos(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
+    func fetchVideos(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         lastVideosTVShowID = tvShowID
 
         guard let videos = videos else {
@@ -90,8 +90,8 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchRecommendations(forTVShow tvShowID: TVShowDTO.ID,
-                              page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
+                              page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastRecommendationsTVShowID = tvShowID
         lastRecommendationsPage = page
 
@@ -105,7 +105,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchSimilar(toTVShow tvShowID: TVShowDTO.ID, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchSimilar(toTVShow tvShowID: TVShow.ID, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastSimilarTVShowID = tvShowID
         lastSimilarPage = page
 
@@ -119,7 +119,7 @@ final class MockTVShowService: TVShowService {
             .eraseToAnyPublisher()
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastPopularPage = page
 
         guard let popular = popular else {

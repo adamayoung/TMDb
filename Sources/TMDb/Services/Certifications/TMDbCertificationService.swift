@@ -9,11 +9,11 @@ final class TMDbCertificationService: CertificationService {
         self.apiClient = apiClient
     }
 
-    func fetchMovieCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
+    func fetchMovieCertifications() -> AnyPublisher<[String: [Certification]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.movie)
     }
 
-    func fetchTVShowCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError> {
+    func fetchTVShowCertifications() -> AnyPublisher<[String: [Certification]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.tvShow)
     }
 

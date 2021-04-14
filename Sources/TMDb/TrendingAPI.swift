@@ -18,7 +18,7 @@ public protocol TrendingAPI {
     ///
     /// - Returns: A publisher with trending movies in a time window as a pageable list.
     func trendingMoviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
-                                 page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+                                 page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending TV shows.
     ///
@@ -35,7 +35,7 @@ public protocol TrendingAPI {
     ///
     /// - Returns: A publisher with trending TV shows in a time window as a pageable list.
     func trendingTVShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
-                                  page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+                                  page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending people.
     ///
@@ -52,24 +52,24 @@ public protocol TrendingAPI {
     ///
     /// - Returns: A publisher with trending people in a time window as a pageable list.
     func trendingPeoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
-                                 page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
+                                 page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 
 }
 
 public extension TrendingAPI {
 
     func trendingMoviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                 page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+                                 page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         trendingMoviesPublisher(inTimeWindow: timeWindow, page: page)
     }
 
     func trendingTVShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         trendingTVShowsPublisher(inTimeWindow: timeWindow, page: page)
     }
 
     func trendingPeoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
-                                 page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+                                 page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
         trendingPeoplePublisher(inTimeWindow: timeWindow, page: page)
     }
 

@@ -5,9 +5,9 @@ import XCTest
 class TMDbAPIMovieTests: TMDbAPITestCase {
 
     func testDetailsPublisherForMovieReturnsMovie() throws {
-        let expectedResult = MovieDTO(id: 1, title: "Title 1")
+        let expectedResult = Movie(id: 1, title: "Title 1")
         movieService.movieDetails = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.detailsPublisher(forMovie: expectedMovieID), storeIn: &cancellables)
 
@@ -16,17 +16,17 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testCreditsPublisherForMovieReturnsShowCredits() throws {
-        let expectedResult = ShowCreditsDTO(
+        let expectedResult = ShowCredits(
             id: 1,
             cast: [
-                CastMemberDTO(
+                CastMember(
                     id: 2,
                     creditID: "3",
                     name: "Cast 1",
                     character: "Character 1",
                     order: 0
                 ),
-                CastMemberDTO(
+                CastMember(
                     id: 3,
                     creditID: "4",
                     name: "Cast 2",
@@ -35,14 +35,14 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
                 )
             ],
             crew: [
-                CrewMemberDTO(
+                CrewMember(
                     id: 4,
                     creditID: "5",
                     name: "Crew 1",
                     job: "Job 1",
                     department: "Department 1"
                 ),
-                CrewMemberDTO(
+                CrewMember(
                     id: 5,
                     creditID: "6",
                     name: "Crew 2",
@@ -52,7 +52,7 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
             ]
         )
         movieService.credits = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.creditsPublisher(forMovie: expectedMovieID), storeIn: &cancellables)
 
@@ -61,18 +61,18 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testReviewsPublisherForMovieReturnsReviews() throws {
-        let expectedResult = ReviewPageableListDTO(
+        let expectedResult = ReviewPageableList(
             page: 2,
             results: [
-                ReviewDTO(id: "1", author: "Author 1", content: "Content 1"),
-                ReviewDTO(id: "2", author: "Author 2", content: "Content 2"),
-                ReviewDTO(id: "3", author: "Author 3", content: "Content 3")
+                Review(id: "1", author: "Author 1", content: "Content 1"),
+                Review(id: "2", author: "Author 2", content: "Content 2"),
+                Review(id: "3", author: "Author 3", content: "Content 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         movieService.reviews = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.reviewsPublisher(forMovie: expectedMovieID), storeIn: &cancellables)
 
@@ -81,21 +81,21 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testImagesPublisherForMovieReturnsImages() throws {
-        let expectedResult = ImageCollectionDTO(
+        let expectedResult = ImageCollection(
             id: 1,
             posters: [
-                ImageMetadataDTO(filePath: URL(string: "/some/image1")!, width: 100, height: 100),
-                ImageMetadataDTO(filePath: URL(string: "/some/image2")!, width: 200, height: 200),
-                ImageMetadataDTO(filePath: URL(string: "/some/image3")!, width: 300, height: 300)
+                ImageMetadata(filePath: URL(string: "/some/image1")!, width: 100, height: 100),
+                ImageMetadata(filePath: URL(string: "/some/image2")!, width: 200, height: 200),
+                ImageMetadata(filePath: URL(string: "/some/image3")!, width: 300, height: 300)
             ],
             backdrops: [
-                ImageMetadataDTO(filePath: URL(string: "/some/image4")!, width: 400, height: 400),
-                ImageMetadataDTO(filePath: URL(string: "/some/image5")!, width: 500, height: 500),
-                ImageMetadataDTO(filePath: URL(string: "/some/image6")!, width: 600, height: 600)
+                ImageMetadata(filePath: URL(string: "/some/image4")!, width: 400, height: 400),
+                ImageMetadata(filePath: URL(string: "/some/image5")!, width: 500, height: 500),
+                ImageMetadata(filePath: URL(string: "/some/image6")!, width: 600, height: 600)
             ]
         )
         movieService.images = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.imagesPublisher(forMovie: expectedMovieID), storeIn: &cancellables)
 
@@ -104,17 +104,17 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testVideosPublisherForMovieReturnsVideos() throws {
-        let expectedResult = VideoCollectionDTO(
+        let expectedResult = VideoCollection(
             id: 1,
             results: [
-                VideoMetadataDTO(
+                VideoMetadata(
                     id: "1", name: "Name 1",
                     site: "Site 1",
                     key: "key1",
                     type: .teaser,
                     size: .s1080
                 ),
-                VideoMetadataDTO(
+                VideoMetadata(
                     id: "2", name: "Name 2",
                     site: "Site 2",
                     key: "key2",
@@ -124,7 +124,7 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
             ]
         )
         movieService.videos = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.videosPublisher(forMovie: expectedMovieID), storeIn: &cancellables)
 
@@ -133,18 +133,18 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testRecommendationsPublisherForMovieReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         movieService.recommendations = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.recommendationsPublisher(forMovie: expectedMovieID),
                                storeIn: &cancellables)
@@ -155,18 +155,18 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testRecommendationsPublisherForMovieWithPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         movieService.recommendations = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
         let expectedPage = 2
 
         let result = try await(publisher: tmdb.recommendationsPublisher(forMovie: expectedMovieID, page: expectedPage),
@@ -178,18 +178,18 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testMoviesPublisherSimilarToMovieReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         movieService.similar = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
 
         let result = try await(publisher: tmdb.moviesPublisher(similarToMovie: expectedMovieID),
                                storeIn: &cancellables)
@@ -200,18 +200,18 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testMoviesPublisherSimilarToMovieWithPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         movieService.similar = expectedResult
-        let expectedMovieID: MovieDTO.ID = 1
+        let expectedMovieID: Movie.ID = 1
         let expectedPage = 2
 
         let result = try await(publisher: tmdb.moviesPublisher(similarToMovie: expectedMovieID, page: expectedPage),
@@ -223,12 +223,12 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testPopularMoviesPublisherReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -242,12 +242,12 @@ class TMDbAPIMovieTests: TMDbAPITestCase {
     }
 
     func testPopularMoviesPublisherWithPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2

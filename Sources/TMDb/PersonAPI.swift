@@ -11,7 +11,7 @@ public protocol PersonAPI {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person.
-    func detailsPublisher(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError>
+    func detailsPublisher(forPerson id: Person.ID) -> AnyPublisher<Person, TMDbError>
 
     /// Publishes the combined movie and TV show credits of a person.
     ///
@@ -21,7 +21,7 @@ public protocol PersonAPI {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's combined movie and TV show credits.
-    func combinedCreditsPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError>
+    func combinedCreditsPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonCombinedCredits, TMDbError>
 
     /// Publishes the movie credits of a person.
     ///
@@ -32,7 +32,7 @@ public protocol PersonAPI {
     ///
     /// - Returns: A publisher with the matching person's movie credits.
     func movieCreditsPublisher(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError>
+        forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError>
 
     /// Publishes the TV show credits of a person.
     ///
@@ -42,7 +42,7 @@ public protocol PersonAPI {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's TV show credits.
-    func tvShowCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError>
+    func tvShowCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError>
 
     /// Publishes the images for a person.
     ///
@@ -52,7 +52,7 @@ public protocol PersonAPI {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's images.
-    func imagesPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError>
+    func imagesPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError>
 
     /// Publishes the list of known for shows for a person.
     ///
@@ -60,7 +60,7 @@ public protocol PersonAPI {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's show credits.
-    func knownForPublisher(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError>
+    func knownForPublisher(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError>
 
     /// Publishes the list of popular people.
     ///
@@ -72,13 +72,13 @@ public protocol PersonAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher of current popular people as a pageable list.
-    func popularPeoplePublisher(page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
+    func popularPeoplePublisher(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 
 }
 
 public extension PersonAPI {
 
-    func popularPeoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+    func popularPeoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
         popularPeoplePublisher(page: page)
     }
 

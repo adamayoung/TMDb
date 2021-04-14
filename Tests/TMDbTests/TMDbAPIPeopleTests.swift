@@ -5,9 +5,9 @@ import XCTest
 class TMDbAPIPeopleTests: TMDbAPITestCase {
 
     func testDetailsPublisherForPersonReturnsPerson() throws {
-        let expectedResult = PersonDTO(id: 1, name: "Name 1")
+        let expectedResult = Person(id: 1, name: "Name 1")
         personService.personDetails = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.detailsPublisher(forPerson: expectedPersonID), storeIn: &cancellables)
 
@@ -16,19 +16,19 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testCombinedCreditsPublisherForPersonReturnsCombinedCredits() throws {
-        let expectedResult = PersonCombinedCreditsDTO(
+        let expectedResult = PersonCombinedCredits(
             id: 1,
             cast: [
-                .movie(MovieDTO(id: 1, title: "Title 1")),
-                .tvShow(TVShowDTO(id: 2, name: "Name 2"))
+                .movie(Movie(id: 1, title: "Title 1")),
+                .tvShow(TVShow(id: 2, name: "Name 2"))
             ],
             crew: [
-                .movie(MovieDTO(id: 3, title: "Title 3")),
-                .tvShow(TVShowDTO(id: 4, name: "Name 4"))
+                .movie(Movie(id: 3, title: "Title 3")),
+                .tvShow(TVShow(id: 4, name: "Name 4"))
             ]
         )
         personService.combinedCredits = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.combinedCreditsPublisher(forPerson: expectedPersonID),
                                storeIn: &cancellables)
@@ -38,19 +38,19 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testMovieCreditsPublisherForPersonReturnsMovieCredits() throws {
-        let expectedResult = PersonMovieCreditsDTO(
+        let expectedResult = PersonMovieCredits(
             id: 1,
             cast: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2")
             ],
             crew: [
-                MovieDTO(id: 3, title: "Title 3"),
-                MovieDTO(id: 4, title: "Title 4")
+                Movie(id: 3, title: "Title 3"),
+                Movie(id: 4, title: "Title 4")
             ]
         )
         personService.movieCredits = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.movieCreditsPublisher(forPerson: expectedPersonID),
                                storeIn: &cancellables)
@@ -60,19 +60,19 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testTVShowCreditsPublisherForPersonReturnsTVShowCredits() throws {
-        let expectedResult = PersonTVShowCreditsDTO(
+        let expectedResult = PersonTVShowCredits(
             id: 1,
             cast: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2")
             ],
             crew: [
-                TVShowDTO(id: 3, name: "Name 3"),
-                TVShowDTO(id: 4, name: "Name 4")
+                TVShow(id: 3, name: "Name 3"),
+                TVShow(id: 4, name: "Name 4")
             ]
         )
         personService.tvShowCredits = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.tvShowCredits(forPerson: expectedPersonID), storeIn: &cancellables)
 
@@ -81,15 +81,15 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testImagesPublisherForPersonReturnsImages() throws {
-        let expectedResult = PersonImageCollectionDTO(
+        let expectedResult = PersonImageCollection(
             id: 1,
             profiles: [
-                ImageMetadataDTO(filePath: URL(string: "/some/images1")!, width: 100, height: 100),
-                ImageMetadataDTO(filePath: URL(string: "/some/images2")!, width: 200, height: 200)
+                ImageMetadata(filePath: URL(string: "/some/images1")!, width: 100, height: 100),
+                ImageMetadata(filePath: URL(string: "/some/images2")!, width: 200, height: 200)
             ]
         )
         personService.images = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.imagesPublisher(forPerson: expectedPersonID), storeIn: &cancellables)
 
@@ -98,12 +98,12 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testKnowForPublisherForPersonReturnsShows() throws {
-        let expectedResult: [ShowDTO] = [
-            .movie(MovieDTO(id: 1, title: "Title 1")),
-            .tvShow(TVShowDTO(id: 2, name: "Name 2"))
+        let expectedResult: [Show] = [
+            .movie(Movie(id: 1, title: "Title 1")),
+            .tvShow(TVShow(id: 2, name: "Name 2"))
         ]
         personService.knownFor = expectedResult
-        let expectedPersonID: PersonDTO.ID = 1
+        let expectedPersonID: Person.ID = 1
 
         let result = try await(publisher: tmdb.knownForPublisher(forPerson: expectedPersonID), storeIn: &cancellables)
 
@@ -112,12 +112,12 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testPopularPeoplePublisherReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 2"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 2"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -131,12 +131,12 @@ class TMDbAPIPeopleTests: TMDbAPITestCase {
     }
 
     func testPopularPeoplePublisherWithPageReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 2"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 2"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2

@@ -12,7 +12,7 @@ public protocol MovieAPI {
     ///     - id: The identifier of the movie.
     ///
     /// - Returns: A publisher with the matching movie.
-    func detailsPublisher(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError>
+    func detailsPublisher(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError>
 
     /// Publishes the cast and crew of a movie.
     ///
@@ -22,7 +22,7 @@ public protocol MovieAPI {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: A publisher with show credits for the matching movie.
-    func creditsPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
+    func creditsPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
     /// Publishes the user reviews for a movie.
     ///
@@ -35,7 +35,7 @@ public protocol MovieAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with reviews for the matching movie as a pageable list.
-    func reviewsPublisher(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
+    func reviewsPublisher(forMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError>
 
     /// Publishes the images that belong to a movie.
     ///
@@ -45,7 +45,7 @@ public protocol MovieAPI {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: A publisher with a collection of images for the matching movie.
-    func imagesPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
+    func imagesPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<ImageCollection, TMDbError>
 
     /// Publishes the videos that have been added to a movie.
     ///
@@ -55,7 +55,7 @@ public protocol MovieAPI {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: A publisher with a collection of videos for the matching movie.
-    func videosPublisher(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+    func videosPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<VideoCollection, TMDbError>
 
     /// Publishes a list of recommended movies for a movie.
     ///
@@ -68,8 +68,8 @@ public protocol MovieAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with recommended movies for the matching movie as a pageable list.
-    func recommendationsPublisher(forMovie movieID: MovieDTO.ID,
-                                  page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func recommendationsPublisher(forMovie movieID: Movie.ID,
+                                  page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes a list of similar movies for a movie.
     ///
@@ -84,8 +84,8 @@ public protocol MovieAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with similar movies for the matching movie as a pageable list.
-    func moviesPublisher(similarToMovie movieID: MovieDTO.ID,
-                         page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func moviesPublisher(similarToMovie movieID: Movie.ID,
+                         page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes a list of current popular movies.
     ///
@@ -97,28 +97,28 @@ public protocol MovieAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with current popular movies as a pageable list.
-    func popularMoviesPublisher(page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func popularMoviesPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
 }
 
 public extension MovieAPI {
 
-    func reviewsPublisher(forMovie movieID: MovieDTO.ID,
-                          page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func reviewsPublisher(forMovie movieID: Movie.ID,
+                          page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
         reviewsPublisher(forMovie: movieID, page: page)
     }
 
-    func recommendationsPublisher(forMovie movieID: MovieDTO.ID,
-                                  page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func recommendationsPublisher(forMovie movieID: Movie.ID,
+                                  page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         recommendationsPublisher(forMovie: movieID, page: page)
     }
 
-    func moviesPublisher(similarToMovie movieID: MovieDTO.ID,
-                         page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func moviesPublisher(similarToMovie movieID: Movie.ID,
+                         page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         moviesPublisher(similarToMovie: movieID, page: page)
     }
 
-    func popularMoviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func popularMoviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         popularMoviesPublisher(page: page)
     }
 

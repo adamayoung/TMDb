@@ -22,12 +22,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchMoviesReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -43,12 +43,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchMoviesWithSortByReturnsMovies() throws {
         let sortBy = MovieSortBy.originalTitleAscending
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -64,12 +64,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchMoviesWithWithPeopleReturnsMovies() throws {
         let people = [1, 2, 3, 4, 5]
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -85,12 +85,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchMoviesWithWithPageReturnsMovies() throws {
         let page = 2
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 4, title: "Movie 4"),
-                MovieDTO(id: 5, title: "Movie 5"),
-                MovieDTO(id: 6, title: "Movie 6")
+                Movie(id: 4, title: "Movie 4"),
+                Movie(id: 5, title: "Movie 5"),
+                Movie(id: 6, title: "Movie 6")
             ],
             totalResults: 6,
             totalPages: 2
@@ -108,12 +108,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
         let sortBy = MovieSortBy.originalTitleAscending
         let people = [1, 2, 3, 4, 5]
         let page = 3
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 7, title: "Movie 7"),
-                MovieDTO(id: 8, title: "Movie 8"),
-                MovieDTO(id: 9, title: "Movie 9")
+                Movie(id: 7, title: "Movie 7"),
+                Movie(id: 8, title: "Movie 8"),
+                Movie(id: 9, title: "Movie 9")
             ],
             totalResults: 3,
             totalPages: 3
@@ -128,12 +128,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchTVShowsReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -148,12 +148,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchTVShowsWithSortByReturnsTVShows() throws {
         let sortBy = TVShowSortBy.firstAirDateAscending
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -168,12 +168,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchTVShowsWithPageReturnsTVShows() throws {
         let page = 2
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: page,
             results: [
-                TVShowDTO(id: 4, name: "TV Show 4"),
-                TVShowDTO(id: 5, name: "TV Show 5"),
-                TVShowDTO(id: 6, name: "TV Show 6")
+                TVShow(id: 4, name: "TV Show 4"),
+                TVShow(id: 5, name: "TV Show 5"),
+                TVShow(id: 6, name: "TV Show 6")
             ],
             totalResults: 6,
             totalPages: 2
@@ -189,12 +189,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
     func testFetchTVShowsWithSortByAndPageReturnsTVShows() throws {
         let sortBy = TVShowSortBy.firstAirDateAscending
         let page = 3
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: page,
             results: [
-                TVShowDTO(id: 7, name: "TV Show 7"),
-                TVShowDTO(id: 8, name: "TV Show 8"),
-                TVShowDTO(id: 9, name: "TV Show 9")
+                TVShow(id: 7, name: "TV Show 7"),
+                TVShow(id: 8, name: "TV Show 8"),
+                TVShow(id: 9, name: "TV Show 9")
             ],
             totalResults: 9,
             totalPages: 3

@@ -5,8 +5,8 @@ import XCTest
 class TMDbAPIConifgurationTests: TMDbAPITestCase {
 
     func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
-        let expectedResult = APIConfigurationDTO(
-            images: ImagesConfigurationDTO(
+        let expectedResult = APIConfiguration(
+            images: ImagesConfiguration(
                 baseUrl: URL(string: "https://some.domain.com/api")!,
                 secureBaseUrl: URL(string: "https://images.domain.com/i")!,
                 backdropSizes: ["w100", "w200", "w300"],

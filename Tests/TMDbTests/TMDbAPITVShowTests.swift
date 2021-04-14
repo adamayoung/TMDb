@@ -5,9 +5,9 @@ import XCTest
 class TMDbAPITVShowTests: TMDbAPITestCase {
 
     func testDetailsPublisherForTVShowReturnsTVShow() throws {
-        let expectedResult = TVShowDTO(id: 1, name: "Name 1")
+        let expectedResult = TVShow(id: 1, name: "Name 1")
         tvShowService.tvShowDetails = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.detailsPublisher(forTVShow: expectedTVShowID), storeIn: &cancellables)
 
@@ -16,17 +16,17 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testCreditsPublisherForTVShowReturnsShowCredits() throws {
-        let expectedResult = ShowCreditsDTO(
+        let expectedResult = ShowCredits(
             id: 1,
             cast: [
-                CastMemberDTO(
+                CastMember(
                     id: 2,
                     creditID: "3",
                     name: "Cast 1",
                     character: "Character 1",
                     order: 0
                 ),
-                CastMemberDTO(
+                CastMember(
                     id: 3,
                     creditID: "4",
                     name: "Cast 2",
@@ -35,14 +35,14 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
                 )
             ],
             crew: [
-                CrewMemberDTO(
+                CrewMember(
                     id: 4,
                     creditID: "5",
                     name: "Crew 1",
                     job: "Job 1",
                     department: "Department 1"
                 ),
-                CrewMemberDTO(
+                CrewMember(
                     id: 5,
                     creditID: "6",
                     name: "Crew 2",
@@ -52,7 +52,7 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
             ]
         )
         tvShowService.credits = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.creditsPublisher(forTVShow: expectedTVShowID), storeIn: &cancellables)
 
@@ -61,18 +61,18 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testReviewsPublisherForTVShowReturnsReviews() throws {
-        let expectedResult = ReviewPageableListDTO(
+        let expectedResult = ReviewPageableList(
             page: 2,
             results: [
-                ReviewDTO(id: "1", author: "Author 1", content: "Content 1"),
-                ReviewDTO(id: "2", author: "Author 2", content: "Content 2"),
-                ReviewDTO(id: "3", author: "Author 3", content: "Content 3")
+                Review(id: "1", author: "Author 1", content: "Content 1"),
+                Review(id: "2", author: "Author 2", content: "Content 2"),
+                Review(id: "3", author: "Author 3", content: "Content 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         tvShowService.reviews = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.reviewsPublisher(forTVShow: expectedTVShowID), storeIn: &cancellables)
 
@@ -81,21 +81,21 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testImagesPublisherForTVShowReturnsImages() throws {
-        let expectedResult = ImageCollectionDTO(
+        let expectedResult = ImageCollection(
             id: 1,
             posters: [
-                ImageMetadataDTO(filePath: URL(string: "/some/image1")!, width: 100, height: 100),
-                ImageMetadataDTO(filePath: URL(string: "/some/image2")!, width: 200, height: 200),
-                ImageMetadataDTO(filePath: URL(string: "/some/image3")!, width: 300, height: 300)
+                ImageMetadata(filePath: URL(string: "/some/image1")!, width: 100, height: 100),
+                ImageMetadata(filePath: URL(string: "/some/image2")!, width: 200, height: 200),
+                ImageMetadata(filePath: URL(string: "/some/image3")!, width: 300, height: 300)
             ],
             backdrops: [
-                ImageMetadataDTO(filePath: URL(string: "/some/image4")!, width: 400, height: 400),
-                ImageMetadataDTO(filePath: URL(string: "/some/image5")!, width: 500, height: 500),
-                ImageMetadataDTO(filePath: URL(string: "/some/image6")!, width: 600, height: 600)
+                ImageMetadata(filePath: URL(string: "/some/image4")!, width: 400, height: 400),
+                ImageMetadata(filePath: URL(string: "/some/image5")!, width: 500, height: 500),
+                ImageMetadata(filePath: URL(string: "/some/image6")!, width: 600, height: 600)
             ]
         )
         tvShowService.images = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.imagesPublisher(forTVShow: expectedTVShowID), storeIn: &cancellables)
 
@@ -104,10 +104,10 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testVideosPublisherForTVShowReturnsVideos() throws {
-        let expectedResult = VideoCollectionDTO(
+        let expectedResult = VideoCollection(
             id: 1,
             results: [
-                VideoMetadataDTO(
+                VideoMetadata(
                     id: "1", name: "Name 1",
                     site: "Site 1",
                     key: "key1",
@@ -117,7 +117,7 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
             ]
         )
         tvShowService.videos = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.videosPublisher(forTVShow: expectedTVShowID), storeIn: &cancellables)
 
@@ -126,18 +126,18 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testRecommendationsPublisherForTVShowReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         tvShowService.recommendations = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.recommendationsPublisher(forTVShow: expectedTVShowID),
                                storeIn: &cancellables)
@@ -148,18 +148,18 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testRecommendationsPublisherForTVShowWithPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         tvShowService.recommendations = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
         let expectedPage = 2
 
         let result = try await(publisher: tmdb.recommendationsPublisher(forTVShow: expectedTVShowID,
@@ -172,18 +172,18 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testTVShowsPublisherSimilarToTVShowReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         tvShowService.similar = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
 
         let result = try await(publisher: tmdb.tvShowsPublisher(similarToTVShow: expectedTVShowID),
                                storeIn: &cancellables)
@@ -194,18 +194,18 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testTVShowsPublisherSimilarToTVShowWithPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
         )
         tvShowService.similar = expectedResult
-        let expectedTVShowID: TVShowDTO.ID = 1
+        let expectedTVShowID: TVShow.ID = 1
         let expectedPage = 2
 
         let result = try await(publisher: tmdb.tvShowsPublisher(similarToTVShow: expectedTVShowID, page: expectedPage),
@@ -217,12 +217,12 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testPopularTVShowsPublisherReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -236,12 +236,12 @@ class TMDbAPITVShowTests: TMDbAPITestCase {
     }
 
     func testPopularTVShowsPublisherWithPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2

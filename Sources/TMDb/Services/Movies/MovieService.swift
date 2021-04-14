@@ -3,21 +3,21 @@ import Foundation
 
 protocol MovieService {
 
-    func fetchDetails(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError>
+    func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError>
 
-    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
+    func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
-    func fetchReviews(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
+    func fetchReviews(forMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError>
 
-    func fetchImages(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
+    func fetchImages(forMovie movieID: Movie.ID) -> AnyPublisher<ImageCollection, TMDbError>
 
-    func fetchVideos(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+    func fetchVideos(forMovie movieID: Movie.ID) -> AnyPublisher<VideoCollection, TMDbError>
 
-    func fetchRecommendations(forMovie movieID: MovieDTO.ID,
-                              page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func fetchRecommendations(forMovie movieID: Movie.ID,
+                              page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
-    func fetchSimilar(toMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func fetchSimilar(toMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
-    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
 }

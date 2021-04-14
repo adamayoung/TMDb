@@ -14,8 +14,8 @@ public protocol DiscoveryAPI {
     ///     - page: The page of results to return. (minimum: `1`, maximum: `1000`)
     ///
     /// - Returns: A publisher with the matching movies as a pageable list.
-    func discoverMoviesPublisher(sortBy: MovieSortBy?, withPeople: [PersonDTO.ID]?,
-                                 page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+    func discoverMoviesPublisher(sortBy: MovieSortBy?, withPeople: [Person.ID]?,
+                                 page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes TV shows to be discovered.
     ///
@@ -26,19 +26,19 @@ public protocol DiscoveryAPI {
     ///     - page: The page of results to return. (minimum: `1`, maximum: `1000`)
     ///
     /// - Returns: A publisher with the matching TV shows as a pageable list.
-    func discoverTVShowsPublisher(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func discoverTVShowsPublisher(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
 }
 
 public extension DiscoveryAPI {
 
-    func discoverMoviesPublisher(sortBy: MovieSortBy? = .default, withPeople: [PersonDTO.ID]? = nil,
-                                 page: Int? = nil) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func discoverMoviesPublisher(sortBy: MovieSortBy? = .default, withPeople: [Person.ID]? = nil,
+                                 page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         discoverMoviesPublisher(sortBy: sortBy, withPeople: withPeople, page: page)
     }
 
     func discoverTVShowsPublisher(sortBy: TVShowSortBy? = nil,
-                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         discoverTVShowsPublisher(sortBy: sortBy, page: page)
 
     }

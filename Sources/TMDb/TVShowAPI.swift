@@ -11,7 +11,7 @@ public protocol TVShowAPI {
     ///     - id: The identifier of the TV show.
     ///
     /// - Returns: A publisher with the matching TV show.
-    func detailsPublisher(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError>
+    func detailsPublisher(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError>
 
     /// Publishes the cast and crew of a TV show.
     ///
@@ -20,7 +20,7 @@ public protocol TVShowAPI {
     /// - Parameter tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A publisher with show credits for the matching TV show.
-    func creditsPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError>
+    func creditsPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError>
 
     /// Publishes the user reviews for a TV show.
     ///
@@ -33,8 +33,8 @@ public protocol TVShowAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with reviews for the matching TV show as a pageable list.
-    func reviewsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                          page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError>
+    func reviewsPublisher(forTVShow tvShowID: TVShow.ID,
+                          page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError>
 
     /// Publishes the images that belong to a TV show.
     ///
@@ -44,7 +44,7 @@ public protocol TVShowAPI {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A publisher with a collection of images for the matching TV show.
-    func imagesPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
+    func imagesPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError>
 
     /// Publishes the videos that belong to a TV show.
     ///
@@ -54,7 +54,7 @@ public protocol TVShowAPI {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A publisher with a collection of videos for the matching TV show.
-    func videosPublisher(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+    func videosPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
 
     /// Publishes a list of recommended TV shows for a TV show.
     ///
@@ -67,8 +67,8 @@ public protocol TVShowAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with recommended TV shows for the matching TV show as a pageable list.
-    func recommendationsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                                  page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func recommendationsPublisher(forTVShow tvShowID: TVShow.ID,
+                                  page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes a list of similar TV shows for a TV show.
     ///
@@ -83,8 +83,8 @@ public protocol TVShowAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with similar TV shows for the matching TV show as a pageable list.
-    func tvShowsPublisher(similarToTVShow tvShowID: TVShowDTO.ID,
-                          page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func tvShowsPublisher(similarToTVShow tvShowID: TVShow.ID,
+                          page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes a list current popular TV shows.
     ///
@@ -96,7 +96,7 @@ public protocol TVShowAPI {
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with current popular TV shows as a pageable list.
-    func popularTVShowsPublisher(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+    func popularTVShowsPublisher(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes the primary information about a TV show season.
     ///
@@ -108,7 +108,7 @@ public protocol TVShowAPI {
     ///
     /// - Returns: A publisher with a season of the matching TV show..
     func detailsPublisher(forSeason seasonNumber: Int,
-                          inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError>
+                          inTVShow tvShowID: TVShow.ID) -> AnyPublisher<TVShowSeason, TMDbError>
 
     /// Publishes the images that belong to a TV show season.
     ///
@@ -120,7 +120,7 @@ public protocol TVShowAPI {
     ///
     /// - Returns: A publisher with a collection of images for the matching TV show's season.
     func imagesPublisher(forSeason seasonNumber: Int,
-                         inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError>
+                         inTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError>
 
     /// Publishes the videos that belong to a TV show season.
     ///
@@ -132,28 +132,28 @@ public protocol TVShowAPI {
     ///
     /// - Returns: A publisher with a collection of videos for the matching TV show's season.
     func videosPublisher(forSeason seasonNumber: Int,
-                         inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError>
+                         inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
 
 }
 
 public extension TVShowAPI {
 
-    func reviewsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                          page: Int? = nil) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func reviewsPublisher(forTVShow tvShowID: TVShow.ID,
+                          page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
         reviewsPublisher(forTVShow: tvShowID, page: page)
     }
 
-    func recommendationsPublisher(forTVShow tvShowID: TVShowDTO.ID,
-                                  page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func recommendationsPublisher(forTVShow tvShowID: TVShow.ID,
+                                  page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         recommendationsPublisher(forTVShow: tvShowID, page: page)
     }
 
-    func tvShowsPublisher(similarToTVShow tvShowID: TVShowDTO.ID,
-                          page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func tvShowsPublisher(similarToTVShow tvShowID: TVShow.ID,
+                          page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         tvShowsPublisher(similarToTVShow: tvShowID, page: page)
     }
 
-    func popularTVShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func popularTVShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         popularTVShowsPublisher(page: page)
     }
 

@@ -4,16 +4,16 @@ import XCTest
 
 final class MockDiscoverService: DiscoverService {
 
-    var movies: MoviePageableListDTO?
+    var movies: MoviePageableList?
     private(set) var lastMoviesSortBy: MovieSortBy?
-    private(set) var lastMoviesWithPeople: [PersonDTO.ID]?
+    private(set) var lastMoviesWithPeople: [Person.ID]?
     private(set) var lastMoviesPage: Int?
-    var tvShows: TVShowPageableListDTO?
+    var tvShows: TVShowPageableList?
     private(set) var lastTVShowsSortBy: TVShowSortBy?
     private(set) var lastTVShowsPage: Int?
 
-    func fetchMovies(sortBy: MovieSortBy?, withPeople: [PersonDTO.ID]?,
-                     page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchMovies(sortBy: MovieSortBy?, withPeople: [Person.ID]?,
+                     page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastMoviesSortBy = sortBy
         lastMoviesWithPeople = withPeople
         lastMoviesPage = page
@@ -28,7 +28,7 @@ final class MockDiscoverService: DiscoverService {
             .eraseToAnyPublisher()
     }
 
-    func fetchTVShows(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchTVShows(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastTVShowsSortBy = sortBy
         lastTVShowsPage = page
 

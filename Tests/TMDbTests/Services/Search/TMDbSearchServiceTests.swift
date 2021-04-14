@@ -23,12 +23,12 @@ class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchAllReturnsMedia() throws {
         let query = "some search string"
-        let expectedResult = MediaPageableListDTO(
+        let expectedResult = MediaPageableList(
             page: 1,
             results: [
-                .movie(MovieDTO(id: 1, title: "Movie 1")),
-                .tvShow(TVShowDTO(id: 2, name: "TV Show 2")),
-                .person(PersonDTO(id: 3, name: "Person 3"))
+                .movie(Movie(id: 1, title: "Movie 1")),
+                .tvShow(TVShow(id: 2, name: "TV Show 2")),
+                .person(Person(id: 3, name: "Person 3"))
             ],
             totalResults: 3,
             totalPages: 1
@@ -44,12 +44,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchAllWithPageReturnsMedia() throws {
         let query = "some search string"
         let page = 2
-        let expectedResult = MediaPageableListDTO(
+        let expectedResult = MediaPageableList(
             page: page,
             results: [
-                .movie(MovieDTO(id: 1, title: "Movie 1")),
-                .tvShow(TVShowDTO(id: 2, name: "TV Show 2")),
-                .person(PersonDTO(id: 3, name: "Person 3"))
+                .movie(Movie(id: 1, title: "Movie 1")),
+                .tvShow(TVShow(id: 2, name: "TV Show 2")),
+                .person(Person(id: 3, name: "Person 3"))
             ],
             totalResults: 3,
             totalPages: 2
@@ -64,12 +64,12 @@ class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchMoviesReturnsMovies() throws {
         let query = "some search string"
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -86,12 +86,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchMoviesWithYearReturnsMovies() throws {
         let query = "some search string"
         let year = 2020
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -108,12 +108,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchMoviesWithPageReturnsMovies() throws {
         let query = "some search string"
         let page = 2
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -131,12 +131,12 @@ class TMDbSearchServiceTests: XCTestCase {
         let query = "some search string"
         let year = 2020
         let page = 2
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -152,12 +152,12 @@ class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchTVShowsReturnsTVShows() throws {
         let query = "some search string"
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 1"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 1"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -174,12 +174,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() throws {
         let query = "some search string"
         let year = 2020
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 1"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 1"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -196,12 +196,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchTVShowsWithPageReturnsTVShows() throws {
         let query = "some search string"
         let page = 2
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: page,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 1"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 1"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -219,12 +219,12 @@ class TMDbSearchServiceTests: XCTestCase {
         let query = "some search string"
         let year = 2020
         let page = 2
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: page,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 1"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 1"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -240,12 +240,12 @@ class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchPeopleReturnsPeople() throws {
         let query = "some search string"
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 1,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -261,12 +261,12 @@ class TMDbSearchServiceTests: XCTestCase {
     func testSearchPeopleWithPageReturnsPeople() throws {
         let query = "some search string"
         let page = 2
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: page,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 2

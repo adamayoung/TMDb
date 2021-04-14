@@ -4,9 +4,9 @@ enum TVShowSeasonsEndpoint {
 
     static let basePath = "season"
 
-    case details(tvShowID: TVShowDTO.ID, seasonNumber: Int)
-    case images(tvShowID: TVShowDTO.ID, seasonNumber: Int)
-    case videos(tvShowID: TVShowDTO.ID, seasonNumber: Int)
+    case details(tvShowID: TVShow.ID, seasonNumber: Int)
+    case images(tvShowID: TVShow.ID, seasonNumber: Int)
+    case videos(tvShowID: TVShow.ID, seasonNumber: Int)
 
 }
 

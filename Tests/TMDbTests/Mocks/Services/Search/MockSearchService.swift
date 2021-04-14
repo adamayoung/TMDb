@@ -4,22 +4,22 @@ import XCTest
 
 final class MockSearchService: SearchService {
 
-    var media: MediaPageableListDTO?
+    var media: MediaPageableList?
     private(set) var lastSearchAllQuery: String?
     private(set) var lastSearchAllPage: Int?
-    var movies: MoviePageableListDTO?
+    var movies: MoviePageableList?
     private(set) var lastSearchMoviesQuery: String?
     private(set) var lastSearchMoviesYear: Int?
     private(set) var lastSearchMoviesPage: Int?
-    var tvShows: TVShowPageableListDTO?
+    var tvShows: TVShowPageableList?
     private(set) var lastSearchTVShowsQuery: String?
     private(set) var lastSearchTVShowsFirstAirDateYear: Int?
     private(set) var lastSearchTVShowsPage: Int?
-    var people: PersonPageableListDTO?
+    var people: PersonPageableList?
     private(set) var lastSearchPeopleQuery: String?
     private(set) var lastSearchPeoplePage: Int?
 
-    func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableListDTO, TMDbError> {
+    func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError> {
         lastSearchAllQuery = query
         lastSearchAllPage = page
 
@@ -33,7 +33,7 @@ final class MockSearchService: SearchService {
             .eraseToAnyPublisher()
     }
 
-    func searchMovies(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func searchMovies(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastSearchMoviesQuery = query
         lastSearchMoviesYear = year
         lastSearchMoviesPage = page
@@ -49,7 +49,7 @@ final class MockSearchService: SearchService {
     }
 
     func searchTVShows(query: String, firstAirDateYear: Int?,
-                       page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+                       page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastSearchTVShowsQuery = query
         lastSearchTVShowsFirstAirDateYear = firstAirDateYear
         lastSearchTVShowsPage = page
@@ -64,7 +64,7 @@ final class MockSearchService: SearchService {
             .eraseToAnyPublisher()
     }
 
-    func searchPeople(query: String, page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+    func searchPeople(query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         lastSearchPeopleQuery = query
         lastSearchPeoplePage = page
 

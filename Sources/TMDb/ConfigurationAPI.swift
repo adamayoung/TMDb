@@ -9,6 +9,6 @@ public protocol ConfigurationAPI {
     /// - Note: [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
     ///
     /// - Returns: A publisher with the API configuration.
-    func apiConfigurationPublisher() -> AnyPublisher<APIConfigurationDTO, TMDbError>
+    func apiConfigurationPublisher() -> AnyPublisher<APIConfiguration, TMDbError>
 
 }

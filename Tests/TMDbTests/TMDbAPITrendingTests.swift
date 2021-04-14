@@ -5,12 +5,12 @@ import XCTest
 class TMDbAPITrendingTests: TMDbAPITestCase {
 
     func testTrendingMoviesPublisherReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -26,12 +26,12 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
     }
 
     func testTrendingMoviesPublisherWithTimeWindowReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -48,12 +48,12 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
     }
 
     func testTrendingMoviesPublisherWithPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -70,12 +70,12 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
     }
 
     func testTrendingMoviesPublisherWithTimeWindowPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -98,12 +98,12 @@ class TMDbAPITrendingTests: TMDbAPITestCase {
 extension TMDbAPITrendingTests {
 
     func testTrendingTVShowsPublisherReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -119,12 +119,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingTVShowsPublisherWithTimeWindowReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -141,12 +141,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingTVShowsPublisherWithPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -163,12 +163,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingTVShowsPublisherWithTimeWindowPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Name 1"),
-                TVShowDTO(id: 2, name: "Name 2"),
-                TVShowDTO(id: 3, name: "Name 3")
+                TVShow(id: 1, name: "Name 1"),
+                TVShow(id: 2, name: "Name 2"),
+                TVShow(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -191,12 +191,12 @@ extension TMDbAPITrendingTests {
 extension TMDbAPITrendingTests {
 
     func testTrendingPeoplePublisherReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 1"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 1"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -212,12 +212,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingPeoplePublisherWithTimeWindowReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 1"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 1"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -234,12 +234,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingPeoplePublisherWithPageReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 1"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 1"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -256,12 +256,12 @@ extension TMDbAPITrendingTests {
     }
 
     func testTrendingPeoplePublisherWithTimeWindowPageReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 1"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 1"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2

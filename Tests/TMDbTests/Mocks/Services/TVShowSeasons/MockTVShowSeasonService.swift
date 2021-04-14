@@ -4,18 +4,18 @@ import XCTest
 
 final class MockTVShowSeasonService: TVShowSeasonService {
 
-    var seasonDetails: TVShowSeasonDTO?
+    var seasonDetails: TVShowSeason?
     private(set) var lastDetailsSeasonNumber: Int?
-    private(set) var lastDetailsTVShowID: TVShowDTO.ID?
-    var images: ImageCollectionDTO?
+    private(set) var lastDetailsTVShowID: TVShow.ID?
+    var images: ImageCollection?
     private(set) var lastImagesSeasonNumber: Int?
-    private(set) var lastImagesTVShowID: TVShowDTO.ID?
-    var videos: VideoCollectionDTO?
+    private(set) var lastImagesTVShowID: TVShow.ID?
+    var videos: VideoCollection?
     private(set) var lastVideosSeasonNumber: Int?
-    private(set) var lastVideosTVShowID: TVShowDTO.ID?
+    private(set) var lastVideosTVShowID: TVShow.ID?
 
     func fetchDetails(forSeason seasonNumber: Int,
-                      inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<TVShowSeasonDTO, TMDbError> {
+                      inTVShow tvShowID: TVShow.ID) -> AnyPublisher<TVShowSeason, TMDbError> {
         lastDetailsSeasonNumber = seasonNumber
         lastDetailsTVShowID = tvShowID
 
@@ -30,7 +30,7 @@ final class MockTVShowSeasonService: TVShowSeasonService {
     }
 
     func fetchImages(forSeason seasonNumber: Int,
-                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
+                     inTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         lastImagesSeasonNumber = seasonNumber
         lastImagesTVShowID = tvShowID
 
@@ -45,7 +45,7 @@ final class MockTVShowSeasonService: TVShowSeasonService {
     }
 
     func fetchVideos(forSeason seasonNumber: Int,
-                     inTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
+                     inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         lastVideosSeasonNumber = seasonNumber
         lastVideosTVShowID = tvShowID
 
