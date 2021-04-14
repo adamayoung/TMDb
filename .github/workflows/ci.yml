@@ -26,9 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Install dependencies
-        run: brew bundle
-
       - name: Lint
         run: swiftlint
 
