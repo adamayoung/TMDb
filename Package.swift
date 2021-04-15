@@ -10,7 +10,7 @@ let package = Package(
     ],
 
     products: [
-        .library(name: "TMDb", targets: ["TMDb"])
+        .library(name: "TMDb", targets: ["TMDb"]),
     ],
 
     targets: [
