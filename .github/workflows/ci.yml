@@ -32,13 +32,13 @@ jobs:
       - name: Run tests
         run: swift test --enable-code-coverage
 
-      - name: Run Danger
-        run: swift run danger-swift ci --verbose
+      - name: Run danger
+        run: danger-swift ci --verbose
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate Code Coverage report
+      - name: Generate code coverage report
         run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
       - name: Upload to codecov
