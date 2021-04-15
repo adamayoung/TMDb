@@ -37,7 +37,7 @@ public extension DiscoveryAPI {
         discoverMoviesPublisher(sortBy: sortBy, withPeople: withPeople, page: page)
     }
 
-    func discoverTVShowsPublisher(sortBy: TVShowSortBy? = nil,
+    func discoverTVShowsPublisher(sortBy: TVShowSortBy? = .default,
                                   page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         discoverTVShowsPublisher(sortBy: sortBy, page: page)
 

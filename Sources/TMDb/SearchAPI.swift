@@ -67,12 +67,12 @@ public extension SearchAPI {
         searchPublisher(withQuery: query, page: page)
     }
 
-    func searchMoviesPublisher(withQuery query: String, year: Int?,
+    func searchMoviesPublisher(withQuery query: String, year: Int? = nil,
                                page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         searchMoviesPublisher(withQuery: query, year: year, page: page)
     }
 
-    func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int?,
+    func searchTVShowsPublisher(withQuery query: String, firstAirDateYear: Int? = nil,
                                 page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         searchTVShowsPublisher(withQuery: query, firstAirDateYear: firstAirDateYear, page: page)
     }

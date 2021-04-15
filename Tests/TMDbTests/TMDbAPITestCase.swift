@@ -5,7 +5,7 @@ import XCTest
 class TMDbAPITestCase: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
-    var tmdb: TMDbAPI!
+    var tmdb: MovieTVShowAPI!
     var certificationService: MockCertificationService!
     var configurationService: MockConfigurationService!
     var discoverService: MockDiscoverService!
