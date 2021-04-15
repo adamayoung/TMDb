@@ -26,8 +26,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Install danger-js
-        run: brew install danger/tap/danger-js
+      - name: Install danger
+        run: brew install danger/tap/danger-swift
 
       - name: Run tests
         run: swift test --enable-code-coverage
