@@ -5,12 +5,12 @@ import XCTest
 class TMDbAPISearchTests: TMDbAPITestCase {
 
     func testSearchPublisherReturnsMedia() throws {
-        let expectedResult = MediaPageableListDTO(
+        let expectedResult = MediaPageableList(
             page: 2,
             results: [
-                .movie(MovieDTO(id: 1, title: "Title 1")),
-                .tvShow(TVShowDTO(id: 2, name: "Name 1")),
-                .person(PersonDTO(id: 3, name: "Person Name 1"))
+                .movie(Movie(id: 1, title: "Title 1")),
+                .tvShow(TVShow(id: 2, name: "Name 1")),
+                .person(Person(id: 3, name: "Person Name 1"))
             ],
             totalResults: 6,
             totalPages: 2
@@ -26,12 +26,12 @@ class TMDbAPISearchTests: TMDbAPITestCase {
     }
 
     func testSearchPublisherWithPageReturnsMedia() throws {
-        let expectedResult = MediaPageableListDTO(
+        let expectedResult = MediaPageableList(
             page: 2,
             results: [
-                .movie(MovieDTO(id: 1, title: "Title 1")),
-                .tvShow(TVShowDTO(id: 2, name: "Name 1")),
-                .person(PersonDTO(id: 3, name: "Person Name 1"))
+                .movie(Movie(id: 1, title: "Title 1")),
+                .tvShow(TVShow(id: 2, name: "Name 1")),
+                .person(Person(id: 3, name: "Person Name 1"))
             ],
             totalResults: 6,
             totalPages: 2
@@ -53,12 +53,12 @@ class TMDbAPISearchTests: TMDbAPITestCase {
 extension TMDbAPISearchTests {
 
     func testSearchMoviesPublisherReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -75,12 +75,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchMoviesPublisherWithYearReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -99,12 +99,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchMoviesPublisherWithPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -123,12 +123,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchMoviesPublisherWithYearPageReturnsMovies() throws {
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 2,
             results: [
-                MovieDTO(id: 1, title: "Title 1"),
-                MovieDTO(id: 2, title: "Title 2"),
-                MovieDTO(id: 3, title: "Title 3")
+                Movie(id: 1, title: "Title 1"),
+                Movie(id: 2, title: "Title 2"),
+                Movie(id: 3, title: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -153,12 +153,12 @@ extension TMDbAPISearchTests {
 extension TMDbAPISearchTests {
 
     func testSearchTVShowsPublisherReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Title 1"),
-                TVShowDTO(id: 2, name: "Title 2"),
-                TVShowDTO(id: 3, name: "Title 3")
+                TVShow(id: 1, name: "Title 1"),
+                TVShow(id: 2, name: "Title 2"),
+                TVShow(id: 3, name: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -175,12 +175,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchTVShowsPublisherWithFirstAirDateYearReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Title 1"),
-                TVShowDTO(id: 2, name: "Title 2"),
-                TVShowDTO(id: 3, name: "Title 3")
+                TVShow(id: 1, name: "Title 1"),
+                TVShow(id: 2, name: "Title 2"),
+                TVShow(id: 3, name: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -200,12 +200,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchTVShowsPublisherWithPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Title 1"),
-                TVShowDTO(id: 2, name: "Title 2"),
-                TVShowDTO(id: 3, name: "Title 3")
+                TVShow(id: 1, name: "Title 1"),
+                TVShow(id: 2, name: "Title 2"),
+                TVShow(id: 3, name: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -224,12 +224,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchTVShowsPublisherWithFirstAirDateYearPageReturnsTVShows() throws {
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 2,
             results: [
-                TVShowDTO(id: 1, name: "Title 1"),
-                TVShowDTO(id: 2, name: "Title 2"),
-                TVShowDTO(id: 3, name: "Title 3")
+                TVShow(id: 1, name: "Title 1"),
+                TVShow(id: 2, name: "Title 2"),
+                TVShow(id: 3, name: "Title 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -255,12 +255,12 @@ extension TMDbAPISearchTests {
 extension TMDbAPISearchTests {
 
     func testSearchPeoplePublisherReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 2"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 2"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2
@@ -277,12 +277,12 @@ extension TMDbAPISearchTests {
     }
 
     func testSearchPeoplePublisherWithPageReturnsPeople() throws {
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 2,
             results: [
-                PersonDTO(id: 1, name: "Name 1"),
-                PersonDTO(id: 2, name: "Name 2"),
-                PersonDTO(id: 3, name: "Name 3")
+                Person(id: 1, name: "Name 1"),
+                Person(id: 2, name: "Name 2"),
+                Person(id: 3, name: "Name 3")
             ],
             totalResults: 6,
             totalPages: 2

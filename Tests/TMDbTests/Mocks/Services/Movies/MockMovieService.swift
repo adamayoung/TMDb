@@ -4,27 +4,27 @@ import XCTest
 
 final class MockMovieService: MovieService {
 
-    var movieDetails: MovieDTO?
-    private(set) var lastMovieDetailsID: MovieDTO.ID?
-    var credits: ShowCreditsDTO?
-    private(set) var lastCreditsMovieID: MovieDTO.ID?
-    var reviews: ReviewPageableListDTO?
-    private(set) var lastReviewsMovieID: MovieDTO.ID?
+    var movieDetails: Movie?
+    private(set) var lastMovieDetailsID: Movie.ID?
+    var credits: ShowCredits?
+    private(set) var lastCreditsMovieID: Movie.ID?
+    var reviews: ReviewPageableList?
+    private(set) var lastReviewsMovieID: Movie.ID?
     private(set) var lastReviewsPage: Int?
-    var images: ImageCollectionDTO?
-    private(set) var lastImagesMovieID: MovieDTO.ID?
-    var videos: VideoCollectionDTO?
-    private(set) var lastVideosMovieID: MovieDTO.ID?
-    var recommendations: MoviePageableListDTO?
-    private(set) var lastRecommendationsMovieID: MovieDTO.ID?
+    var images: ImageCollection?
+    private(set) var lastImagesMovieID: Movie.ID?
+    var videos: VideoCollection?
+    private(set) var lastVideosMovieID: Movie.ID?
+    var recommendations: MoviePageableList?
+    private(set) var lastRecommendationsMovieID: Movie.ID?
     private(set) var lastRecommendationsPage: Int?
-    var similar: MoviePageableListDTO?
-    private(set) var lastSimilarMovieID: MovieDTO.ID?
+    var similar: MoviePageableList?
+    private(set) var lastSimilarMovieID: Movie.ID?
     private(set) var lastSimilarPage: Int?
-    var popular: MoviePageableListDTO?
+    var popular: MoviePageableList?
     private(set) var lastPopularPage: Int?
 
-    func fetchDetails(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError> {
+    func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError> {
         lastMovieDetailsID = id
 
         guard let movieDetails = movieDetails else {
@@ -37,7 +37,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
+    func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         lastCreditsMovieID = movieID
 
         guard let credits = credits else {
@@ -50,7 +50,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchReviews(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func fetchReviews(forMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         lastReviewsMovieID = movieID
         lastReviewsPage = page
 
@@ -64,7 +64,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchImages(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
+    func fetchImages(forMovie movieID: Movie.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         lastImagesMovieID = movieID
 
         guard let images = images else {
@@ -77,7 +77,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchVideos(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
+    func fetchVideos(forMovie movieID: Movie.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         lastVideosMovieID = movieID
 
         guard let videos = videos else {
@@ -90,8 +90,8 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchRecommendations(forMovie movieID: MovieDTO.ID,
-                              page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchRecommendations(forMovie movieID: Movie.ID,
+                              page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastRecommendationsMovieID = movieID
         lastRecommendationsPage = page
 
@@ -105,7 +105,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchSimilar(toMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchSimilar(toMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastSimilarMovieID = movieID
         lastSimilarPage = page
 
@@ -119,7 +119,7 @@ final class MockMovieService: MovieService {
             .eraseToAnyPublisher()
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastPopularPage = page
 
         guard let popular = popular else {

@@ -23,12 +23,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchMoviesForDayReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -45,12 +45,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchMoviesForDayWithPageReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 2
@@ -66,12 +66,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchMoviesForWeekReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: 1,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -88,12 +88,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchMoviesForWeekWithPageReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
-        let expectedResult = MoviePageableListDTO(
+        let expectedResult = MoviePageableList(
             page: page,
             results: [
-                MovieDTO(id: 1, title: "Movie 1"),
-                MovieDTO(id: 2, title: "Movie 2"),
-                MovieDTO(id: 3, title: "Movie 3")
+                Movie(id: 1, title: "Movie 1"),
+                Movie(id: 2, title: "Movie 2"),
+                Movie(id: 3, title: "Movie 3")
             ],
             totalResults: 3,
             totalPages: 2
@@ -109,12 +109,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchTVShowsForDayReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -131,12 +131,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForDayWithPageReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -152,12 +152,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchTVShowsForWeekReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -174,12 +174,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForWeekWithPageReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
-        let expectedResult = TVShowPageableListDTO(
+        let expectedResult = TVShowPageableList(
             page: 1,
             results: [
-                TVShowDTO(id: 1, name: "TV Show 1"),
-                TVShowDTO(id: 2, name: "TV Show 2"),
-                TVShowDTO(id: 3, name: "TV Show 3")
+                TVShow(id: 1, name: "TV Show 1"),
+                TVShow(id: 2, name: "TV Show 2"),
+                TVShow(id: 3, name: "TV Show 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -195,12 +195,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchPeopleForDayReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 1,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -217,12 +217,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForDayWithPageReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 1,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -238,12 +238,12 @@ class TMDbTrendingServiceTests: XCTestCase {
 
     func testFetchPeopleForWeekReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 1,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 1
@@ -260,12 +260,12 @@ class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForWeekWithPageReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
-        let expectedResult = PersonPageableListDTO(
+        let expectedResult = PersonPageableList(
             page: 1,
             results: [
-                PersonDTO(id: 1, name: "Person 1"),
-                PersonDTO(id: 2, name: "Person 2"),
-                PersonDTO(id: 3, name: "Person 3")
+                Person(id: 1, name: "Person 1"),
+                Person(id: 2, name: "Person 2"),
+                Person(id: 3, name: "Person 3")
             ],
             totalResults: 3,
             totalPages: 1

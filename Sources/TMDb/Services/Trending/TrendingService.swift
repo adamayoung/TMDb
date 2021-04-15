@@ -4,12 +4,12 @@ import Foundation
 protocol TrendingService {
 
     func fetchMovies(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError>
+                     page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     func fetchTVShows(timeWindow: TrendingTimeWindowFilterType,
-                      page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError>
+                      page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     func fetchPeople(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError>
+                     page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 
 }

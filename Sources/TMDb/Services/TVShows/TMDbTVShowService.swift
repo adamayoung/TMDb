@@ -9,38 +9,38 @@ public final class TMDbTVShowService: TVShowService {
         self.apiClient = apiClient
     }
 
-    func fetchDetails(forTVShow id: TVShowDTO.ID) -> AnyPublisher<TVShowDTO, TMDbError> {
+    func fetchDetails(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
     }
 
-    func fetchCredits(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
+    func fetchCredits(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
     }
 
-    func fetchReviews(forTVShow tvShowID: TVShowDTO.ID,
-                      page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func fetchReviews(forTVShow tvShowID: TVShow.ID,
+                      page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
     }
 
-    func fetchImages(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
+    func fetchImages(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID))
     }
 
-    func fetchVideos(forTVShow tvShowID: TVShowDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
+    func fetchVideos(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID))
     }
 
-    func fetchRecommendations(forTVShow tvShowID: TVShowDTO.ID,
-                              page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchRecommendations(forTVShow tvShowID: TVShow.ID,
+                              page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
     }
 
-    func fetchSimilar(toTVShow tvShowID: TVShowDTO.ID,
-                      page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchSimilar(toTVShow tvShowID: TVShow.ID,
+                      page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
     }
 

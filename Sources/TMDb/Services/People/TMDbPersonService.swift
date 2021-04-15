@@ -9,53 +9,53 @@ final class TMDbPersonService: PersonService {
         self.apiClient = apiClient
     }
 
-    func fetchDetails(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError> {
+    func fetchDetails(forPerson id: Person.ID) -> AnyPublisher<Person, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
     }
 
     func fetchCombinedCredits(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError> {
+        forPerson personID: Person.ID) -> AnyPublisher<PersonCombinedCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
-            .map { (credits: PersonCombinedCreditsDTO) in
+            .map { (credits: PersonCombinedCredits) in
                 let sortedCast = credits.cast.sorted(by: Self.showSort)
                 let sortedCrew = credits.crew.sorted(by: Self.showSort)
-                return PersonCombinedCreditsDTO(id: credits.id, cast: sortedCast, crew: sortedCrew)
+                return PersonCombinedCredits(id: credits.id, cast: sortedCast, crew: sortedCrew)
             }
             .eraseToAnyPublisher()
     }
 
-    func fetchMovieCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError> {
+    func fetchMovieCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
-            .map { (credits: PersonMovieCreditsDTO) in
+            .map { (credits: PersonMovieCredits) in
                 let sortedCast = credits.cast.sorted(by: Self.movieSort)
                 let sortedCrew = credits.crew.sorted(by: Self.movieSort)
-                return PersonMovieCreditsDTO(id: credits.id, cast: sortedCast, crew: sortedCrew)
+                return PersonMovieCredits(id: credits.id, cast: sortedCast, crew: sortedCrew)
             }
             .eraseToAnyPublisher()
     }
 
     func fetchTVShowCredits(
-        forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError> {
+        forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
-            .map { (credits: PersonTVShowCreditsDTO) in
+            .map { (credits: PersonTVShowCredits) in
                 let sortedCast = credits.cast.sorted(by: Self.tvShowSort)
                 let sortedCrew = credits.crew.sorted(by: Self.tvShowSort)
-                return PersonTVShowCreditsDTO(id: credits.id, cast: sortedCast, crew: sortedCrew)
+                return PersonTVShowCredits(id: credits.id, cast: sortedCast, crew: sortedCrew)
             }
             .eraseToAnyPublisher()
     }
 
-    func fetchImages(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError> {
+    func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
     }
 
-    func fetchKnownFor(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError> {
+    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError> {
         fetchCombinedCredits(forPerson: personID)
             .map(Self.knownForIn)
             .eraseToAnyPublisher()
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
     }
 
@@ -63,7 +63,7 @@ final class TMDbPersonService: PersonService {
 
 extension TMDbPersonService {
 
-    private static func knownForIn(credits: PersonCombinedCreditsDTO) -> [ShowDTO] {
+    private static func knownForIn(credits: PersonCombinedCredits) -> [Show] {
         let topCastShows = Array(credits.cast.prefix(10))
         let topCrewShows = Array(credits.crew.prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -85,7 +85,7 @@ extension TMDbPersonService {
 
 extension TMDbPersonService {
 
-    private static func showSort(lhs: ShowDTO, rhs: ShowDTO) -> Bool {
+    private static func showSort(lhs: Show, rhs: Show) -> Bool {
         guard let lhsDate = lhs.date else {
             return false
         }
@@ -97,7 +97,7 @@ extension TMDbPersonService {
         return lhsDate > rhsDate
     }
 
-    private static func movieSort(lhs: MovieDTO, rhs: MovieDTO) -> Bool {
+    private static func movieSort(lhs: Movie, rhs: Movie) -> Bool {
         guard let lhsDate = lhs.releaseDate else {
             return false
         }
@@ -109,7 +109,7 @@ extension TMDbPersonService {
         return lhsDate > rhsDate
     }
 
-    private static func tvShowSort(lhs: TVShowDTO, rhs: TVShowDTO) -> Bool {
+    private static func tvShowSort(lhs: TVShow, rhs: TVShow) -> Bool {
         guard let lhsDate = lhs.firstAirDate else {
             return false
         }

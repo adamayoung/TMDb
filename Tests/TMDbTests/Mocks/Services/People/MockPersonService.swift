@@ -4,22 +4,22 @@ import XCTest
 
 final class MockPersonService: PersonService {
 
-    var personDetails: PersonDTO?
-    private(set) var lastPersonDetailsID: PersonDTO.ID?
-    var combinedCredits: PersonCombinedCreditsDTO?
-    private(set) var lastCombinedCredtsPersonID: PersonDTO.ID?
-    var movieCredits: PersonMovieCreditsDTO?
-    private(set) var lastMovieCreditsPersonID: PersonDTO.ID?
-    var tvShowCredits: PersonTVShowCreditsDTO?
-    private(set) var lastTVShowCreditsPersonID: PersonDTO.ID?
-    var images: PersonImageCollectionDTO?
-    private(set) var lastImagesPersonID: PersonDTO.ID?
-    var knownFor: [ShowDTO]?
-    private(set) var lastKnownForPersonID: PersonDTO.ID?
-    var popular: PersonPageableListDTO?
+    var personDetails: Person?
+    private(set) var lastPersonDetailsID: Person.ID?
+    var combinedCredits: PersonCombinedCredits?
+    private(set) var lastCombinedCredtsPersonID: Person.ID?
+    var movieCredits: PersonMovieCredits?
+    private(set) var lastMovieCreditsPersonID: Person.ID?
+    var tvShowCredits: PersonTVShowCredits?
+    private(set) var lastTVShowCreditsPersonID: Person.ID?
+    var images: PersonImageCollection?
+    private(set) var lastImagesPersonID: Person.ID?
+    var knownFor: [Show]?
+    private(set) var lastKnownForPersonID: Person.ID?
+    var popular: PersonPageableList?
     var lastPopularPage: Int?
 
-    func fetchDetails(forPerson id: PersonDTO.ID) -> AnyPublisher<PersonDTO, TMDbError> {
+    func fetchDetails(forPerson id: Person.ID) -> AnyPublisher<Person, TMDbError> {
         lastPersonDetailsID = id
 
         guard let personDetails = personDetails else {
@@ -32,7 +32,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchCombinedCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonCombinedCreditsDTO, TMDbError> {
+    func fetchCombinedCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonCombinedCredits, TMDbError> {
         lastCombinedCredtsPersonID = personID
 
         guard let combinedCredits = combinedCredits else {
@@ -45,7 +45,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchMovieCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonMovieCreditsDTO, TMDbError> {
+    func fetchMovieCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError> {
         lastMovieCreditsPersonID = personID
 
         guard let movieCredits = movieCredits else {
@@ -58,7 +58,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchTVShowCredits(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonTVShowCreditsDTO, TMDbError> {
+    func fetchTVShowCredits(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError> {
         lastTVShowCreditsPersonID = personID
 
         guard let tvShowCredits = tvShowCredits else {
@@ -71,7 +71,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchImages(forPerson personID: PersonDTO.ID) -> AnyPublisher<PersonImageCollectionDTO, TMDbError> {
+    func fetchImages(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError> {
         lastImagesPersonID = personID
 
         guard let images = images else {
@@ -84,7 +84,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchKnownFor(forPerson personID: PersonDTO.ID) -> AnyPublisher<[ShowDTO], TMDbError> {
+    func fetchKnownFor(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError> {
         lastKnownForPersonID = personID
 
         guard let knownFor = knownFor else {
@@ -97,7 +97,7 @@ final class MockPersonService: PersonService {
             .eraseToAnyPublisher()
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         lastPopularPage = page
 
         guard let popular = popular else {

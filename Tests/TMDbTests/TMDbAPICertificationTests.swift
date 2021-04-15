@@ -7,14 +7,14 @@ class TMDbAPICertificationTests: TMDbAPITestCase {
     func testMovieCertificationsPublisherReturnsCertifications() throws {
         let expectedResult = [
             "GB": [
-                CertificationDTO(code: "A", meaning: "AA", order: 0),
-                CertificationDTO(code: "B", meaning: "BB", order: 1),
-                CertificationDTO(code: "C", meaning: "CC", order: 2)
+                Certification(code: "A", meaning: "AA", order: 0),
+                Certification(code: "B", meaning: "BB", order: 1),
+                Certification(code: "C", meaning: "CC", order: 2)
             ],
             "US": [
-                CertificationDTO(code: "D", meaning: "DD", order: 0),
-                CertificationDTO(code: "E", meaning: "EE", order: 1),
-                CertificationDTO(code: "F", meaning: "FF", order: 2)
+                Certification(code: "D", meaning: "DD", order: 0),
+                Certification(code: "E", meaning: "EE", order: 1),
+                Certification(code: "F", meaning: "FF", order: 2)
             ]
         ]
         certificationService.movieCertifications = expectedResult
@@ -27,14 +27,14 @@ class TMDbAPICertificationTests: TMDbAPITestCase {
     func testTVShowCertificationsPublisherReturnsCertifications() throws {
         let expectedResult = [
             "GB": [
-                CertificationDTO(code: "A", meaning: "AA", order: 0),
-                CertificationDTO(code: "B", meaning: "BB", order: 1),
-                CertificationDTO(code: "C", meaning: "CC", order: 2)
+                Certification(code: "A", meaning: "AA", order: 0),
+                Certification(code: "B", meaning: "BB", order: 1),
+                Certification(code: "C", meaning: "CC", order: 2)
             ],
             "US": [
-                CertificationDTO(code: "D", meaning: "DD", order: 0),
-                CertificationDTO(code: "E", meaning: "EE", order: 1),
-                CertificationDTO(code: "F", meaning: "FF", order: 2)
+                Certification(code: "D", meaning: "DD", order: 0),
+                Certification(code: "E", meaning: "EE", order: 1),
+                Certification(code: "F", meaning: "FF", order: 2)
             ]
         ]
         certificationService.tvShowCertifications = expectedResult

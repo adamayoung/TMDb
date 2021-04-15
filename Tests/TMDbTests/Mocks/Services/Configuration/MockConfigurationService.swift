@@ -4,9 +4,9 @@ import XCTest
 
 final class MockConfigurationService: ConfigurationService {
 
-    var apiConfiguration: APIConfigurationDTO?
+    var apiConfiguration: APIConfiguration?
 
-    func fetchAPIConfiguration() -> AnyPublisher<APIConfigurationDTO, TMDbError> {
+    func fetchAPIConfiguration() -> AnyPublisher<APIConfiguration, TMDbError> {
         guard let apiConfiguration = apiConfiguration else {
             return Empty()
                 .eraseToAnyPublisher()

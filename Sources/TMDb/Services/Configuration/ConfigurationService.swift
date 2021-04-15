@@ -3,6 +3,6 @@ import Foundation
 
 protocol ConfigurationService {
 
-    func fetchAPIConfiguration() -> AnyPublisher<APIConfigurationDTO, TMDbError>
+    func fetchAPIConfiguration() -> AnyPublisher<APIConfiguration, TMDbError>
 
 }

@@ -1,0 +1,30 @@
+@testable import TMDb
+import XCTest
+
+class StatusTests: XCTestCase {
+
+    func testRumoredStatusReturnsRawValue() {
+        XCTAssertEqual(Status.rumored.rawValue, "Rumored")
+    }
+
+    func testPlannedStatusReturnsRawValue() {
+        XCTAssertEqual(Status.planned.rawValue, "Planned")
+    }
+
+    func testInProductionStatusReturnsRawValue() {
+        XCTAssertEqual(Status.inProduction.rawValue, "In Production")
+    }
+
+    func testPostProductionStatusReturnsRawValue() {
+        XCTAssertEqual(Status.postProduction.rawValue, "Post Production")
+    }
+
+    func testReleasedStatusReturnsRawValue() {
+        XCTAssertEqual(Status.released.rawValue, "Released")
+    }
+
+    func testCanceledStatusReturnsRawValue() {
+        XCTAssertEqual(Status.canceled.rawValue, "Canceled")
+    }
+
+}

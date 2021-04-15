@@ -13,8 +13,6 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: macos-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
 
     steps:
       - uses: actions/checkout@v2
@@ -25,9 +23,6 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-
-      - name: Install dependencies
-        run: brew bundle
 
       - name: Lint
         run: swiftlint

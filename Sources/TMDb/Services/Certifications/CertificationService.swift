@@ -3,8 +3,8 @@ import Foundation
 
 protocol CertificationService {
 
-    func fetchMovieCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError>
+    func fetchMovieCertifications() -> AnyPublisher<[String: [Certification]], TMDbError>
 
-    func fetchTVShowCertifications() -> AnyPublisher<[String: [CertificationDTO]], TMDbError>
+    func fetchTVShowCertifications() -> AnyPublisher<[String: [Certification]], TMDbError>
 
 }

@@ -9,36 +9,36 @@ final class TMDbMovieService: MovieService {
         self.apiClient = apiClient
     }
 
-    func fetchDetails(forMovie id: MovieDTO.ID) -> AnyPublisher<MovieDTO, TMDbError> {
+    func fetchDetails(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
     }
 
-    func fetchCredits(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ShowCreditsDTO, TMDbError> {
+    func fetchCredits(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.credits(movieID: movieID))
     }
 
-    func fetchReviews(forMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<ReviewPageableListDTO, TMDbError> {
+    func fetchReviews(forMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.reviews(movieID: movieID, page: page))
     }
 
-    func fetchImages(forMovie movieID: MovieDTO.ID) -> AnyPublisher<ImageCollectionDTO, TMDbError> {
+    func fetchImages(forMovie movieID: Movie.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.images(movieID: movieID))
     }
 
-    func fetchVideos(forMovie movieID: MovieDTO.ID) -> AnyPublisher<VideoCollectionDTO, TMDbError> {
+    func fetchVideos(forMovie movieID: Movie.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.videos(movieID: movieID))
     }
 
-    func fetchRecommendations(forMovie movieID: MovieDTO.ID,
-                              page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchRecommendations(forMovie movieID: Movie.ID,
+                              page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
     }
 
-    func fetchSimilar(toMovie movieID: MovieDTO.ID, page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchSimilar(toMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page))
     }
 
-    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableListDTO, TMDbError> {
+    func fetchPopular(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
     }
 
