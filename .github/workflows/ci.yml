@@ -10,11 +10,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Test
+  build-and-test:
+    name: Build and Test
     runs-on: macos-latest
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_12.app/Contents/Developer
 
     steps:
       - uses: actions/checkout@v2
@@ -26,19 +24,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Install danger
-        run: brew install danger/tap/danger-swift
+      - name: Install dependencies
+        run: brew bundle
+
+      - name: Lint
+        run: swiftlint
+
+      - name: Build
+        run: swift build
 
       - name: Run tests
         run: swift test --enable-code-coverage
 
-      - name: Run danger
-        run: danger-swift ci --verbose
-        if: ${{ github.event_name == 'pull_request' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate code coverage report
+      - name: Generate Code Coverage report
         run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
       - name: Upload to codecov
