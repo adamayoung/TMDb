@@ -10,8 +10,6 @@ import FoundationNetworking
 
 final class TMDbAPIClient: APIClient {
 
-    private static let baseURL = URL(string: "https://api.themoviedb.org/3")!
-
     private let urlSession: URLSession
     private let jsonDecoder: JSONDecoder
 
@@ -31,23 +29,6 @@ final class TMDbAPIClient: APIClient {
     func setAPIKey(_ apiKey: String) {
         self.apiKey = apiKey
     }
-
-}
-
-extension TMDbAPIClient {
-
-    #if canImport(Combine)
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func get<Response: Decodable>(path: URL,
-                                  httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
-        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
-
-        return urlSession.dataTaskPublisher(for: urlRequest)
-            .mapTMDbError()
-            .mapResponse(to: Response.self, decoder: jsonDecoder)
-            .eraseToAnyPublisher()
-    }
-    #endif
 
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?,
                                   completion: @escaping (Result<Response, TMDbError>) -> Void) {
@@ -88,6 +69,23 @@ extension TMDbAPIClient {
 
 }
 
+#if canImport(Combine)
+extension TMDbAPIClient {
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func get<Response: Decodable>(path: URL,
+                                  httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
+        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
+
+        return urlSession.dataTaskPublisher(for: urlRequest)
+            .mapTMDbError()
+            .mapResponse(to: Response.self, decoder: jsonDecoder)
+            .eraseToAnyPublisher()
+    }
+
+}
+#endif
+
 extension TMDbAPIClient {
 
     private func buildURLRequest(for path: URL, httpHeaders: [String: String]?) -> URLRequest {
@@ -107,9 +105,9 @@ extension TMDbAPIClient {
             return path
         }
 
-        urlComponents.scheme = Self.baseURL.scheme
-        urlComponents.host = Self.baseURL.host
-        urlComponents.path = Self.baseURL.path + "\(urlComponents.path)"
+        urlComponents.scheme = URL.tmdbAPIBaseURL.scheme
+        urlComponents.host = URL.tmdbAPIBaseURL.host
+        urlComponents.path = URL.tmdbAPIBaseURL.path + "\(urlComponents.path)"
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)

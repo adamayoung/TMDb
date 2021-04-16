@@ -49,12 +49,12 @@ extension URL {
         return appendingQueryItem(name: "first_air_date_year", value: year)
     }
 
-    func appendingWithPeople(_ withPeople: [Person.ID]?) -> Self {
-        guard let withPeople = withPeople else {
+    func appendingWithPeople(_ people: [Person.ID]?) -> Self {
+        guard let people = people else {
             return self
         }
 
-        let value = withPeople
+        let value = people
             .map(String.init)
             .joined(separator: ",")
 
