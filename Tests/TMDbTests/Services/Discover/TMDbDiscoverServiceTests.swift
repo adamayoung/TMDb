@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbDiscoverServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbDiscoverService!
     var apiClient: MockAPIClient!
 
@@ -21,7 +26,12 @@ class TMDbDiscoverServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMoviesReturnsMovies() throws {
+}
+
+#if canImport(Combine)
+extension TMDbDiscoverServiceTests {
+
+    func testMoviesPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList(
             page: 1,
             results: [
@@ -34,14 +44,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(sortBy: nil, withPeople: nil, page: nil),
+        let result = try await(publisher: service.moviesPublisher(sortBy: nil, withPeople: nil, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
     }
 
-    func testFetchMoviesWithSortByReturnsMovies() throws {
+    func testMoviesPublisherWithSortByReturnsMovies() throws {
         let sortBy = MovieSortBy.originalTitleAscending
         let expectedResult = MoviePageableList(
             page: 1,
@@ -55,14 +65,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(sortBy: sortBy, withPeople: nil, page: nil),
+        let result = try await(publisher: service.moviesPublisher(sortBy: sortBy, withPeople: nil, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy).url)
     }
 
-    func testFetchMoviesWithWithPeopleReturnsMovies() throws {
+    func testMoviesPublisherWithWithPeopleReturnsMovies() throws {
         let people = [1, 2, 3, 4, 5]
         let expectedResult = MoviePageableList(
             page: 1,
@@ -76,14 +86,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(sortBy: nil, withPeople: people, page: nil),
+        let result = try await(publisher: service.moviesPublisher(sortBy: nil, withPeople: people, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(withPeople: people).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(people: people).url)
     }
 
-    func testFetchMoviesWithWithPageReturnsMovies() throws {
+    func testMoviesPublisherWithWithPageReturnsMovies() throws {
         let page = 2
         let expectedResult = MoviePageableList(
             page: page,
@@ -97,14 +107,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(sortBy: nil, withPeople: nil, page: page),
+        let result = try await(publisher: service.moviesPublisher(sortBy: nil, withPeople: nil, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(page: page).url)
     }
 
-    func testFetchMoviesWithSortByAndWithPeopleAndPageReturnsMovies() throws {
+    func testMoviesPublisherWithSortByAndWithPeopleAndPageReturnsMovies() throws {
         let sortBy = MovieSortBy.originalTitleAscending
         let people = [1, 2, 3, 4, 5]
         let page = 3
@@ -120,14 +130,14 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(sortBy: sortBy, withPeople: people, page: page),
+        let result = try await(publisher: service.moviesPublisher(sortBy: sortBy, withPeople: people, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy, withPeople: people, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page).url)
     }
 
-    func testFetchTVShowsReturnsTVShows() throws {
+    func testTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableList(
             page: 1,
             results: [
@@ -140,13 +150,13 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(sortBy: nil, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowsPublisher(sortBy: nil, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
     }
 
-    func testFetchTVShowsWithSortByReturnsTVShows() throws {
+    func testTVShowsPublisherWithSortByReturnsTVShows() throws {
         let sortBy = TVShowSortBy.firstAirDateAscending
         let expectedResult = TVShowPageableList(
             page: 1,
@@ -160,13 +170,13 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(sortBy: sortBy, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowsPublisher(sortBy: sortBy, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortBy: sortBy).url)
     }
 
-    func testFetchTVShowsWithPageReturnsTVShows() throws {
+    func testTVShowsPublisherWithPageReturnsTVShows() throws {
         let page = 2
         let expectedResult = TVShowPageableList(
             page: page,
@@ -180,13 +190,13 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(sortBy: nil, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowsPublisher(sortBy: nil, page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(page: page).url)
     }
 
-    func testFetchTVShowsWithSortByAndPageReturnsTVShows() throws {
+    func testTVShowsPublisherWithSortByAndPageReturnsTVShows() throws {
         let sortBy = TVShowSortBy.firstAirDateAscending
         let page = 3
         let expectedResult = TVShowPageableList(
@@ -201,10 +211,11 @@ class TMDbDiscoverServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(sortBy: sortBy, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowsPublisher(sortBy: sortBy, page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortBy: sortBy, page: page).url)
     }
 
 }
+#endif

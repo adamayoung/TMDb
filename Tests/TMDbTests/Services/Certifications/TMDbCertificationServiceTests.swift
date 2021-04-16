@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbCertificationServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
 
@@ -21,7 +26,12 @@ class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertificationsReturnsMovieCertifications() throws {
+}
+
+#if canImport(Combine)
+extension TMDbCertificationServiceTests {
+
+    func testMovieCertificationsPublisherReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -34,13 +44,13 @@ class TMDbCertificationServiceTests: XCTestCase {
         ]
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovieCertifications(), storeIn: &cancellables)
+        let result = try await(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertificationsReturnsMovieCertifications() throws {
+    func testTVShowCertificationsPublisherReturnsMovieCertifications() throws {
         let expectedResult = [
             "A": [
                 Certification(code: "1", meaning: "Meaning 1", order: 1),
@@ -53,10 +63,11 @@ class TMDbCertificationServiceTests: XCTestCase {
         ]
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShowCertifications(), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
     }
 
 }
+#endif

@@ -1,10 +1,8 @@
-import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbAPITestCase: XCTestCase {
+class TMDbAPITests: XCTestCase {
 
-    var cancellables: Set<AnyCancellable> = []
     var tmdb: MovieTVShowAPI!
     var certificationService: MockCertificationService!
     var configurationService: MockConfigurationService!
@@ -54,6 +52,14 @@ class TMDbAPITestCase: XCTestCase {
         tmdb = nil
 
         super.tearDown()
+    }
+
+    func testSetAPIKeySetsAPIKeyOnAPIClient() {
+        let expectedAPIKey = UUID().uuidString
+
+        TMDbAPI.setAPIKey(expectedAPIKey)
+
+        XCTAssertEqual(TMDbAPIClient.shared.apiKey, expectedAPIKey)
     }
 
 }

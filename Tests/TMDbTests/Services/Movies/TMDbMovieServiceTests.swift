@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbMovieServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
@@ -21,18 +26,23 @@ class TMDbMovieServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetailsReturnsMovie() throws {
+}
+
+#if canImport(Combine)
+extension TMDbMovieServiceTests {
+
+    func testDetailsPublisherReturnsMovie() throws {
         let movieID = 1
         let expectedResult = Movie(id: movieID, title: "Some title")
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.detailsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
     }
 
-    func testFetchCreditsReturnsCredits() throws {
+    func testCreditsPublisherReturnsCredits() throws {
         let movieID = 1
         let expectedResult = ShowCredits(
             id: movieID,
@@ -41,13 +51,13 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchCredits(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.creditsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
     }
 
-    func testFetchReviewsReturnsReviews() throws {
+    func testReviewsPublisherReturnsReviews() throws {
         let movieID = 1
         let expectedResult = ReviewPageableList(
             page: 1,
@@ -61,13 +71,14 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchReviews(forMovie: movieID, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: nil),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
     }
 
-    func testFetchReviewsWithPageReturnsReviews() throws {
+    func testReviewsPublisherWithPageReturnsReviews() throws {
         let movieID = 1
         let page = 2
         let expectedResult = ReviewPageableList(
@@ -82,13 +93,14 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchReviews(forMovie: movieID, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).url)
     }
 
-    func testFetchImagesReturnsImageCollection() throws {
+    func testImagesPublisherReturnsImageCollection() throws {
         let movieID = 1
         let expectedResult = ImageCollection(
             id: movieID,
@@ -97,13 +109,13 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.imagesPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
     }
 
-    func testFetchVideosReturnsVideoCollection() throws {
+    func testVideosPublisherReturnsVideoCollection() throws {
         let movieID = 1
         let expectedResult = VideoCollection(
             id: movieID,
@@ -120,13 +132,13 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchVideos(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.videosPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsReturnsMovies() throws {
+    func testRecommendationsPublisherReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList(
             page: 1,
@@ -140,14 +152,14 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchRecommendations(forMovie: movieID, page: nil),
+        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsWithPageReturnsMovies() throws {
+    func testRecommendationsPublisherWithPageReturnsMovies() throws {
         let movieID = 1
         let page = 2
         let expectedResult = MoviePageableList(
@@ -162,14 +174,14 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchRecommendations(forMovie: movieID, page: page),
+        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).url)
     }
 
-    func testFetchSimilarReturnsMovies() throws {
+    func testSimilarPublisherReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList(
             page: 1,
@@ -183,13 +195,13 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchSimilar(toMovie: movieID, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
     }
 
-    func testFetchSimilarWithPageReturnsMovies() throws {
+    func testSimilarPublisherWithPageReturnsMovies() throws {
         let movieID = 1
         let page = 2
         let expectedResult = MoviePageableList(
@@ -204,13 +216,14 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchSimilar(toMovie: movieID, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).url)
     }
 
-    func testFetchPopularReturnsMovies() throws {
+    func testPopularPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList(
             page: 1,
             results: [
@@ -223,13 +236,13 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsMovies() throws {
+    func testPopularPublisherWithPageReturnsMovies() throws {
         let page = 2
         let expectedResult = MoviePageableList(
             page: page,
@@ -243,10 +256,11 @@ class TMDbMovieServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
     }
 
 }
+#endif

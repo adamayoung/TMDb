@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbSearchServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbSearchService!
     var apiClient: MockAPIClient!
 
@@ -21,7 +26,12 @@ class TMDbSearchServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSearchAllReturnsMedia() throws {
+}
+
+#if canImport(Combine)
+extension TMDbSearchServiceTests {
+
+    func testSearchAllPublisherReturnsMedia() throws {
         let query = "some search string"
         let expectedResult = MediaPageableList(
             page: 1,
@@ -35,13 +45,13 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAll(query: query, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.searchAllPublisher(query: query, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
-    func testSearchAllWithPageReturnsMedia() throws {
+    func testSearchAllPublisherWithPageReturnsMedia() throws {
         let query = "some search string"
         let page = 2
         let expectedResult = MediaPageableList(
@@ -56,13 +66,13 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAll(query: query, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.searchAllPublisher(query: query, page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
     }
 
-    func testSearchMoviesReturnsMovies() throws {
+    func testSearchMoviesPublisherReturnsMovies() throws {
         let query = "some search string"
         let expectedResult = MoviePageableList(
             page: 1,
@@ -76,14 +86,14 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: nil, page: nil),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
-    func testSearchMoviesWithYearReturnsMovies() throws {
+    func testSearchMoviesPublisherWithYearReturnsMovies() throws {
         let query = "some search string"
         let year = 2020
         let expectedResult = MoviePageableList(
@@ -98,14 +108,14 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: year, page: nil),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
     }
 
-    func testSearchMoviesWithPageReturnsMovies() throws {
+    func testSearchMoviesPublisherWithPageReturnsMovies() throws {
         let query = "some search string"
         let page = 2
         let expectedResult = MoviePageableList(
@@ -120,14 +130,14 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: nil, page: page),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
     }
 
-    func testSearchMoviesWithYearAndPageReturnsMovies() throws {
+    func testSearchMoviesPublisherWithYearAndPageReturnsMovies() throws {
         let query = "some search string"
         let year = 2020
         let page = 2
@@ -143,14 +153,14 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: year, page: page),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
     }
 
-    func testSearchTVShowsReturnsTVShows() throws {
+    func testSearchTVShowsPublisherReturnsTVShows() throws {
         let query = "some search string"
         let expectedResult = TVShowPageableList(
             page: 1,
@@ -164,14 +174,15 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: nil, page: nil),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+                                                                         page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() throws {
+    func testSearchTVShowsPublisherWithFirstAirDateYearReturnsTVShows() throws {
         let query = "some search string"
         let year = 2020
         let expectedResult = TVShowPageableList(
@@ -186,14 +197,15 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: year, page: nil),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+                                                                         page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
     }
 
-    func testSearchTVShowsWithPageReturnsTVShows() throws {
+    func testSearchTVShowsPublisherWithPageReturnsTVShows() throws {
         let query = "some search string"
         let page = 2
         let expectedResult = TVShowPageableList(
@@ -208,14 +220,15 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: nil, page: page),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+                                                                         page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() throws {
+    func testSearchTVShowsPublisherWithFirstAirDateYearANdPageReturnsTVShows() throws {
         let query = "some search string"
         let year = 2020
         let page = 2
@@ -231,14 +244,15 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: year, page: page),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+                                                                         page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
     }
 
-    func testSearchPeopleReturnsPeople() throws {
+    func testSearchPeoplePublisherReturnsPeople() throws {
         let query = "some search string"
         let expectedResult = PersonPageableList(
             page: 1,
@@ -252,13 +266,14 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeople(query: query, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: nil),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
-    func testSearchPeopleWithPageReturnsPeople() throws {
+    func testSearchPeoplePublisherWithPageReturnsPeople() throws {
         let query = "some search string"
         let page = 2
         let expectedResult = PersonPageableList(
@@ -273,10 +288,12 @@ class TMDbSearchServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeople(query: query, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
     }
 
 }
+#endif

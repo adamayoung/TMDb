@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbTVShowSeasonServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbTVShowSeasonService!
     var apiClient: MockAPIClient!
 
@@ -21,7 +26,12 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetailsReturnsTVShowSeason() throws {
+}
+
+#if canImport(Combine)
+extension TMDbTVShowSeasonServiceTests {
+
+    func testDetailsPublisherReturnsTVShowSeason() throws {
         let seasonNumber = 1
         let tvShowID = 2
         let expectedResult = TVShowSeason(
@@ -31,7 +41,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -39,7 +49,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
                        TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchImagesReturnsImages() throws {
+    func testImagesPublisherReturnsImages() throws {
         let seasonNumber = 1
         let tvShowID = 2
         let expectedResult = ImageCollection(
@@ -55,7 +65,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -63,7 +73,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
                        TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchVideosReturnsVideos() throws {
+    func testVideosPublisherReturnsVideos() throws {
         let seasonNumber = 1
         let tvShowID = 2
         let expectedResult = VideoCollection(
@@ -76,7 +86,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -85,3 +95,4 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     }
 
 }
+#endif

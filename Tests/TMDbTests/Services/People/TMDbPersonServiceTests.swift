@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbPersonServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbPersonService!
     var apiClient: MockAPIClient!
 
@@ -21,18 +26,23 @@ class TMDbPersonServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetailsReturnsPerson() throws {
+}
+
+#if canImport(Combine)
+extension TMDbPersonServiceTests {
+
+    func testDetailsPublisherReturnsPerson() throws {
         let personID = 12
         let expectedResult = Person(id: 1, name: "Edward Norton")
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
     }
 
-    func testFetchCombinedCreditsReturnsCombinedCredits() throws {
+    func testCombinedCreditsPublisherReturnsCombinedCredits() throws {
         let personID = 11
         let expectedResult = PersonCombinedCredits(
             id: 1,
@@ -47,13 +57,13 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchCombinedCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.combinedCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testFetchMovieCreditsReturnsMovieCredits() throws {
+    func testMovieCreditsPublisherReturnsMovieCredits() throws {
         let personID = 11
         let expectedResult = PersonMovieCredits(
             id: 2,
@@ -68,13 +78,13 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovieCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
     }
 
-    func testFetchTVShowCreditsReturnsTVShowCredits() throws {
+    func testTVShowCreditsPublisherReturnsTVShowCredits() throws {
         let personID = 11
         let expectedResult = PersonTVShowCredits(
             id: 1,
@@ -89,13 +99,13 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShowCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
     }
 
-    func testFetchImagesReturnsImageCollection() throws {
+    func testImagesPublisherReturnsImageCollection() throws {
         let personID = 13
         let expectedResult = PersonImageCollection(
             id: personID,
@@ -106,13 +116,13 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
     }
 
-    func testFetchPopularReturnsPeople() throws {
+    func testPopularPublisherReturnsPeople() throws {
         let expectedResult = PersonPageableList(
             page: 1,
             results: [
@@ -124,13 +134,13 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsPeople() throws {
+    func testPopularPublisherWithPageReturnsPeople() throws {
         let page = 2
         let expectedResult = PersonPageableList(
             page: page,
@@ -143,10 +153,11 @@ class TMDbPersonServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)
     }
 
 }
+#endif

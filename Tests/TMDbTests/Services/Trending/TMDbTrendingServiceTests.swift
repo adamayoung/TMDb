@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbTrendingServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbTrendingService!
     var apiClient: MockAPIClient!
 
@@ -21,7 +26,12 @@ class TMDbTrendingServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMoviesForDayReturnsMovies() throws {
+}
+
+#if canImport(Combine)
+extension TMDbTrendingServiceTests {
+
+    func testMoviesPublisherForDayReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList(
             page: 1,
@@ -35,14 +45,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.moviesPublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
     }
 
-    func testFetchMoviesForDayWithPageReturnsMovies() throws {
+    func testMoviesPublisherForDayWithPageReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
         let expectedResult = MoviePageableList(
@@ -57,14 +67,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.moviesPublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchMoviesForWeekReturnsMovies() throws {
+    func testMoviesPublisherForWeekReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList(
             page: 1,
@@ -78,14 +88,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.moviesPublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
     }
 
-    func testFetchMoviesForWeekWithPageReturnsMovies() throws {
+    func testMoviesPublisherForWeekWithPageReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
         let expectedResult = MoviePageableList(
@@ -100,14 +110,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovies(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.moviesPublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchTVShowsForDayReturnsTVShows() throws {
+    func testTVShowsPublisherForDayReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList(
             page: 1,
@@ -121,14 +131,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForDayWithPageReturnsTVShows() throws {
+    func testTVShowsPublisherForDayWithPageReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
         let expectedResult = TVShowPageableList(
@@ -143,14 +153,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchTVShowsForWeekReturnsTVShows() throws {
+    func testTVShowsPublisherForWeekReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList(
             page: 1,
@@ -164,7 +174,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -186,14 +196,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShows(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchPeopleForDayReturnsPeople() throws {
+    func testPeoplePublisherForDayReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList(
             page: 1,
@@ -207,14 +217,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPeople(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.peoplePublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForDayWithPageReturnsPeople() throws {
+    func testTVShowsPublisherForDayWithPageReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let page = 2
         let expectedResult = PersonPageableList(
@@ -229,14 +239,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPeople(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.peoplePublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchPeopleForWeekReturnsPeople() throws {
+    func testPeoplePublisherForWeekReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList(
             page: 1,
@@ -250,14 +260,14 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPeople(timeWindow: timeWindow, page: nil),
+        let result = try await(publisher: service.peoplePublisher(timeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForWeekWithPageReturnsPeople() throws {
+    func testTVShowsPublisherForWeekWithPageReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
         let expectedResult = PersonPageableList(
@@ -272,7 +282,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPeople(timeWindow: timeWindow, page: page),
+        let result = try await(publisher: service.peoplePublisher(timeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -280,3 +290,4 @@ class TMDbTrendingServiceTests: XCTestCase {
     }
 
 }
+#endif

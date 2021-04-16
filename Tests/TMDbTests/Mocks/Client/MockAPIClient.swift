@@ -1,6 +1,9 @@
-import Combine
 @testable import TMDb
 import XCTest
+
+#if canImport(Combine)
+import Combine
+#endif
 
 class MockAPIClient: APIClient {
 
@@ -14,6 +17,7 @@ class MockAPIClient: APIClient {
         Self.apiKey = apiKey
     }
 
+    #if canImport(Combine)
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) -> AnyPublisher<Response, TMDbError> {
         self.lastPath = path
         self.lastHTTPHeaders = httpHeaders
@@ -29,6 +33,7 @@ class MockAPIClient: APIClient {
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
     }
+    #endif
 
     func reset() {
         response = nil

@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbConfigurationServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
 
@@ -15,7 +20,12 @@ class TMDbConfigurationServiceTests: XCTestCase {
         service = TMDbConfigurationService(apiClient: apiClient)
     }
 
-    func testFetchAPIConfigurationReturnsAPIConfiguration() throws {
+}
+
+#if canImport(Combine)
+extension TMDbConfigurationServiceTests {
+
+    func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
         let expectedResult = APIConfiguration(
             images: ImagesConfiguration(
                 baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
@@ -43,10 +53,11 @@ class TMDbConfigurationServiceTests: XCTestCase {
         )
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchAPIConfiguration(), storeIn: &cancellables)
+        let result = try await(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
     }
 
 }
+#endif
