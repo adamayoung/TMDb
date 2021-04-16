@@ -20,6 +20,21 @@ class TMDbConfigurationServiceTests: XCTestCase {
         service = TMDbConfigurationService(apiClient: apiClient)
     }
 
+    func testFetchAPIConfigurationReturnsAPIConfiguration() {
+        let expectedResult = APIConfiguration.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchAPIConfiguration { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
+    }
+
 }
 
 #if canImport(Combine)

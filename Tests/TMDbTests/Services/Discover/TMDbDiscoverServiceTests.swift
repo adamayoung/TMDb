@@ -26,6 +26,87 @@ class TMDbDiscoverServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFetchMoviesReturnsMovies() {
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies(sortBy: nil, withPeople: nil, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
+    }
+
+    func testFetchMoviesWithSortByReturnsMovies() {
+        let sortBy = MovieSortBy.originalTitleAscending
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies(sortBy: sortBy, withPeople: nil, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy).url)
+    }
+
+    func testFetchMoviesWithWithPeopleReturnsMovies() {
+        let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies(sortBy: nil, withPeople: people, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(people: people).url)
+    }
+
+    func testFetchMoviesWithWithPageReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies(sortBy: nil, withPeople: nil, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(page: page).url)
+    }
+
+    func testFetchMoviesWithSortByAndWithPeopleAndPageReturnsMovies() throws {
+        let sortBy = MovieSortBy.originalTitleAscending
+        let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies(sortBy: sortBy, withPeople: people, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page).url)
+    }
+
 }
 
 #if canImport(Combine)
@@ -55,7 +136,7 @@ extension TMDbDiscoverServiceTests {
     }
 
     func testMoviesPublisherWithWithPeopleReturnsMovies() throws {
-        let people = [1, 2, 3, 4, 5]
+        let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
@@ -80,7 +161,7 @@ extension TMDbDiscoverServiceTests {
 
     func testMoviesPublisherWithSortByAndWithPeopleAndPageReturnsMovies() throws {
         let sortBy = MovieSortBy.originalTitleAscending
-        let people = [1, 2, 3, 4, 5]
+        let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.response = expectedResult

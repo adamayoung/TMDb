@@ -26,6 +26,36 @@ class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFetchMovieCertificationsReturnsMovieCertifications() {
+        let expectedResult = Certification.mocks
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovieCertifications { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
+    }
+
+    func testFetchTVShowCertificationsReturnsTVShowCertifications() {
+        let expectedResult = Certification.mocks
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchTVShowCertifications { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
+    }
+
 }
 
 #if canImport(Combine)
