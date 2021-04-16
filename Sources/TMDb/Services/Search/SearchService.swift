@@ -1,15 +1,181 @@
-import Combine
 import Foundation
 
-protocol SearchService {
+#if canImport(Combine)
+import Combine
+#endif
 
-    func searchAll(query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError>
+public protocol SearchService {
 
-    func searchMovies(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
+    /// Fetches search results for movies, TV shows and people based on a query.
+    ///
+    /// - Note: [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - page: The page of results to return.
+    ///     - completion: Completion handler.
+    ///     - result: Movies, TV shows and people matching the query.
+    func searchAll(query: String, page: Int?,
+                   completion: @escaping (_ result: Result<MediaPageableList, TMDbError>) -> Void)
 
-    func searchTVShows(query: String, firstAirDateYear: Int?,
-                       page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
+    /// Fetches search results for movies.
+    ///
+    /// - Note: [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - year: The year to filter results for.
+    ///     - page: The page of results to return.
+    ///     - completion: Completion handler.
+    ///     - result: Movies matching the query.
+    func searchMovies(query: String, year: Int?, page: Int?,
+                      completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
 
-    func searchPeople(query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
+    /// Fetches search results for TV shows.
+    ///
+    /// - Note: [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - firstAirDateYear: The year of first air date to filter results for.
+    ///     - page: The page of results to return.
+    ///     - completion: Completion handler.
+    ///     - result: TV shows matching the query.
+    func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?,
+                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void)
+
+    /// Fetches search results for people.
+    ///
+    /// - Note: [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - page: The page of results to return.
+    ///     - completion: Completion handler.
+    ///     - result: People matching the query.
+    func searchPeople(query: String, page: Int?,
+                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void)
+
+    #if canImport(Combine)
+    /// Publishes search results for movies, TV shows and people based on a query.
+    ///
+    /// - Note: [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: A publisher with movies, TV shows and people matching the query.
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchAllPublisher(query: String, page: Int?) -> AnyPublisher<MediaPageableList, TMDbError>
+
+    /// Publishes search results for movies.
+    ///
+    /// - Note: [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - year: The year to filter results for.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: A publisher with movies matching the query.
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchMoviesPublisher(query: String, year: Int?, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
+
+    /// Publishes search results for TV shows.
+    ///
+    /// - Note: [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - firstAirDateYear: The year of first air date to filter results for.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: A publisher with TV shows matching the query.
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchTVShowsPublisher(query: String, firstAirDateYear: Int?,
+                                page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
+
+    /// Publishes search results for people.
+    ///
+    /// - Note: [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - query: A text query to search for.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: A publisher with people matching the query.
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchPeoplePublisher(query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
+    #endif
 
 }
+
+public extension SearchService {
+
+    func searchAll(query: String, page: Int? = nil,
+                   completion: @escaping (_ result: Result<MediaPageableList, TMDbError>) -> Void) {
+        searchAll(query: query, page: page, completion: completion)
+    }
+
+    func searchMovies(query: String, year: Int? = nil, page: Int? = nil,
+                      completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
+        searchMovies(query: query, year: year, page: page, completion: completion)
+    }
+
+    func searchTVShows(query: String, firstAirDateYear: Int? = nil, page: Int? = nil,
+                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void) {
+        searchTVShows(query: query, firstAirDateYear: firstAirDateYear, page: page, completion: completion)
+
+    }
+
+    func searchPeople(query: String, page: Int? = nil,
+                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void) {
+        searchPeople(query: query, page: page, completion: completion)
+    }
+
+}
+
+#if canImport(Combine)
+public extension SearchService {
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchAllPublisher(query: String, page: Int? = nil) -> AnyPublisher<MediaPageableList, TMDbError> {
+        searchAllPublisher(query: query, page: page)
+    }
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchMoviesPublisher(query: String, year: Int? = nil,
+                               page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
+        searchMoviesPublisher(query: query, year: year, page: page)
+    }
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchTVShowsPublisher(query: String, firstAirDateYear: Int? = nil,
+                                page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
+        searchTVShowsPublisher(query: query, firstAirDateYear: firstAirDateYear, page: page)
+    }
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func searchPeoplePublisher(query: String, page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
+        searchPeoplePublisher(query: query, page: page)
+    }
+
+}
+#endif

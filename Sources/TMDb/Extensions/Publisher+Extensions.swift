@@ -1,3 +1,4 @@
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -49,3 +50,4 @@ extension Publisher where Output == URLSession.DataTaskPublisher.Output {
     }
 
 }
+#endif

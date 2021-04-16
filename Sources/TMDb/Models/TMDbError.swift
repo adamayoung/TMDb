@@ -2,7 +2,7 @@ import Foundation
 
 public enum TMDbError: Error {
 
-    case network(URLError)
+    case network(Error)
     case unauthorized
     case notFound
     case unknown
@@ -14,8 +14,8 @@ extension TMDbError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .network(let urlError):
-            return urlError.localizedDescription
+        case .network(let error):
+            return error.localizedDescription
 
         case .unauthorized:
             return "Unauthorised"
