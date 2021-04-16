@@ -32,8 +32,8 @@ class TMDbPersonServiceTests: XCTestCase {
 extension TMDbPersonServiceTests {
 
     func testDetailsPublisherReturnsPerson() throws {
-        let personID = 12
-        let expectedResult = Person(id: 1, name: "Edward Norton")
+        let expectedResult = Person.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
@@ -43,18 +43,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testCombinedCreditsPublisherReturnsCombinedCredits() throws {
-        let personID = 11
-        let expectedResult = PersonCombinedCredits(
-            id: 1,
-            cast: [
-                .movie(Movie(id: 1, title: "Movie 1")),
-                .tvShow(TVShow(id: 2, name: "TV Show 2"))
-            ],
-            crew: [
-                .movie(Movie(id: 3, title: "Movie 3")),
-                .tvShow(TVShow(id: 4, name: "TV Show 4"))
-            ]
-        )
+        let expectedResult = PersonCombinedCredits.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.combinedCreditsPublisher(forPerson: personID), storeIn: &cancellables)
@@ -64,18 +54,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testMovieCreditsPublisherReturnsMovieCredits() throws {
-        let personID = 11
-        let expectedResult = PersonMovieCredits(
-            id: 2,
-            cast: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2")
-            ],
-            crew: [
-                Movie(id: 3, title: "Movie 3"),
-                Movie(id: 4, title: "Movie 4")
-            ]
-        )
+        let expectedResult = PersonMovieCredits.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
@@ -85,18 +65,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testTVShowCreditsPublisherReturnsTVShowCredits() throws {
-        let personID = 11
-        let expectedResult = PersonTVShowCredits(
-            id: 1,
-            cast: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2")
-            ],
-            crew: [
-                TVShow(id: 3, name: "TV Show 3"),
-                TVShow(id: 4, name: "TV Show 4")
-            ]
-        )
+        let expectedResult = PersonTVShowCredits.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
@@ -106,14 +76,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testImagesPublisherReturnsImageCollection() throws {
-        let personID = 13
-        let expectedResult = PersonImageCollection(
-            id: personID,
-            profiles: [
-                ImageMetadata(filePath: URL(string: "/some/path/image1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/image2.jpg")!, width: 150, height: 300)
-            ]
-        )
+        let expectedResult = PersonImageCollection.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
@@ -123,15 +87,7 @@ extension TMDbPersonServiceTests {
     }
 
     func testPopularPublisherReturnsPeople() throws {
-        let expectedResult = PersonPageableList(
-            page: 1,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2")
-            ],
-            totalResults: 2,
-            totalPages: 1
-        )
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
@@ -141,16 +97,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testPopularPublisherWithPageReturnsPeople() throws {
-        let page = 2
-        let expectedResult = PersonPageableList(
-            page: page,
-            results: [
-                Person(id: 3, name: "Person 3"),
-                Person(id: 4, name: "Person 4")
-            ],
-            totalResults: 5,
-            totalPages: 2
-        )
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)

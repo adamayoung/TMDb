@@ -32,13 +32,9 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
 extension TMDbTVShowSeasonServiceTests {
 
     func testDetailsPublisherReturnsTVShowSeason() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = TVShowSeason(
-            id: 11,
-            name: "Season 1",
-            seasonNumber: seasonNumber
-        )
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowSeason.mock
+        let seasonNumber = expectedResult.seasonNumber
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
@@ -50,19 +46,9 @@ extension TMDbTVShowSeasonServiceTests {
     }
 
     func testImagesPublisherReturnsImages() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = ImageCollection(
-            id: 1,
-            posters: [
-                ImageMetadata(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
-            ],
-            backdrops: [
-                ImageMetadata(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
-                ImageMetadata(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
-            ]
-        )
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = ImageCollection.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
@@ -74,16 +60,9 @@ extension TMDbTVShowSeasonServiceTests {
     }
 
     func testVideosPublisherReturnsVideos() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = VideoCollection(
-            id: 1,
-            results: [
-                VideoMetadata(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
-                VideoMetadata(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
-                VideoMetadata(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
-            ]
-        )
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = VideoCollection.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),

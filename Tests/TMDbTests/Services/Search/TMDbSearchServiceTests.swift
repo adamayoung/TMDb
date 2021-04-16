@@ -73,17 +73,8 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchMoviesPublisherReturnsMovies() throws {
-        let query = "some search string"
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
@@ -94,18 +85,9 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchMoviesPublisherWithYearReturnsMovies() throws {
-        let query = "some search string"
+        let query = String.randomString
         let year = 2020
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
@@ -116,18 +98,9 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchMoviesPublisherWithPageReturnsMovies() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
@@ -138,19 +111,10 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchMoviesPublisherWithYearAndPageReturnsMovies() throws {
-        let query = "some search string"
+        let query = String.randomString
         let year = 2020
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
@@ -161,17 +125,8 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchTVShowsPublisherReturnsTVShows() throws {
-        let query = "some search string"
-        let expectedResult = TVShowPageableList(
-            page: 1,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
@@ -183,18 +138,9 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchTVShowsPublisherWithFirstAirDateYearReturnsTVShows() throws {
-        let query = "some search string"
+        let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList(
-            page: 1,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
@@ -206,18 +152,9 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchTVShowsPublisherWithPageReturnsTVShows() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = TVShowPageableList(
-            page: page,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
@@ -229,19 +166,10 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchTVShowsPublisherWithFirstAirDateYearANdPageReturnsTVShows() throws {
-        let query = "some search string"
+        let query = String.randomString
         let year = 2020
-        let page = 2
-        let expectedResult = TVShowPageableList(
-            page: page,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
@@ -253,17 +181,8 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchPeoplePublisherReturnsPeople() throws {
-        let query = "some search string"
-        let expectedResult = PersonPageableList(
-            page: 1,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2"),
-                Person(id: 3, name: "Person 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchPeoplePublisher(query: query, page: nil),
@@ -274,18 +193,9 @@ extension TMDbSearchServiceTests {
     }
 
     func testSearchPeoplePublisherWithPageReturnsPeople() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = PersonPageableList(
-            page: page,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2"),
-                Person(id: 3, name: "Person 3")
-            ],
-            totalResults: 3,
-            totalPages: 2
-        )
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.searchPeoplePublisher(query: query, page: page),

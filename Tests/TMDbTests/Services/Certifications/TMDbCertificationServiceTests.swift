@@ -32,16 +32,7 @@ class TMDbCertificationServiceTests: XCTestCase {
 extension TMDbCertificationServiceTests {
 
     func testMovieCertificationsPublisherReturnsMovieCertifications() throws {
-        let expectedResult = [
-            "A": [
-                Certification(code: "1", meaning: "Meaning 1", order: 1),
-                Certification(code: "2", meaning: "Meaning 2", order: 2)
-            ],
-            "B": [
-                Certification(code: "3", meaning: "Meaning 3", order: 1),
-                Certification(code: "4", meaning: "Meaning 4", order: 2)
-            ]
-        ]
+        let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
@@ -50,17 +41,8 @@ extension TMDbCertificationServiceTests {
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testTVShowCertificationsPublisherReturnsMovieCertifications() throws {
-        let expectedResult = [
-            "A": [
-                Certification(code: "1", meaning: "Meaning 1", order: 1),
-                Certification(code: "2", meaning: "Meaning 2", order: 2)
-            ],
-            "B": [
-                Certification(code: "3", meaning: "Meaning 3", order: 1),
-                Certification(code: "4", meaning: "Meaning 4", order: 2)
-            ]
-        ]
+    func testTVShowCertificationsPublisherReturnsTVShowCertifications() throws {
+        let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)

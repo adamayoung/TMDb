@@ -26,31 +26,7 @@ class TMDbConfigurationServiceTests: XCTestCase {
 extension TMDbConfigurationServiceTests {
 
     func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
-        let expectedResult = APIConfiguration(
-            images: ImagesConfiguration(
-                baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
-                secureBaseUrl: URL(string: "https://image.tmdb.org/t/p/")!,
-                backdropSizes: [
-                    "w300"
-                ],
-                logoSizes: [
-                    "w45"
-                ],
-                posterSizes: [
-                    "w92"
-                ],
-                profileSizes: [
-                    "w45"
-                ],
-                stillSizes: [
-                    "w92"
-                ]
-            ),
-            changeKeys: [
-                "air_date",
-                "also_known_as"
-            ]
-        )
+        let expectedResult = APIConfiguration.mock
         apiClient.response = expectedResult
 
         let result = try await(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
