@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  test-on-macos:
+    name: Test on macOS
     runs-on: macos-latest
 
     steps:
@@ -27,10 +27,7 @@ jobs:
       - name: Lint
         run: swiftlint
 
-      - name: Build
-        run: swift build
-
-      - name: Run tests
+      - name: Build and test
         run: swift test --enable-code-coverage
 
       - name: Generate Code Coverage report
@@ -40,3 +37,23 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash)
+  
+  test-on-linux:
+    name: Text on Linux
+    runs-on: ubuntu-latest
+    container:
+      image: swift:5.2
+      options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build and test
+        run: swift test --enable-test-discovery
