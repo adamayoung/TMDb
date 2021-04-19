@@ -25,7 +25,8 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Lint
-        run: swiftlint
+        run: |
+          swiftlint --reporter json > swiftlint.result.json
 
       - name: Build and test
         run: swift test --enable-code-coverage
@@ -33,10 +34,11 @@ jobs:
       - name: Generate Code Coverage report
         run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
-      - name: Upload to codecov
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
         env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
   test-on-linux:
     name: Text on Linux
