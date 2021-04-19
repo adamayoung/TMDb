@@ -43,7 +43,7 @@ jobs:
         run: xcrun llvm-cov show .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
       - name: SonarCloud Scan
-        run: sonar-scanner -Dsonar.projectKey=adamayoung_TMDb -Dsonar.organization=adamayoung -Dsonar.host.url="https://sonarcloud.io" -Dsonar.swift.coverage.reportPaths=info.lcov -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
+        run: sonar-scanner -Dsonar.projectKey=adamayoung_TMDb -Dsonar.organization=adamayoung -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=info.lcov -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
