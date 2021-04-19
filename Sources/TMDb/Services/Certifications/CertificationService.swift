@@ -4,7 +4,7 @@ import Foundation
 import Combine
 #endif
 
-/// Certifications interface.
+/// Get an up to date list of the officially supported movie certifications on TMDB.
 public protocol CertificationService {
 
     /// Fetches the officially supported movie certifications on TMDb.

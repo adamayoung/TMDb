@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+
   workflow_dispatch:
 
 jobs:
@@ -47,6 +53,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+  test-on-ios:
+    name: Test on iOS
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      
+      - name: Build and test
+        run: xcodebuild -scheme TMDb -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=14.4' test
   
   test-on-linux:
     name: Test on Linux

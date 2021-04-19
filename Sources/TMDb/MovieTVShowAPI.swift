@@ -1,39 +1,43 @@
 import Foundation
 
+/// The Movie Database API.
+///
+/// - Note: [The Movie Database API Documentation](https://developers.themoviedb.org)
 public protocol MovieTVShowAPI {
 
     /// Sets the TMDb API Key to be used with requests to the TMDb API.
     ///
     /// - Note: [TMDb API - Getting Started: Authentication](https://developers.themoviedb.org/3/getting-started/authentication#api-key)
     ///
-    /// - Parameter apiKey: The TMDb API Key.
+    /// - Parameters
+    ///     - apiKey: The TMDb API Key.
     static func setAPIKey(_ apiKey: String)
 
     /// Certifications.
     var certifications: CertificationService { get }
 
-    // Configurations.
+    /// Configurations.
     var configurations: ConfigurationService { get }
 
-    // Discover.
+    /// Discover.
     var discover: DiscoverService { get }
 
-    // Movies.
+    /// Movies.
     var movies: MovieService { get }
 
-    // People.
+    /// People.
     var people: PersonService { get }
 
-    // Search.
+    /// Search.
     var search: SearchService { get }
 
-    // Trending.
+    /// Trending.
     var trending: TrendingService { get }
 
-    // TV Shows.
+    /// TV Shows.
     var tvShows: TVShowService { get }
 
-    // TV Show Seasons.
+    /// TV Show Seasons.
     var tvShowSeasons: TVShowSeasonService { get }
 
 }

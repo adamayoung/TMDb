@@ -4,7 +4,7 @@ import Foundation
 import Combine
 #endif
 
-/// Configuration interface.
+/// Get the system wide configuration information.
 public protocol ConfigurationService {
 
     /// Fetches the TMDb API system wide configuration information.

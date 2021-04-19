@@ -21,7 +21,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///     - completion: Completion handler.
     ///     - result: The matching person's combined movie and TV show credits..
     func fetchCombinedCredits(forPerson personID: Person.ID,
@@ -32,7 +32,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///     - completion: Completion handler.
     ///     - result: The matching person's movie credits.
     func fetchMovieCredits(forPerson personID: Person.ID,
@@ -43,7 +43,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///     - completion: Completion handler.
     ///     - result: The matching person's TV show credits.
     func fetchTVShowCredits(forPerson personID: Person.ID,
@@ -54,7 +54,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///     - completion: Completion handler.
     ///     - result: The matching person's images.
     func fetchImages(forPerson personID: Person.ID,
@@ -63,7 +63,7 @@ public protocol PersonService {
     /// Fetches the list of known for shows for a person.
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///     - completion: Completion handler.
     ///     - result: The matching person's show credits.
     func fetchKnownFor(forPerson personID: Person.ID,
@@ -98,7 +98,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's combined movie and TV show credits.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
@@ -131,7 +131,7 @@ public protocol PersonService {
     /// - Note: [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's images.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
@@ -140,7 +140,7 @@ public protocol PersonService {
     /// Publishes the list of known for shows for a person.
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///     - personID: The identifier of the person.
     ///
     /// - Returns: A publisher with the matching person's show credits.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
