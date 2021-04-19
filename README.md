@@ -78,7 +78,7 @@ Search for movies, TV shows and people.
 
 Get the daily or weekly trending items. The daily trending list tracks items over the period of a day while items have a 24 hour half life. The weekly list tracks items over a 7 day period, with a 7 day half life.
 
-### TV Shows and Seasons
+### TV Shows
 
 Get information about TV shows.
 
