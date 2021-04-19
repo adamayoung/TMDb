@@ -15,14 +15,12 @@ class TMDbSearchServiceTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
         apiClient = MockAPIClient()
         service = TMDbSearchService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient.reset()
-
         super.tearDown()
     }
 
@@ -38,7 +36,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
@@ -54,7 +51,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
@@ -72,7 +68,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
     }
 
@@ -88,7 +83,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
@@ -104,7 +98,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
@@ -121,7 +114,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
     }
 
@@ -138,7 +130,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
     }
 
@@ -156,7 +147,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
     }
 
@@ -172,7 +162,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
@@ -188,7 +177,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
@@ -205,7 +193,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
     }
 
@@ -222,7 +209,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
     }
 
@@ -240,7 +226,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
     }
 
@@ -256,7 +241,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
@@ -272,7 +256,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
@@ -289,7 +272,6 @@ class TMDbSearchServiceTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 1)
-
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
     }
 

@@ -108,7 +108,6 @@ extension TVShow: Comparable {
 
 }
 
-
 extension TVShow {
 
     private enum CodingKeys: String, CodingKey {

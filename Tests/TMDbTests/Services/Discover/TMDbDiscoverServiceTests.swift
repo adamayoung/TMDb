@@ -287,7 +287,6 @@ extension TMDbDiscoverServiceTests {
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
     }
 
-
     func testTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
