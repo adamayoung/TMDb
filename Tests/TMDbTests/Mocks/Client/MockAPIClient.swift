@@ -17,7 +17,8 @@ class MockAPIClient: APIClient {
         Self.apiKey = apiKey
     }
 
-    func get<Response>(path: URL, httpHeaders: [String : String]?, completion: @escaping (Result<Response, TMDbError>) -> Void) where Response : Decodable {
+    func get<Response>(path: URL, httpHeaders: [String: String]?,
+                       completion: @escaping (Result<Response, TMDbError>) -> Void) where Response: Decodable {
         self.lastPath = path
         self.lastHTTPHeaders = httpHeaders
 

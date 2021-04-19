@@ -26,6 +26,60 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFetchDetailsReturnsTVShowSeason() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowSeason.mock
+        let seasonNumber = expectedResult.seasonNumber
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
+    func testFetchImagesReturnsImages() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = ImageCollection.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
+    func testFetchVideosReturnsVideos() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = VideoCollection.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
 }
 
 #if canImport(Combine)
