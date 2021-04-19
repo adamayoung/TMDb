@@ -24,6 +24,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
+      - name: Install tools
+        run: brew install sonar-scanner
+
       - name: Lint
         run: |
           swiftlint --reporter json > swiftlint.result.json
