@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbPersonServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbPersonService!
     var apiClient: MockAPIClient!
 
@@ -22,131 +27,284 @@ class TMDbPersonServiceTests: XCTestCase {
     }
 
     func testFetchDetailsReturnsPerson() throws {
-        let personID = 12
-        let expectedResult = Person(id: 1, name: "Edward Norton")
+        let expectedResult = Person.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forPerson: personID), storeIn: &cancellables)
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchDetails(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
+    }
+
+    func testFetchCombinedCreditsReturnsCombinedCredits() throws {
+        let mock = PersonCombinedCredits.mock
+        let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchCombinedCredits(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+    }
+
+    func testFetchMovieCreditsPublisherReturnsMovieCredits() throws {
+        let mock = PersonMovieCredits.mock
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovieCredits(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
+    }
+
+    func testFetchTVShowCreditsReturnsTVShowCredits() throws {
+        let mock = PersonTVShowCredits.mock
+        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchTVShowCredits(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
+    }
+
+    func testFetchImagesReturnsImageCollection() throws {
+        let expectedResult = PersonImageCollection.mock
+        let personID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchImages(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
+    }
+
+    func testFetchKnownForReturnsShows() throws {
+        let credits = PersonCombinedCredits.mock
+        let personID = credits.id
+        apiClient.response = credits
+        let topCastShows = Array(credits.cast.sorted().prefix(10))
+        let topCrewShows = Array(credits.crew.sorted().prefix(10))
+        var topShows = topCastShows + topCrewShows
+        topShows = topShows.reduce([], { shows, show in
+            var shows = shows
+            if !shows.contains(where: { $0.id == show.id }) {
+                shows.append(show)
+            }
+
+            return shows
+        })
+
+        topShows.sort { $0.popularity ?? 0 > $1.popularity ?? 0 }
+
+        let expectedResult = Array(topShows.prefix(10))
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchKnownFor(forPerson: personID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+    }
+
+    func testFetchPopularWithDefaultParametersReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
+    }
+
+    func testFetchPopularReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular(page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
+    }
+
+    func testFetchPopularWithPageReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular(page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)
+    }
+
+}
+
+#if canImport(Combine)
+extension TMDbPersonServiceTests {
+
+    func testDetailsPublisherReturnsPerson() throws {
+        let expectedResult = Person.mock
+        let personID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
     }
 
-    func testFetchCombinedCreditsReturnsCombinedCredits() throws {
-        let personID = 11
-        let expectedResult = PersonCombinedCredits(
-            id: 1,
-            cast: [
-                .movie(Movie(id: 1, title: "Movie 1")),
-                .tvShow(TVShow(id: 2, name: "TV Show 2"))
-            ],
-            crew: [
-                .movie(Movie(id: 3, title: "Movie 3")),
-                .tvShow(TVShow(id: 4, name: "TV Show 4"))
-            ]
-        )
+    func testCombinedCreditsPublisherReturnsCombinedCredits() throws {
+        let mock = PersonCombinedCredits.mock
+        let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchCombinedCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.combinedCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testFetchMovieCreditsReturnsMovieCredits() throws {
-        let personID = 11
-        let expectedResult = PersonMovieCredits(
-            id: 2,
-            cast: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2")
-            ],
-            crew: [
-                Movie(id: 3, title: "Movie 3"),
-                Movie(id: 4, title: "Movie 4")
-            ]
-        )
+    func testMovieCreditsPublisherReturnsMovieCredits() throws {
+        let mock = PersonMovieCredits.mock
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchMovieCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
     }
 
-    func testFetchTVShowCreditsReturnsTVShowCredits() throws {
-        let personID = 11
-        let expectedResult = PersonTVShowCredits(
-            id: 1,
-            cast: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 2")
-            ],
-            crew: [
-                TVShow(id: 3, name: "TV Show 3"),
-                TVShow(id: 4, name: "TV Show 4")
-            ]
-        )
+    func testTVShowCreditsPublisherReturnsTVShowCredits() throws {
+        let mock = PersonTVShowCredits.mock
+        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchTVShowCredits(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
     }
 
-    func testFetchImagesReturnsImageCollection() throws {
-        let personID = 13
-        let expectedResult = PersonImageCollection(
-            id: personID,
-            profiles: [
-                ImageMetadata(filePath: URL(string: "/some/path/image1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/image2.jpg")!, width: 150, height: 300)
-            ]
-        )
+    func testImagesPublisherReturnsImageCollection() throws {
+        let expectedResult = PersonImageCollection.mock
+        let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forPerson: personID), storeIn: &cancellables)
+        let result = try await(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
     }
 
-    func testFetchPopularReturnsPeople() throws {
-        let expectedResult = PersonPageableList(
-            page: 1,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2")
-            ],
-            totalResults: 2,
-            totalPages: 1
-        )
+    func testKnownForPublisherReturnsShows() throws {
+        let credits = PersonCombinedCredits.mock
+        let personID = credits.id
+        apiClient.response = credits
+        let topCastShows = Array(credits.cast.sorted().prefix(10))
+        let topCrewShows = Array(credits.crew.sorted().prefix(10))
+        var topShows = topCastShows + topCrewShows
+        topShows = topShows.reduce([], { shows, show in
+            var shows = shows
+            if !shows.contains(where: { $0.id == show.id }) {
+                shows.append(show)
+            }
+
+            return shows
+        })
+
+        topShows.sort { $0.popularity ?? 0 > $1.popularity ?? 0 }
+
+        let expectedResult = Array(topShows.prefix(10))
+
+        let result = try await(publisher: service.knownForPublisher(forPerson: personID), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+    }
+
+    func testPopularPublisherWithDefaultParametersReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsPeople() throws {
-        let page = 2
-        let expectedResult = PersonPageableList(
-            page: page,
-            results: [
-                Person(id: 3, name: "Person 3"),
-                Person(id: 4, name: "Person 4")
-            ],
-            totalResults: 5,
-            totalPages: 2
-        )
+    func testPopularPublisherReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
+    }
+
+    func testPopularPublisherWithPageReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)
     }
 
 }
+#endif

@@ -90,9 +90,25 @@ extension Movie {
 
 }
 
+extension Movie: Comparable {
+
+    public static func < (lhs: Movie, rhs: Movie) -> Bool {
+        guard let lhsDate = lhs.releaseDate else {
+            return false
+        }
+
+        guard let rhsDate = rhs.releaseDate else {
+            return true
+        }
+
+        return lhsDate > rhsDate
+    }
+
+}
+
 extension Movie {
 
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case id
         case title
         case tagline

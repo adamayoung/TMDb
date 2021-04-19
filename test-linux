@@ -1,0 +1,6 @@
+docker run --rm --privileged --interactive --tty \
+    --volume "$(pwd):/src" \
+    --workdir "/src" \
+    swift:5.2 \
+    /bin/bash -c \
+    "swift test --build-path ./.build/linux --enable-test-discovery"

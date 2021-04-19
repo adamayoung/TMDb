@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbTVShowSeasonServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbTVShowSeasonService!
     var apiClient: MockAPIClient!
 
@@ -22,16 +27,71 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     }
 
     func testFetchDetailsReturnsTVShowSeason() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = TVShowSeason(
-            id: 11,
-            name: "Season 1",
-            seasonNumber: seasonNumber
-        )
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowSeason.mock
+        let seasonNumber = expectedResult.seasonNumber
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID),
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
+    func testFetchImagesReturnsImages() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = ImageCollection.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
+    func testFetchVideosReturnsVideos() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = VideoCollection.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath,
+                       TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+    }
+
+}
+
+#if canImport(Combine)
+extension TMDbTVShowSeasonServiceTests {
+
+    func testDetailsPublisherReturnsTVShowSeason() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowSeason.mock
+        let seasonNumber = expectedResult.seasonNumber
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -39,23 +99,13 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
                        TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchImagesReturnsImages() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = ImageCollection(
-            id: 1,
-            posters: [
-                ImageMetadata(filePath: URL(string: "/some/path/1.jpg")!, width: 100, height: 200),
-                ImageMetadata(filePath: URL(string: "/some/path/2.jpg")!, width: 200, height: 400)
-            ],
-            backdrops: [
-                ImageMetadata(filePath: URL(string: "/some/path/3.jpg")!, width: 200, height: 100),
-                ImageMetadata(filePath: URL(string: "/some/path/4.jpg")!, width: 400, height: 200)
-            ]
-        )
+    func testImagesPublisherReturnsImages() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = ImageCollection.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -63,20 +113,13 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
                        TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchVideosReturnsVideos() throws {
-        let seasonNumber = 1
-        let tvShowID = 2
-        let expectedResult = VideoCollection(
-            id: 1,
-            results: [
-                VideoMetadata(id: "1", name: "Video 1", site: "Site 1", key: "Key 1", type: .trailer, size: .s1080),
-                VideoMetadata(id: "2", name: "Video 2", site: "Site 2", key: "Key 2", type: .clip, size: .s720),
-                VideoMetadata(id: "3", name: "Video 3", site: "Site 3", key: "Key 3", type: .teaser, size: .s480)
-            ]
-        )
+    func testVideosPublisherReturnsVideos() throws {
+        let seasonNumber = Int.randomID
+        let tvShowID = Int.randomID
+        let expectedResult = VideoCollection.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try await(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -85,3 +128,4 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
     }
 
 }
+#endif

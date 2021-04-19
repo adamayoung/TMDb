@@ -1,10 +1,15 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbMovieServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
@@ -22,231 +27,448 @@ class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testFetchDetailsReturnsMovie() throws {
-        let movieID = 1
-        let expectedResult = Movie(id: movieID, title: "Some title")
+        let expectedResult = Movie.mock
+        let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchDetails(forMovie: movieID), storeIn: &cancellables)
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchDetails(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
+    }
+
+    func testFetchCreditsReturnsCredits() throws {
+        let expectedResult = ShowCredits.mock
+        let movieID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchCredits(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
+    }
+
+    func testFetchReviewsWithDefaultParametersReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchReviews(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
+    }
+
+    func testFetchReviewsReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchReviews(forMovie: movieID, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
+    }
+
+    func testFetchReviewsWithPageReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchReviews(forMovie: movieID, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).url)
+    }
+
+    func testFetchImagesReturnsImageCollection() throws {
+        let expectedResult = ImageCollection.mock
+        let movieID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchImages(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
+    }
+
+    func testFetchVideosReturnsVideoCollection() throws {
+        let expectedResult = VideoCollection.mock
+        let movieID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchVideos(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
+    }
+
+    func testFetchRecommendationsWithDefaultParametersReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchRecommendations(forMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
+    }
+
+    func testFetchRecommendationsReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchRecommendations(forMovie: movieID, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
+    }
+
+    func testFetchRecommendationsWithPageReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchRecommendations(forMovie: movieID, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).url)
+    }
+
+    func testFetchSimilarWithDefaultParametersReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchSimilar(toMovie: movieID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
+    }
+
+    func testFetchSimilarReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchSimilar(toMovie: movieID, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
+    }
+
+    func testFetchSimilarWithPageReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchSimilar(toMovie: movieID, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).url)
+    }
+
+    func testFetchPopularWithDefaultParametersReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
+    }
+
+    func testFetchPopularReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular(page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
+    }
+
+    func testFetchPopularWithPageReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular(page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
+    }
+
+}
+
+#if canImport(Combine)
+extension TMDbMovieServiceTests {
+
+    func testDetailsPublisherReturnsMovie() throws {
+        let expectedResult = Movie.mock
+        let movieID = expectedResult.id
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.detailsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
     }
 
-    func testFetchCreditsReturnsCredits() throws {
-        let movieID = 1
-        let expectedResult = ShowCredits(
-            id: movieID,
-            cast: [CastMember(id: 2, creditID: "a", name: "Cast 1", character: "Character 1", order: 1)],
-            crew: [CrewMember(id: 3, creditID: "b", name: "Crew 1", job: "Job 1", department: "Department 1")]
-        )
+    func testCreditsPublisherReturnsCredits() throws {
+        let expectedResult = ShowCredits.mock
+        let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchCredits(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.creditsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
     }
 
-    func testFetchReviewsReturnsReviews() throws {
-        let movieID = 1
-        let expectedResult = ReviewPageableList(
-            page: 1,
-            results: [
-                Review(id: "1", author: "Author 1", content: "Some content 1"),
-                Review(id: "2", author: "Author 2", content: "Some content 2"),
-                Review(id: "3", author: "Author 3", content: "Some content 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testReviewsPublisherWithDefaultParametersReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchReviews(forMovie: movieID, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
     }
 
-    func testFetchReviewsWithPageReturnsReviews() throws {
-        let movieID = 1
-        let page = 2
-        let expectedResult = ReviewPageableList(
-            page: page,
-            results: [
-                Review(id: "4", author: "Author 4", content: "Some content 4"),
-                Review(id: "5", author: "Author 5", content: "Some content 5"),
-                Review(id: "6", author: "Author 6", content: "Some content 6")
-            ],
-            totalResults: 6,
-            totalPages: 2
-        )
+    func testReviewsPublisherReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchReviews(forMovie: movieID, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: nil),
+                               storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
+    }
+
+    func testReviewsPublisherWithPageReturnsReviews() throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).url)
     }
 
-    func testFetchImagesReturnsImageCollection() throws {
-        let movieID = 1
-        let expectedResult = ImageCollection(
-            id: movieID,
-            posters: [ImageMetadata(filePath: URL(string: "/poster.jog")!, width: 10, height: 20)],
-            backdrops: [ImageMetadata(filePath: URL(string: "/backgrop.jog")!, width: 50, height: 100)]
-        )
+    func testImagesPublisherReturnsImageCollection() throws {
+        let expectedResult = ImageCollection.mock
+        let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchImages(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.imagesPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
     }
 
-    func testFetchVideosReturnsVideoCollection() throws {
-        let movieID = 1
-        let expectedResult = VideoCollection(
-            id: movieID,
-            results: [
-                VideoMetadata(
-                    id: "2",
-                    name: "Video",
-                    site: "YouTube",
-                    key: "abc123",
-                    type: .trailer,
-                    size: .s1080
-                )
-            ]
-        )
+    func testVideosPublisherReturnsVideoCollection() throws {
+        let expectedResult = VideoCollection.mock
+        let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchVideos(forMovie: movieID), storeIn: &cancellables)
+        let result = try await(publisher: service.videosPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsReturnsMovies() throws {
+    func testRecommendationsPublisherWithDefaultParametersReturnsMovies() throws {
         let movieID = 1
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchRecommendations(forMovie: movieID, page: nil),
+        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
+    }
+
+    func testRecommendationsPublisherReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsWithPageReturnsMovies() throws {
+    func testRecommendationsPublisherWithPageReturnsMovies() throws {
         let movieID = 1
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 4, title: "Movie 4"),
-                Movie(id: 5, title: "Movie 5"),
-                Movie(id: 6, title: "Movie 6")
-            ],
-            totalResults: 6,
-            totalPages: 2
-        )
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchRecommendations(forMovie: movieID, page: page),
+        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).url)
     }
 
-    func testFetchSimilarReturnsMovies() throws {
+    func testSimilarPublisherWithDefaultParametersReturnsMovies() throws {
         let movieID = 1
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchSimilar(toMovie: movieID, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.similarPublisher(toMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
     }
 
-    func testFetchSimilarWithPageReturnsMovies() throws {
+    func testSimilarPublisherReturnsMovies() throws {
         let movieID = 1
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 4, title: "Movie 4"),
-                Movie(id: 5, title: "Movie 5"),
-                Movie(id: 6, title: "Movie 6")
-            ],
-            totalResults: 6,
-            totalPages: 2
-        )
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchSimilar(toMovie: movieID, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: nil), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
+    }
+
+    func testSimilarPublisherWithPageReturnsMovies() throws {
+        let movieID = 1
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).url)
     }
 
-    func testFetchPopularReturnsMovies() throws {
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testPopularPublisherWithDefaultParametersReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsMovies() throws {
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 4, title: "Movie 4"),
-                Movie(id: 5, title: "Movie 5"),
-                Movie(id: 6, title: "Movie 6")
-            ],
-            totalResults: 6,
-            totalPages: 2
-        )
+    func testPopularPublisherReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.fetchPopular(page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
+    }
+
+    func testPopularPublisherWithPageReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
     }
 
 }
+#endif

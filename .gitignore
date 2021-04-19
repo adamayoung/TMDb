@@ -96,6 +96,7 @@ Packages
 xcuserdata
 *.xcodeproj
 info.lcov
+Coverage.report
 
 ### SwiftPM ###
 
@@ -121,6 +122,6 @@ info.lcov
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # swiftlint
-swiftlint.json
+swiftlint.result.json
 
 # End of https://www.gitignore.io/api/xcode,macos,swift,swiftpm,swiftpackagemanager

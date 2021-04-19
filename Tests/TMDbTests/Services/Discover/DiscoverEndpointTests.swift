@@ -22,7 +22,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testMoviesEndpointWithWithPeopleReturnsURL() {
         let expectedURL = URL(string: "/discover/movie?with_people=1,2,3")!
 
-        let url = DiscoverEndpoint.movies(withPeople: [1, 2, 3]).url
+        let url = DiscoverEndpoint.movies(people: [1, 2, 3]).url
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -38,7 +38,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testMoviesEndpointWithSortedByAndWithPeopleAndPageReturnsURL() {
         let expectedURL = URL(string: "/discover/movie?sort_by=original_title.asc&with_people=1,2,3&page=1")!
 
-        let url = DiscoverEndpoint.movies(sortBy: .originalTitleAscending, withPeople: [1, 2, 3], page: 1).url
+        let url = DiscoverEndpoint.movies(sortBy: .originalTitleAscending, people: [1, 2, 3], page: 1).url
 
         XCTAssertEqual(url, expectedURL)
     }

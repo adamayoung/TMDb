@@ -1,282 +1,486 @@
-import Combine
 @testable import TMDb
 import XCTest
 
+#if canImport(Combine)
+import Combine
+#endif
+
 class TMDbSearchServiceTests: XCTestCase {
 
+    #if canImport(Combine)
     var cancellables: Set<AnyCancellable> = []
+    #endif
     var service: TMDbSearchService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
-
         apiClient = MockAPIClient()
         service = TMDbSearchService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient.reset()
-
         super.tearDown()
     }
 
-    func testSearchAllReturnsMedia() throws {
-        let query = "some search string"
-        let expectedResult = MediaPageableList(
-            page: 1,
-            results: [
-                .movie(Movie(id: 1, title: "Movie 1")),
-                .tvShow(TVShow(id: 2, name: "TV Show 2")),
-                .person(Person(id: 3, name: "Person 3"))
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testFetchSearchAllWithDefaultParametersReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAll(query: query, page: nil), storeIn: &cancellables)
+        let expectation = XCTestExpectation(description: "await")
+        service.searchAll(query: query) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
+    }
+
+    func testFetchSearchAllReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchAll(query: query, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
+    }
+
+    func testFetchSearchAllWithPageReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
+        let page = expectedResult.page
+
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchAll(query: query, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
+    }
+
+    func testFetchSearchMoviesWithDefaultParametersReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchMovies(query: query) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
+    }
+
+    func testFetchSearchMoviesReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchMovies(query: query, year: nil, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
+    }
+
+    func testFetchSearchMoviesWithYearReturnsMovies() throws {
+        let query = String.randomString
+        let year = 2020
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchMovies(query: query, year: year, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
+    }
+
+    func testFetchSearchMoviesWithPageReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchMovies(query: query, year: nil, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
+    }
+
+    func testFetchSearchMoviesWithYearAndPageReturnsMovies() throws {
+        let query = String.randomString
+        let year = 2020
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchMovies(query: query, year: year, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
+    }
+
+    func testFetchSearchTVShowsWithDefaultParametersReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchTVShows(query: query) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
+    }
+
+    func testFetchSearchTVShowsReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchTVShows(query: query, firstAirDateYear: nil, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
+    }
+
+    func testFetchSearchTVShowsWithFirstAirDateYearReturnsTVShows() throws {
+        let query = String.randomString
+        let year = 2020
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchTVShows(query: query, firstAirDateYear: year, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
+    }
+
+    func testFetchSearchTVShowsWithPageReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchTVShows(query: query, firstAirDateYear: nil, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
+    }
+
+    func testFetchSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() throws {
+        let query = String.randomString
+        let year = 2020
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchTVShows(query: query, firstAirDateYear: year, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
+    }
+
+    func testFetchSearchPeopleWithDefaultParametersReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchPeople(query: query) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
+    }
+
+    func testFetchSearchPeopleReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchPeople(query: query, page: nil) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
+    }
+
+    func testFetchSearchPeopleWithPageReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.searchPeople(query: query, page: page) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
+    }
+
+}
+
+#if canImport(Combine)
+extension TMDbSearchServiceTests {
+
+    func testSearchAllPublisherWithDefaultParametersReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.searchAllPublisher(query: query), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
-    func testSearchAllWithPageReturnsMedia() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = MediaPageableList(
-            page: page,
-            results: [
-                .movie(Movie(id: 1, title: "Movie 1")),
-                .tvShow(TVShow(id: 2, name: "TV Show 2")),
-                .person(Person(id: 3, name: "Person 3"))
-            ],
-            totalResults: 3,
-            totalPages: 2
-        )
+    func testSearchAllPublisherReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAll(query: query, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.searchAllPublisher(query: query, page: nil), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
+    }
+
+    func testSearchAllPublisherWithPageReturnsMedia() throws {
+        let query = String.randomString
+        let expectedResult = MediaPageableList.mock
+        let page = expectedResult.page
+
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.searchAllPublisher(query: query, page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
     }
 
-    func testSearchMoviesReturnsMovies() throws {
-        let query = "some search string"
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchMoviesPublisherWithDefaultParametersReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: nil, page: nil),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
-    func testSearchMoviesWithYearReturnsMovies() throws {
-        let query = "some search string"
-        let year = 2020
-        let expectedResult = MoviePageableList(
-            page: 1,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchMoviesPublisherReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: year, page: nil),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
+                               storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
+    }
+
+    func testSearchMoviesPublisherWithYearReturnsMovies() throws {
+        let query = String.randomString
+        let year = 2020
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
     }
 
-    func testSearchMoviesWithPageReturnsMovies() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchMoviesPublisherWithPageReturnsMovies() throws {
+        let query = String.randomString
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: nil, page: page),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
     }
 
-    func testSearchMoviesWithYearAndPageReturnsMovies() throws {
-        let query = "some search string"
+    func testSearchMoviesPublisherWithYearAndPageReturnsMovies() throws {
+        let query = String.randomString
         let year = 2020
-        let page = 2
-        let expectedResult = MoviePageableList(
-            page: page,
-            results: [
-                Movie(id: 1, title: "Movie 1"),
-                Movie(id: 2, title: "Movie 2"),
-                Movie(id: 3, title: "Movie 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = MoviePageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMovies(query: query, year: year, page: page),
+        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
     }
 
-    func testSearchTVShowsReturnsTVShows() throws {
-        let query = "some search string"
-        let expectedResult = TVShowPageableList(
-            page: 1,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchTVShowsPublisherWithDefaultParametersReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: nil, page: nil),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
+    }
+
+    func testSearchTVShowsPublisherReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+                                                                         page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() throws {
-        let query = "some search string"
+    func testSearchTVShowsPublisherWithFirstAirDateYearReturnsTVShows() throws {
+        let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList(
-            page: 1,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: year, page: nil),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+                                                                         page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
     }
 
-    func testSearchTVShowsWithPageReturnsTVShows() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = TVShowPageableList(
-            page: page,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchTVShowsPublisherWithPageReturnsTVShows() throws {
+        let query = String.randomString
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: nil, page: page),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+                                                                         page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() throws {
-        let query = "some search string"
+    func testSearchTVShowsPublisherWithFirstAirDateYearANdPageReturnsTVShows() throws {
+        let query = String.randomString
         let year = 2020
-        let page = 2
-        let expectedResult = TVShowPageableList(
-            page: page,
-            results: [
-                TVShow(id: 1, name: "TV Show 1"),
-                TVShow(id: 2, name: "TV Show 1"),
-                TVShow(id: 3, name: "TV Show 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+        let expectedResult = TVShowPageableList.mock
+        let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShows(query: query, firstAirDateYear: year, page: page),
+        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+                                                                         page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
     }
 
-    func testSearchPeopleReturnsPeople() throws {
-        let query = "some search string"
-        let expectedResult = PersonPageableList(
-            page: 1,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2"),
-                Person(id: 3, name: "Person 3")
-            ],
-            totalResults: 3,
-            totalPages: 1
-        )
+    func testSearchPeoplePublisherWithDefaultParametersReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeople(query: query, page: nil), storeIn: &cancellables)
+        let result = try await(publisher: service.searchPeoplePublisher(query: query), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
-    func testSearchPeopleWithPageReturnsPeople() throws {
-        let query = "some search string"
-        let page = 2
-        let expectedResult = PersonPageableList(
-            page: page,
-            results: [
-                Person(id: 1, name: "Person 1"),
-                Person(id: 2, name: "Person 2"),
-                Person(id: 3, name: "Person 3")
-            ],
-            totalResults: 3,
-            totalPages: 2
-        )
+    func testSearchPeoplePublisherReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeople(query: query, page: page), storeIn: &cancellables)
+        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: nil),
+                               storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
+    }
+
+    func testSearchPeoplePublisherWithPageReturnsPeople() throws {
+        let query = String.randomString
+        let expectedResult = PersonPageableList.mock
+        let page = expectedResult.page
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: page),
+                               storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
     }
 
 }
+#endif

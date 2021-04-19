@@ -1,5 +1,7 @@
 excluded:
   - .build
+  - Tests/**/XCTestManifests.swift
+  - Tests/LinuxMain.swift
 
 opt_in_rules:
   - attributes
@@ -12,6 +14,9 @@ opt_in_rules:
 
 type_name:
   max_length: 60
+
+cyclomatic_complexity:
+  ignores_case_statements: true
 
 identifier_name:
   min_length:

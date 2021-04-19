@@ -1,5 +1,8 @@
-import Combine
 import Foundation
+
+#if canImport(Combine)
+import Combine
+#endif
 
 final class TMDbTrendingService: TrendingService {
 
@@ -9,19 +12,43 @@ final class TMDbTrendingService: TrendingService {
         self.apiClient = apiClient
     }
 
-    func fetchMovies(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+    func fetchMovies(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+                     completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page), completion: completion)
+    }
+
+    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+                      completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page), completion: completion)
+    }
+
+    func fetchPeople(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+                     completion: @escaping (Result<PersonPageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page), completion: completion)
+    }
+
+}
+
+#if canImport(Combine)
+extension TMDbTrendingService {
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func moviesPublisher(timeWindow: TrendingTimeWindowFilterType,
+                         page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
     }
 
-    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType,
-                      page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType,
+                          page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
     }
 
-    func fetchPeople(timeWindow: TrendingTimeWindowFilterType,
-                     page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func peoplePublisher(timeWindow: TrendingTimeWindowFilterType,
+                         page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
     }
 
 }
+#endif
