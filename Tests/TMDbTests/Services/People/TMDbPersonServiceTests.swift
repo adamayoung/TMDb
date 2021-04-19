@@ -43,7 +43,8 @@ class TMDbPersonServiceTests: XCTestCase {
     }
 
     func testFetchCombinedCreditsReturnsCombinedCredits() throws {
-        let expectedResult = PersonCombinedCredits.mock
+        let mock = PersonCombinedCredits.mock
+        let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -59,7 +60,8 @@ class TMDbPersonServiceTests: XCTestCase {
     }
 
     func testFetchMovieCreditsPublisherReturnsMovieCredits() throws {
-        let expectedResult = PersonMovieCredits.mock
+        let mock = PersonMovieCredits.mock
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -75,7 +77,8 @@ class TMDbPersonServiceTests: XCTestCase {
     }
 
     func testFetchTVShowCreditsReturnsTVShowCredits() throws {
-        let expectedResult = PersonTVShowCredits.mock
+        let mock = PersonTVShowCredits.mock
+        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -110,8 +113,8 @@ class TMDbPersonServiceTests: XCTestCase {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
         apiClient.response = credits
-        let topCastShows = Array(credits.cast.prefix(10))
-        let topCrewShows = Array(credits.crew.prefix(10))
+        let topCastShows = Array(credits.cast.sorted().prefix(10))
+        let topCrewShows = Array(credits.crew.sorted().prefix(10))
         var topShows = topCastShows + topCrewShows
         topShows = topShows.reduce([], { shows, show in
             var shows = shows
@@ -135,6 +138,21 @@ class TMDbPersonServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
 
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+    }
+
+    func testFetchPopularWithDefaultParametersReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
     func testFetchPopularReturnsPeople() throws {
@@ -185,7 +203,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testCombinedCreditsPublisherReturnsCombinedCredits() throws {
-        let expectedResult = PersonCombinedCredits.mock
+        let mock = PersonCombinedCredits.mock
+        let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -196,7 +215,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testMovieCreditsPublisherReturnsMovieCredits() throws {
-        let expectedResult = PersonMovieCredits.mock
+        let mock = PersonMovieCredits.mock
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -207,7 +227,8 @@ extension TMDbPersonServiceTests {
     }
 
     func testTVShowCreditsPublisherReturnsTVShowCredits() throws {
-        let expectedResult = PersonTVShowCredits.mock
+        let mock = PersonTVShowCredits.mock
+        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
@@ -232,8 +253,8 @@ extension TMDbPersonServiceTests {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
         apiClient.response = credits
-        let topCastShows = Array(credits.cast.prefix(10))
-        let topCrewShows = Array(credits.crew.prefix(10))
+        let topCastShows = Array(credits.cast.sorted().prefix(10))
+        let topCrewShows = Array(credits.crew.sorted().prefix(10))
         var topShows = topCastShows + topCrewShows
         topShows = topShows.reduce([], { shows, show in
             var shows = shows
@@ -252,6 +273,16 @@ extension TMDbPersonServiceTests {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+    }
+
+    func testPopularPublisherWithDefaultParametersReturnsPeople() throws {
+        let expectedResult = PersonPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
     func testPopularPublisherReturnsPeople() throws {

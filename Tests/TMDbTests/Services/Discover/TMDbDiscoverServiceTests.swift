@@ -26,6 +26,21 @@ class TMDbDiscoverServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFetchMoviesWithDefaultParametersReturnsMovies() {
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchMovies { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
+    }
+
     func testFetchMoviesReturnsMovies() {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
@@ -107,6 +122,21 @@ class TMDbDiscoverServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page).url)
     }
 
+    func testFetchTVShowsWithDefaultParametersReturnsTVShows() throws {
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchTVShows { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
+    }
+
     func testFetchTVShowsReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
@@ -176,6 +206,16 @@ class TMDbDiscoverServiceTests: XCTestCase {
 #if canImport(Combine)
 extension TMDbDiscoverServiceTests {
 
+    func testMoviesPublisherWithDefaultParametersReturnsMovies() throws {
+        let expectedResult = MoviePageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.moviesPublisher(), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
+    }
+
     func testMoviesPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
@@ -236,6 +276,17 @@ extension TMDbDiscoverServiceTests {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page).url)
     }
+
+    func testTVShowsPublisherWithDefaultParametersReturnsTVShows() throws {
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.tvShowsPublisher(), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
+    }
+
 
     func testTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock

@@ -17,7 +17,7 @@ final class MockTrendingService: TrendingService {
     private(set) var lastPeopleTimeWindow: TrendingTimeWindowFilterType?
     private(set) var lastPeoplePage: Int?
 
-    func fetchMovies(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchMovies(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastMoviesTimeWindow = timeWindow
         lastMoviesPage = page
@@ -31,7 +31,7 @@ final class MockTrendingService: TrendingService {
         }
     }
 
-    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                       completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
         lastTVShowsTimeWindow = timeWindow
         lastTVShowsPage = page
@@ -45,7 +45,7 @@ final class MockTrendingService: TrendingService {
         }
     }
 
-    func fetchPeople(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchPeople(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (Result<PersonPageableList, TMDbError>) -> Void) {
         lastPeopleTimeWindow = timeWindow
         lastPeoplePage = page

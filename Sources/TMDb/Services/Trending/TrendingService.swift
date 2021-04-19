@@ -16,11 +16,11 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending movies in a time window as a pageable list.
-    func fetchMovies(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchMovies(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
 
     /// Fetches a list of the daily or weekly trending TV shows.
@@ -33,11 +33,11 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending TV shows in a time window as a pageable list.
-    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void)
 
     /// Fetches a list of the daily or weekly trending people.
@@ -50,11 +50,11 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending people in a time window as a pageable list.
-    func fetchPeople(timeWindow: TrendingTimeWindowFilterType?, page: Int?,
+    func fetchPeople(timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void)
 
     #if canImport(Combine)
@@ -68,12 +68,12 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with trending movies in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(timeWindow: TrendingTimeWindowFilterType?,
+    func moviesPublisher(timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending TV shows.
@@ -86,12 +86,12 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with trending TV shows in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType?,
+    func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType,
                           page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending people.
@@ -104,12 +104,12 @@ public protocol TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - timeWindow: Daily or weekly time window.
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
     ///     - page: The page of results to return.
     ///
     /// - Returns: A publisher with trending people in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func peoplePublisher(timeWindow: TrendingTimeWindowFilterType?,
+    func peoplePublisher(timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
     #endif
 
@@ -117,19 +117,18 @@ public protocol TrendingService {
 
 public extension TrendingService {
 
-    func fetchMovies(timeWindow: TrendingTimeWindowFilterType? = .default, page: Int? = nil,
-                     completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
-        fetchMovies(timeWindow: timeWindow, page: page, completion: completion)
+    func fetchMovies(page: Int? = nil, completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
+        fetchMovies(timeWindow: .default, page: page, completion: completion)
     }
 
-    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType? = .default, page: Int? = nil,
+    func fetchTVShows(page: Int? = nil,
                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void) {
-        fetchTVShows(timeWindow: timeWindow, page: page, completion: completion)
+        fetchTVShows(timeWindow: .default, page: page, completion: completion)
     }
 
-    func fetchPeople(timeWindow: TrendingTimeWindowFilterType? = .default, page: Int? = nil,
+    func fetchPeople(page: Int? = nil,
                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void) {
-        fetchPeople(timeWindow: timeWindow, page: page, completion: completion)
+        fetchPeople(timeWindow: .default, page: page, completion: completion)
     }
 
 }
@@ -138,21 +137,18 @@ public extension TrendingService {
 public extension TrendingService {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(timeWindow: TrendingTimeWindowFilterType? = .default,
-                         page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
-        moviesPublisher(timeWindow: timeWindow, page: page)
+    func moviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
+        moviesPublisher(timeWindow: .default, page: page)
     }
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType? = .default,
-                          page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        tvShowsPublisher(timeWindow: timeWindow, page: page)
+    func tvShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
+        tvShowsPublisher(timeWindow: .default, page: page)
     }
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func peoplePublisher(timeWindow: TrendingTimeWindowFilterType? = .default,
-                         page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
-        peoplePublisher(timeWindow: timeWindow, page: page)
+    func peoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
+        peoplePublisher(timeWindow: .default, page: page)
     }
 
 }

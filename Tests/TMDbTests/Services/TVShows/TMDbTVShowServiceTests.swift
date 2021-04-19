@@ -58,6 +58,22 @@ class TMDbTVShowServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.credits(tvShowID: tvShowID).url)
     }
 
+    func testFetchReviewsWithDefaultParametersReturnsReviews() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchReviews(forTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
+    }
+
     func testFetchReviewsReturnsReviews() throws {
         let tvShowID = Int.randomID
         let expectedResult = ReviewPageableList.mock
@@ -123,6 +139,22 @@ class TMDbTVShowServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).url)
     }
 
+    func testFetchRecommendationsWithDefaultParametersReturnsTVShows() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchRecommendations(forTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
+    }
+
     func testFetchRecommendationsReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
@@ -156,6 +188,22 @@ class TMDbTVShowServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page).url)
     }
 
+    func testFetchSimilarWithDefaultParametersReturnsTVShows() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchSimilar(toTVShow: tvShowID) { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
+    }
+
     func testFetchSimilarReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
@@ -187,6 +235,21 @@ class TMDbTVShowServiceTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
 
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID, page: page).url)
+    }
+
+    func testFetchPopularWithDefaultParametersReturnsTVShows() throws {
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let expectation = XCTestExpectation(description: "await")
+        service.fetchPopular { result in
+            XCTAssertEqual(try? result.get(), expectedResult)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1)
+
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
     }
 
     func testFetchPopularReturnsTVShows() throws {
@@ -247,6 +310,17 @@ extension TMDbTVShowServiceTests {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.credits(tvShowID: tvShowID).url)
     }
 
+    func testReviewsPublisherWithDefaultParametersReturnsReviews() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = ReviewPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.reviewsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
+    }
+
     func testReviewsPublisherReturnsReviews() throws {
         let tvShowID = Int.randomID
         let expectedResult = ReviewPageableList.mock
@@ -294,6 +368,17 @@ extension TMDbTVShowServiceTests {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).url)
     }
 
+    func testRecommendationsPublisherWithDefaultParametersReturnsTVShows() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.recommendationsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
+    }
+
     func testRecommendationsPublisherReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
@@ -319,6 +404,17 @@ extension TMDbTVShowServiceTests {
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page).url)
     }
 
+    func testSimilarPublisherWithDefaultParametersReturnsTVShows() throws {
+        let tvShowID = Int.randomID
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.similarPublisher(toTVShow: tvShowID), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
+    }
+
     func testSimilarPublisherReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
@@ -342,6 +438,16 @@ extension TMDbTVShowServiceTests {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID, page: page).url)
+    }
+
+    func testPopularPublisherWithDefaultParametersReturnsTVShows() throws {
+        let expectedResult = TVShowPageableList.mock
+        apiClient.response = expectedResult
+
+        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
     }
 
     func testPopularPublisherReturnsTVShows() throws {

@@ -9,7 +9,8 @@ extension TVShow {
         return .init(
             id: id,
             name: "TV Show \(id)",
-            overview: .randomString
+            overview: .randomString,
+            firstAirDate: Date.random
         )
     }
 

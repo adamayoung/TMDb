@@ -72,12 +72,12 @@ public protocol DiscoverService {
 
 public extension DiscoverService {
 
-    func fetchMovies(sortBy: MovieSortBy? = .default, withPeople people: [Person.ID]? = nil, page: Int? = nil,
+    func fetchMovies(sortBy: MovieSortBy? = nil, withPeople people: [Person.ID]? = nil, page: Int? = nil,
                      completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
         fetchMovies(sortBy: sortBy, withPeople: people, page: page, completion: completion)
     }
 
-    func fetchTVShows(sortBy: TVShowSortBy? = .default, page: Int? = nil,
+    func fetchTVShows(sortBy: TVShowSortBy? = nil, page: Int? = nil,
                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void) {
         fetchTVShows(sortBy: sortBy, page: page, completion: completion)
     }
@@ -88,13 +88,13 @@ public extension DiscoverService {
 public extension DiscoverService {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(sortBy: MovieSortBy? = .default, withPeople people: [Person.ID]? = nil,
+    func moviesPublisher(sortBy: MovieSortBy? = nil, withPeople people: [Person.ID]? = nil,
                          page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         moviesPublisher(sortBy: sortBy, withPeople: people, page: page)
     }
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(sortBy: TVShowSortBy? = .default,
+    func tvShowsPublisher(sortBy: TVShowSortBy? = nil,
                           page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         tvShowsPublisher(sortBy: sortBy, page: page)
     }

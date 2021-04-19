@@ -9,7 +9,8 @@ extension Movie {
         return .init(
             id: id,
             title: "Movie \(id)",
-            overview: .randomString
+            overview: .randomString,
+            releaseDate: Date.random
         )
     }
 
