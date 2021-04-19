@@ -32,10 +32,10 @@ jobs:
         run: swift test --enable-code-coverage
 
       - name: Generate Code Coverage report
-        run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
+        run: xcrun llvm-cov export .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        run: sonar-scanner -Dsonar.cfamily.build-wrapper-output.bypass=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
