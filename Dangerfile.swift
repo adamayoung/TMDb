@@ -8,4 +8,4 @@ if danger.git.createdFiles.count + danger.git.modifiedFiles.count - danger.git.d
     warn("Big PR, try to keep changes smaller if you can")
 }
 
-SwiftLint.lint(outputFilePath: "swiftlint.result.json")
+SwiftLint.lint()

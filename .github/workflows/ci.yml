@@ -36,11 +36,11 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Install tools
-        run: brew install sonar-scanner danger/tap/danger-swift
+        run: brew install sonar-scanner
 
-      # - name: Lint
-      #   run: |
-      #     swiftlint --reporter json > swiftlint.result.json
+      - name: Lint
+        run: |
+          swiftlint --reporter json > swiftlint.result.json
 
       - name: Build and test
         run: swift test --enable-code-coverage
@@ -95,3 +95,16 @@ jobs:
 
       - name: Build and test
         run: swift test --enable-test-discovery
+
+  danger: 
+    runs-on: ubuntu-latest
+    name: "Run Danger"
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Danger
+        uses: danger/swift@3.8.0
+        with:
+            args: --failOnErrors --no-publish-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
