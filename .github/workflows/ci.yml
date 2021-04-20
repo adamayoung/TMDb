@@ -36,14 +36,19 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Install tools
-        run: brew install sonar-scanner
+        run: brew install sonar-scanner danger/tap/danger-swift
 
-      - name: Lint
-        run: |
-          swiftlint --reporter json > swiftlint.result.json
+      # - name: Lint
+      #   run: |
+      #     swiftlint --reporter json > swiftlint.result.json
 
       - name: Build and test
         run: swift test --enable-code-coverage
+
+      - name: Danger
+        run: danger-swift ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Code Coverage report
         run: xcrun llvm-cov show .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
