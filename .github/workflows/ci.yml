@@ -45,11 +45,6 @@ jobs:
       - name: Build and test
         run: swift test --enable-code-coverage
 
-      - name: Danger
-        run: danger-swift ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate Code Coverage report
         run: xcrun llvm-cov show .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
@@ -97,14 +92,16 @@ jobs:
         run: swift test --enable-test-discovery
 
   danger: 
-    runs-on: ubuntu-latest
     name: "Run Danger"
+    runs-on: macos-latest
+
     steps:
       - uses: actions/checkout@v1
 
+      - name: Install tools
+        run: brew install danger/tap/danger-swift
+
       - name: Danger
-        uses: danger/swift@3.8.0
-        with:
-            args: --failOnErrors --no-publish-check
+        run: danger-swift ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
