@@ -57,6 +57,7 @@ jobs:
   test-on-ios:
     name: Test on iOS
     runs-on: macos-latest
+    if: github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@v2
@@ -74,6 +75,7 @@ jobs:
   test-on-linux:
     name: Test on Linux
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
     container:
       image: swift:5.2
       options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
@@ -94,6 +96,7 @@ jobs:
   danger: 
     name: "Run Danger"
     runs-on: macos-latest
+    if: github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@v1
