@@ -83,6 +83,22 @@ class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testMovieNowPlayingEndpointReturnsURL() {
+        let expectedURL = URL(string: "/movie/now_playing")!
+
+        let url = MoviesEndpoint.nowPlaying().url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieNowPlayingEndpointWithPageReturnsURL() {
+        let expectedURL = URL(string: "/movie/now_playing?page=1")!
+
+        let url = MoviesEndpoint.nowPlaying(page: 1).url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+    
     func testMoviePopularEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/popular")!
 
@@ -95,6 +111,38 @@ class MoviesEndpointTests: XCTestCase {
         let expectedURL = URL(string: "/movie/popular?page=1")!
 
         let url = MoviesEndpoint.popular(page: 1).url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+    
+    func testMovieTopRatedEndpointReturnsURL() {
+        let expectedURL = URL(string: "/movie/top_rated")!
+
+        let url = MoviesEndpoint.topRated().url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieTopRatedEndpointWithPageReturnsURL() {
+        let expectedURL = URL(string: "/movie/top_rated?page=1")!
+
+        let url = MoviesEndpoint.topRated(page: 1).url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+    
+    func testMovieUpcomingEndpointReturnsURL() {
+        let expectedURL = URL(string: "/movie/upcoming")!
+
+        let url = MoviesEndpoint.upcoming().url
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieUpcomingEndpointWithPageReturnsURL() {
+        let expectedURL = URL(string: "/movie/upcoming?page=1")!
+
+        let url = MoviesEndpoint.upcoming(page: 1).url
 
         XCTAssertEqual(url, expectedURL)
     }

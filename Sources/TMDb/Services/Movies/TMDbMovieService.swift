@@ -43,8 +43,20 @@ final class TMDbMovieService: MovieService {
         apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page), completion: completion)
     }
 
+    func fetchNowPlaying(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page), completion: completion)
+    }
+    
     func fetchPopular(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page), completion: completion)
+    }
+    
+    func fetchTopRated(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: MoviesEndpoint.topRated(page: page), completion: completion)
+    }
+    
+    func fetchUpcoming(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page), completion: completion)
     }
 
 }
@@ -89,8 +101,23 @@ extension TMDbMovieService {
     }
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func nowPlayingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page))
+    }
+    
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popularPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
+    }
+    
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        apiClient.get(endpoint: MoviesEndpoint.topRated(page: page))
+    }
+    
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page))
     }
 
 }

@@ -24,8 +24,14 @@ final class MockMovieService: MovieService {
     var similar: MoviePageableList?
     private(set) var lastSimilarMovieID: Movie.ID?
     private(set) var lastSimilarPage: Int?
+    var nowPlaying: MoviePageableList?
+    private(set) var lastNowPlayingPage: Int?
     var popular: MoviePageableList?
     private(set) var lastPopularPage: Int?
+    var topRated: MoviePageableList?
+    private(set) var lastTopRatedPage: Int?
+    var upcoming: MoviePageableList?
+    private(set) var lastUpcomingPage: Int?
 
     func fetchDetails(forMovie id: Movie.ID, completion: @escaping (Result<Movie, TMDbError>) -> Void) {
         lastMovieDetailsID = id
@@ -117,6 +123,18 @@ final class MockMovieService: MovieService {
         }
     }
 
+    func fetchNowPlaying(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        lastNowPlayingPage = page
+
+        guard let nowPlaying = nowPlaying else {
+            return
+        }
+
+        DispatchQueue.main.simulateWaitForNetwork {
+            completion(.success(nowPlaying))
+        }
+    }
+    
     func fetchPopular(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastPopularPage = page
 
@@ -126,6 +144,30 @@ final class MockMovieService: MovieService {
 
         DispatchQueue.main.simulateWaitForNetwork {
             completion(.success(popular))
+        }
+    }
+    
+    func fetchTopRated(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        lastTopRatedPage = page
+
+        guard let topRated = topRated else {
+            return
+        }
+
+        DispatchQueue.main.simulateWaitForNetwork {
+            completion(.success(topRated))
+        }
+    }
+    
+    func fetchUpcoming(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
+        lastUpcomingPage = page
+
+        guard let upcoming = upcoming else {
+            return
+        }
+
+        DispatchQueue.main.simulateWaitForNetwork {
+            completion(.success(upcoming))
         }
     }
 
@@ -229,6 +271,19 @@ extension MockMovieService {
             .eraseToAnyPublisher()
     }
 
+    func nowPlayingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        lastNowPlayingPage = page
+
+        guard let nowPlaying = nowPlaying else {
+            return Empty()
+                .eraseToAnyPublisher()
+        }
+
+        return Just(nowPlaying)
+            .setFailureType(to: TMDbError.self)
+            .eraseToAnyPublisher()
+    }
+    
     func popularPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastPopularPage = page
 
@@ -238,6 +293,32 @@ extension MockMovieService {
         }
 
         return Just(popular)
+            .setFailureType(to: TMDbError.self)
+            .eraseToAnyPublisher()
+    }
+    
+    func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        lastTopRatedPage = page
+
+        guard let topRated = topRated else {
+            return Empty()
+                .eraseToAnyPublisher()
+        }
+
+        return Just(topRated)
+            .setFailureType(to: TMDbError.self)
+            .eraseToAnyPublisher()
+    }
+    
+    func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
+        lastUpcomingPage = page
+
+        guard let upcoming = upcoming else {
+            return Empty()
+                .eraseToAnyPublisher()
+        }
+
+        return Just(upcoming)
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
     }
