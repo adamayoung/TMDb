@@ -11,7 +11,10 @@ enum MoviesEndpoint {
     case videos(movieID: Movie.ID)
     case recommendations(movieID: Movie.ID, page: Int? = nil)
     case similar(movieID: Movie.ID, page: Int? = nil)
+    case nowPlaying(page: Int? = nil)
     case popular(page: Int? = nil)
+    case topRated(page: Int? = nil)
+    case upcoming(page: Int? = nil)
 
 }
 
@@ -55,10 +58,25 @@ extension MoviesEndpoint: Endpoint {
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
-
+        
+        case .nowPlaying(let page):
+            return Self.basePath
+                .appendingPathComponent("now_playing")
+                .appendingPage(page)
+                
         case .popular(let page):
             return Self.basePath
                 .appendingPathComponent("popular")
+                .appendingPage(page)
+            
+        case .topRated(let page):
+            return Self.basePath
+                .appendingPathComponent("top_rated")
+                .appendingPage(page)
+                    
+        case .upcoming(let page):
+            return Self.basePath
+                .appendingPathComponent("upcoming")
                 .appendingPage(page)
         }
     }
