@@ -236,27 +236,24 @@ public extension TVShowService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension TVShowService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func reviewsPublisher(forTVShow tvShowID: TVShow.ID,
                           page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
         reviewsPublisher(forTVShow: tvShowID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func recommendationsPublisher(forTVShow tvShowID: TVShow.ID,
                                   page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         recommendationsPublisher(forTVShow: tvShowID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func similarPublisher(toTVShow tvShowID: TVShow.ID,
                           page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         similarPublisher(toTVShow: tvShowID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popularPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         popularPublisher(page: page)
     }

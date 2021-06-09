@@ -431,7 +431,7 @@ extension TMDbMovieServiceTests {
         let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.detailsPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.detailsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
@@ -442,7 +442,7 @@ extension TMDbMovieServiceTests {
         let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.creditsPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.creditsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
@@ -453,7 +453,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
@@ -464,7 +464,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: nil),
+        let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -477,7 +477,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forMovie: movieID, page: page),
+        let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -489,7 +489,7 @@ extension TMDbMovieServiceTests {
         let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.imagesPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.imagesPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
@@ -500,7 +500,7 @@ extension TMDbMovieServiceTests {
         let movieID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.videosPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.videosPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
@@ -511,7 +511,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
@@ -522,7 +522,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: nil),
+        let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -535,7 +535,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forMovie: movieID, page: page),
+        let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -547,7 +547,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toMovie: movieID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
@@ -558,7 +558,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
@@ -570,7 +570,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toMovie: movieID, page: page),
+        let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -581,7 +581,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.nowPlayingPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.nowPlayingPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
@@ -591,7 +591,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.nowPlayingPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.nowPlayingPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
@@ -602,7 +602,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.nowPlayingPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.nowPlayingPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying(page: page).url)
@@ -612,7 +612,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
@@ -622,7 +622,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
@@ -633,7 +633,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
@@ -643,7 +643,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.topRatedPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.topRatedPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
@@ -653,7 +653,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.topRatedPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.topRatedPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
@@ -664,7 +664,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.topRatedPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.topRatedPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated(page: page).url)
@@ -674,7 +674,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.upcomingPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.upcomingPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
@@ -684,7 +684,7 @@ extension TMDbMovieServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.upcomingPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.upcomingPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
@@ -695,7 +695,7 @@ extension TMDbMovieServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.upcomingPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.upcomingPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming(page: page).url)

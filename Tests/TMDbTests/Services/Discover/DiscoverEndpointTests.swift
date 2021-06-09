@@ -14,7 +14,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testMoviesEndpointWithSortedByReturnsURL() {
         let expectedURL = URL(string: "/discover/movie?sort_by=original_title.asc")!
 
-        let url = DiscoverEndpoint.movies(sortBy: .originalTitleAscending).url
+        let url = DiscoverEndpoint.movies(sortedBy: .originalTitleAscending).url
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -38,7 +38,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testMoviesEndpointWithSortedByAndWithPeopleAndPageReturnsURL() {
         let expectedURL = URL(string: "/discover/movie?sort_by=original_title.asc&with_people=1,2,3&page=1")!
 
-        let url = DiscoverEndpoint.movies(sortBy: .originalTitleAscending, people: [1, 2, 3], page: 1).url
+        let url = DiscoverEndpoint.movies(sortedBy: .originalTitleAscending, people: [1, 2, 3], page: 1).url
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -54,7 +54,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testTVShowsEndpointWithSortedByReturnsURL() {
         let expectedURL = URL(string: "/discover/tv?sort_by=first_air_date.asc")!
 
-        let url = DiscoverEndpoint.tvShows(sortBy: .firstAirDateAscending).url
+        let url = DiscoverEndpoint.tvShows(sortedBy: .firstAirDateAscending).url
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -70,7 +70,7 @@ class DiscoverEndpointTests: XCTestCase {
     func testTVShowsEndpointWithSortedByAndPageReturnsURL() {
         let expectedURL = URL(string: "/discover/tv?sort_by=first_air_date.asc&page=1")!
 
-        let url = DiscoverEndpoint.tvShows(sortBy: .firstAirDateAscending, page: 1).url
+        let url = DiscoverEndpoint.tvShows(sortedBy: .firstAirDateAscending, page: 1).url
 
         XCTAssertEqual(url, expectedURL)
     }

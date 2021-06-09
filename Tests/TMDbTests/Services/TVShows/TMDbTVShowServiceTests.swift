@@ -293,7 +293,7 @@ extension TMDbTVShowServiceTests {
         let tvShowID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.detailsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.detailsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.details(tvShowID: tvShowID).url)
@@ -304,7 +304,7 @@ extension TMDbTVShowServiceTests {
         let tvShowID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.creditsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.creditsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.credits(tvShowID: tvShowID).url)
@@ -315,7 +315,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
@@ -326,7 +326,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = ReviewPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: nil),
+        let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -339,7 +339,7 @@ extension TMDbTVShowServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: page),
+        let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -351,7 +351,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = ImageCollection.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.imagesPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.imagesPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.images(tvShowID: tvShowID).url)
@@ -362,7 +362,7 @@ extension TMDbTVShowServiceTests {
         let tvShowID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.videosPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.videosPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).url)
@@ -373,7 +373,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
@@ -384,7 +384,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: nil),
+        let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -397,7 +397,7 @@ extension TMDbTVShowServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: page),
+        let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -409,7 +409,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toTVShow: tvShowID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
@@ -420,7 +420,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toTVShow: tvShowID, page: nil),
+        let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -433,7 +433,7 @@ extension TMDbTVShowServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.similarPublisher(toTVShow: tvShowID, page: page),
+        let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -444,7 +444,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
@@ -454,7 +454,7 @@ extension TMDbTVShowServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
@@ -465,7 +465,7 @@ extension TMDbTVShowServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular(page: page).url)

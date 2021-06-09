@@ -12,31 +12,30 @@ final class TMDbDiscoverService: DiscoverService {
         self.apiClient = apiClient
     }
 
-    func fetchMovies(sortBy: MovieSortBy?, withPeople people: [Person.ID]?, page: Int?,
+    func fetchMovies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?,
                      completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
-        apiClient.get(endpoint: DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page),
+        apiClient.get(endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page),
                       completion: completion)
     }
 
-    func fetchTVShows(sortBy: TVShowSortBy?, page: Int?,
+    func fetchTVShows(sortedBy: TVShowSort?, page: Int?,
                       completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
-        apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortBy: sortBy, page: page), completion: completion)
+        apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page), completion: completion)
     }
 
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbDiscoverService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(sortBy: MovieSortBy?, withPeople people: [Person.ID]?,
+    func moviesPublisher(sortedBy: MovieSort?, withPeople people: [Person.ID]?,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
-        apiClient.get(endpoint: DiscoverEndpoint.movies(sortBy: sortBy, people: people, page: page))
+        apiClient.get(endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortBy: sortBy, page: page))
+    func tvShowsPublisher(sortedBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+        apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page))
     }
 
 }

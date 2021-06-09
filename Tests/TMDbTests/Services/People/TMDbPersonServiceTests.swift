@@ -196,7 +196,7 @@ extension TMDbPersonServiceTests {
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
@@ -208,7 +208,7 @@ extension TMDbPersonServiceTests {
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.combinedCreditsPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.combinedCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
@@ -220,7 +220,7 @@ extension TMDbPersonServiceTests {
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
@@ -232,7 +232,7 @@ extension TMDbPersonServiceTests {
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
@@ -243,7 +243,7 @@ extension TMDbPersonServiceTests {
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
@@ -269,7 +269,7 @@ extension TMDbPersonServiceTests {
 
         let expectedResult = Array(topShows.prefix(10))
 
-        let result = try await(publisher: service.knownForPublisher(forPerson: personID), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.knownForPublisher(forPerson: personID), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
@@ -279,7 +279,7 @@ extension TMDbPersonServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
@@ -289,7 +289,7 @@ extension TMDbPersonServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
@@ -300,7 +300,7 @@ extension TMDbPersonServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)

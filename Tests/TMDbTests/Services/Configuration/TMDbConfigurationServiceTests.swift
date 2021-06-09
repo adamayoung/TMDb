@@ -44,7 +44,7 @@ extension TMDbConfigurationServiceTests {
         let expectedResult = APIConfiguration.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)

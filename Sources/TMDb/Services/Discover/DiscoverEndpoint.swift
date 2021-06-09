@@ -4,8 +4,8 @@ enum DiscoverEndpoint {
 
     static let basePath = URL(string: "/discover")!
 
-    case movies(sortBy: MovieSortBy? = nil, people: [Person.ID]? = nil, page: Int? = nil)
-    case tvShows(sortBy: TVShowSortBy? = nil, page: Int? = nil)
+    case movies(sortedBy: MovieSort? = nil, people: [Person.ID]? = nil, page: Int? = nil)
+    case tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil)
 
 }
 
@@ -13,17 +13,17 @@ extension DiscoverEndpoint: Endpoint {
 
     var url: URL {
         switch self {
-        case .movies(let sortBy, let people, let page):
+        case .movies(let sortedBy, let people, let page):
             return Self.basePath
                 .appendingPathComponent("movie")
-                .appendingSortBy(sortBy)
+                .appendingSortBy(sortedBy)
                 .appendingWithPeople(people)
                 .appendingPage(page)
 
-        case .tvShows(let sortBy, let page):
+        case .tvShows(let sortedBy, let page):
             return Self.basePath
                 .appendingPathComponent("tv")
-                .appendingSortBy(sortBy)
+                .appendingSortBy(sortedBy)
                 .appendingPage(page)
         }
     }

@@ -62,60 +62,50 @@ final class TMDbMovieService: MovieService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbMovieService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func detailsPublisher(forMovie id: Movie.ID) -> AnyPublisher<Movie, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func creditsPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.credits(movieID: movieID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func reviewsPublisher(forMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.reviews(movieID: movieID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func imagesPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.images(movieID: movieID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func videosPublisher(forMovie movieID: Movie.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.videos(movieID: movieID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func recommendationsPublisher(forMovie movieID: Movie.ID,
                                   page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func similarPublisher(toMovie movieID: Movie.ID, page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func nowPlayingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page))
     }
-    
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+
     func popularPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
     }
-    
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+
     func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.topRated(page: page))
     }
     
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page))
     }

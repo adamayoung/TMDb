@@ -1,12 +1,12 @@
 @testable import TMDb
 import XCTest
 
-class MovieSortByTests: XCTestCase {
+class MovieSortTests: XCTestCase {
 
     func testPopularityAscendingReturnsRawValue() {
         let expectedResult = "popularity.asc"
 
-        let result = MovieSortBy.popularityAscending.rawValue
+        let result = MovieSort.popularityAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -14,7 +14,7 @@ class MovieSortByTests: XCTestCase {
     func testPopularityDescendingReturnsRawValue() {
         let expectedResult = "popularity.desc"
 
-        let result = MovieSortBy.popularityDescending.rawValue
+        let result = MovieSort.popularityDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -22,7 +22,7 @@ class MovieSortByTests: XCTestCase {
     func testReleaseDateAscendingReturnsRawValue() {
         let expectedResult = "release_date.asc"
 
-        let result = MovieSortBy.releaseDateAscending.rawValue
+        let result = MovieSort.releaseDateAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -30,7 +30,7 @@ class MovieSortByTests: XCTestCase {
     func testReleaseDateDescendingReturnsRawValue() {
         let expectedResult = "release_date.desc"
 
-        let result = MovieSortBy.releaseDateDescending.rawValue
+        let result = MovieSort.releaseDateDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -38,7 +38,7 @@ class MovieSortByTests: XCTestCase {
     func testRevenueAscendingReturnsRawValue() {
         let expectedResult = "revenue.asc"
 
-        let result = MovieSortBy.revenueAscending.rawValue
+        let result = MovieSort.revenueAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -46,7 +46,7 @@ class MovieSortByTests: XCTestCase {
     func testRevenueDescendingReturnsRawValue() {
         let expectedResult = "revenue.desc"
 
-        let result = MovieSortBy.revenueDescending.rawValue
+        let result = MovieSort.revenueDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -54,7 +54,7 @@ class MovieSortByTests: XCTestCase {
     func testPrimaryReleaseDateAscendingAscendingReturnsRawValue() {
         let expectedResult = "primary_release_date.asc"
 
-        let result = MovieSortBy.primaryReleaseDateAscending.rawValue
+        let result = MovieSort.primaryReleaseDateAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -62,7 +62,7 @@ class MovieSortByTests: XCTestCase {
     func testPrimaryReleaseDateDescendingDescendingReturnsRawValue() {
         let expectedResult = "primary_release_date.desc"
 
-        let result = MovieSortBy.primaryReleaseDateDescending.rawValue
+        let result = MovieSort.primaryReleaseDateDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -70,7 +70,7 @@ class MovieSortByTests: XCTestCase {
     func testOriginalTitleAscendingReturnsRawValue() {
         let expectedResult = "original_title.asc"
 
-        let result = MovieSortBy.originalTitleAscending.rawValue
+        let result = MovieSort.originalTitleAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -78,7 +78,7 @@ class MovieSortByTests: XCTestCase {
     func testOriginalTitleDescendingReturnsRawValue() {
         let expectedResult = "original_title.desc"
 
-        let result = MovieSortBy.originalTitleDescending.rawValue
+        let result = MovieSort.originalTitleDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -86,7 +86,7 @@ class MovieSortByTests: XCTestCase {
     func testVoteAverageAscendingReturnsRawValue() {
         let expectedResult = "vote_average.asc"
 
-        let result = MovieSortBy.voteAverageAscending.rawValue
+        let result = MovieSort.voteAverageAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -94,7 +94,7 @@ class MovieSortByTests: XCTestCase {
     func testVoteAverageDescendingReturnsRawValue() {
         let expectedResult = "vote_average.desc"
 
-        let result = MovieSortBy.voteAverageDescending.rawValue
+        let result = MovieSort.voteAverageDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -102,7 +102,7 @@ class MovieSortByTests: XCTestCase {
     func testVoteCountAscendingReturnsRawValue() {
         let expectedResult = "vote_count.asc"
 
-        let result = MovieSortBy.voteCountAscending.rawValue
+        let result = MovieSort.voteCountAscending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -110,7 +110,7 @@ class MovieSortByTests: XCTestCase {
     func testVoteCountDescendingReturnsRawValue() {
         let expectedResult = "vote_count.desc"
 
-        let result = MovieSortBy.voteCountDescending.rawValue
+        let result = MovieSort.voteCountDescending.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -118,19 +118,19 @@ class MovieSortByTests: XCTestCase {
     func testDefaultReturnsRawValue() {
         let expectedResult = "popularity.desc"
 
-        let result = MovieSortBy.default.rawValue
+        let result = MovieSort.default.rawValue
 
         XCTAssertEqual(result, expectedResult)
     }
 
 }
 
-extension MovieSortByTests {
+extension MovieSortTests {
 
     func testURLAppendingSortByReturnsURL() {
         let expectedResult = URL(string: "/some/path?sort_by=popularity.asc")!
 
-        let result = URL(string: "/some/path")!.appendingSortBy(MovieSortBy.popularityAscending)
+        let result = URL(string: "/some/path")!.appendingSortBy(MovieSort.popularityAscending)
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -138,7 +138,7 @@ extension MovieSortByTests {
     func testURLAppendingNilSortByReturnsURL() {
         let expectedResult = URL(string: "/some/path")!
 
-        let result = URL(string: "/some/path")!.appendingSortBy(nil as MovieSortBy?)
+        let result = URL(string: "/some/path")!.appendingSortBy(nil as MovieSort?)
 
         XCTAssertEqual(result, expectedResult)
     }

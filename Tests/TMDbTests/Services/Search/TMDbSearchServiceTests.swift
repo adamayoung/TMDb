@@ -285,7 +285,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = MediaPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAllPublisher(query: query), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.searchAllPublisher(query: query), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
@@ -296,7 +296,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = MediaPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAllPublisher(query: query, page: nil), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.searchAllPublisher(query: query, page: nil), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
@@ -309,7 +309,7 @@ extension TMDbSearchServiceTests {
 
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchAllPublisher(query: query, page: page), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.searchAllPublisher(query: query, page: page), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
@@ -320,7 +320,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMoviesPublisher(query: query),
+        let result = try waitFor(publisher: service.searchMoviesPublisher(query: query),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -332,7 +332,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
+        let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -345,7 +345,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
+        let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -358,7 +358,7 @@ extension TMDbSearchServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
+        let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -372,7 +372,7 @@ extension TMDbSearchServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
+        let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -384,7 +384,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShowsPublisher(query: query), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
@@ -395,7 +395,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+        let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
                                                                          page: nil),
                                storeIn: &cancellables)
 
@@ -409,7 +409,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+        let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
                                                                          page: nil),
                                storeIn: &cancellables)
 
@@ -423,7 +423,7 @@ extension TMDbSearchServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
+        let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
                                                                          page: page),
                                storeIn: &cancellables)
 
@@ -438,7 +438,7 @@ extension TMDbSearchServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
+        let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
                                                                          page: page),
                                storeIn: &cancellables)
 
@@ -451,7 +451,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeoplePublisher(query: query), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.searchPeoplePublisher(query: query), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
@@ -462,7 +462,7 @@ extension TMDbSearchServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: nil),
+        let result = try waitFor(publisher: service.searchPeoplePublisher(query: query, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -475,7 +475,7 @@ extension TMDbSearchServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.searchPeoplePublisher(query: query, page: page),
+        let result = try waitFor(publisher: service.searchPeoplePublisher(query: query, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)

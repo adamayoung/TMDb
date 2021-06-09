@@ -20,7 +20,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending movies in a time window as a pageable list.
-    func fetchMovies(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+    func fetchMovies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
 
     /// Fetches a list of the daily or weekly trending TV shows.
@@ -37,7 +37,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending TV shows in a time window as a pageable list.
-    func fetchTVShows(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+    func fetchTVShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?,
                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void)
 
     /// Fetches a list of the daily or weekly trending people.
@@ -54,7 +54,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///     - completion: Completion handler.
     ///     - result: Trending people in a time window as a pageable list.
-    func fetchPeople(timeWindow: TrendingTimeWindowFilterType, page: Int?,
+    func fetchPeople(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?,
                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void)
 
     #if canImport(Combine)
@@ -73,7 +73,7 @@ public protocol TrendingService {
     ///
     /// - Returns: A publisher with trending movies in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(timeWindow: TrendingTimeWindowFilterType,
+    func moviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending TV shows.
@@ -91,7 +91,7 @@ public protocol TrendingService {
     ///
     /// - Returns: A publisher with trending TV shows in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType,
+    func tvShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
                           page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 
     /// Publishes a list of the daily or weekly trending people.
@@ -109,7 +109,7 @@ public protocol TrendingService {
     ///
     /// - Returns: A publisher with trending people in a time window as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func peoplePublisher(timeWindow: TrendingTimeWindowFilterType,
+    func peoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
     #endif
 
@@ -117,38 +117,110 @@ public protocol TrendingService {
 
 public extension TrendingService {
 
-    func fetchMovies(page: Int? = nil, completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
-        fetchMovies(timeWindow: .default, page: page, completion: completion)
+    func fetchMovies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil,
+                     completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void) {
+        fetchMovies(inTimeWindow: timeWindow, page: page, completion: completion)
     }
 
-    func fetchTVShows(page: Int? = nil,
+    func fetchTVShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil,
                       completion: @escaping (_ result: Result<TVShowPageableList, TMDbError>) -> Void) {
-        fetchTVShows(timeWindow: .default, page: page, completion: completion)
+        fetchTVShows(inTimeWindow: timeWindow, page: page, completion: completion)
     }
 
-    func fetchPeople(page: Int? = nil,
+    func fetchPeople(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil,
                      completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void) {
-        fetchPeople(timeWindow: .default, page: page, completion: completion)
+        fetchPeople(inTimeWindow: timeWindow, page: page, completion: completion)
     }
 
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension TrendingService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func moviesPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
-        moviesPublisher(timeWindow: .default, page: page)
+    func moviesPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                         page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
+        moviesPublisher(inTimeWindow: timeWindow, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func tvShowsPublisher(page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        tvShowsPublisher(timeWindow: .default, page: page)
+    func tvShowsPublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                          page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
+        tvShowsPublisher(inTimeWindow: timeWindow, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func peoplePublisher(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
-        peoplePublisher(timeWindow: .default, page: page)
+    func peoplePublisher(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                         page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
+        peoplePublisher(inTimeWindow: timeWindow, page: page)
+    }
+
+}
+#endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+public extension TrendingService {
+
+    /// Returns a list of the daily or weekly trending movies.
+    ///
+    /// The daily trending list tracks movies over the period of a day while movies have a 24 hour half life. The
+    /// weekly list tracks movies over a 7 day period, with a 7 day half life.
+    ///
+    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: Trending movies in a time window as a pageable list.
+    func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                page: Int? = nil) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchMovies(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    /// Returns a list of the daily or weekly trending TV shows.
+    ///
+    /// The daily trending list tracks TV shows over the period of a day while TV shows have a 24 hour half life. The
+    /// weekly list tracks TV shows over a 7 day period, with a 7 day half life.
+    ///
+    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: Trending TV shows in a time window as a pageable list.
+    func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                 page: Int? = nil) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTVShows(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    /// Returns a list of the daily or weekly trending people.
+    ///
+    /// The daily trending list tracks people over the period of a day while people shows have a 24 hour half life. The
+    /// weekly list tracks people over a 7 day period, with a 7 day half life.
+    ///
+    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///     - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///     - page: The page of results to return.
+    ///
+    /// - Returns: Trending people in a time window as a pageable list.
+    func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+                     page: Int? = nil) async throws -> PersonPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchPeople(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
     }
 
 }

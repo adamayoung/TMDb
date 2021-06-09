@@ -91,7 +91,7 @@ extension TMDbTVShowSeasonServiceTests {
         let seasonNumber = expectedResult.seasonNumber
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try waitFor(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -105,7 +105,7 @@ extension TMDbTVShowSeasonServiceTests {
         let expectedResult = ImageCollection.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try waitFor(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -119,7 +119,7 @@ extension TMDbTVShowSeasonServiceTests {
         let expectedResult = VideoCollection.mock
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+        let result = try waitFor(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)

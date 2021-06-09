@@ -30,21 +30,19 @@ final class TMDbTrendingService: TrendingService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbTrendingService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func moviesPublisher(timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func tvShowsPublisher(timeWindow: TrendingTimeWindowFilterType,
                           page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func peoplePublisher(timeWindow: TrendingTimeWindowFilterType,
                          page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))

@@ -65,7 +65,7 @@ extension TMDbCertificationServiceTests {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
@@ -75,7 +75,7 @@ extension TMDbCertificationServiceTests {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let result = try await(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
+        let result = try waitFor(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)

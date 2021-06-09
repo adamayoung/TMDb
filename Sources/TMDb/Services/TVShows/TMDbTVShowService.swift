@@ -52,47 +52,40 @@ final class TMDbTVShowService: TVShowService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbTVShowService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func detailsPublisher(forTVShow id: TVShow.ID) -> AnyPublisher<TVShow, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func creditsPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ShowCredits, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func reviewsPublisher(forTVShow tvShowID: TVShow.ID,
                           page: Int?) -> AnyPublisher<ReviewPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func imagesPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<ImageCollection, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func videosPublisher(forTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func recommendationsPublisher(forTVShow tvShowID: TVShow.ID,
                                   page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func similarPublisher(toTVShow tvShowID: TVShow.ID,
                           page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popularPublisher(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
     }
