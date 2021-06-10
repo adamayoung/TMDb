@@ -28,7 +28,7 @@ import PackageDescription
 let package = Package(
   name: "MyProject",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "4.1.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "5.0.0")
   ],
   targets: [
     .target(name: "MyProject", dependencies: ["TMDb"])

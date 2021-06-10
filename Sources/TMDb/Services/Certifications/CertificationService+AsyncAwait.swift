@@ -6,7 +6,7 @@ public extension CertificationService {
 
     /// Returns the officially supported movie certifications on TMDb.
     ///
-    /// - Note: [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
+    /// [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
     ///
     /// - Returns: A dictionary of movie certifications.
     func movieCertifications() async throws -> [String: [Certification]] {
@@ -17,7 +17,7 @@ public extension CertificationService {
 
     /// Returns the officially supported TV show certifications on TMDb.
     ///
-    /// - Note: [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
+    /// [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
     ///
     /// - Returns: A dictionary of TV show certifications.
     func tvShowCertifications() async throws -> [String: [Certification]] {

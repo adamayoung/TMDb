@@ -6,7 +6,7 @@ public extension DiscoverService {
 
     /// Returns movies to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
+    /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -25,7 +25,7 @@ public extension DiscoverService {
 
     /// Returns TV shows to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
+    /// [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///

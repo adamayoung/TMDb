@@ -1,13 +1,16 @@
 import Foundation
 
+/// Provides URLs for the different sizes of profile images.
 public protocol ProfileURLProviding {
 
+    /// Path to the profile image.
     var profilePath: URL? { get }
 
 }
 
 public extension ProfileURLProviding {
 
+    /// Original profile image URL.
     var profileOriginalURL: URL? {
         guard let profilePath = profilePath else {
             return nil
@@ -18,6 +21,7 @@ public extension ProfileURLProviding {
             .appendingPathComponent(profilePath.absoluteString)
     }
 
+    /// Large profile image URL.
     var profileLargeURL: URL? {
         guard let profilePath = profilePath else {
             return nil
@@ -28,6 +32,7 @@ public extension ProfileURLProviding {
             .appendingPathComponent(profilePath.absoluteString)
     }
 
+    /// Medium profile image URL.
     var profileMediumURL: URL? {
         guard let profilePath = profilePath else {
             return nil
@@ -38,6 +43,7 @@ public extension ProfileURLProviding {
             .appendingPathComponent(profilePath.absoluteString)
     }
 
+    /// Small profile image URL.
     var profileSmallURL: URL? {
         guard let profilePath = profilePath else {
             return nil
@@ -48,6 +54,7 @@ public extension ProfileURLProviding {
             .appendingPathComponent(profilePath.absoluteString)
     }
 
+    /// Profile image aspect ratio.
     static var profileAspectRatio: Double {
         100.0 / 150.0
     }

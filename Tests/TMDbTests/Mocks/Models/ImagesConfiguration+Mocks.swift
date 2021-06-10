@@ -5,8 +5,8 @@ extension ImagesConfiguration {
 
     static var mock: Self {
         .init(
-            baseUrl: URL(string: "http://image.tmdb.org/t/p/")!,
-            secureBaseUrl: URL(string: "https://image.tmdb.org/t/p/")!,
+            baseURL: URL(string: "http://image.tmdb.org/t/p/")!,
+            secureBaseURL: URL(string: "https://image.tmdb.org/t/p/")!,
             backdropSizes: [
                 "w300"
             ],

@@ -1,12 +1,19 @@
 import Foundation
 
+/// Show status.
 public enum Status: String, Decodable, Equatable {
 
-    case rumored = "Rumored"
+    /// Rumoured.
+    case rumoured = "Rumored"
+    // Planned.
     case planned = "Planned"
+    /// In production.
     case inProduction = "In Production"
+    /// Post production.
     case postProduction = "Post Production"
+    /// Released.
     case released = "Released"
-    case canceled = "Canceled"
+    /// Cancelled.
+    case cancelled = "Canceled"
 
 }

@@ -4,11 +4,12 @@ import Foundation
 import Combine
 #endif
 
+/// Fetch details about TV show seasons.
 public protocol TVShowSeasonService {
 
     /// Fetches the primary information about a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
+    /// [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.
@@ -20,7 +21,7 @@ public protocol TVShowSeasonService {
 
     /// Fetches the images that belong to a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Images](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-images)
+    /// [TMDb API - TV Show Seasons: Images](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-images)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.
@@ -32,7 +33,7 @@ public protocol TVShowSeasonService {
 
     /// Fetches the videos that belong to a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Videos](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-videos)
+    /// [TMDb API - TV Show Seasons: Videos](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-videos)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.
@@ -45,7 +46,7 @@ public protocol TVShowSeasonService {
     #if canImport(Combine)
     /// Publishes the primary information about a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
+    /// [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.
@@ -58,7 +59,7 @@ public protocol TVShowSeasonService {
 
     /// Publishes the images that belong to a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Images](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-images)
+    /// [TMDb API - TV Show Seasons: Images](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-images)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.
@@ -71,7 +72,7 @@ public protocol TVShowSeasonService {
 
     /// Publishes the videos that belong to a TV show season.
     ///
-    /// - Note: [TMDb API - TV Show Seasons: Videos](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-videos)
+    /// [TMDb API - TV Show Seasons: Videos](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-videos)
     ///
     /// - Parameters:
     ///     - seasonNumber: The season number of a TV show.

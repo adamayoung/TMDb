@@ -22,6 +22,28 @@ extension URL {
         appendingQueryItem(name: "api_key", value: apiKey)
     }
 
+    func appendingCurrentLanguage() -> Self {
+        let locale = Locale.current
+        var parts = [String]()
+        if let languageCode = locale.languageCode {
+            parts.append(languageCode)
+
+            if let regionCode = locale.regionCode {
+                parts.append(regionCode)
+            }
+        }
+
+        guard !parts.isEmpty else {
+            return self
+        }
+
+        return appendingLanguage(parts.joined(separator: "-"))
+    }
+
+    func appendingLanguage(_ language: String) -> Self {
+        return appendingQueryItem(name: "language", value: language)
+    }
+
     func appendingPage(_ page: Int?) -> Self {
         guard var page = page else {
             return self

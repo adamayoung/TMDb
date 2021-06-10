@@ -111,6 +111,7 @@ extension TMDbAPIClient {
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)
+            .appendingCurrentLanguage()
     }
 
 }

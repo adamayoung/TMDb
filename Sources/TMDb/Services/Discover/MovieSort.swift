@@ -1,29 +1,83 @@
 import Foundation
 
-public enum MovieSort: String {
+/// Sort specifier when fetching movies.
+public enum MovieSort: CustomStringConvertible {
 
-    case popularityAscending = "popularity.asc"
-    case popularityDescending = "popularity.desc"
+    /// Default sort specifier.
+    public static var `default`: Self = .popularity()
 
-    case releaseDateAscending = "release_date.asc"
-    case releaseDateDescending = "release_date.desc"
+    /// By popularity.
+    case popularity(descending: Bool = true)
+    /// By release date.
+    case releaseDate(descending: Bool = true)
+    /// By primary release date.
+    case primaryReleaseDate(descending: Bool = true)
+    /// By revenue.
+    case revenue(descending: Bool = true)
+    /// By original title.
+    case originalTitle(descending: Bool = true)
+    /// By vote average.
+    case voteAverage(descending: Bool = true)
+    /// By vote count.
+    case voteCount(descending: Bool = true)
 
-    case revenueAscending = "revenue.asc"
-    case revenueDescending = "revenue.desc"
+    public var description: String {
+        "\(fieldName).\(isDescending ? "desc" : "asc")"
+    }
 
-    case primaryReleaseDateAscending = "primary_release_date.asc"
-    case primaryReleaseDateDescending = "primary_release_date.desc"
+}
 
-    case originalTitleAscending = "original_title.asc"
-    case originalTitleDescending = "original_title.desc"
+extension MovieSort {
 
-    case voteAverageAscending = "vote_average.asc"
-    case voteAverageDescending = "vote_average.desc"
+    private var fieldName: String {
+        switch self {
+        case .popularity:
+            return "popularity"
 
-    case voteCountAscending = "vote_count.asc"
-    case voteCountDescending = "vote_count.desc"
+        case .releaseDate:
+            return "release_date"
 
-    public static var `default`: Self = .popularityDescending
+        case .primaryReleaseDate:
+            return "primary_release_date"
+
+        case .revenue:
+            return "revenue"
+
+        case .originalTitle:
+            return "original_title"
+
+        case .voteAverage:
+            return "vote_average"
+
+        case .voteCount:
+            return "vote_count"
+        }
+    }
+
+    private var isDescending: Bool {
+        switch self {
+        case .popularity(let descending):
+            return descending
+
+        case .releaseDate(let descending):
+            return descending
+
+        case .revenue(let descending):
+            return descending
+
+        case .primaryReleaseDate(let descending):
+            return descending
+
+        case .originalTitle(let descending):
+            return descending
+
+        case .voteAverage(let descending):
+            return descending
+
+        case .voteCount(let descending):
+            return descending
+        }
+    }
 
 }
 
@@ -34,7 +88,7 @@ extension URL {
             return self
         }
 
-        return appendingQueryItem(name: "sort_by", value: sortBy.rawValue)
+        return appendingQueryItem(name: "sort_by", value: sortBy)
     }
 
 }

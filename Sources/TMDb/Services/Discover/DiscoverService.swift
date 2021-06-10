@@ -4,12 +4,12 @@ import Foundation
 import Combine
 #endif
 
-/// Discovery interface.
+/// Discover movies by different types of data like average rating, number of votes, genres and certifications.
 public protocol DiscoverService {
 
     /// Fetches movies to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
+    /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -24,7 +24,7 @@ public protocol DiscoverService {
 
     /// Fetches TV shows to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
+    /// [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -39,7 +39,7 @@ public protocol DiscoverService {
     #if canImport(Combine)
     /// Publishes movies to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
+    /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -55,7 +55,7 @@ public protocol DiscoverService {
 
     /// Publishes TV shows to be discovered.
     ///
-    /// - Note: [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
+    /// [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///

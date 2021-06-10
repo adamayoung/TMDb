@@ -1,11 +1,17 @@
 import Foundation
 
+/// A TMDb error.
 public enum TMDbError: Error {
 
+    /// Network error.
     case network(Error)
+    /// Unauthorised.
     case unauthorized
+    /// Not found.
     case notFound
+    /// Unknown error.
     case unknown
+    /// Data decode error.
     case decode(Error)
 
 }

@@ -4,11 +4,12 @@ import Foundation
 import Combine
 #endif
 
+/// Search for movies, TV shows and people.
 public protocol SearchService {
 
     /// Fetches search results for movies, TV shows and people based on a query.
     ///
-    /// - Note: [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
+    /// [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -22,7 +23,7 @@ public protocol SearchService {
 
     /// Fetches search results for movies.
     ///
-    /// - Note: [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
+    /// [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -37,7 +38,7 @@ public protocol SearchService {
 
     /// Fetches search results for TV shows.
     ///
-    /// - Note: [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
+    /// [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -52,7 +53,7 @@ public protocol SearchService {
 
     /// Fetches search results for people.
     ///
-    /// - Note: [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
+    /// [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -67,7 +68,7 @@ public protocol SearchService {
     #if canImport(Combine)
     /// Publishes search results for movies, TV shows and people based on a query.
     ///
-    /// - Note: [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
+    /// [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -81,7 +82,7 @@ public protocol SearchService {
 
     /// Publishes search results for movies.
     ///
-    /// - Note: [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
+    /// [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -96,7 +97,7 @@ public protocol SearchService {
 
     /// Publishes search results for TV shows.
     ///
-    /// - Note: [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
+    /// [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -112,7 +113,7 @@ public protocol SearchService {
 
     /// Publishes search results for people.
     ///
-    /// - Note: [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
+    /// [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
