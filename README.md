@@ -10,6 +10,10 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 * Swift 5.2+
 
+### async/await
+
+* Swift 5.5
+
 ## Installation
 
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
@@ -24,7 +28,7 @@ import PackageDescription
 let package = Package(
   name: "MyProject",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "4.1.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "4.1.0")
   ],
   targets: [
     .target(name: "MyProject", dependencies: ["TMDb"])
