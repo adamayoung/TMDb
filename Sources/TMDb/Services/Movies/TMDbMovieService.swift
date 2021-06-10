@@ -46,15 +46,15 @@ final class TMDbMovieService: MovieService {
     func fetchNowPlaying(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page), completion: completion)
     }
-    
+
     func fetchPopular(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         apiClient.get(endpoint: MoviesEndpoint.popular(page: page), completion: completion)
     }
-    
+
     func fetchTopRated(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         apiClient.get(endpoint: MoviesEndpoint.topRated(page: page), completion: completion)
     }
-    
+
     func fetchUpcoming(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page), completion: completion)
     }
@@ -105,7 +105,7 @@ extension TMDbMovieService {
     func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.topRated(page: page))
     }
-    
+
     func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page))
     }

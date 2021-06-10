@@ -1,8 +1,11 @@
+#if canImport(Combine)
+import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbPersonServiceTests: XCTestCase {
+class TMDbPersonServiceCombineTests: XCTestCase {
 
+    var cancellables: Set<AnyCancellable> = []
     var service: TMDbPersonService!
     var apiClient: MockAPIClient!
 
@@ -18,90 +21,66 @@ class TMDbPersonServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetailsReturnsPerson() throws {
+    func testDetailsPublisherReturnsPerson() throws {
         let expectedResult = Person.mock
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchDetails(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
     }
 
-    func testFetchCombinedCreditsReturnsCombinedCredits() throws {
+    func testCombinedCreditsPublisherReturnsCombinedCredits() throws {
         let mock = PersonCombinedCredits.mock
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchCombinedCredits(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.combinedCreditsPublisher(forPerson: personID),
+                                 storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testFetchMovieCreditsPublisherReturnsMovieCredits() throws {
+    func testMovieCreditsPublisherReturnsMovieCredits() throws {
         let mock = PersonMovieCredits.mock
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovieCredits(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
     }
 
-    func testFetchTVShowCreditsReturnsTVShowCredits() throws {
+    func testTVShowCreditsPublisherReturnsTVShowCredits() throws {
         let mock = PersonTVShowCredits.mock
         let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShowCredits(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
     }
 
-    func testFetchImagesReturnsImageCollection() throws {
+    func testImagesPublisherReturnsImageCollection() throws {
         let expectedResult = PersonImageCollection.mock
         let personID = expectedResult.id
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchImages(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
     }
 
-    func testFetchKnownForReturnsShows() throws {
+    func testKnownForPublisherReturnsShows() throws {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
         apiClient.response = credits
@@ -121,61 +100,42 @@ class TMDbPersonServiceTests: XCTestCase {
 
         let expectedResult = Array(topShows.prefix(10))
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchKnownFor(forPerson: personID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.knownForPublisher(forPerson: personID), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testFetchPopularWithDefaultParametersReturnsPeople() throws {
+    func testPopularPublisherWithDefaultParametersReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testFetchPopularReturnsPeople() throws {
+    func testPopularPublisherReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular(page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsPeople() throws {
+    func testPopularPublisherWithPageReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular(page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)
     }
 
 }
+#endif

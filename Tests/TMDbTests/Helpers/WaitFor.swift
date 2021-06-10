@@ -10,7 +10,7 @@ extension XCTestCase {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func waitFor<Output, Failure: Error>(publisher: AnyPublisher<Output, Failure>,
-                                       storeIn cancellables: inout Set<AnyCancellable>) throws -> Output? {
+                                         storeIn cancellables: inout Set<AnyCancellable>) throws -> Output? {
         let expectation = XCTestExpectation(description: "await")
         var result: Result<Output, Failure>?
         publisher.sink(receiveCompletion: { completion in

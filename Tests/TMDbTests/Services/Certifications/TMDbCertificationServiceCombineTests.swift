@@ -1,8 +1,11 @@
+#if canImport(Combine)
+import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbCertificationServiceTests: XCTestCase {
+class TMDbCertificationServiceCombineTests: XCTestCase {
 
+    var cancellables: Set<AnyCancellable> = []
     var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
 
@@ -18,34 +21,25 @@ class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertificationsReturnsMovieCertifications() {
+    func testMovieCertificationsPublisherReturnsMovieCertifications() throws {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovieCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertificationsReturnsTVShowCertifications() {
+    func testTVShowCertificationsPublisherReturnsTVShowCertifications() throws {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShowCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
     }
 
 }
+#endif

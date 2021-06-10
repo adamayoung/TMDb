@@ -3,8 +3,9 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbConfigurationServiceTests: XCTestCase {
+class TMDbConfigurationServiceCombineTests: XCTestCase {
 
+    var cancellables: Set<AnyCancellable> = []
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
 
@@ -20,18 +21,13 @@ class TMDbConfigurationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchAPIConfigurationReturnsAPIConfiguration() {
+    func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
         let expectedResult = APIConfiguration.mock
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchAPIConfiguration { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
     }
 
