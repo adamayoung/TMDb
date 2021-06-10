@@ -48,7 +48,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(timeWindow: timeWindow, page: nil) { result in
+        service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -65,7 +65,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(timeWindow: timeWindow, page: page) { result in
+        service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -81,7 +81,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(timeWindow: timeWindow, page: nil) { result in
+        service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -98,7 +98,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(timeWindow: timeWindow, page: page) { result in
+        service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -130,7 +130,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(timeWindow: timeWindow, page: nil) { result in
+        service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -147,7 +147,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(timeWindow: timeWindow, page: page) { result in
+        service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -163,7 +163,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(timeWindow: timeWindow, page: nil) { result in
+        service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -180,7 +180,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(timeWindow: timeWindow, page: page) { result in
+        service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -212,7 +212,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(timeWindow: timeWindow, page: nil) { result in
+        service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -229,7 +229,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(timeWindow: timeWindow, page: page) { result in
+        service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -245,7 +245,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(timeWindow: timeWindow, page: nil) { result in
+        service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -262,7 +262,7 @@ class TMDbTrendingServiceTests: XCTestCase {
         apiClient.response = expectedResult
 
         let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(timeWindow: timeWindow, page: page) { result in
+        service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in
             XCTAssertEqual(try? result.get(), expectedResult)
             expectation.fulfill()
         }
@@ -293,7 +293,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.moviesPublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -306,7 +306,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.moviesPublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -318,7 +318,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.moviesPublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -331,7 +331,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.moviesPublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -354,7 +354,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -367,7 +367,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -379,7 +379,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -392,7 +392,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.tvShowsPublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -415,7 +415,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.peoplePublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -428,7 +428,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.peoplePublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -440,7 +440,7 @@ extension TMDbTrendingServiceTests {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.peoplePublisher(timeWindow: timeWindow, page: nil),
+        let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
@@ -453,7 +453,7 @@ extension TMDbTrendingServiceTests {
         let page = expectedResult.page
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.peoplePublisher(timeWindow: timeWindow, page: page),
+        let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
 
         XCTAssertEqual(result, expectedResult)
