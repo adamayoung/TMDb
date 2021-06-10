@@ -88,7 +88,7 @@ class PosterURLProvidingTests: XCTestCase {
     }
 
     func testPosterAspectRatioReturnsAspectRatio() {
-        let expectedResult: Float = 100 / 150
+        let expectedResult = 100.0 / 150.0
 
         let result = TestPosterProvider.posterAspectRatio
 
