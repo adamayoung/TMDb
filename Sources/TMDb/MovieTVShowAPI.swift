@@ -1,16 +1,12 @@
 import Foundation
 
 /// The Movie Database API.
-///
-/// - Note: [The Movie Database API Documentation](https://developers.themoviedb.org)
 public protocol MovieTVShowAPI {
 
-    /// Sets the TMDb API Key to be used with requests to the TMDb API.
-    ///
-    /// - Note: [TMDb API - Getting Started: Authentication](https://developers.themoviedb.org/3/getting-started/authentication#api-key)
+    /// Sets the API Key to be used with requests to the API.
     ///
     /// - Parameters
-    ///     - apiKey: The TMDb API Key.
+    ///     - apiKey: The API Key.
     static func setAPIKey(_ apiKey: String)
 
     /// Certifications.

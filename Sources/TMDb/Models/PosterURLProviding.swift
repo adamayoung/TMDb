@@ -48,8 +48,8 @@ public extension PosterURLProviding {
             .appendingPathComponent(posterPath.absoluteString)
     }
 
-    static var posterAspectRatio: Float {
-        100 / 150
+    static var posterAspectRatio: Double {
+        100.0 / 150.0
     }
 
 }

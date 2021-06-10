@@ -21,7 +21,7 @@ public extension SearchService {
         }
     }
 
-    /// Fetches search results for movies.
+    /// Returns search results for movies.
     ///
     /// - Note: [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
     ///

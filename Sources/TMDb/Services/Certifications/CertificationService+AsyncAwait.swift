@@ -20,7 +20,7 @@ public extension CertificationService {
     /// - Note: [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
     ///
     /// - Returns: A dictionary of TV show certifications.
-    func fetchTVShowCertifications() async throws -> [String: [Certification]] {
+    func tvShowCertifications() async throws -> [String: [Certification]] {
         try await withCheckedThrowingContinuation { continuation in
             self.fetchTVShowCertifications(completion: continuation.resume(with:))
         }

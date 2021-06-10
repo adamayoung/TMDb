@@ -40,3 +40,4 @@ file_length:
 
 line_length:
   ignores_urls: true
+  ignores_comments: true
