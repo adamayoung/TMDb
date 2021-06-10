@@ -1,34 +1,101 @@
 import Foundation
 
+/// A TV show.
 public struct TVShow: Identifiable, Decodable, Equatable, PosterURLProviding, BackdropURLProviding {
 
+    /// TV show identifier.
     public let id: Int
+    /// TV show name.
     public let name: String
+    /// Original TV show name.
     public let originalName: String?
+    /// Original language of the TV show.
     public let originalLanguage: String?
+    /// TV show overview.
     public let overview: String?
+    /// TV show episode run times, in minutes.
     public let episodeRunTime: [Int]?
+    /// Number of seasons in the TV show.
     public let numberOfSeasons: Int?
+    /// Total number of episodes in the TV show.
     public let numberOfEpisodes: Int?
+    /// Seasons in the TV show.
     public let seasons: [TVShowSeason]?
+    /// TV show genres.
     public let genres: [Genre]?
+    /// TV show's first air date.
+    public var firstAirDate: Date? {
+        guard let firstAirDateString = firstAirDateString else {
+            return nil
+        }
+
+        return DateFormatter.theMovieDatabase.date(from: firstAirDateString)
+    }
+    /// TV show country of origin.
     public let originCountry: [String]?
+    /// TV show poster path.
     public let posterPath: URL?
+    /// TV show backdrop path.
     public let backdropPath: URL?
+    /// TV show's web site URL.
+    public var homepageURL: URL? {
+        guard let homepage = homepage else {
+            return nil
+        }
+
+        return URL(string: homepage)
+    }
+    /// Is TV show currently in production.
     public let inProduction: Bool?
+    /// Languages the TV show is available in.
     public let languages: [String]?
+    /// Last air date of the TV show.
     public let lastAirDate: Date?
+    /// Networks involved in the TV show.
     public let networks: [Network]?
+    /// Production companies involved in the TV show.
     public let productionCompanies: [ProductionCompany]?
+    /// TV show status.
     public let status: String?
+    /// TV show type.
     public let type: String?
-    public let popularity: Float?
-    public let voteAverage: Float?
+    /// TV show current popularity.
+    public let popularity: Double?
+    /// Average vote score.
+    public let voteAverage: Double?
+    /// Number of votes.
     public let voteCount: Int?
 
     private let firstAirDateString: String?
     private let homepage: String?
 
+    /// Creates a new `TVShow`.
+    ///
+    /// - Parameters:
+    ///    - id: TV show identifier.
+    ///    - name: TV show name.
+    ///    - originalName: Original TV show name.
+    ///    - originalLanguage: Original language of the TV show.
+    ///    - overview: TV show overview.
+    ///    - episodeRunTime: TV show episode run times, in minutes.
+    ///    - numberOfSeasons: Number of seasons in the TV show.
+    ///    - numberOfEpisodes: Total number of episodes in the TV show.
+    ///    - seasons: Seasons in the TV show.
+    ///    - genres: TV show genres.
+    ///    - firstAirDate: TV show's first air date.
+    ///    - originCountry: TV show country of origin.
+    ///    - posterPath: TV show poster path.
+    ///    - backdropPath: TV show backdrop path.
+    ///    - homepageURL: TV show's web site URL.
+    ///    - inProduction: Is TV show currently in production.
+    ///    - languages: Languages the TV show is available in.
+    ///    - lastAirDate: Last air date of the TV show.
+    ///    - networks: Networks involved in the TV show.
+    ///    - productionCompanies: Production companies involved in the TV show.
+    ///    - status: TV show status.
+    ///    - popularity: TV show current popularity.
+    ///    - voteAverage: Average vote score.
+    ///    - voteCount: Number of votes.
     public init(id: Int, name: String, originalName: String? = nil, originalLanguage: String? = nil,
                 overview: String? = nil, episodeRunTime: [Int]? = nil, numberOfSeasons: Int? = nil,
                 numberOfEpisodes: Int? = nil, seasons: [TVShowSeason]? = nil, genres: [Genre]? = nil,
@@ -36,7 +103,7 @@ public struct TVShow: Identifiable, Decodable, Equatable, PosterURLProviding, Ba
                 backdropPath: URL? = nil, homepageURL: URL? = nil, inProduction: Bool? = nil,
                 languages: [String]? = nil, lastAirDate: Date? = nil, networks: [Network]? = nil,
                 productionCompanies: [ProductionCompany]? = nil, status: String? = nil, type: String? = nil,
-                popularity: Float? = nil, voteAverage: Float? = nil, voteCount: Int? = nil) {
+                popularity: Double? = nil, voteAverage: Double? = nil, voteCount: Int? = nil) {
         self.id = id
         self.name = name
         self.originalName = originalName
@@ -68,26 +135,6 @@ public struct TVShow: Identifiable, Decodable, Equatable, PosterURLProviding, Ba
         self.popularity = popularity
         self.voteAverage = voteAverage
         self.voteCount = voteCount
-    }
-
-}
-
-extension TVShow {
-
-    public var firstAirDate: Date? {
-        guard let firstAirDateString = firstAirDateString else {
-            return nil
-        }
-
-        return DateFormatter.theMovieDatabase.date(from: firstAirDateString)
-    }
-
-    public var homepageURL: URL? {
-        guard let homepage = homepage else {
-            return nil
-        }
-
-        return URL(string: homepage)
     }
 
 }

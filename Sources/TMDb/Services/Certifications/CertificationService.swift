@@ -4,12 +4,12 @@ import Foundation
 import Combine
 #endif
 
-/// Get an up to date list of the officially supported movie certifications on TMDB.
+/// Get an up to date list of the officially supported movie certifications on TMDb.
 public protocol CertificationService {
 
     /// Fetches the officially supported movie certifications on TMDb.
     ///
-    /// - Note: [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
+    /// [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
     ///
     /// - Parameters:
     ///     - completion: Completion handler.
@@ -19,7 +19,7 @@ public protocol CertificationService {
 
     /// Fetches the officially supported TV show certifications on TMDb.
     ///
-    /// - Note: [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
+    /// [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
     ///
     /// - Parameters:
     ///     - completion: Completion handler.
@@ -30,7 +30,7 @@ public protocol CertificationService {
     #if canImport(Combine)
     /// Publishes the officially supported movie certifications on TMDb.
     ///
-    /// - Note: [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
+    /// [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
     ///
     /// - Returns: A publisher with a dictionary of movie certifications.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
@@ -38,7 +38,7 @@ public protocol CertificationService {
 
     /// Publishes the officially supported TV show certifications on TMDb.
     ///
-    /// - Note: [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
+    /// [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
     ///
     /// - Returns: A publisher with a dictionary of tv show certifications.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)

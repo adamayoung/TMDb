@@ -49,7 +49,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchMoviesWithSortByReturnsMovies() {
-        let sortBy = MovieSort.originalTitleAscending
+        let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock
         apiClient.response = expectedResult
 
@@ -97,7 +97,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchMoviesWithSortByAndWithPeopleAndPageReturnsMovies() throws {
-        let sortBy = MovieSort.originalTitleAscending
+        let sortBy = MovieSort.originalTitle(descending: false)
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
@@ -145,7 +145,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchTVShowsWithSortByReturnsTVShows() throws {
-        let sortBy = TVShowSort.firstAirDateAscending
+        let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
         apiClient.response = expectedResult
 
@@ -177,7 +177,7 @@ class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testFetchTVShowsWithSortByAndPageReturnsTVShows() throws {
-        let sortBy = TVShowSort.firstAirDateAscending
+        let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
         apiClient.response = expectedResult

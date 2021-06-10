@@ -3,13 +3,13 @@ import Foundation
 /// A cast member of a movie or TV show.
 public struct CastMember: Identifiable, Decodable, Equatable, ProfileURLProviding {
 
-    /// Cast member identifier.
+    /// Cast member's identifier.
     public let id: Int
-    /// Cast member identifier for the particular movie or TV show.
+    /// Cast member's identifier for the particular movie or TV show.
     public let castID: Int?
     /// Credit identifier for that particular movie or TV show.
     public let creditID: String
-    /// Cast member name.
+    /// Cast member's real name.
     public let name: String
     /// Cast member's character name.
     public let character: String
@@ -23,10 +23,10 @@ public struct CastMember: Identifiable, Decodable, Equatable, ProfileURLProvidin
     /// Creates a new `CastMember`.
     ///
     /// - Parameters:
-    ///    - id: Cast member identifier.
-    ///    - castID: Cast member identifier for the particular movie or TV show.
+    ///    - id: Cast member's identifier.
+    ///    - castID: Cast member's identifier for the particular movie or TV show.
     ///    - creditID: Credit identifier for that particular movie or TV show.
-    ///    - name: Cast member name.
+    ///    - name: Cast member's name.
     ///    - character: Cast member's character name.
     ///    - gender: Cast member's gender.
     ///    - profilePath: Cast member's profile image.

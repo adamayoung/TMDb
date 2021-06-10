@@ -6,7 +6,7 @@ public extension ConfigurationService {
 
     /// Returns the TMDb API system wide configuration information.
     ///
-    /// - Note: [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
+    /// [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
     ///
     /// - Returns: The API configuration.
     func apiConfiguration() async throws -> APIConfiguration {

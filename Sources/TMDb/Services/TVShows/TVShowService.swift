@@ -4,11 +4,12 @@ import Foundation
 import Combine
 #endif
 
+/// Fetch details about TV shows.
 public protocol TVShowService {
 
     /// Fetches the primary information about a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
+    /// [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
     ///
     /// - Parameters:
     ///     - id: The identifier of the TV show.
@@ -18,7 +19,7 @@ public protocol TVShowService {
 
     /// Fetches the cast and crew of a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
+    /// [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -29,7 +30,7 @@ public protocol TVShowService {
 
     /// Fetches the user reviews for a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Reviews](https://developers.themoviedb.org/3/tv/get-tv-reviews)
+    /// [TMDb API - TV Shows: Reviews](https://developers.themoviedb.org/3/tv/get-tv-reviews)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -43,7 +44,7 @@ public protocol TVShowService {
 
     /// Fetches the images that belong to a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Images](https://developers.themoviedb.org/3/tv/get-tv-images)
+    /// [TMDb API - TV Shows: Images](https://developers.themoviedb.org/3/tv/get-tv-images)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -54,7 +55,7 @@ public protocol TVShowService {
 
     /// Fetches the videos that belong to a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Videos](https://developers.themoviedb.org/3/tv/get-tv-videos)
+    /// [TMDb API - TV Shows: Videos](https://developers.themoviedb.org/3/tv/get-tv-videos)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -65,7 +66,7 @@ public protocol TVShowService {
 
     /// Fetches a list of recommended TV shows for a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Recommendations](https://developers.themoviedb.org/3/tv/get-tv-recommendations)
+    /// [TMDb API - TV Shows: Recommendations](https://developers.themoviedb.org/3/tv/get-tv-recommendations)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -81,7 +82,7 @@ public protocol TVShowService {
     ///
     /// This is not the same as the *Recommendations*.
     ///
-    /// - Note: [TMDb API - TV: Similar](https://developers.themoviedb.org/3/tv/get-tv-movies)
+    /// [TMDb API - TV: Similar](https://developers.themoviedb.org/3/tv/get-tv-movies)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -95,7 +96,7 @@ public protocol TVShowService {
 
     /// Fetches a list current popular TV shows.
     ///
-    /// - Note: [TMDb API - TV: Popular](https://developers.themoviedb.org/3/tv/get-popular-tv)
+    /// [TMDb API - TV: Popular](https://developers.themoviedb.org/3/tv/get-popular-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -108,7 +109,7 @@ public protocol TVShowService {
     #if canImport(Combine)
     /// Publishes the primary information about a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
+    /// [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
     ///
     /// - Parameters:
     ///     - id: The identifier of the TV show.
@@ -119,7 +120,7 @@ public protocol TVShowService {
 
     /// Publishes the cast and crew of a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
+    /// [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -130,7 +131,7 @@ public protocol TVShowService {
 
     /// Publishes the user reviews for a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Reviews](https://developers.themoviedb.org/3/tv/get-tv-reviews)
+    /// [TMDb API - TV Shows: Reviews](https://developers.themoviedb.org/3/tv/get-tv-reviews)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -144,7 +145,7 @@ public protocol TVShowService {
 
     /// Publishes the images that belong to a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Images](https://developers.themoviedb.org/3/tv/get-tv-images)
+    /// [TMDb API - TV Shows: Images](https://developers.themoviedb.org/3/tv/get-tv-images)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -155,7 +156,7 @@ public protocol TVShowService {
 
     /// Publishes the videos that belong to a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Videos](https://developers.themoviedb.org/3/tv/get-tv-videos)
+    /// [TMDb API - TV Shows: Videos](https://developers.themoviedb.org/3/tv/get-tv-videos)
     ///
     /// - Parameters:
     ///     - tvShowID: The identifier of the TV show.
@@ -166,7 +167,7 @@ public protocol TVShowService {
 
     /// Publishes a list of recommended TV shows for a TV show.
     ///
-    /// - Note: [TMDb API - TV Shows: Recommendations](https://developers.themoviedb.org/3/tv/get-tv-recommendations)
+    /// [TMDb API - TV Shows: Recommendations](https://developers.themoviedb.org/3/tv/get-tv-recommendations)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -183,7 +184,7 @@ public protocol TVShowService {
     ///
     /// This is not the same as the *Recommendations*.
     ///
-    /// - Note: [TMDb API - TV: Similar](https://developers.themoviedb.org/3/tv/get-tv-movies)
+    /// [TMDb API - TV: Similar](https://developers.themoviedb.org/3/tv/get-tv-movies)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -197,7 +198,7 @@ public protocol TVShowService {
 
     /// Publishes a list current popular TV shows.
     ///
-    /// - Note: [TMDb API - TV: Popular](https://developers.themoviedb.org/3/tv/get-popular-tv)
+    /// [TMDb API - TV: Popular](https://developers.themoviedb.org/3/tv/get-popular-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///

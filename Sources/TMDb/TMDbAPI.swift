@@ -2,7 +2,10 @@ import Foundation
 
 /// The Movie Database API.
 ///
-/// - Note: [The Movie Database API Documentation](https://developers.themoviedb.org)
+/// [The Movie Database API Documentation](https://developers.themoviedb.org)
+/// 
+/// The TMDb API service is for those of you interested in using their movie, TV show or actor images and/or data in your application. Their API is a system they
+/// provide for you and your team to programmatically fetch and use their data and/or images.
 public final class TMDbAPI: MovieTVShowAPI {
 
     /// A shared instance of the TMDb API.

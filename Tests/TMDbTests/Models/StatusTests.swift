@@ -4,7 +4,7 @@ import XCTest
 class StatusTests: XCTestCase {
 
     func testRumoredStatusReturnsRawValue() {
-        XCTAssertEqual(Status.rumored.rawValue, "Rumored")
+        XCTAssertEqual(Status.rumoured.rawValue, "Rumored")
     }
 
     func testPlannedStatusReturnsRawValue() {
@@ -24,7 +24,7 @@ class StatusTests: XCTestCase {
     }
 
     func testCanceledStatusReturnsRawValue() {
-        XCTAssertEqual(Status.canceled.rawValue, "Canceled")
+        XCTAssertEqual(Status.cancelled.rawValue, "Canceled")
     }
 
 }

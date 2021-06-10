@@ -6,7 +6,7 @@ public extension PersonService {
 
     /// Returns the primary information about a person.
     ///
-    /// - Note: [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
+    /// [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
     ///
     /// - Parameters:
     ///     - id: The identifier of the person.
@@ -20,7 +20,7 @@ public extension PersonService {
 
     /// Returns the combined movie and TV show credits of a person.
     ///
-    /// - Note: [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
+    /// [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
     ///
     /// - Parameters:
     ///     - personID: The identifier of the person.
@@ -34,7 +34,7 @@ public extension PersonService {
 
     /// Returns the movie credits of a person.
     ///
-    /// - Note: [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
+    /// [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
     ///
     /// - Parameters:
     ///     - personID: The identifier of the person.
@@ -48,7 +48,7 @@ public extension PersonService {
 
     /// Returns the TV show credits of a person.
     ///
-    /// - Note: [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
+    /// [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
     ///
     /// - Parameters:
     ///     - personID: The identifier of the person.
@@ -62,7 +62,7 @@ public extension PersonService {
 
     /// Returns the images for a person.
     ///
-    /// - Note: [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
+    /// [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
     ///
     /// - Parameters:
     ///     - personID: The identifier of the person.
@@ -88,7 +88,7 @@ public extension PersonService {
 
     /// Returns the list of popular people.
     ///
-    /// - Note: [TMDb API - People: Popular](https://developers.themoviedb.org/3/people/get-popular-people)
+    /// [TMDb API - People: Popular](https://developers.themoviedb.org/3/people/get-popular-people)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///

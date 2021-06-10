@@ -1,7 +1,9 @@
 import Foundation
 
+/// A show - movie or TV show.
 public enum Show: Identifiable, Equatable {
 
+    /// Show identifier.
     public var id: Int {
         switch self {
         case .movie(let movie):
@@ -12,7 +14,8 @@ public enum Show: Identifiable, Equatable {
         }
     }
 
-    var popularity: Float? {
+    /// Show's popularity.
+    var popularity: Double? {
         switch self {
         case .movie(let movie):
             return movie.popularity
@@ -22,6 +25,7 @@ public enum Show: Identifiable, Equatable {
         }
     }
 
+    /// Show's release or first air date.
     var date: Date? {
         switch self {
         case .movie(let movie):
@@ -32,7 +36,9 @@ public enum Show: Identifiable, Equatable {
         }
     }
 
+    /// Movie.
     case movie(Movie)
+    /// TV show.
     case tvShow(TVShow)
 
 }

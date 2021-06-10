@@ -9,7 +9,7 @@ public extension TrendingService {
     /// The daily trending list tracks movies over the period of a day while movies have a 24 hour half life. The
     /// weekly list tracks movies over a 7 day period, with a 7 day half life.
     ///
-    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -30,7 +30,7 @@ public extension TrendingService {
     /// The daily trending list tracks TV shows over the period of a day while TV shows have a 24 hour half life. The
     /// weekly list tracks TV shows over a 7 day period, with a 7 day half life.
     ///
-    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -51,7 +51,7 @@ public extension TrendingService {
     /// The daily trending list tracks people over the period of a day while people shows have a 24 hour half life. The
     /// weekly list tracks people over a 7 day period, with a 7 day half life.
     ///
-    /// - Note: [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///

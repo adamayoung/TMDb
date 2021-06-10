@@ -6,7 +6,7 @@ public extension MovieService {
 
     /// Returns the primary information about a movie.
     ///
-    /// - Note: [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
+    /// [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
     ///
     /// - Parameters:
     ///     - id: The identifier of the movie.
@@ -20,7 +20,7 @@ public extension MovieService {
 
     /// Returns the cast and crew of a movie.
     ///
-    /// - Note: [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
+    /// [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
     ///
     /// - Parameters:
     ///     - movieID: The identifier of the movie.
@@ -34,7 +34,7 @@ public extension MovieService {
 
     /// Returns the user reviews for a movie.
     ///
-    /// - Note: [TMDb API - Movie: Reviews](https://developers.themoviedb.org/3/movies/get-movie-reviews)
+    /// [TMDb API - Movie: Reviews](https://developers.themoviedb.org/3/movies/get-movie-reviews)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -51,7 +51,7 @@ public extension MovieService {
 
     /// Returns the images that belong to a movie.
     ///
-    /// - Note: [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
+    /// [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
     ///
     /// - Parameters:
     ///     - movieID: The identifier of the movie.
@@ -65,7 +65,7 @@ public extension MovieService {
 
     /// Returns the videos that have been added to a movie.
     ///
-    /// - Note: [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
+    /// [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
     ///
     /// - Parameters:
     ///     - movieID: The identifier of the movie.
@@ -79,7 +79,7 @@ public extension MovieService {
 
     /// Returns a list of recommended movies for a movie.
     ///
-    /// - Note: [TMDb API - Movie: Recommendations](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
+    /// [TMDb API - Movie: Recommendations](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -98,7 +98,7 @@ public extension MovieService {
     ///
     /// This is not the same as the *Recommendations*.
     ///
-    /// - Note: [TMDb API - Movie: Similar](https://developers.themoviedb.org/3/movies/get-similar-movies)
+    /// [TMDb API - Movie: Similar](https://developers.themoviedb.org/3/movies/get-similar-movies)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -115,7 +115,7 @@ public extension MovieService {
 
     /// Returns a list of currently playing movies.
     ///
-    /// - Note: [TMDb API - Movie: Now Playing](https://developers.themoviedb.org/3/movies/get-now-playing)
+    /// [TMDb API - Movie: Now Playing](https://developers.themoviedb.org/3/movies/get-now-playing)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
@@ -131,7 +131,7 @@ public extension MovieService {
 
     /// Returns a list of current popular movies.
     ///
-    /// - Note: [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
+    /// [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
@@ -147,7 +147,7 @@ public extension MovieService {
 
     /// Returns a list of top rated movies.
     ///
-    /// - Note: [TMDb API - Movie: Top Rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
+    /// [TMDb API - Movie: Top Rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
@@ -163,7 +163,7 @@ public extension MovieService {
 
     /// Returns a list of upcoming movies.
     ///
-    /// - Note: [TMDb API - Movie: Upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
+    /// [TMDb API - Movie: Upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///

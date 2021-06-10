@@ -1,5 +1,6 @@
 import Foundation
 
+/// Represents a movie, tv show or person.
 public enum Media: Identifiable, Equatable {
 
     public var id: Int {
@@ -15,8 +16,11 @@ public enum Media: Identifiable, Equatable {
         }
     }
 
+    /// Movie.
     case movie(Movie)
+    /// TV show.
     case tvShow(TVShow)
+    /// Person.
     case person(Person)
 
 }

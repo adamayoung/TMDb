@@ -1,17 +1,51 @@
 import Foundation
 
-public enum TVShowSort: String {
+/// Sort specifier when fetching TV shows.
+public enum TVShowSort: CustomStringConvertible {
 
-    case popularityAscending = "popularity.asc"
-    case popularityDescending = "popularity.desc"
+    /// Default sort specifier.
+    public static var `default`: Self = .popularity()
 
-    case firstAirDateAscending = "first_air_date.asc"
-    case firstAirDateDescending = "first_air_date.desc"
+    /// By popularity.
+    case popularity(descending: Bool = true)
+    /// By first air date.
+    case firstAirDate(descending: Bool = true)
+    /// By vote average.
+    case voteAverage(descending: Bool = true)
 
-    case voteAverageAscending = "vote_average.asc"
-    case voteAverageDescending = "vote_average.desc"
+    public var description: String {
+        "\(fieldName).\(isDescending ? "desc" : "asc")"
+    }
 
-    public static var `default`: Self = .popularityDescending
+}
+
+extension TVShowSort {
+
+    private var fieldName: String {
+        switch self {
+        case .popularity:
+            return "popularity"
+
+        case .firstAirDate:
+            return "first_air_date"
+
+        case .voteAverage:
+            return "vote_average"
+        }
+    }
+
+    private var isDescending: Bool {
+        switch self {
+        case .popularity(let descending):
+            return descending
+
+        case .firstAirDate(let descending):
+            return descending
+
+        case .voteAverage(let descending):
+            return descending
+        }
+    }
 
 }
 
@@ -22,7 +56,7 @@ extension URL {
             return self
         }
 
-        return appendingQueryItem(name: "sort_by", value: sortBy.rawValue)
+        return appendingQueryItem(name: "sort_by", value: sortBy)
     }
 
 }
