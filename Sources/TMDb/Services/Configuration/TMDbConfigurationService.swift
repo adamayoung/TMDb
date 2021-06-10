@@ -19,9 +19,9 @@ final class TMDbConfigurationService: ConfigurationService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbConfigurationService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func apiConfigurationPublisher() -> AnyPublisher<APIConfiguration, TMDbError> {
         apiClient.get(endpoint: ConfigurationEndpoint.api)
     }

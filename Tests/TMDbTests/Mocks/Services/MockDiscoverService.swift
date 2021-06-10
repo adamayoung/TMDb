@@ -8,14 +8,14 @@ import Combine
 final class MockDiscoverService: DiscoverService {
 
     var movies: MoviePageableList?
-    private(set) var lastMoviesSortBy: MovieSortBy?
+    private(set) var lastMoviesSortBy: MovieSort?
     private(set) var lastMoviesWithPeople: [Person.ID]?
     private(set) var lastMoviesPage: Int?
     var tvShows: TVShowPageableList?
-    private(set) var lastTVShowsSortBy: TVShowSortBy?
+    private(set) var lastTVShowsSortBy: TVShowSort?
     private(set) var lastTVShowsPage: Int?
 
-    func fetchMovies(sortBy: MovieSortBy?, withPeople people: [Person.ID]?, page: Int?,
+    func fetchMovies(sortBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?,
                      completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastMoviesSortBy = sortBy
         lastMoviesWithPeople = people
@@ -30,7 +30,7 @@ final class MockDiscoverService: DiscoverService {
         }
     }
 
-    func fetchTVShows(sortBy: TVShowSortBy?, page: Int?,
+    func fetchTVShows(sortBy: TVShowSort?, page: Int?,
                       completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
         lastTVShowsSortBy = sortBy
         lastTVShowsPage = page
@@ -49,7 +49,7 @@ final class MockDiscoverService: DiscoverService {
 #if canImport(Combine)
 extension MockDiscoverService {
 
-    func moviesPublisher(sortBy: MovieSortBy?, withPeople people: [Person.ID]?,
+    func moviesPublisher(sortBy: MovieSort?, withPeople people: [Person.ID]?,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastMoviesSortBy = sortBy
         lastMoviesWithPeople = people
@@ -65,7 +65,7 @@ extension MockDiscoverService {
             .eraseToAnyPublisher()
     }
 
-    func tvShowsPublisher(sortBy: TVShowSortBy?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+    func tvShowsPublisher(sortBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
         lastTVShowsSortBy = sortBy
         lastTVShowsPage = page
 

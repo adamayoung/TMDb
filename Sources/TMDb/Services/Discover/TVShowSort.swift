@@ -1,6 +1,6 @@
 import Foundation
 
-public enum TVShowSortBy: String {
+public enum TVShowSort: String {
 
     case popularityAscending = "popularity.asc"
     case popularityDescending = "popularity.desc"
@@ -17,7 +17,7 @@ public enum TVShowSortBy: String {
 
 extension URL {
 
-    func appendingSortBy(_ sortBy: TVShowSortBy?) -> Self {
+    func appendingSortBy(_ sortBy: TVShowSort?) -> Self {
         guard let sortBy = sortBy else {
             return self
         }

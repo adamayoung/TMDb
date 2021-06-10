@@ -48,8 +48,8 @@ public extension ProfileURLProviding {
             .appendingPathComponent(profilePath.absoluteString)
     }
 
-    static var profileAspectRatio: Float {
-        100 / 150
+    static var profileAspectRatio: Double {
+        100.0 / 150.0
     }
 
 }

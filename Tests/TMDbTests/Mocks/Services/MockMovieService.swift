@@ -134,7 +134,7 @@ final class MockMovieService: MovieService {
             completion(.success(nowPlaying))
         }
     }
-    
+
     func fetchPopular(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastPopularPage = page
 
@@ -146,7 +146,7 @@ final class MockMovieService: MovieService {
             completion(.success(popular))
         }
     }
-    
+
     func fetchTopRated(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastTopRatedPage = page
 
@@ -158,7 +158,7 @@ final class MockMovieService: MovieService {
             completion(.success(topRated))
         }
     }
-    
+
     func fetchUpcoming(page: Int?, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         lastUpcomingPage = page
 
@@ -283,7 +283,7 @@ extension MockMovieService {
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
     }
-    
+
     func popularPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastPopularPage = page
 
@@ -296,7 +296,7 @@ extension MockMovieService {
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
     }
-    
+
     func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastTopRatedPage = page
 
@@ -309,7 +309,7 @@ extension MockMovieService {
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
     }
-    
+
     func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
         lastUpcomingPage = page
 

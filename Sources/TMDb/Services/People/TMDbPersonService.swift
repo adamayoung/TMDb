@@ -70,14 +70,13 @@ final class TMDbPersonService: PersonService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbPersonService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func detailsPublisher(forPerson id: Person.ID) -> AnyPublisher<Person, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func combinedCreditsPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonCombinedCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
             .map { (credits: PersonCombinedCredits) in
@@ -88,7 +87,6 @@ extension TMDbPersonService {
             .eraseToAnyPublisher()
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func movieCreditsPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonMovieCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
             .map { (credits: PersonMovieCredits) in
@@ -99,7 +97,6 @@ extension TMDbPersonService {
             .eraseToAnyPublisher()
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func tvShowCreditsPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonTVShowCredits, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
             .map { (credits: PersonTVShowCredits) in
@@ -110,19 +107,16 @@ extension TMDbPersonService {
             .eraseToAnyPublisher()
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func imagesPublisher(forPerson personID: Person.ID) -> AnyPublisher<PersonImageCollection, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func knownForPublisher(forPerson personID: Person.ID) -> AnyPublisher<[Show], TMDbError> {
         combinedCreditsPublisher(forPerson: personID)
             .map(Self.knownForIn)
             .eraseToAnyPublisher()
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popularPublisher(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError> {
         apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
     }

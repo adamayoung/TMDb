@@ -58,22 +58,22 @@ extension MoviesEndpoint: Endpoint {
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
-        
+
         case .nowPlaying(let page):
             return Self.basePath
                 .appendingPathComponent("now_playing")
                 .appendingPage(page)
-                
+
         case .popular(let page):
             return Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
-            
+
         case .topRated(let page):
             return Self.basePath
                 .appendingPathComponent("top_rated")
                 .appendingPage(page)
-                    
+
         case .upcoming(let page):
             return Self.basePath
                 .appendingPathComponent("upcoming")

@@ -88,7 +88,7 @@ class BackdropURLProvidingTests: XCTestCase {
     }
 
     func testBackdropAspectRatioReturnsAspectRatio() {
-        let expectedResult: Float = 500 / 281
+        let expectedResult = 500.0 / 281.0
 
         let result = TestBackdropProvider.backdropAspectRatio
 

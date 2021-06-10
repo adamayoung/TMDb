@@ -7,7 +7,7 @@ import Combine
 /// Movie interface.
 public protocol MovieService {
 
-    /// Publishes the primary information about a movie.
+    /// Fetches the primary information about a movie.
     ///
     /// - Note: [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
     ///
@@ -17,7 +17,7 @@ public protocol MovieService {
     ///     - result: The matching movie.
     func fetchDetails(forMovie id: Movie.ID, completion: @escaping (_ result: Result<Movie, TMDbError>) -> Void)
 
-    /// Publishes the cast and crew of a movie.
+    /// Fetches the cast and crew of a movie.
     ///
     /// - Note: [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
     ///
@@ -28,7 +28,7 @@ public protocol MovieService {
     func fetchCredits(forMovie movieID: Movie.ID,
                       completion: @escaping (_ result: Result<ShowCredits, TMDbError>) -> Void)
 
-    /// Publishes the user reviews for a movie.
+    /// Fetches the user reviews for a movie.
     ///
     /// - Note: [TMDb API - Movie: Reviews](https://developers.themoviedb.org/3/movies/get-movie-reviews)
     ///
@@ -42,7 +42,7 @@ public protocol MovieService {
     func fetchReviews(forMovie movieID: Movie.ID, page: Int?,
                       completion: @escaping (_ result: Result<ReviewPageableList, TMDbError>) -> Void)
 
-    /// Publishes the images that belong to a movie.
+    /// Fetches the images that belong to a movie.
     ///
     /// - Note: [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
     ///
@@ -53,7 +53,7 @@ public protocol MovieService {
     func fetchImages(forMovie movieID: Movie.ID,
                      completion: @escaping (_ result: Result<ImageCollection, TMDbError>) -> Void)
 
-    /// Publishes the videos that have been added to a movie.
+    /// Fetches the videos that have been added to a movie.
     ///
     /// - Note: [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
     ///
@@ -64,7 +64,7 @@ public protocol MovieService {
     func fetchVideos(forMovie movieID: Movie.ID,
                      completion: @escaping (_ result: Result<VideoCollection, TMDbError>) -> Void)
 
-    /// Publishes a list of recommended movies for a movie.
+    /// Fetches a list of recommended movies for a movie.
     ///
     /// - Note: [TMDb API - Movie: Recommendations](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
     ///
@@ -78,7 +78,7 @@ public protocol MovieService {
     func fetchRecommendations(forMovie movieID: Movie.ID, page: Int?,
                               completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
 
-    /// Publishes a list of similar movies for a movie.
+    /// Fetches a list of similar movies for a movie.
     ///
     /// This is not the same as the *Recommendations*.
     ///
@@ -94,7 +94,7 @@ public protocol MovieService {
     func fetchSimilar(toMovie movieID: Movie.ID, page: Int?,
                       completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
 
-    /// Publishes a list of currently playing movies.
+    /// Fetches a list of currently playing movies.
     ///
     /// - Note: [TMDb API - Movie: Now Playing](https://developers.themoviedb.org/3/movies/get-now-playing)
     ///
@@ -105,8 +105,8 @@ public protocol MovieService {
     ///     - completion: Completion handler.
     ///     - result: Current popular movies as a pageable list.
     func fetchNowPlaying(page: Int?, completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
-    
-    /// Publishes a list of current popular movies.
+
+    /// Fetches a list of current popular movies.
     ///
     /// - Note: [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
     ///
@@ -117,8 +117,8 @@ public protocol MovieService {
     ///     - completion: Completion handler.
     ///     - result: Current popular movies as a pageable list.
     func fetchPopular(page: Int?, completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
-    
-    /// Publishes a list of top rated movies.
+
+    /// Fetches a list of top rated movies.
     ///
     /// - Note: [TMDb API - Movie: Top Rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
     ///
@@ -129,8 +129,8 @@ public protocol MovieService {
     ///     - completion: Completion handler.
     ///     - result: Current popular movies as a pageable list.
     func fetchTopRated(page: Int?, completion: @escaping (_ result: Result<MoviePageableList, TMDbError>) -> Void)
-    
-    /// Publishes a list of upcoming movies.
+
+    /// Fetches a list of upcoming movies.
     ///
     /// - Note: [TMDb API - Movie: Upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
     ///
@@ -243,7 +243,7 @@ public protocol MovieService {
     /// - Returns: A publisher with currently playing movies as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func nowPlayingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
-    
+
     /// Publishes a list of current popular movies.
     ///
     /// - Note: [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
@@ -256,7 +256,7 @@ public protocol MovieService {
     /// - Returns: A publisher with current popular movies as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popularPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
-    
+
     /// Publishes a list of top rated movies.
     ///
     /// - Note: [TMDb API - Movie: Top Rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
@@ -269,7 +269,7 @@ public protocol MovieService {
     /// - Returns: A publisher with top rated movies as a pageable list.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func topRatedPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
-    
+
     /// Publishes a list of upcoming movies.
     ///
     /// - Note: [TMDb API - Movie: Upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
@@ -302,15 +302,15 @@ public extension MovieService {
                       completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         fetchSimilar(toMovie: movieID, page: page, completion: completion)
     }
-    
+
     func fetchNowPlaying(page: Int? = nil, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         fetchNowPlaying(page: page, completion: completion)
     }
-    
+
     func fetchPopular(page: Int? = nil, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         fetchPopular(page: page, completion: completion)
     }
-    
+
     func fetchTopRated(page: Int? = nil, completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
         fetchTopRated(page: page, completion: completion)
     }
@@ -322,40 +322,34 @@ public extension MovieService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension MovieService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func reviewsPublisher(forMovie movieID: Movie.ID, page: Int? = nil) -> AnyPublisher<ReviewPageableList, TMDbError> {
         reviewsPublisher(forMovie: movieID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func recommendationsPublisher(forMovie movieID: Movie.ID,
                                   page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         recommendationsPublisher(forMovie: movieID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func similarPublisher(toMovie movieID: Movie.ID, page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         similarPublisher(toMovie: movieID, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func nowPlayingPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         nowPlayingPublisher(page: page)
     }
-    
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+
     func popularPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         popularPublisher(page: page)
     }
-    
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+
     func topRatedPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         topRatedPublisher(page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func upcomingPublisher(page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         upcomingPublisher(page: page)
     }

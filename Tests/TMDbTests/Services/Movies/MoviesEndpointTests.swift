@@ -98,7 +98,7 @@ class MoviesEndpointTests: XCTestCase {
 
         XCTAssertEqual(url, expectedURL)
     }
-    
+
     func testMoviePopularEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/popular")!
 
@@ -114,7 +114,7 @@ class MoviesEndpointTests: XCTestCase {
 
         XCTAssertEqual(url, expectedURL)
     }
-    
+
     func testMovieTopRatedEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/top_rated")!
 
@@ -130,7 +130,7 @@ class MoviesEndpointTests: XCTestCase {
 
         XCTAssertEqual(url, expectedURL)
     }
-    
+
     func testMovieUpcomingEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/upcoming")!
 

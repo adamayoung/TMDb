@@ -153,26 +153,23 @@ public extension SearchService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension SearchService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchAllPublisher(query: String, page: Int? = nil) -> AnyPublisher<MediaPageableList, TMDbError> {
         searchAllPublisher(query: query, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchMoviesPublisher(query: String, year: Int? = nil,
                                page: Int? = nil) -> AnyPublisher<MoviePageableList, TMDbError> {
         searchMoviesPublisher(query: query, year: year, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchTVShowsPublisher(query: String, firstAirDateYear: Int? = nil,
                                 page: Int? = nil) -> AnyPublisher<TVShowPageableList, TMDbError> {
         searchTVShowsPublisher(query: query, firstAirDateYear: firstAirDateYear, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchPeoplePublisher(query: String, page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {
         searchPeoplePublisher(query: query, page: page)
     }

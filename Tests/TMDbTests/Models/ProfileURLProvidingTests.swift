@@ -88,7 +88,7 @@ class ProfileURLProvidingTests: XCTestCase {
     }
 
     func testProfileAspectRatioReturnsAspectRatio() {
-        let expectedResult: Float = 100 / 150
+        let expectedResult = 100.0 / 150.0
 
         let result = TestProfileProvider.profileAspectRatio
 

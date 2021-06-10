@@ -1,6 +1,6 @@
 import Foundation
 
-public enum MovieSortBy: String {
+public enum MovieSort: String {
 
     case popularityAscending = "popularity.asc"
     case popularityDescending = "popularity.desc"
@@ -29,7 +29,7 @@ public enum MovieSortBy: String {
 
 extension URL {
 
-    func appendingSortBy(_ sortBy: MovieSortBy?) -> Self {
+    func appendingSortBy(_ sortBy: MovieSort?) -> Self {
         guard let sortBy = sortBy else {
             return self
         }

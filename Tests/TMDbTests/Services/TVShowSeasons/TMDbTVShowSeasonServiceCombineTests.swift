@@ -1,8 +1,11 @@
+#if canImport(Combine)
+import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbTVShowSeasonServiceTests: XCTestCase {
+class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
 
+    var cancellables: Set<AnyCancellable> = []
     var service: TMDbTVShowSeasonService!
     var apiClient: MockAPIClient!
 
@@ -18,58 +21,47 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchDetailsReturnsTVShowSeason() throws {
+    func testDetailsPublisherReturnsTVShowSeason() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowSeason.mock
         let seasonNumber = expectedResult.seasonNumber
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+                               storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
                        TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchImagesReturnsImages() throws {
+    func testImagesPublisherReturnsImages() throws {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = ImageCollection.mock
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+                               storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
                        TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
-    func testFetchVideosReturnsVideos() throws {
+    func testVideosPublisherReturnsVideos() throws {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = VideoCollection.mock
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try waitFor(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
+                               storeIn: &cancellables)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
                        TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
     }
 
 }
+#endif

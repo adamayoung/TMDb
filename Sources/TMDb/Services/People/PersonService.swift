@@ -172,6 +172,7 @@ public extension PersonService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension PersonService {
 
     func popularPublisher(page: Int? = nil) -> AnyPublisher<PersonPageableList, TMDbError> {

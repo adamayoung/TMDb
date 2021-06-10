@@ -23,14 +23,13 @@ final class TMDbCertificationService: CertificationService {
 }
 
 #if canImport(Combine)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbCertificationService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func movieCertificationsPublisher() -> AnyPublisher<[String: [Certification]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.movie)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func tvShowCertificationsPublisher() -> AnyPublisher<[String: [Certification]], TMDbError> {
         apiClient.get(endpoint: CertificationsEndpoint.tvShow)
     }

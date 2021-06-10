@@ -48,8 +48,8 @@ public extension StillURLProviding {
             .appendingPathComponent(stillPath.absoluteString)
     }
 
-    static var stillAspectRatio: Float {
-        500 / 281
+    static var stillAspectRatio: Double {
+        500.0 / 281.0
     }
 
 }
