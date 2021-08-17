@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class VideoSizeTests: XCTestCase {
+final class VideoSizeTests: XCTestCase {
 
     func test360VideoSizeReturnsRawValue() {
         XCTAssertEqual(VideoSize.s360.rawValue, 360)

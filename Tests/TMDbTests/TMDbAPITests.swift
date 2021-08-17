@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbAPITests: XCTestCase {
+final class TMDbAPITests: XCTestCase {
 
     var tmdb: MovieTVShowAPI!
     var certificationService: MockCertificationService!

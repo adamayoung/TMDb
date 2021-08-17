@@ -57,3 +57,33 @@ extension TMDbSearchService {
 
 }
 #endif
+
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbSearchService {
+
+    func searchAll(query: String, page: Int?) async throws -> MediaPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.searchAll(query: query, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func searchMovies(query: String, year: Int?, page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.searchMovies(query: query, year: year, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.searchTVShows(query: query, firstAirDateYear: firstAirDateYear, page: page,
+                               completion: continuation.resume(with:))
+        }
+    }
+
+    func searchPeople(query: String, page: Int?) async throws -> PersonPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.searchPeople(query: query, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}

@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class VideoMetadataTests: XCTestCase {
+final class VideoMetadataTests: XCTestCase {
 
     func testDecodeReturnsVideoCollection() throws {
         let data = json.data(using: .utf8)!

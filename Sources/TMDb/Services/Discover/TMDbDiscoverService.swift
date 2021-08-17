@@ -40,3 +40,20 @@ extension TMDbDiscoverService {
 
 }
 #endif
+
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbDiscoverService {
+
+    func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchMovies(sortedBy: sortedBy, withPeople: people, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func tvShows(sortedBy: TVShowSort?, page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTVShows(sortedBy: sortedBy, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}

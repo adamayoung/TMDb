@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class StillURLProvidingTests: XCTestCase {
+final class StillURLProvidingTests: XCTestCase {
 
     var providerWithURL: TestStillProvider!
     var providerWithNilURL: TestStillProvider!

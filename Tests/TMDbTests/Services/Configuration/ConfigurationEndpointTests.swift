@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class ConfigurationEndpointTests: XCTestCase {
+final class ConfigurationEndpointTests: XCTestCase {
 
     func testAPIEndpointReturnsURL() {
         let expectedURL = URL(string: "/configuration")!

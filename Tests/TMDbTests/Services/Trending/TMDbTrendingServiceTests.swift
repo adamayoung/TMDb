@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbTrendingServiceTests: XCTestCase {
+final class TMDbTrendingServiceTests: XCTestCase {
 
     var service: TMDbTrendingService!
     var apiClient: MockAPIClient!

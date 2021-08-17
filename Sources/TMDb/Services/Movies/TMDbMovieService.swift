@@ -112,3 +112,74 @@ extension TMDbMovieService {
 
 }
 #endif
+
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbMovieService {
+
+    func details(forMovie id: Movie.ID) async throws -> Movie {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchDetails(forMovie: id, completion: continuation.resume(with:))
+        }
+    }
+
+    func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchCredits(forMovie: movieID, completion: continuation.resume(with:))
+        }
+    }
+
+    func reviews(forMovie movieID: Movie.ID, page: Int?) async throws -> ReviewPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchReviews(forMovie: movieID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchImages(forMovie: movieID, completion: continuation.resume(with:))
+        }
+    }
+
+    func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchVideos(forMovie: movieID, completion: continuation.resume(with:))
+        }
+    }
+
+    func recommendations(forMovie movieID: Movie.ID, page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchRecommendations(forMovie: movieID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func similar(toMovie movieID: Movie.ID, page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSimilar(toMovie: movieID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func nowPlaying(page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchNowPlaying(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func popular(page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchPopular(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func topRated(page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTopRated(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func upcoming(page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchUpcoming(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}

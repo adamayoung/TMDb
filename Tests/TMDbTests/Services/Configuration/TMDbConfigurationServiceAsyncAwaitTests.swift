@@ -1,11 +1,9 @@
-#if canImport(Combine)
-import Combine
 @testable import TMDb
 import XCTest
 
-final class TMDbConfigurationServiceCombineTests: XCTestCase {
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+final class TMDbConfigurationServiceAsyncAwaitTests: XCTestCase {
 
-    var cancellables: Set<AnyCancellable> = []
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
 
@@ -21,15 +19,14 @@ final class TMDbConfigurationServiceCombineTests: XCTestCase {
         super.tearDown()
     }
 
-    func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
+    func testAPIConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock
         apiClient.response = expectedResult
 
-        let result = try waitFor(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
+        let result = try await service.apiConfiguration()
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
     }
 
 }
-#endif

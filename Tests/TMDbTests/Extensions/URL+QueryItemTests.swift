@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class URLQueryItemTests: XCTestCase {
+final class URLQueryItemTests: XCTestCase {
 
     func testAppendingIntPathComponentReturnsURL() {
         let expectedResult = URL(string: "/some/path/2")!

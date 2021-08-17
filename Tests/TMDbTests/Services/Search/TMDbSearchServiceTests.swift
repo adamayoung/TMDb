@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbSearchServiceTests: XCTestCase {
+final class TMDbSearchServiceTests: XCTestCase {
 
     var service: TMDbSearchService!
     var apiClient: MockAPIClient!

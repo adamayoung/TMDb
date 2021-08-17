@@ -1,7 +1,8 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbCertificationServiceTests: XCTestCase {
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+final class TMDbCertificationServiceAsyncAwaitTests: XCTestCase {
 
     var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
@@ -18,33 +19,23 @@ final class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertificationsReturnsMovieCertifications() {
+    func testMovieCertificationsReturnsMovieCertifications() async throws {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovieCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movieCertifications()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertificationsReturnsTVShowCertifications() {
+    func testTVShowCertificationsReturnsTVShowCertifications() async throws {
         let expectedResult = Certification.mocks
         apiClient.response = expectedResult
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShowCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShowCertifications()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
     }
 

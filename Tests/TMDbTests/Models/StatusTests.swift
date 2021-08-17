@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class StatusTests: XCTestCase {
+final class StatusTests: XCTestCase {
 
     func testRumoredStatusReturnsRawValue() {
         XCTAssertEqual(Status.rumoured.rawValue, "Rumored")

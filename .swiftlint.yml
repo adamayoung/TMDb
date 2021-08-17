@@ -35,7 +35,7 @@ identifier_name:
     - url
 
 file_length:
-  warning: 500
+  warning: 600
   error: 800
 
 line_length:

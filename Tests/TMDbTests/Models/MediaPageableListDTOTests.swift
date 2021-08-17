@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class MediaPageableListDTOTests: XCTestCase {
+final class MediaPageableListDTOTests: XCTestCase {
 
     func testDecodeReturnsMediaPageableList() throws {
         let data = json.data(using: .utf8)!

@@ -1,9 +1,7 @@
-#if canImport(Combine)
-import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbConfigurationServiceTests: XCTestCase {
+final class TMDbConfigurationServiceTests: XCTestCase {
 
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
@@ -36,4 +34,3 @@ class TMDbConfigurationServiceTests: XCTestCase {
     }
 
 }
-#endif

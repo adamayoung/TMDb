@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class VideoTypeTests: XCTestCase {
+final class VideoTypeTests: XCTestCase {
 
     func testTrailerVideoTypeReturnsRawValue() {
         XCTAssertEqual(VideoType.trailer.rawValue, "Trailer")

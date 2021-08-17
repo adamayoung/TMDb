@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class JSONDecoderTMDbTests: XCTestCase {
+final class JSONDecoderTMDbTests: XCTestCase {
 
     private static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()

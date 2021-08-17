@@ -16,7 +16,7 @@ public protocol ConfigurationService {
     ///     - result: The API configuration.
     func fetchAPIConfiguration(completion: @escaping (_ result: Result<APIConfiguration, TMDbError>) -> Void)
 
-    #if canImport(Combine)
+#if canImport(Combine)
     /// Publishes the TMDb API system wide configuration information.
     ///
     /// [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
@@ -24,6 +24,14 @@ public protocol ConfigurationService {
     /// - Returns: A publisher with the API configuration.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func apiConfigurationPublisher() -> AnyPublisher<APIConfiguration, TMDbError>
-    #endif
+#endif
+
+    /// Returns the TMDb API system wide configuration information.
+    ///
+    /// [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
+    ///
+    /// - Returns: The API configuration.
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func apiConfiguration() async throws -> APIConfiguration
 
 }

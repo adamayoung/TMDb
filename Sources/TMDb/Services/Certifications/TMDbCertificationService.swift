@@ -23,7 +23,6 @@ final class TMDbCertificationService: CertificationService {
 }
 
 #if canImport(Combine)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbCertificationService {
 
     func movieCertificationsPublisher() -> AnyPublisher<[String: [Certification]], TMDbError> {
@@ -36,3 +35,20 @@ extension TMDbCertificationService {
 
 }
 #endif
+
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbCertificationService {
+
+    func movieCertifications() async throws -> [String: [Certification]] {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchMovieCertifications(completion: continuation.resume(with:))
+        }
+    }
+
+    func tvShowCertifications() async throws -> [String: [Certification]] {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTVShowCertifications(completion: continuation.resume(with:))
+        }
+    }
+
+}

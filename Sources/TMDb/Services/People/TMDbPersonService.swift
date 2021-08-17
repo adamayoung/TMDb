@@ -124,6 +124,53 @@ extension TMDbPersonService {
 }
 #endif
 
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbPersonService {
+
+    func details(forPerson id: Person.ID) async throws -> Person {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchDetails(forPerson: id, completion: continuation.resume(with:))
+        }
+    }
+
+    func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchCombinedCredits(forPerson: personID, completion: continuation.resume(with:))
+        }
+    }
+
+    func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchMovieCredits(forPerson: personID, completion: continuation.resume(with:))
+        }
+    }
+
+    func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTVShowCredits(forPerson: personID, completion: continuation.resume(with:))
+        }
+    }
+
+    func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchImages(forPerson: personID, completion: continuation.resume(with:))
+        }
+    }
+
+    func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchKnownFor(forPerson: personID, completion: continuation.resume(with:))
+        }
+    }
+
+    func popular(page: Int?) async throws -> PersonPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchPopular(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}
+
 extension TMDbPersonService {
 
     private static func knownForIn(credits: PersonCombinedCredits) -> [Show] {

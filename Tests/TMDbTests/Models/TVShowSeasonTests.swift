@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TVShowSeasonDTOTests: XCTestCase {
+final class TVShowSeasonTests: XCTestCase {
 
     func testDecodeReturnsTVShowSeason() throws {
         let data = json.data(using: .utf8)!

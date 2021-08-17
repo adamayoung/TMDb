@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbTVShowServiceTests: XCTestCase {
+final class TMDbTVShowServiceTests: XCTestCase {
 
     var service: TMDbTVShowService!
     var apiClient: MockAPIClient!

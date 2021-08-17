@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbSearchServiceCombineTests: XCTestCase {
+final class TMDbSearchServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbSearchService!
