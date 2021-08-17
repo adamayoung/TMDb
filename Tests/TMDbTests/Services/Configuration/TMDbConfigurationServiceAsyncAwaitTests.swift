@@ -1,3 +1,4 @@
+#if swift(>=5.5)
 @testable import TMDb
 import XCTest
 
@@ -30,3 +31,4 @@ final class TMDbConfigurationServiceAsyncAwaitTests: XCTestCase {
     }
 
 }
+#endif

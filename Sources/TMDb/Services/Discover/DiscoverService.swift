@@ -68,6 +68,7 @@ public protocol DiscoverService {
     func tvShowsPublisher(sortedBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 #endif
 
+#if swift(>=5.5)
     /// Returns movies to be discovered.
     ///
     /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
@@ -96,6 +97,7 @@ public protocol DiscoverService {
     /// - Returns: Matching TV shows as a pageable list.
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func tvShows(sortedBy: TVShowSort?, page: Int?) async throws -> TVShowPageableList
+#endif
 
 }
 
@@ -130,6 +132,7 @@ public extension DiscoverService {
 }
 #endif
 
+#if swift(>=5.5)
 @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension DiscoverService {
 
@@ -145,3 +148,4 @@ public extension DiscoverService {
     }
 
 }
+#endif

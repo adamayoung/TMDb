@@ -65,7 +65,7 @@ public protocol SearchService {
     func searchPeople(query: String, page: Int?,
                       completion: @escaping (_ result: Result<PersonPageableList, TMDbError>) -> Void)
 
-    #if canImport(Combine)
+#if canImport(Combine)
     /// Publishes search results for movies, TV shows and people based on a query.
     ///
     /// [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
@@ -124,8 +124,9 @@ public protocol SearchService {
     /// - Returns: A publisher with people matching the query.
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchPeoplePublisher(query: String, page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
-    #endif
+#endif
 
+#if swift(>=5.5)
     /// Returns search results for movies, TV shows and people based on a query.
     ///
     /// [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
@@ -183,6 +184,7 @@ public protocol SearchService {
     /// - Returns: People matching the query.
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func searchPeople(query: String, page: Int?) async throws -> PersonPageableList
+#endif
 
 }
 
@@ -236,6 +238,7 @@ public extension SearchService {
 }
 #endif
 
+#if swift(>=5.5)
 @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 extension SearchService {
 
@@ -257,3 +260,4 @@ extension SearchService {
     }
 
 }
+#endif

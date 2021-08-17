@@ -3,4 +3,4 @@ docker run --rm --privileged --interactive --tty \
     --workdir "/src" \
     swift:5.4 \
     /bin/bash -c \
-    "swift test --build-path ./.build/linux --enable-test-discovery"
+    "swift test --build-path ./.build/linux"

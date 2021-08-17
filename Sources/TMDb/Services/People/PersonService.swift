@@ -161,6 +161,7 @@ public protocol PersonService {
     func popularPublisher(page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
 #endif
 
+#if swift(>=5.5)
     /// Returns the primary information about a person.
     ///
     /// [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
@@ -235,6 +236,7 @@ public protocol PersonService {
     /// - Returns: Current popular people as a pageable list.
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func popular(page: Int?) async throws -> PersonPageableList
+#endif
 
 }
 
@@ -258,6 +260,7 @@ public extension PersonService {
 }
 #endif
 
+#if swift(>=5.5)
 @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension PersonService {
 
@@ -266,3 +269,4 @@ public extension PersonService {
     }
 
 }
+#endif

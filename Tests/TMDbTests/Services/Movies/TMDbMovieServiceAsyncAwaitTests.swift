@@ -1,3 +1,4 @@
+#if swift(>=5.5)
 @testable import TMDb
 import XCTest
 
@@ -290,3 +291,4 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
     }
 
 }
+#endif

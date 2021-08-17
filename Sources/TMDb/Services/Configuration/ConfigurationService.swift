@@ -26,6 +26,7 @@ public protocol ConfigurationService {
     func apiConfigurationPublisher() -> AnyPublisher<APIConfiguration, TMDbError>
 #endif
 
+#if swift(>=5.5)
     /// Returns the TMDb API system wide configuration information.
     ///
     /// [TMDb API - Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
@@ -33,5 +34,6 @@ public protocol ConfigurationService {
     /// - Returns: The API configuration.
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func apiConfiguration() async throws -> APIConfiguration
+#endif
 
 }

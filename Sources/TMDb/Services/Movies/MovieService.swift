@@ -284,6 +284,7 @@ public protocol MovieService {
     func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 #endif
 
+#if swift(>=5.5)
     /// Returns the primary information about a movie.
     ///
     /// [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
@@ -423,6 +424,7 @@ public protocol MovieService {
     /// - Returns: Current popular movies as a pageable list.
     @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func upcoming(page: Int?) async throws -> MoviePageableList
+#endif
 
 }
 
@@ -497,6 +499,7 @@ public extension MovieService {
 }
 #endif
 
+#if swift(>=5.5)
 @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension MovieService {
 
@@ -529,3 +532,4 @@ public extension MovieService {
     }
 
 }
+#endif
