@@ -111,3 +111,49 @@ extension MockTrendingService {
 
 }
 #endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockTrendingService {
+
+    func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> MoviePageableList {
+        lastMoviesTimeWindow = timeWindow
+        lastMoviesPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let movies = self.movies else {
+                return
+            }
+
+            continuation.resume(returning: movies)
+        }
+    }
+
+    func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> TVShowPageableList {
+        lastTVShowsTimeWindow = timeWindow
+        lastTVShowsPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let tvShows = self.tvShows else {
+                return
+            }
+
+            continuation.resume(returning: tvShows)
+        }
+    }
+
+    func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> PersonPageableList {
+        lastPeopleTimeWindow = timeWindow
+        lastPeoplePage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let people = self.people else {
+                return
+            }
+
+            continuation.resume(returning: people)
+        }
+    }
+
+}
+#endif

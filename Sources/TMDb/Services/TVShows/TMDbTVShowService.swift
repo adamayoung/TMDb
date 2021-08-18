@@ -92,3 +92,58 @@ extension TMDbTVShowService {
 
 }
 #endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbTVShowService {
+
+    func details(forTVShow id: TVShow.ID) async throws -> TVShow {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchDetails(forTVShow: id, completion: continuation.resume(with:))
+        }
+    }
+
+    func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchCredits(forTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+    func reviews(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> ReviewPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchReviews(forTVShow: tvShowID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchImages(forTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+    func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchVideos(forTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+    func recommendations(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchRecommendations(forTVShow: tvShowID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func similar(toTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchSimilar(toTVShow: tvShowID, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func popular(page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchPopular(page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}
+#endif

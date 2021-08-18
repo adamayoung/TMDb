@@ -55,7 +55,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache
+      - name: Cache SPM
         uses: actions/cache@v2
         with:
           path: .build
@@ -76,7 +76,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache
+      - name: Cache SPM
         uses: actions/cache@v2
         with:
           path: .build
@@ -100,7 +100,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache
+      - name: Cache SPM
         uses: actions/cache@v2
         with:
           path: .build

@@ -50,3 +50,28 @@ extension TMDbTrendingService {
 
 }
 #endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbTrendingService {
+
+    func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> MoviePageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchMovies(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> TVShowPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchTVShows(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+    func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> PersonPageableList {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchPeople(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
+        }
+    }
+
+}
+#endif

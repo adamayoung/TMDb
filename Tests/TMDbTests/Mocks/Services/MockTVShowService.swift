@@ -247,3 +247,109 @@ extension MockTVShowService {
 
 }
 #endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockTVShowService {
+
+    func details(forTVShow id: TVShow.ID) async throws -> TVShow {
+        lastTVShowDetailsID = id
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let tvShowDetails = self.tvShowDetails else {
+                return
+            }
+
+            continuation.resume(returning: tvShowDetails)
+        }
+    }
+
+    func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits {
+        lastCreditsTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let credits = self.credits else {
+                return
+            }
+
+            continuation.resume(returning: credits)
+        }
+    }
+
+    func reviews(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> ReviewPageableList {
+        lastReviewsTVShowID = tvShowID
+        lastReviewsPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let reviews = self.reviews else {
+                return
+            }
+
+            continuation.resume(returning: reviews)
+        }
+    }
+
+    func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+        lastImagesTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let images = self.images else {
+                return
+            }
+
+            continuation.resume(returning: images)
+        }
+    }
+
+    func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
+        lastVideosTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let videos = self.videos else {
+                return
+            }
+
+            continuation.resume(returning: videos)
+        }
+    }
+
+    func recommendations(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
+        lastRecommendationsTVShowID = tvShowID
+        lastRecommendationsPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let recommendations = self.recommendations else {
+                return
+            }
+
+            continuation.resume(returning: recommendations)
+        }
+    }
+
+    func similar(toTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
+        lastSimilarTVShowID = tvShowID
+        lastSimilarPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let similar = self.similar else {
+                return
+            }
+
+            continuation.resume(returning: similar)
+        }
+    }
+
+    func popular(page: Int?) async throws -> TVShowPageableList {
+        lastPopularPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let popular = self.popular else {
+                return
+            }
+
+            continuation.resume(returning: popular)
+        }
+    }
+
+}
+#endif

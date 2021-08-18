@@ -53,3 +53,28 @@ extension TMDbTVShowSeasonService {
 
 }
 #endif
+
+#if swift(>=5.5)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbTVShowSeasonService {
+
+    func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+    func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+    func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
+        try await withCheckedThrowingContinuation { continuation in
+            self.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
+        }
+    }
+
+}
+#endif

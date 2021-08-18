@@ -20,7 +20,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDetailsPublisherReturnsPerson() async throws {
+    func testDetailsReturnsPerson() async throws {
         let expectedResult = Person.mock
         let personID = expectedResult.id
         apiClient.response = expectedResult
@@ -31,7 +31,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
     }
 
-    func testCombinedCreditsPublisherReturnsCombinedCredits() async throws {
+    func testCombinedCreditsReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
@@ -43,7 +43,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testMovieCreditsPublisherReturnsMovieCredits() async throws {
+    func testMovieCreditsReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
@@ -55,7 +55,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
     }
 
-    func testTVShowCreditsPublisherReturnsTVShowCredits() async throws {
+    func testTVShowCreditsReturnsTVShowCredits() async throws {
         let mock = PersonTVShowCredits.mock
         let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
@@ -67,7 +67,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
     }
 
-    func testImagesPublisherReturnsImageCollection() async throws {
+    func testImagesReturnsImageCollection() async throws {
         let expectedResult = PersonImageCollection.mock
         let personID = expectedResult.id
         apiClient.response = expectedResult
@@ -78,7 +78,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
     }
 
-    func testKnownForPublisherReturnsShows() async throws {
+    func testKnownForReturnsShows() async throws {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
         apiClient.response = credits
@@ -104,7 +104,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
     }
 
-    func testPopularPublisherWithDefaultParametersReturnsPeople() async throws {
+    func testPopularWithDefaultParametersReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
@@ -114,7 +114,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testPopularPublisherReturnsPeople() async throws {
+    func testPopularReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
         apiClient.response = expectedResult
 
@@ -124,7 +124,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
     }
 
-    func testPopularPublisherWithPageReturnsPeople() async throws {
+    func testPopularWithPageReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
         apiClient.response = expectedResult
