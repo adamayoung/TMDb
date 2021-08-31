@@ -14,6 +14,9 @@ jobs:
   lint:
     name: Lint
     runs-on: macos-11
+    concurrency: 
+      group: pr-lint-${{ github.head_ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
@@ -27,6 +30,9 @@ jobs:
   test-on-macos:
     name: Test on macOS
     runs-on: macos-11
+    concurrency: 
+      group: pr-test-macos-${{ github.head_ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
@@ -48,6 +54,9 @@ jobs:
   test-on-ios:
     name: Test on iOS
     runs-on: macos-11
+    concurrency: 
+      group: pr-test-ios-${{ github.head_ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
@@ -69,6 +78,9 @@ jobs:
   test-on-watchos:
     name: Test on watchOS
     runs-on: macos-11
+    concurrency: 
+      group: pr-test-watchos-${{ github.head_ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
@@ -90,6 +102,9 @@ jobs:
   test-on-linux:
     name: Test on Linux
     runs-on: ubuntu-latest
+    concurrency: 
+      group: pr-test-linux-${{ github.head_ref }}
+      cancel-in-progress: true
     container:
       image: swift:5.4
       options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
@@ -114,6 +129,9 @@ jobs:
   analysis:
     name: Analysis
     runs-on: macos-11
+    concurrency: 
+      group: pr-analysis-${{ github.head_ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
