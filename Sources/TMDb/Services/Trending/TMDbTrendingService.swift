@@ -56,21 +56,15 @@ extension TMDbTrendingService {
 extension TMDbTrendingService {
 
     func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> MoviePageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchMovies(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
     }
 
     func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchTVShows(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
     }
 
     func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> PersonPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchPeople(inTimeWindow: timeWindow, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
     }
 
 }

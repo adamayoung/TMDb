@@ -23,7 +23,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testMoviesWithDefaultParametersReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies()
 
@@ -34,7 +34,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testMoviesForDayReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
@@ -46,7 +46,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
@@ -57,7 +57,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testMoviesForWeekReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
@@ -69,7 +69,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
@@ -80,7 +80,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testTVShowsWithDefaultReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows()
 
@@ -91,7 +91,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testTVShowsForDayReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
@@ -103,7 +103,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
@@ -114,7 +114,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testTVShowsForWeekReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
@@ -126,7 +126,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
@@ -137,7 +137,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testPeopleWithDefaultParametersReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.people()
 
@@ -148,7 +148,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testPeopleForDayReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
@@ -160,7 +160,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.people(inTimeWindow: timeWindow, page: page)
 
@@ -171,7 +171,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
     func testPeopleForWeekReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
@@ -183,7 +183,7 @@ final class TMDbTrendingServiceAsyncAwaitTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.people(inTimeWindow: timeWindow, page: page)
 

@@ -59,21 +59,15 @@ extension TMDbTVShowSeasonService {
 extension TMDbTVShowSeasonService {
 
     func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 
     func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 
     func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber))
     }
 
 }

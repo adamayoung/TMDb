@@ -63,28 +63,20 @@ extension TMDbSearchService {
 extension TMDbSearchService {
 
     func searchAll(query: String, page: Int?) async throws -> MediaPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.searchAll(query: query, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
     }
 
     func searchMovies(query: String, year: Int?, page: Int?) async throws -> MoviePageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.searchMovies(query: query, year: year, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
     }
 
     func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.searchTVShows(query: query, firstAirDateYear: firstAirDateYear, page: page,
-                               completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear,
+                                                                 page: page))
     }
 
     func searchPeople(query: String, page: Int?) async throws -> PersonPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.searchPeople(query: query, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
     }
 
 }

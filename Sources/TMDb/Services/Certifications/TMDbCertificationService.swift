@@ -41,15 +41,11 @@ extension TMDbCertificationService {
 extension TMDbCertificationService {
 
     func movieCertifications() async throws -> [String: [Certification]] {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchMovieCertifications(completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: CertificationsEndpoint.movie)
     }
 
     func tvShowCertifications() async throws -> [String: [Certification]] {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchTVShowCertifications(completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
     }
 
 }

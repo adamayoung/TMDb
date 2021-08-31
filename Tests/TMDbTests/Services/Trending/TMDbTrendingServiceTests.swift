@@ -21,7 +21,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchMoviesWithDefaultValuesReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies { result in
@@ -37,7 +37,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchMoviesForDayReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
@@ -54,7 +54,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
@@ -70,7 +70,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchMoviesForWeekReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
@@ -87,7 +87,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
@@ -103,7 +103,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsWithDefaultParametersReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows { result in
@@ -119,7 +119,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForDayReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
@@ -136,7 +136,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
@@ -152,7 +152,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchTVShowsForWeekReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
@@ -169,7 +169,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
@@ -185,7 +185,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchPeopleWithDefaultParametersReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPeople { result in
@@ -201,7 +201,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchPeopleForDayReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
@@ -218,7 +218,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in
@@ -234,7 +234,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
     func testFetchPeopleForWeekReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
@@ -251,7 +251,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in

@@ -23,7 +23,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
     func testDetailsReturnsPerson() async throws {
         let expectedResult = Person.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.details(forPerson: personID)
 
@@ -35,7 +35,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         let mock = PersonCombinedCredits.mock
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.combinedCredits(forPerson: personID)
 
@@ -47,7 +47,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         let mock = PersonMovieCredits.mock
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movieCredits(forPerson: personID)
 
@@ -59,7 +59,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
         let mock = PersonTVShowCredits.mock
         let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShowCredits(forPerson: personID)
 
@@ -70,7 +70,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
     func testImagesReturnsImageCollection() async throws {
         let expectedResult = PersonImageCollection.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.images(forPerson: personID)
 
@@ -81,7 +81,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
     func testKnownForReturnsShows() async throws {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
-        apiClient.response = credits
+        apiClient.result = .success(credits)
         let topCastShows = Array(credits.cast.sorted().prefix(10))
         let topCrewShows = Array(credits.crew.sorted().prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -106,7 +106,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
 
     func testPopularWithDefaultParametersReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.popular()
 
@@ -116,7 +116,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
 
     func testPopularReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.popular(page: nil)
 
@@ -127,7 +127,7 @@ final class TMDbPersonServiceAsyncAwaitTests: XCTestCase {
     func testPopularWithPageReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.popular(page: page)
 

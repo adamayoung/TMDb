@@ -98,51 +98,35 @@ extension TMDbTVShowService {
 extension TMDbTVShowService {
 
     func details(forTVShow id: TVShow.ID) async throws -> TVShow {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchDetails(forTVShow: id, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
     }
 
     func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchCredits(forTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
     }
 
     func reviews(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> ReviewPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchReviews(forTVShow: tvShowID, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
     }
 
     func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchImages(forTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID))
     }
 
     func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchVideos(forTVShow: tvShowID, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID))
     }
 
     func recommendations(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchRecommendations(forTVShow: tvShowID, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
     }
 
     func similar(toTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchSimilar(toTVShow: tvShowID, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
     }
 
     func popular(page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchPopular(page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
     }
 
 }

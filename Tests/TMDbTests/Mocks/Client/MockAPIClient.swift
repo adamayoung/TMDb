@@ -9,7 +9,7 @@ class MockAPIClient: APIClient {
 
     static var apiKey: String?
 
-    var response: Any?
+    var result: Result<Any, TMDbError>?
     private(set) var lastPath: URL?
     private(set) var lastHTTPHeaders: [String: String]?
 
@@ -22,36 +22,80 @@ class MockAPIClient: APIClient {
         self.lastPath = path
         self.lastHTTPHeaders = httpHeaders
 
-        guard let decodedResponse = response as? Response else {
-            XCTFail("Can't cast response to type \(String(describing: Response.self))")
+        guard let result = result else {
+            XCTFail("No result set.")
+            completion(.failure(.unknown))
             return
         }
 
-        DispatchQueue.main.simulateWaitForNetwork {
-            completion(.success(decodedResponse))
+        DispatchQueue.main.async {
+            do {
+                guard let value = try result.get() as? Response else {
+                    XCTFail("Can't cast response to type \(String(describing: Response.self))")
+                    completion(.failure(.unknown))
+                    return
+                }
+
+                return completion(.success(value))
+            } catch let error {
+                return completion(.failure(error as! TMDbError))
+            }
         }
     }
 
-    #if canImport(Combine)
+#if canImport(Combine)
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) -> AnyPublisher<Response, TMDbError> {
         self.lastPath = path
         self.lastHTTPHeaders = httpHeaders
 
-        guard let result = response as? Response else {
-            XCTFail("Can't cast response to type \(String(describing: Response.self))")
+        guard let result = result else {
             return Empty()
                 .setFailureType(to: TMDbError.self)
                 .eraseToAnyPublisher()
         }
 
-        return Just(result)
-            .setFailureType(to: TMDbError.self)
-            .eraseToAnyPublisher()
+        do {
+            guard let value = try result.get() as? Response else {
+                XCTFail("Can't cast response to type \(String(describing: Response.self))")
+                return Fail(error: TMDbError.unknown)
+                    .eraseToAnyPublisher()
+            }
+
+            return Just(value)
+                .setFailureType(to: TMDbError.self)
+                .eraseToAnyPublisher()
+        } catch let error {
+            return Fail(error: error as! TMDbError)
+                .eraseToAnyPublisher()
+        }
     }
-    #endif
+#endif
+
+#if swift(>=5.5)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
+        self.lastPath = path
+        self.lastHTTPHeaders = httpHeaders
+
+        guard let result = result else {
+            throw TMDbError.unknown
+        }
+
+        do {
+            guard let value = try result.get() as? Response else {
+                XCTFail("Can't cast response to type \(String(describing: Response.self))")
+                throw TMDbError.unknown
+            }
+
+            return value
+        } catch let error {
+            throw error as! TMDbError
+        }
+    }
+#endif
 
     func reset() {
-        response = nil
+        result = nil
         lastPath = nil
         lastHTTPHeaders = nil
     }

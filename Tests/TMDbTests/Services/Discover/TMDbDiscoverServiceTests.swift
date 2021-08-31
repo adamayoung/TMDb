@@ -20,7 +20,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchMoviesWithDefaultParametersReturnsMovies() {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies { result in
@@ -35,7 +35,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchMoviesReturnsMovies() {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(sortedBy: nil, withPeople: nil, page: nil) { result in
@@ -51,7 +51,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testFetchMoviesWithSortByReturnsMovies() {
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(sortedBy: sortBy, withPeople: nil, page: nil) { result in
@@ -67,7 +67,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testFetchMoviesWithWithPeopleReturnsMovies() {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(sortedBy: nil, withPeople: people, page: nil) { result in
@@ -83,7 +83,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testFetchMoviesWithWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(sortedBy: nil, withPeople: nil, page: page) { result in
@@ -101,7 +101,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovies(sortedBy: sortBy, withPeople: people, page: page) { result in
@@ -116,7 +116,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchTVShowsWithDefaultParametersReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows { result in
@@ -131,7 +131,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testFetchTVShowsReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(sortedBy: nil, page: nil) { result in
@@ -147,7 +147,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testFetchTVShowsWithSortByReturnsTVShows() throws {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(sortedBy: sortBy, page: nil) { result in
@@ -163,7 +163,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testTVShowsPublisherWithPageReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(sortedBy: nil, page: page) { result in
@@ -180,7 +180,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShows(sortedBy: sortBy, page: page) { result in

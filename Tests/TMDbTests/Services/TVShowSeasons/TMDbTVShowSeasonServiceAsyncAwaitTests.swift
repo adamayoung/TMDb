@@ -24,7 +24,7 @@ final class TMDbTVShowSeasonServiceAsyncAwaitTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = TVShowSeason.mock
         let seasonNumber = expectedResult.seasonNumber
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.details(forSeason: seasonNumber, inTVShow: tvShowID)
 
@@ -37,7 +37,7 @@ final class TMDbTVShowSeasonServiceAsyncAwaitTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = ImageCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.images(forSeason: seasonNumber, inTVShow: tvShowID)
 
@@ -50,7 +50,7 @@ final class TMDbTVShowSeasonServiceAsyncAwaitTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = VideoCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.videos(forSeason: seasonNumber, inTVShow: tvShowID)
 

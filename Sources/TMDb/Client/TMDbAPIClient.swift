@@ -86,6 +86,39 @@ extension TMDbAPIClient {
 }
 #endif
 
+#if swift(>=5.5)
+extension TMDbAPIClient {
+
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
+        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
+
+        let data: Data
+        let response: URLResponse
+
+        do {
+            (data, response) = try await urlSession.data(for: urlRequest)
+        } catch {
+            throw TMDbError.network(error)
+        }
+
+        if let tmdbError = TMDbError(response: response) {
+            throw tmdbError
+        }
+
+        let decodedResponse: Response
+        do {
+            decodedResponse = try jsonDecoder.decode(Response.self, from: data)
+        } catch let error {
+            throw TMDbError.decode(error)
+        }
+
+        return decodedResponse
+    }
+
+}
+#endif
+
 extension TMDbAPIClient {
 
     private func buildURLRequest(for path: URL, httpHeaders: [String: String]?) -> URLRequest {

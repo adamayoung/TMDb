@@ -24,7 +24,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
     func testDetailsPublisherReturnsPerson() throws {
         let expectedResult = Person.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.detailsPublisher(forPerson: personID), storeIn: &cancellables)
 
@@ -36,7 +36,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
         let mock = PersonCombinedCredits.mock
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.combinedCreditsPublisher(forPerson: personID),
                                  storeIn: &cancellables)
@@ -49,7 +49,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
         let mock = PersonMovieCredits.mock
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.movieCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
@@ -61,7 +61,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
         let mock = PersonTVShowCredits.mock
         let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowCreditsPublisher(forPerson: personID), storeIn: &cancellables)
 
@@ -72,7 +72,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
     func testImagesPublisherReturnsImageCollection() throws {
         let expectedResult = PersonImageCollection.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.imagesPublisher(forPerson: personID), storeIn: &cancellables)
 
@@ -83,7 +83,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
     func testKnownForPublisherReturnsShows() throws {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
-        apiClient.response = credits
+        apiClient.result = .success(credits)
         let topCastShows = Array(credits.cast.sorted().prefix(10))
         let topCrewShows = Array(credits.crew.sorted().prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -108,7 +108,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
 
     func testPopularPublisherWithDefaultParametersReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
@@ -118,7 +118,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
 
     func testPopularPublisherReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
@@ -129,7 +129,7 @@ final class TMDbPersonServiceCombineTests: XCTestCase {
     func testPopularPublisherWithPageReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 

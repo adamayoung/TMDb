@@ -1,7 +1,7 @@
 import Foundation
 
 /// Person image collection.
-public struct PersonImageCollection: Identifiable, Decodable, Equatable {
+public struct PersonImageCollection: Identifiable, Decodable, Equatable, Hashable {
 
     /// Person identifier.
     public let id: Int

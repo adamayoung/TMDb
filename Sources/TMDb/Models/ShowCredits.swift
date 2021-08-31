@@ -3,7 +3,7 @@ import Foundation
 /// Credits for a movie or TV show.
 ///
 /// A person can be both a cast member and crew member of the same show.
-public struct ShowCredits: Identifiable, Decodable, Equatable {
+public struct ShowCredits: Identifiable, Decodable, Equatable, Hashable {
 
     /// Movie or TV show identifier.
     public let id: Int

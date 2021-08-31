@@ -24,7 +24,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testMoviesPublisherWithDefaultParametersReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(), storeIn: &cancellables)
 
@@ -35,7 +35,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testMoviesPublisherForDayReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -48,7 +48,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
@@ -60,7 +60,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testMoviesPublisherForWeekReturnsMovies() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -73,7 +73,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
@@ -85,7 +85,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testTVShowsPublisherWithDefaultReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(), storeIn: &cancellables)
 
@@ -96,7 +96,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testTVShowsPublisherForDayReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -109,7 +109,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
@@ -121,7 +121,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testTVShowsPublisherForWeekReturnsTVShows() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -134,7 +134,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
@@ -146,7 +146,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testPeoplePublisherWithDefaultParametersReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.peoplePublisher(), storeIn: &cancellables)
 
@@ -157,7 +157,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testPeoplePublisherForDayReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -170,7 +170,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)
@@ -182,7 +182,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
     func testPeoplePublisherForWeekReturnsPeople() throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: nil),
                                storeIn: &cancellables)
@@ -195,7 +195,7 @@ final class TMDbTrendingServiceCombineTests: XCTestCase {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.peoplePublisher(inTimeWindow: timeWindow, page: page),
                                storeIn: &cancellables)

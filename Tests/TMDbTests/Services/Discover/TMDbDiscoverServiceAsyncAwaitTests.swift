@@ -22,7 +22,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
 
     func testMoviesWithDefaultParametersReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies()
 
@@ -32,7 +32,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
 
     func testMoviesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: nil)
 
@@ -43,7 +43,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
     func testMoviesWithSortByReturnsMovies() async throws {
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil)
 
@@ -54,7 +54,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
     func testMoviesWithWithPeopleReturnsMovies() async throws {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil)
 
@@ -65,7 +65,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
     func testMoviesWithWithPageReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: page)
 
@@ -78,7 +78,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: sortBy, withPeople: people, page: page)
 
@@ -88,7 +88,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
 
     func testTVShowsWithDefaultParametersReturnsTVShows() async throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows()
 
@@ -98,7 +98,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
 
     func testTVShowsReturnsTVShows() async throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: nil, page: nil)
 
@@ -109,7 +109,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
     func testTVShowsWithSortByReturnsTVShows() async throws {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: sortBy, page: nil)
 
@@ -120,7 +120,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
     func testTVShowsWithPageReturnsTVShows() async throws {
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: nil, page: page)
 
@@ -132,7 +132,7 @@ final class TMDbDiscoverServiceAsyncAwaitTests: XCTestCase {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: sortBy, page: page)
 

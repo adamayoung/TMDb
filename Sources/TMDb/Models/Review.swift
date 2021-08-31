@@ -1,7 +1,7 @@
 import Foundation
 
 /// A review.
-public struct Review: Identifiable, Decodable, Equatable {
+public struct Review: Identifiable, Decodable, Equatable, Hashable {
 
     /// Review identifier.
     public let id: String

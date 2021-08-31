@@ -21,7 +21,7 @@ final class TMDbPersonServiceTests: XCTestCase {
     func testFetchDetailsReturnsPerson() throws {
         let expectedResult = Person.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchDetails(forPerson: personID) { result in
@@ -38,7 +38,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let mock = PersonCombinedCredits.mock
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchCombinedCredits(forPerson: personID) { result in
@@ -55,7 +55,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let mock = PersonMovieCredits.mock
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovieCredits(forPerson: personID) { result in
@@ -72,7 +72,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let mock = PersonTVShowCredits.mock
         let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShowCredits(forPerson: personID) { result in
@@ -88,7 +88,7 @@ final class TMDbPersonServiceTests: XCTestCase {
     func testFetchImagesReturnsImageCollection() throws {
         let expectedResult = PersonImageCollection.mock
         let personID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchImages(forPerson: personID) { result in
@@ -104,7 +104,7 @@ final class TMDbPersonServiceTests: XCTestCase {
     func testFetchKnownForReturnsShows() throws {
         let credits = PersonCombinedCredits.mock
         let personID = credits.id
-        apiClient.response = credits
+        apiClient.result = .success(credits)
         let topCastShows = Array(credits.cast.sorted().prefix(10))
         let topCrewShows = Array(credits.crew.sorted().prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -134,7 +134,7 @@ final class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchPopularWithDefaultParametersReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPopular { result in
@@ -149,7 +149,7 @@ final class TMDbPersonServiceTests: XCTestCase {
 
     func testFetchPopularReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPopular(page: nil) { result in
@@ -165,7 +165,7 @@ final class TMDbPersonServiceTests: XCTestCase {
     func testFetchPopularWithPageReturnsPeople() throws {
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchPopular(page: page) { result in

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Details describing a video.
-public struct VideoMetadata: Identifiable, Decodable, Equatable {
+public struct VideoMetadata: Identifiable, Decodable, Equatable, Hashable {
 
     /// Video identifier.
     public let id: String

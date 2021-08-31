@@ -23,7 +23,7 @@ final class TMDbCertificationServiceCombineTests: XCTestCase {
 
     func testMovieCertificationsPublisherReturnsMovieCertifications() throws {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
 
@@ -33,7 +33,7 @@ final class TMDbCertificationServiceCombineTests: XCTestCase {
 
     func testTVShowCertificationsPublisherReturnsTVShowCertifications() throws {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
 

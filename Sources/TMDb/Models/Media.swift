@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a movie, tv show or person.
-public enum Media: Identifiable, Equatable {
+public enum Media: Identifiable, Equatable, Hashable {
 
     public var id: Int {
         switch self {

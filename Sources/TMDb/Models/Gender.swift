@@ -1,7 +1,7 @@
 import Foundation
 
 /// Gender of a person.
-public enum Gender: Int, Decodable, Equatable {
+public enum Gender: Int, Decodable, Equatable, Hashable {
 
     /// Unknown.
     case unknown = 0

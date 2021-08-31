@@ -1,7 +1,7 @@
 import Foundation
 
 /// Details describing an image.
-public struct ImageMetadata: Identifiable, Decodable, Equatable {
+public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
 
     public var id: URL { filePath }
     /// Path of the image.

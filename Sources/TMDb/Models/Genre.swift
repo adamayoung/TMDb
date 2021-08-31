@@ -1,7 +1,7 @@
 import Foundation
 
 /// Genre.
-public struct Genre: Identifiable, Decodable, Equatable {
+public struct Genre: Identifiable, Decodable, Equatable, Hashable {
 
     /// Genre Identifier.
     public let id: Int

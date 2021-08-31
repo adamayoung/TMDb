@@ -1,7 +1,7 @@
 import Foundation
 
 /// Production country.
-public struct ProductionCountry: Identifiable, Decodable, Equatable {
+public struct ProductionCountry: Identifiable, Decodable, Equatable, Hashable {
 
     public var id: String { iso31661 }
     /// Country code.

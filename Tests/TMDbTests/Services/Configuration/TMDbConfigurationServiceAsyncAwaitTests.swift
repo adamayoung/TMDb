@@ -22,7 +22,7 @@ final class TMDbConfigurationServiceAsyncAwaitTests: XCTestCase {
 
     func testAPIConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try await service.apiConfiguration()
 

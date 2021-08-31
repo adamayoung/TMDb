@@ -64,7 +64,7 @@ jobs:
             ${{ runner.os }}-spm-
       
       - name: Build and test
-        run: xcodebuild -scheme TMDb -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=15.0' test
+        run: xcodebuild -scheme TMDb -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=15.0' -disableAutomaticPackageResolution test
   
   test-on-watchos:
     name: Test on watchOS
@@ -85,7 +85,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build and test
-        run: xcodebuild -scheme TMDb -sdk watchsimulator -destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm,OS=8.0' test
+        run: xcodebuild -scheme TMDb -sdk watchsimulator -destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm,OS=8.0' -disableAutomaticPackageResolution test
   
   test-on-linux:
     name: Test on Linux
@@ -109,7 +109,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build and test
-        run: swift test --enable-test-discovery
+        run: swift test
 
   analysis:
     name: Analysis

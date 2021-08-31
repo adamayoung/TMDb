@@ -34,9 +34,7 @@ extension TMDbConfigurationService {
 extension TMDbConfigurationService {
 
     func apiConfiguration() async throws -> APIConfiguration {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchAPIConfiguration(completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: ConfigurationEndpoint.api)
     }
 
 }

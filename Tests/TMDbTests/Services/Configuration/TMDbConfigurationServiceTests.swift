@@ -20,7 +20,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
 
     func testFetchAPIConfigurationReturnsAPIConfiguration() {
         let expectedResult = APIConfiguration.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchAPIConfiguration { result in

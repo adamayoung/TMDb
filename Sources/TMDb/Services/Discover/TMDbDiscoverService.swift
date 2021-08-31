@@ -46,15 +46,11 @@ extension TMDbDiscoverService {
 extension TMDbDiscoverService {
 
     func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchMovies(sortedBy: sortedBy, withPeople: people, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page))
     }
 
     func tvShows(sortedBy: TVShowSort?, page: Int?) async throws -> TVShowPageableList {
-        try await withCheckedThrowingContinuation { continuation in
-            self.fetchTVShows(sortedBy: sortedBy, page: page, completion: continuation.resume(with:))
-        }
+        try await apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page))
     }
 
 }
