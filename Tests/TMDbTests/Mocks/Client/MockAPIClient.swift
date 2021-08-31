@@ -37,8 +37,10 @@ class MockAPIClient: APIClient {
                 }
 
                 return completion(.success(value))
-            } catch let error {
-                return completion(.failure(error as! TMDbError))
+            } catch let error as TMDbError {
+                return completion(.failure(error))
+            } catch {
+                return completion(.failure(.unknown))
             }
         }
     }
@@ -57,15 +59,18 @@ class MockAPIClient: APIClient {
         do {
             guard let value = try result.get() as? Response else {
                 XCTFail("Can't cast response to type \(String(describing: Response.self))")
-                return Fail(error: TMDbError.unknown)
+                return Fail(error: .unknown)
                     .eraseToAnyPublisher()
             }
 
             return Just(value)
                 .setFailureType(to: TMDbError.self)
                 .eraseToAnyPublisher()
-        } catch let error {
-            return Fail(error: error as! TMDbError)
+        } catch let error as TMDbError {
+            return Fail(error: error)
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: .unknown)
                 .eraseToAnyPublisher()
         }
     }
@@ -88,8 +93,10 @@ class MockAPIClient: APIClient {
             }
 
             return value
-        } catch let error {
-            throw error as! TMDbError
+        } catch let error as TMDbError {
+            throw error
+        } catch {
+            throw TMDbError.unknown
         }
     }
 #endif
