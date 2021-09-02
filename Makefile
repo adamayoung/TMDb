@@ -2,7 +2,7 @@ OS_NAME := $(shell uname -s | tr A-Z a-z)
 
 # Lint
 lint:
-	@brew ls swiftlint --versions || brew install swiftlint
+	@brew ls --versions swiftlint || brew install swiftlint
 	@swiftlint --strict
 
 # Test
@@ -33,8 +33,8 @@ test-linux:
 	fi
 
 analyse:
-	@brew ls swiftlint --versions || brew install swiftlint
-	@brew ls sonar-scanner --versions || brew install sonar-scanner
+	@brew ls --versions swiftlint || brew install swiftlint
+	@brew ls --versions sonar-scanner || brew install sonar-scanner
 	@set -o pipefail && swiftlint --reporter json > swiftlint.result.json
 	@set -o pipefail && swift test --enable-code-coverage
 	@xcrun llvm-cov show ".build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests" -instr-profile ".build/debug/codecov/default.profdata" "Sources/" > info.lcov
