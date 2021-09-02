@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: swiftlint
-        run: swiftlint --strict
+        run: make lint
 
   test-on-macos:
     name: Test on macOS
@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build and test
-        run: swift test
+        run: make test-macos
   
   test-on-ios:
     name: Test on iOS
@@ -73,7 +73,7 @@ jobs:
             ${{ runner.os }}-spm-
       
       - name: Build and test
-        run: xcodebuild -scheme TMDb -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=15.0' -disableAutomaticPackageResolution test
+        run: make test-ios
   
   test-on-watchos:
     name: Test on watchOS
@@ -97,7 +97,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build and test
-        run: xcodebuild -scheme TMDb -sdk watchsimulator -destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm,OS=8.0' -disableAutomaticPackageResolution test
+        run: make test-watchos
   
   test-on-linux:
     name: Test on Linux
@@ -124,7 +124,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build and test
-        run: swift test
+        run: make test-linux
 
   analysis:
     name: Analysis
@@ -159,21 +159,8 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Install tools
-        run: brew install sonar-scanner
-
-      - name: Lint
-        run: |
-          set -o pipefail && swiftlint --reporter json > swiftlint.result.json
-
-      - name: Build and test
-        run: set -o pipefail && swift test --enable-code-coverage
-
-      - name: Generate Code Coverage report
-        run: xcrun llvm-cov show .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
-
-      - name: SonarCloud Scan
-        run: sonar-scanner -Dsonar.projectKey=adamayoung_TMDb -Dsonar.organization=adamayoung -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=info.lcov -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
+      - name: Analyse
+        run: make analyse
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
