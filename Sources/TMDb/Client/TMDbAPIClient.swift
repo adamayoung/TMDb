@@ -97,22 +97,7 @@ extension TMDbAPIClient {
         let response: URLResponse
 
         do {
-            (data, response) = try await withCheckedThrowingContinuation { continuation in
-                urlSession.dataTask(with: urlRequest) { data, response, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-
-                    guard let data = data, let response = response else {
-                        continuation.resume(throwing: TMDbError.unknown)
-                        return
-                    }
-
-                    continuation.resume(returning: (data, response))
-                }
-                .resume()
-            }
+            (data, response) = try await urlSession.data(for: urlRequest)
         } catch {
             throw TMDbError.network(error)
         }
