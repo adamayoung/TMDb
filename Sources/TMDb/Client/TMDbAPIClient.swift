@@ -89,7 +89,7 @@ extension TMDbAPIClient {
 #if swift(>=5.5)
 extension TMDbAPIClient {
 
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
         let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
 
@@ -97,7 +97,22 @@ extension TMDbAPIClient {
         let response: URLResponse
 
         do {
-            (data, response) = try await urlSession.data(for: urlRequest)
+            (data, response) = try await withCheckedThrowingContinuation { continuation in
+                urlSession.dataTask(with: urlRequest) { data, response, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+
+                    guard let data = data, let response = response else {
+                        continuation.resume(throwing: TMDbError.unknown)
+                        return
+                    }
+
+                    continuation.resume(returning: (data, response))
+                }
+                .resume()
+            }
         } catch {
             throw TMDbError.network(error)
         }

@@ -138,7 +138,7 @@ public protocol SearchService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Movies, TV shows and people matching the query.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchAll(query: String, page: Int?) async throws -> MediaPageableList
 
     /// Returns search results for movies.
@@ -153,7 +153,7 @@ public protocol SearchService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Movies matching the query.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchMovies(query: String, year: Int?, page: Int?) async throws -> MoviePageableList
 
     /// Returns search results for TV shows.
@@ -168,7 +168,7 @@ public protocol SearchService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: TV shows matching the query.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?) async throws -> TVShowPageableList
 
     /// Returns search results for people.
@@ -182,7 +182,7 @@ public protocol SearchService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: People matching the query.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func searchPeople(query: String, page: Int?) async throws -> PersonPageableList
 #endif
 
@@ -239,7 +239,7 @@ public extension SearchService {
 #endif
 
 #if swift(>=5.5)
-@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension SearchService {
 
     func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {

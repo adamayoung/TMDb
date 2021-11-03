@@ -170,7 +170,7 @@ public protocol PersonService {
     ///     - id: The identifier of the person.
     ///
     /// - Returns: The matching person.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func details(forPerson id: Person.ID) async throws -> Person
     /// Returns the combined movie and TV show credits of a person.
     ///
@@ -180,7 +180,7 @@ public protocol PersonService {
     ///     - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's combined movie and TV show credits..
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits
 
     /// Returns the movie credits of a person.
@@ -191,7 +191,7 @@ public protocol PersonService {
     ///     - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's movie credits.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits
     /// Returns the TV show credits of a person.
     ///
@@ -201,7 +201,7 @@ public protocol PersonService {
     ///     - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's TV show credits.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits
 
     /// Returns the images for a person.
@@ -212,7 +212,7 @@ public protocol PersonService {
     ///     - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's images.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func images(forPerson personID: Person.ID) async throws -> PersonImageCollection
 
     /// Returns the list of known for shows for a person.
@@ -221,7 +221,7 @@ public protocol PersonService {
     ///     - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's show credits.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func knownFor(forPerson personID: Person.ID) async throws -> [Show]
 
     /// Returns the list of popular people.
@@ -234,7 +234,7 @@ public protocol PersonService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular people as a pageable list.
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func popular(page: Int?) async throws -> PersonPageableList
 #endif
 
@@ -261,7 +261,7 @@ public extension PersonService {
 #endif
 
 #if swift(>=5.5)
-@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension PersonService {
 
     func popular(page: Int? = nil) async throws -> PersonPageableList {

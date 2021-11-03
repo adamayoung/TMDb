@@ -52,7 +52,7 @@ extension TMDbTrendingService {
 #endif
 
 #if swift(>=5.5)
-@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension TMDbTrendingService {
 
     func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> MoviePageableList {
