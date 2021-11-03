@@ -65,7 +65,12 @@ test:
 
 test-macos:
 	@echo "Testing for macOS..."
-	@swift test
+#	@swift test
+	@xcodebuild \
+		-scheme "$(SCHEME)" \
+		-sdk macosx \
+		-destination 'platform=macOS,arch=x86_64' \
+		test
 
 test-ios:
 	@echo "Testing for iOS..."
