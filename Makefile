@@ -131,8 +131,8 @@ analyse:
 	@set -o pipefail && swiftlint --reporter json > swiftlint.result.json
 	@set -o pipefail && xcodebuild \
 		-scheme "$(SCHEME)" \
-		-sdk $(MAC_SDK) \
-		-destination $(MAC_DESTINATION) \
+		-sdk iphonesimulator \
+		-destination $(IPHONE_DESTINATION) \
 		-derivedDataPath Build/ \
 		-enableCodeCoverage YES \
 		clean build test
