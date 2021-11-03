@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class URLTMDbTests: XCTestCase {
+final class URLTMDbTests: XCTestCase {
 
     func testTMDbAPIBaseURLRetunsCorrectURL() {
         let expectedResult = URL(string: "https://api.themoviedb.org/3")!

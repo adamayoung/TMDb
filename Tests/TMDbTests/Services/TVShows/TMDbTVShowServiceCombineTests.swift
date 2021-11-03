@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbTVShowServiceCombineTests: XCTestCase {
+final class TMDbTVShowServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbTVShowService!
@@ -24,7 +24,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testDetailsPublisherReturnsTVShow() throws {
         let expectedResult = TVShow.mock
         let tvShowID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.detailsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
@@ -35,7 +35,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testCreditsPublisherReturnsShowsCredits() throws {
         let expectedResult = ShowCredits.mock
         let tvShowID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.creditsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
@@ -46,7 +46,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testReviewsPublisherWithDefaultParametersReturnsReviews() throws {
         let tvShowID = Int.randomID
         let expectedResult = ReviewPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
@@ -57,7 +57,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testReviewsPublisherReturnsReviews() throws {
         let tvShowID = Int.randomID
         let expectedResult = ReviewPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
@@ -70,7 +70,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = ReviewPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
@@ -82,7 +82,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testImagesPublisherReturnsImages() throws {
         let tvShowID = Int.randomID
         let expectedResult = ImageCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.imagesPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
@@ -93,7 +93,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testVideosPublisherReturnsVideos() throws {
         let expectedResult = VideoCollection.mock
         let tvShowID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.videosPublisher(forTVShow: tvShowID), storeIn: &cancellables)
 
@@ -104,7 +104,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testRecommendationsPublisherWithDefaultParametersReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID),
                                  storeIn: &cancellables)
@@ -116,7 +116,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testRecommendationsPublisherReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
@@ -129,7 +129,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
@@ -141,7 +141,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testSimilarPublisherWithDefaultParametersReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID), storeIn: &cancellables)
 
@@ -152,7 +152,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testSimilarPublisherReturnsTVShows() throws {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID, page: nil),
                                storeIn: &cancellables)
@@ -165,7 +165,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toTVShow: tvShowID, page: page),
                                storeIn: &cancellables)
@@ -176,7 +176,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
 
     func testPopularPublisherWithDefaultParametersReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
@@ -186,7 +186,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
 
     func testPopularPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
@@ -197,7 +197,7 @@ class TMDbTVShowServiceCombineTests: XCTestCase {
     func testPopularPublisherWithPageReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 

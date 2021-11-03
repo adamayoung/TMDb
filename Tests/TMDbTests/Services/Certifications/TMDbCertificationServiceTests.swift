@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbCertificationServiceTests: XCTestCase {
+final class TMDbCertificationServiceTests: XCTestCase {
 
     var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
@@ -20,7 +20,7 @@ class TMDbCertificationServiceTests: XCTestCase {
 
     func testFetchMovieCertificationsReturnsMovieCertifications() {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchMovieCertifications { result in
@@ -35,7 +35,7 @@ class TMDbCertificationServiceTests: XCTestCase {
 
     func testFetchTVShowCertificationsReturnsTVShowCertifications() {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchTVShowCertifications { result in

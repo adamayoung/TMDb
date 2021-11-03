@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class SpokenLanguageTests: XCTestCase {
+final class SpokenLanguageTests: XCTestCase {
 
     func testIDReturnsISO6391() {
         XCTAssertEqual(spokenLanguage.id, spokenLanguage.iso6391)

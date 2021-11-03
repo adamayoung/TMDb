@@ -1,7 +1,7 @@
 import Foundation
 
 /// A collection of poster and backdrop images for a movie or TV show.
-public struct ImageCollection: Decodable, Equatable {
+public struct ImageCollection: Decodable, Equatable, Hashable {
 
     /// Movie or TV show identifier for these images.
     public let id: Int

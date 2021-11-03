@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TrendingTimeWindowFilterTypeTests: XCTestCase {
+final class TrendingTimeWindowFilterTypeTests: XCTestCase {
 
     func testDayReturnsRawValue() {
         let expectedResult = "day"

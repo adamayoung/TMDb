@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class ImageCollectionTests: XCTestCase {
+final class ImageCollectionTests: XCTestCase {
 
     func testDecodeReturnsImageCollection() throws {
         let data = json.data(using: .utf8)!

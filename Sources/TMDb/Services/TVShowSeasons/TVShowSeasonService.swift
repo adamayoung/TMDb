@@ -43,7 +43,7 @@ public protocol TVShowSeasonService {
     func fetchVideos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID,
                      completion: @escaping (_ result: Result<VideoCollection, TMDbError>) -> Void)
 
-    #if canImport(Combine)
+#if canImport(Combine)
     /// Publishes the primary information about a TV show season.
     ///
     /// [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
@@ -82,6 +82,44 @@ public protocol TVShowSeasonService {
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func videosPublisher(forSeason seasonNumber: Int,
                          inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
-    #endif
+#endif
+
+#if swift(>=5.5) && !os(Linux)
+    /// Returns the primary information about a TV show season.
+    ///
+    /// [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
+    ///
+    /// - Parameters:
+    ///     - seasonNumber: The season number of a TV show.
+    ///     - tvShowID: The identifier of the TV show.
+    ///
+    /// - Returns: A season of the matching TV show.
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason
+
+    /// Returns the images that belong to a TV show season.
+    ///
+    /// [TMDb API - TV Show Seasons: Images](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-images)
+    ///
+    /// - Parameters:
+    ///     - seasonNumber: The season number of a TV show.
+    ///     - tvShowID: The identifier of the TV show.
+    ///
+    /// - Returns: A collection of images for the matching TV show's season.
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection
+
+    /// Returns the videos that belong to a TV show season.
+    ///
+    /// [TMDb API - TV Show Seasons: Videos](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-videos)
+    ///
+    /// - Parameters:
+    ///     - seasonNumber: The season number of a TV show.
+    ///     - tvShowID: The identifier of the TV show.
+    ///
+    /// - Returns: A collection of videos for the matching TV show's season.
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+    func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection
+#endif
 
 }

@@ -1,11 +1,11 @@
 @testable import TMDb
 import XCTest
 
-class TVShowPageableListDTOTests: XCTestCase {
+final class MoviePageableListTests: XCTestCase {
 
-    func testDecodeReturnsTVShowPageableList() throws {
+    func testDecodeReturnsMoviePageableList() throws {
         let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(TVShowPageableList.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(MoviePageableList.self, from: data)
 
         XCTAssertEqual(result.page, list.page)
         XCTAssertEqual(result.results, list.results)
@@ -19,15 +19,15 @@ class TVShowPageableListDTOTests: XCTestCase {
         "results": [
             {
                 "id": 1,
-                "name": "TV Show 1"
+                "title": "Movie 1"
             },
             {
                 "id": 2,
-                "name": "TV Show 2"
+                "title": "Movie 2"
             },
             {
                 "id": 3,
-                "name": "TV Show 3"
+                "title": "Movie 3"
             }
         ],
         "total_pages": 1,
@@ -35,12 +35,12 @@ class TVShowPageableListDTOTests: XCTestCase {
     }
     """
 
-    private let list = TVShowPageableList(
+    private let list = MoviePageableList(
         page: 1,
         results: [
-            TVShow(id: 1, name: "TV Show 1"),
-            TVShow(id: 2, name: "TV Show 2"),
-            TVShow(id: 3, name: "TV Show 3")
+            Movie(id: 1, title: "Movie 1"),
+            Movie(id: 2, title: "Movie 2"),
+            Movie(id: 3, title: "Movie 3")
         ],
         totalResults: 3,
         totalPages: 1

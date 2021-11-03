@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class SearchEndpointTests: XCTestCase {
+final class SearchEndpointTests: XCTestCase {
 
     func testMultiSearchEndpointReturnsURL() {
         let expectedURL = URL(string: "/search/multi?query=Game%20of%20Thrones")!

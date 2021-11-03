@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class APIConfigurationTests: XCTestCase {
+final class APIConfigurationTests: XCTestCase {
 
     func testDecodeReturnsAPIConfiguration() throws {
         let data = json.data(using: .utf8)!

@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class GenderTests: XCTestCase {
+final class GenderTests: XCTestCase {
 
     func testUnknownGenderReturnsRawValue() {
         XCTAssertEqual(Gender.unknown.rawValue, 0)

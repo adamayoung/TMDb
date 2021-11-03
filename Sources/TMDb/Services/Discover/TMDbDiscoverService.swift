@@ -40,3 +40,18 @@ extension TMDbDiscoverService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbDiscoverService {
+
+    func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
+        try await apiClient.get(endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page))
+    }
+
+    func tvShows(sortedBy: TVShowSort?, page: Int?) async throws -> TVShowPageableList {
+        try await apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page))
+    }
+
+}
+#endif

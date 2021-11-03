@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class CertificationTests: XCTestCase {
+final class CertificationTests: XCTestCase {
 
     func testIDReturnsCode() {
         XCTAssertEqual(certification.id, certification.code)

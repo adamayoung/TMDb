@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbCertificationServiceCombineTests: XCTestCase {
+final class TMDbCertificationServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbCertificationService!
@@ -23,7 +23,7 @@ class TMDbCertificationServiceCombineTests: XCTestCase {
 
     func testMovieCertificationsPublisherReturnsMovieCertifications() throws {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.movieCertificationsPublisher(), storeIn: &cancellables)
 
@@ -33,7 +33,7 @@ class TMDbCertificationServiceCombineTests: XCTestCase {
 
     func testTVShowCertificationsPublisherReturnsTVShowCertifications() throws {
         let expectedResult = Certification.mocks
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowCertificationsPublisher(), storeIn: &cancellables)
 

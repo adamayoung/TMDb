@@ -208,3 +208,94 @@ extension MockPersonService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockPersonService {
+
+    func details(forPerson id: Person.ID) async throws -> Person {
+        lastPersonDetailsID = id
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let personDetails = self.personDetails else {
+                return
+            }
+
+            continuation.resume(returning: personDetails)
+        }
+    }
+
+    func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
+        lastCombinedCredtsPersonID = personID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let combinedCredits = self.combinedCredits else {
+                return
+            }
+
+            continuation.resume(returning: combinedCredits)
+        }
+    }
+
+    func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
+        lastMovieCreditsPersonID = personID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let movieCredits = self.movieCredits else {
+                return
+            }
+
+            continuation.resume(returning: movieCredits)
+        }
+    }
+
+    func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
+        lastTVShowCreditsPersonID = personID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let tvShowCredits = self.tvShowCredits else {
+                return
+            }
+
+            continuation.resume(returning: tvShowCredits)
+        }
+    }
+
+    func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
+        lastImagesPersonID = personID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let images = self.images else {
+                return
+            }
+
+            continuation.resume(returning: images)
+        }
+    }
+
+    func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
+        lastKnownForPersonID = personID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let knownFor = self.knownFor else {
+                return
+            }
+
+            continuation.resume(returning: knownFor)
+        }
+    }
+
+    func popular(page: Int?) async throws -> PersonPageableList {
+        lastPopularPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let popular = self.popular else {
+                return
+            }
+
+            continuation.resume(returning: popular)
+        }
+    }
+
+}
+#endif

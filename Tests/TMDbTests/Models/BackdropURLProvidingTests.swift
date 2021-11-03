@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class BackdropURLProvidingTests: XCTestCase {
+final class BackdropURLProvidingTests: XCTestCase {
 
     var providerWithURL: TestBackdropProvider!
     var providerWithNilURL: TestBackdropProvider!

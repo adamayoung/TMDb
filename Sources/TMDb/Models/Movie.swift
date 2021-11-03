@@ -1,7 +1,7 @@
 import Foundation
 
 /// A movie.
-public struct Movie: Identifiable, Decodable, Equatable, PosterURLProviding, BackdropURLProviding {
+public struct Movie: Identifiable, Decodable, Equatable, Hashable, PosterURLProviding, BackdropURLProviding {
 
     /// Movie identifier.
     public let id: Int

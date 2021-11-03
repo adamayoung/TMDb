@@ -1,7 +1,7 @@
 import Foundation
 
 /// A person.
-public struct Person: Identifiable, Decodable, Equatable, ProfileURLProviding {
+public struct Person: Identifiable, Decodable, Equatable, Hashable, ProfileURLProviding {
 
     /// Person identifier.
     public let id: Int

@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbAPIClientTests: XCTestCase {
+final class TMDbAPIClientTests: XCTestCase {
 
     var apiClient: TMDbAPIClient!
 

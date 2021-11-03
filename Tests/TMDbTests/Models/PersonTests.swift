@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class PersonTests: XCTestCase {
+final class PersonTests: XCTestCase {
 
     func testHomepageURLWhenNilReturnsNil() {
         let somePerson = Person(id: 1, name: "Name 1", homepageURL: nil)

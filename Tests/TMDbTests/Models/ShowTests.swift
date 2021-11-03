@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class ShowTests: XCTestCase {
+final class ShowTests: XCTestCase {
 
     func testIDWhenMovieReturnsMovieID() {
         XCTAssertEqual(movieShow.id, 109091)

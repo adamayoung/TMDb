@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
+final class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbTVShowSeasonService!
@@ -25,7 +25,7 @@ class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = TVShowSeason.mock
         let seasonNumber = expectedResult.seasonNumber
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.detailsPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
@@ -39,7 +39,7 @@ class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = ImageCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.imagesPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)
@@ -53,7 +53,7 @@ class TMDbTVShowSeasonServiceCombineTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = VideoCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.videosPublisher(forSeason: seasonNumber, inTVShow: tvShowID),
                                storeIn: &cancellables)

@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TVShowTests: XCTestCase {
+final class TVShowTests: XCTestCase {
 
     func testFirstAirDateWhenNilReturnsNil() {
         let someTVShow = TVShow(id: 1, name: "Some tv show name 1", firstAirDate: nil)

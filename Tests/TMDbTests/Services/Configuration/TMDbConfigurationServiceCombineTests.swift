@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbConfigurationServiceCombineTests: XCTestCase {
+final class TMDbConfigurationServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbConfigurationService!
@@ -23,7 +23,7 @@ class TMDbConfigurationServiceCombineTests: XCTestCase {
 
     func testAPIConfigurationPublisherReturnsAPIConfiguration() throws {
         let expectedResult = APIConfiguration.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.apiConfigurationPublisher(), storeIn: &cancellables)
 

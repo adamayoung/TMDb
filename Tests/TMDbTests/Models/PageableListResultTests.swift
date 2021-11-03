@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class PageableListResultTests: XCTestCase {
+final class PageableListResultTests: XCTestCase {
 
     func testDecodeReturnsPageableListResult() throws {
         let data = json.data(using: .utf8)!
@@ -49,7 +49,7 @@ class PageableListResultTests: XCTestCase {
 
 }
 
-private struct SomeListItem: Identifiable, Decodable, Equatable {
+private struct SomeListItem: Identifiable, Decodable, Equatable, Hashable {
 
     let id: Int
 

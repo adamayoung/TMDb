@@ -1,9 +1,7 @@
-#if canImport(Combine)
-import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbConfigurationServiceTests: XCTestCase {
+final class TMDbConfigurationServiceTests: XCTestCase {
 
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
@@ -22,7 +20,7 @@ class TMDbConfigurationServiceTests: XCTestCase {
 
     func testFetchAPIConfigurationReturnsAPIConfiguration() {
         let expectedResult = APIConfiguration.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchAPIConfiguration { result in
@@ -36,4 +34,3 @@ class TMDbConfigurationServiceTests: XCTestCase {
     }
 
 }
-#endif

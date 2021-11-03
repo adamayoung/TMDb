@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class ProfileURLProvidingTests: XCTestCase {
+final class ProfileURLProvidingTests: XCTestCase {
 
     var providerWithURL: TestProfileProvider!
     var providerWithNilURL: TestProfileProvider!

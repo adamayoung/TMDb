@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbErrorTests: XCTestCase {
+final class TMDbErrorTests: XCTestCase {
 
     func testNetworkReturnsErrorDescription() {
         let urlError = URLError(.badURL)

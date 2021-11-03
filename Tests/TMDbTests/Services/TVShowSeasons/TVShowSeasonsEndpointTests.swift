@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TVShowSeaonsEndpointTests: XCTestCase {
+final class TVShowSeaonsEndpointTests: XCTestCase {
 
     func testTVShowSeasonDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/tv/1/season/2")!

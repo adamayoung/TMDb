@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class ImageMetadataTests: XCTestCase {
+final class ImageMetadataTests: XCTestCase {
 
     func testIDReturnsFilePath() {
         XCTAssertEqual(imageMetadata.id, imageMetadata.filePath)

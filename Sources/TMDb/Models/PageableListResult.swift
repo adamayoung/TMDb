@@ -1,7 +1,8 @@
 import Foundation
 
 /// A pageable list of items.
-public struct PageableListResult<Result: Decodable & Identifiable & Equatable>: Decodable, Equatable {
+public struct PageableListResult<Result: Decodable & Identifiable & Equatable & Hashable>: Decodable, Equatable,
+                                                                                           Hashable {
 
     /// Page number.
     public let page: Int?

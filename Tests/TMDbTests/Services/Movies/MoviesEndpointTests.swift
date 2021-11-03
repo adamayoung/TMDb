@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class MoviesEndpointTests: XCTestCase {
+final class MoviesEndpointTests: XCTestCase {
 
     func testMovieDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/movie/1")!

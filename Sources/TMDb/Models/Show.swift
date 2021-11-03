@@ -1,7 +1,7 @@
 import Foundation
 
 /// A show - movie or TV show.
-public enum Show: Identifiable, Equatable {
+public enum Show: Identifiable, Equatable, Hashable {
 
     /// Show identifier.
     public var id: Int {

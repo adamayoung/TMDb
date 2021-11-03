@@ -111,3 +111,49 @@ extension MockTVShowSeasonService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockTVShowSeasonService {
+
+    func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason {
+        lastDetailsSeasonNumber = seasonNumber
+        lastDetailsTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let seasonDetails = self.seasonDetails else {
+                return
+            }
+
+            continuation.resume(returning: seasonDetails)
+        }
+    }
+
+    func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+        lastImagesSeasonNumber = seasonNumber
+        lastImagesTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let images = self.images else {
+                return
+            }
+
+            continuation.resume(returning: images)
+        }
+    }
+
+    func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
+        lastVideosSeasonNumber = seasonNumber
+        lastVideosTVShowID = tvShowID
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let videos = self.videos else {
+                return
+            }
+
+            continuation.resume(returning: videos)
+        }
+    }
+
+}
+#endif

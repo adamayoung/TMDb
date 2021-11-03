@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbMovieServiceCombineTests: XCTestCase {
+final class TMDbMovieServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbMovieService!
@@ -24,7 +24,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testDetailsPublisherReturnsMovie() throws {
         let expectedResult = Movie.mock
         let movieID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.detailsPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -35,7 +35,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testCreditsPublisherReturnsCredits() throws {
         let expectedResult = ShowCredits.mock
         let movieID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.creditsPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -46,7 +46,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testReviewsPublisherWithDefaultParametersReturnsReviews() throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -57,7 +57,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testReviewsPublisherReturnsReviews() throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
@@ -70,7 +70,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.reviewsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
@@ -82,7 +82,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testImagesPublisherReturnsImageCollection() throws {
         let expectedResult = ImageCollection.mock
         let movieID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.imagesPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -93,7 +93,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testVideosPublisherReturnsVideoCollection() throws {
         let expectedResult = VideoCollection.mock
         let movieID = expectedResult.id
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.videosPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -104,7 +104,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testRecommendationsPublisherWithDefaultParametersReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID), storeIn: &cancellables)
 
@@ -115,7 +115,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testRecommendationsPublisherReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID, page: nil),
                                storeIn: &cancellables)
@@ -128,7 +128,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.recommendationsPublisher(forMovie: movieID, page: page),
                                storeIn: &cancellables)
@@ -140,7 +140,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testSimilarPublisherWithDefaultParametersReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID), storeIn: &cancellables)
 
@@ -151,7 +151,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testSimilarPublisherReturnsMovies() throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID, page: nil),
                                  storeIn: &cancellables)
@@ -164,7 +164,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.similarPublisher(toMovie: movieID, page: page),
                                storeIn: &cancellables)
@@ -175,7 +175,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testNowPlayingPublisherWithDefaultParametersReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.nowPlayingPublisher(), storeIn: &cancellables)
 
@@ -185,7 +185,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testNowPlayingPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.nowPlayingPublisher(page: nil), storeIn: &cancellables)
 
@@ -196,7 +196,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testNowPlayingPublisherWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.nowPlayingPublisher(page: page), storeIn: &cancellables)
 
@@ -206,7 +206,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testPopularPublisherWithDefaultParametersReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(), storeIn: &cancellables)
 
@@ -216,7 +216,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testPopularPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: nil), storeIn: &cancellables)
 
@@ -227,7 +227,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testPopularPublisherWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.popularPublisher(page: page), storeIn: &cancellables)
 
@@ -237,7 +237,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testTopRatedPublisherWithDefaultParametersReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.topRatedPublisher(), storeIn: &cancellables)
 
@@ -247,7 +247,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testTopRatedPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.topRatedPublisher(page: nil), storeIn: &cancellables)
 
@@ -258,7 +258,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testTopRatedPublisherWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.topRatedPublisher(page: page), storeIn: &cancellables)
 
@@ -268,7 +268,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testUpcomingPublisherWithDefaultParametersReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.upcomingPublisher(), storeIn: &cancellables)
 
@@ -278,7 +278,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
 
     func testUpcomingPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.upcomingPublisher(page: nil), storeIn: &cancellables)
 
@@ -289,7 +289,7 @@ class TMDbMovieServiceCombineTests: XCTestCase {
     func testUpcomingPublisherWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.upcomingPublisher(page: page), storeIn: &cancellables)
 

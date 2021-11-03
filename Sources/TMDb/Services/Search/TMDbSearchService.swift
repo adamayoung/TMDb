@@ -57,3 +57,27 @@ extension TMDbSearchService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension TMDbSearchService {
+
+    func searchAll(query: String, page: Int?) async throws -> MediaPageableList {
+        try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
+    }
+
+    func searchMovies(query: String, year: Int?, page: Int?) async throws -> MoviePageableList {
+        try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
+    }
+
+    func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?) async throws -> TVShowPageableList {
+        try await apiClient.get(endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear,
+                                                                 page: page))
+    }
+
+    func searchPeople(query: String, page: Int?) async throws -> PersonPageableList {
+        try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
+    }
+
+}
+#endif

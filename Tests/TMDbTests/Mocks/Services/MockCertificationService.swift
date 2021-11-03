@@ -49,3 +49,22 @@ extension MockCertificationService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockCertificationService {
+
+    func movieCertifications() async throws -> [String: [Certification]] {
+        try await withCheckedThrowingContinuation { continuation in
+            continuation.resume(returning: movieCertifications)
+        }
+    }
+
+    func tvShowCertifications() async throws -> [String: [Certification]] {
+        try await withCheckedThrowingContinuation { continuation in
+            continuation.resume(returning: tvShowCertifications)
+        }
+    }
+
+}
+#endif

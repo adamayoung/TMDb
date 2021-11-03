@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbSearchServiceCombineTests: XCTestCase {
+final class TMDbSearchServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbSearchService!
@@ -24,7 +24,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchAllPublisherWithDefaultParametersReturnsMedia() throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchAllPublisher(query: query), storeIn: &cancellables)
 
@@ -35,7 +35,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchAllPublisherReturnsMedia() throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchAllPublisher(query: query, page: nil), storeIn: &cancellables)
 
@@ -48,7 +48,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let expectedResult = MediaPageableList.mock
         let page = expectedResult.page
 
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchAllPublisher(query: query, page: page),
                                  storeIn: &cancellables)
@@ -60,7 +60,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchMoviesPublisherWithDefaultParametersReturnsMovies() throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchMoviesPublisher(query: query),
                                storeIn: &cancellables)
@@ -72,7 +72,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchMoviesPublisherReturnsMovies() throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: nil, page: nil),
                                storeIn: &cancellables)
@@ -85,7 +85,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let query = String.randomString
         let year = 2020
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: year, page: nil),
                                storeIn: &cancellables)
@@ -98,7 +98,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: nil, page: page),
                                storeIn: &cancellables)
@@ -112,7 +112,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let year = 2020
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchMoviesPublisher(query: query, year: year, page: page),
                                storeIn: &cancellables)
@@ -124,7 +124,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchTVShowsPublisherWithDefaultParametersReturnsTVShows() throws {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query), storeIn: &cancellables)
 
@@ -135,7 +135,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchTVShowsPublisherReturnsTVShows() throws {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
                                                                          page: nil),
@@ -149,7 +149,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let query = String.randomString
         let year = 2020
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
                                                                          page: nil),
@@ -163,7 +163,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: nil,
                                                                          page: page),
@@ -178,7 +178,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let year = 2020
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchTVShowsPublisher(query: query, firstAirDateYear: year,
                                                                          page: page),
@@ -191,7 +191,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchPeoplePublisherWithDefaultParametersReturnsPeople() throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchPeoplePublisher(query: query), storeIn: &cancellables)
 
@@ -202,7 +202,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
     func testSearchPeoplePublisherReturnsPeople() throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchPeoplePublisher(query: query, page: nil),
                                storeIn: &cancellables)
@@ -215,7 +215,7 @@ class TMDbSearchServiceCombineTests: XCTestCase {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.searchPeoplePublisher(query: query, page: page),
                                storeIn: &cancellables)

@@ -8,16 +8,17 @@ import Combine
 final class MockDiscoverService: DiscoverService {
 
     var movies: MoviePageableList?
-    private(set) var lastMoviesSortBy: MovieSort?
+    private(set) var lastMoviesSortedBy: MovieSort?
     private(set) var lastMoviesWithPeople: [Person.ID]?
     private(set) var lastMoviesPage: Int?
+
     var tvShows: TVShowPageableList?
-    private(set) var lastTVShowsSortBy: TVShowSort?
+    private(set) var lastTVShowsSortedBy: TVShowSort?
     private(set) var lastTVShowsPage: Int?
 
-    func fetchMovies(sortBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?,
+    func fetchMovies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?,
                      completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
-        lastMoviesSortBy = sortBy
+        lastMoviesSortedBy = sortedBy
         lastMoviesWithPeople = people
         lastMoviesPage = page
 
@@ -30,9 +31,9 @@ final class MockDiscoverService: DiscoverService {
         }
     }
 
-    func fetchTVShows(sortBy: TVShowSort?, page: Int?,
+    func fetchTVShows(sortedBy: TVShowSort?, page: Int?,
                       completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
-        lastTVShowsSortBy = sortBy
+        lastTVShowsSortedBy = sortedBy
         lastTVShowsPage = page
 
         guard let tvShows = tvShows else {
@@ -49,9 +50,9 @@ final class MockDiscoverService: DiscoverService {
 #if canImport(Combine)
 extension MockDiscoverService {
 
-    func moviesPublisher(sortBy: MovieSort?, withPeople people: [Person.ID]?,
+    func moviesPublisher(sortedBy: MovieSort?, withPeople people: [Person.ID]?,
                          page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
-        lastMoviesSortBy = sortBy
+        lastMoviesSortedBy = sortedBy
         lastMoviesWithPeople = people
         lastMoviesPage = page
 
@@ -65,8 +66,8 @@ extension MockDiscoverService {
             .eraseToAnyPublisher()
     }
 
-    func tvShowsPublisher(sortBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        lastTVShowsSortBy = sortBy
+    func tvShowsPublisher(sortedBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
+        lastTVShowsSortedBy = sortedBy
         lastTVShowsPage = page
 
         guard let tvShows = tvShows else {
@@ -77,6 +78,40 @@ extension MockDiscoverService {
         return Just(tvShows)
             .setFailureType(to: TMDbError.self)
             .eraseToAnyPublisher()
+    }
+
+}
+#endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockDiscoverService {
+
+    func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
+        lastMoviesSortedBy = sortedBy
+        lastMoviesWithPeople = people
+        lastMoviesPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let movies = self.movies else {
+                return
+            }
+
+            continuation.resume(returning: movies)
+        }
+    }
+
+    func tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil) async throws -> TVShowPageableList {
+        lastTVShowsSortedBy = sortedBy
+        lastTVShowsPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let tvShows = self.tvShows else {
+                return
+            }
+
+            continuation.resume(returning: tvShows)
+        }
     }
 
 }

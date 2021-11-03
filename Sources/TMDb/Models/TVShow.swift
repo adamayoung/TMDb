@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV show.
-public struct TVShow: Identifiable, Decodable, Equatable, PosterURLProviding, BackdropURLProviding {
+public struct TVShow: Identifiable, Decodable, Equatable, Hashable, PosterURLProviding, BackdropURLProviding {
 
     /// TV show identifier.
     public let id: Int

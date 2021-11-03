@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TVShowSortTests: XCTestCase {
+final class TVShowSortTests: XCTestCase {
 
     func testPopularityAscendingReturnsRawValue() {
         let expectedResult = "popularity.asc"

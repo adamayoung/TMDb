@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.2.app
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: macos-11
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: swiftlint
+        run: make lint

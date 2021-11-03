@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class TMDbTVShowSeasonServiceTests: XCTestCase {
+final class TMDbTVShowSeasonServiceTests: XCTestCase {
 
     var service: TMDbTVShowSeasonService!
     var apiClient: MockAPIClient!
@@ -22,7 +22,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         let tvShowID = Int.randomID
         let expectedResult = TVShowSeason.mock
         let seasonNumber = expectedResult.seasonNumber
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchDetails(forSeason: seasonNumber, inTVShow: tvShowID) { result in
@@ -40,7 +40,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = ImageCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchImages(forSeason: seasonNumber, inTVShow: tvShowID) { result in
@@ -58,7 +58,7 @@ class TMDbTVShowSeasonServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
         let expectedResult = VideoCollection.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let expectation = XCTestExpectation(description: "await")
         service.fetchVideos(forSeason: seasonNumber, inTVShow: tvShowID) { result in

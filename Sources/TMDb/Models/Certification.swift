@@ -1,7 +1,7 @@
 import Foundation
 
 /// Officially supported certification.
-public struct Certification: Identifiable, Decodable, Equatable {
+public struct Certification: Identifiable, Decodable, Equatable, Hashable {
 
     public var id: String { code }
     /// Certification code.

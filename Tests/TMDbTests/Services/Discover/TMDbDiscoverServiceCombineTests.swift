@@ -3,7 +3,7 @@ import Combine
 @testable import TMDb
 import XCTest
 
-class TMDbDiscoverServiceCombineTests: XCTestCase {
+final class TMDbDiscoverServiceCombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable> = []
     var service: TMDbDiscoverService!
@@ -23,7 +23,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
 
     func testMoviesPublisherWithDefaultParametersReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(), storeIn: &cancellables)
 
@@ -33,7 +33,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
 
     func testMoviesPublisherReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(sortedBy: nil, withPeople: nil, page: nil),
                                  storeIn: &cancellables)
@@ -45,7 +45,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
     func testMoviesPublisherWithSortByReturnsMovies() throws {
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(sortedBy: sortBy, withPeople: nil, page: nil),
                                  storeIn: &cancellables)
@@ -57,7 +57,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
     func testMoviesPublisherWithWithPeopleReturnsMovies() throws {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(sortedBy: nil, withPeople: people, page: nil),
                                  storeIn: &cancellables)
@@ -69,7 +69,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
     func testMoviesPublisherWithWithPageReturnsMovies() throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(sortedBy: nil, withPeople: nil, page: page),
                                  storeIn: &cancellables)
@@ -83,7 +83,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.moviesPublisher(sortedBy: sortBy, withPeople: people, page: page),
                                  storeIn: &cancellables)
@@ -94,7 +94,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
 
     func testTVShowsPublisherWithDefaultParametersReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(), storeIn: &cancellables)
 
@@ -104,7 +104,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
 
     func testTVShowsPublisherReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(sortedBy: nil, page: nil), storeIn: &cancellables)
 
@@ -115,7 +115,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
     func testTVShowsPublisherWithSortByReturnsTVShows() throws {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(sortedBy: sortBy, page: nil),
                                  storeIn: &cancellables)
@@ -124,10 +124,10 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy).url)
     }
 
-    func testFetchTVShowsWithPageReturnsTVShows() throws {
+    func testTVShowsPublisherWithPageReturnsTVShows() throws {
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(sortedBy: nil, page: page), storeIn: &cancellables)
 
@@ -139,7 +139,7 @@ class TMDbDiscoverServiceCombineTests: XCTestCase {
         let sortBy = TVShowSort.firstAirDate(descending: false)
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
-        apiClient.response = expectedResult
+        apiClient.result = .success(expectedResult)
 
         let result = try waitFor(publisher: service.tvShowsPublisher(sortedBy: sortBy, page: page),
                                  storeIn: &cancellables)

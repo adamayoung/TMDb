@@ -145,3 +145,64 @@ extension MockSearchService {
 
 }
 #endif
+
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension MockSearchService {
+
+    func searchAll(query: String, page: Int?) async throws -> MediaPageableList {
+        lastSearchAllQuery = query
+        lastSearchAllPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let media = self.media else {
+                return
+            }
+
+            continuation.resume(returning: media)
+        }
+    }
+
+    func searchMovies(query: String, year: Int?, page: Int?) async throws -> MoviePageableList {
+        lastSearchMoviesQuery = query
+        lastSearchMoviesYear = year
+        lastSearchMoviesPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let movies = self.movies else {
+                return
+            }
+
+            continuation.resume(returning: movies)
+        }
+    }
+
+    func searchTVShows(query: String, firstAirDateYear: Int?, page: Int?) async throws -> TVShowPageableList {
+        lastSearchTVShowsQuery = query
+        lastSearchTVShowsFirstAirDateYear = firstAirDateYear
+        lastSearchTVShowsPage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let tvShows = self.tvShows else {
+                return
+            }
+
+            continuation.resume(returning: tvShows)
+        }
+    }
+
+    func searchPeople(query: String, page: Int?) async throws -> PersonPageableList {
+        lastSearchPeopleQuery = query
+        lastSearchPeoplePage = page
+
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let people = self.people else {
+                return
+            }
+
+            continuation.resume(returning: people)
+        }
+    }
+
+}
+#endif

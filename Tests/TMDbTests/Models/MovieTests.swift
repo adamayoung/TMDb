@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class MovieTests: XCTestCase {
+final class MovieTests: XCTestCase {
 
     func testReleaseDateWhenNilReturnsNil() {
         let someMovie = Movie(id: 1, title: "Some movie title 1")

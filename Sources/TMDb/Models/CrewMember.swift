@@ -1,7 +1,7 @@
 import Foundation
 
 /// A crew member of a movie or TV show.
-public struct CrewMember: Identifiable, Decodable, Equatable, ProfileURLProviding {
+public struct CrewMember: Identifiable, Decodable, Equatable, Hashable, ProfileURLProviding {
 
     /// Crew member's identifier.
     public let id: Int

@@ -3,7 +3,7 @@ import Foundation
 /// TV show credits for a person.
 ///
 /// A person can be both a cast member and crew member of the same TV show.
-public struct PersonTVShowCredits: Identifiable, Decodable, Equatable {
+public struct PersonTVShowCredits: Identifiable, Decodable, Equatable, Hashable {
 
     /// Person identifier.
     public let id: Int
@@ -11,6 +11,10 @@ public struct PersonTVShowCredits: Identifiable, Decodable, Equatable {
     public let cast: [TVShow]
     /// TV shows where the person is in the crew.
     public let crew: [TVShow]
+    /// All TV shows the person is in.
+    public var allShows: [TVShow] {
+        (cast + crew).uniqued()
+    }
 
     /// Creates a new `PersonTVShowCredits`.
     ///
