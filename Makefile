@@ -137,7 +137,17 @@ analyse:
 		-enableCodeCoverage YES \
 		clean build test
 	@bash xccov-to-sonarqube-generic.sh Build/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
-	@sonar-scanner -Dsonar.projectKey="$(SONARCLOUD_ORGANISATION)_$(SONARCLOUD_PROJECT_NAME)" -Dsonar.organization=$(SONARCLOUD_ORGANISATION) -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=sonarqube-generic-coverage.xml -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
+	@sonar-scanner -Dsonar.projectKey=$(SONARCLOUD_ORGANISATION)_$(SONARCLOUD_PROJECT_NAME) -Dsonar.organization=$(SONARCLOUD_ORGANISATION) -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json -Dsonar.cfamily.build-wrapper-output.bypass=true
+
+#analyse:
+#	@echo "Analysing for SonarCloud..."
+#	$(call brew_install,swiftlint)
+#	$(call brew_install,sonar-scanner)
+#	@set -o pipefail && swiftlint --reporter json > swiftlint.result.json
+#	@set -o pipefail && swift test --enable-code-coverage
+#	@xcrun llvm-cov show .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
+#	@sonar-scanner -Dsonar.projectKey=$(SONARCLOUD_ORGANISATION)_$(SONARCLOUD_PROJECT_NAME) -Dsonar.organization=$(SONARCLOUD_ORGANISATION) -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=info.lcov -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
+
 
 # Functions
 
