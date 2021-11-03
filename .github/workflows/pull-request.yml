@@ -80,6 +80,30 @@ jobs:
 
       - name: Build and test
         run: make test-watchos
+    
+  test-on-appletv:
+    name: Test on tvOS
+    runs-on: macos-11
+    concurrency: 
+      group: pr-test-tvos-${{ github.head_ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache SPM
+        uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build and test
+        run: make test-tvos
   
   test-on-linux:
     name: Test on Linux

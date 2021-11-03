@@ -4,7 +4,13 @@ SHELL := /bin/bash
 OS_NAME := $(shell uname -s | tr A-Z a-z)
 DOCKER_SWIFT_VERSION := 5.5
 SCHEME := TMDb
-SONARCLOUD_PROJECT_KEY := adamayoung_TMDb
+MAC_SDK := macosx12.1
+MAC_DESTINATION := 'platform=macOS,arch=x86_64'
+IPHONE_DESTINATION := 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.2'
+WATCH_DESTINATION := 'platform=watchOS Simulator,name=Apple Watch Series 7 - 45mm,OS=8.3'
+TV_DESTINATION := 'platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=15.2'
+SONARCLOUD_ORGANISATION := adamayoung
+SONARCLOUD_PROJECT_NAME := TMDb
 
 
 # Lint
@@ -28,23 +34,35 @@ build:
 
 build-macos:
 	@echo "Building for macOS..."
-	@swift build
+	@xcodebuild \
+		-scheme "$(SCHEME)" \
+		-sdk $(MAC_SDK) \
+		-destination $(MAC_DESTINATION) \
+		clean build
 
 build-ios:
 	@echo "Building for iOS..."
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk iphonesimulator \
-		-destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=15.0' \
-		build
+		-destination $(IPHONE_DESTINATION) \
+		clean build
 
 build-watchos:
 	@echo "Building for watchOS..."
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk watchsimulator \
-		-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm,OS=8.0' \
-		build
+		-destination $(WATCH_DESTINATION) \
+		clean build
+
+build-tvos:
+	@echo "Building for tvOS..."
+	@xcodebuild \
+		-scheme "$(SCHEME)" \
+		-sdk appletvsimulator \
+		-destination $(TV_DESTINATION) \
+		clean build
 
 build-linux:
 	@echo "Building for Linux..."
@@ -65,11 +83,10 @@ test:
 
 test-macos:
 	@echo "Testing for macOS..."
-#	@swift test
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
-		-sdk macosx \
-		-destination 'platform=macOS,arch=x86_64' \
+		-sdk $(MAC_SDK) \
+		-destination $(MAC_DESTINATION) \
 		test
 
 test-ios:
@@ -77,7 +94,7 @@ test-ios:
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk iphonesimulator \
-		-destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.0' \
+		-destination $(IPHONE_DESTINATION) \
 		test
 
 test-watchos:
@@ -85,7 +102,15 @@ test-watchos:
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk watchsimulator \
-		-destination 'platform=watchOS Simulator,name=Apple Watch Series 7 - 45mm,OS=8.0' \
+		-destination $(WATCH_DESTINATION) \
+		test
+
+test-tvos:
+	@echo "Testing for tvOS..."
+	@xcodebuild \
+		-scheme "$(SCHEME)" \
+		-sdk appletvsimulator \
+		-destination $(TV_DESTINATION) \
 		test
 
 test-linux:
@@ -104,10 +129,15 @@ analyse:
 	$(call brew_install,swiftlint)
 	$(call brew_install,sonar-scanner)
 	@set -o pipefail && swiftlint --reporter json > swiftlint.result.json
-	@set -o pipefail && swift test --enable-code-coverage
-	@xcrun llvm-cov show ".build/debug/$(SCHEME)PackageTests.xctest/Contents/MacOS/$(SCHEME)PackageTests" -instr-profile ".build/debug/codecov/default.profdata" "Sources/" > info.lcov
-	@sonar-scanner -Dsonar.projectKey="$(SONARCLOUD_PROJECT_KEY)" -Dsonar.organization=adamayoung -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=info.lcov -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
-
+	@set -o pipefail && xcodebuild \
+		-scheme "$(SCHEME)" \
+		-sdk $(MAC_SDK) \
+		-destination $(MAC_DESTINATION) \
+		-derivedDataPath Build/ \
+		-enableCodeCoverage YES \
+		clean build test
+	@bash xccov-to-sonarqube-generic.sh Build/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
+	@sonar-scanner -Dsonar.projectKey="$(SONARCLOUD_ORGANISATION)_$(SONARCLOUD_PROJECT_NAME)" -Dsonar.organization=$(SONARCLOUD_ORGANISATION) -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.swift.coverage.reportPaths=sonarqube-generic-coverage.xml -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json
 
 # Functions
 

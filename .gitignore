@@ -124,4 +124,7 @@ Coverage.report
 # swiftlint
 swiftlint.result.json
 
+# SonarQube
+sonarqube-generic-coverage.xml
+
 # End of https://www.gitignore.io/api/xcode,macos,swift,swiftpm,swiftpackagemanager
