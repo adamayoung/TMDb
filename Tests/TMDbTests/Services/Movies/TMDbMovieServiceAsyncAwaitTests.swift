@@ -1,7 +1,8 @@
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
 @testable import TMDb
 import XCTest
 
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
 
     var service: TMDbMovieService!

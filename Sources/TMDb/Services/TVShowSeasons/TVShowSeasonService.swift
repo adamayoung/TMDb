@@ -84,7 +84,7 @@ public protocol TVShowSeasonService {
                          inTVShow tvShowID: TVShow.ID) -> AnyPublisher<VideoCollection, TMDbError>
 #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns the primary information about a TV show season.
     ///
     /// [TMDb API - TV Show Seasons: Details](https://developers.themoviedb.org/3/tv-seasons/get-tv-season-details)
@@ -94,7 +94,7 @@ public protocol TVShowSeasonService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A season of the matching TV show.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason
 
     /// Returns the images that belong to a TV show season.
@@ -106,7 +106,7 @@ public protocol TVShowSeasonService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of images for the matching TV show's season.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection
 
     /// Returns the videos that belong to a TV show season.
@@ -118,7 +118,7 @@ public protocol TVShowSeasonService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of videos for the matching TV show's season.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection
 #endif
 

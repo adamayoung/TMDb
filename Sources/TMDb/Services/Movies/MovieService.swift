@@ -284,7 +284,7 @@ public protocol MovieService {
     func upcomingPublisher(page: Int?) -> AnyPublisher<MoviePageableList, TMDbError>
 #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns the primary information about a movie.
     ///
     /// [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
@@ -293,7 +293,7 @@ public protocol MovieService {
     ///     - id: The identifier of the movie.
     ///
     /// - Returns: The matching movie.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func details(forMovie id: Movie.ID) async throws -> Movie
 
     /// Returns the cast and crew of a movie.
@@ -304,7 +304,7 @@ public protocol MovieService {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: Credits for the matching movie.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits
 
     /// Returns the user reviews for a movie.
@@ -318,7 +318,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func reviews(forMovie movieID: Movie.ID, page: Int?) async throws -> ReviewPageableList
 
     /// Returns the images that belong to a movie.
@@ -329,7 +329,7 @@ public protocol MovieService {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: Collection of images for the matching movie.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func images(forMovie movieID: Movie.ID) async throws -> ImageCollection
 
     /// Returns the videos that have been added to a movie.
@@ -340,7 +340,7 @@ public protocol MovieService {
     ///     - movieID: The identifier of the movie.
     ///
     /// - Returns: Collection of videos for the matching movie.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection
 
     /// Returns a list of recommended movies for a movie.
@@ -354,7 +354,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func recommendations(forMovie movieID: Movie.ID, page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of similar movies for a movie.
@@ -370,7 +370,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func similar(toMovie movieID: Movie.ID, page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of currently playing movies.
@@ -383,7 +383,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func nowPlaying(page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of current popular movies.
@@ -396,7 +396,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func popular(page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of top rated movies.
@@ -409,7 +409,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func topRated(page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of upcoming movies.
@@ -422,7 +422,7 @@ public protocol MovieService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func upcoming(page: Int?) async throws -> MoviePageableList
 #endif
 
@@ -499,8 +499,8 @@ public extension MovieService {
 }
 #endif
 
-#if swift(>=5.5)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension MovieService {
 
     func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {

@@ -5,12 +5,12 @@ extension Certification {
 
     static var mocks: [String: [Certification]] {
         [
-            UUID().uuidString: [
+            "1": [
                 Certification(code: UUID().uuidString, meaning: "Meaning \(String.randomID)", order: 1),
                 Certification(code: UUID().uuidString, meaning: "Meaning \(String.randomID)", order: 2),
                 Certification(code: UUID().uuidString, meaning: "Meaning \(String.randomID)", order: 3)
             ],
-            UUID().uuidString: [
+            "2": [
                 Certification(code: UUID().uuidString, meaning: "Meaning \(String.randomID)", order: 1),
                 Certification(code: UUID().uuidString, meaning: "Meaning \(String.randomID)", order: 2)
             ]

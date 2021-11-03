@@ -210,7 +210,7 @@ public protocol TVShowService {
     func popularPublisher(page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
     #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns the primary information about a TV show.
     ///
     /// [TMDb API - TV Shows: Details](https://developers.themoviedb.org/3/tv/get-tv-details)
@@ -219,7 +219,7 @@ public protocol TVShowService {
     ///     - id: The identifier of the TV show.
     ///
     /// - Returns: The matching TV show.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func details(forTVShow id: TVShow.ID) async throws -> TVShow
 
     /// Returns the cast and crew of a TV show.
@@ -230,7 +230,7 @@ public protocol TVShowService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: Show credits for the matching TV show.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits
 
     /// Returns the user reviews for a TV show.
@@ -244,7 +244,7 @@ public protocol TVShowService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Reviews for the matching TV show as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func reviews(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> ReviewPageableList
 
     /// Returns the images that belong to a TV show.
@@ -255,7 +255,7 @@ public protocol TVShowService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of images for the matching TV show.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection
 
     /// Returns the videos that belong to a TV show.
@@ -266,7 +266,7 @@ public protocol TVShowService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of videos for the matching TV show.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection
 
     /// Returns a list of recommended TV shows for a TV show.
@@ -280,7 +280,7 @@ public protocol TVShowService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Recommended TV shows for the matching TV show as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func recommendations(forTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList
 
     /// Returns a list of similar TV shows for a TV show.
@@ -296,7 +296,7 @@ public protocol TVShowService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Similar TV shows for the matching TV show as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func similar(toTVShow tvShowID: TVShow.ID, page: Int?) async throws -> TVShowPageableList
 
     /// Returns a list current popular TV shows.
@@ -309,7 +309,7 @@ public protocol TVShowService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Current popular TV shows as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func popular(page: Int?) async throws -> TVShowPageableList
 #endif
 
@@ -365,8 +365,8 @@ public extension TVShowService {
 }
 #endif
 
-#if swift(>=5.5)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension TVShowService {
 
     func reviews(forTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> ReviewPageableList {

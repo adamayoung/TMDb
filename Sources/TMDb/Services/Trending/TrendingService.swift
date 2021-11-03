@@ -115,7 +115,7 @@ public protocol TrendingService {
                          page: Int?) -> AnyPublisher<PersonPageableList, TMDbError>
     #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns a list of the daily or weekly trending movies.
     ///
     /// The daily trending list tracks movies over the period of a day while movies have a 24 hour half life. The
@@ -130,7 +130,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Trending movies in a time window as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> MoviePageableList
 
     /// Returns a list of the daily or weekly trending TV shows.
@@ -147,7 +147,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Trending TV shows in a time window as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> TVShowPageableList
 
     /// Returns a list of the daily or weekly trending people.
@@ -164,7 +164,7 @@ public protocol TrendingService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Trending people in a time window as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType, page: Int?) async throws -> PersonPageableList
 #endif
 
@@ -211,8 +211,8 @@ public extension TrendingService {
 }
 #endif
 
-#if swift(>=5.5)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension TrendingService {
 
     func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,

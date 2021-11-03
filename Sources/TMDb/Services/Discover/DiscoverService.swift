@@ -68,7 +68,7 @@ public protocol DiscoverService {
     func tvShowsPublisher(sortedBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError>
 #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns movies to be discovered.
     ///
     /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
@@ -81,7 +81,7 @@ public protocol DiscoverService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Matching movies as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList
 
     /// Returns TV shows to be discovered.
@@ -95,7 +95,7 @@ public protocol DiscoverService {
     ///     - page: The page of results to return.
     ///
     /// - Returns: Matching TV shows as a pageable list.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func tvShows(sortedBy: TVShowSort?, page: Int?) async throws -> TVShowPageableList
 #endif
 
@@ -132,17 +132,15 @@ public extension DiscoverService {
 }
 #endif
 
-#if swift(>=5.5)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public extension DiscoverService {
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func movies(sortedBy: MovieSort? = nil, withPeople people: [Person.ID]? = nil,
                 page: Int? = nil) async throws -> MoviePageableList {
         try await movies(sortedBy: sortedBy, withPeople: people, page: page)
     }
 
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     func tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil) async throws -> TVShowPageableList {
         try await tvShows(sortedBy: sortedBy, page: page)
     }

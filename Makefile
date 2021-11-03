@@ -49,7 +49,7 @@ build-watchos:
 build-linux:
 	@echo "Building for Linux..."
 	@if [ "$(OS_NAME)" == "darwin" ]; then \
-		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:"$(DOCKER_SWIFT_VERSION)" /bin/bash -c "swift build --build-path ./.build/linux"; \
+		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:$(DOCKER_SWIFT_VERSION)-focal /bin/bash -c "swift build --build-path ./.build/linux"; \
 	else \
 		make build; \
 	fi
@@ -72,7 +72,7 @@ test-ios:
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk iphonesimulator \
-		-destination 'platform=iOS Simulator,name=iPhone 12 Pro,OS=15.0' \
+		-destination 'platform=iOS Simulator,name=iPhone 13 Pro,OS=15.0' \
 		test
 
 test-watchos:
@@ -80,16 +80,16 @@ test-watchos:
 	@xcodebuild \
 		-scheme "$(SCHEME)" \
 		-sdk watchsimulator \
-		-destination 'platform=watchOS Simulator,name=Apple Watch Series 6 - 44mm,OS=8.0' \
+		-destination 'platform=watchOS Simulator,name=Apple Watch Series 7 - 45mm,OS=8.0' \
 		test
 
 test-linux:
 	@echo "Testing for Linux..."
-	ifeq ($(OS_NAME), darwin)
-		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:"$(DOCKER_SWIFT_VERSION)" /bin/bash -c "swift test --build-path ./.build/linux"
-	else
-		make test
-	endif
+	@if [ "$(OS_NAME)" == "darwin" ]; then \
+		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:$(DOCKER_SWIFT_VERSION)-focal /bin/bash -c "swift test --build-path ./.build/linux"; \
+	else \
+		make test; \
+	fi
 
 
 # Analyse

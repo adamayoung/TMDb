@@ -248,8 +248,8 @@ extension MockTVShowService {
 }
 #endif
 
-#if swift(>=5.5)
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=5.5) && !os(Linux)
+@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 extension MockTVShowService {
 
     func details(forTVShow id: TVShow.ID) async throws -> TVShow {

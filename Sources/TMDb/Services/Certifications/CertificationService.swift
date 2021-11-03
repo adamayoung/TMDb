@@ -45,13 +45,13 @@ public protocol CertificationService {
     func tvShowCertificationsPublisher() -> AnyPublisher<[String: [Certification]], TMDbError>
 #endif
 
-#if swift(>=5.5)
+#if swift(>=5.5) && !os(Linux)
     /// Returns the officially supported movie certifications on TMDb.
     ///
     /// [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
     ///
     /// - Returns: A dictionary of movie certifications.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func movieCertifications() async throws -> [String: [Certification]]
 
     /// Returns the officially supported TV show certifications on TMDb.
@@ -59,7 +59,7 @@ public protocol CertificationService {
     /// [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
     ///
     /// - Returns: A dictionary of TV show certifications.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func tvShowCertifications() async throws -> [String: [Certification]]
 #endif
 

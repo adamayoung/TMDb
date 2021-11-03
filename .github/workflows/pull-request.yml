@@ -88,7 +88,7 @@ jobs:
       group: pr-test-linux-${{ github.head_ref }}
       cancel-in-progress: true
     container:
-      image: swift:5.4
+      image: swift:5.5
       options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
 
     steps:
