@@ -79,7 +79,7 @@ test-all: test-macos test-ios test-watchos test-linux
 
 test:
 	@echo "Testing for current platform..."
-	@swift test
+	@swift test --parallel
 
 test-macos:
 	@echo "Testing for macOS..."
@@ -87,6 +87,7 @@ test-macos:
 		-scheme "$(SCHEME)" \
 		-sdk $(MAC_SDK) \
 		-destination $(MAC_DESTINATION) \
+		-parallel-testing-enabled YES \
 		test
 
 test-ios:
@@ -95,6 +96,7 @@ test-ios:
 		-scheme "$(SCHEME)" \
 		-sdk iphonesimulator \
 		-destination $(IPHONE_DESTINATION) \
+		-parallel-testing-enabled YES \
 		test
 
 test-watchos:
@@ -103,6 +105,7 @@ test-watchos:
 		-scheme "$(SCHEME)" \
 		-sdk watchsimulator \
 		-destination $(WATCH_DESTINATION) \
+		-parallel-testing-enabled YES \
 		test
 
 test-tvos:
@@ -111,12 +114,13 @@ test-tvos:
 		-scheme "$(SCHEME)" \
 		-sdk appletvsimulator \
 		-destination $(TV_DESTINATION) \
+		-parallel-testing-enabled YES \
 		test
 
 test-linux:
 	@echo "Testing for Linux..."
 	@if [ "$(OS_NAME)" == "darwin" ]; then \
-		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:$(DOCKER_SWIFT_VERSION)-focal /bin/bash -c "swift test --build-path ./.build/linux"; \
+		docker run --rm --privileged --interactive --tty -v "$$(pwd):/src" -w "/src" swift:$(DOCKER_SWIFT_VERSION)-focal /bin/bash -c "swift test  --parallel --build-path ./.build/linux"; \
 	else \
 		make test; \
 	fi
