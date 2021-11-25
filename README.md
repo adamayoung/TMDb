@@ -162,7 +162,15 @@ let personList = try await personService.popular()
 let people = personList.results
 ```
 
+## Documentation
+
+The latest documentation for the TMDb APIs is available [here](https://adamayoung.github.io/TMDb/).
+
 ## References
 
 * [https://www.themoviedb.org](https://www.themoviedb.org)
 * [https://developers.themoviedb.org](https://developers.themoviedb.org)
+
+## License
+
+This library  is licensed under the Apache License 2.0. See [LICENSE](https://github.com/adamayoung/TMDb/blob/main/LICENSE) for details.
