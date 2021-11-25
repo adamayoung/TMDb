@@ -1,16 +1,12 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/Mainline/badge.svg) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=coverage)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=alert_status)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=security_rating)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=coverage)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=alert_status)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=security_rating)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb)
 
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Linux-333333.svg)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
-
-* Swift 5.2+
-
-### async/await
 
 * Swift 5.5
 
@@ -21,17 +17,17 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 Add the TMDb package as a dependency to your `Package.swift` file, and add it as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.2
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
-  name: "MyProject",
+  name: "MyPackage",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "5.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "6.0.0")
   ],
   targets: [
-    .target(name: "MyProject", dependencies: ["TMDb"])
+    .target(name: "MyPackage", dependencies: ["TMDb"])
   ]
 )
 ```
