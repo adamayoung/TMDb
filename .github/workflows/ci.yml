@@ -163,7 +163,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
-  - documentation:
+  documentation:
     name: Compile Documentation
     runs-on: macos-11
     steps:
