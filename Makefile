@@ -143,6 +143,23 @@ analyse:
 	@bash xccov-to-sonarqube-generic.sh Build/Logs/Test/*.xcresult/ > sonarqube-generic-coverage.xml
 	@sonar-scanner -Dsonar.projectKey=$(SONARCLOUD_ORGANISATION)_$(SONARCLOUD_PROJECT_NAME) -Dsonar.organization=$(SONARCLOUD_ORGANISATION) -Dsonar.host.url="https://sonarcloud.io" -Dsonar.sources=Sources -Dsonar.coverageReportPaths=sonarqube-generic-coverage.xml -Dsonar.swift.swiftLint.reportPaths=swiftlint.result.json -Dsonar.cfamily.build-wrapper-output.bypass=true
 
+
+# Test Docs
+
+DOC_WARNINGS := $(shell xcodebuild clean docbuild \
+	-scheme "$(SCHEME)" \
+	-sdk $(MAC_SDK) \
+	-destination $(MAC_DESTINATION) \
+	-quiet \
+	2>&1 \
+	| grep "couldn't be resolved to known documentation" \
+	| sed 's|$(PWD)|.|g' \
+	| tr '\n' '\1')
+test-docs:
+	@test "$(DOC_WARNINGS)" = "" \
+		|| (echo "xcodebuild docbuild failed:\n\n$(DOC_WARNINGS)" | tr '\1' '\n' \
+		&& exit 1)
+
 #analyse:
 #	@echo "Analysing for SonarCloud..."
 #	$(call brew_install,swiftlint)
