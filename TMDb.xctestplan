@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "4E487DB9-6F06-4C8C-901B-60170891CE52",
+      "id" : "2FEE8FB8-5637-4FFD-BD2C-2FE3524A0D5E",
       "name" : "Configuration 1",
       "options" : {
 
@@ -13,7 +13,6 @@
   },
   "testTargets" : [
     {
-      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:",
         "identifier" : "TMDbTests",

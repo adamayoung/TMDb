@@ -1,0 +1,82 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXFileReference section */
+		E7F17085275FAFBB009606AB /* TMDb */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TMDb; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		E7F1707B275FAF2C009606AB = {
+			isa = PBXGroup;
+			children = (
+				E7F17084275FAFBB009606AB /* Packages */,
+			);
+			sourceTree = "<group>";
+		};
+		E7F17084275FAFBB009606AB /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E7F17085275FAFBB009606AB /* TMDb */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		E7F1707C275FAF2C009606AB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1310;
+			};
+			buildConfigurationList = E7F1707F275FAF2C009606AB /* Build configuration list for PBXProject "TMDb" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E7F1707B275FAF2C009606AB;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		E7F17080275FAF2C009606AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		E7F17081275FAF2C009606AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E7F1707F275FAF2C009606AB /* Build configuration list for PBXProject "TMDb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7F17080275FAF2C009606AB /* Debug */,
+				E7F17081275FAF2C009606AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E7F1707C275FAF2C009606AB /* Project object */;
+}
