@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "BCDEED95-5F8D-44CE-ADFF-2868A9633CFF",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "TMDb",
+      "name" : "TMDb"
+    },
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "TMDbTests",
+        "name" : "TMDbTests"
+      }
+    }
+  ],
+  "version" : 1
+}

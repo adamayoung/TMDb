@@ -8,12 +8,14 @@
 
 /* Begin PBXFileReference section */
 		E7F17073275F98B2009606AB /* TMDb */ = {isa = PBXFileReference; lastKnownFileType = folder; name = TMDb; path = ..; sourceTree = "<group>"; };
+		E7F17074275FA4D2009606AB /* TMDb.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDb.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		E7F1706C275F9897009606AB = {
 			isa = PBXGroup;
 			children = (
+				E7F17074275FA4D2009606AB /* TMDb.xctestplan */,
 				E7F17073275F98B2009606AB /* TMDb */,
 			);
 			sourceTree = "<group>";
