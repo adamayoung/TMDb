@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "BCDEED95-5F8D-44CE-ADFF-2868A9633CFF",
+      "id" : "4E487DB9-6F06-4C8C-901B-60170891CE52",
       "name" : "Configuration 1",
       "options" : {
 
@@ -9,12 +9,7 @@
     }
   ],
   "defaultOptions" : {
-    "targetForVariableExpansion" : {
-      "containerPath" : "container:",
-      "identifier" : "TMDb",
-      "name" : "TMDb"
-    },
-    "testExecutionOrdering" : "random"
+
   },
   "testTargets" : [
     {
