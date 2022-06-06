@@ -12,6 +12,9 @@ jobs:
   lint:
     name: Lint
     runs-on: macos-12
+    concurrency:
+       group: ci-lint-${{ github.head_ref || github.run_id }}
+       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,6 +25,9 @@ jobs:
   build-test:
     name: Build and Test
     runs-on: macos-12
+    concurrency:
+       group: ci-lint-${{ github.head_ref || github.run_id }}
+       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -33,22 +39,19 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-      
-      - name: Resolve Packages
-        run: xcodebuild -scheme "TMDb" -resolvePackageDependencies -derivedDataPath ./.build
-      
-      - name: Clean
-        run: xcodebuild -scheme "TMDb" -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build clean
 
       - name: Build
-        run: set -o pipefail && xcodebuild -scheme "TMDb" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build -parallelizeTargets build-for-testing | xcpretty -c
+        run: swift build --build-tests
 
       - name: Test
-        run: set -o pipefail && xcodebuild -scheme "TMDb" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build -enableCodeCoverage YES test-without-building | xcpretty -c
+        run: swift test --skip-build --parallel
   
   documentation:
     name: Compile Documentation
     runs-on: macos-12
+    concurrency:
+       group: ci-lint-${{ github.head_ref || github.run_id }}
+       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
