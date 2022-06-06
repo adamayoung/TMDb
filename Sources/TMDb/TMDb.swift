@@ -6,19 +6,28 @@ import Foundation
 /// 
 /// The TMDb API service is for those of you interested in using their movie, TV show or actor images and/or data in your application. Their API is a system they
 /// provide for you and your team to programmatically fetch and use their data and/or images.
-public final class TMDbAPI: MovieTVShowAPI {
+public final class TMDb {
 
     /// A shared instance of the TMDb API.
-    public static let shared: MovieTVShowAPI = TMDbAPI()
+    public static let shared = TMDb()
 
+    /// Certifications.
     public let certifications: CertificationService
+    /// Configurations.
     public let configurations: ConfigurationService
+    /// Discover.
     public let discover: DiscoverService
+    /// Movies.
     public let movies: MovieService
+    /// People.
     public let people: PersonService
+    /// Search.
     public let search: SearchService
+    /// Trending.
     public let trending: TrendingService
+    /// TV Shows.
     public let tvShows: TVShowService
+    /// TV Show Seasons.
     public let tvShowSeasons: TVShowSeasonService
 
     init(
@@ -43,6 +52,10 @@ public final class TMDbAPI: MovieTVShowAPI {
         self.tvShowSeasons = tvShowSeasonService
     }
 
+    /// Sets the API Key to be used with requests to the API.
+    ///
+    /// - Parameters
+    ///     - apiKey: The API Key.
     public static func setAPIKey(_ apiKey: String) {
         TMDbAPIClient.setAPIKey(apiKey)
     }

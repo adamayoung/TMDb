@@ -18,249 +18,174 @@ final class TMDbTrendingServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMoviesWithDefaultValuesReturnsMovies() throws {
+    func testMoviesWithDefaultParametersReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movies()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
     }
 
-    func testFetchMoviesForDayReturnsMovies() throws {
+    func testMoviesForDayReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
     }
 
-    func testFetchMoviesForDayWithPageReturnsMovies() throws {
+    func testMoviesForDayWithPageReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchMoviesForWeekReturnsMovies() throws {
+    func testMoviesForWeekReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
     }
 
-    func testFetchMoviesForWeekWithPageReturnsMovies() throws {
+    func testMoviesForWeekWithPageReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovies(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchTVShowsWithDefaultParametersReturnsTVShows() throws {
+    func testTVShowsWithDefaultReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShows()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForDayReturnsTVShows() throws {
+    func testTVShowsForDayReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForDayWithPageReturnsTVShows() throws {
+    func testTVShowsForDayWithPageReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchTVShowsForWeekReturnsTVShows() throws {
+    func testTVShowsForWeekReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
     }
 
-    func testFetchTVShowsForWeekWithPageReturnsTVShows() throws {
+    func testTVShowsForWeekWithPageReturnsTVShows() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShows(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchPeopleWithDefaultParametersReturnsPeople() throws {
+    func testPeopleWithDefaultParametersReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.people()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
     }
 
-    func testFetchPeopleForDayReturnsPeople() throws {
+    func testPeopleForDayReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
     }
 
-    func testFetchPeopleForDayWithPageReturnsPeople() throws {
+    func testPeopleForDayWithPageReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.people(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).url)
     }
 
-    func testFetchPeopleForWeekReturnsPeople() throws {
+    func testPeopleForWeekReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(inTimeWindow: timeWindow, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
     }
 
-    func testFetchPeopleForWeekWithPageReturnsPeople() throws {
+    func testPeopleForWeekWithPageReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPeople(inTimeWindow: timeWindow, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.people(inTimeWindow: timeWindow, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).url)
     }
 

@@ -18,254 +18,190 @@ final class TMDbSearchServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchSearchAllWithDefaultParametersReturnsMedia() throws {
+    func testSearchAllWithDefaultParametersReturnsMedia() async throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchAll(query: query) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchAll(query: query)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
-    func testFetchSearchAllReturnsMedia() throws {
+    func testSearchAllReturnsMedia() async throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchAll(query: query, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchAll(query: query, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
     }
 
-    func testFetchSearchAllWithPageReturnsMedia() throws {
+    func testSearchAllWithPageReturnsMedia() async throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock
         let page = expectedResult.page
 
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchAll(query: query, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchAll(query: query, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
     }
 
-    func testFetchSearchMoviesWithDefaultParametersReturnsMovies() throws {
+    func testSearchMoviesWithDefaultParametersReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchMovies(query: query) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchMovies(query: query)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
-    func testFetchSearchMoviesReturnsMovies() throws {
+    func testSearchMoviesReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchMovies(query: query, year: nil, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchMovies(query: query, year: nil, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
     }
 
-    func testFetchSearchMoviesWithYearReturnsMovies() throws {
+    func testSearchMoviesWithYearReturnsMovies() async throws {
         let query = String.randomString
         let year = 2020
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchMovies(query: query, year: year, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchMovies(query: query, year: year, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
     }
 
-    func testFetchSearchMoviesWithPageReturnsMovies() throws {
+    func testSearchMoviesWithPageReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchMovies(query: query, year: nil, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchMovies(query: query, year: nil, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
     }
 
-    func testFetchSearchMoviesWithYearAndPageReturnsMovies() throws {
+    func testSearchMoviesWithYearAndPageReturnsMovies() async throws {
         let query = String.randomString
         let year = 2020
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchMovies(query: query, year: year, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchMovies(query: query, year: year, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
     }
 
-    func testFetchSearchTVShowsWithDefaultParametersReturnsTVShows() throws {
+    func testSearchTVShowsWithDefaultParametersReturnsTVShows() async throws {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchTVShows(query: query) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchTVShows(query: query)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
-    func testFetchSearchTVShowsReturnsTVShows() throws {
+    func testSearchTVShowsReturnsTVShows() async throws {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchTVShows(query: query, firstAirDateYear: nil, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
     }
 
-    func testFetchSearchTVShowsWithFirstAirDateYearReturnsTVShows() throws {
+    func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() async throws {
         let query = String.randomString
         let year = 2020
         let expectedResult = TVShowPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchTVShows(query: query, firstAirDateYear: year, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
     }
 
-    func testFetchSearchTVShowsWithPageReturnsTVShows() throws {
+    func testSearchTVShowsWithPageReturnsTVShows() async throws {
         let query = String.randomString
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchTVShows(query: query, firstAirDateYear: nil, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
     }
 
-    func testFetchSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() throws {
+    func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() async throws {
         let query = String.randomString
         let year = 2020
         let expectedResult = TVShowPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchTVShows(query: query, firstAirDateYear: year, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
     }
 
-    func testFetchSearchPeopleWithDefaultParametersReturnsPeople() throws {
+    func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchPeople(query: query) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchPeople(query: query)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
-    func testFetchSearchPeopleReturnsPeople() throws {
+    func testSearchPeopleReturnsPeople() async throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchPeople(query: query, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchPeople(query: query, page: nil)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
     }
 
-    func testFetchSearchPeopleWithPageReturnsPeople() throws {
+    func testSearchPeopleWithPageReturnsPeople() async throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.searchPeople(query: query, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.searchPeople(query: query, page: page)
 
-        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
     }
 

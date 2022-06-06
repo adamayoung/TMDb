@@ -18,18 +18,13 @@ final class TMDbConfigurationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchAPIConfigurationReturnsAPIConfiguration() {
+    func testAPIConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchAPIConfiguration { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.apiConfiguration()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.url)
     }
 

@@ -1,9 +1,9 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbAPITests: XCTestCase {
+final class TMDbTests: XCTestCase {
 
-    var tmdb: MovieTVShowAPI!
+    var tmdb: TMDb!
     var certificationService: MockCertificationService!
     var configurationService: MockConfigurationService!
     var discoverService: MockDiscoverService!
@@ -26,7 +26,7 @@ final class TMDbAPITests: XCTestCase {
         trendingService = MockTrendingService()
         tvShowService = MockTVShowService()
         tvShowSeasonService = MockTVShowSeasonService()
-        tmdb = TMDbAPI(
+        tmdb = TMDb(
             certificationService: certificationService,
             configurationService: configurationService,
             discoverService: discoverService,
@@ -57,7 +57,7 @@ final class TMDbAPITests: XCTestCase {
     func testSetAPIKeySetsAPIKeyOnAPIClient() {
         let expectedAPIKey = UUID().uuidString
 
-        TMDbAPI.setAPIKey(expectedAPIKey)
+        TMDb.setAPIKey(expectedAPIKey)
 
         XCTAssertEqual(TMDbAPIClient.shared.apiKey, expectedAPIKey)
     }

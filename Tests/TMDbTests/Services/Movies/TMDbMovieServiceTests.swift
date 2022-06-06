@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbMovieServiceTests: XCTestCase {
+final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
@@ -18,438 +18,273 @@ final class TMDbMovieServiceTests: XCTestCase {
         super.tearDown()
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchDetailsReturnsMovie() throws {
+    func testDetailsReturnsMovie() async throws {
         let expectedResult = Movie.mock
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchDetails(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.details(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchCreditsReturnsCredits() throws {
+    func testCreditsReturnsCredits() async throws {
         let expectedResult = ShowCredits.mock
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchCredits(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.credits(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchReviewsWithDefaultParametersReturnsReviews() throws {
+    func testReviewsWithDefaultParametersReturnsReviews() async throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchReviews(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.reviews(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
     }
 
-    func testFetchReviewsReturnsReviews() throws {
+    func testReviewsReturnsReviews() async throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchReviews(forMovie: movieID, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.reviews(forMovie: movieID, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
     }
 
-    func testFetchReviewsWithPageReturnsReviews() throws {
+    func testReviewsWithPageReturnsReviews() async throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchReviews(forMovie: movieID, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.reviews(forMovie: movieID, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchImagesReturnsImageCollection() throws {
+    func testImagesReturnsImageCollection() async throws {
         let expectedResult = ImageCollection.mock
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchImages(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.images(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
     }
 
-    func testFetchVideosReturnsVideoCollection() throws {
+    func testVideosReturnsVideoCollection() async throws {
         let expectedResult = VideoCollection.mock
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchVideos(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.videos(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchRecommendationsWithDefaultParametersReturnsMovies() throws {
+    func testRecommendationsWithDefaultParametersReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchRecommendations(forMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.recommendations(forMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsReturnsMovies() throws {
+    func testRecommendationsReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchRecommendations(forMovie: movieID, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.recommendations(forMovie: movieID, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
     }
 
-    func testFetchRecommendationsWithPageReturnsMovies() throws {
+    func testRecommendationsWithPageReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchRecommendations(forMovie: movieID, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.recommendations(forMovie: movieID, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchSimilarWithDefaultParametersReturnsMovies() throws {
+    func testSimilarWithDefaultParametersReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchSimilar(toMovie: movieID) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.similar(toMovie: movieID)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
     }
 
-    func testFetchSimilarReturnsMovies() throws {
+    func testSimilarReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchSimilar(toMovie: movieID, page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.similar(toMovie: movieID, page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
     }
 
-    func testFetchSimilarWithPageReturnsMovies() throws {
+    func testSimilarWithPageReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchSimilar(toMovie: movieID, page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.similar(toMovie: movieID, page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchNowPlayingWithDefaultParametersReturnsMovies() throws {
+    func testNowPlayingWithDefaultParametersReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchNowPlaying { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.nowPlaying()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
     }
 
-    func testFetchNowPlayingReturnsMovies() throws {
+    func testNowPlayingReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchNowPlaying(page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.nowPlaying(page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
     }
 
-    func testFetchNowPlayingWithPageReturnsMovies() throws {
+    func testNowPlayingWithPageReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchNowPlaying(page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.nowPlaying(page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying(page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchPopularWithDefaultParametersReturnsMovies() throws {
+    func testPopularWithDefaultParametersReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.popular()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
     }
 
-    func testFetchPopularReturnsMovies() throws {
+    func testPopularReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular(page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.popular(page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
     }
 
-    func testFetchPopularWithPageReturnsMovies() throws {
+    func testPopularWithPageReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchPopular(page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.popular(page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchTopRatedWithDefaultParametersReturnsMovies() throws {
+    func testTopRatedWithDefaultParametersReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTopRated { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.topRated()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
     }
 
-    func testFetchTopRatedReturnsMovies() throws {
+    func testTopRatedReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTopRated(page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.topRated(page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
     }
 
-    func testFetchTopRatedWithPageReturnsMovies() throws {
+    func testTopRatedWithPageReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTopRated(page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.topRated(page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated(page: page).url)
     }
 
-}
-
-extension TMDbMovieServiceTests {
-
-    func testFetchUpcomingWithDefaultParametersReturnsMovies() throws {
+    func testUpcomingWithDefaultParametersReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchUpcoming { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.upcoming()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
     }
 
-    func testFetchUpcomingReturnsMovies() throws {
+    func testUpcomingReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchUpcoming(page: nil) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.upcoming(page: nil)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
     }
 
-    func testFetchUpcomingWithPageReturnsMovies() throws {
+    func testUpcomingWithPageReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchUpcoming(page: page) { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.upcoming(page: page)
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming(page: page).url)
     }
 

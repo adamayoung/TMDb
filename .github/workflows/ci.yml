@@ -8,50 +8,23 @@ on:
     branches:
       - main
 
-env:
-  DEVELOPER_DIR: /Applications/Xcode_13.2.app
-
 jobs:
   lint:
     name: Lint
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: swiftlint
-        run: make lint
+        run: swiftlint --strict
 
-  test-on-macos:
-    name: Test on macOS
-    runs-on: macos-11
+  build-test:
+    name: Build and Test
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
-      - name: Build and test
-        run: make test-macos
-  
-  test-on-ios:
-    name: Test on iOS
-    runs-on: macos-11
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Cache SPM
         uses: actions/cache@v2
@@ -61,111 +34,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
       
-      - name: Build and test
-        run: make test-ios
-  
-  test-on-watchos:
-    name: Test on watchOS
-    runs-on: macos-11
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Resolve Packages
+        run: xcodebuild -scheme "TMDb" -resolvePackageDependencies -derivedDataPath ./.build
+      
+      - name: Clean
+        run: xcodebuild -scheme "TMDb" -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build clean
 
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
+      - name: Build
+        run: set -o pipefail && xcodebuild -scheme "TMDb" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build -parallelizeTargets build-for-testing | xcpretty -c
 
-      - name: Build and test
-        run: make test-watchos
-    
-  test-on-appletv:
-    name: Test on tvOS
-    runs-on: macos-11
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
-      - name: Build and test
-        run: make test-tvos
-  
-  test-on-linux:
-    name: Test on Linux
-    runs-on: ubuntu-latest
-    container:
-      image: swift:5.5
-      options: --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --security-opt apparmor=unconfined
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
-      - name: Build and test
-        run: make test-linux
-
-  analysis:
-    name: Analysis
-    runs-on: macos-11
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v2
-        with:
-          path: .sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      - name: Analyse
-        run: make analyse
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Test
+        run: set -o pipefail && xcodebuild -scheme "TMDb" -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 13 Pro" -derivedDataPath ./.build -enableCodeCoverage YES test-without-building | xcpretty -c
   
   documentation:
     name: Compile Documentation
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2

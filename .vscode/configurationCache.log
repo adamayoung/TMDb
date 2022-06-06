@@ -1,0 +1,1 @@
+{"buildTargets":["analyse","build","build-all","build-ios","build-linux","build-macos","build-tvos","build-watchos","clean","lint","test","test-all","test-docs","test-ios","test-linux","test-macos","test-tvos","test-watchos"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
