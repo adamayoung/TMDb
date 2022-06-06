@@ -1,14 +1,12 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=coverage)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=alert_status)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=adamayoung_TMDb&metric=security_rating)](https://sonarcloud.io/dashboard?id=adamayoung_TMDb)
-
-[![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20macOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Linux-333333.svg)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) 
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.5
+* Swift 5.6
 
 ## Installation
 
@@ -17,14 +15,14 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 Add the TMDb package as a dependency to your `Package.swift` file, and add it as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 
 let package = Package(
   name: "MyPackage",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "6.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "7.0.0")
   ],
   targets: [
     .target(name: "MyPackage", dependencies: ["TMDb"])
@@ -38,19 +36,19 @@ let package = Package(
 
 Create an API Key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
-### Set you API Key
+### Set your API Key
 
 Set your API key before making any calls
 
 ```swift
-TMDbAPI.setAPIKey("ahb4334n43nj34jk43nklkg4")
+TMDb.setAPIKey("ahb4334n43nj34jk43nklkg4")
 ```
 
 ## API Areas
 
 ### Certifications
 
-Get an up to date list of the officially supported movie certifications on TMDB.
+Get an up to date list of the officially supported movie certifications on TMDb.
 
 ### Configuration
 
@@ -88,9 +86,10 @@ Get information about TV show seasons.
 
 ## Examples
 
+First, set your TMDb API key.
+
 ```swift
-// Set API Key
-TMDbAPI.setAPIKey("ahb4334n43nj34jk43nklkg4")
+TMDbAPI.setAPIKey("<tmdb-api-key>")
 ```
 
 ### Discover Movies
@@ -98,20 +97,6 @@ TMDbAPI.setAPIKey("ahb4334n43nj34jk43nklkg4")
 ```swift
 let discoverService = TMDb.shared.discover
 
-// With a completion handler
-discoverService.fetchMovies { result in
-    let movies = (try? result.get())?.results
-    ...
-}
-
-// With Combine
-discoverService.moviesPublisher()
-    .map(\.results)
-    .replaceError(with: [])
-    .assign(to: \.movies, on: self)
-    .store(in: &cancellables)
-
-// With async/await
 let movieList = try await discoverService.movies()
 let movies = movieList.results
 ```
@@ -121,20 +106,6 @@ let movies = movieList.results
 ```swift
 let trendingService = TMDb.shared.trending
 
-// With a completion handler
-trendingService.fetchTVShows(inTimeWindow: .week, page: 2) { result in
-    let tvShows = (try? result.get())?.results
-    ...
-}
-
-// With Combine
-trendingService.tvShowsPublisher(inTimeWindow: .week, page: 2)
-    .map(\.results)
-    .replaceError(with: [])
-    .assign(to: \.tvShows, on: self)
-    .store(in: &cancellables)
-
-// With async/await
 let tvShowList = try await trendingService.tvShows(inTimeWindow: .week, page: 2)
 let tvShows = list.results
 ```
@@ -144,27 +115,17 @@ let tvShows = list.results
 ```swift
 let personService = TMDb.shared.person
 
-// With a completion handler
-personService.fetchPopular { result in
-    let people = (try? result.get())?.results
-    ...
-}
-
-// With Combine
-personService.popularPublisher()
-    .map(\.results)
-    .replaceError(with: [])
-    .assign(to: \.people, on: self)
-    .store(in: &cancellables)
-
-// With async/await
 let personList = try await personService.popular()
 let people = personList.results
 ```
 
+## Support for Combine
+
+Combine support is available in version [6.0.0](https://github.com/adamayoung/TMDb/tree/6.0.0).
+
 ## Documentation
 
-The latest documentation for the TMDb APIs is available [here](https://adamayoung.github.io/TMDb/).
+The latest documentation for the TMDb APIs is available at [https://adamayoung.github.io/TMDb](https://adamayoung.github.io/TMDb/).
 
 ## References
 
@@ -173,4 +134,4 @@ The latest documentation for the TMDb APIs is available [here](https://adamayoun
 
 ## License
 
-This library  is licensed under the Apache License 2.0. See [LICENSE](https://github.com/adamayoung/TMDb/blob/main/LICENSE) for details.
+This library is licensed under the Apache License 2.0. See [LICENSE](https://github.com/adamayoung/TMDb/blob/main/LICENSE) for details.

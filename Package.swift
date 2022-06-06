@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 
 import PackageDescription
 
@@ -6,7 +6,7 @@ let package = Package(
     name: "TMDb",
 
     platforms: [
-        .macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)
+        .macOS(.v12), .iOS(.v15), .tvOS(.v15), .watchOS(.v8)
     ],
 
     products: [

@@ -1,13 +1,5 @@
 import Foundation
 
-#if canImport(Combine)
-import Combine
-#endif
-
-#if canImport(FoundationNetworking)
-import FoundationNetworking
-#endif
-
 final class TMDbAPIClient: APIClient {
 
     private let urlSession: URLSession
@@ -30,66 +22,6 @@ final class TMDbAPIClient: APIClient {
         self.apiKey = apiKey
     }
 
-    func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?,
-                                  completion: @escaping (Result<Response, TMDbError>) -> Void) {
-        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
-
-        urlSession.dataTask(with: urlRequest) { [weak self] data, response, error in
-            guard let self = self else {
-                return
-            }
-
-            if let error = error {
-                completion(.failure(.network(error)))
-                return
-            }
-
-            guard let response = response, let data = data else {
-                completion(.failure(.unknown))
-                return
-            }
-
-            if let tmdbError = TMDbError(response: response) {
-                completion(.failure(tmdbError))
-                return
-            }
-
-            let decodedResponse: Response
-            do {
-                decodedResponse = try self.jsonDecoder.decode(Response.self, from: data)
-            } catch let error {
-                completion(.failure(.decode(error)))
-                return
-            }
-
-            completion(.success(decodedResponse))
-        }
-        .resume()
-    }
-
-}
-
-#if canImport(Combine)
-extension TMDbAPIClient {
-
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    func get<Response: Decodable>(path: URL,
-                                  httpHeaders: [String: String]? = nil) -> AnyPublisher<Response, TMDbError> {
-        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
-
-        return urlSession.dataTaskPublisher(for: urlRequest)
-            .mapTMDbError()
-            .mapResponse(to: Response.self, decoder: jsonDecoder)
-            .eraseToAnyPublisher()
-    }
-
-}
-#endif
-
-#if swift(>=5.5) && !os(Linux)
-extension TMDbAPIClient {
-
-    @available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
         let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
 
@@ -117,7 +49,6 @@ extension TMDbAPIClient {
     }
 
 }
-#endif
 
 extension TMDbAPIClient {
 

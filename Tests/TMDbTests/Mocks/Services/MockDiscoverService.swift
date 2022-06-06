@@ -1,10 +1,6 @@
 @testable import TMDb
 import XCTest
 
-#if canImport(Combine)
-import Combine
-#endif
-
 final class MockDiscoverService: DiscoverService {
 
     var movies: MoviePageableList?
@@ -15,77 +11,6 @@ final class MockDiscoverService: DiscoverService {
     var tvShows: TVShowPageableList?
     private(set) var lastTVShowsSortedBy: TVShowSort?
     private(set) var lastTVShowsPage: Int?
-
-    func fetchMovies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?,
-                     completion: @escaping (Result<MoviePageableList, TMDbError>) -> Void) {
-        lastMoviesSortedBy = sortedBy
-        lastMoviesWithPeople = people
-        lastMoviesPage = page
-
-        guard let movies = movies else {
-            return
-        }
-
-        DispatchQueue.main.simulateWaitForNetwork {
-            completion(.success(movies))
-        }
-    }
-
-    func fetchTVShows(sortedBy: TVShowSort?, page: Int?,
-                      completion: @escaping (Result<TVShowPageableList, TMDbError>) -> Void) {
-        lastTVShowsSortedBy = sortedBy
-        lastTVShowsPage = page
-
-        guard let tvShows = tvShows else {
-            return
-        }
-
-        DispatchQueue.main.simulateWaitForNetwork {
-            completion(.success(tvShows))
-        }
-    }
-
-}
-
-#if canImport(Combine)
-extension MockDiscoverService {
-
-    func moviesPublisher(sortedBy: MovieSort?, withPeople people: [Person.ID]?,
-                         page: Int?) -> AnyPublisher<MoviePageableList, TMDbError> {
-        lastMoviesSortedBy = sortedBy
-        lastMoviesWithPeople = people
-        lastMoviesPage = page
-
-        guard let movies = movies else {
-            return Empty()
-                .eraseToAnyPublisher()
-        }
-
-        return Just(movies)
-            .setFailureType(to: TMDbError.self)
-            .eraseToAnyPublisher()
-    }
-
-    func tvShowsPublisher(sortedBy: TVShowSort?, page: Int?) -> AnyPublisher<TVShowPageableList, TMDbError> {
-        lastTVShowsSortedBy = sortedBy
-        lastTVShowsPage = page
-
-        guard let tvShows = tvShows else {
-            return Empty()
-                .eraseToAnyPublisher()
-        }
-
-        return Just(tvShows)
-            .setFailureType(to: TMDbError.self)
-            .eraseToAnyPublisher()
-    }
-
-}
-#endif
-
-#if swift(>=5.5) && !os(Linux)
-@available(macOS 12, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
-extension MockDiscoverService {
 
     func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
         lastMoviesSortedBy = sortedBy
@@ -115,4 +40,3 @@ extension MockDiscoverService {
     }
 
 }
-#endif

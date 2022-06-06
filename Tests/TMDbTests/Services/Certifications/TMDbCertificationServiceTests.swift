@@ -18,33 +18,23 @@ final class TMDbCertificationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFetchMovieCertificationsReturnsMovieCertifications() {
+    func testMovieCertificationsReturnsMovieCertifications() async throws {
         let expectedResult = Certification.mocks
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchMovieCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.movieCertifications()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
     }
 
-    func testFetchTVShowCertificationsReturnsTVShowCertifications() {
+    func testTVShowCertificationsReturnsTVShowCertifications() async throws {
         let expectedResult = Certification.mocks
         apiClient.result = .success(expectedResult)
 
-        let expectation = XCTestExpectation(description: "await")
-        service.fetchTVShowCertifications { result in
-            XCTAssertEqual(try? result.get(), expectedResult)
-            expectation.fulfill()
-        }
+        let result = try await service.tvShowCertifications()
 
-        wait(for: [expectation], timeout: 1)
-
+        XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
     }
 

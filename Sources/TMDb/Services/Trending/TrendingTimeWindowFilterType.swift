@@ -1,11 +1,15 @@
 import Foundation
 
+/// Sort specifier when fetching TV shows.
 public enum TrendingTimeWindowFilterType: String {
 
-    case day
-    case week
-
+    /// Default trending time window filter.
     public static var `default`: Self = .day
+
+    /// Day time window filter.
+    case day
+    /// Week time window filter.
+    case week
 
 }
 
