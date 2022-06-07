@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: swiftlint
-        run: swiftlint --strict
+        run: swiftlint --strict --reporter github-actions-logging
 
   build-test:
     name: Build and Test
