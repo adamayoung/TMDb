@@ -1,6 +1,6 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) 
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
@@ -41,7 +41,7 @@ Create an API Key from The Movie Database web site [https://www.themoviedb.org/d
 Set your API key before making any calls
 
 ```swift
-TMDb.setAPIKey("ahb4334n43nj34jk43nklkg4")
+TMDb.setAPIKey("<tmdb-api-key>")
 ```
 
 ## API Areas
@@ -89,7 +89,7 @@ Get information about TV show seasons.
 First, set your TMDb API key.
 
 ```swift
-TMDbAPI.setAPIKey("<tmdb-api-key>")
+TMDb.setAPIKey("<tmdb-api-key>")
 ```
 
 ### Discover Movies
