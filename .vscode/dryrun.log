@@ -1,4 +1,0 @@
-make: Entering directory `/Users/adamy/Developer/Personal/MoviesApp/TMDb'
-if which swiftlint >/dev/null; then echo "swiftlint installed..."; else echo "Installing swiftlint..."; brew install swiftlint; fi && swiftlint --strict
-make: Leaving directory `/Users/adamy/Developer/Personal/MoviesApp/TMDb'
- 
