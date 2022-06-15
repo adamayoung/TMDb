@@ -6,10 +6,10 @@ import Foundation
 /// 
 /// The TMDb API service is for those of you interested in using their movie, TV show or actor images and/or data in your application. Their API is a system they
 /// provide for you and your team to programmatically fetch and use their data and/or images.
-public final class TMDb {
+public final class TMDbAPI {
 
     /// A shared instance of the TMDb API.
-    public static let shared = TMDb()
+    public static let shared = TMDbAPI()
 
     /// Certifications.
     public let certifications: CertificationService
