@@ -41,7 +41,7 @@ Create an API Key from The Movie Database web site [https://www.themoviedb.org/d
 Set your API key before making any calls
 
 ```swift
-TMDb.setAPIKey("<tmdb-api-key>")
+TMDbAPI.setAPIKey("<tmdb-api-key>")
 ```
 
 ## API Areas
@@ -89,13 +89,13 @@ Get information about TV show seasons.
 First, set your TMDb API key.
 
 ```swift
-TMDb.setAPIKey("<tmdb-api-key>")
+TMDbAPI.setAPIKey("<tmdb-api-key>")
 ```
 
 ### Discover Movies
 
 ```swift
-let discoverService = TMDb.shared.discover
+let discoverService = TMDbAPI.shared.discover
 
 let movieList = try await discoverService.movies()
 let movies = movieList.results
@@ -104,7 +104,7 @@ let movies = movieList.results
 ### Trending TV Shows this week, 2nd page
 
 ```swift
-let trendingService = TMDb.shared.trending
+let trendingService = TMDbAPI.shared.trending
 
 let tvShowList = try await trendingService.tvShows(inTimeWindow: .week, page: 2)
 let tvShows = list.results
@@ -113,7 +113,7 @@ let tvShows = list.results
 ### Popular People
 
 ```swift
-let personService = TMDb.shared.person
+let personService = TMDbAPI.shared.person
 
 let personList = try await personService.popular()
 let people = personList.results
