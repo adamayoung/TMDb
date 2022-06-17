@@ -26,7 +26,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.movies()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).path)
     }
 
     func testMoviesForDayReturnsMovies() async throws {
@@ -37,7 +37,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).path)
     }
 
     func testMoviesForDayWithPageReturnsMovies() async throws {
@@ -49,7 +49,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).path)
     }
 
     func testMoviesForWeekReturnsMovies() async throws {
@@ -60,7 +60,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow).path)
     }
 
     func testMoviesForWeekWithPageReturnsMovies() async throws {
@@ -72,7 +72,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.movies(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).path)
     }
 
     func testTVShowsWithDefaultReturnsTVShows() async throws {
@@ -83,7 +83,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.tvShows()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
     }
 
     func testTVShowsForDayReturnsTVShows() async throws {
@@ -94,7 +94,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
     }
 
     func testTVShowsForDayWithPageReturnsTVShows() async throws {
@@ -106,7 +106,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).path)
     }
 
     func testTVShowsForWeekReturnsTVShows() async throws {
@@ -117,7 +117,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
     }
 
     func testTVShowsForWeekWithPageReturnsTVShows() async throws {
@@ -129,7 +129,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).path)
     }
 
     func testPeopleWithDefaultParametersReturnsPeople() async throws {
@@ -140,7 +140,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.people()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).path)
     }
 
     func testPeopleForDayReturnsPeople() async throws {
@@ -151,7 +151,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).path)
     }
 
     func testPeopleForDayWithPageReturnsPeople() async throws {
@@ -163,7 +163,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.people(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).path)
     }
 
     func testPeopleForWeekReturnsPeople() async throws {
@@ -174,7 +174,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.people(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow).path)
     }
 
     func testPeopleForWeekWithPageReturnsPeople() async throws {
@@ -186,7 +186,7 @@ final class TMDbTrendingServiceTests: XCTestCase {
         let result = try await service.people(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.people(timeWindow: timeWindow, page: page).path)
     }
 
 }

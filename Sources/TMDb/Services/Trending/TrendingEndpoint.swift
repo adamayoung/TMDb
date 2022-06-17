@@ -12,7 +12,7 @@ enum TrendingEndpoint {
 
 extension TrendingEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .movies(let timeWindow, let page):
             return Self.basePath

@@ -6,7 +6,7 @@ final class CertificationsEndpointTests: XCTestCase {
     func testMovieEndpointReturnsURL() {
         let expectedURL = URL(string: "/certification/movie/list")!
 
-        let url = CertificationsEndpoint.movie.url
+        let url = CertificationsEndpoint.movie.path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -14,7 +14,7 @@ final class CertificationsEndpointTests: XCTestCase {
     func testTVShowEndpointReturnsURL() {
         let expectedURL = URL(string: "/certification/tv/list")!
 
-        let url = CertificationsEndpoint.tvShow.url
+        let url = CertificationsEndpoint.tvShow.path
 
         XCTAssertEqual(url, expectedURL)
     }

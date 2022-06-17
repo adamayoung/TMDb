@@ -1,0 +1,22 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "id": 1,
+            "title": "Fight Club",
+            "media_type": "movie"
+        },
+        {
+            "id": 2,
+            "name": "The Mrs Bradley Mysteries",
+            "media_type": "tv"
+        },
+        {
+            "id": 51329,
+            "name": "Bradley Cooper",
+            "media_type": "person"
+        }
+    ],
+    "total_results": 3,
+    "total_pages": 1
+}

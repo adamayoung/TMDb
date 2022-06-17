@@ -4,36 +4,14 @@ import XCTest
 final class MoviePageableListTests: XCTestCase {
 
     func testDecodeReturnsMoviePageableList() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(MoviePageableList.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase
+            .decode(MoviePageableList.self, fromResource: "movie-pageable-list")
 
         XCTAssertEqual(result.page, list.page)
         XCTAssertEqual(result.results, list.results)
         XCTAssertEqual(result.totalResults, list.totalResults)
         XCTAssertEqual(result.totalPages, list.totalPages)
     }
-
-    private let json = """
-    {
-        "page": 1,
-        "results": [
-            {
-                "id": 1,
-                "title": "Movie 1"
-            },
-            {
-                "id": 2,
-                "title": "Movie 2"
-            },
-            {
-                "id": 3,
-                "title": "Movie 3"
-            }
-        ],
-        "total_pages": 1,
-        "total_results": 3
-    }
-    """
 
     private let list = MoviePageableList(
         page: 1,

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV show season.
-public struct TVShowSeason: Identifiable, Decodable, Equatable, Hashable, PosterURLProviding {
+public struct TVShowSeason: Identifiable, Decodable, Equatable, Hashable {
 
     /// TV show season identifier.
     public let id: Int

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A production company.
-public struct ProductionCompany: Identifiable, Decodable, Equatable, Hashable, LogoURLProviding {
+public struct ProductionCompany: Identifiable, Decodable, Equatable, Hashable {
 
     /// Production company identifier.
     public let id: Int

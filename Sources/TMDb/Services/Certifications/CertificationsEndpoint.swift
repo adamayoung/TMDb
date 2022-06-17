@@ -11,7 +11,7 @@ enum CertificationsEndpoint {
 
 extension CertificationsEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .movie:
             return Self.basePath

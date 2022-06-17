@@ -15,7 +15,7 @@ enum PeopleEndpoint {
 
 extension PeopleEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .details(let personID):
             return Self.basePath

@@ -25,7 +25,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().path)
     }
 
     func testMoviesReturnsMovies() async throws {
@@ -35,7 +35,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies().path)
     }
 
     func testMoviesWithSortByReturnsMovies() async throws {
@@ -46,7 +46,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortedBy: sortBy).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortedBy: sortBy).path)
     }
 
     func testMoviesWithWithPeopleReturnsMovies() async throws {
@@ -57,7 +57,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(people: people).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(people: people).path)
     }
 
     func testMoviesWithWithPageReturnsMovies() async throws {
@@ -68,7 +68,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(page: page).path)
     }
 
     func testMoviesWithSortByAndWithPeopleAndPageReturnsMovies() async throws {
@@ -81,7 +81,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: sortBy, withPeople: people, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).path)
     }
 
     func testTVShowsWithDefaultParametersReturnsTVShows() async throws {
@@ -91,7 +91,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.tvShows()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().path)
     }
 
     func testTVShowsReturnsTVShows() async throws {
@@ -101,7 +101,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.tvShows(sortedBy: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().path)
     }
 
     func testTVShowsWithSortByReturnsTVShows() async throws {
@@ -112,7 +112,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.tvShows(sortedBy: sortBy, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy).path)
     }
 
     func testTVShowsWithPageReturnsTVShows() async throws {
@@ -123,7 +123,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.tvShows(sortedBy: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(page: page).path)
     }
 
     func testTVShowsWithSortByAndPageReturnsTVShows() async throws {
@@ -135,7 +135,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let result = try await service.tvShows(sortedBy: sortBy, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy, page: page).path)
     }
 
 }

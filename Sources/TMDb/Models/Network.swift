@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV network.
-public struct Network: Identifiable, Decodable, Equatable, Hashable, LogoURLProviding {
+public struct Network: Identifiable, Decodable, Equatable, Hashable {
 
     /// Network identifier.
     public let id: Int

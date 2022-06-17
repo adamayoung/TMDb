@@ -1,0 +1,19 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "id": 1
+        },
+        {
+            "id": 2
+        },
+        {
+            "id": 3
+        },
+        {
+            "id": 4
+        }
+    ],
+    "total_results": 4,
+    "total_pages": 1
+}

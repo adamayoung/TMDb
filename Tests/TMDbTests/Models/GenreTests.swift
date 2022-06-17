@@ -4,18 +4,11 @@ import XCTest
 final class GenreTests: XCTestCase {
 
     func testDecodeReturnsGenre() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(Genre.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(Genre.self, fromResource: "genre")
 
-        XCTAssertEqual(result, genre)
+        XCTAssertEqual(result.id, genre.id)
+        XCTAssertEqual(result.name, genre.name)
     }
-
-    private let json = """
-    {
-        "id": 28,
-        "name": "Action"
-    }
-    """
 
     private let genre = Genre(
         id: 28,

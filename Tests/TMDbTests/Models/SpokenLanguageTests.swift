@@ -4,25 +4,18 @@ import XCTest
 final class SpokenLanguageTests: XCTestCase {
 
     func testIDReturnsISO6391() {
-        XCTAssertEqual(spokenLanguage.id, spokenLanguage.iso6391)
+        XCTAssertEqual(spokenLanguage.id, spokenLanguage.languageCode)
     }
 
     func testDecodeReturnsSpokenLanguage() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(SpokenLanguage.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(SpokenLanguage.self, fromResource: "spoken-language")
 
-        XCTAssertEqual(result, spokenLanguage)
+        XCTAssertEqual(result.languageCode, spokenLanguage.languageCode)
+        XCTAssertEqual(result.name, spokenLanguage.name)
     }
-
-    private let json = """
-    {
-        "iso_639_1": "en",
-        "name": "English"
-    }
-    """
 
     private let spokenLanguage = SpokenLanguage(
-        iso6391: "en",
+        languageCode: "en",
         name: "English"
     )
 

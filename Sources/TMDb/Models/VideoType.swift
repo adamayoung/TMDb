@@ -17,5 +17,11 @@ public enum VideoType: String, Decodable, Equatable, Hashable {
     case behindTheScenes = "Behind the Scenes"
     /// Bloopers.
     case bloopers = "Bloopers"
+    /// Unknown.
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        self = try VideoType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+    }
 
 }

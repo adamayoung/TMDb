@@ -13,7 +13,7 @@ enum SearchEndpoint {
 
 extension SearchEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
 
         case .multi(let query, let page):

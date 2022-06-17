@@ -28,7 +28,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+                       TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber).path)
     }
 
     func testImagesReturnsImages() async throws {
@@ -41,7 +41,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+                       TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).path)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -54,7 +54,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).url)
+                       TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).path)
     }
 
 }

@@ -6,7 +6,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPersonDetailsEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/1")!
 
-        let url = PeopleEndpoint.details(personID: 1).url
+        let url = PeopleEndpoint.details(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -14,7 +14,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPersonCombinedCreditsEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/1/combined_credits")!
 
-        let url = PeopleEndpoint.combinedCredits(personID: 1).url
+        let url = PeopleEndpoint.combinedCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -22,7 +22,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPersonMovieCreditsEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/1/movie_credits")!
 
-        let url = PeopleEndpoint.movieCredits(personID: 1).url
+        let url = PeopleEndpoint.movieCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -30,7 +30,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPersonTVShowCreditsEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/1/tv_credits")!
 
-        let url = PeopleEndpoint.tvShowCredits(personID: 1).url
+        let url = PeopleEndpoint.tvShowCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -38,7 +38,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPersonImagesEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/1/images")!
 
-        let url = PeopleEndpoint.images(personID: 1).url
+        let url = PeopleEndpoint.images(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -46,7 +46,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPopularPeopleEndpointReturnsURL() {
         let expectedURL = URL(string: "/person/popular")!
 
-        let url = PeopleEndpoint.popular().url
+        let url = PeopleEndpoint.popular().path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -54,7 +54,7 @@ final class PeopleEndpointTests: XCTestCase {
     func testPopularPeopleEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/person/popular?page=1")!
 
-        let url = PeopleEndpoint.popular(page: 1).url
+        let url = PeopleEndpoint.popular(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }

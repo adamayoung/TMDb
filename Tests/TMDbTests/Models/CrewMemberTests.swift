@@ -4,23 +4,16 @@ import XCTest
 final class CrewMemberTests: XCTestCase {
 
     func testDecodeReturnsCrewMember() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(CrewMember.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(CrewMember.self, fromResource: "crew-member")
 
-        XCTAssertEqual(result, crewMember)
+        XCTAssertEqual(result.id, crewMember.id)
+        XCTAssertEqual(result.creditID, crewMember.creditID)
+        XCTAssertEqual(result.name, crewMember.name)
+        XCTAssertEqual(result.job, crewMember.job)
+        XCTAssertEqual(result.department, crewMember.department)
+        XCTAssertEqual(result.gender, crewMember.gender)
+        XCTAssertEqual(result.profilePath, crewMember.profilePath)
     }
-
-    private let json = """
-    {
-        "credit_id": "52fe4250c3a36847f8014a11",
-        "department": "Production",
-        "gender": 0,
-        "id": 1254,
-        "job": "Producer",
-        "name": "Art Linson",
-        "profile_path": "/dEtVivCXxQBtIzmJcUNupT1AB4H.jpg"
-    }
-    """
 
     private let crewMember = CrewMember(
         id: 1254,

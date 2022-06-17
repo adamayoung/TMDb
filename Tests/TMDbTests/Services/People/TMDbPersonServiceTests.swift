@@ -26,7 +26,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.details(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).path)
     }
 
     func testCombinedCreditsReturnsCombinedCredits() async throws {
@@ -38,7 +38,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.combinedCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).path)
     }
 
     func testMovieCreditsReturnsMovieCredits() async throws {
@@ -50,7 +50,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.movieCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).path)
     }
 
     func testTVShowCreditsReturnsTVShowCredits() async throws {
@@ -62,7 +62,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.tvShowCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).path)
     }
 
     func testImagesReturnsImageCollection() async throws {
@@ -73,7 +73,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.images(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).path)
     }
 
     func testKnownForReturnsShows() async throws {
@@ -99,7 +99,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.knownFor(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).path)
     }
 
     func testPopularWithDefaultParametersReturnsPeople() async throws {
@@ -109,7 +109,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.popular()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().path)
     }
 
     func testPopularReturnsPeople() async throws {
@@ -119,7 +119,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.popular(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().path)
     }
 
     func testPopularWithPageReturnsPeople() async throws {
@@ -130,7 +130,7 @@ final class TMDbPersonServiceTests: XCTestCase {
         let result = try await service.popular(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).path)
     }
 
 }
