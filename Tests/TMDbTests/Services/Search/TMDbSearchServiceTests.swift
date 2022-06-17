@@ -26,7 +26,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchAll(query: query)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).path)
     }
 
     func testSearchAllReturnsMedia() async throws {
@@ -37,7 +37,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchAll(query: query, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query).path)
     }
 
     func testSearchAllWithPageReturnsMedia() async throws {
@@ -50,7 +50,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchAll(query: query, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.multi(query: query, page: page).path)
     }
 
     func testSearchMoviesWithDefaultParametersReturnsMovies() async throws {
@@ -61,7 +61,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchMovies(query: query)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).path)
     }
 
     func testSearchMoviesReturnsMovies() async throws {
@@ -72,7 +72,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchMovies(query: query, year: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query).path)
     }
 
     func testSearchMoviesWithYearReturnsMovies() async throws {
@@ -84,7 +84,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchMovies(query: query, year: year, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year).path)
     }
 
     func testSearchMoviesWithPageReturnsMovies() async throws {
@@ -96,7 +96,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchMovies(query: query, year: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, page: page).path)
     }
 
     func testSearchMoviesWithYearAndPageReturnsMovies() async throws {
@@ -109,7 +109,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchMovies(query: query, year: year, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).path)
     }
 
     func testSearchTVShowsWithDefaultParametersReturnsTVShows() async throws {
@@ -120,7 +120,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).path)
     }
 
     func testSearchTVShowsReturnsTVShows() async throws {
@@ -131,7 +131,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).path)
     }
 
     func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() async throws {
@@ -143,7 +143,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).path)
     }
 
     func testSearchTVShowsWithPageReturnsTVShows() async throws {
@@ -155,7 +155,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).path)
     }
 
     func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() async throws {
@@ -168,7 +168,8 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).url)
+        XCTAssertEqual(apiClient.lastPath,
+                       SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).path)
     }
 
     func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {
@@ -179,7 +180,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchPeople(query: query)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).path)
     }
 
     func testSearchPeopleReturnsPeople() async throws {
@@ -190,7 +191,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchPeople(query: query, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query).path)
     }
 
     func testSearchPeopleWithPageReturnsPeople() async throws {
@@ -202,7 +203,7 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchPeople(query: query, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.people(query: query, page: page).path)
     }
 
 }

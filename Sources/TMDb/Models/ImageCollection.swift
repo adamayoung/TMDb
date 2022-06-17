@@ -7,6 +7,8 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
     public let id: Int
     /// Poster images.
     public let posters: [ImageMetadata]
+    /// Logo images.
+    public let logos: [ImageMetadata]
     /// Backdrop images.
     public let backdrops: [ImageMetadata]
 
@@ -16,9 +18,10 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
     ///    - id: Movie or TV show identifier for these images.
     ///    - posters: Poster images.
     ///    - backdrops: Backdrop images.
-    public init(id: Int, posters: [ImageMetadata], backdrops: [ImageMetadata]) {
+    public init(id: Int, posters: [ImageMetadata], logos: [ImageMetadata], backdrops: [ImageMetadata]) {
         self.id = id
         self.posters = posters
+        self.logos = logos
         self.backdrops = backdrops
     }
 

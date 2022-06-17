@@ -20,7 +20,7 @@ enum MoviesEndpoint {
 
 extension MoviesEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .details(let movieID):
             return Self.basePath

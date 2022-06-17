@@ -17,7 +17,7 @@ enum TVShowsEndpoint {
 
 extension TVShowsEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .details(let tvShowID):
             return Self.basePath

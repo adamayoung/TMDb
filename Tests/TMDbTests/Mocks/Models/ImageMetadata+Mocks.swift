@@ -7,7 +7,9 @@ extension ImageMetadata {
         .init(
             filePath: URL(string: "/\(String.randomString).jpg")!,
             width: Int.random(in: 10...100),
-            height: Int.random(in: 10...100)
+            height: Int.random(in: 10...100),
+            aspectRatio: 1.5,
+            languageCode: "en"
         )
     }
 

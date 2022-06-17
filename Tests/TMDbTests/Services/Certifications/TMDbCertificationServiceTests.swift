@@ -25,7 +25,7 @@ final class TMDbCertificationServiceTests: XCTestCase {
         let result = try await service.movieCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.url)
+        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.path)
     }
 
     func testTVShowCertificationsReturnsTVShowCertifications() async throws {
@@ -35,7 +35,7 @@ final class TMDbCertificationServiceTests: XCTestCase {
         let result = try await service.tvShowCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.url)
+        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvShow.path)
     }
 
 }

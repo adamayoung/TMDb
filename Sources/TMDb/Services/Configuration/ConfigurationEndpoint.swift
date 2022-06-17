@@ -10,7 +10,7 @@ enum ConfigurationEndpoint {
 
 extension ConfigurationEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .api:
             return Self.basePath

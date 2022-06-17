@@ -17,10 +17,21 @@ final class PersonTests: XCTestCase {
     }
 
     func testDecodeReturnsPerson() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(Person.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(Person.self, fromResource: "person")
 
-        XCTAssertEqual(result, person)
+        XCTAssertEqual(result.id, person.id)
+        XCTAssertEqual(result.name, person.name)
+        XCTAssertEqual(result.alsoKnownAs, person.alsoKnownAs)
+        XCTAssertEqual(result.knownForDepartment, person.knownForDepartment)
+        XCTAssertEqual(result.biography, person.biography)
+        XCTAssertEqual(result.birthday, person.birthday)
+        XCTAssertEqual(result.deathday, person.deathday)
+        XCTAssertEqual(result.gender, person.gender)
+        XCTAssertEqual(result.placeOfBirth, person.placeOfBirth)
+        XCTAssertEqual(result.profilePath, person.profilePath)
+        XCTAssertEqual(result.popularity, person.popularity)
+        XCTAssertEqual(result.imdbID, person.imdbID)
+        XCTAssertEqual(result.homepageURL, person.homepageURL)
     }
 
 }
@@ -28,32 +39,6 @@ final class PersonTests: XCTestCase {
 extension PersonTests {
 
     // swiftlint:disable line_length
-    private var json: String {
-        """
-        {
-            "birthday": "1963-12-18",
-            "known_for_department": "Acting",
-            "deathday": null,
-            "id": 287,
-            "name": "Brad Pitt",
-            "also_known_as": [
-                "Бред Питт",
-                "Бред Пітт",
-                "Buratto Pitto",
-                "Брэд Питт"
-            ],
-            "gender": 2,
-            "biography": "William Bradley 'Brad' Pitt (born December 18, 1963) is an American actor and film producer. Pitt has received two Academy Award nominations and four Golden Globe Award nominations, winning one. He has been described as one of the world's most attractive men, a label for which he has received substantial media attention. Pitt began his acting career with television guest appearances, including a role on the CBS prime-time soap opera Dallas in 1987. He later gained recognition as the cowboy hitchhiker who seduces Geena Davis's character in the 1991 road movie Thelma & Louise. Pitt's first leading roles in big-budget productions came with A River Runs Through It (1992) and Interview with the Vampire (1994). He was cast opposite Anthony Hopkins in the 1994 drama Legends of the Fall, which earned him his first Golden Globe nomination. In 1995 he gave critically acclaimed performances in the crime thriller Seven and the science fiction film 12 Monkeys, the latter securing him a Golden Globe Award for Best Supporting Actor and an Academy Award nomination.",
-            "popularity": 10.647,
-            "place_of_birth": "Shawnee, Oklahoma, USA",
-            "profile_path": "/kU3B75TyRiCgE270EyZnHjfivoq.jpg",
-            "adult": false,
-            "imdb_id": "nm0000093",
-            "homepage": null
-        }
-        """
-    }
-
     private var person: Person {
         .init(
             id: 287,

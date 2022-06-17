@@ -4,24 +4,17 @@ import XCTest
 final class CastMemberTests: XCTestCase {
 
     func testDecodeReturnsCastMember() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(CastMember.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(CastMember.self, fromResource: "cast-member")
 
-        XCTAssertEqual(result, castMember)
+        XCTAssertEqual(result.id, castMember.id)
+        XCTAssertEqual(result.castID, castMember.castID)
+        XCTAssertEqual(result.creditID, castMember.creditID)
+        XCTAssertEqual(result.name, castMember.name)
+        XCTAssertEqual(result.character, castMember.character)
+        XCTAssertEqual(result.gender, castMember.gender)
+        XCTAssertEqual(result.profilePath, castMember.profilePath)
+        XCTAssertEqual(result.order, castMember.order)
     }
-
-    private let json = """
-    {
-      "cast_id": 4,
-      "character": "The Narrator",
-      "credit_id": "52fe4250c3a36847f80149f3",
-      "gender": 2,
-      "id": 819,
-      "name": "Edward Norton",
-      "order": 0,
-      "profile_path": "/eIkFHNlfretLS1spAcIoihKUS62.jpg"
-    }
-    """
 
     private let castMember = CastMember(
         id: 819,

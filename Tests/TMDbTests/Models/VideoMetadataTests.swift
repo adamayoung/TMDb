@@ -4,24 +4,15 @@ import XCTest
 final class VideoMetadataTests: XCTestCase {
 
     func testDecodeReturnsVideoCollection() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(VideoMetadata.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(VideoMetadata.self, fromResource: "video-metadata")
 
-        XCTAssertEqual(result, videoMetadata)
+        XCTAssertEqual(result.id, videoMetadata.id)
+        XCTAssertEqual(result.name, videoMetadata.name)
+        XCTAssertEqual(result.site, videoMetadata.site)
+        XCTAssertEqual(result.key, videoMetadata.key)
+        XCTAssertEqual(result.type, videoMetadata.type)
+        XCTAssertEqual(result.size, videoMetadata.size)
     }
-
-    private let json = """
-    {
-        "id": "533ec654c3a36854480003eb",
-        "iso_639_1": "en",
-        "iso_3166_1": "US",
-        "key": "SUXWAEX2jlg",
-        "name": "Trailer 1",
-        "site": "YouTube",
-        "size": 720,
-        "type": "Trailer"
-    }
-    """
 
     private let videoMetadata = VideoMetadata(
         id: "533ec654c3a36854480003eb",

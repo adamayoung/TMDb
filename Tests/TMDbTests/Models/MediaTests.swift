@@ -16,31 +16,10 @@ final class MediaTests: XCTestCase {
     }
 
     func testDecodeReturnsMedias() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode([Media].self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode([Media].self, fromResource: "media")
 
         XCTAssertEqual(result, medias)
     }
-
-    private let json = """
-    [
-        {
-            "id": 1,
-            "title": "Fight Club",
-            "media_type": "movie"
-        },
-        {
-            "id": 2,
-            "name": "The Mrs Bradley Mysteries",
-            "media_type": "tv"
-        },
-        {
-            "id": 51329,
-            "name": "Bradley Cooper",
-            "media_type": "person"
-        }
-    ]
-    """
 
     private let medias: [Media] = [
         .movie(Movie(id: 1, title: "Fight Club")),

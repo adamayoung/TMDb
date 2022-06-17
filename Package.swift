@@ -14,7 +14,15 @@ let package = Package(
     ],
 
     targets: [
-        .target(name: "TMDb"),
-        .testTarget(name: "TMDbTests", dependencies: ["TMDb"])
+        .target(
+            name: "TMDb"
+        ),
+        .testTarget(
+            name: "TMDbTests",
+            dependencies: ["TMDb"],
+            resources: [
+                .process("Resources")
+            ]
+        )
     ]
 )

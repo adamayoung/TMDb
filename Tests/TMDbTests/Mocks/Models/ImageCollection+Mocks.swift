@@ -7,6 +7,7 @@ extension ImageCollection {
         .init(
             id: .randomID,
             posters: ImageMetadata.mocks,
+            logos: ImageMetadata.mocks,
             backdrops: ImageMetadata.mocks
         )
     }

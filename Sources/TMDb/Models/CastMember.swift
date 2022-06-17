@@ -1,7 +1,7 @@
 import Foundation
 
 /// A cast member of a movie or TV show.
-public struct CastMember: Identifiable, Decodable, Equatable, Hashable, ProfileURLProviding {
+public struct CastMember: Identifiable, Decodable, Equatable, Hashable {
 
     /// Cast member's identifier.
     public let id: Int

@@ -26,7 +26,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.details(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.details(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.details(tvShowID: tvShowID).path)
     }
 
     func testCreditsReturnsShowsCredits() async throws {
@@ -37,7 +37,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.credits(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.credits(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.credits(tvShowID: tvShowID).path)
     }
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
@@ -48,7 +48,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.reviews(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).path)
     }
 
     func testReviewsReturnsReviews() async throws {
@@ -59,7 +59,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.reviews(forTVShow: tvShowID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID).path)
     }
 
     func testReviewsWithPageReturnsReviews() async throws {
@@ -71,7 +71,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.reviews(forTVShow: tvShowID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page).path)
     }
 
     func testImagesReturnsImages() async throws {
@@ -82,7 +82,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.images(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.images(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.images(tvShowID: tvShowID).path)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -93,7 +93,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.videos(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).path)
     }
 
     func testRecommendationsWithDefaultParametersReturnsTVShows() async throws {
@@ -104,7 +104,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.recommendations(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).path)
     }
 
     func testRecommendationsReturnsTVShows() async throws {
@@ -115,7 +115,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.recommendations(forTVShow: tvShowID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID).path)
     }
 
     func testRecommendationsWithPageReturnsTVShows() async throws {
@@ -127,7 +127,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.recommendations(forTVShow: tvShowID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page).path)
     }
 
     func testSimilarWithDefaultParametersReturnsTVShows() async throws {
@@ -138,7 +138,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.similar(toTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).path)
     }
 
     func testSimilarReturnsTVShows() async throws {
@@ -149,7 +149,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.similar(toTVShow: tvShowID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID).path)
     }
 
     func testSimilarWithPageReturnsTVShows() async throws {
@@ -161,7 +161,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.similar(toTVShow: tvShowID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.similar(tvShowID: tvShowID, page: page).path)
     }
 
     func testPopularWithDefaultParametersReturnsTVShows() async throws {
@@ -171,7 +171,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.popular()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().path)
     }
 
     func testPopularReturnsTVShows() async throws {
@@ -181,7 +181,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.popular(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular().path)
     }
 
     func testPopularWithPageReturnsTVShows() async throws {
@@ -192,7 +192,7 @@ final class TMDbTVShowServiceTests: XCTestCase {
         let result = try await service.popular(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.popular(page: page).path)
     }
 
 }

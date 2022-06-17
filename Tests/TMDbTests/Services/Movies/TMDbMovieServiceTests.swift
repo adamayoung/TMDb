@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
+final class TMDbMovieServiceTests: XCTestCase {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
@@ -26,7 +26,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.details(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.details(movieID: movieID).path)
     }
 
     func testCreditsReturnsCredits() async throws {
@@ -37,7 +37,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.credits(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.credits(movieID: movieID).path)
     }
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
@@ -48,7 +48,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.reviews(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).path)
     }
 
     func testReviewsReturnsReviews() async throws {
@@ -59,7 +59,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.reviews(forMovie: movieID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID).path)
     }
 
     func testReviewsWithPageReturnsReviews() async throws {
@@ -71,7 +71,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.reviews(forMovie: movieID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.reviews(movieID: movieID, page: page).path)
     }
 
     func testImagesReturnsImageCollection() async throws {
@@ -82,7 +82,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.images(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).path)
     }
 
     func testVideosReturnsVideoCollection() async throws {
@@ -93,7 +93,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.videos(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).path)
     }
 
     func testRecommendationsWithDefaultParametersReturnsMovies() async throws {
@@ -104,7 +104,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.recommendations(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).path)
     }
 
     func testRecommendationsReturnsMovies() async throws {
@@ -115,7 +115,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.recommendations(forMovie: movieID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID).path)
     }
 
     func testRecommendationsWithPageReturnsMovies() async throws {
@@ -127,7 +127,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.recommendations(forMovie: movieID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.recommendations(movieID: movieID, page: page).path)
     }
 
     func testSimilarWithDefaultParametersReturnsMovies() async throws {
@@ -138,7 +138,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.similar(toMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).path)
     }
 
     func testSimilarReturnsMovies() async throws {
@@ -149,7 +149,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.similar(toMovie: movieID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID).path)
     }
 
     func testSimilarWithPageReturnsMovies() async throws {
@@ -161,7 +161,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.similar(toMovie: movieID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.similar(movieID: movieID, page: page).path)
     }
 
     func testNowPlayingWithDefaultParametersReturnsMovies() async throws {
@@ -171,7 +171,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.nowPlaying()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().path)
     }
 
     func testNowPlayingReturnsMovies() async throws {
@@ -181,7 +181,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.nowPlaying(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying().path)
     }
 
     func testNowPlayingWithPageReturnsMovies() async throws {
@@ -192,7 +192,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.nowPlaying(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.nowPlaying(page: page).path)
     }
 
     func testPopularWithDefaultParametersReturnsMovies() async throws {
@@ -202,7 +202,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.popular()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().path)
     }
 
     func testPopularReturnsMovies() async throws {
@@ -212,7 +212,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.popular(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular().path)
     }
 
     func testPopularWithPageReturnsMovies() async throws {
@@ -223,7 +223,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.popular(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.popular(page: page).path)
     }
 
     func testTopRatedWithDefaultParametersReturnsMovies() async throws {
@@ -233,7 +233,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.topRated()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().path)
     }
 
     func testTopRatedReturnsMovies() async throws {
@@ -243,7 +243,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.topRated(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated().path)
     }
 
     func testTopRatedWithPageReturnsMovies() async throws {
@@ -254,7 +254,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.topRated(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.topRated(page: page).path)
     }
 
     func testUpcomingWithDefaultParametersReturnsMovies() async throws {
@@ -264,7 +264,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.upcoming()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().path)
     }
 
     func testUpcomingReturnsMovies() async throws {
@@ -274,7 +274,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.upcoming(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming().path)
     }
 
     func testUpcomingWithPageReturnsMovies() async throws {
@@ -285,7 +285,7 @@ final class TMDbMovieServiceAsyncAwaitTests: XCTestCase {
         let result = try await service.upcoming(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming(page: page).url)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming(page: page).path)
     }
 
 }

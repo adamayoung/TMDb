@@ -4,20 +4,13 @@ import XCTest
 final class NetworkTests: XCTestCase {
 
     func testDecodeReturnsNetwork() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(Network.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(Network.self, fromResource: "network")
 
-        XCTAssertEqual(result, network)
+        XCTAssertEqual(result.id, network.id)
+        XCTAssertEqual(result.name, network.name)
+        XCTAssertEqual(result.logoPath, network.logoPath)
+        XCTAssertEqual(result.originCountry, network.originCountry)
     }
-
-    private let json = """
-    {
-        "name": "HBO",
-        "id": 49,
-        "logo_path": "/tuomPhY2UtuPTqqFnKMVHvSb724.png",
-        "origin_country": "US"
-    }
-    """
 
     private let network = Network(
         id: 49,

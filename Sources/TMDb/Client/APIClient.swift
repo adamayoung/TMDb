@@ -1,9 +1,5 @@
 import Foundation
 
-#if canImport(Combine)
-import Combine
-#endif
-
 protocol APIClient {
 
     static func setAPIKey(_ apiKey: String)
@@ -19,7 +15,7 @@ extension APIClient {
     }
 
     func get<Response: Decodable>(endpoint: Endpoint, httpHeaders: [String: String]? = nil) async throws -> Response {
-        try await get(path: endpoint.url, httpHeaders: httpHeaders)
+        try await get(path: endpoint.path, httpHeaders: httpHeaders)
     }
 
 }

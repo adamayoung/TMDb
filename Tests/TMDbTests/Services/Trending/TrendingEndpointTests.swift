@@ -6,7 +6,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/day")!
 
-        let url = TrendingEndpoint.movies().url
+        let url = TrendingEndpoint.movies().path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -14,7 +14,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/day?page=1")!
 
-        let url = TrendingEndpoint.movies(page: 1).url
+        let url = TrendingEndpoint.movies(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -22,7 +22,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointWithTimeWindowDayReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/day")!
 
-        let url = TrendingEndpoint.movies(timeWindow: .day).url
+        let url = TrendingEndpoint.movies(timeWindow: .day).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -30,7 +30,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointWithTimeWindowDayAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/day?page=1")!
 
-        let url = TrendingEndpoint.movies(timeWindow: .day, page: 1).url
+        let url = TrendingEndpoint.movies(timeWindow: .day, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -38,7 +38,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointWithTimeWindowWeekReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/week")!
 
-        let url = TrendingEndpoint.movies(timeWindow: .week).url
+        let url = TrendingEndpoint.movies(timeWindow: .week).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -46,7 +46,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingMoviesEndpointWithTimeWindowWeekAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/movie/week?page=1")!
 
-        let url = TrendingEndpoint.movies(timeWindow: .week, page: 1).url
+        let url = TrendingEndpoint.movies(timeWindow: .week, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -54,7 +54,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/day")!
 
-        let url = TrendingEndpoint.tvShows().url
+        let url = TrendingEndpoint.tvShows().path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -62,7 +62,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/day?page=1")!
 
-        let url = TrendingEndpoint.tvShows(page: 1).url
+        let url = TrendingEndpoint.tvShows(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -70,7 +70,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointWithTimeWindowDayReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/day")!
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .day).url
+        let url = TrendingEndpoint.tvShows(timeWindow: .day).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -78,7 +78,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointWithTimeWindowDayAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/day?page=1")!
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .day, page: 1).url
+        let url = TrendingEndpoint.tvShows(timeWindow: .day, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -86,7 +86,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointWithTimeWindowWeekReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/week")!
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .week).url
+        let url = TrendingEndpoint.tvShows(timeWindow: .week).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -94,7 +94,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingTVShowsEndpointWithTimeWindowWeekAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/tv/week?page=1")!
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .week, page: 1).url
+        let url = TrendingEndpoint.tvShows(timeWindow: .week, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -102,7 +102,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointReturnsURL() {
         let expectedURL = URL(string: "/trending/person/day")!
 
-        let url = TrendingEndpoint.people().url
+        let url = TrendingEndpoint.people().path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -110,7 +110,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointWithPageReturnsURL() {
         let expectedURL = URL(string: "/trending/person/day?page=1")!
 
-        let url = TrendingEndpoint.people(page: 1).url
+        let url = TrendingEndpoint.people(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -118,7 +118,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointWithTimeWindowDayReturnsURL() {
         let expectedURL = URL(string: "/trending/person/day")!
 
-        let url = TrendingEndpoint.people(timeWindow: .day).url
+        let url = TrendingEndpoint.people(timeWindow: .day).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -126,7 +126,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointWithTimeWindowDayAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/person/day?page=1")!
 
-        let url = TrendingEndpoint.people(timeWindow: .day, page: 1).url
+        let url = TrendingEndpoint.people(timeWindow: .day, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -134,7 +134,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointWithTimeWindowWeekReturnsURL() {
         let expectedURL = URL(string: "/trending/person/week")!
 
-        let url = TrendingEndpoint.people(timeWindow: .week).url
+        let url = TrendingEndpoint.people(timeWindow: .week).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -142,7 +142,7 @@ final class TrendingEndpointTests: XCTestCase {
     func testTrendingPeopleEndpointWithTimeWindowWeekAndPageReturnsURL() {
         let expectedURL = URL(string: "/trending/person/week?page=1")!
 
-        let url = TrendingEndpoint.people(timeWindow: .week, page: 1).url
+        let url = TrendingEndpoint.people(timeWindow: .week, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }

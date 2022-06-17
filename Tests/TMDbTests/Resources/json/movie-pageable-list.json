@@ -1,0 +1,19 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "id": 1,
+            "title": "Movie 1"
+        },
+        {
+            "id": 2,
+            "title": "Movie 2"
+        },
+        {
+            "id": 3,
+            "title": "Movie 3"
+        }
+    ],
+    "total_pages": 1,
+    "total_results": 3
+}

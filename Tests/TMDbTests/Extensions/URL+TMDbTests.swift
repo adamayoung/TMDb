@@ -11,12 +11,4 @@ final class URLTMDbTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testTMDbImageBaseURLRetunsCorrectURL() {
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p")!
-
-        let result = URL.tmdbImageBaseURL
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
 }

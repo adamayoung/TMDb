@@ -4,20 +4,14 @@ import XCTest
 final class ProductionCompanyTests: XCTestCase {
 
     func testDecodeReturnsProductionCompany() throws {
-        let data = json.data(using: .utf8)!
-        let result = try JSONDecoder.theMovieDatabase.decode(ProductionCompany.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase
+            .decode(ProductionCompany.self, fromResource: "production-company")
 
-        XCTAssertEqual(result, productionCompany)
+        XCTAssertEqual(result.id, productionCompany.id)
+        XCTAssertEqual(result.name, productionCompany.name)
+        XCTAssertEqual(result.originCountry, productionCompany.originCountry)
+        XCTAssertEqual(result.logoPath, productionCompany.logoPath)
     }
-
-    private let json = """
-    {
-        "id": 25,
-        "logo_path": "/qZCc1lty5FzX30aOCVRBLzaVmcp.png",
-        "name": "20th Century Fox",
-        "origin_country": "US"
-    }
-    """
 
     private let productionCompany = ProductionCompany(
         id: 25,

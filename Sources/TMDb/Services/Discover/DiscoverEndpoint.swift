@@ -11,7 +11,7 @@ enum DiscoverEndpoint {
 
 extension DiscoverEndpoint: Endpoint {
 
-    var url: URL {
+    var path: URL {
         switch self {
         case .movies(let sortedBy, let people, let page):
             return Self.basePath
