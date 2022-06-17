@@ -22,7 +22,7 @@ import PackageDescription
 let package = Package(
   name: "MyPackage",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "7.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "8.0.0")
   ],
   targets: [
     .target(name: "MyPackage", dependencies: ["TMDb"])
