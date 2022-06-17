@@ -168,7 +168,8 @@ final class TMDbSearchServiceTests: XCTestCase {
         let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).path)
+        XCTAssertEqual(apiClient.lastPath,
+                       SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).path)
     }
 
     func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {

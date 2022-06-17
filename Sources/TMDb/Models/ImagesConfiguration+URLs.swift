@@ -84,7 +84,7 @@ extension ImagesConfiguration {
                 continue
             }
 
-            if parsedSize >= width  {
+            if parsedSize >= width {
                 return size
             }
         }

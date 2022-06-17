@@ -309,5 +309,5 @@ final class ImagesConfigurationURLsTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
     }
-    
+
 }
