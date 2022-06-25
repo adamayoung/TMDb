@@ -26,7 +26,7 @@ extension URL {
         guard let languageCode = locale.languageCode else {
             return self
         }
-        
+
         return appendingQueryItem(name: "language", value: languageCode)
     }
 
