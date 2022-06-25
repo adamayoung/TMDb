@@ -24,7 +24,7 @@ extension URL {
 
     func appendingLanguage(locale: Locale = .current) -> Self {
         if let languageCode = locale.languageCode {
-            return languageCode
+            return appendingLanguage(languageCode)
         } else {
             return self
         }
