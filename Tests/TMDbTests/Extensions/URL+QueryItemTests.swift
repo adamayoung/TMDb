@@ -79,15 +79,6 @@ final class URLQueryItemTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testAppendingLanguageReturnsURL() {
-        let language = "en"
-        let expectedResult = URL(string: "/some/path?language=en")!
-
-        let result = URL(string: "/some/path")!.appendingLanguage(language)
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
     func testAppendingPageWhenNoQueryItemsAndPageIsNilReturnsURL() {
         let expectedResult = URL(string: "/some/path")!
 
