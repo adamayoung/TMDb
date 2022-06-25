@@ -31,7 +31,11 @@ extension URL {
     }
 
     func appendingLanguage(_ language: String) -> Self {
-        return appendingQueryItem(name: "language", value: language)
+        guard let languageCode = locale.languageCode else {
+            return self
+        }
+        
+        return appendingQueryItem(name: "language", value: languageCode)
     }
 
     func appendingPage(_ page: Int?) -> Self {
