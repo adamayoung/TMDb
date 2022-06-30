@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Cache SPM
         uses: actions/cache@v2
@@ -46,10 +48,10 @@ jobs:
       - name: Test
         run: swift test --skip-build --parallel --enable-code-coverage
 
-      - name: Generate Code Coverage report
+      - name: Prepare Code Coverage report
         run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
-      - name: Upload to codecov
+      - name: Upload to Codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash)
