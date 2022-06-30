@@ -1,6 +1,6 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/adamayoung/TMDb/branch/main/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
