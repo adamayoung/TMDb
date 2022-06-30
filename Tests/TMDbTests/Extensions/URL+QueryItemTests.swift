@@ -45,7 +45,7 @@ final class URLQueryItemTests: XCTestCase {
 
     func testAppendingLanguageWithLocaleReturnsURL() {
         let locale = Locale(identifier: "en_GB")
-        let expectedResult = URL(string: "/some/path?language=en-GB")!
+        let expectedResult = URL(string: "/some/path?language=en")!
 
         let result = URL(string: "/some/path")!.appendingLanguage(locale: locale)
 
@@ -72,18 +72,9 @@ final class URLQueryItemTests: XCTestCase {
 
     func testAppendingLanguageWithLocaleWhenContainsQueryItemsReturnsURL() {
         let locale = Locale(identifier: "en_GB")
-        let expectedResult = URL(string: "/some/path?a=b&language=en-GB")!
+        let expectedResult = URL(string: "/some/path?a=b&language=en")!
 
         let result = URL(string: "/some/path?a=b")!.appendingLanguage(locale: locale)
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
-    func testAppendingLanguageReturnsURL() {
-        let language = "en-GB"
-        let expectedResult = URL(string: "/some/path?language=en-GB")!
-
-        let result = URL(string: "/some/path")!.appendingLanguage(language)
 
         XCTAssertEqual(result, expectedResult)
     }

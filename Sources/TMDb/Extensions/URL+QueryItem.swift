@@ -23,24 +23,11 @@ extension URL {
     }
 
     func appendingLanguage(locale: Locale = .current) -> Self {
-        var parts = [String]()
-        if let languageCode = locale.languageCode {
-            parts.append(languageCode)
-
-            if let regionCode = locale.regionCode {
-                parts.append(regionCode)
-            }
-        }
-
-        guard !parts.isEmpty else {
+        guard let languageCode = locale.languageCode else {
             return self
         }
 
-        return appendingLanguage(parts.joined(separator: "-"))
-    }
-
-    func appendingLanguage(_ language: String) -> Self {
-        return appendingQueryItem(name: "language", value: language)
+        return appendingQueryItem(name: "language", value: languageCode)
     }
 
     func appendingPage(_ page: Int?) -> Self {
