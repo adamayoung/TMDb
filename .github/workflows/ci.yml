@@ -41,7 +41,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build
-        run: swift build --build-tests
+        run: swift build --build-tests --enable-code-coverage
 
       - name: Test
         run: swift test --skip-build --parallel --enable-code-coverage
