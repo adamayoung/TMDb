@@ -5,7 +5,7 @@ final actor TMDbConfigurationService: ConfigurationService {
     private let apiClient: APIClient
     private var configurationTask: Task<APIConfiguration, Error>?
 
-    init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient) {
         self.apiClient = apiClient
     }
 

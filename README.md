@@ -22,7 +22,7 @@ import PackageDescription
 let package = Package(
   name: "MyPackage",
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "8.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", upToNextMajor: "9.0.0")
   ],
   targets: [
     .target(name: "MyPackage", dependencies: ["TMDb"])
@@ -34,14 +34,14 @@ let package = Package(
 
 ### Get an API Key
 
-Create an API Key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
+Create an API key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
-### Set your API Key
+### Create an instance
 
-Set your API key before making any calls
+Create an instance of TMDb with your API key.
 
 ```swift
-TMDbAPI.setAPIKey("<tmdb-api-key>")
+let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
 ```
 
 ## API Areas
@@ -89,33 +89,27 @@ Get information about TV show seasons.
 First, set your TMDb API key.
 
 ```swift
-TMDbAPI.setAPIKey("<tmdb-api-key>")
+let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
 ```
 
 ### Discover Movies
 
 ```swift
-let discoverService = TMDbAPI.shared.discover
-
-let movieList = try await discoverService.movies()
+let movieList = try await tmdb.discover.movies()
 let movies = movieList.results
 ```
 
 ### Trending TV Shows this week, 2nd page
 
 ```swift
-let trendingService = TMDbAPI.shared.trending
-
-let tvShowList = try await trendingService.tvShows(inTimeWindow: .week, page: 2)
+let tvShowList = try await tmdb.trending.tvShows(inTimeWindow: .week, page: 2)
 let tvShows = list.results
 ```
 
 ### Popular People
 
 ```swift
-let personService = TMDbAPI.shared.person
-
-let personList = try await personService.popular()
+let personList = try await tmdb.person.popular()
 let people = personList.results
 ```
 

@@ -2,8 +2,6 @@ import Foundation
 
 protocol APIClient {
 
-    static func setAPIKey(_ apiKey: String)
-
     func get<Response: Decodable>(path: URL) async throws -> Response
 
 }
