@@ -19,4 +19,21 @@ final class GenderTests: XCTestCase {
         XCTAssertEqual(Gender.other.rawValue, 3)
     }
 
+    func testDecodeWhenInvalidValueReturnsUnknown() throws {
+        let data = "{\"gender\": 9}".data(using: .utf8)!
+        let decoder = JSONDecoder()
+
+        let result = try decoder.decode(MockObject.self, from: data).gender
+
+        XCTAssertEqual(result, .unknown)
+    }
+
+}
+
+extension GenderTests {
+
+    private struct MockObject: Decodable {
+        let gender: Gender
+    }
+
 }

@@ -19,4 +19,21 @@ final class VideoSizeTests: XCTestCase {
         XCTAssertEqual(VideoSize.s1080.rawValue, 1080)
     }
 
+    func testDecodeWhenInvalidValueReturnsUnknown() throws {
+        let data = "{\"videoSize\": 999}".data(using: .utf8)!
+        let decoder = JSONDecoder()
+
+        let result = try decoder.decode(MockObject.self, from: data).videoSize
+
+        XCTAssertEqual(result, .unknown)
+    }
+
+}
+
+extension VideoSizeTests {
+
+    private struct MockObject: Decodable {
+        let videoSize: VideoSize
+    }
+
 }

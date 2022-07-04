@@ -1,25 +1,17 @@
 import Foundation
 
-final class TMDbAPIClient: APIClient {
+final actor TMDbAPIClient: APIClient {
 
+    private let apiKey: String
+    private let baseURL: URL
     private let urlSession: URLSession
-    private let jsonDecoder: JSONDecoder
+    private let serialiser: Serialiser
 
-    private(set) var apiKey: String = ""
-
-    static let shared = TMDbAPIClient()
-
-    public static func setAPIKey(_ apiKey: String) {
-        shared.setAPIKey(apiKey)
-    }
-
-    init(urlSession: URLSession = URLSession(configuration: .default), jsonDecoder: JSONDecoder = .theMovieDatabase) {
-        self.urlSession = urlSession
-        self.jsonDecoder = jsonDecoder
-    }
-
-    func setAPIKey(_ apiKey: String) {
+    init(apiKey: String, baseURL: URL, urlSession: URLSession, serialiser: Serialiser) {
         self.apiKey = apiKey
+        self.baseURL = baseURL
+        self.urlSession = urlSession
+        self.serialiser = serialiser
     }
 
     func get<Response: Decodable>(path: URL) async throws -> Response {
@@ -34,18 +26,8 @@ final class TMDbAPIClient: APIClient {
             throw TMDbError.network(error)
         }
 
-        if let tmdbError = TMDbError(response: response) {
-            throw tmdbError
-        }
-
-        let decodedResponse: Response
-        do {
-            decodedResponse = try jsonDecoder.decode(Response.self, from: data)
-        } catch let error {
-            throw TMDbError.decode(error)
-        }
-
-        return decodedResponse
+        try validate(response: response)
+        return try await serialiser.decode(data)
     }
 
 }
@@ -64,13 +46,19 @@ extension TMDbAPIClient {
             return path
         }
 
-        urlComponents.scheme = URL.tmdbAPIBaseURL.scheme
-        urlComponents.host = URL.tmdbAPIBaseURL.host
-        urlComponents.path = URL.tmdbAPIBaseURL.path + "\(urlComponents.path)"
+        urlComponents.scheme = baseURL.scheme
+        urlComponents.host = baseURL.host
+        urlComponents.path = baseURL.path + "\(urlComponents.path)"
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)
             .appendingLanguage()
+    }
+
+    private func validate(response: URLResponse) throws {
+        if let tmdbError = TMDbError(response: response) {
+            throw tmdbError
+        }
     }
 
 }

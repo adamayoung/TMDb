@@ -8,9 +8,6 @@ import Foundation
 /// provide for you and your team to programmatically fetch and use their data and/or images.
 public final class TMDbAPI {
 
-    /// A shared instance of the TMDb API.
-    public static let shared = TMDbAPI()
-
     /// Certifications.
     public let certifications: CertificationService
     /// Configurations.
@@ -30,17 +27,28 @@ public final class TMDbAPI {
     /// TV Show Seasons.
     public let tvShowSeasons: TVShowSeasonService
 
-    init(
-        certificationService: CertificationService = TMDbCertificationService(),
-        configurationService: ConfigurationService = TMDbConfigurationService(),
-        discoverService: DiscoverService = TMDbDiscoverService(),
-        movieService: MovieService = TMDbMovieService(),
-        personService: PersonService = TMDbPersonService(),
-        searchService: SearchService = TMDbSearchService(),
-        trendingService: TrendingService = TMDbTrendingService(),
-        tvShowService: TVShowService = TMDbTVShowService(),
-        tvShowSeasonService: TVShowSeasonService = TMDbTVShowSeasonService()
-    ) {
+    public convenience init(apiKey: String) {
+        let apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: .tmdbAPIBaseURL,
+                                      urlSession: URLSession(configuration: .default),
+                                      serialiser: Serialiser(decoder: .theMovieDatabase))
+
+        self.init(
+            certificationService: TMDbCertificationService(apiClient: apiClient),
+            configurationService: TMDbConfigurationService(apiClient: apiClient),
+            discoverService: TMDbDiscoverService(apiClient: apiClient),
+            movieService: TMDbMovieService(apiClient: apiClient),
+            personService: TMDbPersonService(apiClient: apiClient),
+            searchService: TMDbSearchService(apiClient: apiClient),
+            trendingService: TMDbTrendingService(apiClient: apiClient),
+            tvShowService: TMDbTVShowService(apiClient: apiClient),
+            tvShowSeasonService: TMDbTVShowSeasonService(apiClient: apiClient)
+        )
+    }
+
+    init(certificationService: CertificationService, configurationService: ConfigurationService,
+         discoverService: DiscoverService, movieService: MovieService, personService: PersonService,
+         searchService: SearchService, trendingService: TrendingService, tvShowService: TVShowService,
+         tvShowSeasonService: TVShowSeasonService) {
         self.certifications = certificationService
         self.configurations = configurationService
         self.discover = discoverService
@@ -50,14 +58,6 @@ public final class TMDbAPI {
         self.trending = trendingService
         self.tvShows = tvShowService
         self.tvShowSeasons = tvShowSeasonService
-    }
-
-    /// Sets the API Key to be used with requests to the API.
-    ///
-    /// - Parameters
-    ///     - apiKey: The API Key.
-    public static func setAPIKey(_ apiKey: String) {
-        TMDbAPIClient.setAPIKey(apiKey)
     }
 
 }

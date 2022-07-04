@@ -54,12 +54,16 @@ final class TMDbAPITests: XCTestCase {
         super.tearDown()
     }
 
-    func testSetAPIKeySetsAPIKeyOnAPIClient() {
-        let expectedAPIKey = UUID().uuidString
-
-        TMDbAPI.setAPIKey(expectedAPIKey)
-
-        XCTAssertEqual(TMDbAPIClient.shared.apiKey, expectedAPIKey)
+    func testInit() {
+        XCTAssertIdentical(tmdb.certifications as? MockCertificationService, certificationService)
+        XCTAssertIdentical(tmdb.configurations as? MockConfigurationService, configurationService)
+        XCTAssertIdentical(tmdb.discover as? MockDiscoverService, discoverService)
+        XCTAssertIdentical(tmdb.movies as? MockMovieService, movieService)
+        XCTAssertIdentical(tmdb.people as? MockPersonService, personService)
+        XCTAssertIdentical(tmdb.search as? MockSearchService, searchService)
+        XCTAssertIdentical(tmdb.trending as? MockTrendingService, trendingService)
+        XCTAssertIdentical(tmdb.tvShows as? MockTVShowService, tvShowService)
+        XCTAssertIdentical(tmdb.tvShowSeasons as? MockTVShowSeasonService, tvShowSeasonService)
     }
 
 }

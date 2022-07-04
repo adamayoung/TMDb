@@ -4,7 +4,7 @@ final class TMDbTrendingService: TrendingService {
 
     private let apiClient: APIClient
 
-    init(apiClient: APIClient = TMDbAPIClient.shared) {
+    init(apiClient: APIClient) {
         self.apiClient = apiClient
     }
 

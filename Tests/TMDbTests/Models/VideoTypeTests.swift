@@ -31,4 +31,21 @@ final class VideoTypeTests: XCTestCase {
         XCTAssertEqual(VideoType.bloopers.rawValue, "Bloopers")
     }
 
+    func testDecodeWhenInvalidValueReturnsUnknown() throws {
+        let data = "{\"videoType\": \"some-value\"}".data(using: .utf8)!
+        let decoder = JSONDecoder()
+
+        let result = try decoder.decode(MockObject.self, from: data).videoType
+
+        XCTAssertEqual(result, .unknown)
+    }
+
+}
+
+extension VideoTypeTests {
+
+    private struct MockObject: Decodable {
+        let videoType: VideoType
+    }
+
 }
