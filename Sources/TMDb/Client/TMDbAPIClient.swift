@@ -22,8 +22,8 @@ final class TMDbAPIClient: APIClient {
         self.apiKey = apiKey
     }
 
-    func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
-        let urlRequest = buildURLRequest(for: path, httpHeaders: httpHeaders)
+    func get<Response: Decodable>(path: URL) async throws -> Response {
+        let urlRequest = buildURLRequest(for: path)
 
         let data: Data
         let response: URLResponse
@@ -52,15 +52,10 @@ final class TMDbAPIClient: APIClient {
 
 extension TMDbAPIClient {
 
-    private func buildURLRequest(for path: URL, httpHeaders: [String: String]?) -> URLRequest {
+    private func buildURLRequest(for path: URL) -> URLRequest {
         let url = urlFromPath(path)
         var urlRequest = URLRequest(url: url)
-
         urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
-        httpHeaders?.forEach { (key: String, value: String) in
-            urlRequest.addValue(value, forHTTPHeaderField: key)
-        }
-
         return urlRequest
     }
 

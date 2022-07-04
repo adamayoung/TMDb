@@ -1,6 +1,6 @@
 import Foundation
 
-/// Get the system wide configuration information.
+/// A service to fetch the TMDb system wide configuration information.
 public protocol ConfigurationService {
 
     /// Returns the TMDb API system wide configuration information. The result is cached, so there is no overhead in making multiple calls.
