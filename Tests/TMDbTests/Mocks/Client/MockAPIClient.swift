@@ -8,16 +8,14 @@ class MockAPIClient: APIClient {
     var result: Result<Any, TMDbError>?
     var requestTime: TimeInterval = 0
     private(set) var lastPath: URL?
-    private(set) var lastHTTPHeaders: [String: String]?
     private(set) var getCount = 0
 
     static func setAPIKey(_ apiKey: String) {
         Self.apiKey = apiKey
     }
 
-    func get<Response: Decodable>(path: URL, httpHeaders: [String: String]?) async throws -> Response {
+    func get<Response: Decodable>(path: URL) async throws -> Response {
         self.lastPath = path
-        self.lastHTTPHeaders = httpHeaders
         self.getCount += 1
 
         Thread.sleep(forTimeInterval: requestTime)
@@ -43,7 +41,6 @@ class MockAPIClient: APIClient {
     func reset() {
         result = nil
         lastPath = nil
-        lastHTTPHeaders = nil
         getCount = 0
     }
 
