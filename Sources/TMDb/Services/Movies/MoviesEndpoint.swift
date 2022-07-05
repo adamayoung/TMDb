@@ -2,8 +2,6 @@ import Foundation
 
 enum MoviesEndpoint {
 
-    static let basePath = URL(string: "/movie")!
-
     case details(movieID: Movie.ID)
     case credits(movieID: Movie.ID)
     case reviews(movieID: Movie.ID, page: Int? = nil)
@@ -19,6 +17,8 @@ enum MoviesEndpoint {
 }
 
 extension MoviesEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/movie")!
 
     var path: URL {
         switch self {

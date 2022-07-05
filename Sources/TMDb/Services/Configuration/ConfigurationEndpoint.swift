@@ -2,8 +2,6 @@ import Foundation
 
 enum ConfigurationEndpoint {
 
-    static let basePath = URL(string: "/configuration")!
-
     case api
     case countries
     case jobs
@@ -11,6 +9,8 @@ enum ConfigurationEndpoint {
 }
 
 extension ConfigurationEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/configuration")!
 
     var path: URL {
         switch self {

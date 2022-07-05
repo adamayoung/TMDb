@@ -10,8 +10,8 @@ extension CrewMember {
             id: id,
             creditID: .randomID,
             name: "Crew \(id)",
-            job: "Job \(String.randomID)",
-            department: "Department \(String.randomID))"
+            job: "Job \(String.randomString)",
+            department: "Department \(String.randomString))"
         )
     }
 

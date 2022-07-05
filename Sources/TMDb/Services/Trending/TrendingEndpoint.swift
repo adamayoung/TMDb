@@ -2,8 +2,6 @@ import Foundation
 
 enum TrendingEndpoint {
 
-    static let basePath = URL(string: "/trending")!
-
     case movies(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
     case tvShows(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
     case people(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
@@ -11,6 +9,8 @@ enum TrendingEndpoint {
 }
 
 extension TrendingEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/trending")!
 
     var path: URL {
         switch self {

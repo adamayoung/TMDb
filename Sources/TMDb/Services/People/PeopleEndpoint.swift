@@ -2,8 +2,6 @@ import Foundation
 
 enum PeopleEndpoint {
 
-    static let basePath = URL(string: "/person")!
-
     case details(personID: Person.ID)
     case combinedCredits(personID: Person.ID)
     case movieCredits(personID: Person.ID)
@@ -14,6 +12,8 @@ enum PeopleEndpoint {
 }
 
 extension PeopleEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/person")!
 
     var path: URL {
         switch self {
