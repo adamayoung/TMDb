@@ -53,12 +53,11 @@ jobs:
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
           coverageLocations: |
-            ${{ github.workspace }}/info.lcov:lcov
+            ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
 
-      # - name: Prepare Code Coverage report
-      #   run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
+      - name: Prepare Codecov code coverage report
+        run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
 
       - name: Upload coverage report to Codecov
         env:
