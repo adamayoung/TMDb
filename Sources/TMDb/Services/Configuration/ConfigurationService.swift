@@ -18,4 +18,11 @@ public protocol ConfigurationService {
     /// - Returns: Countries used throughout TMDb,
     func countries() async throws -> [Country]
 
+    /// Returns a list of the jobs and departments used on TMDb.
+    ///
+    /// [TMDb API - Configuration: Jobs](https://developers.themoviedb.org/3/configuration/get-jobs)
+    ///
+    /// - Returns: Jobs and departments used on TMDb.
+    func jobsByDepartment() async throws -> [Department]
+
 }

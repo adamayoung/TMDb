@@ -53,4 +53,14 @@ final class TMDbConfigurationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.countries.path)
     }
 
+    func testJobsByDepartmentReturnsDepartments() async throws {
+        let expectedResult = Department.mocks
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.jobsByDepartment()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.jobs.path)
+    }
+
 }
