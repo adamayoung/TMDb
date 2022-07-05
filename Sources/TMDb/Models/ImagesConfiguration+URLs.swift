@@ -11,8 +11,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a backdrop image.
     public func backdropURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
-        let sizePathComponent = Self.imageSizePathComponent(for: width, from: backdropSizes)
-        return imageURL(for: path, sizePathComponent: sizePathComponent)
+        imageURL(for: path, idealWidth: width, sizes: backdropSizes)
     }
 
     /// Generates the fully qualified URL for a logo image.
@@ -24,8 +23,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a logo image.
     public func logoURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
-        let sizePathComponent = Self.imageSizePathComponent(for: width, from: logoSizes)
-        return imageURL(for: path, sizePathComponent: sizePathComponent)
+        imageURL(for: path, idealWidth: width, sizes: logoSizes)
     }
 
     /// Generates the fully qualified URL for a poster image.
@@ -37,8 +35,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a poster image.
     public func posterURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
-        let sizePathComponent = Self.imageSizePathComponent(for: width, from: posterSizes)
-        return imageURL(for: path, sizePathComponent: sizePathComponent)
+        imageURL(for: path, idealWidth: width, sizes: posterSizes)
     }
 
     /// Generates the fully qualified URL for a profile image.
@@ -50,8 +47,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a profile image.
     public func profileURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
-        let sizePathComponent = Self.imageSizePathComponent(for: width, from: profileSizes)
-        return imageURL(for: path, sizePathComponent: sizePathComponent)
+        imageURL(for: path, idealWidth: width, sizes: profileSizes)
     }
 
     /// Generates the fully qualified URL for a still image.
@@ -63,8 +59,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a still image.
     public func stillURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
-        let sizePathComponent = Self.imageSizePathComponent(for: width, from: stillSizes)
-        return imageURL(for: path, sizePathComponent: sizePathComponent)
+        imageURL(for: path, idealWidth: width, sizes: stillSizes)
     }
 
 }
@@ -73,10 +68,12 @@ extension ImagesConfiguration {
 
     private static let defaultSizePathComponent = "original"
 
-    private func imageURL(for path: URL?, sizePathComponent: String) -> URL? {
+    private func imageURL(for path: URL?, idealWidth width: Int, sizes: [String]) -> URL? {
         guard let path = path else {
             return nil
         }
+
+        let sizePathComponent = Self.imageSizePathComponent(for: width, from: sizes)
 
         return secureBaseURL
             .appendingPathComponent(sizePathComponent)
@@ -84,17 +81,15 @@ extension ImagesConfiguration {
     }
 
     private static func imageSizePathComponent(for width: Int, from sizes: [String]) -> String {
-        for size in sizes {
+        let actualSize = sizes.first { size in
             guard let parsedSize = Int(size.replacingOccurrences(of: "w", with: "")) else {
-                continue
+                return false
             }
 
-            if parsedSize >= width {
-                return size
-            }
-        }
+            return parsedSize >= width
+        } ?? sizes.last
 
-        return sizes.last ?? Self.defaultSizePathComponent
+        return actualSize ?? Self.defaultSizePathComponent
     }
 
 }
