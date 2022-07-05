@@ -48,21 +48,22 @@ jobs:
       - name: Test
         run: swift test --skip-build --parallel --enable-code-coverage
 
-      - name: Prepare Code Coverage report
-        run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
-
-      - name: Upload coverage report to Codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: bash <(curl -s https://codecov.io/bash)
-
       - name: Upload coverage report to CodeClimate
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
+          coverageCommand: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
           coverageLocations: |
-            ${{github.workspace}}/lcov.info:lcov
+            ${{ github.workspace }}/lcov.info:lcov
+
+      # - name: Prepare Code Coverage report
+      #   run: xcrun llvm-cov export -format="lcov" .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests -instr-profile .build/debug/codecov/default.profdata Sources/ > info.lcov
+
+      - name: Upload coverage report to Codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
   
   documentation:
     name: Compile Documentation
