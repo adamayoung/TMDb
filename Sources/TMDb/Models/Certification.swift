@@ -3,6 +3,7 @@ import Foundation
 /// Officially supported certification.
 public struct Certification: Identifiable, Decodable, Equatable, Hashable {
 
+    /// Certification's identifier (same as `code`).
     public var id: String { code }
     /// Certification code.
     public let code: String

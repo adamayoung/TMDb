@@ -3,6 +3,7 @@ import Foundation
 /// Details describing an image.
 public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
 
+    /// Image metadata's identifier (same as `filePath`).
     public var id: URL { filePath }
     /// Path of the image.
     public let filePath: URL

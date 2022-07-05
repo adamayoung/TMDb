@@ -6,7 +6,8 @@ extension ImagesConfiguration {
     ///
     /// - Parameters:
     ///   - path: Path to the backdrop image.
-    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original image URL is returned.
+    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original
+    ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a backdrop image.
     public func backdropURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
@@ -18,7 +19,8 @@ extension ImagesConfiguration {
     ///
     /// - Parameters:
     ///   - path: Path to the logo image.
-    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original image URL is returned.
+    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original
+    ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a logo image.
     public func logoURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
@@ -30,7 +32,8 @@ extension ImagesConfiguration {
     ///
     /// - Parameters:
     ///   - path: Path to the poster image.
-    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original image URL is returned.
+    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original
+    ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a poster image.
     public func posterURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
@@ -42,7 +45,8 @@ extension ImagesConfiguration {
     ///
     /// - Parameters:
     ///   - path: Path to the profile image.
-    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original image URL is returned.
+    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original
+    ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a profile image.
     public func profileURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
@@ -54,7 +58,8 @@ extension ImagesConfiguration {
     ///
     /// - Parameters:
     ///   - path: Path to the still image.
-    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original image URL is returned.
+    ///   - width: The ideal width of the image. The actual image maybe be larger. When no width is given, the original
+    ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a still image.
     public func stillURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {

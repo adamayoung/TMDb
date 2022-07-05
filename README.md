@@ -36,14 +36,6 @@ let package = Package(
 
 Create an API key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
-### Create an instance
-
-Create an instance of TMDb with your API key.
-
-```swift
-let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
-```
-
 ## API Areas
 
 ### Certifications
@@ -86,7 +78,7 @@ Get information about TV show seasons.
 
 ## Examples
 
-First, set your TMDb API key.
+First, create an instance of TMDb with your [API key](#get-an-api-key).
 
 ```swift
 let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
@@ -109,7 +101,7 @@ let tvShows = list.results
 ### Popular People
 
 ```swift
-let personList = try await tmdb.person.popular()
+let personList = try await tmdb.people.popular()
 let people = personList.results
 ```
 
