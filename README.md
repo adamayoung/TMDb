@@ -1,6 +1,6 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/adamayoung/TMDb/branch/main/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/adamayoung/TMDb/branch/main/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb) [![Maintainability](https://api.codeclimate.com/v1/badges/03626b7a71a3547ac79e/maintainability)](https://codeclimate.com/github/adamayoung/TMDb/maintainability)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
