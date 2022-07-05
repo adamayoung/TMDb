@@ -11,4 +11,12 @@ final class ConfigurationEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testCountriesEndpointReturnsURL() {
+        let expectedURL = URL(string: "/configuration/countries")!
+
+        let url = ConfigurationEndpoint.countries.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }

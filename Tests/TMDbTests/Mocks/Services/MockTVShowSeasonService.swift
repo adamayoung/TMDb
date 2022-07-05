@@ -19,6 +19,7 @@ final class MockTVShowSeasonService: TVShowSeasonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let seasonDetails = self.seasonDetails else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -32,6 +33,7 @@ final class MockTVShowSeasonService: TVShowSeasonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let images = self.images else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -45,6 +47,7 @@ final class MockTVShowSeasonService: TVShowSeasonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let videos = self.videos else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 

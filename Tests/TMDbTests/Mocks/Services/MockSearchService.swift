@@ -24,6 +24,7 @@ final class MockSearchService: SearchService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let media = self.media else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -38,6 +39,7 @@ final class MockSearchService: SearchService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let movies = self.movies else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -52,6 +54,7 @@ final class MockSearchService: SearchService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let tvShows = self.tvShows else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -65,6 +68,7 @@ final class MockSearchService: SearchService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let people = self.people else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 

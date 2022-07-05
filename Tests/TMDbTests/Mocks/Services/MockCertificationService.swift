@@ -8,6 +8,11 @@ final class MockCertificationService: CertificationService {
 
     func movieCertifications() async throws -> [String: [Certification]] {
         try await withCheckedThrowingContinuation { continuation in
+            guard !movieCertifications.isEmpty else {
+                continuation.resume(throwing: MockDataMissingError())
+                return
+            }
+
             continuation.resume(returning: movieCertifications)
         }
     }
