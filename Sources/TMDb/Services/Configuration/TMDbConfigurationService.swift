@@ -22,4 +22,8 @@ final actor TMDbConfigurationService: ConfigurationService {
         return try await task.value
     }
 
+    func countries() async throws -> [Country] {
+        try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
+    }
+
 }

@@ -19,6 +19,7 @@ final class MockDiscoverService: DiscoverService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let movies = self.movies else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -32,6 +33,7 @@ final class MockDiscoverService: DiscoverService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let tvShows = self.tvShows else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 

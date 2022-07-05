@@ -34,6 +34,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let movieDetails = self.movieDetails else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -46,6 +47,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let credits = self.credits else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -59,6 +61,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let reviews = self.reviews else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -71,6 +74,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let images = self.images else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -83,6 +87,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let videos = self.videos else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -97,6 +102,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let recommendations = self.recommendations else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -110,6 +116,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let similar = self.similar else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -122,6 +129,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let nowPlaying = self.nowPlaying else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -134,6 +142,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let popular = self.popular else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -146,6 +155,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let topRated = self.topRated else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -158,6 +168,7 @@ final class MockMovieService: MovieService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let upcoming = self.upcoming else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 

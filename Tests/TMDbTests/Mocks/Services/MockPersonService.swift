@@ -23,6 +23,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let personDetails = self.personDetails else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -35,6 +36,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let combinedCredits = self.combinedCredits else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -47,6 +49,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let movieCredits = self.movieCredits else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -59,6 +62,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let tvShowCredits = self.tvShowCredits else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -71,6 +75,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let images = self.images else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -83,6 +88,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let knownFor = self.knownFor else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -95,6 +101,7 @@ final class MockPersonService: PersonService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let popular = self.popular else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 

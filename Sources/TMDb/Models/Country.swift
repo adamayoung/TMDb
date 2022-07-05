@@ -1,7 +1,7 @@
 import Foundation
 
-/// Production country.
-public struct ProductionCountry: Identifiable, Decodable, Equatable, Hashable {
+/// Country.
+public struct Country: Identifiable, Decodable, Equatable, Hashable {
 
     /// Country's identifier (same as `countryCode`).
     public var id: String { countryCode }
@@ -9,24 +9,29 @@ public struct ProductionCountry: Identifiable, Decodable, Equatable, Hashable {
     public let countryCode: String
     /// Country name.
     public let name: String
+    /// Country name in English.
+    public let englishName: String
 
-    /// Creates a new `ProductionCountry`.
+    /// Creates a new `Country`.
     ///
     /// - Parameters:
     ///    - countryCode: ISO 3166-1 country code.
     ///    - name: Country name.
-    public init(countryCode: String, name: String) {
+    ///    - englishName: Country name in English.
+    public init(countryCode: String, name: String, englishName: String) {
         self.countryCode = countryCode
         self.name = name
+        self.englishName = englishName
     }
 
 }
 
-extension ProductionCountry {
+extension Country {
 
     private enum CodingKeys: String, CodingKey {
         case countryCode = "iso31661"
-        case name
+        case name = "nativeName"
+        case englishName = "englishName"
     }
 
 }

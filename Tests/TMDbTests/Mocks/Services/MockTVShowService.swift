@@ -32,6 +32,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let tvShowDetails = self.tvShowDetails else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -44,6 +45,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let credits = self.credits else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -57,6 +59,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let reviews = self.reviews else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -69,6 +72,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let images = self.images else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -81,6 +85,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let videos = self.videos else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -94,6 +99,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let recommendations = self.recommendations else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -107,6 +113,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let similar = self.similar else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
@@ -119,6 +126,7 @@ final class MockTVShowService: TVShowService {
 
         return try await withCheckedThrowingContinuation { continuation in
             guard let popular = self.popular else {
+                continuation.resume(throwing: MockDataMissingError())
                 return
             }
 
