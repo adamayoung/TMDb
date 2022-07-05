@@ -1,6 +1,7 @@
 import Foundation
 
-/// A service to discover TV shows by different types of data like average rating, number of votes, genres and certifications.
+/// A service to discover TV shows by different types of data like average rating, number of votes, genres and
+/// certifications.
 public protocol TVShowDiscoverService {
 
     /// Returns TV shows to be discovered.

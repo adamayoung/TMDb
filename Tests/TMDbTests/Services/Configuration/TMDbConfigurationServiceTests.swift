@@ -31,32 +31,14 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     func testAPIConfigurationWhenCalledMultipleTimesMakesOneRequest() async throws {
         let expectedResult = APIConfiguration.mock
         apiClient.result = .success(expectedResult)
-        apiClient.requestTime = 0.5
 
-        Task.detached { [unowned self] in
-            _ = try await service.apiConfiguration()
+        await withThrowingTaskGroup(of: APIConfiguration.self) { group in
+            for _ in 0...10 {
+                group.addTask {
+                    try await self.service.apiConfiguration()
+                }
+            }
         }
-
-        Task.detached { [unowned self] in
-            _ = try await service.apiConfiguration()
-        }
-
-        Task.detached { [unowned self] in
-            _ = try await service.apiConfiguration()
-        }
-
-        let expectation = self.expectation(description: "apiConfiguration")
-
-        Task.detached { [unowned self] in
-            Thread.sleep(forTimeInterval: 1)
-
-            let result = try? await service.apiConfiguration()
-
-            XCTAssertEqual(result, expectedResult)
-            expectation.fulfill()
-        }
-
-        await waitForExpectations(timeout: 2)
 
         XCTAssertEqual(apiClient.getCount, 1)
     }

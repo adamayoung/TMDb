@@ -16,7 +16,6 @@ final class TMDbAPITests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
         certificationService = MockCertificationService()
         configurationService = MockConfigurationService()
         discoverService = MockDiscoverService()
@@ -50,7 +49,6 @@ final class TMDbAPITests: XCTestCase {
         tvShowService = nil
         tvShowSeasonService = nil
         tmdb = nil
-
         super.tearDown()
     }
 

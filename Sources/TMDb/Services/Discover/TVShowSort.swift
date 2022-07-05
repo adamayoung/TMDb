@@ -21,16 +21,22 @@ public enum TVShowSort: CustomStringConvertible {
 
 extension TVShowSort {
 
+    private enum FieldName {
+        static let popularity = "popularity"
+        static let firstAirDate = "first_air_date"
+        static let voteAverage = "vote_average"
+    }
+
     private var fieldName: String {
         switch self {
         case .popularity:
-            return "popularity"
+            return FieldName.popularity
 
         case .firstAirDate:
-            return "first_air_date"
+            return FieldName.firstAirDate
 
         case .voteAverage:
-            return "vote_average"
+            return FieldName.voteAverage
         }
     }
 
@@ -51,12 +57,16 @@ extension TVShowSort {
 
 extension URL {
 
+    private enum QueryItemName {
+        static let sortBy = "sort_by"
+    }
+
     func appendingSortBy(_ sortBy: TVShowSort?) -> Self {
         guard let sortBy = sortBy else {
             return self
         }
 
-        return appendingQueryItem(name: "sort_by", value: sortBy)
+        return appendingQueryItem(name: QueryItemName.sortBy, value: sortBy)
     }
 
 }

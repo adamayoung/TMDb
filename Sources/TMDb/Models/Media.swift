@@ -3,6 +3,7 @@ import Foundation
 /// Represents a movie, tv show or person.
 public enum Media: Identifiable, Equatable, Hashable {
 
+    /// Media's identifier.
     public var id: Int {
         switch self {
         case .movie(let movie):

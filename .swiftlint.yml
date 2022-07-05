@@ -1,7 +1,5 @@
 excluded:
   - .build
-  - Tests/**/XCTestManifests.swift
-  - Tests/LinuxMain.swift
 
 opt_in_rules:
   - attributes
@@ -12,16 +10,7 @@ opt_in_rules:
   - operator_usage_whitespace
   - sorted_imports
 
-type_name:
-  max_length: 60
-
-cyclomatic_complexity:
-  ignores_case_statements: true
-
 identifier_name:
-  min_length:
-    error: 4
-  max_length: 60
   excluded:
     - all
     - api
@@ -34,10 +23,6 @@ identifier_name:
     - tv
     - url
 
-file_length:
-  warning: 600
-  error: 800
-
-line_length:
-  ignores_urls: true
-  ignores_comments: true
+# line_length:
+#   ignores_urls: true
+#   ignores_comments: true

@@ -2,7 +2,8 @@ import Foundation
 
 /// Images configuration which holds data relevant to building image URLs.
 ///
-/// To build an image URL, you will need 3 pieces of data. The `base_url`, `size` and `file_path`. Simply combine them all and you will have a fully qualified URL.
+/// To build an image URL, you will need 3 pieces of data. The `base_url`, `size` and `file_path`. Simply combine them
+/// all and you will have a fully qualified URL.
 public struct ImagesConfiguration: Decodable, Equatable, Hashable {
 
     /// Base image URL (http).

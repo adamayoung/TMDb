@@ -1,6 +1,6 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/adamayoung/TMDb/branch/main/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/adamayoung/TMDb/branch/main/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb) [![Maintainability](https://api.codeclimate.com/v1/badges/03626b7a71a3547ac79e/maintainability)](https://codeclimate.com/github/adamayoung/TMDb/maintainability)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
@@ -35,14 +35,6 @@ let package = Package(
 ### Get an API Key
 
 Create an API key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
-
-### Create an instance
-
-Create an instance of TMDb with your API key.
-
-```swift
-let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
-```
 
 ## API Areas
 
@@ -86,7 +78,7 @@ Get information about TV show seasons.
 
 ## Examples
 
-First, set your TMDb API key.
+First, create an instance of TMDb with your [API key](#get-an-api-key).
 
 ```swift
 let tmdb = TMDbAPI(apiKey: "<tmdb-api-key>")
@@ -109,7 +101,7 @@ let tvShows = list.results
 ### Popular People
 
 ```swift
-let personList = try await tmdb.person.popular()
+let personList = try await tmdb.people.popular()
 let people = personList.results
 ```
 
