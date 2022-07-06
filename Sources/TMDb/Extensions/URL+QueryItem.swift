@@ -18,8 +18,17 @@ extension URL {
 
 extension URL {
 
+    private enum QueryItemName {
+        static let apiKey = "api_key"
+        static let language = "language"
+        static let page = "page"
+        static let year = "year"
+        static let firstAirDateYear = "first_air_date_year"
+        static let withPeople = "with_people"
+    }
+
     func appendingAPIKey(_ apiKey: String) -> Self {
-        appendingQueryItem(name: "api_key", value: apiKey)
+        appendingQueryItem(name: QueryItemName.apiKey, value: apiKey)
     }
 
     func appendingLanguage(locale: Locale = .current) -> Self {
@@ -27,7 +36,7 @@ extension URL {
             return self
         }
 
-        return appendingQueryItem(name: "language", value: languageCode)
+        return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
 
     func appendingPage(_ page: Int?) -> Self {
@@ -38,7 +47,7 @@ extension URL {
         page = max(page, 1)
         page = min(page, 1000)
 
-        return appendingQueryItem(name: "page", value: page)
+        return appendingQueryItem(name: QueryItemName.page, value: page)
     }
 
     func appendingYear(_ year: Int?) -> Self {
@@ -46,7 +55,7 @@ extension URL {
             return self
         }
 
-        return appendingQueryItem(name: "year", value: year)
+        return appendingQueryItem(name: QueryItemName.year, value: year)
     }
 
     func appendingFirstAirDateYear(_ year: Int?) -> Self {
@@ -54,7 +63,7 @@ extension URL {
             return self
         }
 
-        return appendingQueryItem(name: "first_air_date_year", value: year)
+        return appendingQueryItem(name: QueryItemName.firstAirDateYear, value: year)
     }
 
     func appendingWithPeople(_ people: [Person.ID]?) -> Self {
@@ -66,7 +75,7 @@ extension URL {
             .map(String.init)
             .joined(separator: ",")
 
-        return appendingQueryItem(name: "with_people", value: value)
+        return appendingQueryItem(name: QueryItemName.withPeople, value: value)
     }
 
 }

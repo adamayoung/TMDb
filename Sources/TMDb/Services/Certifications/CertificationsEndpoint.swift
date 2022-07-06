@@ -2,14 +2,14 @@ import Foundation
 
 enum CertificationsEndpoint {
 
-    static let basePath = URL(string: "/certification")!
-
     case movie
     case tvShow
 
 }
 
 extension CertificationsEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/certification")!
 
     var path: URL {
         switch self {
