@@ -41,11 +41,13 @@ extension MoviesEndpoint: Endpoint {
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("images")
+				.appendingImageLanguage()
 
         case .videos(let movieID):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("videos")
+				.appendingVideoLanguage()
 
         case .recommendations(let movieID, let page):
             return Self.basePath
