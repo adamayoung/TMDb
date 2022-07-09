@@ -41,22 +41,22 @@ extension URL {
         return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
 
-	func appendingImageLanguage(local: Locale = .current) -> Self {
+	func appendingImageLanguage(locale: Locale = .current) -> Self {
 		guard let languageCode = locale.languageCode else {
 			return self
 		}
 
-		return appendingQueryItem(name: QueryItemName.imageLanguage, value: languageCode.append(",null"))
+		return appendingQueryItem(name: QueryItemName.imageLanguage, value: languageCode + ",null")
 	}
-	
-	func appendingVideoLanguage(local: Locale = .current) -> Self {
+
+	func appendingVideoLanguage(locale: Locale = .current) -> Self {
 		guard let languageCode = locale.languageCode else {
 			return self
 		}
 
-		return appendingQueryItem(name: QueryItemName.videoLanguage, value: languageCode.append(",null"))
+		return appendingQueryItem(name: QueryItemName.videoLanguage, value: languageCode + ",null")
 	}
-	
+
     func appendingPage(_ page: Int?) -> Self {
         guard var page = page else {
             return self
