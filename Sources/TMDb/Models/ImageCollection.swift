@@ -12,7 +12,7 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
     /// Backdrop images.
     public let backdrops: [ImageMetadata]
     /// Still images.
-    public let stills: [ImageMetadata]
+    public let stills: [ImageMetadata]?
 
     /// Creates a new `ImageCollection`.
     ///
@@ -26,7 +26,7 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
         self.posters = posters
         self.logos = logos
         self.backdrops = backdrops
-        self.stills = stills ?? []
+        self.stills = stills
     }
 
 }
