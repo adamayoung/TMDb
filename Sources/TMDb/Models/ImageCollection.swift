@@ -18,7 +18,6 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
     ///    - id: Movie or TV show identifier for these images.
     ///    - posters: Poster images.
     ///    - backdrops: Backdrop images.
-    ///    - stills: Still images.
     public init(id: Int, posters: [ImageMetadata], logos: [ImageMetadata], backdrops: [ImageMetadata]) {
         self.id = id
         self.posters = posters
