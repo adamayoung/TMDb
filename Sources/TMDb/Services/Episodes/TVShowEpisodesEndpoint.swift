@@ -8,7 +8,7 @@ enum TVShowEpisodesEndpoint {
 
 }
 
-extension TVShowSeasonsEndpoint: Endpoint {
+extension TVShowEpisodesEndpoint: Endpoint {
 
     private static func basePath(for tvShowID: TVShow.ID) -> URL {
         TVShowsEndpoint.details(tvShowID: tvShowID).path
@@ -17,20 +17,20 @@ extension TVShowSeasonsEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let tvShowID, let seasonNumber, let episodeNumber: Int):
+        case .details(let tvShowID, let seasonNumber, let episodeNumber):
             return Self.basePath(for: tvShowID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")
                 .appendingPathComponent(episodeNumber)
 
-        case .images(let tvShowID, let seasonNumber, let episodeNumber: Int):
+        case .images(let tvShowID, let seasonNumber, let episodeNumber):
             return Self.basePath(for: tvShowID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")
                 .appendingPathComponent(episodeNumber)
                 .appendingPathComponent("images")
 
-        case .videos(let tvShowID, let seasonNumber, let episodeNumber: Int):
+        case .videos(let tvShowID, let seasonNumber, let episodeNumber):
             return Self.basePath(for: tvShowID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")
