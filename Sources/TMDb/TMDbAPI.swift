@@ -27,6 +27,8 @@ public final class TMDbAPI {
     public let tvShows: TVShowService
     /// TV Show Seasons.
     public let tvShowSeasons: TVShowSeasonService
+    /// TV Show Episodes.
+    public let tvShowEpisodes: TVShowEpisodeService
 
     public convenience init(apiKey: String) {
         let apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: .tmdbAPIBaseURL,
