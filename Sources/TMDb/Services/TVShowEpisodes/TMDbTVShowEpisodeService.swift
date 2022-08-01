@@ -12,7 +12,7 @@ final class TMDbTVShowEpisodeService: TVShowEpisodeService {
         try await apiClient.get(endpoint: TVShowEpisodesEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber, episodeNumber: episodeNumber))
     }
 
-    func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+    func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection {
         try await apiClient.get(endpoint: TVShowEpisodesEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber, episodeNumber: episodeNumber))
     }
 
