@@ -21,12 +21,12 @@ public struct ImageCollection: Decodable, Equatable, Hashable {
     ///    - posters: Poster images.
     ///    - backdrops: Backdrop images.
     ///    - stills: Still images.
-    public init(id: Int, posters: [ImageMetadata], logos: [ImageMetadata], backdrops: [ImageMetadata], stills: [ImageMetadata]) {
+    public init(id: Int, posters: [ImageMetadata], logos: [ImageMetadata], backdrops: [ImageMetadata], stills: [ImageMetadata]?) {
         self.id = id
         self.posters = posters
         self.logos = logos
         self.backdrops = backdrops
-        self.stills = stills
+        self.stills = stills ?? []
     }
 
 }
