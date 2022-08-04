@@ -12,7 +12,7 @@ final class TVShowSeaonsEndpointTests: XCTestCase {
     }
 
     func testTVShowSeasonImagesEndpointReturnsURL() {
-        let expectedURL = URL(string: "/tv/1/season/2/images")!
+        let expectedURL = URL(string: "/tv/1/season/2/images?include_image_language=en,null")!
 
         let url = TVShowSeasonsEndpoint.images(tvShowID: 1, seasonNumber: 2).path
 
@@ -20,7 +20,7 @@ final class TVShowSeaonsEndpointTests: XCTestCase {
     }
 
     func testTVShowSeasonVideosEndpointReturnsURL() {
-        let expectedURL = URL(string: "/tv/1/season/2/videos")!
+        let expectedURL = URL(string: "/tv/1/season/2/videos?include_video_language=en,null")!
 
         let url = TVShowSeasonsEndpoint.videos(tvShowID: 1, seasonNumber: 2).path
 

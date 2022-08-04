@@ -21,6 +21,8 @@ extension URL {
     private enum QueryItemName {
         static let apiKey = "api_key"
         static let language = "language"
+		static let imageLanguage = "include_image_language"
+		static let videoLanguage = "include_video_language"
         static let page = "page"
         static let year = "year"
         static let firstAirDateYear = "first_air_date_year"
@@ -38,6 +40,22 @@ extension URL {
 
         return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
+
+	func appendingImageLanguage(locale: Locale = .current) -> Self {
+		guard let languageCode = locale.languageCode else {
+			return self
+		}
+
+		return appendingQueryItem(name: QueryItemName.imageLanguage, value: languageCode + ",null")
+	}
+
+	func appendingVideoLanguage(locale: Locale = .current) -> Self {
+		guard let languageCode = locale.languageCode else {
+			return self
+		}
+
+		return appendingQueryItem(name: QueryItemName.videoLanguage, value: languageCode + ",null")
+	}
 
     func appendingPage(_ page: Int?) -> Self {
         guard var page = page else {
