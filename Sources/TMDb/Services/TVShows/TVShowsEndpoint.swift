@@ -38,13 +38,13 @@ extension TVShowsEndpoint: Endpoint {
             return Self.basePath
                 .appendingPathComponent(tvShowID)
                 .appendingPathComponent("images")
-				.appendingImageLanguage()
+                .appendingImageLanguage()
 
         case .videos(let tvShowID):
             return Self.basePath
                 .appendingPathComponent(tvShowID)
                 .appendingPathComponent("videos")
-				.appendingVideoLanguage()
+                .appendingVideoLanguage()
 
         case .recommendations(let tvShowID, let page):
             return Self.basePath
