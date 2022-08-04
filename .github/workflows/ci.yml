@@ -43,18 +43,10 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build
-        run: swift build --build-tests --enable-code-coverage
+        run: swift build --build-tests
 
       - name: Test
-        run: swift test --skip-build --parallel --enable-code-coverage
-
-      - name: Upload coverage report to CodeClimate
-        uses: paambaati/codeclimate-action@v3.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/.build/debug/codecov/*.json:lcov-json
+        run: swift test --skip-build --parallel
   
   documentation:
     name: Compile Documentation
