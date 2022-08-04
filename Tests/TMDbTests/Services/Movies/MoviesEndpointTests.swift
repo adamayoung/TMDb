@@ -36,7 +36,7 @@ final class MoviesEndpointTests: XCTestCase {
     }
 
     func testMovieImagesEndpointReturnsURL() {
-        let expectedURL = URL(string: "/movie/1/images")!
+        let expectedURL = URL(string: "/movie/1/images?include_image_language=en,null")!
 
         let url = MoviesEndpoint.images(movieID: 1).path
 
@@ -44,7 +44,7 @@ final class MoviesEndpointTests: XCTestCase {
     }
 
     func testMovieVideosEndpointReturnsURL() {
-        let expectedURL = URL(string: "/movie/1/videos")!
+        let expectedURL = URL(string: "/movie/1/videos?include_video_language=en,null")!
 
         let url = MoviesEndpoint.videos(movieID: 1).path
 
