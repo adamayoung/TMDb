@@ -25,13 +25,13 @@ extension TVShowSeasonsEndpoint: Endpoint {
             return Self.basePath(for: tvShowID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("images")
-				.appendingImageLanguage()
+                .appendingImageLanguage()
 
         case .videos(let tvShowID, let seasonNumber):
             return Self.basePath(for: tvShowID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("videos")
-				.appendingVideoLanguage()
+                .appendingVideoLanguage()
         }
     }
 

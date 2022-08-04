@@ -21,8 +21,8 @@ extension URL {
     private enum QueryItemName {
         static let apiKey = "api_key"
         static let language = "language"
-		static let imageLanguage = "include_image_language"
-		static let videoLanguage = "include_video_language"
+        static let imageLanguage = "include_image_language"
+        static let videoLanguage = "include_video_language"
         static let page = "page"
         static let year = "year"
         static let firstAirDateYear = "first_air_date_year"
@@ -41,21 +41,29 @@ extension URL {
         return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
 
-	func appendingImageLanguage(locale: Locale = .current) -> Self {
-		guard let languageCode = locale.languageCode else {
-			return self
-		}
+    func appendingImageLanguage(locale: Locale = .current) -> Self {
+        guard let languageCode = locale.languageCode else {
+            return self
+        }
 
-		return appendingQueryItem(name: QueryItemName.imageLanguage, value: languageCode + ",null")
-	}
+        let value = [languageCode, "null"]
+            .map(\.description)
+            .joined(separator: ",")
 
-	func appendingVideoLanguage(locale: Locale = .current) -> Self {
-		guard let languageCode = locale.languageCode else {
-			return self
-		}
+        return appendingQueryItem(name: QueryItemName.imageLanguage, value: value)
+    }
 
-		return appendingQueryItem(name: QueryItemName.videoLanguage, value: languageCode + ",null")
-	}
+    func appendingVideoLanguage(locale: Locale = .current) -> Self {
+        guard let languageCode = locale.languageCode else {
+            return self
+        }
+
+        let value = [languageCode, "null"]
+            .map(\.description)
+            .joined(separator: ",")
+
+        return appendingQueryItem(name: QueryItemName.videoLanguage, value: value)
+    }
 
     func appendingPage(_ page: Int?) -> Self {
         guard var page = page else {
@@ -84,13 +92,13 @@ extension URL {
         return appendingQueryItem(name: QueryItemName.firstAirDateYear, value: year)
     }
 
-    func appendingWithPeople(_ people: [Person.ID]?) -> Self {
-        guard let people = people else {
+    func appendingWithPeople(_ peopleIDs: [Person.ID]?) -> Self {
+        guard let peopleIDs = peopleIDs else {
             return self
         }
 
-        let value = people
-            .map(String.init)
+        let value = peopleIDs
+            .map(\.description)
             .joined(separator: ",")
 
         return appendingQueryItem(name: QueryItemName.withPeople, value: value)
