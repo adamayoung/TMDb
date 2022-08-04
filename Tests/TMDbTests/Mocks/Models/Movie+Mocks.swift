@@ -10,7 +10,7 @@ extension Movie {
             id: id,
             title: "Movie \(id)",
             overview: .randomString,
-            releaseDate: Date.random
+            releaseDate: .random
         )
     }
 

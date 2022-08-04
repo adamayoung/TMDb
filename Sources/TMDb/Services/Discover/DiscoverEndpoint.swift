@@ -2,14 +2,14 @@ import Foundation
 
 enum DiscoverEndpoint {
 
-    static let basePath = URL(string: "/discover")!
-
     case movies(sortedBy: MovieSort? = nil, people: [Person.ID]? = nil, page: Int? = nil)
     case tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil)
 
 }
 
 extension DiscoverEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/discover")!
 
     var path: URL {
         switch self {

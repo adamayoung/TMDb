@@ -2,8 +2,6 @@ import Foundation
 
 enum TVShowsEndpoint {
 
-    static let basePath = URL(string: "/tv")!
-
     case details(tvShowID: TVShow.ID)
     case credits(tvShowID: TVShow.ID)
     case reviews(tvShowID: TVShow.ID, page: Int? = nil)
@@ -16,6 +14,8 @@ enum TVShowsEndpoint {
 }
 
 extension TVShowsEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/tv")!
 
     var path: URL {
         switch self {
