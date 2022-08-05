@@ -27,7 +27,7 @@ final class PersonImageCollectionTests: XCTestCase {
                 width: 2000,
                 height: 3000,
                 aspectRatio: 0.666666666666667,
-                voteAverage: 5.21,
+                voteAverage: 4.21,
                 voteCount: 3
             )
         ]

@@ -55,8 +55,8 @@ extension ImageMetadata {
         case height
         case aspectRatio
         case languageCode = "iso6391"
-        case voteAverage = "vote_average"
-        case voteCount = "vote_count"
+        case voteAverage
+        case voteCount
     }
 
 }

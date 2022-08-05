@@ -6,7 +6,7 @@ final class TVShowEpisodeImageCollectionTests: XCTestCase {
     func testDecodeReturnsImageCollection() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             TVShowEpisodeImageCollection.self,
-            fromResource: "tv-show-episode-image-collection.json"
+            fromResource: "tv-show-episode-image-collection"
         )
 
         XCTAssertEqual(result.id, episodeImageCollection.id)
