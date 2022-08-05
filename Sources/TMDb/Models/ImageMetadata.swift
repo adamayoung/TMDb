@@ -20,7 +20,6 @@ public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
     /// The number of user votes on this image.
     public let voteCount: Int?
 
-
     /// Creates a new `ImageMetadata`.
     ///
     /// - Parameters:
@@ -30,7 +29,13 @@ public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
     ///    - languageCode: ISO 639-1 language code.
     ///    - voteAverage: The average of user votes on this image.
     ///    - voteCount: The number of user votes on this image.
-    public init(filePath: URL, width: Int, height: Int, aspectRatio: Float, voteAverage: Float?, voteCount: Int?, languageCode: String? = nil) {
+    public init(filePath: URL,
+                width: Int,
+                height: Int,
+                aspectRatio: Float,
+                voteAverage: Float?,
+                voteCount: Int?,
+                languageCode: String? = nil) {
         self.filePath = filePath
         self.width = width
         self.height = height

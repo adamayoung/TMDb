@@ -13,7 +13,9 @@ public protocol TVShowEpisodeImageryService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of images for the matching TV show's episode.
-    func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection
+    func images(forEpisode episodeNumber: Int,
+                inSeason seasonNumber: Int,
+                inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection
 
     /// Returns the videos that belong to a TV show episode.
     ///
@@ -25,6 +27,8 @@ public protocol TVShowEpisodeImageryService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A collection of videos for the matching TV show's episode.
-    func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection
+    func videos(forEpisode episodeNumber: Int,
+                inSeason seasonNumber: Int,
+                inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection
 
 }

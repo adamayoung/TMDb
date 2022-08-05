@@ -4,7 +4,10 @@ import XCTest
 final class TVShowEpisodeImageCollectionTests: XCTestCase {
 
     func testDecodeReturnsImageCollection() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(TVShowEpisodeImageCollection.self, fromResource: "tv-show-episode-image-collection.json")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVShowEpisodeImageCollection.self,
+            fromResource: "tv-show-episode-image-collection.json"
+        )
 
         XCTAssertEqual(result.id, episodeImageCollection.id)
         XCTAssertEqual(result.stills, episodeImageCollection.stills)

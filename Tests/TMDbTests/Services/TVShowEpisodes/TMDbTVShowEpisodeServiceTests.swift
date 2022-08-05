@@ -25,11 +25,15 @@ final class TMDbTVShowEpisodeServiceTests: XCTestCase {
         let episodeNumber = expectedResult.episodeNumber
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.details(forEpisode: episodeNumber, inSeason: seasonNumber, inTVShow: tvShowID)
+        let result = try await service.details(forEpisode: episodeNumber,
+                                               inSeason: seasonNumber,
+                                               inTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowEpisodesEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber, episodeNumber: episodeNumber).path)
+                       TVShowEpisodesEndpoint.details(tvShowID: tvShowID,
+                                                      seasonNumber: seasonNumber,
+                                                      episodeNumber: episodeNumber).path)
     }
 
     func testImagesReturnsImages() async throws {
@@ -39,11 +43,15 @@ final class TMDbTVShowEpisodeServiceTests: XCTestCase {
         let expectedResult = TVShowEpisodeImageCollection.mock
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.images(forEpisode: episodeNumber, inSeason: seasonNumber, inTVShow: tvShowID)
+        let result = try await service.images(forEpisode: episodeNumber,
+                                              inSeason: seasonNumber,
+                                              inTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowEpisodesEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber, episodeNumber: episodeNumber).path)
+                       TVShowEpisodesEndpoint.images(tvShowID: tvShowID,
+                                                     seasonNumber: seasonNumber,
+                                                     episodeNumber: episodeNumber).path)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -53,11 +61,15 @@ final class TMDbTVShowEpisodeServiceTests: XCTestCase {
         let expectedResult = VideoCollection.mock
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.videos(forEpisode: episodeNumber, inSeason: seasonNumber, inTVShow: tvShowID)
+        let result = try await service.videos(forEpisode: episodeNumber,
+                                              inSeason: seasonNumber,
+                                              inTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       TVShowEpisodesEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber, episodeNumber: episodeNumber).path)
+                       TVShowEpisodesEndpoint.videos(tvShowID: tvShowID,
+                                                     seasonNumber: seasonNumber,
+                                                     episodeNumber: episodeNumber).path)
     }
 
 }

@@ -16,7 +16,9 @@ final class MockTVShowEpisodeService: TVShowEpisodeService {
     private(set) var lastVideosSeasonNumber: Int?
     private(set) var lastVideosTVShowID: TVShow.ID?
 
-    func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisode {
+    func details(forEpisode episodeNumber: Int,
+                 inSeason seasonNumber: Int,
+                 inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisode {
         lastDetailsEpisodeNumber = episodeNumber
         lastDetailsSeasonNumber = seasonNumber
         lastDetailsTVShowID = tvShowID
@@ -31,7 +33,9 @@ final class MockTVShowEpisodeService: TVShowEpisodeService {
         }
     }
 
-    func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection {
+    func images(forEpisode episodeNumber: Int,
+                inSeason seasonNumber: Int,
+                inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection {
         lastImagesEpisodeNumber = episodeNumber
         lastImagesSeasonNumber = seasonNumber
         lastImagesTVShowID = tvShowID
@@ -46,7 +50,9 @@ final class MockTVShowEpisodeService: TVShowEpisodeService {
         }
     }
 
-    func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
+    func videos(forEpisode episodeNumber: Int,
+                inSeason seasonNumber: Int,
+                inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
         lastVideosEpisodeNumber = episodeNumber
         lastVideosSeasonNumber = seasonNumber
         lastVideosTVShowID = tvShowID
