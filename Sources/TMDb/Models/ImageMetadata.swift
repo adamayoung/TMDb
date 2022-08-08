@@ -15,6 +15,10 @@ public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
     public let aspectRatio: Float
     /// ISO 639-1 language code.
     public let languageCode: String?
+    /// The average of user votes on this image.
+    public let voteAverage: Float?
+    /// The number of user votes on this image.
+    public let voteCount: Int?
 
     /// Creates a new `ImageMetadata`.
     ///
@@ -23,12 +27,22 @@ public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
     ///    - width: Image width.
     ///    - height: Image height.
     ///    - languageCode: ISO 639-1 language code.
-    public init(filePath: URL, width: Int, height: Int, aspectRatio: Float, languageCode: String? = nil) {
+    ///    - voteAverage: The average of user votes on this image.
+    ///    - voteCount: The number of user votes on this image.
+    public init(filePath: URL,
+                width: Int,
+                height: Int,
+                aspectRatio: Float,
+                voteAverage: Float?,
+                voteCount: Int?,
+                languageCode: String? = nil) {
         self.filePath = filePath
         self.width = width
         self.height = height
         self.aspectRatio = aspectRatio
         self.languageCode = languageCode
+        self.voteAverage = voteAverage
+        self.voteCount = voteCount
     }
 
 }
@@ -41,6 +55,8 @@ extension ImageMetadata {
         case height
         case aspectRatio
         case languageCode = "iso6391"
+        case voteAverage
+        case voteCount
     }
 
 }

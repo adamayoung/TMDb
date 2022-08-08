@@ -18,13 +18,17 @@ final class PersonImageCollectionTests: XCTestCase {
                 filePath: URL(string: "/rLSUjr725ez1cK7SKVxC9udO03Y.jpg")!,
                 width: 546,
                 height: 819,
-                aspectRatio: 0.666666666666667
+                aspectRatio: 0.666666666666667,
+                voteAverage: 7.21,
+                voteCount: 345
             ),
             ImageMetadata(
                 filePath: URL(string: "/lYqC8Amj4owX05xQg5Yo7uUHgah.jpg")!,
                 width: 2000,
                 height: 3000,
-                aspectRatio: 0.666666666666667
+                aspectRatio: 0.666666666666667,
+                voteAverage: 4.21,
+                voteCount: 3
             )
         ]
     )

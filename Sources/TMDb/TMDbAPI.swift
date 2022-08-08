@@ -27,6 +27,8 @@ public final class TMDbAPI {
     public let tvShows: TVShowService
     /// TV Show Seasons.
     public let tvShowSeasons: TVShowSeasonService
+    /// TV Show Episodes.
+    public let tvShowEpisodes: TVShowEpisodeService
 
     public convenience init(apiKey: String) {
         let apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: .tmdbAPIBaseURL,
@@ -42,14 +44,15 @@ public final class TMDbAPI {
             searchService: TMDbSearchService(apiClient: apiClient),
             trendingService: TMDbTrendingService(apiClient: apiClient),
             tvShowService: TMDbTVShowService(apiClient: apiClient),
-            tvShowSeasonService: TMDbTVShowSeasonService(apiClient: apiClient)
+            tvShowSeasonService: TMDbTVShowSeasonService(apiClient: apiClient),
+            tvShowEpisodeService: TMDbTVShowEpisodeService(apiClient: apiClient)
         )
     }
 
     init(certificationService: CertificationService, configurationService: ConfigurationService,
          discoverService: DiscoverService, movieService: MovieService, personService: PersonService,
          searchService: SearchService, trendingService: TrendingService, tvShowService: TVShowService,
-         tvShowSeasonService: TVShowSeasonService) {
+         tvShowSeasonService: TVShowSeasonService, tvShowEpisodeService: TVShowEpisodeService) {
         self.certifications = certificationService
         self.configurations = configurationService
         self.discover = discoverService
@@ -59,6 +62,7 @@ public final class TMDbAPI {
         self.trending = trendingService
         self.tvShows = tvShowService
         self.tvShowSeasons = tvShowSeasonService
+        self.tvShowEpisodes = tvShowEpisodeService
     }
 
 }
