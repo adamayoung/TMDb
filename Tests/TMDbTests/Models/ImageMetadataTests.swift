@@ -14,6 +14,8 @@ final class ImageMetadataTests: XCTestCase {
         XCTAssertEqual(result.width, imageMetadata.width)
         XCTAssertEqual(result.height, imageMetadata.height)
         XCTAssertEqual(result.aspectRatio, imageMetadata.aspectRatio)
+        XCTAssertEqual(result.voteAverage, imageMetadata.voteAverage)
+        XCTAssertEqual(result.voteCount, imageMetadata.voteCount)
         XCTAssertEqual(result.languageCode, imageMetadata.languageCode)
     }
 
@@ -22,6 +24,8 @@ final class ImageMetadataTests: XCTestCase {
         width: 1280,
         height: 720,
         aspectRatio: 1.77777777777778,
+        voteAverage: 5.7,
+        voteCount: 957,
         languageCode: "en"
     )
 

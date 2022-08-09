@@ -9,6 +9,8 @@ extension ImageMetadata {
             width: Int.random(in: 10...100),
             height: Int.random(in: 10...100),
             aspectRatio: 1.5,
+            voteAverage: Float.random(in: 0.0...10.0),
+            voteCount: Int.random(in: 0...1000),
             languageCode: "en"
         )
     }
