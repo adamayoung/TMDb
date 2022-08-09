@@ -7,7 +7,7 @@ final class LanguageTests: XCTestCase {
         XCTAssertEqual(language.id, language.code)
     }
 
-    func testDecodeReturnsCertification() throws {
+    func testDecodeReturnsLanguage() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Language.self, fromResource: "configuration-language")
 
         XCTAssertEqual(result.code, language.code)

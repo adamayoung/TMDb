@@ -14,6 +14,7 @@ final class TMDbAPITests: XCTestCase {
     var tvShowService: MockTVShowService!
     var tvShowSeasonService: MockTVShowSeasonService!
     var tvShowEpisodeService: MockTVShowEpisodeService!
+    var genreService: MockGenreService!
 
     override func setUp() {
         super.setUp()
@@ -27,6 +28,7 @@ final class TMDbAPITests: XCTestCase {
         tvShowService = MockTVShowService()
         tvShowSeasonService = MockTVShowSeasonService()
         tvShowEpisodeService = MockTVShowEpisodeService()
+        genreService = MockGenreService()
         tmdb = TMDbAPI(
             certificationService: certificationService,
             configurationService: configurationService,
@@ -37,7 +39,8 @@ final class TMDbAPITests: XCTestCase {
             trendingService: trendingService,
             tvShowService: tvShowService,
             tvShowSeasonService: tvShowSeasonService,
-            tvShowEpisodeService: tvShowEpisodeService
+            tvShowEpisodeService: tvShowEpisodeService,
+            genreService: genreService
         )
     }
 
@@ -67,6 +70,7 @@ final class TMDbAPITests: XCTestCase {
         XCTAssertIdentical(tmdb.tvShows as? MockTVShowService, tvShowService)
         XCTAssertIdentical(tmdb.tvShowSeasons as? MockTVShowSeasonService, tvShowSeasonService)
         XCTAssertIdentical(tmdb.tvShowEpisodes as? MockTVShowEpisodeService, tvShowEpisodeService)
+        XCTAssertIdentical(tmdb.genres as? MockGenreService, genreService)
     }
 
 }

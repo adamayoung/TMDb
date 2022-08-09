@@ -12,7 +12,7 @@ public struct Language: Identifiable, Decodable, Equatable, Hashable {
     /// English name.
     public let englishName: String
 
-    /// Creates a new `SpokenLanguage`.
+    /// Creates a new `Language`.
     ///
     /// - Parameters:
     ///    - languageCode: ISO 639-1 language code.
