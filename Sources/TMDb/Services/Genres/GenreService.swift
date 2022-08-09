@@ -10,4 +10,11 @@ public protocol GenreService {
     /// - Returns: A list of genres.
     func movieGenres() async throws -> [Genre]
 
+    /// Returns the list of official genres for TV shows.
+    ///
+    /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-tv-list)
+    ///
+    /// - Returns: A list of genres.
+    func tvShowGenres() async throws -> [Genre]
+
 }

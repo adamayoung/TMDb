@@ -26,7 +26,18 @@ final class TMDbGenreServiceTests: XCTestCase {
         let result = try await service.movieGenres()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, GenresEndpoint.movies.path)
+        XCTAssertEqual(apiClient.lastPath, GenresEndpoint.movie.path)
+    }
+
+    func testTVShowGenresReturnsGenres() async throws {
+        let genreList = GenreList.mock
+        let expectedResult = genreList.genres
+        apiClient.result = .success(genreList)
+
+        let result = try await service.tvShowGenres()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, GenresEndpoint.tvShow.path)
     }
 
 }
