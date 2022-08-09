@@ -30,4 +30,8 @@ final actor TMDbConfigurationService: ConfigurationService {
         try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
     }
 
+    func languages() async throws -> [Language] {
+        try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
+    }
+
 }
