@@ -13,8 +13,7 @@ public protocol TVShowEpisodeDetailsService {
     ///     - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: A episode of the matching TV show.
-    func details(forEpisode episodeNumber: Int,
-                 inSeason seasonNumber: Int,
+    func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                  inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisode
 
 }

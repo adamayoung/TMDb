@@ -6,6 +6,7 @@ final class MockConfigurationService: ConfigurationService {
     var apiConfiguration: APIConfiguration?
     var countries: [Country]?
     var departments: [Department]?
+    var languages: [Language]?
 
     func apiConfiguration() async throws -> APIConfiguration {
         try await withCheckedThrowingContinuation { continuation in
@@ -37,6 +38,17 @@ final class MockConfigurationService: ConfigurationService {
             }
 
             continuation.resume(returning: departments)
+        }
+    }
+
+    func languages() async throws -> [Language] {
+        try await withCheckedThrowingContinuation { continuation in
+            guard let languages = self.languages else {
+                continuation.resume(throwing: MockDataMissingError())
+                return
+            }
+
+            continuation.resume(returning: languages)
         }
     }
 

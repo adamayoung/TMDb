@@ -25,4 +25,11 @@ public protocol ConfigurationService {
     /// - Returns: Jobs and departments used on TMDb.
     func jobsByDepartment() async throws -> [Department]
 
+    /// Returns the list of languages (ISO 639-1 tags) used throughout TMDb.
+    ///
+    /// [TMDb API - Configuration: Languages](https://developers.themoviedb.org/3/configuration/get-languages)
+    ///
+    ///  - Returns: Languages used throughout TMDb.
+    func languages() async throws -> [Language]
+
 }

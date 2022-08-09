@@ -19,4 +19,20 @@ final class ConfigurationEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testJobsEndpointReturnsURL() {
+        let expectedURL = URL(string: "/configuration/jobs")!
+
+        let url = ConfigurationEndpoint.jobs.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testLanguageEndpointReturnsURL() {
+        let expectedURL = URL(string: "/configuration/languages")!
+
+        let url = ConfigurationEndpoint.languages.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }

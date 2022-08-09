@@ -5,6 +5,7 @@ enum ConfigurationEndpoint {
     case api
     case countries
     case jobs
+    case languages
 
 }
 
@@ -24,6 +25,10 @@ extension ConfigurationEndpoint: Endpoint {
         case .jobs:
             return Self.basePath
                 .appendingPathComponent("jobs")
+
+        case .languages:
+            return Self.basePath
+                .appendingPathComponent("languages")
         }
     }
 
