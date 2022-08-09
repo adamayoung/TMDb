@@ -9,11 +9,13 @@ final class TMDbCertificationService: CertificationService {
     }
 
     func movieCertifications() async throws -> [String: [Certification]] {
-        try await apiClient.get(endpoint: CertificationsEndpoint.movie)
+        let certifications: Certifications = try await apiClient.get(endpoint: CertificationsEndpoint.movie)
+        return certifications.certifications
     }
 
     func tvShowCertifications() async throws -> [String: [Certification]] {
-        try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
+        let certifications: Certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
+        return certifications.certifications
     }
 
 }
