@@ -2,7 +2,8 @@ import Foundation
 
 enum GenresEndpoint {
 
-    case movies
+    case movie
+    case tvShow
 
 }
 
@@ -12,9 +13,14 @@ extension GenresEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .movies:
+        case .movie:
             return Self.basePath
                 .appendingPathComponent("movie")
+                .appendingPathComponent("list")
+
+        case .tvShow:
+            return Self.basePath
+                .appendingPathComponent("tv")
                 .appendingPathComponent("list")
         }
     }
