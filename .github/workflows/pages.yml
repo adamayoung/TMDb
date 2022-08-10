@@ -1,4 +1,4 @@
-name: Generate documentation
+name: Documentation
 
 on:
   release:
@@ -20,7 +20,7 @@ jobs:
     name: Deploy
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}/documentation/tmdb
+      url: ${{ steps.deployment.outputs.page_url }}documentation/tmdb
     runs-on: macos-12
     steps:
       - name: Checkout
@@ -38,7 +38,7 @@ jobs:
           --hosting-base-path TMDb \
           --output-path docs
 
-      - name: Upload artifact
+      - name: Upload documentation
         uses: actions/upload-pages-artifact@v1
         with:
           path: 'docs'
