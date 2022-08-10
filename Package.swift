@@ -23,6 +23,13 @@ let package = Package(
             resources: [
                 .process("Resources")
             ]
+        ),
+        .testTarget(
+            name: "TMDbIntegrationTests",
+            dependencies: ["TMDb"],
+            resources: [
+                .process("Resources")
+            ]
         )
     ]
 )
