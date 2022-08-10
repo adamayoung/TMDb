@@ -8,13 +8,14 @@ on:
     branches:
       - main
 
+concurrency:
+  group: "ci-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint
     runs-on: macos-12
-    concurrency:
-       group: ci-lint-${{ github.head_ref || github.run_id }}
-       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,9 +26,6 @@ jobs:
   codeScan:
     name: Code Scan
     runs-on: ubuntu-latest
-    concurrency:
-       group: ci-code-scan-${{ github.head_ref || github.run_id }}
-       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -45,9 +43,6 @@ jobs:
   build-test:
     name: Build and Test
     runs-on: macos-12
-    concurrency:
-       group: ci-build-test-${{ github.head_ref || github.run_id }}
-       cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -65,3 +60,21 @@ jobs:
 
       - name: Test
         run: swift test --skip-build --parallel
+
+  build-documentation:
+    name: Build Documentation
+    runs-on: macos-12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache SPM
+        uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build
+        run: swift package generate-documentation
