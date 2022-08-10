@@ -111,7 +111,7 @@ Combine support is available in version [6.0.0](https://github.com/adamayoung/TM
 
 ## Documentation
 
-The latest documentation for the TMDb APIs is available at [https://adamayoung.github.io/TMDb](https://adamayoung.github.io/TMDb/).
+The latest documentation for the TMDb APIs is available at [https://adamayoung.github.io/TMDb/documentation/tmdb](https://adamayoung.github.io/TMDb/documentation/tmdb).
 
 ## References
 

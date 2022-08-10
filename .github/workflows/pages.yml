@@ -1,4 +1,4 @@
-name: Deploy static content to Pages
+name: Generate documentation
 
 on:
   release:
@@ -12,14 +12,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "documentation"
   cancel-in-progress: true
 
 jobs:
   deploy:
+    name: Deploy
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}/documentation/tmdb
     runs-on: macos-12
     steps:
       - name: Checkout
