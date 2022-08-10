@@ -20,7 +20,9 @@ final class TMDbCertificationServiceTests: XCTestCase {
 
     func testMovieCertificationsReturnsMovieCertifications() async throws {
         let expectedResult = Certification.mocks
-        apiClient.result = .success(expectedResult)
+        let certifications = Certifications(certifications: expectedResult)
+
+        apiClient.result = .success(certifications)
 
         let result = try await service.movieCertifications()
 
@@ -30,7 +32,9 @@ final class TMDbCertificationServiceTests: XCTestCase {
 
     func testTVShowCertificationsReturnsTVShowCertifications() async throws {
         let expectedResult = Certification.mocks
-        apiClient.result = .success(expectedResult)
+        let certifications = Certifications(certifications: expectedResult)
+
+        apiClient.result = .success(certifications)
 
         let result = try await service.tvShowCertifications()
 

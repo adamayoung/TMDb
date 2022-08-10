@@ -33,9 +33,13 @@ public final class TMDbAPI {
     public let genres: GenreService
 
     public convenience init(apiKey: String) {
-        let apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: .tmdbAPIBaseURL,
-                                      urlSession: URLSession(configuration: .default),
-                                      serialiser: Serialiser(decoder: .theMovieDatabase))
+        self.init(apiKey: apiKey, urlSessionConfiguration: .default)
+    }
+
+    convenience init(apiKey: String, baseURL: URL = .tmdbAPIBaseURL, urlSessionConfiguration: URLSessionConfiguration) {
+        let urlSession = URLSession(configuration: urlSessionConfiguration)
+        let serialiser = Serialiser(decoder: .theMovieDatabase)
+        let apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, urlSession: urlSession, serialiser: serialiser)
 
         self.init(
             certificationService: TMDbCertificationService(apiClient: apiClient),
