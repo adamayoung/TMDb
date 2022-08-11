@@ -20,6 +20,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Cache SPM
+        uses: actions/cache@v2
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
       - name: swiftlint
         run: swift package swiftlint --strict --reporter github-actions-logging
 
