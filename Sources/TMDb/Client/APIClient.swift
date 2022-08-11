@@ -8,7 +8,7 @@ protocol APIClient {
 
 extension APIClient {
 
-    func get<Response: Decodable>(endpoint:Endpoint) async throws -> Response {
+    func get<Response: Decodable>(endpoint: Endpoint) async throws -> Response {
         try await get(path: endpoint.path)
     }
 
