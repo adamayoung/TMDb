@@ -1,0 +1,19 @@
+{
+    "results": [
+        {
+            "iso_3166_1": "AR",
+            "english_name": "Argentina",
+            "native_name": "Argentina"
+        },
+        {
+            "iso_3166_1": "AT",
+            "english_name": "Austria",
+            "native_name": "Austria"
+        },
+        {
+            "iso_3166_1": "US",
+            "english_name": "United States of America",
+            "native_name": "United States"
+        }
+    ]
+}
