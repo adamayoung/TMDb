@@ -1,10 +1,6 @@
 @testable import TMDb
 import XCTest
 
-#if canImport(Combine)
-import Combine
-#endif
-
 final class MockTVShowService: TVShowService {
 
     var tvShowDetails: TVShow?

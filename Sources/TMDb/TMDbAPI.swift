@@ -31,6 +31,8 @@ public final class TMDbAPI {
     public let tvShowEpisodes: TVShowEpisodeService
     /// Genres.
     public let genres: GenreService
+    /// Watch Providers.
+    public let watchProviders: WatchProviderService
 
     public convenience init(apiKey: String) {
         self.init(apiKey: apiKey, urlSessionConfiguration: .default)
@@ -52,7 +54,8 @@ public final class TMDbAPI {
             tvShowService: TMDbTVShowService(apiClient: apiClient),
             tvShowSeasonService: TMDbTVShowSeasonService(apiClient: apiClient),
             tvShowEpisodeService: TMDbTVShowEpisodeService(apiClient: apiClient),
-            genreService: TMDbGenreService(apiClient: apiClient)
+            genreService: TMDbGenreService(apiClient: apiClient),
+            watchProviderService: TMDbWatchProviderService(apiClient: apiClient)
         )
     }
 
@@ -60,7 +63,7 @@ public final class TMDbAPI {
          discoverService: DiscoverService, movieService: MovieService, personService: PersonService,
          searchService: SearchService, trendingService: TrendingService, tvShowService: TVShowService,
          tvShowSeasonService: TVShowSeasonService, tvShowEpisodeService: TVShowEpisodeService,
-         genreService: GenreService) {
+         genreService: GenreService, watchProviderService: WatchProviderService) {
         self.certifications = certificationService
         self.configurations = configurationService
         self.discover = discoverService
@@ -72,6 +75,7 @@ public final class TMDbAPI {
         self.tvShowSeasons = tvShowSeasonService
         self.tvShowEpisodes = tvShowEpisodeService
         self.genres = genreService
+        self.watchProviders = watchProviderService
     }
 
 }
