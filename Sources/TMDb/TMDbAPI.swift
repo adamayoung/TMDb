@@ -11,10 +11,14 @@ public final class TMDbAPI {
 
     /// Certifications.
     public let certifications: CertificationService
+    /// Companies.
+    public let companies: CompanyService
     /// Configurations.
     public let configurations: ConfigurationService
     /// Discover.
     public let discover: DiscoverService
+    /// Genres.
+    public let genres: GenreService
     /// Movies.
     public let movies: MovieService
     /// People.
@@ -29,8 +33,6 @@ public final class TMDbAPI {
     public let tvShowSeasons: TVShowSeasonService
     /// TV Show Episodes.
     public let tvShowEpisodes: TVShowEpisodeService
-    /// Genres.
-    public let genres: GenreService
     /// Watch Providers.
     public let watchProviders: WatchProviderService
 
@@ -45,8 +47,10 @@ public final class TMDbAPI {
 
         self.init(
             certificationService: TMDbCertificationService(apiClient: apiClient),
+            companyService: TMDbCompanyService(apiClient: apiClient),
             configurationService: TMDbConfigurationService(apiClient: apiClient),
             discoverService: TMDbDiscoverService(apiClient: apiClient),
+            genreService: TMDbGenreService(apiClient: apiClient),
             movieService: TMDbMovieService(apiClient: apiClient),
             personService: TMDbPersonService(apiClient: apiClient),
             searchService: TMDbSearchService(apiClient: apiClient),
@@ -54,19 +58,20 @@ public final class TMDbAPI {
             tvShowService: TMDbTVShowService(apiClient: apiClient),
             tvShowSeasonService: TMDbTVShowSeasonService(apiClient: apiClient),
             tvShowEpisodeService: TMDbTVShowEpisodeService(apiClient: apiClient),
-            genreService: TMDbGenreService(apiClient: apiClient),
             watchProviderService: TMDbWatchProviderService(apiClient: apiClient)
         )
     }
 
-    init(certificationService: CertificationService, configurationService: ConfigurationService,
-         discoverService: DiscoverService, movieService: MovieService, personService: PersonService,
-         searchService: SearchService, trendingService: TrendingService, tvShowService: TVShowService,
-         tvShowSeasonService: TVShowSeasonService, tvShowEpisodeService: TVShowEpisodeService,
-         genreService: GenreService, watchProviderService: WatchProviderService) {
+    init(certificationService: CertificationService, companyService: CompanyService,
+         configurationService: ConfigurationService, discoverService: DiscoverService, genreService: GenreService,
+         movieService: MovieService, personService: PersonService, searchService: SearchService,
+         trendingService: TrendingService, tvShowService: TVShowService, tvShowSeasonService: TVShowSeasonService,
+         tvShowEpisodeService: TVShowEpisodeService, watchProviderService: WatchProviderService) {
         self.certifications = certificationService
+        self.companies = companyService
         self.configurations = configurationService
         self.discover = discoverService
+        self.genres = genreService
         self.movies = movieService
         self.people = personService
         self.search = searchService
@@ -74,7 +79,6 @@ public final class TMDbAPI {
         self.tvShows = tvShowService
         self.tvShowSeasons = tvShowSeasonService
         self.tvShowEpisodes = tvShowEpisodeService
-        self.genres = genreService
         self.watchProviders = watchProviderService
     }
 
