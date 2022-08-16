@@ -24,6 +24,7 @@ final class TMDbAPITests: XCTestCase {
         companyService = MockCompanyService()
         configurationService = MockConfigurationService()
         discoverService = MockDiscoverService()
+        genreService = MockGenreService()
         movieService = MockMovieService()
         personService = MockPersonService()
         searchService = MockSearchService()
@@ -31,13 +32,13 @@ final class TMDbAPITests: XCTestCase {
         tvShowService = MockTVShowService()
         tvShowSeasonService = MockTVShowSeasonService()
         tvShowEpisodeService = MockTVShowEpisodeService()
-        genreService = MockGenreService()
         watchProviderService = MockWatchProviderService()
         tmdb = TMDbAPI(
             certificationService: certificationService,
             companyService: companyService,
             configurationService: configurationService,
             discoverService: discoverService,
+            genreService: genreService,
             movieService: movieService,
             personService: personService,
             searchService: searchService,
@@ -45,16 +46,17 @@ final class TMDbAPITests: XCTestCase {
             tvShowService: tvShowService,
             tvShowSeasonService: tvShowSeasonService,
             tvShowEpisodeService: tvShowEpisodeService,
-            genreService: genreService,
             watchProviderService: watchProviderService
         )
     }
 
     override func tearDown() {
+        tmdb = nil
         certificationService = nil
         companyService = nil
         configurationService = nil
         discoverService = nil
+        genreService = nil
         movieService = nil
         personService = nil
         searchService = nil
@@ -63,7 +65,6 @@ final class TMDbAPITests: XCTestCase {
         tvShowSeasonService = nil
         tvShowEpisodeService = nil
         watchProviderService = nil
-        tmdb = nil
         super.tearDown()
     }
 
@@ -72,6 +73,7 @@ final class TMDbAPITests: XCTestCase {
         XCTAssertIdentical(tmdb.companies as? MockCompanyService, companyService)
         XCTAssertIdentical(tmdb.configurations as? MockConfigurationService, configurationService)
         XCTAssertIdentical(tmdb.discover as? MockDiscoverService, discoverService)
+        XCTAssertIdentical(tmdb.genres as? MockGenreService, genreService)
         XCTAssertIdentical(tmdb.movies as? MockMovieService, movieService)
         XCTAssertIdentical(tmdb.people as? MockPersonService, personService)
         XCTAssertIdentical(tmdb.search as? MockSearchService, searchService)
@@ -79,7 +81,6 @@ final class TMDbAPITests: XCTestCase {
         XCTAssertIdentical(tmdb.tvShows as? MockTVShowService, tvShowService)
         XCTAssertIdentical(tmdb.tvShowSeasons as? MockTVShowSeasonService, tvShowSeasonService)
         XCTAssertIdentical(tmdb.tvShowEpisodes as? MockTVShowEpisodeService, tvShowEpisodeService)
-        XCTAssertIdentical(tmdb.genres as? MockGenreService, genreService)
         XCTAssertIdentical(tmdb.watchProviders as? MockWatchProviderService, watchProviderService)
     }
 

@@ -47,6 +47,7 @@ public struct Company: Identifiable, Decodable, Equatable, Hashable {
 
 extension Company {
 
+    /// A parent company.
     public struct Parent: Identifiable, Decodable, Equatable, Hashable {
 
         /// Company identifier.
