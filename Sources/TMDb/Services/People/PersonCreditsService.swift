@@ -10,7 +10,7 @@ public protocol PersonCreditsService {
     /// - Parameters:
     ///     - personID: The identifier of the person.
     ///
-    /// - Returns: The matching person's combined movie and TV show credits..
+    /// - Returns: The matching person's combined movie and TV show credits.
     func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits
 
     /// Returns the movie credits of a person.

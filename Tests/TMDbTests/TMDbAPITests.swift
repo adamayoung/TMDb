@@ -5,6 +5,7 @@ final class TMDbAPITests: XCTestCase {
 
     var tmdb: TMDbAPI!
     var certificationService: MockCertificationService!
+    var companyService: MockCompanyService!
     var configurationService: MockConfigurationService!
     var discoverService: MockDiscoverService!
     var movieService: MockMovieService!
@@ -20,6 +21,7 @@ final class TMDbAPITests: XCTestCase {
     override func setUp() {
         super.setUp()
         certificationService = MockCertificationService()
+        companyService = MockCompanyService()
         configurationService = MockConfigurationService()
         discoverService = MockDiscoverService()
         movieService = MockMovieService()
@@ -33,6 +35,7 @@ final class TMDbAPITests: XCTestCase {
         watchProviderService = MockWatchProviderService()
         tmdb = TMDbAPI(
             certificationService: certificationService,
+            companyService: companyService,
             configurationService: configurationService,
             discoverService: discoverService,
             movieService: movieService,
@@ -49,6 +52,7 @@ final class TMDbAPITests: XCTestCase {
 
     override func tearDown() {
         certificationService = nil
+        companyService = nil
         configurationService = nil
         discoverService = nil
         movieService = nil
@@ -65,6 +69,7 @@ final class TMDbAPITests: XCTestCase {
 
     func testInit() {
         XCTAssertIdentical(tmdb.certifications as? MockCertificationService, certificationService)
+        XCTAssertIdentical(tmdb.companies as? MockCompanyService, companyService)
         XCTAssertIdentical(tmdb.configurations as? MockConfigurationService, configurationService)
         XCTAssertIdentical(tmdb.discover as? MockDiscoverService, discoverService)
         XCTAssertIdentical(tmdb.movies as? MockMovieService, movieService)
