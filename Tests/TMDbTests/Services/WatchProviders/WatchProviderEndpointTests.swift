@@ -20,4 +20,13 @@ final class WatchProviderEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testTVShowEndpointReturnsURL() {
+        let regionCode = Locale.current.regionCode ?? ""
+        let expectedURL = URL(string: "/watch/providers/tv?watch_region=\(regionCode)")!
+
+        let url = WatchProviderEndpoint.tvShow.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }

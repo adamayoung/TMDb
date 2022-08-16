@@ -5,6 +5,7 @@ final class MockWatchProviderService: WatchProviderService {
 
     var countries: [Country]?
     var movieWatchProviders: [WatchProvider]?
+    var tvShowWatchProviders: [WatchProvider]?
 
     func countries() async throws -> [Country] {
         try await withCheckedThrowingContinuation { continuation in
@@ -25,6 +26,17 @@ final class MockWatchProviderService: WatchProviderService {
             }
 
             continuation.resume(returning: movieWatchProviders)
+        }
+    }
+
+    func tvShowWatchProviders() async throws -> [WatchProvider] {
+        try await withCheckedThrowingContinuation { continuation in
+            guard let tvShowWatchProviders = self.tvShowWatchProviders else {
+                continuation.resume(throwing: MockDataMissingError())
+                return
+            }
+
+            continuation.resume(returning: tvShowWatchProviders)
         }
     }
 

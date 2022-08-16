@@ -18,4 +18,9 @@ final class TMDbWatchProviderService: WatchProviderService {
         return result.results
     }
 
+    func tvShowWatchProviders() async throws -> [WatchProvider] {
+        let result: WatchProviderResult = try await apiClient.get(endpoint: WatchProviderEndpoint.tvShow)
+        return result.results
+    }
+
 }

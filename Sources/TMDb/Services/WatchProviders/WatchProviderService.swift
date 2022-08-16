@@ -16,4 +16,11 @@ public protocol WatchProviderService {
     /// - Returns: Watch providers for movies.
     func movieWatchProviders() async throws -> [WatchProvider]
 
+    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV shows.
+    ///
+    /// [TMDb API - Watch Providers: TV](https://developers.themoviedb.org/3/watch-providers/get-tv-providers)
+    ///
+    /// - Returns: Watch providers for TV shows.
+    func tvShowWatchProviders() async throws -> [WatchProvider]
+
 }

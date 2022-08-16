@@ -32,4 +32,12 @@ final class WatchProviderTests: XCTestCase {
         XCTAssertTrue(!watchProviders.isEmpty)
     }
 
+    func testTVShowWatchProviders() async throws {
+        TMDbURLProtocol.add("watch-providers-tv", for: WatchProviderEndpoint.tvShow)
+
+        let watchProviders = try await tmdb.watchProviders.tvShowWatchProviders()
+
+        XCTAssertTrue(!watchProviders.isEmpty)
+    }
+
 }
