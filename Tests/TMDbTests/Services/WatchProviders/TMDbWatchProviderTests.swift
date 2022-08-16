@@ -29,4 +29,15 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.regions.path)
     }
 
+    func testMovieWatchProvidersReturnsWatchProviders() async throws {
+        let watchProviderResult = WatchProviderResult.mock
+        let expectedResult = watchProviderResult.results
+        apiClient.result = .success(watchProviderResult)
+
+        let result = try await service.movieWatchProviders()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie.path)
+    }
+
 }

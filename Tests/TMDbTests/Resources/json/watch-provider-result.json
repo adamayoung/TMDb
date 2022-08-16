@@ -1,0 +1,16 @@
+{
+    "results": [
+        {
+            "display_priority": 0,
+            "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+            "provider_name": "Netflix",
+            "provider_id": 8
+        },
+        {
+            "display_priority": 1,
+            "logo_path": "/emthp39XA2YScoYL1p0sdbAH2WA.jpg",
+            "provider_name": "Amazon Prime Video",
+            "provider_id": 9
+        }
+    ]
+}

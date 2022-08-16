@@ -9,4 +9,11 @@ public protocol WatchProviderService {
     /// - Returns: Countries TMDb have watch provider data for.
     func countries() async throws -> [Country]
 
+    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
+    ///
+    /// [TMDb API - Watch Providers: Movie](https://developers.themoviedb.org/3/watch-providers/get-movie-providers)
+    ///
+    /// - Returns: Watch providers for movies.
+    func movieWatchProviders() async throws -> [WatchProvider]
+
 }

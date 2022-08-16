@@ -6,7 +6,7 @@ final class TMDbURLProtocol: URLProtocol {
     private static var testURLs = [String: String]()
 
     static func add(_ mockName: String, for endpoint: Endpoint) {
-        testURLs["/3\(endpoint.path)"] = mockName
+        testURLs["/3\(endpoint.path.path)"] = mockName
     }
 
     static func reset() {
@@ -14,11 +14,7 @@ final class TMDbURLProtocol: URLProtocol {
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
-        guard let path = request.url?.path, testURLs[path] != nil else {
-            return false
-        }
-
-        return true
+        true
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
