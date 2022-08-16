@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/adamayoung/swiftlint-plugin.git",
       "state" : {
-        "revision" : "205bcb202f287105c0277ee94d7274f93f85a654",
-        "version" : "0.2.0"
+        "revision" : "90df8f932f23d2a8d3de96a723b4e8ec9468c8ad",
+        "version" : "0.3.2"
       }
     }
   ],

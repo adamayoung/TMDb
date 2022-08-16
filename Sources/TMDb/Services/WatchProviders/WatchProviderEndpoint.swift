@@ -4,6 +4,7 @@ enum WatchProviderEndpoint {
 
     case regions
     case movie
+    case tvShow
 
 }
 
@@ -20,6 +21,11 @@ extension WatchProviderEndpoint: Endpoint {
         case .movie:
             return Self.basePath
                 .appendingPathComponent("movie")
+                .appendingWatchRegion()
+
+        case .tvShow:
+            return Self.basePath
+                .appendingPathComponent("tv")
                 .appendingWatchRegion()
         }
     }
