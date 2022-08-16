@@ -13,4 +13,9 @@ final class TMDbWatchProviderService: WatchProviderService {
         return regions.results
     }
 
+    func movieWatchProviders() async throws -> [WatchProvider] {
+        let result: WatchProviderResult = try await apiClient.get(endpoint: WatchProviderEndpoint.movie)
+        return result.results
+    }
+
 }

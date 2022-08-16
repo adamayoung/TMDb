@@ -24,4 +24,12 @@ final class WatchProviderTests: XCTestCase {
         XCTAssertTrue(!countries.isEmpty)
     }
 
+    func testMovieWatchProviders() async throws {
+        TMDbURLProtocol.add("watch-providers-movie", for: WatchProviderEndpoint.movie)
+
+        let watchProviders = try await tmdb.watchProviders.movieWatchProviders()
+
+        XCTAssertTrue(!watchProviders.isEmpty)
+    }
+
 }
