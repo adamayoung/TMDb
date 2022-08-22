@@ -3,18 +3,42 @@ import TMDb
 
 extension TVShowEpisode {
 
-    static var mock: Self {
-        let id = Int.randomID
-
-        return .init(id: id, name: "Episode \(id)",
-                     episodeNumber: .random(in: 0...23),
-                     seasonNumber: .random(in: 0...10))
+    static func mock(
+        id: Int = .randomID,
+        name: String? = nil,
+        episodeNumber: Int = .random(in: 0...23),
+        seasonNumber: Int = .random(in: 0...10),
+        overview: String? = .randomString,
+        airDate: Date? = .random,
+        productionCode: String? = nil,
+        stillPath: URL? = nil,
+        crew: [CrewMember]? = nil,
+        guestStars: [CastMember]? = nil,
+        voteAverage: Double? = nil,
+        voteCount: Int? = nil
+    ) -> Self {
+        .init(
+            id: id,
+            name: name ?? "TV Show Episode \(id)",
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            overview: overview,
+            airDate: airDate,
+            productionCode: productionCode,
+            stillPath: stillPath,
+            crew: crew,
+            guestStars: guestStars,
+            voteAverage: voteAverage,
+            voteCount: voteCount
+        )
     }
 
-    static var mocks: [Self] {
-        (0...Int.random(in: 1...10)).map { _ in
-            .mock
-        }
+}
+
+extension Array where Element == TVShowEpisode {
+
+    static var mocks: [Element] {
+        [.mock(), .mock(), .mock(), .mock()]
     }
 
 }

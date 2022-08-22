@@ -3,10 +3,13 @@ import TMDb
 
 extension PersonImageCollection {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        profiles: [ImageMetadata] = [.mock(), .mock()]
+    ) -> Self {
         .init(
-            id: .randomID,
-            profiles: ImageMetadata.mocks
+            id: id,
+            profiles: profiles
         )
     }
 

@@ -19,7 +19,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testMoviesWithDefaultParametersReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.movies()
@@ -29,7 +29,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testMoviesReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: nil)
@@ -40,7 +40,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testMoviesWithSortByReturnsMovies() async throws {
         let sortBy = MovieSort.originalTitle(descending: false)
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil)
@@ -51,7 +51,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testMoviesWithWithPeopleReturnsMovies() async throws {
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil)
@@ -61,7 +61,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testMoviesWithWithPageReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -74,7 +74,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     func testMoviesWithSortByAndWithPeopleAndPageReturnsMovies() async throws {
         let sortBy = MovieSort.originalTitle(descending: false)
         let people: [Int] = [.randomID, .randomID, .randomID, .randomID, .randomID]
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -85,7 +85,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testTVShowsWithDefaultParametersReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows()
@@ -95,7 +95,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testTVShowsReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: nil, page: nil)
@@ -106,7 +106,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testTVShowsWithSortByReturnsTVShows() async throws {
         let sortBy = TVShowSort.firstAirDate(descending: false)
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.tvShows(sortedBy: sortBy, page: nil)
@@ -116,7 +116,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
     }
 
     func testTVShowsWithPageReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -128,7 +128,7 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
     func testTVShowsWithSortByAndPageReturnsTVShows() async throws {
         let sortBy = TVShowSort.firstAirDate(descending: false)
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 

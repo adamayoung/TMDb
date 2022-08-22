@@ -1,10 +1,10 @@
 import Foundation
 
-extension Sequence where Element: Hashable {
+extension Sequence where Element: Hashable, Element: Identifiable {
 
     func uniqued() -> [Element] {
-        var seen = Set<Element>()
-        return filter { seen.insert($0).inserted }
+        var seen = Set<Element.ID>()
+        return filter { seen.insert($0.id).inserted }
     }
 
 }

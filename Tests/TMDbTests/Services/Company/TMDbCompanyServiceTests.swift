@@ -19,7 +19,7 @@ final class TMDbCompanyServiceTests: XCTestCase {
     }
 
     func testDetailsReturnsCompany() async throws {
-        let expectedResult = Company.mock
+        let expectedResult = Company.lucasfilm
         let companyID = expectedResult.id
 
         apiClient.result = .success(expectedResult)

@@ -19,8 +19,8 @@ final class TMDbCertificationServiceTests: XCTestCase {
     }
 
     func testMovieCertificationsReturnsMovieCertifications() async throws {
-        let expectedResult = Certification.mocks
-        let certifications = Certifications(certifications: expectedResult)
+        let certifications = Certifications.gbAndUS
+        let expectedResult = certifications.certifications
 
         apiClient.result = .success(certifications)
 
@@ -31,8 +31,8 @@ final class TMDbCertificationServiceTests: XCTestCase {
     }
 
     func testTVShowCertificationsReturnsTVShowCertifications() async throws {
-        let expectedResult = Certification.mocks
-        let certifications = Certifications(certifications: expectedResult)
+        let certifications = Certifications.gbAndUS
+        let expectedResult = certifications.certifications
 
         apiClient.result = .success(certifications)
 

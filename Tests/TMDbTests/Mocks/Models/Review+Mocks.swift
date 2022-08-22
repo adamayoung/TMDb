@@ -3,18 +3,24 @@ import TMDb
 
 extension Review {
 
-    static var mock: Self {
+    static func mock(
+        id: String = .randomID,
+        author: String? = nil,
+        content: String = .randomString
+    ) -> Self {
         .init(
-            id: .randomID,
-            author: "Author \(String.randomID)",
-            content: .randomString
+            id: id,
+            author: author ?? "Author \(String.randomID)",
+            content: content
         )
     }
 
-    static var mocks: [Self] {
-        (0...Int.random(in: 1...10)).map { _ in
-            .mock
-        }
+}
+
+extension Array where Element == Review {
+
+    static var mocks: [Element] {
+        [.mock(), .mock(), .mock()]
     }
 
 }

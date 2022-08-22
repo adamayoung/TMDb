@@ -3,21 +3,30 @@ import TMDb
 
 extension VideoMetadata {
 
-    static var mock: Self {
+    static func mock(
+        id: String = .randomID,
+        name: String = .randomString,
+        site: String = "YouTube",
+        key: String = "abc123",
+        type: VideoType = .trailer,
+        size: VideoSize = .s1080
+    ) -> Self {
         .init(
-            id: .randomID,
-            name: .randomString,
-            site: .randomString,
-            key: .randomString,
-            type: .trailer,
-            size: .s1080
+            id: id,
+            name: name,
+            site: site,
+            key: key,
+            type: type,
+            size: size
         )
     }
 
-    static var mocks: [Self] {
-        (0...Int.random(in: 1...10)).map { _ in
-            .mock
-        }
+}
+
+extension Array where Element == VideoMetadata {
+
+    static var mocks: [Element] {
+        [.mock(), .mock(), .mock()]
     }
 
 }

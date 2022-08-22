@@ -19,7 +19,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testDetailsReturnsMovie() async throws {
-        let expectedResult = Movie.mock
+        let expectedResult = Movie.thorLoveAndThunder
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
@@ -30,7 +30,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testCreditsReturnsCredits() async throws {
-        let expectedResult = ShowCredits.mock
+        let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
@@ -42,7 +42,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
         let movieID = Int.randomID
-        let expectedResult = ReviewPageableList.mock
+        let expectedResult = ReviewPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.reviews(forMovie: movieID)
@@ -53,7 +53,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testReviewsReturnsReviews() async throws {
         let movieID = Int.randomID
-        let expectedResult = ReviewPageableList.mock
+        let expectedResult = ReviewPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.reviews(forMovie: movieID, page: nil)
@@ -64,7 +64,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testReviewsWithPageReturnsReviews() async throws {
         let movieID = Int.randomID
-        let expectedResult = ReviewPageableList.mock
+        let expectedResult = ReviewPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -75,7 +75,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testImagesReturnsImageCollection() async throws {
-        let expectedResult = ImageCollection.mock
+        let expectedResult = ImageCollection.mock()
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
@@ -86,7 +86,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testVideosReturnsVideoCollection() async throws {
-        let expectedResult = VideoCollection.mock
+        let expectedResult = VideoCollection.mock()
         let movieID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
@@ -98,7 +98,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testRecommendationsWithDefaultParametersReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.recommendations(forMovie: movieID)
@@ -109,7 +109,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testRecommendationsReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.recommendations(forMovie: movieID, page: nil)
@@ -120,7 +120,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testRecommendationsWithPageReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -132,7 +132,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testSimilarWithDefaultParametersReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.similar(toMovie: movieID)
@@ -143,7 +143,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testSimilarReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.similar(toMovie: movieID, page: nil)
@@ -154,7 +154,7 @@ final class TMDbMovieServiceTests: XCTestCase {
 
     func testSimilarWithPageReturnsMovies() async throws {
         let movieID = 1
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -165,7 +165,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testNowPlayingWithDefaultParametersReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.nowPlaying()
@@ -175,7 +175,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testNowPlayingReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.nowPlaying(page: nil)
@@ -185,7 +185,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testNowPlayingWithPageReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -196,7 +196,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testPopularWithDefaultParametersReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.popular()
@@ -206,7 +206,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testPopularReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.popular(page: nil)
@@ -216,7 +216,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testPopularWithPageReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -227,7 +227,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testTopRatedWithDefaultParametersReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.topRated()
@@ -237,7 +237,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testTopRatedReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.topRated(page: nil)
@@ -247,7 +247,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testTopRatedWithPageReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -258,7 +258,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testUpcomingWithDefaultParametersReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.upcoming()
@@ -268,7 +268,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testUpcomingReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.upcoming(page: nil)
@@ -278,7 +278,7 @@ final class TMDbMovieServiceTests: XCTestCase {
     }
 
     func testUpcomingWithPageReturnsMovies() async throws {
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 

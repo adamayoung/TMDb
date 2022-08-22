@@ -19,7 +19,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testAPIConfigurationReturnsAPIConfiguration() async throws {
-        let expectedResult = APIConfiguration.mock
+        let expectedResult = APIConfiguration.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.apiConfiguration()
@@ -29,7 +29,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testAPIConfigurationWhenCalledMultipleTimesMakesOneRequest() async throws {
-        let expectedResult = APIConfiguration.mock
+        let expectedResult = APIConfiguration.mock()
         apiClient.result = .success(expectedResult)
 
         await withThrowingTaskGroup(of: APIConfiguration.self) { group in
@@ -44,7 +44,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testCountriesReturnsCountries() async throws {
-        let expectedResult = Country.mocks
+        let expectedResult = [Country].mocks
         apiClient.result = .success(expectedResult)
 
         let result = try await service.countries()
@@ -54,7 +54,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testJobsByDepartmentReturnsDepartments() async throws {
-        let expectedResult = Department.mocks
+        let expectedResult = [Department].mocks
         apiClient.result = .success(expectedResult)
 
         let result = try await service.jobsByDepartment()
@@ -64,7 +64,7 @@ final class TMDbConfigurationServiceTests: XCTestCase {
     }
 
     func testLanguagesReturnsLanguages() async throws {
-        let expectedResult = Language.mocks
+        let expectedResult = [Language].mocks
         apiClient.result = .success(expectedResult)
 
         let result = try await service.languages()

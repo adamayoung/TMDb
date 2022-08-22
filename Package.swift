@@ -15,14 +15,14 @@ let package = Package(
 
     dependencies: [
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.0.0"),
-        .package(url: "https://github.com/adamayoung/swiftlint-plugin.git", from: "0.3.1")
+//        .package(url: "https://github.com/adamayoung/swiftlint-plugin.git", from: "0.3.1")
     ],
 
     targets: [
         .target(
             name: "TMDb",
             plugins: [
-                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
+//                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
             ]
         ),
         .testTarget(
@@ -32,7 +32,7 @@ let package = Package(
                 .process("Resources")
             ],
             plugins: [
-                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
+//                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
             ]
         ),
         .testTarget(
@@ -42,7 +42,7 @@ let package = Package(
                 .process("Resources")
             ],
             plugins: [
-                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
+//                .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
             ]
         )
     ]

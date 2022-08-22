@@ -3,11 +3,15 @@ import TMDb
 
 extension PersonTVShowCredits {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        cast: [TVShow] = .mocks,
+        crew: [TVShow] = .mocks
+    ) -> Self {
         .init(
-            id: .randomID,
-            cast: TVShow.mocks,
-            crew: TVShow.mocks
+            id: id,
+            cast: cast,
+            crew: crew
         )
     }
 
