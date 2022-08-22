@@ -3,10 +3,13 @@ import TMDb
 
 extension VideoCollection {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        results: [VideoMetadata] = .mocks
+    ) -> Self {
         .init(
-            id: .randomID,
-            results: VideoMetadata.mocks
+            id: id,
+            results: results
         )
     }
 

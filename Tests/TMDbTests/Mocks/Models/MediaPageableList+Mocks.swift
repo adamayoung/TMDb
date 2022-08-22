@@ -3,19 +3,17 @@ import TMDb
 
 extension MediaPageableList {
 
-    static var mock: Self {
+    static func mock(
+        page: Int = Int.random(in: 1...5),
+        results: [Media] = .mocks,
+        totalResults: Int? = Int.random(in: 1...100),
+        totalPages: Int? = Int.random(in: 1...5)
+    ) -> Self {
         .init(
-            page: Int.random(in: 1...5),
-            results: [
-                .movie(.mock),
-                .movie(.mock),
-                .tvShow(.mock),
-                .tvShow(.mock),
-                .movie(.mock),
-                .tvShow(.mock)
-            ],
-            totalResults: Int.random(in: 1...100),
-            totalPages: Int.random(in: 1...5)
+            page: page,
+            results: results,
+            totalResults: totalResults,
+            totalPages: totalPages
         )
     }
 

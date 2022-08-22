@@ -3,10 +3,13 @@ import TMDb
 
 extension TVShowEpisodeImageCollection {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        stills: [ImageMetadata] = .mocks
+    ) -> Self {
         .init(
-            id: .randomID,
-            stills: ImageMetadata.mocks
+            id: id,
+            stills: stills
         )
     }
 

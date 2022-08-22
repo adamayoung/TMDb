@@ -3,12 +3,17 @@ import TMDb
 
 extension ImageCollection {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        posters: [ImageMetadata] = .mocks,
+        logos: [ImageMetadata] = .mocks,
+        backdrops: [ImageMetadata] = .mocks
+    ) -> Self {
         .init(
-            id: .randomID,
-            posters: ImageMetadata.mocks,
-            logos: ImageMetadata.mocks,
-            backdrops: ImageMetadata.mocks
+            id: id,
+            posters: posters,
+            logos: logos,
+            backdrops: backdrops
         )
     }
 

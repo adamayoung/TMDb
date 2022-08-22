@@ -3,21 +3,25 @@ import TMDb
 
 extension PersonCombinedCredits {
 
-    static var mock: Self {
+    static func mock(
+        id: Int = .randomID,
+        cast: [Show] = [
+            .movie(.jurassicWorldDominion),
+            .tvShow(.theSandman),
+            .movie(.topGunMaverick),
+            .tvShow(.sheHulk),
+            .tvShow(.strangerThings)
+        ],
+        crew: [Show] = [
+            .movie(.bulletTrain),
+            .tvShow(.theSandman),
+            .movie(.thorLoveAndThunder)
+        ]
+    ) -> Self {
         .init(
-            id: .randomID,
-            cast: [
-                .movie(.mock),
-                .tvShow(.mock),
-                .movie(.mock),
-                .tvShow(.mock),
-                .tvShow(.mock)
-            ],
-            crew: [
-                .movie(.mock),
-                .tvShow(.mock),
-                .movie(.mock)
-            ]
+            id: id,
+            cast: cast,
+            crew: crew
         )
     }
 

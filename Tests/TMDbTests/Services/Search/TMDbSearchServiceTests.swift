@@ -20,7 +20,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchAllWithDefaultParametersReturnsMedia() async throws {
         let query = String.randomString
-        let expectedResult = MediaPageableList.mock
+        let expectedResult = MediaPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchAll(query: query)
@@ -31,7 +31,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchAllReturnsMedia() async throws {
         let query = String.randomString
-        let expectedResult = MediaPageableList.mock
+        let expectedResult = MediaPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchAll(query: query, page: nil)
@@ -42,7 +42,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchAllWithPageReturnsMedia() async throws {
         let query = String.randomString
-        let expectedResult = MediaPageableList.mock
+        let expectedResult = MediaPageableList.mock()
         let page = expectedResult.page
 
         apiClient.result = .success(expectedResult)
@@ -55,7 +55,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchMoviesWithDefaultParametersReturnsMovies() async throws {
         let query = String.randomString
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchMovies(query: query)
@@ -66,7 +66,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchMoviesReturnsMovies() async throws {
         let query = String.randomString
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchMovies(query: query, year: nil, page: nil)
@@ -78,7 +78,7 @@ final class TMDbSearchServiceTests: XCTestCase {
     func testSearchMoviesWithYearReturnsMovies() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchMovies(query: query, year: year, page: nil)
@@ -89,7 +89,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchMoviesWithPageReturnsMovies() async throws {
         let query = String.randomString
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -102,7 +102,7 @@ final class TMDbSearchServiceTests: XCTestCase {
     func testSearchMoviesWithYearAndPageReturnsMovies() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = MoviePageableList.mock
+        let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -114,7 +114,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchTVShowsWithDefaultParametersReturnsTVShows() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchTVShows(query: query)
@@ -125,7 +125,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchTVShowsReturnsTVShows() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: nil)
@@ -137,7 +137,7 @@ final class TMDbSearchServiceTests: XCTestCase {
     func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: nil)
@@ -148,7 +148,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchTVShowsWithPageReturnsTVShows() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -161,7 +161,7 @@ final class TMDbSearchServiceTests: XCTestCase {
     func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList.mock
+        let expectedResult = TVShowPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
@@ -174,7 +174,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {
         let query = String.randomString
-        let expectedResult = PersonPageableList.mock
+        let expectedResult = PersonPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchPeople(query: query)
@@ -185,7 +185,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchPeopleReturnsPeople() async throws {
         let query = String.randomString
-        let expectedResult = PersonPageableList.mock
+        let expectedResult = PersonPageableList.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.searchPeople(query: query, page: nil)
@@ -196,7 +196,7 @@ final class TMDbSearchServiceTests: XCTestCase {
 
     func testSearchPeopleWithPageReturnsPeople() async throws {
         let query = String.randomString
-        let expectedResult = PersonPageableList.mock
+        let expectedResult = PersonPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 

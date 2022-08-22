@@ -3,25 +3,23 @@ import TMDb
 
 extension ImagesConfiguration {
 
-    static var mock: Self {
+    static func mock(
+        baseURL: URL = .randomBaseURL(secure: false),
+        secureBaseURL: URL = .randomBaseURL(),
+        backdropSizes: [String] = ["w300"],
+        logoSizes: [String] = ["w45"],
+        posterSizes: [String] = ["w92"],
+        profileSizes: [String] = ["w45"],
+        stillSizes: [String] = ["w92"]
+    ) -> Self {
         .init(
-            baseURL: URL(string: "http://image.tmdb.org/t/p/")!,
-            secureBaseURL: URL(string: "https://image.tmdb.org/t/p/")!,
-            backdropSizes: [
-                "w300"
-            ],
-            logoSizes: [
-                "w45"
-            ],
-            posterSizes: [
-                "w92"
-            ],
-            profileSizes: [
-                "w45"
-            ],
-            stillSizes: [
-                "w92"
-            ]
+            baseURL: baseURL,
+            secureBaseURL: secureBaseURL,
+            backdropSizes: backdropSizes,
+            logoSizes: logoSizes,
+            posterSizes: posterSizes,
+            profileSizes: profileSizes,
+            stillSizes: stillSizes
         )
     }
 
