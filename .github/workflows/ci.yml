@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: swiftlint
-        run: swift package swiftlint --strict --reporter github-actions-logging
+        run: swiftlint --strict --reporter github-actions-logging
 
   codeScan:
     name: Code Scan
