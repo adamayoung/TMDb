@@ -19,7 +19,7 @@ final class TMDbGenreServiceTests: XCTestCase {
     }
 
     func testMovieGenresReturnsGenres() async throws {
-        let genreList = GenreList.mock
+        let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.result = .success(genreList)
 
@@ -30,7 +30,7 @@ final class TMDbGenreServiceTests: XCTestCase {
     }
 
     func testTVShowGenresReturnsGenres() async throws {
-        let genreList = GenreList.mock
+        let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.result = .success(genreList)
 

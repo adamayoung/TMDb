@@ -3,22 +3,32 @@ import TMDb
 
 extension CrewMember {
 
-    static var mock: Self {
-        let id = Int.randomID
-
-        return .init(
+    static func mock(
+        id: Int = .randomID,
+        creditID: String = .randomID,
+        name: String? = nil,
+        job: String = "Job \(String.randomString)",
+        department: String = "Department \(String.randomString))",
+        gender: Gender? = Gender.male,
+        profilePath: URL? = .randomImagePath
+    ) -> Self {
+        .init(
             id: id,
-            creditID: .randomID,
-            name: "Crew \(id)",
-            job: "Job \(String.randomString)",
-            department: "Department \(String.randomString))"
+            creditID: creditID,
+            name: name ?? "Crew Member \(id)",
+            job: job,
+            department: department,
+            gender: gender,
+            profilePath: profilePath
         )
     }
 
-    static var mocks: [Self] {
-        (0...Int.random(in: 1...10)).map { _ in
-            .mock
-        }
+}
+
+extension Array where Element == CrewMember {
+
+    static var mocks: [Element] {
+        []
     }
 
 }

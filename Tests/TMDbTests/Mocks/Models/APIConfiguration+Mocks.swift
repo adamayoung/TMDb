@@ -3,13 +3,13 @@ import TMDb
 
 extension APIConfiguration {
 
-    static var mock: Self {
+    static func mock(
+        images: ImagesConfiguration = .mock(),
+        changeKeys: [String] = ["air_date", "also_known_as"]
+    ) -> Self {
         .init(
-            images: .mock,
-            changeKeys: [
-                "air_date",
-                "also_known_as"
-            ]
+            images: images,
+            changeKeys: changeKeys
         )
     }
 

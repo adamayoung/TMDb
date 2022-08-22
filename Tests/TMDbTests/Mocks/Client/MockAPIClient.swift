@@ -6,7 +6,7 @@ final class MockAPIClient: APIClient {
     static var apiKey: String?
 
     var result: Result<Any, TMDbError>?
-    var requestTime: TimeInterval = 0
+    var requestTime: UInt64 = 0
     private(set) var lastPath: URL?
     private(set) var getCount = 0
 
@@ -18,7 +18,9 @@ final class MockAPIClient: APIClient {
         self.lastPath = path
         self.getCount += 1
 
-        Thread.sleep(forTimeInterval: requestTime)
+        if requestTime > 0 {
+            try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
+        }
 
         guard let result = result else {
             throw TMDbError.unknown

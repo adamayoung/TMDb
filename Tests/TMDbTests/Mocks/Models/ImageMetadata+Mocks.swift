@@ -3,22 +3,32 @@ import TMDb
 
 extension ImageMetadata {
 
-    static var mock: Self {
+    static func mock(
+        filePath: URL = .randomImagePath,
+        width: Int = Int.random(in: 10...100),
+        height: Int = Int.random(in: 10...100),
+        aspectRatio: Float = Float.random(in: 1.0...5.0),
+        voteAverage: Float = Float.random(in: 0.0...10.0),
+        voteCount: Int = Int.random(in: 0...1000),
+        languageCode: String = "en"
+    ) -> Self {
         .init(
-            filePath: URL(string: "/\(String.randomString).jpg")!,
-            width: Int.random(in: 10...100),
-            height: Int.random(in: 10...100),
-            aspectRatio: 1.5,
-            voteAverage: Float.random(in: 0.0...10.0),
-            voteCount: Int.random(in: 0...1000),
-            languageCode: "en"
+            filePath: filePath,
+            width: width,
+            height: height,
+            aspectRatio: aspectRatio,
+            voteAverage: voteAverage,
+            voteCount: voteCount,
+            languageCode: languageCode
         )
     }
 
-    static var mocks: [Self] {
-        (0...Int.random(in: 1...10)).map { _ in
-            .mock
-        }
+}
+
+extension Array where Element == ImageMetadata {
+
+    static var mocks: [Element] {
+        [.mock(), .mock()]
     }
 
 }

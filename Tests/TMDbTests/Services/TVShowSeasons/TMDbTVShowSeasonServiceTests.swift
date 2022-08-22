@@ -20,7 +20,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
 
     func testDetailsReturnsTVShowSeason() async throws {
         let tvShowID = Int.randomID
-        let expectedResult = TVShowSeason.mock
+        let expectedResult = TVShowSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         apiClient.result = .success(expectedResult)
 
@@ -34,7 +34,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
     func testImagesReturnsImages() async throws {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
-        let expectedResult = ImageCollection.mock
+        let expectedResult = ImageCollection.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.images(forSeason: seasonNumber, inTVShow: tvShowID)
@@ -47,7 +47,7 @@ final class TMDbTVShowSeasonServiceTests: XCTestCase {
     func testVideosReturnsVideos() async throws {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
-        let expectedResult = VideoCollection.mock
+        let expectedResult = VideoCollection.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.videos(forSeason: seasonNumber, inTVShow: tvShowID)

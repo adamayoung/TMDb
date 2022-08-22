@@ -3,12 +3,17 @@ import TMDb
 
 extension PersonPageableList {
 
-    static var mock: Self {
+    static func mock(
+        page: Int = .random(in: 1...5),
+        results: [Person] = .mocks,
+        totalResults: Int = .random(in: 1...100),
+        totalPages: Int = .random(in: 1...5)
+    ) -> Self {
         .init(
-            page: Int.random(in: 1...5),
-            results: Person.mocks,
-            totalResults: Int.random(in: 1...100),
-            totalPages: Int.random(in: 1...5)
+            page: page,
+            results: results,
+            totalResults: totalResults,
+            totalPages: totalPages
         )
     }
 
