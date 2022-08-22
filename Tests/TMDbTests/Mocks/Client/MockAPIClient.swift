@@ -1,7 +1,7 @@
 @testable import TMDb
 import XCTest
 
-class MockAPIClient: APIClient {
+final class MockAPIClient: APIClient {
 
     static var apiKey: String?
 
