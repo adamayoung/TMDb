@@ -43,7 +43,7 @@ extension Movie {
             backdropPath: backdropPath,
             budget: budget,
             revenue: revenue,
-            homepageURL:homepageURL,
+            homepageURL: homepageURL,
             imdbID: imdbID,
             status: status,
             productionCompanies: productionCompanies,

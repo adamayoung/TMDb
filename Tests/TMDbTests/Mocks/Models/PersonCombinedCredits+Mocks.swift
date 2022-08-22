@@ -24,5 +24,5 @@ extension PersonCombinedCredits {
             crew: crew
         )
     }
-    
+
 }

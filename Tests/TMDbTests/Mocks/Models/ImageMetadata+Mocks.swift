@@ -5,7 +5,7 @@ extension ImageMetadata {
 
     static func mock(
         filePath: URL = .randomImagePath,
-        width: Int =  Int.random(in: 10...100),
+        width: Int = Int.random(in: 10...100),
         height: Int = Int.random(in: 10...100),
         aspectRatio: Float = Float.random(in: 1.0...5.0),
         voteAverage: Float = Float.random(in: 0.0...10.0),
