@@ -1,5 +1,7 @@
 # TMDb - The Movie Database
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3736ec542f094683afab5a009034dec5)](https://app.codacy.com/gh/adamayoung/TMDb?utm_source=github.com&utm_medium=referral&utm_content=adamayoung/TMDb&utm_campaign=Badge_Grade)
+
 ![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
