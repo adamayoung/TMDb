@@ -6,7 +6,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.6
+* Swift 5.7
 
 ## Installation
 
@@ -15,7 +15,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 Add the TMDb package as a dependency to your `Package.swift` file, and add it as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 
 import PackageDescription
 

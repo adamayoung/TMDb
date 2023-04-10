@@ -11,9 +11,6 @@ permissions:
   pages: write
   id-token: write
 
-env:
-  DEVELOPER_DIR: /Applications/Xcode_14.0.app/Contents/Developer
-
 concurrency:
   group: "documentation"
   cancel-in-progress: true
