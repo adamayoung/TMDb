@@ -7,7 +7,6 @@ struct SwiftLintCommandPlugin: CommandPlugin {
     func performCommand(context: PluginContext, arguments: [String]) throws {
         let swiftlintTool = try context.tool(named: "swiftlint")
         let swiftlintExecutableURL = URL(fileURLWithPath: swiftlintTool.path.string)
-        print(swiftlintExecutableURL.absoluteString)
         var swiftlintArguments = [
             "lint",
             "--cache-path",
