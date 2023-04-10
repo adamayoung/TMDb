@@ -56,7 +56,7 @@ final class TMDbAPIClientTests: XCTestCase {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbError {
             switch error {
-            case .unauthorized:
+            case .unauthorised:
                 XCTAssertTrue(true)
                 return
             default:
@@ -92,7 +92,7 @@ final class TMDbAPIClientTests: XCTestCase {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbError {
             switch error {
-            case .unknown:
+            case .internalServerError:
                 XCTAssertTrue(true)
                 return
             default:

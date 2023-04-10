@@ -26,8 +26,16 @@ final actor TMDbAPIClient: APIClient {
             throw TMDbError.network(error)
         }
 
-        try validate(response: response)
-        return try await serialiser.decode(data)
+        try await validate(data: data, response: response)
+
+        let decodedResponse: Response
+        do {
+            decodedResponse = try await serialiser.decode(Response.self, from: data)
+        } catch let error {
+            throw TMDbError.decode(error)
+        }
+
+        return decodedResponse
     }
 
 }
@@ -55,31 +63,58 @@ extension TMDbAPIClient {
             .appendingLanguage()
     }
 
-    private func validate(response: URLResponse) throws {
-        if let tmdbError = TMDbError(response: response) {
-            throw tmdbError
-        }
-    }
-
-}
-
-private extension TMDbError {
-
-    init?(response: URLResponse) {
+    private func validate(data: Data, response: URLResponse) async throws {
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-        guard statusCode != 200 else {
-            return nil
+
+        if (200...299).contains(statusCode) {
+            return
         }
+
+        let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
+        let message = statusResponse?.statusMessage
 
         switch statusCode {
+        case 400:
+            throw TMDbError.badRequest(message)
+
         case 401:
-            self = .unauthorized
+            throw TMDbError.unauthorised(message)
+
+        case 403:
+            throw TMDbError.forbidden(message)
 
         case 404:
-            self = .notFound
+            throw TMDbError.notFound(message)
+
+        case 405:
+            throw TMDbError.methodNotAllowed(message)
+
+        case 406:
+            throw TMDbError.notAcceptable(message)
+
+        case 422:
+            throw TMDbError.unprocessableContent(message)
+
+        case 429:
+            throw TMDbError.tooManyRequests(message)
+
+        case 500:
+            throw TMDbError.internalServerError(message)
+
+        case 501:
+            throw TMDbError.notImplemented(message)
+
+        case 502:
+            throw TMDbError.badGateway(message)
+
+        case 503:
+            throw TMDbError.serviceUnavailable(message)
+
+        case 504:
+            throw TMDbError.gatewayTimeout(message)
 
         default:
-            self = .unknown
+            throw TMDbError.unknown
         }
     }
 

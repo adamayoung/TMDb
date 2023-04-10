@@ -22,7 +22,7 @@ final class MockAPIClient: APIClient {
             try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
         }
 
-        guard let result = result else {
+        guard let result else {
             throw TMDbError.unknown
         }
 

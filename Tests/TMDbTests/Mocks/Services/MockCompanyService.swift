@@ -7,7 +7,7 @@ final class MockCompanyService: CompanyService {
 
     func details(forCompany id: Company.ID) async throws -> Company {
         try await withCheckedThrowingContinuation { continuation in
-            guard let company = company else {
+            guard let company else {
                 continuation.resume(throwing: MockDataMissingError())
                 return
             }

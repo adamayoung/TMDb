@@ -77,7 +77,7 @@ extension URL {
     }
 
     func appendingYear(_ year: Int?) -> Self {
-        guard let year = year else {
+        guard let year else {
             return self
         }
 
@@ -85,7 +85,7 @@ extension URL {
     }
 
     func appendingFirstAirDateYear(_ year: Int?) -> Self {
-        guard let year = year else {
+        guard let year else {
             return self
         }
 
@@ -93,7 +93,7 @@ extension URL {
     }
 
     func appendingWithPeople(_ peopleIDs: [Person.ID]?) -> Self {
-        guard let peopleIDs = peopleIDs else {
+        guard let peopleIDs else {
             return self
         }
 

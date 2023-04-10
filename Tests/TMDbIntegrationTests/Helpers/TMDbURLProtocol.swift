@@ -41,7 +41,7 @@ final class TMDbURLProtocol: URLProtocol {
             return
         }
 
-        guard let data = data else {
+        guard let data else {
             let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: "2.0", headerFields: nil)!
             self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             self.client?.urlProtocolDidFinishLoading(self)

@@ -69,7 +69,7 @@ extension ImagesConfiguration {
     private static let defaultSizePathComponent = "original"
 
     private func imageURL(for path: URL?, idealWidth width: Int, sizes: [String]) -> URL? {
-        guard let path = path else {
+        guard let path else {
             return nil
         }
 
