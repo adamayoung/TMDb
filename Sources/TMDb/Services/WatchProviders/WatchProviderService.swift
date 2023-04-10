@@ -1,5 +1,6 @@
 import Foundation
 
+/// A service to fetch information about TMDb watch providers.
 public protocol WatchProviderService {
 
     /// Returns a list of all of the countries TMDb have watch provider (OTT/streaming) data for.
