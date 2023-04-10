@@ -1,12 +1,12 @@
 # TMDb - The Movie Database
 
-![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg)
+![CI](https://github.com/adamayoung/TMDb/workflows/CI/badge.svg) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/dfcab1f87b6c4a3587e0383443e2433c)](https://app.codacy.com/gh/adamayoung/TMDb/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.6
+* Swift 5.7
 
 ## Installation
 
@@ -15,7 +15,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 Add the TMDb package as a dependency to your `Package.swift` file, and add it as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 
 import PackageDescription
 
@@ -42,6 +42,10 @@ Create an API key from The Movie Database web site [https://www.themoviedb.org/d
 
 Get an up to date list of the officially supported movie certifications on TMDb.
 
+### Company
+
+Get details about companies.
+
 ### Configuration
 
 System wide configuration information.
@@ -51,6 +55,10 @@ System wide configuration information.
 Discover movies by different types of data like average rating, number of votes, genres and certifications.
 
 Discover TV shows by different types of data like average rating, number of votes, genres, the network they aired on and air dates.
+
+### Genres
+
+Get the official genres for Movies and TV Shows on TMDb.
 
 ### Movies
 
@@ -75,6 +83,14 @@ Get information about TV shows.
 ### TV Show Seasons
 
 Get information about TV show seasons.
+
+### TV Show Episodes
+
+Get information about TV show episodes.
+
+### Watch Providers
+
+Get TMDb watch provider data.
 
 ## Examples
 
@@ -104,10 +120,6 @@ let tvShows = list.results
 let personList = try await tmdb.people.popular()
 let people = personList.results
 ```
-
-## Support for Combine
-
-Combine support is available in version [6.0.0](https://github.com/adamayoung/TMDb/tree/6.0.0).
 
 ## Documentation
 

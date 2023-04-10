@@ -7,32 +7,36 @@ on:
   pull_request:
     branches:
       - main
-
-env:
-  DEVELOPER_DIR: /Applications/Xcode_14.0.app/Contents/Developer
+  workflow_dispatch:
 
 concurrency:
   group: "ci-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  build-test:
+    name: Build and Test
     runs-on: macos-12
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache SPM
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+      
+      - name: Lint
+        run: swift package plugin swiftlint --strict --reporter github-actions-logging
 
-      - name: swiftlint
-        run: swiftlint --strict --reporter github-actions-logging
+      - name: Build
+        run: swift build --build-tests
+
+      - name: Test
+        run: swift test --skip-build --parallel
 
   codeScan:
     name: Code Scan
@@ -41,7 +45,7 @@ jobs:
         security-events: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Scan
         uses: MobSF/mobsfscan@main
@@ -53,36 +57,15 @@ jobs:
         with:
           sarif_file: results.sarif
 
-  build-test:
-    name: Build and Test
-    runs-on: macos-12
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Cache SPM
-        uses: actions/cache@v2
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
-      - name: Build
-        run: swift build --build-tests
-
-      - name: Test
-        run: swift test --skip-build --parallel
-
   build-documentation:
     name: Build Documentation
     runs-on: macos-12
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache SPM
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
