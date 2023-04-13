@@ -26,8 +26,16 @@ final actor TMDbAPIClient: APIClient {
             throw TMDbError.network(error)
         }
 
-        try validate(response: response)
-        return try await serialiser.decode(data)
+        try await validate(data: data, response: response)
+
+        let decodedResponse: Response
+        do {
+            decodedResponse = try await serialiser.decode(Response.self, from: data)
+        } catch let error {
+            throw TMDbError.decode(error)
+        }
+
+        return decodedResponse
     }
 
 }
@@ -55,32 +63,17 @@ extension TMDbAPIClient {
             .appendingLanguage()
     }
 
-    private func validate(response: URLResponse) throws {
-        if let tmdbError = TMDbError(response: response) {
-            throw tmdbError
-        }
-    }
-
-}
-
-private extension TMDbError {
-
-    init?(response: URLResponse) {
+    private func validate(data: Data, response: URLResponse) async throws {
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-        guard statusCode != 200 else {
-            return nil
+
+        if (200...299).contains(statusCode) {
+            return
         }
 
-        switch statusCode {
-        case 401:
-            self = .unauthorized
+        let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
+        let message = statusResponse?.statusMessage
 
-        case 404:
-            self = .notFound
-
-        default:
-            self = .unknown
-        }
+        throw TMDbError(statusCode: statusCode, message: message)
     }
 
 }

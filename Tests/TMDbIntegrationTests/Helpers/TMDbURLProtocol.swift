@@ -3,14 +3,18 @@ import Foundation
 
 final class TMDbURLProtocol: URLProtocol {
 
-    private static var testURLs = [String: String]()
+    private static var responseBodyMap = [String: String]()
+    private static var responseHTTPStatusMap = [String: Int]()
 
-    static func add(_ mockName: String, for endpoint: Endpoint) {
-        testURLs["/3\(endpoint.path.path)"] = mockName
+    static func add(_ mockName: String, for endpoint: Endpoint, httpStatus: Int = 200) {
+        let path = "/3\(endpoint.path.path)"
+        responseBodyMap[path] = mockName
+        responseHTTPStatusMap[path] = httpStatus
     }
 
     static func reset() {
-        testURLs = [:]
+        responseBodyMap = [:]
+        responseHTTPStatusMap = [:]
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
@@ -26,7 +30,7 @@ final class TMDbURLProtocol: URLProtocol {
             return
         }
 
-        guard let mockName = Self.testURLs[url.path] else {
+        guard let mockName = Self.responseBodyMap[url.path] else {
             let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: "2.0", headerFields: nil)!
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             self.client?.urlProtocolDidFinishLoading(self)
@@ -41,15 +45,17 @@ final class TMDbURLProtocol: URLProtocol {
             return
         }
 
-        guard let data = data else {
+        guard let data else {
             let response = HTTPURLResponse(url: url, statusCode: 404, httpVersion: "2.0", headerFields: nil)!
             self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             self.client?.urlProtocolDidFinishLoading(self)
             return
         }
 
+        let statusCode = Self.responseHTTPStatusMap[url.path] ?? 200
+
         self.client?.urlProtocol(self, didLoad: data)
-        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "2.0", headerFields: nil)!
+        let response = HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: "2.0", headerFields: nil)!
         self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         self.client?.urlProtocolDidFinishLoading(self)
     }

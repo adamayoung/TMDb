@@ -13,15 +13,15 @@ final class TMDbErrorTests: XCTestCase {
     }
 
     func testUnauthorizedReturnsErrorDescription() {
-        XCTAssertEqual(TMDbError.unauthorized.localizedDescription, "Unauthorised")
+        XCTAssertEqual(TMDbError.unauthorised(nil).localizedDescription, "Unauthorised")
     }
 
     func testNotFoundReturnsErrorDescription() {
-        XCTAssertEqual(TMDbError.notFound.localizedDescription, "Not Found")
+        XCTAssertEqual(TMDbError.notFound(nil).localizedDescription, "Not found")
     }
 
     func testUnknownReturnsErrorDescription() {
-        XCTAssertEqual(TMDbError.unknown.localizedDescription, "Unknown Error")
+        XCTAssertEqual(TMDbError.unknown.localizedDescription, "Unknown error")
     }
 
     func testDecodeReturnsErrorDescription() {
@@ -29,7 +29,7 @@ final class TMDbErrorTests: XCTestCase {
 
         let result = TMDbError.decode(error).localizedDescription
 
-        XCTAssertEqual(result, "Data Decode Error")
+        XCTAssertEqual(result, "The operation couldn’t be completed. (NSURLErrorDomain error -1000.)")
     }
 
 }

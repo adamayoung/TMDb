@@ -88,7 +88,7 @@ extension URL {
     }
 
     func appendingSortBy(_ sortBy: MovieSort?) -> Self {
-        guard let sortBy = sortBy else {
+        guard let sortBy else {
             return self
         }
 

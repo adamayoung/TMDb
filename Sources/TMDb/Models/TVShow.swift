@@ -25,7 +25,7 @@ public struct TVShow: Identifiable, Decodable, Equatable, Hashable {
     public let genres: [Genre]?
     /// TV show's first air date.
     public var firstAirDate: Date? {
-        guard let firstAirDateString = firstAirDateString else {
+        guard let firstAirDateString else {
             return nil
         }
 
@@ -39,7 +39,7 @@ public struct TVShow: Identifiable, Decodable, Equatable, Hashable {
     public let backdropPath: URL?
     /// TV show's web site URL.
     public var homepageURL: URL? {
-        guard let homepage = homepage else {
+        guard let homepage else {
             return nil
         }
 
@@ -115,7 +115,7 @@ public struct TVShow: Identifiable, Decodable, Equatable, Hashable {
         self.seasons = seasons
         self.genres = genres
         self.firstAirDateString = {
-            guard let firstAirDate = firstAirDate else {
+            guard let firstAirDate else {
                 return nil
             }
 

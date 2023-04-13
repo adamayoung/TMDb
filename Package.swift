@@ -23,6 +23,9 @@ let package = Package(
     targets: [
         .target(
             name: "TMDb",
+            resources: [
+                .process("Resources")
+            ],
             plugins: [
                 .plugin(name: "SwiftLintPlugin")
             ]

@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings  
+*/
+
+"BAD_REQUEST" = "Bad request";
+"UNAUTHORISED" = "Unauthorised";
+"FORBIDDEN" = "Forbidden";
+"NOT_FOUND" = "Not found";
+"METHOD_NOT_ALLOWED" = "Method not allowed";
+"NOT_ACCEPTABLE" = "Not acceptable";
+"UNPROCESSABLE_CONTENT" = "Unprocessable content";
+"TOO_MANY_REQUESTS" = "Too many requests";
+"INTERNAL_SERVER_ERROR" = "Internal server error";
+"NOT_IMPLEMENTED" = "Not implemented";
+"BAD_GATEWAY" = "Bad gateway";
+"SERVICE_UNAVAILABLE" = "Service unavailable";
+"GATEWAY_TIMEOUT" = "Gateway timeout";
+"UNKNOWN_ERROR" = "Unknown error";

@@ -19,15 +19,10 @@ final class SerialiserTests: XCTestCase {
         let data = "aaa".data(using: .utf8)!
 
         do {
-            _ = try await serialiser.decode(data) as MockObject
-        } catch let error as TMDbError {
-            switch error {
-            case .decode:
-                XCTAssertTrue(true)
-                return
-            default:
-                break
-            }
+            _ = try await serialiser.decode(MockObject.self, from: data)
+        } catch {
+            XCTAssertTrue(true)
+            return
         }
 
         XCTFail("Expected decode error to be thrown")
@@ -37,7 +32,7 @@ final class SerialiserTests: XCTestCase {
         let expectedResult = MockObject()
         let data = expectedResult.data
 
-        let result = try await serialiser.decode(data) as MockObject
+        let result = try await serialiser.decode(MockObject.self, from: data)
 
         XCTAssertEqual(result, expectedResult)
     }

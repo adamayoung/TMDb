@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "7BFE8F34-FCEA-4261-8CD7-FB157F38E939",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "region" : "GB",
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "TMDbIntegrationTests",
+        "name" : "TMDbIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "TMDbTests",
+        "name" : "TMDbTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -25,3 +25,6 @@ identifier_name:
 
 line_length:
   ignores_urls: true
+
+cyclomatic_complexity:
+  ignores_case_statements: true

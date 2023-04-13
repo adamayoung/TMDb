@@ -62,7 +62,7 @@ extension URL {
     }
 
     func appendingSortBy(_ sortBy: TVShowSort?) -> Self {
-        guard let sortBy = sortBy else {
+        guard let sortBy else {
             return self
         }
 

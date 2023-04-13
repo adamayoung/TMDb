@@ -29,7 +29,7 @@ public struct Person: Identifiable, Decodable, Equatable, Hashable {
     public let imdbID: String?
     /// Person's web site.
     public var homepageURL: URL? {
-        guard let homepage = homepage else {
+        guard let homepage else {
             return nil
         }
 

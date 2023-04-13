@@ -21,7 +21,7 @@ public struct Movie: Identifiable, Decodable, Equatable, Hashable {
     public let genres: [Genre]?
     /// Movie release date.
     public var releaseDate: Date? {
-        guard let releaseDateString = releaseDateString else {
+        guard let releaseDateString else {
             return nil
         }
 
@@ -37,7 +37,7 @@ public struct Movie: Identifiable, Decodable, Equatable, Hashable {
     public let revenue: Double?
     /// Movie's web site URL.
     public var homepageURL: URL? {
-        guard let homepage = homepage else {
+        guard let homepage else {
             return nil
         }
 
@@ -111,7 +111,7 @@ public struct Movie: Identifiable, Decodable, Equatable, Hashable {
         self.runtime = runtime
         self.genres = genres
         self.releaseDateString = {
-            guard let releaseDate = releaseDate else {
+            guard let releaseDate else {
                 return nil
             }
 
