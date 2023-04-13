@@ -17,7 +17,7 @@ final class TMDbAPIClientTests: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         urlSession = URLSession(configuration: configuration)
-        serialiser = Serialiser(decoder: JSONDecoder())
+        serialiser = Serialiser(decoder: .theMovieDatabase)
         apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, urlSession: urlSession, serialiser: serialiser)
     }
 
@@ -85,16 +85,20 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTFail("Expected not found error to be thrown")
     }
 
-    func testGetWhenResponseStatusCodeIs500ReturnsUnknownError() async throws {
-        MockURLProtocol.responseStatusCode = 500
+    func testGetWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
+        MockURLProtocol.responseStatusCode = 404
+        let expectedStatusMessage = "The resource you requested could not be found."
+        let statusResponse = try Data(fromResource: "error-status-response", withExtension: "json")
+        MockURLProtocol.data = statusResponse
 
         do {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbError {
             switch error {
-            case .internalServerError:
-                XCTAssertTrue(true)
+            case .notFound(let message):
+                XCTAssertEqual(message, expectedStatusMessage)
                 return
+
             default:
                 break
             }

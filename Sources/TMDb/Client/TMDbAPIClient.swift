@@ -73,49 +73,7 @@ extension TMDbAPIClient {
         let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
         let message = statusResponse?.statusMessage
 
-        switch statusCode {
-        case 400:
-            throw TMDbError.badRequest(message)
-
-        case 401:
-            throw TMDbError.unauthorised(message)
-
-        case 403:
-            throw TMDbError.forbidden(message)
-
-        case 404:
-            throw TMDbError.notFound(message)
-
-        case 405:
-            throw TMDbError.methodNotAllowed(message)
-
-        case 406:
-            throw TMDbError.notAcceptable(message)
-
-        case 422:
-            throw TMDbError.unprocessableContent(message)
-
-        case 429:
-            throw TMDbError.tooManyRequests(message)
-
-        case 500:
-            throw TMDbError.internalServerError(message)
-
-        case 501:
-            throw TMDbError.notImplemented(message)
-
-        case 502:
-            throw TMDbError.badGateway(message)
-
-        case 503:
-            throw TMDbError.serviceUnavailable(message)
-
-        case 504:
-            throw TMDbError.gatewayTimeout(message)
-
-        default:
-            throw TMDbError.unknown
-        }
+        throw TMDbError(statusCode: statusCode, message: message)
     }
 
 }
