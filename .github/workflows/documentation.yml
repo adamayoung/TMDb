@@ -1,9 +1,9 @@
 name: Documentation
 
 on:
-  release:
-    types:
-      - published
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -13,21 +13,32 @@ permissions:
 
 concurrency:
   group: "documentation"
-  cancel-in-progress: true
+  cancel-in-progress: false
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy Documentation
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}documentation/tmdb
-    runs-on: macos-12
+      url: ${{ steps.deployment.outputs.page_url }}documentation/policedatakit
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
+      - name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
       
       - name: Build documentation
         run: |

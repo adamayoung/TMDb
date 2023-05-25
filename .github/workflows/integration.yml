@@ -1,0 +1,39 @@
+name: Integration
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Every day at 12am
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: "integration-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
+
+jobs:
+  integration-test:
+    name: Integration Test
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build
+        run: swift build --build-tests
+
+      - name: Test
+        run: swift test --skip-build --filter TMDbIntegrationTests
