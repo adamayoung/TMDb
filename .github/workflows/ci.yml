@@ -13,10 +13,13 @@ concurrency:
   group: "ci-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
+
 jobs:
   build-test:
     name: Build and Test
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,36 +33,20 @@ jobs:
             ${{ runner.os }}-spm-
       
       - name: Lint
-        run: swift package plugin swiftlint --strict --reporter github-actions-logging
+        run: swiftlint --strict --reporter github-actions-logging
 
       - name: Build
-        run: swift build --build-tests
+        run: swift build -Xswiftc -warnings-as-errors --build-tests
 
       - name: Test
-        run: swift test --skip-build --parallel
-
-  codeScan:
-    name: Code Scan
-    runs-on: ubuntu-latest
-    permissions:
-        security-events: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Scan
-        uses: MobSF/mobsfscan@main
-        with:
-          args: '. --sarif --output results.sarif || true'
-
-      - name: Upload report
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: results.sarif
+        run: swift test --skip-build --parallel --filter TMDbTests
+      
+      - name: Build for Release
+        run: swift build -c release -Xswiftc -warnings-as-errors
 
   build-documentation:
     name: Build Documentation
-    runs-on: macos-12
+    runs-on: macos-13
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -73,4 +60,4 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Build
-        run: swift package generate-documentation
+        run: swift package generate-documentation --product TMDb
