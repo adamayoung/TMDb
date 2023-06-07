@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining people from TMDb.
+///
 public final class PersonService {
 
     private let apiClient: APIClient

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A person.
-public struct Person: Identifiable, Decodable, Equatable, Hashable {
+public struct Person: Identifiable, Codable, Equatable, Hashable {
 
     /// Person identifier.
     public let id: Int
@@ -54,10 +54,21 @@ public struct Person: Identifiable, Decodable, Equatable, Hashable {
     ///    - popularity: Person's current popularity.
     ///    - imdbID: Person's IMDb identifier.
     ///    - homepageURL: Person's web site.
-    public init(id: Int, name: String, alsoKnownAs: [String]? = nil, knownForDepartment: String? = nil,
-                biography: String? = nil, birthday: Date? = nil, deathday: Date? = nil, gender: Gender? = nil,
-                placeOfBirth: String? = nil, profilePath: URL? = nil, popularity: Double? = nil, imdbID: String? = nil,
-                homepageURL: URL? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        alsoKnownAs: [String]? = nil,
+        knownForDepartment: String? = nil,
+        biography: String? = nil,
+        birthday: Date? = nil,
+        deathday: Date? = nil,
+        gender: Gender? = nil,
+        placeOfBirth: String? = nil,
+        profilePath: URL? = nil,
+        popularity: Double? = nil,
+        imdbID: String? = nil,
+        homepageURL: URL? = nil
+    ) {
         self.id = id
         self.name = name
         self.alsoKnownAs = alsoKnownAs

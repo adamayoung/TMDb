@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for finding trending movies, TV shows and people from TMDb.
+///
 public final class TrendingService {
 
     private let apiClient: APIClient

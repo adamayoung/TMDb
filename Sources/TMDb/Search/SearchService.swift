@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for searching content from TMDb..
+///
 public final class SearchService {
 
     private let apiClient: APIClient

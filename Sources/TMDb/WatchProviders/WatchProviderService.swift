@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining watch providers from TMDb.
+///
 public final class WatchProviderService {
 
     private let apiClient: APIClient

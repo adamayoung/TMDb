@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a movie, tv show or person.
-public enum Media: Identifiable, Equatable, Hashable {
+public enum Media: Identifiable, Codable, Equatable, Hashable {
 
     /// Media's identifier.
     public var id: Int {
@@ -26,7 +26,7 @@ public enum Media: Identifiable, Equatable, Hashable {
 
 }
 
-extension Media: Decodable {
+extension Media {
 
     private enum CodingKeys: String, CodingKey {
         case mediaType
@@ -51,6 +51,21 @@ extension Media: Decodable {
 
         case .person:
             self = .person(try Person(from: decoder))
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var singleContainer = encoder.singleValueContainer()
+
+        switch self {
+        case .movie(let movie):
+            try singleContainer.encode(movie)
+
+        case .tvShow(let tvShow):
+            try singleContainer.encode(tvShow)
+
+        case .person(let person):
+            try singleContainer.encode(person)
         }
     }
 

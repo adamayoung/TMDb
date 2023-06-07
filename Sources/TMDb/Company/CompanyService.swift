@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining company data from TMDb.
+///
 public final class CompanyService {
 
     private let apiClient: APIClient

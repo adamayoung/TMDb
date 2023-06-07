@@ -4,7 +4,7 @@ import Foundation
 ///
 /// To build an image URL, you will need 3 pieces of data. The `base_url`, `size` and `file_path`. Simply combine them
 /// all and you will have a fully qualified URL.
-public struct ImagesConfiguration: Decodable, Equatable, Hashable {
+public struct ImagesConfiguration: Codable, Equatable, Hashable {
 
     /// Base image URL (http).
     public let baseURL: URL
@@ -31,8 +31,15 @@ public struct ImagesConfiguration: Decodable, Equatable, Hashable {
     ///    - posterSizes: Poster image sizes.
     ///    - profileSizes: Profile image sizes.
     ///    - stillSizes: Still image sizes.
-    public init(baseURL: URL, secureBaseURL: URL, backdropSizes: [String], logoSizes: [String], posterSizes: [String],
-                profileSizes: [String], stillSizes: [String]) {
+    public init(
+        baseURL: URL,
+        secureBaseURL: URL,
+        backdropSizes: [String],
+        logoSizes: [String],
+        posterSizes: [String],
+        profileSizes: [String],
+        stillSizes: [String]
+    ) {
         self.baseURL = baseURL
         self.secureBaseURL = secureBaseURL
         self.backdropSizes = backdropSizes

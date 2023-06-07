@@ -1,7 +1,7 @@
 import Foundation
 
 /// Video type.
-public enum VideoType: String, Decodable, Equatable, Hashable {
+public enum VideoType: String, Codable, Equatable, Hashable {
 
     /// Trailer.
     case trailer = "Trailer"

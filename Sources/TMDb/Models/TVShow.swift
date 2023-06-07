@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV show.
-public struct TVShow: Identifiable, Decodable, Equatable, Hashable {
+public struct TVShow: Identifiable, Codable, Equatable, Hashable {
 
     /// TV show identifier.
     public let id: Int
@@ -96,14 +96,33 @@ public struct TVShow: Identifiable, Decodable, Equatable, Hashable {
     ///    - popularity: TV show current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
-    public init(id: Int, name: String, originalName: String? = nil, originalLanguage: String? = nil,
-                overview: String? = nil, episodeRunTime: [Int]? = nil, numberOfSeasons: Int? = nil,
-                numberOfEpisodes: Int? = nil, seasons: [TVShowSeason]? = nil, genres: [Genre]? = nil,
-                firstAirDate: Date? = nil, originCountry: [String]? = nil, posterPath: URL? = nil,
-                backdropPath: URL? = nil, homepageURL: URL? = nil, inProduction: Bool? = nil,
-                languages: [String]? = nil, lastAirDate: Date? = nil, networks: [Network]? = nil,
-                productionCompanies: [ProductionCompany]? = nil, status: String? = nil, type: String? = nil,
-                popularity: Double? = nil, voteAverage: Double? = nil, voteCount: Int? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        originalName: String? = nil,
+        originalLanguage: String? = nil,
+        overview: String? = nil,
+        episodeRunTime: [Int]? = nil,
+        numberOfSeasons: Int? = nil,
+        numberOfEpisodes: Int? = nil,
+        seasons: [TVShowSeason]? = nil,
+        genres: [Genre]? = nil,
+        firstAirDate: Date? = nil,
+        originCountry: [String]? = nil,
+        posterPath: URL? = nil,
+        backdropPath: URL? = nil,
+        homepageURL: URL? = nil,
+        inProduction: Bool? = nil,
+        languages: [String]? = nil,
+        lastAirDate: Date? = nil,
+        networks: [Network]? = nil,
+        productionCompanies: [ProductionCompany]? = nil,
+        status: String? = nil,
+        type: String? = nil,
+        popularity: Double? = nil,
+        voteAverage: Double? = nil,
+        voteCount: Int? = nil
+    ) {
         self.id = id
         self.name = name
         self.originalName = originalName

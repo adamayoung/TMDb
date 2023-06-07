@@ -27,7 +27,7 @@ final class PageableListResultTests: XCTestCase {
 
 }
 
-private struct SomeListItem: Identifiable, Decodable, Equatable, Hashable {
+private struct SomeListItem: Identifiable, Codable, Equatable, Hashable {
 
     let id: Int
 

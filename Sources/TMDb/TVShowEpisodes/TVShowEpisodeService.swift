@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining TV show episodes from TMDb.
+///
 public final class TVShowEpisodeService {
 
     private let apiClient: APIClient

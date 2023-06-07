@@ -44,7 +44,7 @@ extension TMDbAPIClient {
 
     private func buildURLRequest(for path: URL) -> URLRequest {
         let url = urlFromPath(path)
-        var urlRequest = URLRequest(url: url)
+        var urlRequest = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
         urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
         return urlRequest
     }

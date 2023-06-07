@@ -12,7 +12,7 @@ extension TMDbFactory {
         TMDbAPIClient(
             apiKey: apiKey,
             baseURL: .tmdbAPIBaseURL,
-            urlSession: .shared,
+            urlSession: urlSession,
             serialiser: serialiser
         )
     }
@@ -20,6 +20,20 @@ extension TMDbFactory {
 }
 
 extension TMDbFactory {
+
+    private static let urlSession = URLSession(configuration: urlSessionConfiguration)
+
+    private static var urlSessionConfiguration: URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.default
+        #if !os(macOS)
+            configuration.multipathServiceType = .handover
+        #endif
+
+        configuration.waitsForConnectivity = true
+        configuration.timeoutIntervalForRequest = 30
+
+        return configuration
+    }
 
     private static var serialiser: some Serialiser {
         Serialiser(decoder: .theMovieDatabase)

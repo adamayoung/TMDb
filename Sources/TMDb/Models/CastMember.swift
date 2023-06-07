@@ -1,26 +1,36 @@
 import Foundation
 
-/// A cast member of a movie or TV show.
-public struct CastMember: Identifiable, Decodable, Equatable, Hashable {
+///
+/// A model representing a cast member..
+///
+public struct CastMember: Identifiable, Codable, Equatable, Hashable {
 
     /// Cast member's identifier.
     public let id: Int
+
     /// Cast member's identifier for the particular movie or TV show.
     public let castID: Int?
+
     /// Credit identifier for that particular movie or TV show.
     public let creditID: String
+
     /// Cast member's real name.
     public let name: String
+
     /// Cast member's character name.
     public let character: String
+
     /// Cast member's gender.
     public let gender: Gender?
+
     /// Cast member's profile image.
     public let profilePath: URL?
+
     /// Order number in the cast list.
     public let order: Int
 
-    /// Creates a new `CastMember`.
+    ///
+    /// Creates a cast member object.
     ///
     /// - Parameters:
     ///    - id: Cast member's identifier.
@@ -31,8 +41,17 @@ public struct CastMember: Identifiable, Decodable, Equatable, Hashable {
     ///    - gender: Cast member's gender.
     ///    - profilePath: Cast member's profile image.
     ///    - order: Order number in the cast list.
-    public init(id: Int, castID: Int? = nil, creditID: String, name: String, character: String, gender: Gender? = nil,
-                profilePath: URL? = nil, order: Int) {
+    /// 
+    public init(
+        id: Int,
+        castID: Int? = nil,
+        creditID: String,
+        name: String,
+        character: String,
+        gender: Gender? = nil,
+        profilePath: URL? = nil,
+        order: Int
+    ) {
         self.id = id
         self.castID = castID
         self.creditID = creditID

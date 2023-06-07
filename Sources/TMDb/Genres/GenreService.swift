@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining movie and TV show genres from TMDb.
+///
 public final class GenreService {
 
     private let apiClient: APIClient

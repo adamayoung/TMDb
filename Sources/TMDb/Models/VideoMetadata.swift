@@ -1,7 +1,7 @@
 import Foundation
 
 /// Details describing a video.
-public struct VideoMetadata: Identifiable, Decodable, Equatable, Hashable {
+public struct VideoMetadata: Identifiable, Codable, Equatable, Hashable {
 
     /// Video identifier.
     public let id: String
@@ -25,7 +25,14 @@ public struct VideoMetadata: Identifiable, Decodable, Equatable, Hashable {
     ///    - key: Site's video identifier.
     ///    - type: Video type.
     ///    - size: Video size.
-    public init(id: String, name: String, site: String, key: String, type: VideoType, size: VideoSize) {
+    public init(
+        id: String,
+        name: String,
+        site: String,
+        key: String,
+        type: VideoType,
+        size: VideoSize
+    ) {
         self.id = id
         self.name = name
         self.site = site

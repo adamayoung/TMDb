@@ -1,7 +1,7 @@
 import Foundation
 
 /// Details describing an image.
-public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
+public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable {
 
     /// Image metadata's identifier (same as `filePath`).
     public var id: URL { filePath }
@@ -29,13 +29,15 @@ public struct ImageMetadata: Identifiable, Decodable, Equatable, Hashable {
     ///    - languageCode: ISO 639-1 language code.
     ///    - voteAverage: The average of user votes on this image.
     ///    - voteCount: The number of user votes on this image.
-    public init(filePath: URL,
-                width: Int,
-                height: Int,
-                aspectRatio: Float,
-                voteAverage: Float?,
-                voteCount: Int?,
-                languageCode: String? = nil) {
+    public init(
+        filePath: URL,
+        width: Int,
+        height: Int,
+        aspectRatio: Float,
+        voteAverage: Float?,
+        voteCount: Int?,
+        languageCode: String? = nil
+    ) {
         self.filePath = filePath
         self.width = width
         self.height = height

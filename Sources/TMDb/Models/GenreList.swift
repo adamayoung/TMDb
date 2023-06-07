@@ -1,6 +1,6 @@
 import Foundation
 
-struct GenreList: Decodable, Equatable, Hashable {
+struct GenreList: Codable, Equatable, Hashable {
 
     let genres: [Genre]
 

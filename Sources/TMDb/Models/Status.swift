@@ -1,7 +1,7 @@
 import Foundation
 
 /// Show status.
-public enum Status: String, Decodable, Equatable, Hashable {
+public enum Status: String, Codable, Equatable, Hashable {
 
     /// Rumoured.
     case rumoured = "Rumored"

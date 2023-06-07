@@ -1,15 +1,20 @@
 import Foundation
 
-/// Gender of a person.
-public enum Gender: Int, Decodable, Equatable, Hashable {
+///
+/// The gender of a person.
+///
+public enum Gender: Int, Codable, Equatable, Hashable {
 
-    /// Unknown.
+    /// An unknown gender.
     case unknown = 0
-    /// Female.
+
+    /// A female.
     case female = 1
-    /// Male.
+
+    /// A male.
     case male = 2
-    /// Other.
+
+    /// Some other gender.
     case other = 3
 
     public init(from decoder: Decoder) throws {
