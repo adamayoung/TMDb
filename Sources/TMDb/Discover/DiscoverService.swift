@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for discovering movies and TV shows from TMDb.
+///
 public final class DiscoverService {
 
     private let apiClient: APIClient

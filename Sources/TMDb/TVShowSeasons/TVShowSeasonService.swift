@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining TV show seasons from TMDb.
+///
 public final class TVShowSeasonService {
 
     private let apiClient: APIClient

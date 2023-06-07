@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining movies from TMDb.
+///
 public final class MovieService {
 
     private let apiClient: APIClient

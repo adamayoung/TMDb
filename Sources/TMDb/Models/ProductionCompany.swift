@@ -1,7 +1,7 @@
 import Foundation
 
 /// A production company.
-public struct ProductionCompany: Identifiable, Decodable, Equatable, Hashable {
+public struct ProductionCompany: Identifiable, Codable, Equatable, Hashable {
 
     /// Company identifier.
     public let id: Company.ID
@@ -19,7 +19,11 @@ public struct ProductionCompany: Identifiable, Decodable, Equatable, Hashable {
     ///    - name: Company's country of origin.
     ///    - originCountry: Company's country of origin.
     ///    - logoPath: Company's logo path.
-    public init(id: Int, name: String, originCountry: String, logoPath: URL? = nil) {
+    public init(
+        id: Int, name: String,
+        originCountry: String,
+        logoPath: URL? = nil
+    ) {
         self.id = id
         self.name = name
         self.originCountry = originCountry

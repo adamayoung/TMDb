@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV show season.
-public struct TVShowSeason: Identifiable, Decodable, Equatable, Hashable {
+public struct TVShowSeason: Identifiable, Codable, Equatable, Hashable {
 
     /// TV show season identifier.
     public let id: Int
@@ -28,8 +28,15 @@ public struct TVShowSeason: Identifiable, Decodable, Equatable, Hashable {
     ///    - airDate: TV show season's air date.
     ///    - posterPath: TV show season's poster path.
     ///    - episodes: Episode's in this TV show season.
-    public init(id: Int, name: String, seasonNumber: Int, overview: String? = nil, airDate: Date? = nil,
-                posterPath: URL? = nil, episodes: [TVShowEpisode]? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        seasonNumber: Int,
+        overview: String? = nil,
+        airDate: Date? = nil,
+        posterPath: URL? = nil,
+        episodes: [TVShowEpisode]? = nil
+    ) {
         self.id = id
         self.name = name
         self.seasonNumber = seasonNumber

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Spoken language.
-public struct SpokenLanguage: Identifiable, Decodable, Equatable, Hashable {
+public struct SpokenLanguage: Identifiable, Codable, Equatable, Hashable {
 
     /// Language code.
     public var id: String { languageCode }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV network.
-public struct Network: Identifiable, Decodable, Equatable, Hashable {
+public struct Network: Identifiable, Codable, Equatable, Hashable {
 
     /// Network identifier.
     public let id: Int
@@ -19,7 +19,12 @@ public struct Network: Identifiable, Decodable, Equatable, Hashable {
     ///    - name: Network name.
     ///    - logoPath: Network logo path.
     ///    - originCountry: Network origin country.
-    public init(id: Int, name: String, logoPath: URL? = nil, originCountry: String? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        logoPath: URL? = nil,
+        originCountry: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.logoPath = logoPath

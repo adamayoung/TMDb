@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining certification data from TMDb.
+///
 public final class CertificationService {
 
     private let apiClient: APIClient

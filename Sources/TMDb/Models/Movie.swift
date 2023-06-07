@@ -1,7 +1,7 @@
 import Foundation
 
 /// A movie.
-public struct Movie: Identifiable, Decodable, Equatable, Hashable {
+public struct Movie: Identifiable, Codable, Equatable, Hashable {
 
     /// Movie identifier.
     public let id: Int
@@ -94,14 +94,32 @@ public struct Movie: Identifiable, Decodable, Equatable, Hashable {
     ///    - voteCount: Number of votes.
     ///    - video: Has video.
     ///    - adult: Is the movie only suitable for adults.
-    public init(id: Int, title: String, tagline: String? = nil, originalTitle: String? = nil,
-                originalLanguage: String? = nil, overview: String? = nil, runtime: Int? = nil,
-                genres: [Genre]? = nil, releaseDate: Date? = nil, posterPath: URL? = nil, backdropPath: URL? = nil,
-                budget: Double? = nil, revenue: Double? = nil, homepageURL: URL? = nil, imdbID: String? = nil,
-                status: Status? = nil, productionCompanies: [ProductionCompany]? = nil,
-                productionCountries: [ProductionCountry]? = nil, spokenLanguages: [SpokenLanguage]? = nil,
-                popularity: Double? = nil, voteAverage: Double? = nil, voteCount: Int? = nil, video: Bool? = nil,
-                adult: Bool? = nil) {
+    public init(
+        id: Int,
+        title: String,
+        tagline: String? = nil,
+        originalTitle: String? = nil,
+        originalLanguage: String? = nil,
+        overview: String? = nil,
+        runtime: Int? = nil,
+        genres: [Genre]? = nil,
+        releaseDate: Date? = nil,
+        posterPath: URL? = nil,
+        backdropPath: URL? = nil,
+        budget: Double? = nil,
+        revenue: Double? = nil,
+        homepageURL: URL? = nil,
+        imdbID: String? = nil,
+        status: Status? = nil,
+        productionCompanies: [ProductionCompany]? = nil,
+        productionCountries: [ProductionCountry]? = nil,
+        spokenLanguages: [SpokenLanguage]? = nil,
+        popularity: Double? = nil,
+        voteAverage: Double? = nil,
+        voteCount: Int? = nil,
+        video: Bool? = nil,
+        adult: Bool? = nil
+    ) {
         self.id = id
         self.title = title
         self.tagline = tagline

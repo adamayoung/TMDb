@@ -1,7 +1,7 @@
 import Foundation
 
 /// A production company.
-public struct Company: Identifiable, Decodable, Equatable, Hashable {
+public struct Company: Identifiable, Codable, Equatable, Hashable {
 
     /// Company identifier.
     public let id: Int
@@ -31,8 +31,16 @@ public struct Company: Identifiable, Decodable, Equatable, Hashable {
     ///   - logoPath: Company's logo path.
     ///   - originCountry: Origin country.
     ///   - parentCompany: Parent company.
-    public init(id: Int, name: String, description: String, headquarters: String, homepage: URL, logoPath: URL,
-                originCountry: String, parentCompany: Parent? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        description: String,
+        headquarters: String,
+        homepage: URL,
+        logoPath: URL,
+        originCountry: String,
+        parentCompany: Parent? = nil
+    ) {
         self.id = id
         self.name = name
         self.description = description
@@ -48,7 +56,7 @@ public struct Company: Identifiable, Decodable, Equatable, Hashable {
 extension Company {
 
     /// A parent company.
-    public struct Parent: Identifiable, Decodable, Equatable, Hashable {
+    public struct Parent: Identifiable, Codable, Equatable, Hashable {
 
         /// Company identifier.
         public let id: Company.ID
@@ -63,7 +71,11 @@ extension Company {
         ///   - id: Company identifier.
         ///   - name: Company name.
         ///   - logoPath: Company's logo path.
-        public init(id: Company.ID, name: String, logoPath: URL) {
+        public init(
+            id: Company.ID,
+            name: String,
+            logoPath: URL
+        ) {
             self.id = id
             self.name = name
             self.logoPath = logoPath

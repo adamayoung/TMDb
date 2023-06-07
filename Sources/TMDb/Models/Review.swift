@@ -1,7 +1,7 @@
 import Foundation
 
 /// A review.
-public struct Review: Identifiable, Decodable, Equatable, Hashable {
+public struct Review: Identifiable, Codable, Equatable, Hashable {
 
     /// Review identifier.
     public let id: String
@@ -16,7 +16,11 @@ public struct Review: Identifiable, Decodable, Equatable, Hashable {
     ///    - id: Review identifier.
     ///    - author: Author of the review.
     ///    - content: Review content.
-    public init(id: String, author: String, content: String) {
+    public init(
+        id: String,
+        author: String,
+        content: String
+    ) {
         self.id = id
         self.author = author
         self.content = content

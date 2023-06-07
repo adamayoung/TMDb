@@ -1,7 +1,7 @@
 import Foundation
 
 /// Officially supported certification.
-public struct Certification: Identifiable, Decodable, Equatable, Hashable {
+public struct Certification: Identifiable, Codable, Equatable, Hashable {
 
     /// Certification's identifier (same as `code`).
     public var id: String { code }
@@ -18,7 +18,11 @@ public struct Certification: Identifiable, Decodable, Equatable, Hashable {
     ///    - code: Certification code.
     ///    - meaning: Certification meaning.
     ///    - order: Order number of certification in list.
-    public init(code: String, meaning: String, order: Int) {
+    public init(
+        code: String,
+        meaning: String,
+        order: Int
+    ) {
         self.code = code
         self.meaning = meaning
         self.order = order

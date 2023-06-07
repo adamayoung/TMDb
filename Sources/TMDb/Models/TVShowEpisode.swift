@@ -1,7 +1,7 @@
 import Foundation
 
 /// A TV show episode.
-public struct TVShowEpisode: Identifiable, Decodable, Equatable, Hashable {
+public struct TVShowEpisode: Identifiable, Codable, Equatable, Hashable {
 
     /// TV show episode identifier.
     public let id: Int
@@ -43,10 +43,20 @@ public struct TVShowEpisode: Identifiable, Decodable, Equatable, Hashable {
     ///    - guestStars: TV show episode guest cast members.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
-    public init(id: Int, name: String, episodeNumber: Int, seasonNumber: Int, overview: String? = nil,
-                airDate: Date? = nil, productionCode: String? = nil, stillPath: URL? = nil,
-                crew: [CrewMember]? = nil, guestStars: [CastMember]? = nil, voteAverage: Double? = nil,
-                voteCount: Int? = nil) {
+    public init(
+        id: Int,
+        name: String,
+        episodeNumber: Int,
+        seasonNumber: Int,
+        overview: String? = nil,
+        airDate: Date? = nil,
+        productionCode: String? = nil,
+        stillPath: URL? = nil,
+        crew: [CrewMember]? = nil,
+        guestStars: [CastMember]? = nil,
+        voteAverage: Double? = nil,
+        voteCount: Int? = nil
+    ) {
         self.id = id
         self.name = name
         self.episodeNumber = episodeNumber

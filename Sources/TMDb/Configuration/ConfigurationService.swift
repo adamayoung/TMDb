@@ -1,5 +1,8 @@
 import Foundation
 
+///
+/// Provides an interface for obtaining configuration data from TMDb.
+///
 public final class ConfigurationService {
 
     private let apiClient: APIClient
