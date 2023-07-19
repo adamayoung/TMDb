@@ -1,20 +1,32 @@
 import Foundation
 
-/// Production country.
+///
+/// A model representing a production country.
+///
 public struct ProductionCountry: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Country's identifier (same as `countryCode`).
+    ///
     public var id: String { countryCode }
-    /// ISO 3166-1 country code.
+
+    ///
+    /// The ISO 3166-1 country code.
+    ///
     public let countryCode: String
+
+    ///
     /// Country name.
+    ///
     public let name: String
 
-    /// Creates a new `ProductionCountry`.
+    ///
+    /// Creates a production country object.
     ///
     /// - Parameters:
     ///    - countryCode: ISO 3166-1 country code.
     ///    - name: Country name.
+    ///
     public init(countryCode: String, name: String) {
         self.countryCode = countryCode
         self.name = name

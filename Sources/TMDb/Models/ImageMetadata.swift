@@ -1,26 +1,52 @@
 import Foundation
 
-/// Details describing an image.
+///
+/// A model representing image metadata.
+///
 public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Image metadata's identifier (same as `filePath`).
+    ///
     public var id: URL { filePath }
+
+    ///
     /// Path of the image.
+    ///
     public let filePath: URL
+
+    ///
     /// Image width.
+    ///
     public let width: Int
+
+    ///
     /// Image height.
+    ///
     public let height: Int
+
+    ///
     /// Aspect ratio.
+    ///
     public let aspectRatio: Float
+
+    ///
     /// ISO 639-1 language code.
+    ///
     public let languageCode: String?
+
+    ///
     /// The average of user votes on this image.
+    ///
     public let voteAverage: Float?
+
+    ///
     /// The number of user votes on this image.
+    ///
     public let voteCount: Int?
 
-    /// Creates a new `ImageMetadata`.
+    ///
+    /// Creates an image metadata object.
     ///
     /// - Parameters:
     ///    - filePath: Path of the image.
@@ -29,6 +55,7 @@ public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable {
     ///    - languageCode: ISO 639-1 language code.
     ///    - voteAverage: The average of user votes on this image.
     ///    - voteCount: The number of user votes on this image.
+    ///
     public init(
         filePath: URL,
         width: Int,

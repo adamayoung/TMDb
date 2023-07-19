@@ -2,6 +2,7 @@ import Foundation
 
 extension ImagesConfiguration {
 
+    ///
     /// Generates the fully qualified URL for a backdrop image.
     ///
     /// - Parameters:
@@ -10,10 +11,12 @@ extension ImagesConfiguration {
     ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a backdrop image.
+    ///
     public func backdropURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: backdropSizes)
     }
 
+    ///
     /// Generates the fully qualified URL for a logo image.
     ///
     /// - Parameters:
@@ -22,10 +25,12 @@ extension ImagesConfiguration {
     ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a logo image.
+    ///
     public func logoURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: logoSizes)
     }
 
+    ///
     /// Generates the fully qualified URL for a poster image.
     ///
     /// - Parameters:
@@ -34,10 +39,12 @@ extension ImagesConfiguration {
     ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a poster image.
+    ///
     public func posterURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: posterSizes)
     }
 
+    ///
     /// Generates the fully qualified URL for a profile image.
     ///
     /// - Parameters:
@@ -46,10 +53,12 @@ extension ImagesConfiguration {
     ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a profile image.
+    ///
     public func profileURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: profileSizes)
     }
 
+    ///
     /// Generates the fully qualified URL for a still image.
     ///
     /// - Parameters:
@@ -58,6 +67,7 @@ extension ImagesConfiguration {
     ///            image URL is returned.
     ///
     /// - Returns: A fully qualified URL to a still image.
+    ///
     public func stillURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: stillSizes)
     }

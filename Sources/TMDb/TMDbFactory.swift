@@ -31,8 +31,13 @@ extension TMDbFactory {
 
         configuration.waitsForConnectivity = true
         configuration.timeoutIntervalForRequest = 30
+        configuration.urlCache = urlCache
 
         return configuration
+    }
+
+    private static var urlCache: URLCache {
+        URLCache(memoryCapacity: 50_000_000, diskCapacity: 1_000_000_000)
     }
 
     private static var serialiser: some Serialiser {

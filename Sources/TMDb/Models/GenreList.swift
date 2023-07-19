@@ -1,11 +1,7 @@
 import Foundation
 
-struct GenreList: Codable, Equatable, Hashable {
+struct GenreList: Codable {
 
     let genres: [Genre]
-
-    init(genres: [Genre]) {
-        self.genres = genres
-    }
 
 }

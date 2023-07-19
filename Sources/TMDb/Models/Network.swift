@@ -1,24 +1,39 @@
 import Foundation
 
-/// A TV network.
+///
+/// A model representing a TV network.
+///
 public struct Network: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Network identifier.
+    ///
     public let id: Int
+
+    ///
     /// Network name.
+    ///
     public let name: String
+
+    ///
     /// Network logo path.
+    ///
     public let logoPath: URL?
+
+    ///
     /// Network origin country.
+    ///
     public let originCountry: String?
 
-    /// Creates a new `Network`.
+    ///
+    /// Creates a network object.
     ///
     /// - Parameters:
     ///    - id: Network identifier.
     ///    - name: Network name.
     ///    - logoPath: Network logo path.
     ///    - originCountry: Network origin country.
+    ///
     public init(
         id: Int,
         name: String,

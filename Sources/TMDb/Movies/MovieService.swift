@@ -23,7 +23,7 @@ public final class MovieService {
     /// [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the movie.
+    ///    - id: The identifier of the movie.
     ///
     /// - Returns: The matching movie.
     /// 
@@ -37,7 +37,7 @@ public final class MovieService {
     /// [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///
     /// - Returns: Credits for the matching movie.
     /// 
@@ -53,8 +53,8 @@ public final class MovieService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie.
-    ///     - page: The page of results to return.
+    ///    - movieID: The identifier of the movie.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
     /// 

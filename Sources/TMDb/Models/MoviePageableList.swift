@@ -1,4 +1,6 @@
 import Foundation
 
-/// A pageable list of movies.
+///
+/// A model representing a pageable list of movies.
+///
 public typealias MoviePageableList = PageableListResult<Movie>

@@ -1,16 +1,28 @@
 import Foundation
 
-/// Sort specifier when fetching TV shows.
+///
+/// A sort specifier when fetching TV shows.
+///
 public enum TVShowSort: CustomStringConvertible {
 
+    ///
     /// Default sort specifier.
+    ///
     public static var `default`: Self = .popularity()
 
+    ///
     /// By popularity.
+    ///
     case popularity(descending: Bool = true)
+
+    ///
     /// By first air date.
+    ///
     case firstAirDate(descending: Bool = true)
+
+    ///
     /// By vote average.
+    ///
     case voteAverage(descending: Bool = true)
 
     public var description: String {

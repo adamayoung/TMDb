@@ -1,9 +1,13 @@
 import Foundation
 
-/// A show - movie or TV show.
+///
+/// A model representing a show - movie or TV show.
+///
 public enum Show: Identifiable, Equatable, Hashable {
 
+    ///
     /// Show identifier.
+    ///
     public var id: Int {
         switch self {
         case .movie(let movie):
@@ -14,7 +18,9 @@ public enum Show: Identifiable, Equatable, Hashable {
         }
     }
 
+    ///
     /// Show's popularity.
+    ///
     var popularity: Double? {
         switch self {
         case .movie(let movie):
@@ -25,7 +31,9 @@ public enum Show: Identifiable, Equatable, Hashable {
         }
     }
 
+    ///
     /// Show's release or first air date.
+    ///
     var date: Date? {
         switch self {
         case .movie(let movie):
@@ -36,9 +44,14 @@ public enum Show: Identifiable, Equatable, Hashable {
         }
     }
 
+    ///
     /// Movie.
+    ///
     case movie(Movie)
+
+    ///
     /// TV show.
+    ///
     case tvShow(TVShow)
 
 }

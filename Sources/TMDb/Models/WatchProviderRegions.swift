@@ -1,11 +1,7 @@
 import Foundation
 
-struct WatchProviderRegions: Decodable, Equatable, Hashable {
+struct WatchProviderRegions: Decodable {
 
     let results: [Country]
-
-    init(results: [Country]) {
-        self.results = results
-    }
 
 }

@@ -1,11 +1,7 @@
 import Foundation
 
-struct WatchProviderResult: Decodable, Equatable, Hashable {
+struct WatchProviderResult: Decodable, Equatable {
 
     let results: [WatchProvider]
-
-    init(results: [WatchProvider]) {
-        self.results = results
-    }
 
 }

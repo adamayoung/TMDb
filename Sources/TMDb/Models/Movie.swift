@@ -1,25 +1,53 @@
 import Foundation
 
-/// A movie.
+///
+/// A model representing a movie.
+///
 public struct Movie: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Movie identifier.
+    ///
     public let id: Int
+
+    ///
     /// Movie title.
+    ///
     public let title: String
+
+    ///
     /// Movie tagline.
+    ///
     public let tagline: String?
+
+    ///
     /// Original movie title.
+    ///
     public let originalTitle: String?
+
+    ///
     /// Original language of the movie.
+    ///
     public let originalLanguage: String?
+
+    ///
     /// Movie overview.
+    ///
     public let overview: String?
+
+    ///
     /// Movie runtime, in minutes.
+    ///
     public let runtime: Int?
+
+    ///
     /// Movie genres.
+    ///
     public let genres: [Genre]?
+
+    ///
     /// Movie release date.
+    ///
     public var releaseDate: Date? {
         guard let releaseDateString else {
             return nil
@@ -27,15 +55,30 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
 
         return DateFormatter.theMovieDatabase.date(from: releaseDateString)
     }
+
+    ///
     /// Movie poster path.
+    ///
     public let posterPath: URL?
+
+    ///
     /// Movie poster backdrop path.
+    ///
     public let backdropPath: URL?
+
+    ///
     /// Movie budget, in US dollars.
+    ///
     public let budget: Double?
+
+    ///
     /// Movie revenue, in US dollars.
+    ///
     public let revenue: Double?
+
+    ///
     /// Movie's web site URL.
+    ///
     public var homepageURL: URL? {
         guard let homepage else {
             return nil
@@ -43,31 +86,62 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
 
         return URL(string: homepage)
     }
+
+    ///
     /// IMDd identifier.
+    ///
     public let imdbID: String?
+
+    ///
     /// Movie status.
+    ///
     public let status: Status?
+
+    ///
     /// Movie production companies.
+    ///
     public let productionCompanies: [ProductionCompany]?
+
+    ///
     /// Movie production countries.
+    ///
     public let productionCountries: [ProductionCountry]?
+
+    ///
     /// Movie spoken languages.
+    ///
     public let spokenLanguages: [SpokenLanguage]?
+
+    ///
     /// Current popularity.
+    ///
     public let popularity: Double?
+
+    ///
     /// Average vote score.
+    ///
     public let voteAverage: Double?
+
+    ///
     /// Number of votes.
+    ///
     public let voteCount: Int?
+
+    ///
     /// Has video.
+    ///
     public let video: Bool?
+
+    ///
     /// Is the movie only suitable for adults.
+    ///
     public let adult: Bool?
 
     private let releaseDateString: String?
     private let homepage: String?
 
-    /// Creates a new `Movie`.
+    ///
+    /// Creates a movie object.
     ///
     /// - Parameters:
     ///    - id: Movie identifier.
@@ -94,6 +168,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
     ///    - voteCount: Number of votes.
     ///    - video: Has video.
     ///    - adult: Is the movie only suitable for adults.
+    ///
     public init(
         id: Int,
         title: String,
