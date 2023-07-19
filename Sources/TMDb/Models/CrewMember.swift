@@ -5,27 +5,42 @@ import Foundation
 ///
 public struct CrewMember: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Crew member's identifier.
+    ///
     public let id: Int
 
+    ///
     /// Crew member's identifier for the particular movie or TV show.
+    ///
     public let creditID: String
 
+    ///
     /// Crew member's name.
+    ///
     public let name: String
 
+    ///
     /// Crew member's job.
+    ///
     public let job: String
 
+    ///
     /// Crew member's department.
+    ///
     public let department: String
 
+    ///
     /// Crew member's gender.
+    ///
     public let gender: Gender?
 
+    ///
     /// Crew member's profile image.
+    ///
     public let profilePath: URL?
 
+    ///
     /// Creates a crew member object.
     ///
     /// - Parameters:

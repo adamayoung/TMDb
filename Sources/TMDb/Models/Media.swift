@@ -1,9 +1,13 @@
 import Foundation
 
-/// Represents a movie, tv show or person.
+///
+/// A model representing a media.
+///
 public enum Media: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Media's identifier.
+    ///
     public var id: Int {
         switch self {
         case .movie(let movie):
@@ -17,11 +21,19 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
         }
     }
 
+    ///
     /// Movie.
+    ///
     case movie(Movie)
+
+    ///
     /// TV show.
+    ///
     case tvShow(TVShow)
+
+    ///
     /// Person.
+    ///
     case person(Person)
 
 }

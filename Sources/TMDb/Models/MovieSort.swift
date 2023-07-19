@@ -1,24 +1,48 @@
 import Foundation
 
-/// Sort specifier when fetching movies.
+///
+/// A sort specifier when fetching movies.
+///
 public enum MovieSort: CustomStringConvertible {
 
+    ///
     /// Default sort specifier.
+    ///
     public static var `default`: Self = .popularity()
 
+    ///
     /// By popularity.
+    ///
     case popularity(descending: Bool = true)
+
+    ///
     /// By release date.
+    ///
     case releaseDate(descending: Bool = true)
+
+    ///
     /// By primary release date.
+    ///
     case primaryReleaseDate(descending: Bool = true)
+
+    ///
     /// By revenue.
+    ///
     case revenue(descending: Bool = true)
+
+    ///
     /// By original title.
+    ///
     case originalTitle(descending: Bool = true)
+
+    ///
     /// By vote average.
+    ///
     case voteAverage(descending: Bool = true)
+
+    ///
     /// By vote count.
+    ///
     case voteCount(descending: Bool = true)
 
     public var description: String {

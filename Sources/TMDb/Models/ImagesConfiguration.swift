@@ -1,27 +1,50 @@
 import Foundation
 
-/// Images configuration which holds data relevant to building image URLs.
+///
+/// A model representing images configuration, which holds data relevant to building image URLs.
 ///
 /// To build an image URL, you will need 3 pieces of data. The `base_url`, `size` and `file_path`. Simply combine them
 /// all and you will have a fully qualified URL.
+///
 public struct ImagesConfiguration: Codable, Equatable, Hashable {
 
+    ///
     /// Base image URL (http).
+    ///
     public let baseURL: URL
+
+    ///
     /// Base Image secure URL (https).
+    ///
     public let secureBaseURL: URL
+
+    ///
     /// Backdrop image sizes.
+    ///
     public let backdropSizes: [String]
+
+    ///
     /// Logo image sizes.
+    ///
     public let logoSizes: [String]
+
+    ///
     /// Poster image sizes.
+    ///
     public let posterSizes: [String]
+
+    ///
     /// Profile image sizes.
+    ///
     public let profileSizes: [String]
+
+    ///
     /// Still image sizes.
+    ///
     public let stillSizes: [String]
 
-    /// Creates a new `ImagesConfiguration`.
+    ///
+    /// Creates an images configuration object.
     ///
     /// - Parameters:
     ///    - baseURL: Base image URL (http).
@@ -31,6 +54,7 @@ public struct ImagesConfiguration: Codable, Equatable, Hashable {
     ///    - posterSizes: Poster image sizes.
     ///    - profileSizes: Profile image sizes.
     ///    - stillSizes: Still image sizes.
+    ///
     public init(
         baseURL: URL,
         secureBaseURL: URL,

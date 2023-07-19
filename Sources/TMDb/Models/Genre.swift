@@ -5,10 +5,14 @@ import Foundation
 ///
 public struct Genre: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Genre Identifier.
+    ///
     public let id: Int
 
+    ///
     /// Genre name.
+    ///
     public let name: String
 
     ///

@@ -1,18 +1,27 @@
 import Foundation
 
-/// TV Show Episode image collection.
+///
+/// A model representing a TV show episode image collection.
+///
 public struct TVShowEpisodeImageCollection: Identifiable, Decodable, Equatable, Hashable {
 
+    ///
     /// Person identifier.
+    ///
     public let id: Int
+
+    ///
     /// Episode images.
+    ///
     public let stills: [ImageMetadata]
 
-    /// Creates a new `TVShowEpisodeImageCollection`.
+    ///
+    /// Creates a TV show episode image collection.
     ///
     /// - Parameters:
     ///    - id: TVShow identifier.
     ///    - stills: Still images.
+    ///
     public init(id: Int, stills: [ImageMetadata]) {
         self.id = id
         self.stills = stills

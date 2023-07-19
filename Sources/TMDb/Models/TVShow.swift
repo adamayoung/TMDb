@@ -1,29 +1,63 @@
 import Foundation
 
-/// A TV show.
+///
+/// A model representing a TV show.
+///
 public struct TVShow: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// TV show identifier.
+    ///
     public let id: Int
+
+    ///
     /// TV show name.
+    ///
     public let name: String
+
+    ///
     /// Original TV show name.
+    ///
     public let originalName: String?
+
+    ///
     /// Original language of the TV show.
+    ///
     public let originalLanguage: String?
+
+    ///
     /// TV show overview.
+    ///
     public let overview: String?
+
+    ///
     /// TV show episode run times, in minutes.
+    ///
     public let episodeRunTime: [Int]?
+
+    ///
     /// Number of seasons in the TV show.
+    ///
     public let numberOfSeasons: Int?
+
+    ///
     /// Total number of episodes in the TV show.
+    ///
     public let numberOfEpisodes: Int?
+
+    ///
     /// Seasons in the TV show.
+    ///
     public let seasons: [TVShowSeason]?
+
+    ///
     /// TV show genres.
+    ///
     public let genres: [Genre]?
+
+    ///
     /// TV show's first air date.
+    ///
     public var firstAirDate: Date? {
         guard let firstAirDateString else {
             return nil
@@ -31,13 +65,25 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
 
         return DateFormatter.theMovieDatabase.date(from: firstAirDateString)
     }
+
+    ///
     /// TV show country of origin.
+    ///
     public let originCountry: [String]?
+
+    ///
     /// TV show poster path.
+    ///
     public let posterPath: URL?
+
+    ///
     /// TV show backdrop path.
+    ///
     public let backdropPath: URL?
+
+    ///
     /// TV show's web site URL.
+    ///
     public var homepageURL: URL? {
         guard let homepage else {
             return nil
@@ -45,31 +91,62 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
 
         return URL(string: homepage)
     }
-    /// Is TV show currently in production.
+
+    ///
+    /// Is the TV show currently in production.
+    ///
     public let inProduction: Bool?
+
+    ///
     /// Languages the TV show is available in.
+    ///
     public let languages: [String]?
+
+    ///
     /// Last air date of the TV show.
+    ///
     public let lastAirDate: Date?
+
+    ///
     /// Networks involved in the TV show.
+    ///
     public let networks: [Network]?
+
+    ///
     /// Production companies involved in the TV show.
+    ///
     public let productionCompanies: [ProductionCompany]?
+
+    ///
     /// TV show status.
+    ///
     public let status: String?
+
+    ///
     /// TV show type.
+    ///
     public let type: String?
+
+    ///
     /// TV show current popularity.
+    ///
     public let popularity: Double?
+
+    ///
     /// Average vote score.
+    ///
     public let voteAverage: Double?
+
+    ///
     /// Number of votes.
+    ///
     public let voteCount: Int?
 
     private let firstAirDateString: String?
     private let homepage: String?
 
-    /// Creates a new `TVShow`.
+    ///
+    /// Creates a TV show object.
     ///
     /// - Parameters:
     ///    - id: TV show identifier.
@@ -96,6 +173,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///    - popularity: TV show current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
+    ///
     public init(
         id: Int,
         name: String,

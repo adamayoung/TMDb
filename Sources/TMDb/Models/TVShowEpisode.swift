@@ -1,34 +1,72 @@
 import Foundation
 
-/// A TV show episode.
+///
+/// A model representing a TV show episode.
+///
 public struct TVShowEpisode: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// TV show episode identifier.
+    ///
     public let id: Int
+
+    ///
     /// TV show episode name.
+    ///
     public let name: String
+
+    ///
     /// TV show episode number.
+    ///
     public let episodeNumber: Int
+
+    ///
     /// TV show episode season number.
+    ///
     public let seasonNumber: Int
+
+    ///
     /// TV show episode overview.
+    ///
     public let overview: String?
+
+    ///
     /// TV show episode air date.
+    ///
     public let airDate: Date?
+
+    ///
     /// TV show episode production code.
+    ///
     public let productionCode: String?
+
+    ///
     /// TV show episode still image path.
+    ///
     public let stillPath: URL?
+
+    ///
     /// TV show episode crew.
+    ///
     public let crew: [CrewMember]?
+
+    ///
     /// TV show episode guest cast members.
+    ///
     public let guestStars: [CastMember]?
+
+    ///
     /// Average vote score.
+    ///
     public let voteAverage: Double?
+
+    ///
     /// Number of votes.
+    ///
     public let voteCount: Int?
 
-    /// Creates a new `TVShowEpisode`.
+    ///
+    /// Creates a TV show episode object.
     ///
     /// - Parameters:
     ///    - id: TV show episode identifier.
@@ -43,6 +81,7 @@ public struct TVShowEpisode: Identifiable, Codable, Equatable, Hashable {
     ///    - guestStars: TV show episode guest cast members.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
+    ///
     public init(
         id: Int,
         name: String,

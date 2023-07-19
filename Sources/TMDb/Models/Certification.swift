@@ -1,23 +1,38 @@
 import Foundation
 
-/// Officially supported certification.
+///
+/// A model representing an officially supported certification.
+///
 public struct Certification: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Certification's identifier (same as `code`).
+    ///
     public var id: String { code }
+
+    ///
     /// Certification code.
+    ///
     public let code: String
+
+    ///
     /// Certification meaning.
+    ///
     public let meaning: String
+
+    ///
     /// Order number of certification in list.
+    /// 
     public let order: Int
 
-    /// Creates a new `Certification`.
+    ///
+    /// Creates a certification object.
     ///
     /// - Parameters:
     ///    - code: Certification code.
     ///    - meaning: Certification meaning.
     ///    - order: Order number of certification in list.
+    ///
     public init(
         code: String,
         meaning: String,

@@ -1,33 +1,73 @@
 import Foundation
 
-/// A person.
+///
+/// A model representing a person.
+///
 public struct Person: Identifiable, Codable, Equatable, Hashable {
 
+    ///
     /// Person identifier.
+    ///
     public let id: Int
+
+    ///
     /// Person's name.
+    ///
     public let name: String
+
+    ///
     /// Person also known as.
+    ///
     public let alsoKnownAs: [String]?
+
+    ///
     /// Department this person is known for.
+    ///
     public let knownForDepartment: String?
+
+    ///
     /// Person's biography.
+    ///
     public let biography: String?
+
+    ///
     /// Person's birthday.
+    ///
     public let birthday: Date?
+
+    ///
     /// Person's death day, if they've died.
+    ///
     public let deathday: Date?
+
+    ///
     /// Person's gender.
+    ///
     public let gender: Gender?
+
+    ///
     /// Person's place of birth.
+    ///
     public let placeOfBirth: String?
+
+    ///
     /// Person's profile path.
+    ///
     public let profilePath: URL?
+
+    ///
     /// Person's current popularity.
+    ///
     public let popularity: Double?
+
+    ///
     /// Person's IMDb identifier.
+    ///
     public let imdbID: String?
+
+    ///
     /// Person's web site.
+    ///
     public var homepageURL: URL? {
         guard let homepage else {
             return nil
@@ -38,7 +78,8 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
 
     private let homepage: String?
 
-    /// Creates a new `Person`.
+    ///
+    /// Creates a person object.
     ///
     /// - Parameters:
     ///    - id: Person identifier.
@@ -54,6 +95,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
     ///    - popularity: Person's current popularity.
     ///    - imdbID: Person's IMDb identifier.
     ///    - homepageURL: Person's web site.
+    ///
     public init(
         id: Int,
         name: String,

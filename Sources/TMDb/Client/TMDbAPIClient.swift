@@ -64,8 +64,11 @@ extension TMDbAPIClient {
     }
 
     private func validate(data: Data, response: URLResponse) async throws {
-        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+        guard let httpURLResponse = response as? HTTPURLResponse else {
+            return
+        }
 
+        let statusCode = httpURLResponse.statusCode
         if (200...299).contains(statusCode) {
             return
         }
