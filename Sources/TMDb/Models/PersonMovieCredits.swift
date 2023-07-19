@@ -29,7 +29,6 @@ public struct PersonMovieCredits: Identifiable, Decodable, Equatable, Hashable {
         (cast + crew).uniqued()
     }
 
-
     /// Creates a person movie credits object.
     ///
     /// - Parameters:

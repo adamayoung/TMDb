@@ -25,7 +25,9 @@ public enum VideoSize: Int, Codable, Equatable, Hashable {
     ///
     case s1080 = 1080
 
+    ///
     /// Unknown.
+    ///
     case unknown
 
     public init(from decoder: Decoder) throws {
