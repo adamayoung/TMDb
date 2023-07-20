@@ -7,6 +7,12 @@ public final class TrendingService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a trending service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)

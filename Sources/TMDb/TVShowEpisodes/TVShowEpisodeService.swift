@@ -7,6 +7,12 @@ public final class TVShowEpisodeService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a TV show episode service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)

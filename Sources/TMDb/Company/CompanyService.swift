@@ -7,6 +7,12 @@ public final class CompanyService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a company service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -18,12 +24,12 @@ public final class CompanyService {
     }
 
     ///
-    /// Returns TV shows to be discovered.
+    /// Returns a company's details
     ///
-    /// [TMDb API - Companies: Details](https://developers.themoviedb.org/3/companies/get-company-details)
+    /// [TMDb API - Companies: Details](https://developer.themoviedb.org/reference/company-details)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the company.
+    ///    - id: The identifier of the company.
     ///
     /// - Returns: Matching company.
     ///

@@ -7,6 +7,12 @@ public final class DiscoverService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a discover service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -25,9 +31,9 @@ public final class DiscoverService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - sortedBy: How results should be sorted.
-    ///     - people: A list of Person identifiers which to return only movies they have appeared in.
-    ///     - page: The page of results to return.
+    ///    - sortedBy: How results should be sorted.
+    ///    - people: A list of Person identifiers which to return only movies they have appeared in.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Matching movies as a pageable list.
     /// 
@@ -44,8 +50,8 @@ public final class DiscoverService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - sortedBy: How results should be sorted.
-    ///     - page: The page of results to return.
+    ///    - sortedBy: How results should be sorted.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Matching TV shows as a pageable list.
     ///

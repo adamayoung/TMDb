@@ -7,6 +7,12 @@ public final class TVShowService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a TV show service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -37,7 +43,7 @@ public final class TVShowService {
     /// [TMDb API - TV Shows: Credits](https://developers.themoviedb.org/3/tv/get-tv-credits)
     ///
     /// - Parameters:
-    ///     - tvShowID: The identifier of the TV show.
+    ///    - tvShowID: The identifier of the TV show.
     ///
     /// - Returns: Show credits for the matching TV show.
     /// 
