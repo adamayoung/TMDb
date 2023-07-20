@@ -23,7 +23,7 @@ jobs:
     name: Deploy Documentation
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}documentation/policedatakit
+      url: ${{ steps.deployment.outputs.page_url }}documentation/tmdb
     runs-on: macos-13
     steps:
       - name: Checkout
