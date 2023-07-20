@@ -3,10 +3,17 @@ import Foundation
 ///
 /// Provides an interface for obtaining people from TMDb.
 ///
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 public final class PersonService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a person service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -23,7 +30,7 @@ public final class PersonService {
     /// [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
     ///
     /// - Parameters:
-    ///     - id: The identifier of the person.
+    ///    - id: The identifier of the person.
     ///
     /// - Returns: The matching person.
     /// 
@@ -37,7 +44,7 @@ public final class PersonService {
     /// [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
     ///
     /// - Parameters:
-    ///     - personID: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's combined movie and TV show credits.
     /// 
@@ -55,7 +62,7 @@ public final class PersonService {
     /// [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
     ///
     /// - Parameters:
-    ///     - personID: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's movie credits.
     /// 
@@ -73,7 +80,7 @@ public final class PersonService {
     /// [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
     ///
     /// - Parameters:
-    ///     - personID: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's TV show credits.
     /// 
@@ -91,7 +98,7 @@ public final class PersonService {
     /// [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
     ///
     /// - Parameters:
-    ///     - personID: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's images.
     ///
@@ -103,7 +110,7 @@ public final class PersonService {
     /// Returns the list of known for shows for a person.
     ///
     /// - Parameters:
-    ///     - personID: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///
     /// - Returns: The matching person's show credits.
     /// 
@@ -120,7 +127,7 @@ public final class PersonService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - page: The page of results to return.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Current popular people as a pageable list.
     ///

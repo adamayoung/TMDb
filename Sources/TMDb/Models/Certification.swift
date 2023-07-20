@@ -6,7 +6,7 @@ import Foundation
 public struct Certification: Identifiable, Codable, Equatable, Hashable {
 
     ///
-    /// Certification's identifier (same as `code`).
+    /// Certification's identifier (same as ``code``).
     ///
     public var id: String { code }
 

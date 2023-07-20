@@ -3,10 +3,17 @@ import Foundation
 ///
 /// Provides an interface for obtaining certification data from TMDb.
 ///
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 public final class CertificationService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a certificate service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -18,9 +25,9 @@ public final class CertificationService {
     }
 
     ///
-    /// Returns the officially supported movie certifications on TMDb.
+    /// Returns an up to date list of the officially supported movie certifications on TMDB.
     ///
-    /// [TMDb API - Movie Certifications](https://developers.themoviedb.org/3/certifications/get-movie-certifications)
+    /// [TMDb API - Movie Certifications](https://developer.themoviedb.org/reference/certification-movie-list)
     ///
     /// - Returns: A dictionary of movie certifications.
     /// 
@@ -30,9 +37,9 @@ public final class CertificationService {
     }
 
     ///
-    /// Returns the officially supported TV show certifications on TMDb.
+    /// Returns an up to date list of the officially supported TV certifications on TMDB.
     ///
-    /// [TMDb API - TV show Certifications](https://developers.themoviedb.org/3/certifications/get-tv-certifications)
+    /// [TMDb API - TV show Certifications](https://developer.themoviedb.org/reference/certifications-tv-list)
     ///
     /// - Returns: A dictionary of TV show certifications.
     /// 

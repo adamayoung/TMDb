@@ -3,10 +3,17 @@ import Foundation
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 public final class MovieService {
 
     private let apiClient: APIClient
 
+    ///
+    /// Creates a movie service object.
+    ///
+    /// - Parameters:
+    ///    - config: TMDb configuration setting.
+    ///
     public convenience init(config: TMDbConfiguration) {
         self.init(
             apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
@@ -68,7 +75,7 @@ public final class MovieService {
     /// [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///
     /// - Returns: Collection of images for the matching movie.
     /// 
@@ -82,7 +89,7 @@ public final class MovieService {
     /// [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///
     /// - Returns: Collection of videos for the matching movie.
     /// 
@@ -98,8 +105,8 @@ public final class MovieService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie for get recommendations for.
-    ///     - page: The page of results to return.
+    ///    - movieID: The identifier of the movie for get recommendations for.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     /// 
@@ -117,8 +124,8 @@ public final class MovieService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - movieID: The identifier of the movie for get similar movies for.
-    ///     - page: The page of results to return.
+    ///    - movieID: The identifier of the movie for get similar movies for.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
     /// 
@@ -134,7 +141,7 @@ public final class MovieService {
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - page: The page of results to return.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
     /// 
@@ -150,7 +157,7 @@ public final class MovieService {
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - page: The page of results to return.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
     /// 
@@ -166,7 +173,7 @@ public final class MovieService {
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - page: The page of results to return.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
     /// 
@@ -182,7 +189,7 @@ public final class MovieService {
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///     - page: The page of results to return.
+    ///    - page: The page of results to return.
     ///
     /// - Returns: Current popular movies as a pageable list.
     /// 

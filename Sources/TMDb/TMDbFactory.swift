@@ -29,6 +29,7 @@ extension TMDbFactory {
             configuration.multipathServiceType = .handover
         #endif
 
+        configuration.requestCachePolicy = .useProtocolCachePolicy
         configuration.waitsForConnectivity = true
         configuration.timeoutIntervalForRequest = 30
         configuration.urlCache = urlCache
