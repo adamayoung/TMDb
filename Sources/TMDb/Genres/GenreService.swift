@@ -3,6 +3,7 @@ import Foundation
 ///
 /// Provides an interface for obtaining movie and TV show genres from TMDb.
 ///
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
 public final class GenreService {
 
     private let apiClient: APIClient

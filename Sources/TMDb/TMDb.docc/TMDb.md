@@ -4,9 +4,11 @@ Deliver data about movies, TV shows and actors to users.
 
 ## Overview
 
-TMDb provides the definitive list of currently available movies, TV shows, actors and images.
+TMDb provides the definitive list of currently available movies, TV shows,
+actors and images.
 
-For the TMDb API documentation, see [https://developer.themoviedb.org/docs](https://developer.themoviedb.org/docs).
+For the TMDb API documentation, see
+[https://developer.themoviedb.org/docs](https://developer.themoviedb.org/docs).
 
 ## Topics
 

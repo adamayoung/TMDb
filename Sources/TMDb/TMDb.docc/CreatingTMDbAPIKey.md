@@ -1,10 +1,11 @@
 # Creating a TMDb API Key
 
-Instructions on how to create a TMDb API Key. 
+Instructions on how to create a TMDb API Key.
 
 ## Overview
 
-All calls to TMDb must be authenticated. API Keys are free to created once you have created a TMDb account.
+All calls to TMDb must be authenticated. API Keys are free to created once you
+have created a TMDb account.
 
 ## Registering an Account
 
