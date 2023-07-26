@@ -9,12 +9,19 @@
     }
   ],
   "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "TMDB_API_KEY",
+        "value" : "cf458964ba75aa9d53a21578df3747ed"
+      }
+    ],
     "language" : "en",
     "region" : "GB",
     "testExecutionOrdering" : "random"
   },
   "testTargets" : [
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:",
         "identifier" : "TMDbIntegrationTests",
