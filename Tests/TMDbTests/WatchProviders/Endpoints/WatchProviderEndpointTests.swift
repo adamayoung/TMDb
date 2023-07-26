@@ -3,28 +3,44 @@ import XCTest
 
 final class WatchProviderEndpointTests: XCTestCase {
 
-    func testRegionsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/watch/providers/regions")!
+    func testRegionsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/regions"))
 
         let url = WatchProviderEndpoint.regions.path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testMovieEndpointReturnsURL() {
+    func testMovieEndpointWhenGivenRegionCodeReturnsURL() throws {
         let regionCode = "GB"
-        let expectedURL = URL(string: "/watch/providers/movie?watch_region=\(regionCode)")!
+        let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/movie?watch_region=\(regionCode)"))
 
-        let url = WatchProviderEndpoint.movie.path
+        let url = WatchProviderEndpoint.movie(regionCode: regionCode).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowEndpointReturnsURL() {
-        let regionCode = "GB"
-        let expectedURL = URL(string: "/watch/providers/tv?watch_region=\(regionCode)")!
+    func testMovieEndpointWhenNotGivenRegionCodeReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/movie"))
 
-        let url = WatchProviderEndpoint.tvShow.path
+        let url = WatchProviderEndpoint.movie(regionCode: nil).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVShowWhenGivenRegionCodeEndpointReturnsURL() throws {
+        let regionCode = "GB"
+        let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/tv?watch_region=\(regionCode)"))
+
+        let url = WatchProviderEndpoint.tvShow(regionCode: regionCode).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVShowWhenNotGivenRegionCodeEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/tv"))
+
+        let url = WatchProviderEndpoint.tvShow(regionCode: nil).path
 
         XCTAssertEqual(url, expectedURL)
     }

@@ -10,10 +10,10 @@ final class TMDbAPIClientTests: XCTestCase {
     var serialiser: Serialiser!
     var locale: Locale!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         apiKey = "abc123"
-        baseURL = URL(string: "https://some.domain.com/path")
+        baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
@@ -21,11 +21,12 @@ final class TMDbAPIClientTests: XCTestCase {
         serialiser = Serialiser(decoder: .theMovieDatabase)
         locale = Locale(identifier: "en_GB")
         apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
-                                  locale: { [unowned self] in self.locale })
+                                  localeProvider: { [unowned self] in self.locale })
     }
 
     override func tearDown() {
         apiClient = nil
+        locale = nil
         serialiser = nil
         httpClient = nil
         baseURL = nil
@@ -133,7 +134,7 @@ final class TMDbAPIClientTests: XCTestCase {
         let path = "/object"
         let language = "en"
         let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
-        let expectedResult = URL(string: urlString)
+        let expectedResult = try XCTUnwrap(URL(string: urlString))
 
         _ = try? await apiClient.get(path: URL(string: path)!) as String
 

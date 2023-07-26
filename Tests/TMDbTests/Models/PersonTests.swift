@@ -9,8 +9,8 @@ final class PersonTests: XCTestCase {
         XCTAssertNil(somePerson.homepageURL)
     }
 
-    func testHomepageURLWhenHasURLReturnsURL() {
-        let expectedResult = URL(string: "https://some.domain.com")!
+    func testHomepageURLWhenHasURLReturnsURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
         let somePerson = Person(id: 1, name: "Name 1", homepageURL: expectedResult)
 
         XCTAssertEqual(somePerson.homepageURL, expectedResult)

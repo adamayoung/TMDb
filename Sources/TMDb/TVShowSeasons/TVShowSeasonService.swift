@@ -7,18 +7,21 @@ import Foundation
 public final class TVShowSeasonService {
 
     private let apiClient: APIClient
+    private let localeProvider: () -> Locale
 
     ///
     /// Creates a TV show season service object.
     ///
     public convenience init() {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient,
+            localeProvider: TMDbFactory.localeProvider
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
         self.apiClient = apiClient
+        self.localeProvider = localeProvider
     }
 
     ///
@@ -48,7 +51,12 @@ public final class TVShowSeasonService {
     /// - Returns: A collection of images for the matching TV show's season.
     ///
     public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(
+            endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                                   languageCode: languageCode)
+        )
     }
 
     ///
@@ -63,7 +71,12 @@ public final class TVShowSeasonService {
     /// - Returns: A collection of videos for the matching TV show's season.
     ///
     public func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(
+            endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                                   languageCode: languageCode)
+        )
     }
 
 }

@@ -3,8 +3,8 @@ import Foundation
 enum WatchProviderEndpoint {
 
     case regions
-    case movie
-    case tvShow
+    case movie(regionCode: String?)
+    case tvShow(regionCode: String?)
 
 }
 
@@ -18,15 +18,15 @@ extension WatchProviderEndpoint: Endpoint {
             return Self.basePath
                 .appendingPathComponent("regions")
 
-        case .movie:
+        case .movie(let regionCode):
             return Self.basePath
                 .appendingPathComponent("movie")
-                .appendingWatchRegion()
+                .appendingWatchRegion(regionCode)
 
-        case .tvShow:
+        case .tvShow(let regionCode):
             return Self.basePath
                 .appendingPathComponent("tv")
-                .appendingWatchRegion()
+                .appendingWatchRegion(regionCode)
         }
     }
 
@@ -38,8 +38,8 @@ private extension URL {
         static let watchRegion = "watch_region"
     }
 
-    func appendingWatchRegion() -> URL {
-        guard let regionCode = Locale.current.regionCode else {
+    func appendingWatchRegion(_ regionCode: String?) -> URL {
+        guard let regionCode else {
             return self
         }
 

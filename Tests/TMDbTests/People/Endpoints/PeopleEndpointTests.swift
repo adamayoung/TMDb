@@ -3,56 +3,56 @@ import XCTest
 
 final class PeopleEndpointTests: XCTestCase {
 
-    func testPersonDetailsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/1")!
+    func testPersonDetailsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1"))
 
         let url = PeopleEndpoint.details(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPersonCombinedCreditsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/1/combined_credits")!
+    func testPersonCombinedCreditsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1/combined_credits"))
 
         let url = PeopleEndpoint.combinedCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPersonMovieCreditsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/1/movie_credits")!
+    func testPersonMovieCreditsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1/movie_credits"))
 
         let url = PeopleEndpoint.movieCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPersonTVShowCreditsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/1/tv_credits")!
+    func testPersonTVShowCreditsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1/tv_credits"))
 
         let url = PeopleEndpoint.tvShowCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPersonImagesEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/1/images")!
+    func testPersonImagesEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1/images"))
 
         let url = PeopleEndpoint.images(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPopularPeopleEndpointReturnsURL() {
-        let expectedURL = URL(string: "/person/popular")!
+    func testPopularPeopleEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/popular"))
 
         let url = PeopleEndpoint.popular().path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPopularPeopleEndpointWithPageReturnsURL() {
-        let expectedURL = URL(string: "/person/popular?page=1")!
+    func testPopularPeopleEndpointWithPageReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/popular?page=1"))
 
         let url = PeopleEndpoint.popular(page: 1).path
 

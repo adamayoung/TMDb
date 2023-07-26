@@ -7,9 +7,9 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
      var baseURL: URL!
      var urlSession: URLSession!
 
-     override func setUp() {
-         super.setUp()
-         baseURL = URL(string: "https://some.domain.com/path")
+     override func setUpWithError() throws {
+         try super.setUpWithError()
+         baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
 
          let configuration = URLSessionConfiguration.default
          configuration.protocolClasses = [MockURLProtocol.self]

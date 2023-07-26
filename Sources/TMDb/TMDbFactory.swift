@@ -14,8 +14,12 @@ extension TMDbFactory {
             baseURL: .tmdbAPIBaseURL,
             httpClient: TMDb.configuration.httpClient(),
             serialiser: serialiser,
-            locale: { .current }
+            localeProvider: localeProvider
         )
+    }
+
+    static func localeProvider() -> Locale {
+        .current
     }
 
 }

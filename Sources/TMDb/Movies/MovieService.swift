@@ -7,18 +7,21 @@ import Foundation
 public final class MovieService {
 
     private let apiClient: APIClient
+    private let localeProvider: () -> Locale
 
     ///
     /// Creates a movie service object.
     ///
     public convenience init() {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient,
+            localeProvider: TMDbFactory.localeProvider
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
         self.apiClient = apiClient
+        self.localeProvider = localeProvider
     }
 
     ///
@@ -77,7 +80,9 @@ public final class MovieService {
     /// - Returns: Collection of images for the matching movie.
     /// 
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
-        try await apiClient.get(endpoint: MoviesEndpoint.images(movieID: movieID))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(endpoint: MoviesEndpoint.images(movieID: movieID, languageCode: languageCode))
     }
 
     ///
@@ -89,9 +94,11 @@ public final class MovieService {
     ///    - movieID: The identifier of the movie.
     ///
     /// - Returns: Collection of videos for the matching movie.
-    /// 
+    ///
     public func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection {
-        try await apiClient.get(endpoint: MoviesEndpoint.videos(movieID: movieID))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(endpoint: MoviesEndpoint.videos(movieID: movieID, languageCode: languageCode))
     }
 
     ///

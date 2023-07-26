@@ -7,18 +7,21 @@ import Foundation
 public final class TVShowService {
 
     private let apiClient: APIClient
+    private let localeProvider: () -> Locale
 
     ///
     /// Creates a TV show service object.
     ///
     public convenience init() {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient,
+            localeProvider: TMDbFactory.localeProvider
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
         self.apiClient = apiClient
+        self.localeProvider = localeProvider
     }
 
     ///
@@ -77,7 +80,9 @@ public final class TVShowService {
     /// - Returns: A collection of images for the matching TV show.
     ///
     public func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        try await apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID, languageCode: languageCode))
     }
 
     ///
@@ -91,7 +96,9 @@ public final class TVShowService {
     /// - Returns: A collection of videos for the matching TV show.
     ///
     public func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        try await apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID))
+        let languageCode = localeProvider().languageCode
+
+        return try await apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID, languageCode: languageCode))
     }
 
     ///

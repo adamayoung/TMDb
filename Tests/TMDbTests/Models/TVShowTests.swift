@@ -15,8 +15,8 @@ final class TVShowTests: XCTestCase {
         XCTAssertNil(someTVShow.homepageURL)
     }
 
-    func testHomepageURLWhenHasURLReturnsURL() {
-        let expectedResult = URL(string: "https://some.domain.com")!
+    func testHomepageURLWhenHasURLReturnsURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
         let someTVShow = TVShow(id: 3, name: "Some tv show name 3", homepageURL: expectedResult)
 
         XCTAssertEqual(someTVShow.homepageURL, expectedResult)

@@ -15,8 +15,8 @@ final class MovieTests: XCTestCase {
         XCTAssertNil(someMovie.homepageURL)
     }
 
-    func testHomepageURLWhenHasURLReturnsURL() {
-        let expectedResult = URL(string: "https://some.domain.com")!
+    func testHomepageURLWhenHasURLReturnsURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
         let someMovie = Movie(id: 3, title: "Some movie title 3", homepageURL: expectedResult)
 
         XCTAssertEqual(someMovie.homepageURL, expectedResult)

@@ -127,19 +127,19 @@ final class MovieSortTests: XCTestCase {
 
 extension MovieSortTests {
 
-    func testURLAppendingSortByReturnsURL() {
-        let expectedResult = URL(string: "/some/path?sort_by=popularity.asc")!
+    func testURLAppendingSortByReturnsURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "/some/path?sort_by=popularity.asc"))
 
-        let result = URL(string: "/some/path")!
+        let result = try XCTUnwrap(URL(string: "/some/path"))
             .appendingSortBy(MovieSort.popularity(descending: false))
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testURLAppendingNilSortByReturnsURL() {
-        let expectedResult = URL(string: "/some/path")!
+    func testURLAppendingNilSortByReturnsURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "/some/path"))
 
-        let result = URL(string: "/some/path")!
+        let result = try XCTUnwrap(URL(string: "/some/path"))
             .appendingSortBy(nil as MovieSort?)
 
         XCTAssertEqual(result, expectedResult)

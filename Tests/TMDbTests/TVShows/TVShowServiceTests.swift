@@ -5,15 +5,18 @@ final class TVShowServiceTests: XCTestCase {
 
     var service: TVShowService!
     var apiClient: MockAPIClient!
+    var locale: Locale!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = TVShowService(apiClient: apiClient)
+        locale = Locale(identifier: "en_GB")
+        service = TVShowService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
     }
 
     override func tearDown() {
         apiClient = nil
+        locale = nil
         service = nil
         super.tearDown()
     }
@@ -82,7 +85,10 @@ final class TVShowServiceTests: XCTestCase {
         let result = try await service.images(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.images(tvShowID: tvShowID).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVShowsEndpoint.images(tvShowID: tvShowID, languageCode: locale.languageCode).path
+        )
     }
 
     func testVideosReturnsVideos() async throws {
@@ -93,7 +99,10 @@ final class TVShowServiceTests: XCTestCase {
         let result = try await service.videos(forTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TVShowsEndpoint.videos(tvShowID: tvShowID).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVShowsEndpoint.videos(tvShowID: tvShowID, languageCode: locale.languageCode).path
+        )
     }
 
     func testRecommendationsWithDefaultParametersReturnsTVShows() async throws {
