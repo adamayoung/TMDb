@@ -18,7 +18,7 @@ For the TMDb API documentation, see
 
 - <doc:/CreatingTMDbAPIKey>
 - <doc:/ConfiguringTMDb>
-- ``TMDb``
+- ``TMDb/TMDb``
 - ``TMDbConfiguration``
 - ``HTTPClient``
 
