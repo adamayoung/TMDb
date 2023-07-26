@@ -1,32 +1,38 @@
 import Foundation
 
-final actor TMDbAPIClient: APIClient {
+final class TMDbAPIClient: APIClient {
 
     private let apiKey: String
     private let baseURL: URL
-    private let urlSession: URLSession
+    private let httpClient: HTTPClient
     private let serialiser: Serialiser
 
-    init(apiKey: String, baseURL: URL, urlSession: URLSession, serialiser: Serialiser) {
+    init(apiKey: String, baseURL: URL, httpClient: HTTPClient, serialiser: Serialiser) {
         self.apiKey = apiKey
         self.baseURL = baseURL
-        self.urlSession = urlSession
+        self.httpClient = httpClient
         self.serialiser = serialiser
     }
 
     func get<Response: Decodable>(path: URL) async throws -> Response {
-        let urlRequest = buildURLRequest(for: path)
+        let url = urlFromPath(path)
+        let headers = [
+            "Accept": "application/json"
+        ]
 
-        let data: Data
-        let response: URLResponse
+        let response: HTTPResponse
 
         do {
-            (data, response) = try await urlSession.data(for: urlRequest)
+            response = try await httpClient.get(url: url, headers: headers)
         } catch {
             throw TMDbError.network(error)
         }
 
-        try await validate(data: data, response: response)
+        try await validate(response: response)
+
+        guard let data = response.data else {
+            throw TMDbError.unknown
+        }
 
         let decodedResponse: Response
         do {
@@ -42,13 +48,6 @@ final actor TMDbAPIClient: APIClient {
 
 extension TMDbAPIClient {
 
-    private func buildURLRequest(for path: URL) -> URLRequest {
-        let url = urlFromPath(path)
-        var urlRequest = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy)
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
-        return urlRequest
-    }
-
     private func urlFromPath(_ path: URL) -> URL {
         guard var urlComponents = URLComponents(url: path, resolvingAgainstBaseURL: true) else {
             return path
@@ -63,14 +62,14 @@ extension TMDbAPIClient {
             .appendingLanguage()
     }
 
-    private func validate(data: Data, response: URLResponse) async throws {
-        guard let httpURLResponse = response as? HTTPURLResponse else {
+    private func validate(response: HTTPResponse) async throws {
+        let statusCode = response.statusCode
+        if (200...299).contains(statusCode) {
             return
         }
 
-        let statusCode = httpURLResponse.statusCode
-        if (200...299).contains(statusCode) {
-            return
+        guard let data = response.data else {
+            throw TMDbError(statusCode: statusCode, message: nil)
         }
 
         let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
