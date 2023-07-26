@@ -12,7 +12,7 @@ final class WatchProviderEndpointTests: XCTestCase {
     }
 
     func testMovieEndpointReturnsURL() {
-        let regionCode = Locale.current.regionCode ?? ""
+        let regionCode = "GB"
         let expectedURL = URL(string: "/watch/providers/movie?watch_region=\(regionCode)")!
 
         let url = WatchProviderEndpoint.movie.path
@@ -21,7 +21,7 @@ final class WatchProviderEndpointTests: XCTestCase {
     }
 
     func testTVShowEndpointReturnsURL() {
-        let regionCode = Locale.current.regionCode ?? ""
+        let regionCode = "GB"
         let expectedURL = URL(string: "/watch/providers/tv?watch_region=\(regionCode)")!
 
         let url = WatchProviderEndpoint.tvShow.path

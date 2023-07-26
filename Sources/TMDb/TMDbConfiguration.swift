@@ -7,28 +7,37 @@ import Foundation
 ///
 public struct TMDbConfiguration {
 
-    let apiKey: String
-    let httpClient: HTTPClient?
+    let apiKey: @Sendable () -> String
+    let httpClient: () -> any HTTPClient
 
     ///
-    /// Creates a TMDb conifguration object using the default URLSession.
+    /// Creates a TMDb configuration object using URLSession as the HTTP client.
     ///
     /// - Parameters:
     ///    - apiKey: The TMDb API key to use.
     ///
     public init(apiKey: String) {
-        self.apiKey = apiKey
-        self.httpClient = nil
+        self.init(
+            apiKey: { apiKey },
+            httpClient: { TMDbFactory.defaultHTTPClientAdapter }
+        )
     }
 
     ///
-    /// Creates a TMDb conifguration object.
+    /// Creates a TMDb configuration object.
     ///
     /// - Parameters:
     ///    - apiKey: The TMDb API key to use.
-    ///    - httpClient: A custom HTTP client adapter to make HTTP requests.
+    ///    - httpClient: A custom HTTP client adapter for making HTTP requests.
     ///
     public init(apiKey: String, httpClient: HTTPClient) {
+        self.init(
+            apiKey: { apiKey },
+            httpClient: { httpClient }
+        )
+    }
+
+    init(apiKey: @escaping @Sendable () -> String, httpClient: @escaping @Sendable () -> any HTTPClient) {
         self.apiKey = apiKey
         self.httpClient = httpClient
     }

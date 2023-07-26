@@ -1,5 +1,5 @@
 import Foundation
-import TMDb
+@testable import TMDb
 
 extension Certifications {
 

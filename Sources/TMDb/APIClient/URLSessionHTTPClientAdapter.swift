@@ -8,7 +8,7 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
         self.urlSession = urlSession
     }
 
-    func get(url: URL, headers: [String : String]) async throws -> HTTPResponse {
+    func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         for header in headers {

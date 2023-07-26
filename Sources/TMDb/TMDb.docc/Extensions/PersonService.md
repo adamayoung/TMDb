@@ -4,7 +4,7 @@
 
 ### Creating a Person Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Details
 

@@ -11,12 +11,9 @@ public final class CompanyService {
     ///
     /// Creates a company service object.
     ///
-    /// - Parameters:
-    ///    - config: TMDb configuration setting.
-    ///
-    public convenience init(config: TMDbConfiguration) {
+    public convenience init() {
         self.init(
-            apiClient: TMDbFactory.apiClient(apiKey: config.apiKey)
+            apiClient: TMDbFactory.apiClient
         )
     }
 

@@ -4,7 +4,7 @@
 
 ### Creating a Search Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Media
 

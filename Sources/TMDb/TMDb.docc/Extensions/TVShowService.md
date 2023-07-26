@@ -4,7 +4,7 @@
 
 ### Creating a TV Show Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Details
 

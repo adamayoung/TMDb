@@ -39,10 +39,7 @@ let package = Package(
         ),
         .testTarget(
             name: "TMDbIntegrationTests",
-            dependencies: ["TMDb"],
-            resources: [
-                .process("Resources")
-            ]
+            dependencies: ["TMDb"]
         )
     ]
 )

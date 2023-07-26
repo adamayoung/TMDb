@@ -8,12 +8,13 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static func apiClient(config: TMDbConfiguration) -> some APIClient {
+    static var apiClient: some APIClient {
         TMDbAPIClient(
-            apiKey: config.apiKey,
+            apiKey: TMDb.configuration.apiKey(),
             baseURL: .tmdbAPIBaseURL,
-            httpClient: httpClient(config: config),
-            serialiser: serialiser
+            httpClient: TMDb.configuration.httpClient(),
+            serialiser: serialiser,
+            locale: { .current }
         )
     }
 
@@ -21,15 +22,7 @@ extension TMDbFactory {
 
 extension TMDbFactory {
 
-    private static func httpClient(config: TMDbConfiguration) -> HTTPClient {
-        config.httpClient ?? defaultHTTPClientAdapter
-    }
-
-}
-
-extension TMDbFactory {
-
-    private static var defaultHTTPClientAdapter: HTTPClient {
+    static var defaultHTTPClientAdapter: some HTTPClient {
         URLSessionHTTPClientAdapter(urlSession: urlSession)
     }
 
