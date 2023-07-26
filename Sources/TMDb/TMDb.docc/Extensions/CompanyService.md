@@ -4,7 +4,7 @@
 
 ### Creating a Company Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Company Details
 

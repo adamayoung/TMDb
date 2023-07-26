@@ -5,15 +5,18 @@ final class MovieServiceTests: XCTestCase {
 
     var service: MovieService!
     var apiClient: MockAPIClient!
+    var locale: Locale!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = MovieService(apiClient: apiClient)
+        locale = Locale(identifier: "en_GB")
+        service = MovieService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
     }
 
     override func tearDown() {
         apiClient = nil
+        locale = nil
         service = nil
         super.tearDown()
     }
@@ -82,7 +85,10 @@ final class MovieServiceTests: XCTestCase {
         let result = try await service.images(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.images(movieID: movieID).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            MoviesEndpoint.images(movieID: movieID, languageCode: locale.languageCode).path
+        )
     }
 
     func testVideosReturnsVideoCollection() async throws {
@@ -93,7 +99,10 @@ final class MovieServiceTests: XCTestCase {
         let result = try await service.videos(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.videos(movieID: movieID).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            MoviesEndpoint.videos(movieID: movieID, languageCode: locale.languageCode).path
+        )
     }
 
     func testRecommendationsWithDefaultParametersReturnsMovies() async throws {

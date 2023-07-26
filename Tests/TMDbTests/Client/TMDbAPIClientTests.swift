@@ -6,33 +6,38 @@ final class TMDbAPIClientTests: XCTestCase {
     var apiClient: TMDbAPIClient!
     var apiKey: String!
     var baseURL: URL!
-    var urlSession: URLSession!
+    var httpClient: HTTPMockClient!
     var serialiser: Serialiser!
+    var locale: Locale!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         apiKey = "abc123"
-        baseURL = URL(string: "https://some.domain.com/path")
+        baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
-        urlSession = URLSession(configuration: configuration)
+        httpClient = HTTPMockClient()
         serialiser = Serialiser(decoder: .theMovieDatabase)
-        apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, urlSession: urlSession, serialiser: serialiser)
+        locale = Locale(identifier: "en_GB")
+        apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
+                                  localeProvider: { [unowned self] in self.locale })
     }
 
     override func tearDown() {
         apiClient = nil
+        locale = nil
         serialiser = nil
+        httpClient = nil
         baseURL = nil
         apiKey = nil
-        MockURLProtocol.reset()
         super.tearDown()
     }
 
     func testGetWhenRequestFailsThrowsNetworkError() async throws {
         let expectedError = NSError(domain: NSURLErrorDomain, code: URLError.badServerResponse.rawValue)
-        MockURLProtocol.failError = expectedError
+
+        httpClient.result = .failure(expectedError)
 
         do {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
@@ -50,7 +55,7 @@ final class TMDbAPIClientTests: XCTestCase {
     }
 
     func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
-        MockURLProtocol.responseStatusCode = 401
+        httpClient.result = .success(HTTPResponse(statusCode: 401))
 
         do {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
@@ -68,7 +73,7 @@ final class TMDbAPIClientTests: XCTestCase {
     }
 
     func testGetWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
-        MockURLProtocol.responseStatusCode = 404
+        httpClient.result = .success(HTTPResponse(statusCode: 404))
 
         do {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
@@ -86,10 +91,9 @@ final class TMDbAPIClientTests: XCTestCase {
     }
 
     func testGetWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
-        MockURLProtocol.responseStatusCode = 404
         let expectedStatusMessage = "The resource you requested could not be found."
         let statusResponse = try Data(fromResource: "error-status-response", withExtension: "json")
-        MockURLProtocol.data = statusResponse
+        httpClient.result = .success(HTTPResponse(statusCode: 404, data: statusResponse))
 
         do {
            _ = try await apiClient.get(path: URL(string: "/error")!) as String
@@ -109,7 +113,7 @@ final class TMDbAPIClientTests: XCTestCase {
 
     func testGetWhenResponseHasValidDataReturnsDecodedObject() async throws {
         let expectedResult = MockObject()
-        MockURLProtocol.data = expectedResult.data
+        httpClient.result = .success(HTTPResponse(data: expectedResult.data))
 
         let result: MockObject = try await apiClient.get(path: URL(string: "/object")!)
 
@@ -121,20 +125,20 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.get(path: URL(string: "/object")!) as String
 
-        let result = MockURLProtocol.lastRequest?.value(forHTTPHeaderField: "Accept")
+        let result = httpClient.lastHeaders?["Accept"]
 
         XCTAssertEqual(result, expectedResult)
     }
 
     func testGetURLRequestHasCorrectURL() async throws {
         let path = "/object"
-        let language = Locale.current.languageCode ?? ""
+        let language = "en"
         let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
-        let expectedResult = URL(string: urlString)
+        let expectedResult = try XCTUnwrap(URL(string: urlString))
 
         _ = try? await apiClient.get(path: URL(string: path)!) as String
 
-        let result = MockURLProtocol.lastRequest?.url
+        let result = httpClient.lastURL
 
         XCTAssertEqual(result, expectedResult)
     }

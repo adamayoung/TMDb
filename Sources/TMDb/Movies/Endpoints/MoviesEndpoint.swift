@@ -5,8 +5,8 @@ enum MoviesEndpoint {
     case details(movieID: Movie.ID)
     case credits(movieID: Movie.ID)
     case reviews(movieID: Movie.ID, page: Int? = nil)
-    case images(movieID: Movie.ID)
-    case videos(movieID: Movie.ID)
+    case images(movieID: Movie.ID, languageCode: String?)
+    case videos(movieID: Movie.ID, languageCode: String?)
     case recommendations(movieID: Movie.ID, page: Int? = nil)
     case similar(movieID: Movie.ID, page: Int? = nil)
     case nowPlaying(page: Int? = nil)
@@ -37,17 +37,17 @@ extension MoviesEndpoint: Endpoint {
                 .appendingPathComponent("reviews")
                 .appendingPage(page)
 
-        case .images(let movieID):
+        case .images(let movieID, let languageCode):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("images")
-                .appendingImageLanguage()
+                .appendingImageLanguage(languageCode)
 
-        case .videos(let movieID):
+        case .videos(let movieID, let languageCode):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("videos")
-                .appendingVideoLanguage()
+                .appendingVideoLanguage(languageCode)
 
         case .recommendations(let movieID, let page):
             return Self.basePath

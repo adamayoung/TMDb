@@ -10,12 +10,17 @@ actors and images.
 For the TMDb API documentation, see
 [https://developer.themoviedb.org/docs](https://developer.themoviedb.org/docs).
 
+> Important: This product uses the TMDb API but is not endorsed or certified by TMDb.
+
 ## Topics
 
 ### Getting Started
 
 - <doc:/CreatingTMDbAPIKey>
-- <doc:/CreatingAService>
+- <doc:/ConfiguringTMDb>
+- ``TMDb``
+- ``TMDbConfiguration``
+- ``HTTPClient``
 
 ### Movies
 

@@ -33,16 +33,16 @@ extension URL {
         appendingQueryItem(name: QueryItemName.apiKey, value: apiKey)
     }
 
-    func appendingLanguage(locale: Locale = .current) -> Self {
-        guard let languageCode = locale.languageCode else {
+    func appendingLanguage(_ languageCode: String?) -> Self {
+        guard let languageCode else {
             return self
         }
 
         return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
 
-    func appendingImageLanguage(locale: Locale = .current) -> Self {
-        guard let languageCode = locale.languageCode else {
+    func appendingImageLanguage(_ languageCode: String?) -> Self {
+        guard let languageCode else {
             return self
         }
 
@@ -53,8 +53,8 @@ extension URL {
         return appendingQueryItem(name: QueryItemName.imageLanguage, value: value)
     }
 
-    func appendingVideoLanguage(locale: Locale = .current) -> Self {
-        guard let languageCode = locale.languageCode else {
+    func appendingVideoLanguage(_ languageCode: String?) -> Self {
+        guard let languageCode else {
             return self
         }
 

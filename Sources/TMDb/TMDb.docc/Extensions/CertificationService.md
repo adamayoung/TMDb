@@ -4,7 +4,7 @@
 
 ### Creating a Certification Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Certifications
 

@@ -4,7 +4,7 @@
 
 ### Creating a Discover Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Discover Movies
 

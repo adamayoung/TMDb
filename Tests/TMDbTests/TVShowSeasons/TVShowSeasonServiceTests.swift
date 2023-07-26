@@ -5,11 +5,13 @@ final class TVShowSeasonServiceTests: XCTestCase {
 
     var service: TVShowSeasonService!
     var apiClient: MockAPIClient!
+    var locale: Locale!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = TVShowSeasonService(apiClient: apiClient)
+        locale = Locale(identifier: "en_GB")
+        service = TVShowSeasonService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
     }
 
     override func tearDown() {
@@ -40,8 +42,11 @@ final class TVShowSeasonServiceTests: XCTestCase {
         let result = try await service.images(forSeason: seasonNumber, inTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath,
-                       TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                         languageCode: locale.languageCode).path
+        )
     }
 
     func testVideosReturnsVideos() async throws {
@@ -53,8 +58,11 @@ final class TVShowSeasonServiceTests: XCTestCase {
         let result = try await service.videos(forSeason: seasonNumber, inTVShow: tvShowID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath,
-                       TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                         languageCode: locale.languageCode).path
+        )
     }
 
 }

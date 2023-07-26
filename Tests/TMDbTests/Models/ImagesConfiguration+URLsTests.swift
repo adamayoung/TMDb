@@ -40,270 +40,270 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    func testBackdropURLWhenNoWidthIsGivenReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testBackdropURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.backdropURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testBackdropURLWhenWidthIsVeryLargeReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testBackdropURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.backdropURL(for: path, idealWidth: 100000)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testBackdropURLWhenWidth1280Returns1280URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w1280/image.jpg")!
+    func testBackdropURLWhenWidth1280Returns1280URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w1280/image.jpg"))
 
         let result = configuration.backdropURL(for: path, idealWidth: 1280)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testBackdropURLWhenWidth900Returns1280URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w1280/image.jpg")!
+    func testBackdropURLWhenWidth900Returns1280URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w1280/image.jpg"))
 
         let result = configuration.backdropURL(for: path, idealWidth: 900)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testBackdropURLWhenWidth200Returns300URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w300/image.jpg")!
+    func testBackdropURLWhenWidth200Returns300URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w300/image.jpg"))
 
         let result = configuration.backdropURL(for: path, idealWidth: 200)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testBackdropURLWhenConfigurationIsEmptyReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testBackdropURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = emptyConfiguration.backdropURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenNoWidthIsGivenReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testLogoURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.logoURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenWidthIsVeryLargeReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testLogoURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.logoURL(for: path, idealWidth: 100000)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenWidth500Returns500URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w500/image.jpg")!
+    func testLogoURLWhenWidth500Returns500URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w500/image.jpg"))
 
         let result = configuration.logoURL(for: path, idealWidth: 500)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenWidth400Returns500URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w500/image.jpg")!
+    func testLogoURLWhenWidth400Returns500URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w500/image.jpg"))
 
         let result = configuration.logoURL(for: path, idealWidth: 400)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenWidth40Returns45URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w45/image.jpg")!
+    func testLogoURLWhenWidth40Returns45URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w45/image.jpg"))
 
         let result = configuration.logoURL(for: path, idealWidth: 40)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testLogoURLWhenConfigurationIsEmptyReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testLogoURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = emptyConfiguration.logoURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenNoWidthIsGivenReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testPosterURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.posterURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenWidthIsVeryLargeReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testPosterURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.posterURL(for: path, idealWidth: 100000)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenWidth780Returns780URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w780/image.jpg")!
+    func testPosterURLWhenWidth780Returns780URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w780/image.jpg"))
 
         let result = configuration.posterURL(for: path, idealWidth: 780)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenWidth600Returns780URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w780/image.jpg")!
+    func testPosterURLWhenWidth600Returns780URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w780/image.jpg"))
 
         let result = configuration.posterURL(for: path, idealWidth: 600)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenWidth90Returns92URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w92/image.jpg")!
+    func testPosterURLWhenWidth90Returns92URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w92/image.jpg"))
 
         let result = configuration.posterURL(for: path, idealWidth: 90)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testPosterURLWhenConfigurationIsEmptyReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testPosterURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = emptyConfiguration.posterURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenNoWidthIsGivenReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testProfileURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.profileURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenWidthIsVeryLargeReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testProfileURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.profileURL(for: path, idealWidth: 100000)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenWidth185Returns185URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w185/image.jpg")!
+    func testProfileURLWhenWidth185Returns185URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w185/image.jpg"))
 
         let result = configuration.profileURL(for: path, idealWidth: 185)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenWidth100Returns185URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w185/image.jpg")!
+    func testProfileURLWhenWidth100Returns185URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w185/image.jpg"))
 
         let result = configuration.profileURL(for: path, idealWidth: 100)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenWidth40Returns45URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w45/image.jpg")!
+    func testProfileURLWhenWidth40Returns45URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w45/image.jpg"))
 
         let result = configuration.profileURL(for: path, idealWidth: 40)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testProfileURLWhenConfigurationIsEmptyReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testProfileURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = emptyConfiguration.profileURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenNoWidthIsGivenReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testStillURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.stillURL(for: path)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenWidthIsVeryLargeReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testStillURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = configuration.stillURL(for: path, idealWidth: 100000)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenWidth300Returns300URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w300/image.jpg")!
+    func testStillURLWhenWidth300Returns300URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w300/image.jpg"))
 
         let result = configuration.stillURL(for: path, idealWidth: 300)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenWidth190Returns300URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w300/image.jpg")!
+    func testStillURLWhenWidth190Returns300URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w300/image.jpg"))
 
         let result = configuration.stillURL(for: path, idealWidth: 190)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenWidth50Returns92URL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/w92/image.jpg")!
+    func testStillURLWhenWidth50Returns92URL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/w92/image.jpg"))
 
         let result = configuration.stillURL(for: path, idealWidth: 50)
 
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testStillURLWhenConfigurationIsEmptyReturnsOriginalURL() {
-        let path = URL(string: "/image.jpg")!
-        let expectedResult = URL(string: "https://image.tmdb.org/t/p/original/image.jpg")!
+    func testStillURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
+        let path = try XCTUnwrap(URL(string: "/image.jpg"))
+        let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
         let result = emptyConfiguration.stillURL(for: path)
 

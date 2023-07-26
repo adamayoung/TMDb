@@ -4,7 +4,7 @@
 
 ### Creating a Configuration Service
 
-- ``init(config:)``
+- ``init()``
 
 ### API Configuration
 

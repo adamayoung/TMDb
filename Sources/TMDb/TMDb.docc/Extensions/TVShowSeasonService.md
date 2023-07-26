@@ -4,7 +4,7 @@
 
 ### Creating a TV Show Season Service
 
-- ``init(config:)``
+- ``init()``
 
 ### Details
 

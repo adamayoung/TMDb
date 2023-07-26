@@ -3,32 +3,32 @@ import XCTest
 
 final class ConfigurationEndpointTests: XCTestCase {
 
-    func testAPIEndpointReturnsURL() {
-        let expectedURL = URL(string: "/configuration")!
+    func testAPIEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/configuration"))
 
         let url = ConfigurationEndpoint.api.path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testCountriesEndpointReturnsURL() {
-        let expectedURL = URL(string: "/configuration/countries")!
+    func testCountriesEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/configuration/countries"))
 
         let url = ConfigurationEndpoint.countries.path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testJobsEndpointReturnsURL() {
-        let expectedURL = URL(string: "/configuration/jobs")!
+    func testJobsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/configuration/jobs"))
 
         let url = ConfigurationEndpoint.jobs.path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testLanguageEndpointReturnsURL() {
-        let expectedURL = URL(string: "/configuration/languages")!
+    func testLanguageEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/configuration/languages"))
 
         let url = ConfigurationEndpoint.languages.path
 

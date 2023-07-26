@@ -15,14 +15,7 @@
   },
   "testTargets" : [
     {
-      "enabled" : false,
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "TMDbIntegrationTests",
-        "name" : "TMDbIntegrationTests"
-      }
-    },
-    {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:",
         "identifier" : "TMDbTests",
