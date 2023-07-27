@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build
-        run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: xcodebuild clean build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
       
       - name: Test
         run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
