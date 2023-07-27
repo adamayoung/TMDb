@@ -52,18 +52,39 @@ jobs:
       matrix:
         include:
           - name: iPhone
-            destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            os: ios
           - name: Apple Watch
-            destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+            os: watchos
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Build
-        run: xcodebuild clean build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: xcrun xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}' -IDEClonedSourcePackagesDirPathOverride="$PWD/.dependencies" -derivedDataPath "$PWD/.derivedData-${{ matrix.os }}"
       
       - name: Test
-        run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: xcrun xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}' -IDEClonedSourcePackagesDirPathOverride="$PWD/.dependencies" -derivedDataPath "$PWD/.derivedData-${{ matrix.os }}"
+
+  # build-platforms:
+  #   name: Build and Test (${{ matrix.name }})
+  #   runs-on: macos-13
+  #   continue-on-error: true
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - name: iPhone
+  #           destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+  #         - name: Apple Watch
+  #           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     - name: Build
+  #       run: xcodebuild clean build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+      
+  #     - name: Test
+  #       run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
 
   build-documentation:
     name: Build Documentation
