@@ -197,7 +197,6 @@ public final class PersonService {
         do {
             personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
         } catch let error {
-            // swiftlint:disable:next line_length
             Self.logger.error("failed fetching popular people: \(error.localizedDescription, privacy: .public)")
             throw error
         }
