@@ -40,7 +40,7 @@ public final class DiscoverService {
     /// 
     public func movies(sortedBy: MovieSort? = nil, withPeople people: [Person.ID]? = nil,
                        page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching movies")
+        Self.logger.info("fetching movies")
 
         let movieList: MoviePageableList
         do {
@@ -69,7 +69,7 @@ public final class DiscoverService {
     /// - Returns: Matching TV shows as a pageable list.
     ///
     public func tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil) async throws -> TVShowPageableList {
-        Self.logger.trace("fetching TV shows")
+        Self.logger.info("fetching TV shows")
 
         let tvShowList: TVShowPageableList
         do {

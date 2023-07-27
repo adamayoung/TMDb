@@ -35,7 +35,7 @@ public final class CompanyService {
     /// - Returns: Matching company.
     ///
     public func details(forCompany id: Company.ID) async throws -> Company {
-        Self.logger.trace("fetching company \(id, privacy: .public)")
+        Self.logger.info("fetching company \(id, privacy: .public)")
 
         let company: Company
         do {

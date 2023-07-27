@@ -32,7 +32,7 @@ public final class GenreService {
     /// - Returns: A list of genres.
     ///
     public func movieGenres() async throws -> [Genre] {
-        Self.logger.trace("fetching movie genres")
+        Self.logger.info("fetching movie genres")
 
         let genreList: GenreList
         do {
@@ -53,7 +53,7 @@ public final class GenreService {
     /// - Returns: A list of genres.
     /// 
     public func tvShowGenres() async throws -> [Genre] {
-        Self.logger.trace("fetching TV show genres")
+        Self.logger.info("fetching TV show genres")
 
         let genreList: GenreList
         do {

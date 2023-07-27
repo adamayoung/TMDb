@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for obtaining TV shows from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVShowService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "TVShowService")
 
     private let apiClient: APIClient
     private let localeProvider: () -> Locale
@@ -35,7 +38,18 @@ public final class TVShowService {
     /// - Returns: The matching TV show.
     /// 
     public func details(forTVShow id: TVShow.ID) async throws -> TVShow {
-        try await apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
+        Self.logger.info("fetching TV show \(id, privacy: .public)")
+
+        let tvShow: TVShow
+        do {
+            tvShow = try await apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching TV show \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return tvShow
     }
 
     ///
@@ -49,7 +63,18 @@ public final class TVShowService {
     /// - Returns: Show credits for the matching TV show.
     /// 
     public func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits {
-        try await apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
+        Self.logger.info("fetching credits for TV show \(tvShowID, privacy: .public)")
+
+        let credits: ShowCredits
+        do {
+            credits = try await apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching credits for TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return credits
     }
 
     ///
@@ -66,7 +91,18 @@ public final class TVShowService {
     /// - Returns: Reviews for the matching TV show as a pageable list.
     /// 
     public func reviews(forTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> ReviewPageableList {
-        try await apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
+        Self.logger.info("fetching reviews for TV show \(tvShowID, privacy: .public)")
+
+        let reviewList: ReviewPageableList
+        do {
+            reviewList = try await apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching reviews for TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return reviewList
     }
 
     ///
@@ -80,9 +116,21 @@ public final class TVShowService {
     /// - Returns: A collection of images for the matching TV show.
     ///
     public func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider().languageCode
+        Self.logger.info("fetching images for TV show \(tvShowID, privacy: .public)")
 
-        return try await apiClient.get(endpoint: TVShowsEndpoint.images(tvShowID: tvShowID, languageCode: languageCode))
+        let languageCode = localeProvider().languageCode
+        let imageCollection: ImageCollection
+        do {
+            imageCollection = try await apiClient.get(
+                endpoint: TVShowsEndpoint.images(tvShowID: tvShowID, languageCode: languageCode)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching images for TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return imageCollection
     }
 
     ///
@@ -96,9 +144,21 @@ public final class TVShowService {
     /// - Returns: A collection of videos for the matching TV show.
     ///
     public func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+        Self.logger.info("fetching videos for TV show \(tvShowID, privacy: .public)")
 
-        return try await apiClient.get(endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID, languageCode: languageCode))
+        let languageCode = localeProvider().languageCode
+        let videoCollection: VideoCollection
+        do {
+            videoCollection = try await apiClient.get(
+                endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID, languageCode: languageCode)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching images for TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return videoCollection
     }
 
     ///
@@ -115,7 +175,20 @@ public final class TVShowService {
     /// - Returns: Recommended TV shows for the matching TV show as a pageable list.
     ///
     public func recommendations(forTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> TVShowPageableList {
-        try await apiClient.get(endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page))
+        Self.logger.info("fetching recommendations for TV show \(tvShowID, privacy: .public)")
+
+        let tvShowList: TVShowPageableList
+        do {
+            tvShowList = try await apiClient.get(
+                endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching recommendations for TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return tvShowList
     }
 
     ///
@@ -134,7 +207,18 @@ public final class TVShowService {
     /// - Returns: Similar TV shows for the matching TV show as a pageable list.
     /// 
     public func similar(toTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> TVShowPageableList {
-        try await apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
+        Self.logger.info("fetching similar TV shows to TV show \(tvShowID, privacy: .public)")
+
+        let tvShowList: TVShowPageableList
+        do {
+            tvShowList = try await apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching similar TV shows to TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return tvShowList
     }
 
     ///
@@ -150,7 +234,17 @@ public final class TVShowService {
     /// - Returns: Current popular TV shows as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> TVShowPageableList {
-        try await apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
+        Self.logger.info("fetching popular TV shows")
+
+        let tvShowList: TVShowPageableList
+        do {
+            tvShowList = try await apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
+        } catch let error {
+            Self.logger.error("failed fetching popular TV shows: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return tvShowList
     }
 
 }

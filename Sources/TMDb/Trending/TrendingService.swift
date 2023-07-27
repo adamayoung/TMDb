@@ -42,7 +42,7 @@ public final class TrendingService {
     ///
     public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                        page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching trending movies")
+        Self.logger.info("fetching trending movies")
 
         let movieList: MoviePageableList
         do {
@@ -73,7 +73,7 @@ public final class TrendingService {
     ///
     public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                         page: Int? = nil) async throws -> TVShowPageableList {
-        Self.logger.trace("fetching trending TV shows")
+        Self.logger.info("fetching trending TV shows")
 
         let tvShowList: TVShowPageableList
         do {
@@ -104,7 +104,7 @@ public final class TrendingService {
     ///
     public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                        page: Int? = nil) async throws -> PersonPageableList {
-        Self.logger.trace("fetching trending people")
+        Self.logger.info("fetching trending people")
 
         let peopleList: PersonPageableList
         do {

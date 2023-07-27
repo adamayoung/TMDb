@@ -36,7 +36,7 @@ public final class PersonService {
     /// - Returns: The matching person.
     /// 
     public func details(forPerson id: Person.ID) async throws -> Person {
-        Self.logger.trace("fetching person \(id, privacy: .public)")
+        Self.logger.info("fetching person \(id, privacy: .public)")
 
         let person: Person
         do {
@@ -61,7 +61,7 @@ public final class PersonService {
     /// - Returns: The matching person's combined movie and TV show credits.
     /// 
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
-        Self.logger.trace("fetching combined credits for person \(personID, privacy: .public)")
+        Self.logger.info("fetching combined credits for person \(personID, privacy: .public)")
 
         let credits: PersonCombinedCredits
         do {
@@ -86,7 +86,7 @@ public final class PersonService {
     /// - Returns: The matching person's movie credits.
     /// 
     public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
-        Self.logger.trace("fetching movie credits for person \(personID, privacy: .public)")
+        Self.logger.info("fetching movie credits for person \(personID, privacy: .public)")
 
         let credits: PersonMovieCredits
         do {
@@ -111,7 +111,7 @@ public final class PersonService {
     /// - Returns: The matching person's TV show credits.
     /// 
     public func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
-        Self.logger.trace("fetching TV show credits for person \(personID, privacy: .public)")
+        Self.logger.info("fetching TV show credits for person \(personID, privacy: .public)")
 
         let credits: PersonTVShowCredits
         do {
@@ -136,7 +136,7 @@ public final class PersonService {
     /// - Returns: The matching person's images.
     ///
     public func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
-        Self.logger.trace("fetching images for person \(personID, privacy: .public)")
+        Self.logger.info("fetching images for person \(personID, privacy: .public)")
 
         let imageCollection: PersonImageCollection
         do {
@@ -159,7 +159,7 @@ public final class PersonService {
     /// - Returns: The matching person's show credits.
     /// 
     public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
-        Self.logger.trace("fetching known for shows for person \(personID, privacy: .public)")
+        Self.logger.info("fetching known for shows for person \(personID, privacy: .public)")
 
         let credits: PersonCombinedCredits
         do {
@@ -191,7 +191,7 @@ public final class PersonService {
     /// - Returns: Current popular people as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> PersonPageableList {
-        Self.logger.trace("fetching popular people")
+        Self.logger.info("fetching popular people")
 
         let personList: PersonPageableList
         do {

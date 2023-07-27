@@ -33,7 +33,7 @@ public final class ConfigurationService {
     /// - Returns: The API configuration.
     /// 
     public func apiConfiguration() async throws -> APIConfiguration {
-        Self.logger.trace("fetching api configuration")
+        Self.logger.info("fetching api configuration")
 
         let apiConfiguration: APIConfiguration
         do {
@@ -54,7 +54,7 @@ public final class ConfigurationService {
     /// - Returns: Countries used throughout TMDb,
     /// 
     public func countries() async throws -> [Country] {
-        Self.logger.trace("fetching countries")
+        Self.logger.info("fetching countries")
 
         let countries: [Country]
         do {
@@ -75,7 +75,7 @@ public final class ConfigurationService {
     /// - Returns: Jobs and departments used on TMDb.
     /// 
     public func jobsByDepartment() async throws -> [Department] {
-        Self.logger.trace("fetching jobs by department")
+        Self.logger.info("fetching jobs by department")
 
         let departments: [Department]
         do {
@@ -96,7 +96,7 @@ public final class ConfigurationService {
     ///  - Returns: Languages used throughout TMDb.
     ///
     public func languages() async throws -> [Language] {
-        Self.logger.trace("fetching languages")
+        Self.logger.info("fetching languages")
 
         let languages: [Language]
         do {

@@ -39,7 +39,7 @@ public final class TVShowEpisodeService {
     public func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                         inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisode {
         // swiftlint:disable:next line_length
-        Self.logger.trace("fetching TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+        Self.logger.info("fetching TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
 
         let episode: TVShowEpisode
         do {
@@ -73,7 +73,7 @@ public final class TVShowEpisodeService {
     public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVShow tvShowID: TVShow.ID) async throws -> TVShowEpisodeImageCollection {
         // swiftlint:disable:next line_length
-        Self.logger.trace("fetching images for TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+        Self.logger.info("fetching images for TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
 
         let imageCollection: TVShowEpisodeImageCollection
         do {
@@ -108,7 +108,7 @@ public final class TVShowEpisodeService {
     public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
         // swiftlint:disable:next line_length
-        Self.logger.trace("fetching videos for TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+        Self.logger.info("fetching videos for TV show episode \(episodeNumber, privacy: .public) in season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
 
         let videoCollection: VideoCollection
         do {

@@ -38,7 +38,7 @@ public final class SearchService {
     /// - Returns: Movies, TV shows and people matching the query.
     /// 
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
-        Self.logger.trace("searching all media matching query \"\(query, privacy: .public)\"")
+        Self.logger.info("searching all media matching query \"\(query, privacy: .public)\"")
 
         let mediaList: MediaPageableList
         do {
@@ -66,7 +66,7 @@ public final class SearchService {
     /// - Returns: Movies matching the query.
     ///
     public func searchMovies(query: String, year: Int? = nil, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("searching movies matching query \"\(query, privacy: .public)\"")
+        Self.logger.info("searching movies matching query \"\(query, privacy: .public)\"")
 
         let movieList: MoviePageableList
         do {
@@ -95,7 +95,7 @@ public final class SearchService {
     ///
     public func searchTVShows(query: String, firstAirDateYear: Int? = nil,
                               page: Int? = nil) async throws -> TVShowPageableList {
-        Self.logger.trace("searching TV shows matching query \"\(query, privacy: .public)\"")
+        Self.logger.info("searching TV shows matching query \"\(query, privacy: .public)\"")
 
         let tvShowList: TVShowPageableList
         do {
@@ -124,7 +124,7 @@ public final class SearchService {
     /// - Returns: People matching the query.
     ///
     public func searchPeople(query: String, page: Int? = nil) async throws -> PersonPageableList {
-        Self.logger.trace("searching people matching query \"\(query, privacy: .public)\"")
+        Self.logger.info("searching people matching query \"\(query, privacy: .public)\"")
 
         let peopleList: PersonPageableList
         do {

@@ -38,7 +38,7 @@ public final class MovieService {
     /// - Returns: The matching movie.
     /// 
     public func details(forMovie id: Movie.ID) async throws -> Movie {
-        Self.logger.trace("fetching movie \(id, privacy: .public)")
+        Self.logger.info("fetching movie \(id, privacy: .public)")
 
         let movie: Movie
         do {
@@ -63,7 +63,7 @@ public final class MovieService {
     /// - Returns: Credits for the matching movie.
     /// 
     public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
-        Self.logger.trace("fetching credits for movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching credits for movie \(movieID, privacy: .public)")
 
         let credits: ShowCredits
         do {
@@ -91,7 +91,7 @@ public final class MovieService {
     /// - Returns: Reviews for the matching movie as a pageable list.
     /// 
     public func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {
-        Self.logger.trace("fetching reviews for movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching reviews for movie \(movieID, privacy: .public)")
 
         let reviewList: ReviewPageableList
         do {
@@ -116,7 +116,7 @@ public final class MovieService {
     /// - Returns: Collection of images for the matching movie.
     /// 
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
-        Self.logger.trace("fetching images for movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching images for movie \(movieID, privacy: .public)")
 
         let languageCode = localeProvider().languageCode
         let imageCollection: ImageCollection
@@ -144,7 +144,7 @@ public final class MovieService {
     /// - Returns: Collection of videos for the matching movie.
     ///
     public func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection {
-        Self.logger.trace("fetching videos for movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching videos for movie \(movieID, privacy: .public)")
 
         let languageCode = localeProvider().languageCode
         let videoCollection: VideoCollection
@@ -175,7 +175,7 @@ public final class MovieService {
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     /// 
     public func recommendations(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching recommendations for movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching recommendations for movie \(movieID, privacy: .public)")
 
         let movieList: MoviePageableList
         do {
@@ -205,7 +205,7 @@ public final class MovieService {
     /// - Returns: Similar movies for the matching movie as a pageable list.
     /// 
     public func similar(toMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching movies similar to movie \(movieID, privacy: .public)")
+        Self.logger.info("fetching movies similar to movie \(movieID, privacy: .public)")
 
         let movieList: MoviePageableList
         do {
@@ -232,7 +232,7 @@ public final class MovieService {
     /// - Returns: Now playing movies as a pageable list.
     /// 
     public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching movies now playing")
+        Self.logger.info("fetching movies now playing")
 
         let movieList: MoviePageableList
         do {
@@ -258,7 +258,7 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func popular(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching popular movies")
+        Self.logger.info("fetching popular movies")
 
         let movieList: MoviePageableList
         do {
@@ -284,7 +284,7 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func topRated(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching top rated movies")
+        Self.logger.info("fetching top rated movies")
 
         let movieList: MoviePageableList
         do {
@@ -310,7 +310,7 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.trace("fetching upcoming movies")
+        Self.logger.info("fetching upcoming movies")
 
         let movieList: MoviePageableList
         do {

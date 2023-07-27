@@ -32,7 +32,7 @@ public final class CertificationService {
     /// - Returns: A dictionary of movie certifications.
     /// 
     public func movieCertifications() async throws -> [String: [Certification]] {
-        Self.logger.trace("fetching movie certifications")
+        Self.logger.info("fetching movie certifications")
 
         let certifications: Certifications
         do {
@@ -53,7 +53,7 @@ public final class CertificationService {
     /// - Returns: A dictionary of TV show certifications.
     /// 
     public func tvShowCertifications() async throws -> [String: [Certification]] {
-        Self.logger.trace("fetching movie certifications")
+        Self.logger.info("fetching movie certifications")
 
         let certifications: Certifications
         do {
