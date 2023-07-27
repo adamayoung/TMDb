@@ -3,7 +3,7 @@ import Foundation
 ///
 /// Provides an interface for finding trending movies, TV shows and people from TMDb.
 ///
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TrendingService {
 
     private let apiClient: APIClient
