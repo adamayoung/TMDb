@@ -7,7 +7,7 @@ import os
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class MovieService {
 
-    private static let logger = Logger(subsystem: Logger.tmdb, category: "GenreService")
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "MovieService")
 
     private let apiClient: APIClient
     private let localeProvider: () -> Locale
