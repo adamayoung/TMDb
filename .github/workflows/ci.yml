@@ -55,15 +55,17 @@ jobs:
             os: ios
           - name: Apple Watch
             os: watchos
+          - name: Apple TV
+            os: tvos
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Build
-        run: xcrun xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}' -IDEClonedSourcePackagesDirPathOverride="$PWD/.dependencies" -derivedDataPath "$PWD/.derivedData-${{ matrix.os }}"
+        run: xcrun xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}'
       
       - name: Test
-        run: xcrun xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}' -IDEClonedSourcePackagesDirPathOverride="$PWD/.dependencies" -derivedDataPath "$PWD/.derivedData-${{ matrix.os }}"
+        run: xcrun xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}'
 
   # build-platforms:
   #   name: Build and Test (${{ matrix.name }})
