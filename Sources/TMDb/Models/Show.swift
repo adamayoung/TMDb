@@ -56,22 +56,6 @@ public enum Show: Identifiable, Equatable, Hashable {
 
 }
 
-extension Show: Comparable {
-
-    public static func < (lhs: Show, rhs: Show) -> Bool {
-        guard let lhsDate = lhs.date else {
-            return false
-        }
-
-        guard let rhsDate = rhs.date else {
-            return true
-        }
-
-        return lhsDate > rhsDate
-    }
-
-}
-
 extension Show: Decodable {
 
     private enum CodingKeys: String, CodingKey {

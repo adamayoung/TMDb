@@ -229,7 +229,7 @@ public final class MovieService {
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Returns: Current popular movies as a pageable list.
+    /// - Returns: Now playing movies as a pageable list.
     /// 
     public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
         Self.logger.trace("fetching movies now playing")
