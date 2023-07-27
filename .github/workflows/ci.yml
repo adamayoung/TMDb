@@ -52,41 +52,21 @@ jobs:
       matrix:
         include:
           - name: iPhone
-            os: ios
+            destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
           - name: Apple Watch
-            os: watchos
+            destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           - name: Apple TV
-            os: tvos
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Build
-        run: xcrun xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}'
+        run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
       
       - name: Test
-        run: xcrun xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination 'generic/platform=${{ matrix.os }}'
-
-  # build-platforms:
-  #   name: Build and Test (${{ matrix.name }})
-  #   runs-on: macos-13
-  #   continue-on-error: true
-  #   strategy:
-  #     matrix:
-  #       include:
-  #         - name: iPhone
-  #           destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
-  #         - name: Apple Watch
-  #           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-  #     - name: Build
-  #       run: xcodebuild clean build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
-      
-  #     - name: Test
-  #       run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
 
   build-documentation:
     name: Build Documentation
