@@ -48,7 +48,7 @@ public final class TVShowSeasonService {
             )
         } catch let error {
             // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+            Self.logger.error("failed fetching TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -79,7 +79,7 @@ public final class TVShowSeasonService {
             )
         } catch let error {
             // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching images for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+            Self.logger.error("failed fetching images for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -110,7 +110,7 @@ public final class TVShowSeasonService {
             )
         } catch let error {
             // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching videos for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+            Self.logger.error("failed fetching videos for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
