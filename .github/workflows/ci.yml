@@ -45,13 +45,15 @@ jobs:
         run: swift build -c release -Xswiftc -warnings-as-errors
   
   build-platforms:
-    name: Platform Build and Test
+    name: Build and Test (${{ matrix.name }})
     runs-on: macos-13
     strategy:
       matrix:
-        destination:
-          - platform=iOS Simulator,name=iPhone 14
-          - platform=watchOS Simulator,name=Apple Watch Ultra (49mm)
+        include:
+          - name: iPhone
+            destination: platform=iOS Simulator,name=iPhone 14
+          - name: Apple Watch
+            destination: platform=watchOS Simulator,name=Apple Watch Ultra (49mm)
     steps:
       - name: Checkout
         uses: actions/checkout@v3
