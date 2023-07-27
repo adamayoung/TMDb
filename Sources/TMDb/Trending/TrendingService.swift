@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for finding trending movies, TV shows and people from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TrendingService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "TrendingService")
 
     private let apiClient: APIClient
 
@@ -39,7 +42,17 @@ public final class TrendingService {
     ///
     public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                        page: Int? = nil) async throws -> MoviePageableList {
-        try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
+        Self.logger.trace("fetching trending movies")
+
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
+        } catch let error {
+            Self.logger.error("failed fetching trending movies: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return movieList
     }
 
     ///
@@ -60,7 +73,17 @@ public final class TrendingService {
     ///
     public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                         page: Int? = nil) async throws -> TVShowPageableList {
-        try await apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
+        Self.logger.trace("fetching trending TV shows")
+
+        let tvShowList: TVShowPageableList
+        do {
+            tvShowList = try await apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
+        } catch let error {
+            Self.logger.error("failed fetching trending TV shows: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return tvShowList
     }
 
     ///
@@ -81,7 +104,17 @@ public final class TrendingService {
     ///
     public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
                        page: Int? = nil) async throws -> PersonPageableList {
-        try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
+        Self.logger.trace("fetching trending people")
+
+        let peopleList: PersonPageableList
+        do {
+            peopleList = try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
+        } catch let error {
+            Self.logger.error("failed fetching trending people: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return peopleList
     }
 
 }
