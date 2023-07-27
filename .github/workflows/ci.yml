@@ -51,15 +51,16 @@ jobs:
       matrix:
         destination:
           - platform=iOS Simulator,name=iPhone 14
+          - platform=watchOS Simulator,name=Apple Watch Ultra (49mm)
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Build
-        run: xcodebuild build-for-testing -scheme TMDb -destination '${{ matrix.destination }}'
+        run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
       
       - name: Test
-        run: xcodebuild test-without-building -scheme TMDb -destination '${{ matrix.destination }}'
+        run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
 
   build-documentation:
     name: Build Documentation
