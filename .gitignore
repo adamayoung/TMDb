@@ -130,4 +130,7 @@ swiftlint.result.json
 # Documentation
 docs
 
+# Test Plans
+*.xctestplan
+
 # End of https://www.gitignore.io/api/xcode,macos,swift,swiftpm,swiftpackagemanager
