@@ -2,5 +2,7 @@
 .docc-build
 .swiftpm
 /.build
+/*.xcodeproj
+xcuserdata/
 .vscode
 *.xctestplan

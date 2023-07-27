@@ -43,6 +43,23 @@ jobs:
       
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
+  
+  build-platforms:
+    name: Platform Build and Test
+    runs-on: macos-13
+    strategy:
+      matrix:
+        destination:
+          - platform=iOS Simulator,name=iPhone 14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: xcodebuild build-for-testing -scheme TMDb -destination '${{ matrix.destination }}'
+      
+      - name: Test
+        run: xcodebuild test-without-building -scheme TMDb -destination '${{ matrix.destination }}'
 
   build-documentation:
     name: Build Documentation
