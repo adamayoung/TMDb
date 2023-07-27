@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for obtaining movie and TV show genres from TMDb.
 ///
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class GenreService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "GenreService")
 
     private let apiClient: APIClient
 
@@ -29,7 +32,16 @@ public final class GenreService {
     /// - Returns: A list of genres.
     ///
     public func movieGenres() async throws -> [Genre] {
-        let genreList: GenreList = try await apiClient.get(endpoint: GenresEndpoint.movie)
+        Self.logger.info("fetching movie genres")
+
+        let genreList: GenreList
+        do {
+            genreList = try await apiClient.get(endpoint: GenresEndpoint.movie)
+        } catch let error {
+            Self.logger.error("failed fetching movie genres: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
         return genreList.genres
     }
 
@@ -41,7 +53,16 @@ public final class GenreService {
     /// - Returns: A list of genres.
     /// 
     public func tvShowGenres() async throws -> [Genre] {
-        let genreList: GenreList = try await apiClient.get(endpoint: GenresEndpoint.tvShow)
+        Self.logger.info("fetching TV show genres")
+
+        let genreList: GenreList
+        do {
+            genreList = try await apiClient.get(endpoint: GenresEndpoint.tvShow)
+        } catch let error {
+            Self.logger.error("failed fetching TV show genres: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
         return genreList.genres
     }
 

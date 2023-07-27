@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for obtaining certification data from TMDb.
 ///
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class CertificationService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "CertificationService")
 
     private let apiClient: APIClient
 
@@ -29,7 +32,16 @@ public final class CertificationService {
     /// - Returns: A dictionary of movie certifications.
     /// 
     public func movieCertifications() async throws -> [String: [Certification]] {
-        let certifications: Certifications = try await apiClient.get(endpoint: CertificationsEndpoint.movie)
+        Self.logger.info("fetching movie certifications")
+
+        let certifications: Certifications
+        do {
+            certifications = try await apiClient.get(endpoint: CertificationsEndpoint.movie)
+        } catch let error {
+            Self.logger.error("failed fetching movie certifications: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
         return certifications.certifications
     }
 
@@ -41,7 +53,16 @@ public final class CertificationService {
     /// - Returns: A dictionary of TV show certifications.
     /// 
     public func tvShowCertifications() async throws -> [String: [Certification]] {
-        let certifications: Certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
+        Self.logger.info("fetching movie certifications")
+
+        let certifications: Certifications
+        do {
+            certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
+        } catch let error {
+            Self.logger.error("failed fetching TV show certifications: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
         return certifications.certifications
     }
 

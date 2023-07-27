@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for obtaining TV show seasons from TMDb.
 ///
-@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macOS 10.15, *)
+@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVShowSeasonService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "TVShowSeasonService")
 
     private let apiClient: APIClient
     private let localeProvider: () -> Locale
@@ -36,7 +39,20 @@ public final class TVShowSeasonService {
     /// - Returns: A season of the matching TV show.
     ///
     public func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason {
-        try await apiClient.get(endpoint: TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber))
+        Self.logger.info("fetching TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
+
+        let season: TVShowSeason
+        do {
+            season = try await apiClient.get(
+                endpoint: TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return season
     }
 
     ///
@@ -51,12 +67,23 @@ public final class TVShowSeasonService {
     /// - Returns: A collection of images for the matching TV show's season.
     ///
     public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider().languageCode
+        // swiftlint:disable:next line_length
+        Self.logger.info("fetching images for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
 
-        return try await apiClient.get(
-            endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber,
-                                                   languageCode: languageCode)
-        )
+        let languageCode = localeProvider().languageCode
+        let imageCollection: ImageCollection
+        do {
+            imageCollection = try await apiClient.get(
+                endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                                       languageCode: languageCode)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching images for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return imageCollection
     }
 
     ///
@@ -71,12 +98,23 @@ public final class TVShowSeasonService {
     /// - Returns: A collection of videos for the matching TV show's season.
     ///
     public func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+        // swiftlint:disable:next line_length
+        Self.logger.info("fetching videos for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public)")
 
-        return try await apiClient.get(
-            endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber,
-                                                   languageCode: languageCode)
-        )
+        let languageCode = localeProvider().languageCode
+        let videoCollection: VideoCollection
+        do {
+            videoCollection = try await apiClient.get(
+                endpoint: TVShowSeasonsEndpoint.videos(tvShowID: tvShowID, seasonNumber: seasonNumber,
+                                                       languageCode: languageCode)
+            )
+        } catch let error {
+            // swiftlint:disable:next line_length
+            Self.logger.error("failed fetching videos for TV show season \(seasonNumber, privacy: .public) in TV show \(tvShowID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return videoCollection
     }
 
 }

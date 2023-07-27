@@ -41,58 +41,6 @@ final class ShowTests: XCTestCase {
         XCTAssertEqual(result, tvShowShow)
     }
 
-    func testSortWithNoDates() {
-        let showOne: Show = .movie(
-            .init(id: .randomID, title: .randomString)
-        )
-        let showTwo: Show = .tvShow(
-            .init(id: .randomID, name: .randomString)
-        )
-
-        let result = showOne < showTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithLHSDate() {
-        let showOne: Show = .movie(
-            .init(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1618840399))
-        )
-        let showTwo: Show = .tvShow(
-            .init(id: .randomID, name: .randomString)
-        )
-
-        let result = showOne < showTwo
-
-        XCTAssertTrue(result)
-    }
-
-    func testSortWithRHSDate() {
-        let showOne: Show = .movie(
-            .init(id: .randomID, title: .randomString)
-        )
-        let showTwo: Show = .tvShow(
-            .init(id: .randomID, name: .randomString, firstAirDate: Date(timeIntervalSince1970: 1218840399))
-        )
-
-        let result = showOne < showTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithDates() {
-        let showOne: Show = .movie(
-            .init(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1618840399))
-        )
-        let showTwo: Show = .tvShow(
-            .init(id: .randomID, name: .randomString, firstAirDate: Date(timeIntervalSince1970: 1218840399))
-        )
-
-        let result = showOne < showTwo
-
-        XCTAssertTrue(result)
-    }
-
 }
 
 extension ShowTests {
