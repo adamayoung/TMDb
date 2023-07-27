@@ -1,10 +1,13 @@
 import Foundation
+import os
 
 ///
 /// Provides an interface for obtaining configuration data from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class ConfigurationService {
+
+    private static let logger = Logger(subsystem: Logger.tmdb, category: "ConfigurationService")
 
     private let apiClient: APIClient
 
@@ -30,7 +33,17 @@ public final class ConfigurationService {
     /// - Returns: The API configuration.
     /// 
     public func apiConfiguration() async throws -> APIConfiguration {
-        try await apiClient.get(endpoint: ConfigurationEndpoint.api)
+        Self.logger.trace("fetching api configuration")
+
+        let apiConfiguration: APIConfiguration
+        do {
+            apiConfiguration = try await apiClient.get(endpoint: ConfigurationEndpoint.api)
+        } catch let error {
+            Self.logger.error("failed fetching api configuration: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return apiConfiguration
     }
 
     ///
@@ -41,7 +54,17 @@ public final class ConfigurationService {
     /// - Returns: Countries used throughout TMDb,
     /// 
     public func countries() async throws -> [Country] {
-        try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
+        Self.logger.trace("fetching countries")
+
+        let countries: [Country]
+        do {
+            countries = try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
+        } catch let error {
+            Self.logger.error("failed fetching countries: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return countries
     }
 
     ///
@@ -52,7 +75,17 @@ public final class ConfigurationService {
     /// - Returns: Jobs and departments used on TMDb.
     /// 
     public func jobsByDepartment() async throws -> [Department] {
-        try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
+        Self.logger.trace("fetching jobs by department")
+
+        let departments: [Department]
+        do {
+            departments = try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
+        } catch let error {
+            Self.logger.error("failed fetching jobs by department: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return departments
     }
 
     ///
@@ -63,7 +96,17 @@ public final class ConfigurationService {
     ///  - Returns: Languages used throughout TMDb.
     ///
     public func languages() async throws -> [Language] {
-        try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
+        Self.logger.trace("fetching languages")
+
+        let languages: [Language]
+        do {
+            languages = try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
+        } catch let error {
+            Self.logger.error("failed fetching languages: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+
+        return languages
     }
 
 }
