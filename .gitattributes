@@ -1,0 +1,5 @@
+*.swift diff=swift
+
+*.md linguist-detectable=true
+*.md linguist-documentation=false
+*.md diff=markdown

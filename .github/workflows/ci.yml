@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_14.3.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
 
 jobs:
   build-test:
@@ -43,6 +43,30 @@ jobs:
       
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
+  
+  build-platforms:
+    name: Build and Test (${{ matrix.name }})
+    runs-on: macos-13
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - name: iPhone
+            destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+          - name: Apple Watch
+            destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+          - name: Apple TV
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+      
+      - name: Test
+        run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
 
   build-documentation:
     name: Build Documentation

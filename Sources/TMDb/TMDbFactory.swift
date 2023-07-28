@@ -34,7 +34,7 @@ extension TMDbFactory {
 
     private static var urlSessionConfiguration: URLSessionConfiguration {
         let configuration = URLSessionConfiguration.default
-        #if !os(macOS)
+        #if os(iOS)
             configuration.multipathServiceType = .handover
         #endif
 

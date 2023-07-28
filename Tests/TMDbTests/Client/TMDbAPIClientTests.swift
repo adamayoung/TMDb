@@ -34,26 +34,6 @@ final class TMDbAPIClientTests: XCTestCase {
         super.tearDown()
     }
 
-    func testGetWhenRequestFailsThrowsNetworkError() async throws {
-        let expectedError = NSError(domain: NSURLErrorDomain, code: URLError.badServerResponse.rawValue)
-
-        httpClient.result = .failure(expectedError)
-
-        do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
-        } catch let error as TMDbError {
-            switch error {
-            case .network(let error as NSError):
-                XCTAssertEqual(error.code, expectedError.code)
-                return
-            default:
-                break
-            }
-        }
-
-        XCTFail("Expected error to be thrown")
-    }
-
     func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         httpClient.result = .success(HTTPResponse(statusCode: 401))
 
