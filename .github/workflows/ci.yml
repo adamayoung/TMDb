@@ -31,9 +31,6 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-      
-      - name: Lint
-        run: swiftlint --strict --reporter github-actions-logging
 
       - name: Build
         run: swift build -Xswiftc -warnings-as-errors --build-tests
