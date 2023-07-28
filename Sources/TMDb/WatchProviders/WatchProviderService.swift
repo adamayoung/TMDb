@@ -1,5 +1,4 @@
 import Foundation
-import os
 
 ///
 /// Provides an interface for obtaining watch providers from TMDb.
