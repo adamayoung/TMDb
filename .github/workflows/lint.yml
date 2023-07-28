@@ -13,13 +13,12 @@ concurrency:
   group: "lint-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
-env:
-  DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
-
 jobs:
   swiftlint:
     name: Swiftlint
-    runs-on: macos-13
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/realm/swiftlint:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -28,17 +27,14 @@ jobs:
         run: swiftlint --strict --reporter github-actions-logging
 
   markdownlint:
-    name: Markdown lint
-    runs-on: macos-13
+    name: Markdownlint
+    runs-on: ubuntu-latest
     steps:
-        - name: Checkout
-          uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Install markdownlint-cli
-          run: brew install markdownlint-cli
+      - name: Lint README
+        run: docker run -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "README.md"
 
-        - name: Lint README
-          run: markdownlint README.md
-
-        - name: Lint DocC files
-          run: markdownlint **/*.docc/**/*.md
+      - name: Lint DocC files
+        run: docker run -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.docc/**/*.md"
