@@ -1,5 +1,8 @@
 @testable import TMDb
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 final class TMDbAPIClientTests: XCTestCase {
 
