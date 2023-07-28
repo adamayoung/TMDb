@@ -80,11 +80,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
 
-      - name: Install markdownlint-cli
-        run: brew install markdownlint-cli
-
-      - name: Lint DocC files
-        run: markdownlint **/*.docc/**/*.md
-
       - name: Build
         run: swift package generate-documentation --product TMDb

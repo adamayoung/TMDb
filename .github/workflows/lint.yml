@@ -17,8 +17,8 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
 
 jobs:
-  lint:
-    name: Lint
+  swiftlint:
+    name: Swiftlint
     runs-on: macos-13
     steps:
       - name: Checkout
@@ -26,3 +26,19 @@ jobs:
       
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
+
+  markdownlint:
+    name: Markdown lint
+    runs-on: macos-13
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+
+        - name: Install markdownlint-cli
+          run: brew install markdownlint-cli
+
+        - name: Lint README
+          run: markdownlint README.md
+
+        - name: Lint DocC files
+          run: markdownlint **/*.docc/**/*.md
