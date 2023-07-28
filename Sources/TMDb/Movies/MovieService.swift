@@ -1,13 +1,10 @@
 import Foundation
-import os
 
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class MovieService {
-
-    private static let logger = Logger(subsystem: Logger.tmdb, category: "MovieService")
 
     private let apiClient: APIClient
     private let localeProvider: () -> Locale
@@ -38,14 +35,10 @@ public final class MovieService {
     /// - Returns: The matching movie.
     /// 
     public func details(forMovie id: Movie.ID) async throws -> Movie {
-        Self.logger.info("fetching movie \(id, privacy: .public)")
-
         let movie: Movie
         do {
             movie = try await apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching movie \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -63,14 +56,10 @@ public final class MovieService {
     /// - Returns: Credits for the matching movie.
     /// 
     public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
-        Self.logger.info("fetching credits for movie \(movieID, privacy: .public)")
-
         let credits: ShowCredits
         do {
             credits = try await apiClient.get(endpoint: MoviesEndpoint.credits(movieID: movieID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching credits for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -91,14 +80,10 @@ public final class MovieService {
     /// - Returns: Reviews for the matching movie as a pageable list.
     /// 
     public func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {
-        Self.logger.info("fetching reviews for movie \(movieID, privacy: .public)")
-
         let reviewList: ReviewPageableList
         do {
             reviewList = try await apiClient.get(endpoint: MoviesEndpoint.reviews(movieID: movieID, page: page))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching reviews for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -116,8 +101,6 @@ public final class MovieService {
     /// - Returns: Collection of images for the matching movie.
     /// 
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
-        Self.logger.info("fetching images for movie \(movieID, privacy: .public)")
-
         let languageCode = localeProvider().languageCode
         let imageCollection: ImageCollection
         do {
@@ -125,8 +108,6 @@ public final class MovieService {
                 endpoint: MoviesEndpoint.images(movieID: movieID, languageCode: languageCode)
             )
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching images for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -144,8 +125,6 @@ public final class MovieService {
     /// - Returns: Collection of videos for the matching movie.
     ///
     public func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection {
-        Self.logger.info("fetching videos for movie \(movieID, privacy: .public)")
-
         let languageCode = localeProvider().languageCode
         let videoCollection: VideoCollection
         do {
@@ -153,8 +132,6 @@ public final class MovieService {
                 endpoint: MoviesEndpoint.videos(movieID: movieID, languageCode: languageCode)
             )
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching videos for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -175,14 +152,10 @@ public final class MovieService {
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     /// 
     public func recommendations(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching recommendations for movie \(movieID, privacy: .public)")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching recommendations for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -205,14 +178,10 @@ public final class MovieService {
     /// - Returns: Similar movies for the matching movie as a pageable list.
     /// 
     public func similar(toMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching movies similar to movie \(movieID, privacy: .public)")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching movies similar for movie \(movieID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -232,13 +201,10 @@ public final class MovieService {
     /// - Returns: Now playing movies as a pageable list.
     /// 
     public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching movies now playing")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page))
         } catch let error {
-            Self.logger.error("failed fetching movies now playing")
             throw error
         }
 
@@ -258,13 +224,10 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func popular(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching popular movies")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
         } catch let error {
-            Self.logger.error("failed fetching popular movies")
             throw error
         }
 
@@ -284,13 +247,10 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func topRated(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching top rated movies")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.topRated(page: page))
         } catch let error {
-            Self.logger.error("failed fetching top rated movies")
             throw error
         }
 
@@ -310,13 +270,10 @@ public final class MovieService {
     /// - Returns: Current popular movies as a pageable list.
     /// 
     public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("fetching upcoming movies")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page))
         } catch let error {
-            Self.logger.error("failed fetching upcoming movies")
             throw error
         }
 
