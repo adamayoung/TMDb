@@ -19,7 +19,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
-Add the TMDb package as a dependency to your `Package.swift` file, and add it as a dependency to your target.
+Add the TMDb package as a dependency to your `Package.swift` file, and add it
+as a dependency to your target.
 
 ```swift
 // swift-tools-version:5.7
@@ -47,7 +48,8 @@ Add the TMDb package to your Project's Package dependencies.
 
 ### Get an API Key
 
-Create an API key from The Movie Database web site [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
+Create an API key from The Movie Database web site
+[https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
 ## Documentation
 
@@ -61,4 +63,5 @@ Documentation and examples of usage can be found at
 
 ## License
 
-This library is licensed under the Apache License 2.0. See [LICENSE](https://github.com/adamayoung/TMDb/blob/main/LICENSE) for details.
+This library is licensed under the Apache License 2.0. See
+[LICENSE](https://github.com/adamayoung/TMDb/blob/main/LICENSE) for details.
