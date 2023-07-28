@@ -1,5 +1,4 @@
 import Foundation
-import os
 
 ///
 /// Provides an interface for obtaining people from TMDb.
@@ -7,7 +6,6 @@ import os
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class PersonService {
 
-    private static let logger = Logger(subsystem: Logger.tmdb, category: "PersonService")
     private static let knownForShowsMaxCount = 10
 
     private let apiClient: APIClient
@@ -36,14 +34,10 @@ public final class PersonService {
     /// - Returns: The matching person.
     /// 
     public func details(forPerson id: Person.ID) async throws -> Person {
-        Self.logger.info("fetching person \(id, privacy: .public)")
-
         let person: Person
         do {
             person = try await apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching person \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -61,14 +55,10 @@ public final class PersonService {
     /// - Returns: The matching person's combined movie and TV show credits.
     /// 
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
-        Self.logger.info("fetching combined credits for person \(personID, privacy: .public)")
-
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching combined credits for person \(personID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -86,14 +76,10 @@ public final class PersonService {
     /// - Returns: The matching person's movie credits.
     /// 
     public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
-        Self.logger.info("fetching movie credits for person \(personID, privacy: .public)")
-
         let credits: PersonMovieCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching movie credits for person \(personID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -111,14 +97,10 @@ public final class PersonService {
     /// - Returns: The matching person's TV show credits.
     /// 
     public func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
-        Self.logger.info("fetching TV show credits for person \(personID, privacy: .public)")
-
         let credits: PersonTVShowCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching TV show credits for person \(personID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -136,14 +118,10 @@ public final class PersonService {
     /// - Returns: The matching person's images.
     ///
     public func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
-        Self.logger.info("fetching images for person \(personID, privacy: .public)")
-
         let imageCollection: PersonImageCollection
         do {
             imageCollection = try await apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching images for person \(personID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -159,14 +137,10 @@ public final class PersonService {
     /// - Returns: The matching person's show credits.
     /// 
     public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
-        Self.logger.info("fetching known for shows for person \(personID, privacy: .public)")
-
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
         } catch let error {
-            // swiftlint:disable:next line_length
-            Self.logger.error("failed fetching known for shows for person \(personID, privacy: .public): \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -191,13 +165,10 @@ public final class PersonService {
     /// - Returns: Current popular people as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> PersonPageableList {
-        Self.logger.info("fetching popular people")
-
         let personList: PersonPageableList
         do {
             personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
         } catch let error {
-            Self.logger.error("failed fetching popular people: \(error.localizedDescription, privacy: .public)")
             throw error
         }
 

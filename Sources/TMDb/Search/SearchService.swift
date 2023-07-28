@@ -1,13 +1,10 @@
 import Foundation
-import os
 
 ///
 /// Provides an interface for searching content from TMDb..
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class SearchService {
-
-    private static let logger = Logger(subsystem: Logger.tmdb, category: "PersonService")
 
     private let apiClient: APIClient
 
@@ -38,13 +35,10 @@ public final class SearchService {
     /// - Returns: Movies, TV shows and people matching the query.
     /// 
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
-        Self.logger.info("searching all media matching query \"\(query, privacy: .public)\"")
-
         let mediaList: MediaPageableList
         do {
             mediaList = try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
         } catch let error {
-            Self.logger.error("failed searching all media: \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -66,13 +60,10 @@ public final class SearchService {
     /// - Returns: Movies matching the query.
     ///
     public func searchMovies(query: String, year: Int? = nil, page: Int? = nil) async throws -> MoviePageableList {
-        Self.logger.info("searching movies matching query \"\(query, privacy: .public)\"")
-
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
         } catch let error {
-            Self.logger.error("failed searching movies: \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -95,15 +86,12 @@ public final class SearchService {
     ///
     public func searchTVShows(query: String, firstAirDateYear: Int? = nil,
                               page: Int? = nil) async throws -> TVShowPageableList {
-        Self.logger.info("searching TV shows matching query \"\(query, privacy: .public)\"")
-
         let tvShowList: TVShowPageableList
         do {
             tvShowList = try await apiClient.get(
                 endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear, page: page)
             )
         } catch let error {
-            Self.logger.error("failed searching TV shows: \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
@@ -124,13 +112,10 @@ public final class SearchService {
     /// - Returns: People matching the query.
     ///
     public func searchPeople(query: String, page: Int? = nil) async throws -> PersonPageableList {
-        Self.logger.info("searching people matching query \"\(query, privacy: .public)\"")
-
         let peopleList: PersonPageableList
         do {
             peopleList = try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
         } catch let error {
-            Self.logger.error("failed searching people: \(error.localizedDescription, privacy: .public)")
             throw error
         }
 
