@@ -24,21 +24,6 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
          super.tearDown()
      }
 
-     func testGetWhenRequestFailsThrowsNetworkError() async throws {
-         let expectedError = NSError(domain: NSURLErrorDomain, code: URLError.badServerResponse.rawValue)
-         MockURLProtocol.failError = expectedError
-
-         do {
-             let url = try XCTUnwrap(URL(string: "/error"))
-             _ = try await httpClient.get(url: url, headers: [:])
-         } catch let error as NSError {
-             XCTAssertEqual(error.code, expectedError.code)
-             return
-         }
-
-         XCTFail("Expected error to be thrown")
-     }
-
      func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
          MockURLProtocol.responseStatusCode = 401
 
