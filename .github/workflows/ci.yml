@@ -41,7 +41,7 @@ jobs:
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
   
-  build-platforms:
+  build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
     runs-on: macos-13
     continue-on-error: true
@@ -64,6 +64,24 @@ jobs:
       
       - name: Test
         run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+  
+  build-test-linux:
+    name: Build and Test (Linux)
+    runs-on: ubuntu-latest
+    container:
+        image: swift:5.8.1-focal
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: swift build -Xswiftc -warnings-as-errors --build-tests
+
+      - name: Test
+        run: swift test --skip-build --parallel --filter TMDbTests
+      
+      - name: Build for Release
+        run: swift build -c release -Xswiftc -warnings-as-errors
 
   build-documentation:
     name: Build Documentation

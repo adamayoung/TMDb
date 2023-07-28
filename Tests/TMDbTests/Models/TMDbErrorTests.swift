@@ -29,7 +29,7 @@ final class TMDbErrorTests: XCTestCase {
 
         let result = TMDbError.decode(error).localizedDescription
 
-        XCTAssertEqual(result, "The operation couldn’t be completed. (NSURLErrorDomain error -1000.)")
+        XCTAssertEqual(result, error.localizedDescription)
     }
 
 }
