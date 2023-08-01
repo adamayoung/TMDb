@@ -33,6 +33,8 @@ public final class TVShowSeasonService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A season of the matching TV show.
     ///
     public func details(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeason {
@@ -42,7 +44,7 @@ public final class TVShowSeasonService {
                 endpoint: TVShowSeasonsEndpoint.details(tvShowID: tvShowID, seasonNumber: seasonNumber)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return season
@@ -57,6 +59,8 @@ public final class TVShowSeasonService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of images for the matching TV show's season.
     ///
     public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
@@ -68,7 +72,7 @@ public final class TVShowSeasonService {
                                                        languageCode: languageCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return imageCollection
@@ -83,6 +87,8 @@ public final class TVShowSeasonService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of videos for the matching TV show's season.
     ///
     public func videos(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
@@ -94,7 +100,7 @@ public final class TVShowSeasonService {
                                                        languageCode: languageCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return videoCollection

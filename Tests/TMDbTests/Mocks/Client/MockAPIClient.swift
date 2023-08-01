@@ -5,7 +5,7 @@ final class MockAPIClient: APIClient {
 
     static var apiKey: String?
 
-    var result: Result<Any, TMDbError>?
+    var result: Result<Any, TMDbAPIError>?
     var requestTime: UInt64 = 0
     private(set) var lastPath: URL?
     private(set) var getCount = 0
@@ -23,20 +23,20 @@ final class MockAPIClient: APIClient {
         }
 
         guard let result else {
-            throw TMDbError.unknown
+            throw TMDbAPIError.unknown
         }
 
         do {
             guard let value = try result.get() as? Response else {
-                XCTFail("Can't cast response to type \(String(describing: Response.self))")
-                throw TMDbError.unknown
+                preconditionFailure("Can't cast response to type \(String(describing: Response.self))")
+//                throw TMDbAPIError.unknown
             }
 
             return value
-        } catch let error as TMDbError {
+        } catch let error as TMDbAPIError {
             throw error
         } catch {
-            throw TMDbError.unknown
+            throw TMDbAPIError.unknown
         }
     }
 

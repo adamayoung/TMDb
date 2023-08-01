@@ -1,6 +1,6 @@
 import Foundation
 
-extension TMDbError {
+extension TMDbAPIError {
 
     init(statusCode: Int, message: String?) {
         switch statusCode {

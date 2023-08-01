@@ -236,22 +236,6 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
 
 }
 
-extension TVShow: Comparable {
-
-    public static func < (lhs: TVShow, rhs: TVShow) -> Bool {
-        guard let lhsDate = lhs.firstAirDate else {
-            return false
-        }
-
-        guard let rhsDate = rhs.firstAirDate else {
-            return true
-        }
-
-        return lhsDate > rhsDate
-    }
-
-}
-
 extension TVShow {
 
     private enum CodingKeys: String, CodingKey {

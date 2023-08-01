@@ -28,46 +28,6 @@ final class TVShowTests: XCTestCase {
         XCTAssertEqual(result, tvShow)
     }
 
-    func testSortNoDates() {
-        let tvShowOne = TVShow(id: .randomID, name: .randomString)
-        let tvShowTwo = TVShow(id: .randomID, name: .randomString)
-
-        let result = tvShowOne < tvShowTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithLHSDate() {
-        let tvShowOne = TVShow(id: .randomID, name: .randomString,
-                               firstAirDate: Date(timeIntervalSince1970: 1618840399))
-        let tvShowTwo = TVShow(id: .randomID, name: .randomString)
-
-        let result = tvShowOne < tvShowTwo
-
-        XCTAssertTrue(result)
-    }
-
-    func testSortWithRHSDate() {
-        let tvShowOne = TVShow(id: .randomID, name: .randomString)
-        let tvShowTwo = TVShow(id: .randomID, name: .randomString,
-                               firstAirDate: Date(timeIntervalSince1970: 1218840399))
-
-        let result = tvShowOne < tvShowTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithDates() {
-        let tvShowOne = TVShow(id: .randomID, name: .randomString,
-                               firstAirDate: Date(timeIntervalSince1970: 1618840399))
-        let tvShowTwo = TVShow(id: .randomID, name: .randomString,
-                               firstAirDate: Date(timeIntervalSince1970: 1218840399))
-
-        let result = tvShowOne < tvShowTwo
-
-        XCTAssertTrue(result)
-    }
-
 }
 
 extension TVShowTests {

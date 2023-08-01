@@ -43,7 +43,7 @@ final class PersonServiceTests: XCTestCase {
 
     func testMovieCreditsReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock()
-        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
@@ -55,7 +55,7 @@ final class PersonServiceTests: XCTestCase {
 
     func testTVShowCreditsReturnsTVShowCredits() async throws {
         let mock = PersonTVShowCredits.mock()
-        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast.sorted(), crew: mock.crew.sorted())
+        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.result = .success(expectedResult)
 

@@ -33,20 +33,20 @@ final class TMDbAPIClient: APIClient {
         do {
             response = try await httpClient.get(url: url, headers: headers)
         } catch {
-            throw TMDbError.network(error)
+            throw TMDbAPIError.network(error)
         }
 
         try await validate(response: response)
 
         guard let data = response.data else {
-            throw TMDbError.unknown
+            throw TMDbAPIError.unknown
         }
 
         let decodedResponse: Response
         do {
             decodedResponse = try await serialiser.decode(Response.self, from: data)
         } catch let error {
-            throw TMDbError.decode(error)
+            throw TMDbAPIError.decode(error)
         }
 
         return decodedResponse
@@ -77,13 +77,13 @@ extension TMDbAPIClient {
         }
 
         guard let data = response.data else {
-            throw TMDbError(statusCode: statusCode, message: nil)
+            throw TMDbAPIError(statusCode: statusCode, message: nil)
         }
 
         let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
         let message = statusResponse?.statusMessage
 
-        throw TMDbError(statusCode: statusCode, message: message)
+        throw TMDbAPIError(statusCode: statusCode, message: message)
     }
 
 }

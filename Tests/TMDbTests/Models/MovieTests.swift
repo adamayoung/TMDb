@@ -28,42 +28,6 @@ final class MovieTests: XCTestCase {
         XCTAssertEqual(result, movie)
     }
 
-    func testSortWithNoDates() {
-        let movieOne = Movie(id: .randomID, title: .randomString)
-        let movieTwo = Movie(id: .randomID, title: .randomString)
-
-        let result = movieOne < movieTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithLHSDate() {
-        let movieOne = Movie(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1618840399))
-        let movieTwo = Movie(id: .randomID, title: .randomString)
-
-        let result = movieOne < movieTwo
-
-        XCTAssertTrue(result)
-    }
-
-    func testSortWithRHSDate() {
-        let movieOne = Movie(id: .randomID, title: .randomString)
-        let movieTwo = Movie(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1218840399))
-
-        let result = movieOne < movieTwo
-
-        XCTAssertFalse(result)
-    }
-
-    func testSortWithDates() {
-        let movieOne = Movie(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1618840399))
-        let movieTwo = Movie(id: .randomID, title: .randomString, releaseDate: Date(timeIntervalSince1970: 1218840399))
-
-        let result = movieOne < movieTwo
-
-        XCTAssertTrue(result)
-    }
-
 }
 
 extension MovieTests {

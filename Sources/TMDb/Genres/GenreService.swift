@@ -26,6 +26,8 @@ public final class GenreService {
     ///
     /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-movie-list)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A list of genres.
     ///
     public func movieGenres() async throws -> [Genre] {
@@ -33,7 +35,7 @@ public final class GenreService {
         do {
             genreList = try await apiClient.get(endpoint: GenresEndpoint.movie)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return genreList.genres
@@ -44,6 +46,8 @@ public final class GenreService {
     ///
     /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-tv-list)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A list of genres.
     /// 
     public func tvShowGenres() async throws -> [Genre] {
@@ -51,7 +55,7 @@ public final class GenreService {
         do {
             genreList = try await apiClient.get(endpoint: GenresEndpoint.tvShow)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return genreList.genres

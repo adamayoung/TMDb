@@ -32,6 +32,8 @@ public final class TVShowService {
     /// - Parameters:
     ///    - id: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching TV show.
     /// 
     public func details(forTVShow id: TVShow.ID) async throws -> TVShow {
@@ -39,7 +41,7 @@ public final class TVShowService {
         do {
             tvShow = try await apiClient.get(endpoint: TVShowsEndpoint.details(tvShowID: id))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShow
@@ -53,6 +55,8 @@ public final class TVShowService {
     /// - Parameters:
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Show credits for the matching TV show.
     /// 
     public func credits(forTVShow tvShowID: TVShow.ID) async throws -> ShowCredits {
@@ -60,7 +64,7 @@ public final class TVShowService {
         do {
             credits = try await apiClient.get(endpoint: TVShowsEndpoint.credits(tvShowID: tvShowID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return credits
@@ -77,6 +81,8 @@ public final class TVShowService {
     ///    - tvShowID: The identifier of the TV show.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Reviews for the matching TV show as a pageable list.
     /// 
     public func reviews(forTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> ReviewPageableList {
@@ -84,7 +90,7 @@ public final class TVShowService {
         do {
             reviewList = try await apiClient.get(endpoint: TVShowsEndpoint.reviews(tvShowID: tvShowID, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return reviewList
@@ -98,6 +104,8 @@ public final class TVShowService {
     /// - Parameters:
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of images for the matching TV show.
     ///
     public func images(forTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
@@ -108,7 +116,7 @@ public final class TVShowService {
                 endpoint: TVShowsEndpoint.images(tvShowID: tvShowID, languageCode: languageCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return imageCollection
@@ -122,6 +130,8 @@ public final class TVShowService {
     /// - Parameters:
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of videos for the matching TV show.
     ///
     public func videos(forTVShow tvShowID: TVShow.ID) async throws -> VideoCollection {
@@ -132,7 +142,7 @@ public final class TVShowService {
                 endpoint: TVShowsEndpoint.videos(tvShowID: tvShowID, languageCode: languageCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return videoCollection
@@ -149,6 +159,8 @@ public final class TVShowService {
     ///    - tvShowID: The identifier of the TV show.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Recommended TV shows for the matching TV show as a pageable list.
     ///
     public func recommendations(forTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> TVShowPageableList {
@@ -158,7 +170,7 @@ public final class TVShowService {
                 endpoint: TVShowsEndpoint.recommendations(tvShowID: tvShowID, page: page)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList
@@ -177,6 +189,8 @@ public final class TVShowService {
     ///    - tvShowID: The identifier of the TV show for get similar TV shows for.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Similar TV shows for the matching TV show as a pageable list.
     /// 
     public func similar(toTVShow tvShowID: TVShow.ID, page: Int? = nil) async throws -> TVShowPageableList {
@@ -184,7 +198,7 @@ public final class TVShowService {
         do {
             tvShowList = try await apiClient.get(endpoint: TVShowsEndpoint.similar(tvShowID: tvShowID, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList
@@ -200,6 +214,8 @@ public final class TVShowService {
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Current popular TV shows as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> TVShowPageableList {
@@ -207,7 +223,7 @@ public final class TVShowService {
         do {
             tvShowList = try await apiClient.get(endpoint: TVShowsEndpoint.popular(page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList
