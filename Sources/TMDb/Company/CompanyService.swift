@@ -29,6 +29,8 @@ public final class CompanyService {
     /// - Parameters:
     ///    - id: The identifier of the company.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Matching company.
     ///
     public func details(forCompany id: Company.ID) async throws -> Company {
@@ -36,7 +38,7 @@ public final class CompanyService {
         do {
             company = try await apiClient.get(endpoint: CompanyEndpoint.details(companyID: id))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return company

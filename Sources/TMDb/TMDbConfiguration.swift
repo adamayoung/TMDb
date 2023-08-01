@@ -8,7 +8,7 @@ import Foundation
 public struct TMDbConfiguration {
 
     let apiKey: @Sendable () -> String
-    let httpClient: () -> any HTTPClient
+    let httpClient: @Sendable () -> any HTTPClient
 
     ///
     /// Creates a TMDb configuration object using URLSession as the HTTP client.
@@ -30,7 +30,7 @@ public struct TMDbConfiguration {
     ///    - apiKey: The TMDb API key to use.
     ///    - httpClient: A custom HTTP client adapter for making HTTP requests.
     ///
-    public init(apiKey: String, httpClient: HTTPClient) {
+    public init(apiKey: String, httpClient: some HTTPClient) {
         self.init(
             apiKey: { apiKey },
             httpClient: { httpClient }

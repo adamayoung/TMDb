@@ -229,22 +229,6 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
 
 }
 
-extension Movie: Comparable {
-
-    public static func < (lhs: Movie, rhs: Movie) -> Bool {
-        guard let lhsDate = lhs.releaseDate else {
-            return false
-        }
-
-        guard let rhsDate = rhs.releaseDate else {
-            return true
-        }
-
-        return lhsDate > rhsDate
-    }
-
-}
-
 extension Movie {
 
     private enum CodingKeys: String, CodingKey {

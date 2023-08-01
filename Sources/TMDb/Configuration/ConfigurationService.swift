@@ -27,6 +27,8 @@ public final class ConfigurationService {
     ///
     /// [TMDb API - Configuration: API Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The API configuration.
     /// 
     public func apiConfiguration() async throws -> APIConfiguration {
@@ -34,7 +36,7 @@ public final class ConfigurationService {
         do {
             apiConfiguration = try await apiClient.get(endpoint: ConfigurationEndpoint.api)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return apiConfiguration
@@ -45,6 +47,8 @@ public final class ConfigurationService {
     ///
     /// [TMDb API - Configuration: Countries](https://developers.themoviedb.org/3/configuration/get-countries)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Countries used throughout TMDb,
     /// 
     public func countries() async throws -> [Country] {
@@ -52,7 +56,7 @@ public final class ConfigurationService {
         do {
             countries = try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return countries
@@ -63,6 +67,8 @@ public final class ConfigurationService {
     ///
     /// [TMDb API - Configuration: Jobs](https://developers.themoviedb.org/3/configuration/get-jobs)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Jobs and departments used on TMDb.
     /// 
     public func jobsByDepartment() async throws -> [Department] {
@@ -70,7 +76,7 @@ public final class ConfigurationService {
         do {
             departments = try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return departments
@@ -81,14 +87,16 @@ public final class ConfigurationService {
     ///
     /// [TMDb API - Configuration: Languages](https://developers.themoviedb.org/3/configuration/get-languages)
     ///
-    ///  - Returns: Languages used throughout TMDb.
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
+    /// - Returns: Languages used throughout TMDb.
     ///
     public func languages() async throws -> [Language] {
         let languages: [Language]
         do {
             languages = try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return languages

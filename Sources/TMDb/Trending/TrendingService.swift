@@ -35,6 +35,8 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Trending movies in a time window as a pageable list.
     ///
     public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
@@ -43,7 +45,7 @@ public final class TrendingService {
         do {
             movieList = try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return movieList
@@ -63,6 +65,8 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Trending TV shows in a time window as a pageable list.
     ///
     public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
@@ -71,7 +75,7 @@ public final class TrendingService {
         do {
             tvShowList = try await apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList
@@ -91,6 +95,8 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Trending people in a time window as a pageable list.
     ///
     public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
@@ -99,7 +105,7 @@ public final class TrendingService {
         do {
             peopleList = try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return peopleList

@@ -31,6 +31,8 @@ public final class TVShowEpisodeService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A episode of the matching TV show.
     ///
     public func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
@@ -45,7 +47,7 @@ public final class TVShowEpisodeService {
                 )
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return episode
@@ -61,6 +63,8 @@ public final class TVShowEpisodeService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of images for the matching TV show's episode.
     ///
     public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
@@ -75,7 +79,7 @@ public final class TVShowEpisodeService {
                 )
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return imageCollection
@@ -91,6 +95,8 @@ public final class TVShowEpisodeService {
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A collection of videos for the matching TV show's episode.
     ///
     public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
@@ -105,7 +111,7 @@ public final class TVShowEpisodeService {
                 )
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return videoCollection

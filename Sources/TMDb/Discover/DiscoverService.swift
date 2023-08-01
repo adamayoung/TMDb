@@ -33,6 +33,8 @@ public final class DiscoverService {
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Matching movies as a pageable list.
     /// 
     public func movies(sortedBy: MovieSort? = nil, withPeople people: [Person.ID]? = nil,
@@ -43,7 +45,7 @@ public final class DiscoverService {
                 endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return movieList
@@ -60,6 +62,8 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Matching TV shows as a pageable list.
     ///
     public func tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil) async throws -> TVShowPageableList {
@@ -67,7 +71,7 @@ public final class DiscoverService {
         do {
             tvShowList = try await apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList

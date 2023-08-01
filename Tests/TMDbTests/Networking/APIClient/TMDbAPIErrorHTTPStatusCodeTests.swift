@@ -1,13 +1,13 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
+final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
 
     func testBadRequest() {
         let statusCode = 400
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .badRequest(let message):
@@ -22,7 +22,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 401
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .unauthorised(let message):
@@ -37,7 +37,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 403
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .forbidden(let message):
@@ -52,7 +52,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 404
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .notFound(let message):
@@ -67,7 +67,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 405
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .methodNotAllowed(let message):
@@ -82,7 +82,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 406
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .notAcceptable(let message):
@@ -97,7 +97,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 422
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .unprocessableContent(let message):
@@ -112,7 +112,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 429
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .tooManyRequests(let message):
@@ -127,7 +127,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 500
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .internalServerError(let message):
@@ -142,7 +142,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 501
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .notImplemented(let message):
@@ -157,7 +157,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 502
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .badGateway(let message):
@@ -172,7 +172,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 503
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .serviceUnavailable(let message):
@@ -187,7 +187,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
         let statusCode = 504
         let expectedMessage = "Some error message"
 
-        let error = TMDbError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
         case .gatewayTimeout(let message):
@@ -201,7 +201,7 @@ final class TMDbErrorHTTPStatusCodeTests: XCTestCase {
     func testUnknown() {
         let statusCode = 999
 
-        let error = TMDbError(statusCode: statusCode, message: nil)
+        let error = TMDbAPIError(statusCode: statusCode, message: nil)
 
         switch error {
         case .unknown:

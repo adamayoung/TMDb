@@ -26,6 +26,8 @@ public final class CertificationService {
     ///
     /// [TMDb API - Movie Certifications](https://developer.themoviedb.org/reference/certification-movie-list)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A dictionary of movie certifications.
     /// 
     public func movieCertifications() async throws -> [String: [Certification]] {
@@ -33,7 +35,7 @@ public final class CertificationService {
         do {
             certifications = try await apiClient.get(endpoint: CertificationsEndpoint.movie)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return certifications.certifications
@@ -44,6 +46,8 @@ public final class CertificationService {
     ///
     /// [TMDb API - TV show Certifications](https://developer.themoviedb.org/reference/certifications-tv-list)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A dictionary of TV show certifications.
     /// 
     public func tvShowCertifications() async throws -> [String: [Certification]] {
@@ -51,7 +55,7 @@ public final class CertificationService {
         do {
             certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return certifications.certifications

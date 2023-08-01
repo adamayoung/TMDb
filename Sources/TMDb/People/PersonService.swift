@@ -31,6 +31,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - id: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person.
     /// 
     public func details(forPerson id: Person.ID) async throws -> Person {
@@ -38,7 +40,7 @@ public final class PersonService {
         do {
             person = try await apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return person
@@ -52,6 +54,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person's combined movie and TV show credits.
     /// 
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
@@ -59,7 +63,7 @@ public final class PersonService {
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return credits
@@ -73,6 +77,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person's movie credits.
     /// 
     public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
@@ -80,7 +86,7 @@ public final class PersonService {
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return credits
@@ -94,6 +100,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person's TV show credits.
     /// 
     public func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
@@ -101,7 +109,7 @@ public final class PersonService {
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return credits
@@ -115,6 +123,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person's images.
     ///
     public func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
@@ -122,7 +132,7 @@ public final class PersonService {
         do {
             imageCollection = try await apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return imageCollection
@@ -134,6 +144,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: The matching person's show credits.
     /// 
     public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
@@ -141,7 +153,7 @@ public final class PersonService {
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         let topShowsSubSequence = credits.allShows.lazy
@@ -162,6 +174,8 @@ public final class PersonService {
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Current popular people as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> PersonPageableList {
@@ -169,7 +183,7 @@ public final class PersonService {
         do {
             personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return personList

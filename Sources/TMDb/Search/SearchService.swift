@@ -32,6 +32,8 @@ public final class SearchService {
     ///    - query: A text query to search for.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Movies, TV shows and people matching the query.
     /// 
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
@@ -39,7 +41,7 @@ public final class SearchService {
         do {
             mediaList = try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return mediaList
@@ -57,6 +59,8 @@ public final class SearchService {
     ///    - year: The year to filter results for.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Movies matching the query.
     ///
     public func searchMovies(query: String, year: Int? = nil, page: Int? = nil) async throws -> MoviePageableList {
@@ -64,7 +68,7 @@ public final class SearchService {
         do {
             movieList = try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return movieList
@@ -82,6 +86,8 @@ public final class SearchService {
     ///    - firstAirDateYear: The year of first air date to filter results for.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: TV shows matching the query.
     ///
     public func searchTVShows(query: String, firstAirDateYear: Int? = nil,
@@ -92,7 +98,7 @@ public final class SearchService {
                 endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear, page: page)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return tvShowList
@@ -109,6 +115,8 @@ public final class SearchService {
     ///    - query: A text query to search for.
     ///    - page: The page of results to return.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: People matching the query.
     ///
     public func searchPeople(query: String, page: Int? = nil) async throws -> PersonPageableList {
@@ -116,7 +124,7 @@ public final class SearchService {
         do {
             peopleList = try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return peopleList

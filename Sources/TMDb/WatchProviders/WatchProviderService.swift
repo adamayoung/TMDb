@@ -29,6 +29,8 @@ public final class WatchProviderService {
     ///
     /// [TMDb API - Watch Providers: Regions](https://developers.themoviedb.org/3/watch-providers/get-available-regions)
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: Countries TMDb have watch provider data for.
     /// 
     public func countries() async throws -> [Country] {
@@ -36,7 +38,7 @@ public final class WatchProviderService {
         do {
             regions = try await apiClient.get(endpoint: WatchProviderEndpoint.regions)
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return regions.results
@@ -46,6 +48,8 @@ public final class WatchProviderService {
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
     ///
     /// [TMDb API - Watch Providers: Movie](https://developers.themoviedb.org/3/watch-providers/get-movie-providers)
+    ///
+    /// - Throws: TMDb data error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movies.
     /// 
@@ -57,7 +61,7 @@ public final class WatchProviderService {
                 endpoint: WatchProviderEndpoint.movie(regionCode: regionCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return result.results
@@ -67,6 +71,8 @@ public final class WatchProviderService {
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV shows.
     ///
     /// [TMDb API - Watch Providers: TV](https://developers.themoviedb.org/3/watch-providers/get-tv-providers)
+    ///
+    /// - Throws: TMDb data error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV shows.
     /// 
@@ -78,7 +84,7 @@ public final class WatchProviderService {
                 endpoint: WatchProviderEndpoint.tvShow(regionCode: regionCode)
             )
         } catch let error {
-            throw error
+            throw TMDbError(error: error)
         }
 
         return result.results
