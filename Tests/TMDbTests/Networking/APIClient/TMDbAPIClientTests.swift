@@ -104,6 +104,7 @@ final class TMDbAPIClientTests: XCTestCase {
     }
 
     func testGetURLRequestAcceptHeaderSetToApplicationJSON() async throws {
+        httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
 
         _ = try? await apiClient.get(path: URL(string: "/object")!) as String
@@ -114,6 +115,7 @@ final class TMDbAPIClientTests: XCTestCase {
     }
 
     func testGetURLRequestHasCorrectURL() async throws {
+        httpClient.result = .success(HTTPResponse())
         let path = "/object"
         let language = "en"
         let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
