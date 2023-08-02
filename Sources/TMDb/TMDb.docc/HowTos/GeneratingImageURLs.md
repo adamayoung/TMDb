@@ -1,15 +1,17 @@
 # Generating Image URLs
 
-Instructions on how to generate the full URL from an image path. 
+Instructions on how to generate the full URL from an image path.
 
 ## Overview
 
-TMDb returns paths to images in objects such as ``Movie``, ``TVShow`` and ``Person``. In order to get the actual image
-the full URL needs to be generated.
+TMDb returns paths to images in objects such as ``Movie``, ``TVShow`` and
+``Person``. In order to get the actual image the full URL needs to be
+generated.
 
 ## Fetching Images Configuration
 
-Before an image's full URL can be generated from its path, the ``ImagesConfiguration`` needs to be fetched from TMDb.
+Before an image's full URL can be generated from its path, the
+``ImagesConfiguration`` needs to be fetched from TMDb.
 
 ```swift
 let configurationService = ConfigurationService()
@@ -20,7 +22,8 @@ let imagesConfiguration = apiConfiguration.images
 
 ## Generate the Image URL
 
-Once you have the ``ImagesConfiguration`` it can be used to generate the full URL to an image.
+Once you have the ``ImagesConfiguration`` it can be used to generate the full
+URL to an image.
 
 ```swift
 let movieService = MovieService()
@@ -29,12 +32,14 @@ let barbieMovie = try await movieService.details(forMovie: 346698)
 let barbiePosterURL = imagesConfiguration.posterURL(for: barbieMovie.posterPath)
 ```
 
-> Tip: You can add the `idealWidth` parameter to generate the URL for the image best suited to a width. If `idealWidth`
-is not given, the URL to the original image will be generated. 
+> Tip: You can add the `idealWidth` parameter to generate the URL for the image
+best suited to a width. If `idealWidth` is not given, the URL to the original
+image will be generated.
 
 ## Image types
 
-Use the following methods on ``ImagesConfiguration`` to generate image URLs depending on the type of image needed:
+Use the following methods on ``ImagesConfiguration`` to generate image URLs
+depending on the type of image needed:
 
 * ``ImagesConfiguration/backdropURL(for:idealWidth:)``
 * ``ImagesConfiguration/logoURL(for:idealWidth:)``
