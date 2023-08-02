@@ -23,6 +23,8 @@ public struct ProductionCompany: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Company's logo path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let logoPath: URL?
 
     ///

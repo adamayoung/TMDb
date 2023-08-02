@@ -13,6 +13,8 @@ public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Path of the image.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let filePath: URL
 
     ///

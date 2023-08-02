@@ -18,6 +18,8 @@ public struct WatchProvider: Identifiable, Decodable, Equatable, Hashable {
     ///
     /// Watch Provider logo path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let logoPath: URL
 
     ///

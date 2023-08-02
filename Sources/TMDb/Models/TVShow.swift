@@ -58,13 +58,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///
     /// TV show's first air date.
     ///
-    public var firstAirDate: Date? {
-        guard let firstAirDateString else {
-            return nil
-        }
-
-        return DateFormatter.theMovieDatabase.date(from: firstAirDateString)
-    }
+    public let firstAirDate: Date?
 
     ///
     /// TV show country of origin.
@@ -74,28 +68,26 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///
     /// TV show poster path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let posterPath: URL?
 
     ///
     /// TV show backdrop path.
+    ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
     public let backdropPath: URL?
 
     ///
     /// TV show's web site URL.
     ///
-    public var homepageURL: URL? {
-        guard let homepage else {
-            return nil
-        }
-
-        return URL(string: homepage)
-    }
+    public let homepageURL: URL?
 
     ///
     /// Is the TV show currently in production.
     ///
-    public let inProduction: Bool?
+    public let isInProduction: Bool?
 
     ///
     /// Languages the TV show is available in.
@@ -142,8 +134,10 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///
     public let voteCount: Int?
 
-    private let firstAirDateString: String?
-    private let homepage: String?
+    ///
+    /// Is the TV show only suitable for adults.
+    ///
+    public let isAdultOnly: Bool?
 
     ///
     /// Creates a TV show object.
@@ -164,7 +158,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///    - posterPath: TV show poster path.
     ///    - backdropPath: TV show backdrop path.
     ///    - homepageURL: TV show's web site URL.
-    ///    - inProduction: Is TV show currently in production.
+    ///    - isInProduction: Is TV show currently in production.
     ///    - languages: Languages the TV show is available in.
     ///    - lastAirDate: Last air date of the TV show.
     ///    - networks: Networks involved in the TV show.
@@ -173,6 +167,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ///    - popularity: TV show current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
+    ///    - isAdultOnly: Is the TV show only suitable for adults.
     ///
     public init(
         id: Int,
@@ -190,7 +185,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
         posterPath: URL? = nil,
         backdropPath: URL? = nil,
         homepageURL: URL? = nil,
-        inProduction: Bool? = nil,
+        isInProduction: Bool? = nil,
         languages: [String]? = nil,
         lastAirDate: Date? = nil,
         networks: [Network]? = nil,
@@ -199,7 +194,8 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
         type: String? = nil,
         popularity: Double? = nil,
         voteAverage: Double? = nil,
-        voteCount: Int? = nil
+        voteCount: Int? = nil,
+        isAdultOnly: Bool? = nil
     ) {
         self.id = id
         self.name = name
@@ -211,18 +207,12 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
         self.numberOfEpisodes = numberOfEpisodes
         self.seasons = seasons
         self.genres = genres
-        self.firstAirDateString = {
-            guard let firstAirDate else {
-                return nil
-            }
-
-            return DateFormatter.theMovieDatabase.string(from: firstAirDate)
-        }()
+        self.firstAirDate = firstAirDate
         self.originCountry = originCountry
         self.posterPath = posterPath
         self.backdropPath = backdropPath
-        self.homepage = homepageURL?.absoluteString
-        self.inProduction = inProduction
+        self.homepageURL = homepageURL
+        self.isInProduction = isInProduction
         self.languages = languages
         self.lastAirDate = lastAirDate
         self.networks = networks
@@ -232,6 +222,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
         self.popularity = popularity
         self.voteAverage = voteAverage
         self.voteCount = voteCount
+        self.isAdultOnly = isAdultOnly
     }
 
 }
@@ -252,7 +243,7 @@ extension TVShow {
         case originCountry
         case posterPath
         case backdropPath
-        case inProduction
+        case isInProduction = "inProduction"
         case languages
         case lastAirDate
         case networks
@@ -262,8 +253,61 @@ extension TVShow {
         case popularity
         case voteAverage
         case voteCount
-        case firstAirDateString = "firstAirDate"
-        case homepage
+        case firstAirDate
+        case homepageURL = "homepage"
+        case isAdultOnly = "adult"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container2 = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.originalName = try container.decodeIfPresent(String.self, forKey: .originalName)
+        self.originalLanguage = try container.decodeIfPresent(String.self, forKey: .originalLanguage)
+        self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
+        self.episodeRunTime = try container.decodeIfPresent([Int].self, forKey: .episodeRunTime)
+        self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
+        self.numberOfEpisodes = try container.decodeIfPresent(Int.self, forKey: .numberOfEpisodes)
+        self.seasons = try container.decodeIfPresent([TVShowSeason].self, forKey: .seasons)
+        self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
+
+        // Need to deal with empty strings - date decoding will fail with an empty string
+        let firstAirDateString = try container.decodeIfPresent(String.self, forKey: .firstAirDate)
+        self.firstAirDate = try {
+            guard let firstAirDateString, !firstAirDateString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(Date.self, forKey: .firstAirDate)
+        }()
+
+        self.originCountry = try container.decodeIfPresent([String].self, forKey: .originCountry)
+        self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
+        self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
+
+        // Need to deal with empty strings - URL decoding will fail with an empty string
+        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
+        self.homepageURL = try {
+            guard let homepageURLString, !homepageURLString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
+        }()
+
+        self.isInProduction = try container.decodeIfPresent(Bool.self, forKey: .isInProduction)
+        self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
+        self.lastAirDate = try container.decodeIfPresent(Date.self, forKey: .lastAirDate)
+        self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
+        self.productionCompanies = try container.decodeIfPresent([ProductionCompany].self, forKey: .productionCompanies)
+        self.status = try container.decodeIfPresent(String.self, forKey: .status)
+        self.type = try container.decodeIfPresent(String.self, forKey: .type)
+        self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
+        self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
+        self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)
+        self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
     }
 
 }

@@ -11,7 +11,7 @@ extension Person {
         biography: String? = .randomString,
         birthday: Date? = .random,
         deathday: Date? = nil,
-        gender: Gender? = .male,
+        gender: Gender = .unknown,
         placeOfBirth: String? = .randomString,
         profilePath: URL? = .randomImagePath,
         popularity: Double? = Double.random(in: 1...10),

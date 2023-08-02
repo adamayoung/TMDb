@@ -39,7 +39,7 @@ public final class TrendingService {
     ///
     /// - Returns: Trending movies in a time window as a pageable list.
     ///
-    public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+    public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
                        page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -69,7 +69,7 @@ public final class TrendingService {
     ///
     /// - Returns: Trending TV shows in a time window as a pageable list.
     ///
-    public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+    public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
                         page: Int? = nil) async throws -> TVShowPageableList {
         let tvShowList: TVShowPageableList
         do {
@@ -99,7 +99,7 @@ public final class TrendingService {
     ///
     /// - Returns: Trending people in a time window as a pageable list.
     ///
-    public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .default,
+    public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
                        page: Int? = nil) async throws -> PersonPageableList {
         let peopleList: PersonPageableList
         do {

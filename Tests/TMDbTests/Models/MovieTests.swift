@@ -3,29 +3,18 @@ import XCTest
 
 final class MovieTests: XCTestCase {
 
-    func testReleaseDateWhenNilReturnsNil() {
-        let someMovie = Movie(id: 1, title: "Some movie title 1")
-
-        XCTAssertNil(someMovie.releaseDate)
-    }
-
-    func testHomepageURLWhenNilReturnsNil() {
-        let someMovie = Movie(id: 2, title: "Some movie title 2")
-
-        XCTAssertNil(someMovie.homepageURL)
-    }
-
-    func testHomepageURLWhenHasURLReturnsURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
-        let someMovie = Movie(id: 3, title: "Some movie title 3", homepageURL: expectedResult)
-
-        XCTAssertEqual(someMovie.homepageURL, expectedResult)
-    }
-
     func testDecodeReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Movie.self, fromResource: "movie")
 
         XCTAssertEqual(result, movie)
+    }
+
+    func testDecodeWhenHomepageIsEmptyStringReturnsMovie() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(Movie.self,
+                                                             fromResource: "movie-blank-homepage-release-date")
+
+        XCTAssertNil(result.homepageURL)
+        XCTAssertNil(result.releaseDate)
     }
 
 }
@@ -76,8 +65,8 @@ extension MovieTests {
             popularity: 0.5,
             voteAverage: 7.8,
             voteCount: 3439,
-            video: false,
-            adult: false
+            hasVideo: false,
+            isAdultOnly: false
         )
     }
     // swiftlint:enable line_length

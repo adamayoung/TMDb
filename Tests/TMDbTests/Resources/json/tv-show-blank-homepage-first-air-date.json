@@ -1,0 +1,114 @@
+{
+    "adult": false,
+    "backdrop_path": "/57clBMPX25NNO6nmDw3TV3zQaQE.jpg",
+    "created_by": [
+        {
+            "id": 1580115,
+            "credit_id": "62f5c9b3b39e35008f76d3bc",
+            "name": "Kyle Bradstreet",
+            "gender": 2,
+            "profile_path": null
+        }
+    ],
+    "episode_run_time": [],
+    "first_air_date": "",
+    "genres": [
+        {
+            "id": 18,
+            "name": "Drama"
+        },
+        {
+            "id": 10765,
+            "name": "Sci-Fi & Fantasy"
+        },
+        {
+            "id": 10759,
+            "name": "Action & Adventure"
+        }
+    ],
+    "homepage": "",
+    "id": 114472,
+    "in_production": false,
+    "languages": [
+        "en"
+    ],
+    "last_air_date": "2023-07-26",
+    "last_episode_to_air": {
+        "id": 4340162,
+        "name": "Home",
+        "overview": "All hope for humanity rests on Fury's shoulders.",
+        "vote_average": 6.214,
+        "vote_count": 14,
+        "air_date": "2023-07-26",
+        "episode_number": 6,
+        "production_code": "",
+        "runtime": 38,
+        "season_number": 1,
+        "show_id": 114472,
+        "still_path": "/3RJU5QMdfz6ufTocIcLOzN0wM9M.jpg"
+    },
+    "name": "Secret Invasion",
+    "next_episode_to_air": null,
+    "networks": [
+        {
+            "id": 2739,
+            "logo_path": "/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.png",
+            "name": "Disney+",
+            "origin_country": ""
+        }
+    ],
+    "number_of_episodes": 6,
+    "number_of_seasons": 1,
+    "origin_country": [
+        "US"
+    ],
+    "original_language": "en",
+    "original_name": "Secret Invasion",
+    "overview": "Nick Fury and Talos discover a faction of shapeshifting Skrulls who have been infiltrating Earth for years.",
+    "popularity": 1044.25,
+    "poster_path": "/f5ZMzzCvt2IzVDxr54gHPv9jlC9.jpg",
+    "production_companies": [
+        {
+            "id": 420,
+            "logo_path": "/hUzeosd33nzE5MCNsZxCGEKTXaQ.png",
+            "name": "Marvel Studios",
+            "origin_country": "US"
+        },
+        {
+            "id": 176762,
+            "logo_path": null,
+            "name": "Kevin Feige Productions",
+            "origin_country": "US"
+        }
+    ],
+    "production_countries": [
+        {
+            "iso_3166_1": "US",
+            "name": "United States of America"
+        }
+    ],
+    "seasons": [
+        {
+            "air_date": "2023-06-21",
+            "episode_count": 6,
+            "id": 171711,
+            "name": "Miniseries",
+            "overview": "",
+            "poster_path": "/8fQckSuTR8NEN3mXeledSQCISZJ.jpg",
+            "season_number": 1,
+            "vote_average": 6.8
+        }
+    ],
+    "spoken_languages": [
+        {
+            "english_name": "English",
+            "iso_639_1": "en",
+            "name": "English"
+        }
+    ],
+    "status": "Ended",
+    "tagline": "Who do you trust?",
+    "type": "Miniseries",
+    "vote_average": 7.312,
+    "vote_count": 549
+}

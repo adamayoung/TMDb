@@ -26,8 +26,8 @@ extension Movie {
         popularity: Double? = Double.random(in: 1...10),
         voteAverage: Double? = Double.random(in: 1...10),
         voteCount: Int? = Int.random(in: 1...1000),
-        video: Bool? = .random(),
-        adult: Bool? = .random()
+        hasVideo: Bool? = .random(),
+        isAdultOnly: Bool? = .random()
     ) -> Self {
         .init(
             id: id,
@@ -52,8 +52,8 @@ extension Movie {
             popularity: popularity,
             voteAverage: voteAverage,
             voteCount: voteCount,
-            video: video,
-            adult: adult
+            hasVideo: hasVideo,
+            isAdultOnly: isAdultOnly
         )
     }
 

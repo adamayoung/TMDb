@@ -98,5 +98,6 @@
     "status": "Returning Series",
     "type": "Scripted",
     "vote_average": 8.2,
-    "vote_count": 4682
+    "vote_count": 4682,
+    "adult": false
 }

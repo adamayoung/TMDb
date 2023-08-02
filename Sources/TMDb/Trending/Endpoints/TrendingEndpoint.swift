@@ -2,9 +2,9 @@ import Foundation
 
 enum TrendingEndpoint {
 
-    case movies(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
-    case tvShows(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
-    case people(timeWindow: TrendingTimeWindowFilterType = .default, page: Int? = nil)
+    case movies(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
+    case tvShows(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
+    case people(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
 
 }
 

@@ -1,0 +1,78 @@
+{
+    "adult": false,
+    "backdrop_path": "/qgPYU8xDYiZPKapK0sOvfIEKRtH.jpg",
+    "belongs_to_collection": null,
+    "budget": 5500000,
+    "genres": [
+        {
+            "id": 18,
+            "name": "Drama"
+        },
+        {
+            "id": 36,
+            "name": "History"
+        }
+    ],
+    "homepage": "",
+    "id": 9443,
+    "imdb_id": "tt0082158",
+    "original_language": "en",
+    "original_title": "Chariots of Fire",
+    "overview": "In the class-obsessed and religiously divided UK of the early 1920s, two determined young runners train for the 1924 Paris Olympics. Eric Liddell, a devout Christian born to Scottish missionaries in China, sees running as part of his worship of God's glory and refuses to train or compete on the Sabbath. Harold Abrahams overcomes anti-Semitism and class bias, but neglects his beloved sweetheart in his single-minded quest.",
+    "popularity": 13.255,
+    "poster_path": "/qnRaum8k0HqGRml2i7OawFqUtEb.jpg",
+    "production_companies": [
+        {
+            "id": 7965,
+            "logo_path": null,
+            "name": "The Ladd Company",
+            "origin_country": "US"
+        },
+        {
+            "id": 7049,
+            "logo_path": null,
+            "name": "Enigma Productions",
+            "origin_country": ""
+        },
+        {
+            "id": 8770,
+            "logo_path": null,
+            "name": "Allied Stars, Ltd.",
+            "origin_country": ""
+        },
+        {
+            "id": 174,
+            "logo_path": "/IuAlhI9eVC9Z8UQWOIDdWRKSEJ.png",
+            "name": "Warner Bros. Pictures",
+            "origin_country": "US"
+        },
+        {
+            "id": 25,
+            "logo_path": "/qZCc1lty5FzX30aOCVRBLzaVmcp.png",
+            "name": "20th Century Fox",
+            "origin_country": "US"
+        }
+    ],
+    "production_countries": [
+        {
+            "iso_3166_1": "GB",
+            "name": "United Kingdom"
+        }
+    ],
+    "release_date": "",
+    "revenue": 58972904,
+    "runtime": 124,
+    "spoken_languages": [
+        {
+            "english_name": "English",
+            "iso_639_1": "en",
+            "name": "English"
+        }
+    ],
+    "status": "Released",
+    "tagline": "This is the story of two men who run, not to run, but to prove something to the world. They will sacrifice anything to achieve their goals... except their honor.",
+    "title": "Chariots of Fire",
+    "video": false,
+    "vote_average": 6.8,
+    "vote_count": 785
+}
