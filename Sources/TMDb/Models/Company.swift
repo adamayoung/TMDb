@@ -33,6 +33,8 @@ public struct Company: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Company's logo path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let logoPath: URL
 
     ///
@@ -99,6 +101,8 @@ extension Company {
 
         ///
         /// Company's logo path.
+        ///
+        /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
         ///
         public let logoPath: URL
 

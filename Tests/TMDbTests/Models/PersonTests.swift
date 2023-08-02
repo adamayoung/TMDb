@@ -3,19 +3,6 @@ import XCTest
 
 final class PersonTests: XCTestCase {
 
-    func testHomepageURLWhenNilReturnsNil() {
-        let somePerson = Person(id: 1, name: "Name 1", homepageURL: nil)
-
-        XCTAssertNil(somePerson.homepageURL)
-    }
-
-    func testHomepageURLWhenHasURLReturnsURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
-        let somePerson = Person(id: 1, name: "Name 1", homepageURL: expectedResult)
-
-        XCTAssertEqual(somePerson.homepageURL, expectedResult)
-    }
-
     func testDecodeReturnsPerson() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Person.self, fromResource: "person")
 
@@ -32,6 +19,12 @@ final class PersonTests: XCTestCase {
         XCTAssertEqual(result.popularity, person.popularity)
         XCTAssertEqual(result.imdbID, person.imdbID)
         XCTAssertEqual(result.homepageURL, person.homepageURL)
+    }
+
+    func testDecodeWhenHomepageIsEmptyStringReturnsPerson() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(Person.self, fromResource: "person-blank-homepage")
+
+        XCTAssertNil(result.homepageURL)
     }
 
 }

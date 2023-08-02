@@ -18,6 +18,8 @@ public struct Network: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Network logo path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let logoPath: URL?
 
     ///

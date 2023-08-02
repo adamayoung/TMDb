@@ -38,6 +38,8 @@ public struct CrewMember: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Crew member's profile image.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let profilePath: URL?
 
     ///

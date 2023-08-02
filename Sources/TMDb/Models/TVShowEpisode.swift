@@ -43,6 +43,8 @@ public struct TVShowEpisode: Identifiable, Codable, Equatable, Hashable {
     ///
     /// TV show episode still image path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let stillPath: URL?
 
     ///

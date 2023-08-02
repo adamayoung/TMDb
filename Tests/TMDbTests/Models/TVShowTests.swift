@@ -3,29 +3,18 @@ import XCTest
 
 final class TVShowTests: XCTestCase {
 
-    func testFirstAirDateWhenNilReturnsNil() {
-        let someTVShow = TVShow(id: 1, name: "Some tv show name 1", firstAirDate: nil)
-
-        XCTAssertNil(someTVShow.firstAirDate)
-    }
-
-    func testHomepageURLWhenNilReturnsNil() {
-        let someTVShow = TVShow(id: 2, name: "Some tv show name 2", homepageURL: nil)
-
-        XCTAssertNil(someTVShow.homepageURL)
-    }
-
-    func testHomepageURLWhenHasURLReturnsURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "https://some.domain.com"))
-        let someTVShow = TVShow(id: 3, name: "Some tv show name 3", homepageURL: expectedResult)
-
-        XCTAssertEqual(someTVShow.homepageURL, expectedResult)
-    }
-
     func testDecodeReturnsTVShow() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(TVShow.self, fromResource: "tv-show")
 
         XCTAssertEqual(result, tvShow)
+    }
+
+    func testDecodeWhenHomepageIsEmptyStringReturnsTVShow() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(TVShow.self,
+                                                             fromResource: "tv-show-blank-homepage-first-air-date")
+
+        XCTAssertNil(result.homepageURL)
+        XCTAssertNil(result.firstAirDate)
     }
 
 }
@@ -64,7 +53,7 @@ extension TVShowTests {
             posterPath: URL(string: "/gwPSoYUHAKmdyVywgLpKKA4BjRr.jpg"),
             backdropPath: URL(string: "/gX8SYlnL9ZznfZwEH4KJUePBFUM.jpg"),
             homepageURL: URL(string: "http://www.hbo.com/game-of-thrones"),
-            inProduction: true,
+            isInProduction: true,
             languages: ["es", "en", "de"],
             lastAirDate: DateFormatter.theMovieDatabase.date(from: "2017-08-27"),
             networks: [
@@ -87,7 +76,8 @@ extension TVShowTests {
             type: "Scripted",
             popularity: 53.516,
             voteAverage: 8.2,
-            voteCount: 4682
+            voteCount: 4682,
+            isAdultOnly: false
         )
     }
     // swiftlint:enable line_length

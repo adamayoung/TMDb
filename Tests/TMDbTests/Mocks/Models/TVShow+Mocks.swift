@@ -46,7 +46,7 @@ extension TVShow {
             posterPath: posterPath,
             backdropPath: backdropPath,
             homepageURL: homepageURL,
-            inProduction: inProduction,
+            isInProduction: inProduction,
             languages: languages,
             lastAirDate: lastAirDate,
             networks: networks,
