@@ -43,7 +43,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Person's gender.
     ///
-    public let gender: Gender?
+    public let gender: Gender
 
     ///
     /// Person's place of birth.
@@ -52,6 +52,8 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Person's profile path.
+    ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
     public let profilePath: URL?
 
@@ -68,15 +70,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Person's web site.
     ///
-    public var homepageURL: URL? {
-        guard let homepage else {
-            return nil
-        }
-
-        return URL(string: homepage)
-    }
-
-    private let homepage: String?
+    public let homepageURL: URL?
 
     ///
     /// Creates a person object.
@@ -104,7 +98,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
         biography: String? = nil,
         birthday: Date? = nil,
         deathday: Date? = nil,
-        gender: Gender? = nil,
+        gender: Gender,
         placeOfBirth: String? = nil,
         profilePath: URL? = nil,
         popularity: Double? = nil,
@@ -123,7 +117,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable {
         self.profilePath = profilePath
         self.popularity = popularity
         self.imdbID = imdbID
-        self.homepage = homepageURL?.absoluteString
+        self.homepageURL = homepageURL
     }
 
 }
@@ -143,7 +137,35 @@ extension Person {
         case profilePath
         case popularity
         case imdbID = "imdbId"
-        case homepage
+        case homepageURL = "homepage"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container2 = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.alsoKnownAs = try container.decodeIfPresent([String].self, forKey: .alsoKnownAs)
+        self.knownForDepartment = try container.decodeIfPresent(String.self, forKey: .knownForDepartment)
+        self.biography = try container.decodeIfPresent(String.self, forKey: .biography)
+        self.birthday = try container.decodeIfPresent(Date.self, forKey: .birthday)
+        self.deathday = try container.decodeIfPresent(Date.self, forKey: .deathday)
+        self.gender = (try? container.decodeIfPresent(Gender.self, forKey: .gender)) ?? .unknown
+        self.placeOfBirth = try container.decodeIfPresent(String.self, forKey: .placeOfBirth)
+        self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
+        self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
+        self.imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
+
+        // Need to deal with empty strings - URL decoding will fail with an empty string
+        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
+        self.homepageURL = try {
+            guard let homepageURLString, !homepageURLString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
+        }()
     }
 
 }

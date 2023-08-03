@@ -6,6 +6,8 @@ import Foundation
 /// To build an image URL, you will need 3 pieces of data. The `base_url`, `size` and `file_path`. Simply combine them
 /// all and you will have a fully qualified URL.
 ///
+/// See <doc:/GeneratingImageURLs> for more details.
+///
 public struct ImagesConfiguration: Codable, Equatable, Hashable {
 
     ///

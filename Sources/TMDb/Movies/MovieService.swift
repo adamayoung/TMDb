@@ -264,7 +264,7 @@ public final class MovieService {
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
-    /// - Returns: Current popular movies as a pageable list.
+    /// - Returns: Top rated movies as a pageable list.
     /// 
     public func topRated(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
@@ -289,7 +289,7 @@ public final class MovieService {
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
-    /// - Returns: Current popular movies as a pageable list.
+    /// - Returns: Upcoming movies as a pageable list.
     /// 
     public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList

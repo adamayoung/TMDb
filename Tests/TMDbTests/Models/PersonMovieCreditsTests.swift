@@ -40,8 +40,8 @@ final class PersonMovieCreditsTests: XCTestCase {
                 popularity: 3.597124,
                 voteAverage: 5,
                 voteCount: 661,
-                video: false,
-                adult: false
+                hasVideo: false,
+                isAdultOnly: false
             )
         ],
         crew: [
@@ -57,8 +57,8 @@ final class PersonMovieCreditsTests: XCTestCase {
                 popularity: 1.214663,
                 voteAverage: 6.4,
                 voteCount: 7,
-                video: false,
-                adult: false
+                hasVideo: false,
+                isAdultOnly: false
             )
         ]
     )

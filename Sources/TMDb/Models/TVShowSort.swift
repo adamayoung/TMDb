@@ -6,11 +6,6 @@ import Foundation
 public enum TVShowSort: CustomStringConvertible {
 
     ///
-    /// Default sort specifier.
-    ///
-    public static var `default`: Self = .popularity()
-
-    ///
     /// By popularity.
     ///
     case popularity(descending: Bool = true)

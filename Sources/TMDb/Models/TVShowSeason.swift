@@ -33,6 +33,8 @@ public struct TVShowSeason: Identifiable, Codable, Equatable, Hashable {
     ///
     /// TV show season's poster path.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let posterPath: URL?
 
     ///

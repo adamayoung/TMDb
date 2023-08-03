@@ -19,12 +19,4 @@ final class TrendingTimeWindowFilterTypeTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testDefaultReturnsRawValue() {
-        let expectedResult = "day"
-
-        let result = TrendingTimeWindowFilterType.default.rawValue
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
 }

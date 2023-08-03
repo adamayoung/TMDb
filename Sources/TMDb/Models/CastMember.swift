@@ -38,6 +38,8 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Cast member's profile image.
     ///
+    /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
+    ///
     public let profilePath: URL?
 
     ///

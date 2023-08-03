@@ -115,14 +115,6 @@ final class MovieSortTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
-    func testDefaultReturnsRawValue() {
-        let expectedResult = "popularity.desc"
-
-        let result = MovieSort.default.description
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
 }
 
 extension MovieSortTests {

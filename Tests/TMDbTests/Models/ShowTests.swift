@@ -60,8 +60,8 @@ extension ShowTests {
                 popularity: 3.597124,
                 voteAverage: 5,
                 voteCount: 661,
-                video: false,
-                adult: false
+                hasVideo: false,
+                isAdultOnly: false
             )
         )
     }
