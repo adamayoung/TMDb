@@ -10,7 +10,7 @@ final class SearchIntegrationTests: XCTestCase {
         TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
         searchService = SearchService()
     }
-    
+
     override func tearDown() {
         searchService = nil
         super.tearDown()

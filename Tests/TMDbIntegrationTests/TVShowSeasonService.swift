@@ -2,15 +2,15 @@ import TMDb
 import XCTest
 
 final class TVShowSeasonServiceTests: XCTestCase {
-    
+
     var tvShowSeasonService: TVShowSeasonService!
-    
+
     override func setUp() {
         super.setUp()
         TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
         tvShowSeasonService = TVShowSeasonService()
     }
-    
+
     override func tearDown() {
         tvShowSeasonService = nil
         super.tearDown()

@@ -10,7 +10,7 @@ final class PersonIntegrationTests: XCTestCase {
         TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
         personService = PersonService()
     }
-    
+
     override func tearDown() {
         personService = nil
         super.tearDown()

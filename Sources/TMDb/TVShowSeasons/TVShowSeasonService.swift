@@ -63,7 +63,8 @@ public final class TVShowSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV show's season.
     ///
-    public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeasonImageCollection {
+    public func images(forSeason seasonNumber: Int,
+                       inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeasonImageCollection {
         let languageCode = localeProvider().languageCode
         let imageCollection: TVShowSeasonImageCollection
         do {

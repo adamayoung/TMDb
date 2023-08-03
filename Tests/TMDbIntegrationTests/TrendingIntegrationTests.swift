@@ -10,7 +10,7 @@ final class TrendingIntegrationTests: XCTestCase {
         TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
         trendingService = TrendingService()
     }
-    
+
     override func tearDown() {
         trendingService = nil
         super.tearDown()
