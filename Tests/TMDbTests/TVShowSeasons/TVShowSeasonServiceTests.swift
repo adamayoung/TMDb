@@ -36,7 +36,7 @@ final class TVShowSeasonServiceTests: XCTestCase {
     func testImagesReturnsImages() async throws {
         let seasonNumber = Int.randomID
         let tvShowID = Int.randomID
-        let expectedResult = ImageCollection.mock()
+        let expectedResult = TVShowSeasonImageCollection.mock()
         apiClient.result = .success(expectedResult)
 
         let result = try await service.images(forSeason: seasonNumber, inTVShow: tvShowID)

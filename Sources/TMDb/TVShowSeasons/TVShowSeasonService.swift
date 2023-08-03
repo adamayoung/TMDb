@@ -63,9 +63,9 @@ public final class TVShowSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV show's season.
     ///
-    public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> ImageCollection {
+    public func images(forSeason seasonNumber: Int, inTVShow tvShowID: TVShow.ID) async throws -> TVShowSeasonImageCollection {
         let languageCode = localeProvider().languageCode
-        let imageCollection: ImageCollection
+        let imageCollection: TVShowSeasonImageCollection
         do {
             imageCollection = try await apiClient.get(
                 endpoint: TVShowSeasonsEndpoint.images(tvShowID: tvShowID, seasonNumber: seasonNumber,
