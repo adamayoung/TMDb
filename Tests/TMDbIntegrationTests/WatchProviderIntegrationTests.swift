@@ -1,20 +1,20 @@
 import TMDb
- import XCTest
+import XCTest
 
- final class WatchProviderIntegrationTests: XCTestCase {
+final class WatchProviderIntegrationTests: XCTestCase {
 
-     var watchProviderService: WatchProviderService!
+    var watchProviderService: WatchProviderService!
 
-     override func setUp() {
-         super.setUp()
-         TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
-         watchProviderService = WatchProviderService()
-     }
+    override func setUp() {
+        super.setUp()
+        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+        watchProviderService = WatchProviderService()
+    }
 
-     override func tearDown() {
-         watchProviderService = nil
-         super.tearDown()
-     }
+    override func tearDown() {
+        watchProviderService = nil
+        super.tearDown()
+    }
 
     func testCountries() async throws {
         let countries = try await watchProviderService.countries()
@@ -34,4 +34,4 @@ import TMDb
         XCTAssertFalse(watchProviders.isEmpty)
     }
 
- }
+}

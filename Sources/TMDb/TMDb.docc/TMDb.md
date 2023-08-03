@@ -77,7 +77,7 @@ For the TMDb API documentation, see
 
 - ``TVShowSeasonService``
 - ``TVShowSeason``
-- ``ImageCollection``
+- ``TVShowSeasonImageCollection``
 - ``VideoCollection``
 
 ### TV Show Episodes

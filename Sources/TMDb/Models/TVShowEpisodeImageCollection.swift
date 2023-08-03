@@ -6,7 +6,7 @@ import Foundation
 public struct TVShowEpisodeImageCollection: Identifiable, Decodable, Equatable, Hashable {
 
     ///
-    /// Person identifier.
+    /// Collection identifier.
     ///
     public let id: Int
 
@@ -19,7 +19,7 @@ public struct TVShowEpisodeImageCollection: Identifiable, Decodable, Equatable, 
     /// Creates a TV show episode image collection.
     ///
     /// - Parameters:
-    ///    - id: TVShow identifier.
+    ///    - id: Collection identifier.
     ///    - stills: Still images.
     ///
     public init(id: Int, stills: [ImageMetadata]) {
