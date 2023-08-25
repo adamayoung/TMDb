@@ -1,0 +1,15 @@
+{
+  "image": "swift:5.7.1",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "lldb.adapterType": "bundled",
+        "lldb.executable": "/usr/bin/lldb",
+        "sourcekit-lsp.serverPath": "/usr/bin/sourcekit-lsp",
+        "sde.languageServerMode": "sourcekit-lsp"
+      },
+      "extensions": ["sswg.swift-lang"]
+    }
+  },
+  "postCreateCommand": "swiftc --version"
+}
