@@ -14,7 +14,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     /// TV show name.
     ///
     public let name: String
-    
+
     ///
     /// TV show tagline.
     ///
