@@ -16,6 +16,11 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     public let name: String
 
     ///
+    /// TV show tagline.
+    ///
+    public let tagline: String?
+
+    ///
     /// Original TV show name.
     ///
     public let originalName: String?
@@ -145,6 +150,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     /// - Parameters:
     ///    - id: TV show identifier.
     ///    - name: TV show name.
+    ///    - tagline: TV show tagline.
     ///    - originalName: Original TV show name.
     ///    - originalLanguage: Original language of the TV show.
     ///    - overview: TV show overview.
@@ -172,6 +178,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     public init(
         id: Int,
         name: String,
+        tagline: String? = nil,
         originalName: String? = nil,
         originalLanguage: String? = nil,
         overview: String? = nil,
@@ -199,6 +206,7 @@ public struct TVShow: Identifiable, Codable, Equatable, Hashable {
     ) {
         self.id = id
         self.name = name
+        self.tagline = tagline
         self.originalName = originalName
         self.originalLanguage = originalLanguage
         self.overview = overview
@@ -232,6 +240,7 @@ extension TVShow {
     private enum CodingKeys: String, CodingKey {
         case id
         case name
+        case tagline
         case originalName
         case originalLanguage
         case overview
@@ -264,6 +273,7 @@ extension TVShow {
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
+        self.tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
         self.originalName = try container.decodeIfPresent(String.self, forKey: .originalName)
         self.originalLanguage = try container.decodeIfPresent(String.self, forKey: .originalLanguage)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
