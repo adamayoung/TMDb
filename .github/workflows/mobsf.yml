@@ -1,4 +1,4 @@
-name: Code Scan
+name: MobSF
 
 on:
   push:
@@ -12,6 +12,9 @@ on:
     - cron:  '0 0 * * 0'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: "code-scan-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
@@ -20,11 +23,13 @@ env:
   DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
 
 jobs:
-  codeScan:
+  mobile-security:
     name: Code Scan
     runs-on: ubuntu-latest
     permissions:
-        security-events: write
+      contents: read
+      security-events: write
+      actions: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
