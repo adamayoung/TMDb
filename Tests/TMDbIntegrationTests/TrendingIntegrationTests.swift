@@ -5,9 +5,9 @@ final class TrendingIntegrationTests: XCTestCase {
 
     var trendingService: TrendingService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         trendingService = TrendingService()
     }
 
