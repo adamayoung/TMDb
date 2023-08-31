@@ -5,9 +5,9 @@ final class DiscoverIntegrationTests: XCTestCase {
 
     var discoverService: DiscoverService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         discoverService = DiscoverService()
     }
 

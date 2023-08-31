@@ -5,9 +5,9 @@ final class PersonIntegrationTests: XCTestCase {
 
     var personService: PersonService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         personService = PersonService()
     }
 

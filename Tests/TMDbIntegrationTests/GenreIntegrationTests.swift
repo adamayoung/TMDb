@@ -5,9 +5,9 @@ final class GenreIntegrationTests: XCTestCase {
 
     var genreService: GenreService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         genreService = GenreService()
     }
 

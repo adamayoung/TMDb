@@ -5,9 +5,9 @@ final class TVShowEpisodeServiceTests: XCTestCase {
 
     var tvShowEpisodeService: TVShowEpisodeService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         tvShowEpisodeService = TVShowEpisodeService()
     }
 

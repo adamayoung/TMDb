@@ -58,6 +58,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/TMDb-*/SourcePackages 
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
       - name: Build
         run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
@@ -68,11 +76,17 @@ jobs:
   build-test-linux:
     name: Build and Test (Linux)
     runs-on: ubuntu-latest
-    container:
-        image: swift:5.8.1-focal
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Cache SPM
+        uses: actions/cache@v3
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
 
       - name: Build
         run: swift build -Xswiftc -warnings-as-errors --build-tests
