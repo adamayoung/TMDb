@@ -30,6 +30,7 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: swift
+        config-file: ./.github/codeql/codeql-config.yml
 
     - name: Cache SPM
       uses: actions/cache@v3
@@ -40,7 +41,7 @@ jobs:
           ${{ runner.os }}-spm-
 
     - name: Build
-      run: swift build
+      run: swift build --build-tests
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
