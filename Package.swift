@@ -22,10 +22,7 @@ let package = Package(
 
     targets: [
         .target(
-            name: "TMDb",
-            resources: [
-                .process("Resources")
-            ]
+            name: "TMDb"
         ),
         .testTarget(
             name: "TMDbTests",
