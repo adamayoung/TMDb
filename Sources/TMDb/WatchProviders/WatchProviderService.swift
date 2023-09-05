@@ -27,9 +27,9 @@ public final class WatchProviderService {
     ///
     /// Returns a list of all of the countries TMDb have watch provider (OTT/streaming) data for.
     ///
-    /// [TMDb API - Watch Providers: Regions](https://developers.themoviedb.org/3/watch-providers/get-available-regions)
+    /// [TMDb API - Watch Providers: Available Regions](https://developer.themoviedb.org/reference/watch-providers-available-regions)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     /// 
@@ -47,9 +47,9 @@ public final class WatchProviderService {
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
     ///
-    /// [TMDb API - Watch Providers: Movie](https://developers.themoviedb.org/3/watch-providers/get-movie-providers)
+    /// [TMDb API - Watch Providers: Movie Providers](https://developer.themoviedb.org/reference/watch-providers-movie-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movies.
     /// 
@@ -70,9 +70,9 @@ public final class WatchProviderService {
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV shows.
     ///
-    /// [TMDb API - Watch Providers: TV](https://developers.themoviedb.org/3/watch-providers/get-tv-providers)
+    /// [TMDb API - Watch Providers: TV Providers](https://developer.themoviedb.org/reference/watch-provider-tv-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV shows.
     /// 

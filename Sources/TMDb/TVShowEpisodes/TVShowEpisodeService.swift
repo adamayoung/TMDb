@@ -24,14 +24,14 @@ public final class TVShowEpisodeService {
     ///
     /// Returns the primary information about a TV show episode.
     ///
-    /// [TMDb API - TV Show Episodes: Details](https://developers.themoviedb.org/3/tv-episodes/get-tv-episode-details)
+    /// [TMDb API - TV Episodes: Details](https://developer.themoviedb.org/reference/tv-episode-details)
     ///
     /// - Parameters:
     ///    - episodeNumber: The episode number of a TV show.
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A episode of the matching TV show.
     ///
@@ -56,14 +56,14 @@ public final class TVShowEpisodeService {
     ///
     /// Returns the images that belong to a TV show episode.
     ///
-    /// [TMDb API - TV Show Episode: Images](https://developers.themoviedb.org/3/tv-episodes/get-tv-episode-images)
+    /// [TMDb API - TV Episode: Images](https://developer.themoviedb.org/reference/tv-episode-images)
     ///
     /// - Parameters:
     ///    - episodeNumber: The episode number of a TV show.
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of images for the matching TV show's episode.
     ///
@@ -88,14 +88,14 @@ public final class TVShowEpisodeService {
     ///
     /// Returns the videos that belong to a TV show episode.
     ///
-    /// [TMDb API - TV Show Episode: Videos](https://developers.themoviedb.org/3/tv-episodes/get-tv-episode-videos)
+    /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
     ///
     /// - Parameters:
     ///    - episodeNumber: The episode number of a TV show.
     ///    - seasonNumber: The season number of a TV show.
     ///    - tvShowID: The identifier of the TV show.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of videos for the matching TV show's episode.
     ///

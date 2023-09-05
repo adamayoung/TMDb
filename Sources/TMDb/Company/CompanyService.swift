@@ -29,7 +29,7 @@ public final class CompanyService {
     /// - Parameters:
     ///    - id: The identifier of the company.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching company.
     ///

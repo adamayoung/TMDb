@@ -24,7 +24,7 @@ public final class DiscoverService {
     ///
     /// Returns movies to be discovered.
     ///
-    /// [TMDb API - Discover: Movies](https://developers.themoviedb.org/3/discover/movie-discover)
+    /// [TMDb API - Discover: Movie](https://developer.themoviedb.org/reference/discover-movie)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -33,7 +33,7 @@ public final class DiscoverService {
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching movies as a pageable list.
     /// 
@@ -54,7 +54,7 @@ public final class DiscoverService {
     ///
     /// Returns TV shows to be discovered.
     ///
-    /// [TMDb API - Discover: TV Shows](https://developers.themoviedb.org/3/discover/tv-discover)
+    /// [TMDb API - Discover: TV](https://developer.themoviedb.org/reference/discover-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -62,7 +62,7 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching TV shows as a pageable list.
     ///

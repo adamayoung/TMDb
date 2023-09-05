@@ -27,12 +27,12 @@ public final class MovieService {
     ///
     /// Returns the primary information about a movie.
     ///
-    /// [TMDb API - Movie: Details](https://developers.themoviedb.org/3/movies/get-movie-details)
+    /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie.
     /// 
@@ -50,12 +50,12 @@ public final class MovieService {
     ///
     /// Returns the cast and crew of a movie.
     ///
-    /// [TMDb API - Movie: Credits](https://developers.themoviedb.org/3/movies/get-movie-credits)
+    /// [TMDb API - Movies: Credits](https://developer.themoviedb.org/reference/movie-credits)
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching movie.
     /// 
@@ -73,7 +73,7 @@ public final class MovieService {
     ///
     /// Returns the user reviews for a movie.
     ///
-    /// [TMDb API - Movie: Reviews](https://developers.themoviedb.org/3/movies/get-movie-reviews)
+    /// [TMDb API - Movies: Reviews](https://developer.themoviedb.org/reference/movie-reviews)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -81,7 +81,7 @@ public final class MovieService {
     ///    - movieID: The identifier of the movie.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
     /// 
@@ -99,12 +99,12 @@ public final class MovieService {
     ///
     /// Returns the images that belong to a movie.
     ///
-    /// [TMDb API - Movie: Images](https://developers.themoviedb.org/3/movies/get-movie-images)
+    /// [TMDb API - Movies: Images](https://developer.themoviedb.org/reference/movie-images)
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
     /// 
@@ -125,12 +125,12 @@ public final class MovieService {
     ///
     /// Returns the videos that have been added to a movie.
     ///
-    /// [TMDb API - Movie: Videos](https://developers.themoviedb.org/3/movies/get-movie-videos)
+    /// [TMDb API - Movies: Videos](https://developer.themoviedb.org/reference/movie-videos)
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
@@ -151,7 +151,7 @@ public final class MovieService {
     ///
     /// Returns a list of recommended movies for a movie.
     ///
-    /// [TMDb API - Movie: Recommendations](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
+    /// [TMDb API - Movies: Recommendations](https://developer.themoviedb.org/reference/movie-recommendations)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -159,7 +159,7 @@ public final class MovieService {
     ///    - movieID: The identifier of the movie for get recommendations for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     /// 
@@ -179,7 +179,7 @@ public final class MovieService {
     ///
     /// This is not the same as the *Recommendations*.
     ///
-    /// [TMDb API - Movie: Similar](https://developers.themoviedb.org/3/movies/get-similar-movies)
+    /// [TMDb API - Movies: Similar](https://developer.themoviedb.org/reference/movie-similar)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -187,7 +187,7 @@ public final class MovieService {
     ///    - movieID: The identifier of the movie for get similar movies for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
     /// 
@@ -205,14 +205,14 @@ public final class MovieService {
     ///
     /// Returns a list of currently playing movies.
     ///
-    /// [TMDb API - Movie: Now Playing](https://developers.themoviedb.org/3/movies/get-now-playing)
+    /// [TMDb API - Movie Lists: Now Playing](https://developer.themoviedb.org/reference/movie-now-playing-list)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Now playing movies as a pageable list.
     /// 
@@ -230,14 +230,14 @@ public final class MovieService {
     ///
     /// Returns a list of current popular movies.
     ///
-    /// [TMDb API - Movie: Popular](https://developers.themoviedb.org/3/movies/get-popular-movies)
+    /// [TMDb API - Movie List: Popular](https://developer.themoviedb.org/reference/movie-popular-list)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular movies as a pageable list.
     /// 
@@ -255,14 +255,14 @@ public final class MovieService {
     ///
     /// Returns a list of top rated movies.
     ///
-    /// [TMDb API - Movie: Top Rated](https://developers.themoviedb.org/3/movies/get-top-rated-movies)
+    /// [TMDb API - Movie List: Top Rated](https://developer.themoviedb.org/reference/movie-top-rated-list)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Top rated movies as a pageable list.
     /// 
@@ -280,14 +280,14 @@ public final class MovieService {
     ///
     /// Returns a list of upcoming movies.
     ///
-    /// [TMDb API - Movie: Upcoming](https://developers.themoviedb.org/3/movies/get-upcoming)
+    /// [TMDb API - Movie List: Upcoming](https://developer.themoviedb.org/reference/movie-upcoming-list)
     ///
     /// - precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Upcoming movies as a pageable list.
     /// 
