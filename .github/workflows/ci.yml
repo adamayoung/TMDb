@@ -24,14 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache SPM
-        uses: actions/cache@v3
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
-
       - name: Build
         run: swift build -Xswiftc -warnings-as-errors --build-tests
 
@@ -58,14 +50,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Cache SPM
-        uses: actions/cache@v3
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData/TMDb-*/SourcePackages 
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
 
       - name: Build
         run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
@@ -79,14 +63,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Cache SPM
-        uses: actions/cache@v3
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
 
       - name: Build
         run: swift build -Xswiftc -warnings-as-errors --build-tests
@@ -100,17 +76,11 @@ jobs:
   build-documentation:
     name: Build Documentation
     runs-on: macos-13
+    env:
+      SWIFTCI_DOCC: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Cache SPM
-        uses: actions/cache@v3
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
 
       - name: Build
         run: swift package generate-documentation --product TMDb
