@@ -19,6 +19,7 @@ concurrency:
 
 env:
   DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
+  SWIFTCI_DOCC: 1
 
 jobs:
   deploy:
@@ -33,14 +34,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
-
-      - name: Cache SPM
-        uses: actions/cache@v3
-        with:
-          path: .build
-          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
       
       - name: Build documentation
         run: |
