@@ -27,7 +27,7 @@ public final class TrendingService {
     /// The daily trending list tracks movies over the period of a day while movies have a 24 hour half life. The
     /// weekly list tracks movies over a 7 day period, with a 7 day half life.
     ///
-    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending: Movies](https://developer.themoviedb.org/reference/trending-all)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -35,7 +35,7 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Trending movies in a time window as a pageable list.
     ///
@@ -57,7 +57,7 @@ public final class TrendingService {
     /// The daily trending list tracks TV shows over the period of a day while TV shows have a 24 hour half life. The
     /// weekly list tracks TV shows over a 7 day period, with a 7 day half life.
     ///
-    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending: TV](https://developer.themoviedb.org/reference/trending-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -65,7 +65,7 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Trending TV shows in a time window as a pageable list.
     ///
@@ -87,7 +87,7 @@ public final class TrendingService {
     /// The daily trending list tracks people over the period of a day while people shows have a 24 hour half life. The
     /// weekly list tracks people over a 7 day period, with a 7 day half life.
     ///
-    /// [TMDb API - Trending](https://developers.themoviedb.org/3/trending/get-trending)
+    /// [TMDb API - Trending: People](https://developer.themoviedb.org/reference/trending-people)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -95,7 +95,7 @@ public final class TrendingService {
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Trending people in a time window as a pageable list.
     ///

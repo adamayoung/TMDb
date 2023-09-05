@@ -24,9 +24,9 @@ public final class GenreService {
     ///
     /// Returns the list of official genres for movies.
     ///
-    /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-movie-list)
+    /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
@@ -44,9 +44,9 @@ public final class GenreService {
     ///
     /// Returns the list of official genres for TV shows.
     ///
-    /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-tv-list)
+    /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     /// 

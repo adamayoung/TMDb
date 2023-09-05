@@ -24,9 +24,9 @@ public final class CertificationService {
     ///
     /// Returns an up to date list of the officially supported movie certifications on TMDB.
     ///
-    /// [TMDb API - Movie Certifications](https://developer.themoviedb.org/reference/certification-movie-list)
+    /// [TMDb API - Certifications: Movie Certifications](https://developer.themoviedb.org/reference/certification-movie-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A dictionary of movie certifications.
     /// 
@@ -44,9 +44,9 @@ public final class CertificationService {
     ///
     /// Returns an up to date list of the officially supported TV certifications on TMDB.
     ///
-    /// [TMDb API - TV show Certifications](https://developer.themoviedb.org/reference/certifications-tv-list)
+    /// [TMDb API - Certifications: TV Certifications](https://developer.themoviedb.org/reference/certifications-tv-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A dictionary of TV show certifications.
     /// 
