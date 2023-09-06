@@ -28,8 +28,8 @@ final class WatchProviderIntegrationTests: XCTestCase {
         XCTAssertFalse(watchProviders.isEmpty)
     }
 
-    func testTVShowWatchProviders() async throws {
-        let watchProviders = try await watchProviderService.tvShowWatchProviders()
+    func testTVSeriesWatchProviders() async throws {
+        let watchProviders = try await watchProviderService.tvSeriesWatchProviders()
 
         XCTAssertFalse(watchProviders.isEmpty)
     }

@@ -1,14 +1,14 @@
 import Foundation
 
 ///
-/// A model representing a show's (movie or TV show) credits.
+/// A model representing a show's (movie or TV series) credits.
 ///
 /// A person can be both a cast member and crew member of the same show.
 ///
 public struct ShowCredits: Identifiable, Decodable, Equatable, Hashable {
 
     ///
-    /// Movie or TV show identifier.
+    /// Movie or TV series identifier.
     ///
     public let id: Int
 
@@ -26,7 +26,7 @@ public struct ShowCredits: Identifiable, Decodable, Equatable, Hashable {
     /// Creates a show credits object.
     ///
     /// - Parameters:
-    ///    - id: Movie or TV show identifier.
+    ///    - id: Movie or TV series identifier.
     ///    - cast: Cast members of the show.
     ///    - crew: Crew members of the show.
     ///

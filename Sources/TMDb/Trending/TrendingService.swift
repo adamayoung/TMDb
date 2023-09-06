@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// Provides an interface for finding trending movies, TV shows and people from TMDb.
+/// Provides an interface for finding trending movies, TV series and people from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TrendingService {
@@ -52,10 +52,10 @@ public final class TrendingService {
     }
 
     ///
-    /// Returns a list of the daily or weekly trending TV shows.
+    /// Returns a list of the daily or weekly trending TV series.
     ///
-    /// The daily trending list tracks TV shows over the period of a day while TV shows have a 24 hour half life. The
-    /// weekly list tracks TV shows over a 7 day period, with a 7 day half life.
+    /// The daily trending list tracks TV series over the period of a day while TV series have a 24 hour half life. The
+    /// weekly list tracks TV series over a 7 day period, with a 7 day half life.
     ///
     /// [TMDb API - Trending: TV](https://developer.themoviedb.org/reference/trending-tv)
     ///
@@ -67,18 +67,20 @@ public final class TrendingService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Trending TV shows in a time window as a pageable list.
+    /// - Returns: Trending TV series in a time window as a pageable list.
     ///
-    public func tvShows(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-                        page: Int? = nil) async throws -> TVShowPageableList {
-        let tvShowList: TVShowPageableList
+    public func tvSeries(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+                         page: Int? = nil) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
         do {
-            tvShowList = try await apiClient.get(endpoint: TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page))
+            tvSeriesList = try await apiClient.get(
+                endpoint: TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page)
+            )
         } catch let error {
             throw TMDbError(error: error)
         }
 
-        return tvShowList
+        return tvSeriesList
     }
 
     ///

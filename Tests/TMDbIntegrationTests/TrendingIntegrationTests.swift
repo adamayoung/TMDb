@@ -28,16 +28,16 @@ final class TrendingIntegrationTests: XCTestCase {
         XCTAssertFalse(movieList.results.isEmpty)
     }
 
-    func testTVShowsTrendingByDay() async throws {
-        let tvShowList = try await trendingService.tvShows(inTimeWindow: .day)
+    func testTVSeriesTrendingByDay() async throws {
+        let tvSeriesList = try await trendingService.tvSeries(inTimeWindow: .day)
 
-        XCTAssertFalse(tvShowList.results.isEmpty)
+        XCTAssertFalse(tvSeriesList.results.isEmpty)
     }
 
-    func testTVShowTrendingByWeek() async throws {
-        let tvShowList = try await trendingService.tvShows(inTimeWindow: .week)
+    func testTVSeriesTrendingByWeek() async throws {
+        let tvSeriesList = try await trendingService.tvSeries(inTimeWindow: .week)
 
-        XCTAssertFalse(tvShowList.results.isEmpty)
+        XCTAssertFalse(tvSeriesList.results.isEmpty)
     }
 
     func testPeopleTrendingByDay() async throws {

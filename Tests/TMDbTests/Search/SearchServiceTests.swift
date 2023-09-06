@@ -112,64 +112,64 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, SearchEndpoint.movies(query: query, year: year, page: page).path)
     }
 
-    func testSearchTVShowsWithDefaultParametersReturnsTVShows() async throws {
+    func testSearchTVSeriesWithDefaultParametersReturnsTVSeries() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.searchTVShows(query: query)
+        let result = try await service.searchTVSeries(query: query)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).path)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvSeries(query: query).path)
     }
 
-    func testSearchTVShowsReturnsTVShows() async throws {
+    func testSearchTVSeriesReturnsTVSeries() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: nil)
+        let result = try await service.searchTVSeries(query: query, firstAirDateYear: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query).path)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvSeries(query: query).path)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearReturnsTVShows() async throws {
+    func testSearchTVSeriesWithFirstAirDateYearReturnsTVSeries() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: nil)
+        let result = try await service.searchTVSeries(query: query, firstAirDateYear: year, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, firstAirDateYear: year).path)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvSeries(query: query, firstAirDateYear: year).path)
     }
 
-    func testSearchTVShowsWithPageReturnsTVShows() async throws {
+    func testSearchTVSeriesWithPageReturnsTVSeries() async throws {
         let query = String.randomString
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.searchTVShows(query: query, firstAirDateYear: nil, page: page)
+        let result = try await service.searchTVSeries(query: query, firstAirDateYear: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvShows(query: query, page: page).path)
+        XCTAssertEqual(apiClient.lastPath, SearchEndpoint.tvSeries(query: query, page: page).path)
     }
 
-    func testSearchTVShowsWithFirstAirDateYearANdPageReturnsTVShows() async throws {
+    func testSearchTVSeriesWithFirstAirDateYearANdPageReturnsTVSeries() async throws {
         let query = String.randomString
         let year = 2020
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.searchTVShows(query: query, firstAirDateYear: year, page: page)
+        let result = try await service.searchTVSeries(query: query, firstAirDateYear: year, page: page)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath,
-                       SearchEndpoint.tvShows(query: query, firstAirDateYear: year, page: page).path)
+                       SearchEndpoint.tvSeries(query: query, firstAirDateYear: year, page: page).path)
     }
 
     func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {

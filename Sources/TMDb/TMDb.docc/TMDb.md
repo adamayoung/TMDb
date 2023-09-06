@@ -1,6 +1,6 @@
 # ``TMDb``
 
-Millions of movies, TV shows and people to discover. Explore now.
+Millions of movies, TV series and people to discover. Explore now.
 
 ## Overview
 
@@ -16,7 +16,7 @@ Every year since 2008, the number of contributions to their database has
 increased. With over 1,000,000 developers and companies using their platform,
 TMDB has become a premiere source for metadata.
 
-Along with extensive metadata for movies, TV shows and people, they also offer
+Along with extensive metadata for movies, TV series and people, they also offer
 one of the best selections of high resolution posters and fanart. On average,
 over 1,000 images are added every single day.
 
@@ -62,29 +62,29 @@ For the TMDb API documentation, see
 - ``VideoCollection``
 - ``MoviePageableList``
 
-### TV Shows
+### TV Series
 
-- ``TVShowService``
-- ``TVShow``
+- ``TVSeriesService``
+- ``TVSeries``
 - ``ShowCredits``
 - ``ReviewPageableList``
 - ``Review``
 - ``ImageCollection``
 - ``VideoCollection``
-- ``TVShowPageableList``
+- ``TVSeriesPageableList``
 
-### TV Show Seasons
+### TV Seasons
 
-- ``TVShowSeasonService``
-- ``TVShowSeason``
-- ``TVShowSeasonImageCollection``
+- ``TVSeasonService``
+- ``TVSeason``
+- ``TVSeasonImageCollection``
 - ``VideoCollection``
 
-### TV Show Episodes
+### TV Episodes
 
-- ``TVShowEpisodeService``
-- ``TVShowEpisode``
-- ``TVShowEpisodeImageCollection``
+- ``TVEpisodeService``
+- ``TVEpisode``
+- ``TVEpisodeImageCollection``
 - ``VideoCollection``
 
 ### People
@@ -93,7 +93,7 @@ For the TMDb API documentation, see
 - ``Person``
 - ``PersonCombinedCredits``
 - ``PersonMovieCredits``
-- ``PersonTVShowCredits``
+- ``PersonTVSeriesCredits``
 - ``PersonImageCollection``
 - ``Show``
 - ``PersonPageableList``
@@ -104,17 +104,17 @@ For the TMDb API documentation, see
 - ``MoviePageableList``
 - ``Movie``
 - ``MovieSort``
-- ``TVShowPageableList``
-- ``TVShow``
-- ``TVShowSort``
+- ``TVSeriesPageableList``
+- ``TVSeries``
+- ``TVSeriesSort``
 
 ### Trending
 
 - ``TrendingService``
 - ``MoviePageableList``
 - ``Movie``
-- ``TVShowPageableList``
-- ``TVShow``
+- ``TVSeriesPageableList``
+- ``TVSeries``
 - ``PersonPageableList``
 - ``Person``
 - ``TrendingTimeWindowFilterType``
@@ -126,8 +126,8 @@ For the TMDb API documentation, see
 - ``Media``
 - ``MoviePageableList``
 - ``Movie``
-- ``TVShowPageableList``
-- ``TVShow``
+- ``TVSeriesPageableList``
+- ``TVSeries``
 - ``PersonPageableList``
 - ``Person``
 

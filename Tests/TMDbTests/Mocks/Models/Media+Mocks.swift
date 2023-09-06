@@ -15,10 +15,10 @@ extension Array where Element == Media {
         [
             .movie(.bulletTrain),
             .movie(.topGunMaverick),
-            .tvShow(.strangerThings),
-            .tvShow(.theSandman),
+            .tvSeries(.strangerThings),
+            .tvSeries(.theSandman),
             .movie(.jurassicWorldDominion),
-            .tvShow(.sheHulk)
+            .tvSeries(.sheHulk)
         ]
     }
 

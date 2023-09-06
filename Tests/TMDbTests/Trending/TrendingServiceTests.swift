@@ -75,61 +75,61 @@ final class TrendingServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).path)
     }
 
-    func testTVShowsWithDefaultReturnsTVShows() async throws {
+    func testTVSeriesWithDefaultReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows()
+        let result = try await service.tvSeries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
     }
 
-    func testTVShowsForDayReturnsTVShows() async throws {
+    func testTVSeriesForDayReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
+        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
     }
 
-    func testTVShowsForDayWithPageReturnsTVShows() async throws {
+    func testTVSeriesForDayWithPageReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
+        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page).path)
     }
 
-    func testTVShowsForWeekReturnsTVShows() async throws {
+    func testTVSeriesForWeekReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(inTimeWindow: timeWindow, page: nil)
+        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
     }
 
-    func testTVShowsForWeekWithPageReturnsTVShows() async throws {
+    func testTVSeriesForWeekWithPageReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = TVShowPageableList.mock()
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(inTimeWindow: timeWindow, page: page)
+        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvShows(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastPath, TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page).path)
     }
 
     func testPeopleWithDefaultParametersReturnsPeople() async throws {

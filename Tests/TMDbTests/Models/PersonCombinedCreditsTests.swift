@@ -16,7 +16,7 @@ final class PersonCombinedCreditsTests: XCTestCase {
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,
         cast: [
-            .tvShow(TVShow(
+            .tvSeries(TVSeries(
                 id: 54,
                 name: "Growing Pains",
                 originalName: "Growing Pains",
@@ -47,7 +47,7 @@ final class PersonCombinedCreditsTests: XCTestCase {
             ))
         ],
         crew: [
-            .tvShow(TVShow(
+            .tvSeries(TVSeries(
                 id: 69061,
                 name: "The OA",
                 originalName: "The OA",

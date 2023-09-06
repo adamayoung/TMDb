@@ -4,7 +4,7 @@ enum SearchEndpoint {
 
     case multi(query: String, page: Int? = nil)
     case movies(query: String, year: Int? = nil, page: Int? = nil)
-    case tvShows(query: String, firstAirDateYear: Int? = nil, page: Int? = nil)
+    case tvSeries(query: String, firstAirDateYear: Int? = nil, page: Int? = nil)
     case people(query: String, page: Int? = nil)
 
 }
@@ -33,7 +33,7 @@ extension SearchEndpoint: Endpoint {
                 .appendingYear(year)
                 .appendingPage(page)
 
-        case .tvShows(let query, let firstAirDateYear, let page):
+        case .tvSeries(let query, let firstAirDateYear, let page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingQueryItem(name: QueryItemName.query, value: query)

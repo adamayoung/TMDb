@@ -9,4 +9,4 @@
 ### Certifications
 
 - ``movieCertifications()``
-- ``tvShowCertifications()``
+- ``tvSeriesCertifications()``

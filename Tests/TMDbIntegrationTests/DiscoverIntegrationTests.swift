@@ -22,10 +22,10 @@ final class DiscoverIntegrationTests: XCTestCase {
         XCTAssertFalse(movieList.results.isEmpty)
     }
 
-    func testTVShows() async throws {
-        let tvShowList = try await discoverService.tvShows()
+    func testTVSeries() async throws {
+        let tvSeriesList = try await discoverService.tvSeries()
 
-        XCTAssertFalse(tvShowList.results.isEmpty)
+        XCTAssertFalse(tvSeriesList.results.isEmpty)
     }
 
 }

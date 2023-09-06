@@ -11,12 +11,12 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable {
     public let id: Int
 
     ///
-    /// Cast member's identifier for the particular movie or TV show.
+    /// Cast member's identifier for the particular movie or TV series.
     ///
     public let castID: Int?
 
     ///
-    /// Credit identifier for that particular movie or TV show.
+    /// Credit identifier for that particular movie or TV series.
     ///
     public let creditID: String
 
@@ -52,8 +52,8 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable {
     ///
     /// - Parameters:
     ///    - id: Cast member's identifier.
-    ///    - castID: Cast member's identifier for the particular movie or TV show.
-    ///    - creditID: Credit identifier for that particular movie or TV show.
+    ///    - castID: Cast member's identifier for the particular movie or TV series.
+    ///    - creditID: Credit identifier for that particular movie or TV series.
     ///    - name: Cast member's name.
     ///    - character: Cast member's character name.
     ///    - gender: Cast member's gender.

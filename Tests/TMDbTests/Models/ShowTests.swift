@@ -7,16 +7,16 @@ final class ShowTests: XCTestCase {
         XCTAssertEqual(movieShow.id, 109091)
     }
 
-    func testIDWhenTVShowReturnsTVShowID() {
-        XCTAssertEqual(tvShowShow.id, 54)
+    func testIDWhenTVSeriesReturnsTVSeriesID() {
+        XCTAssertEqual(tvSeriesShow.id, 54)
     }
 
     func testPopularityWhenMovieReturnsMoviePopularity() {
         XCTAssertEqual(movieShow.popularity, 3.597124)
     }
 
-    func testPopularityWhenTVShowReturnsTVShowPopularity() {
-        XCTAssertEqual(tvShowShow.popularity, 2.883124)
+    func testPopularityWhenTVSeriesReturnsTVSeriesPopularity() {
+        XCTAssertEqual(tvSeriesShow.popularity, 2.883124)
     }
 
     func testDateWhenMovieReturnsMovieReleaseDate() {
@@ -24,9 +24,9 @@ final class ShowTests: XCTestCase {
         XCTAssertEqual(movieShow.date, expectedResult)
     }
 
-    func testDateWhenTVShowReturnsTVShowFirstAirDate() {
+    func testDateWhenTVSeriesReturnsTVSeriesFirstAirDate() {
         let expectedResult = DateFormatter.theMovieDatabase.date(from: "1985-09-24")
-        XCTAssertEqual(tvShowShow.date, expectedResult)
+        XCTAssertEqual(tvSeriesShow.date, expectedResult)
     }
 
     func testDecodeReturnsMovie() throws {
@@ -35,10 +35,10 @@ final class ShowTests: XCTestCase {
         XCTAssertEqual(result, movieShow)
     }
 
-    func testDecodeReturnsTVShow() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-tv-show")
+    func testDecodeReturnsTVSeries() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-tv-series")
 
-        XCTAssertEqual(result, tvShowShow)
+        XCTAssertEqual(result, tvSeriesShow)
     }
 
 }
@@ -66,8 +66,8 @@ extension ShowTests {
         )
     }
 
-    private var tvShowShow: Show {
-        .tvShow(
+    private var tvSeriesShow: Show {
+        .tvSeries(
             .init(
                 id: 54,
                 name: "Growing Pains",

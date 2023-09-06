@@ -84,58 +84,58 @@ final class DiscoverServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).path)
     }
 
-    func testTVShowsWithDefaultParametersReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock()
+    func testTVSeriesWithDefaultParametersReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows()
+        let result = try await service.tvSeries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().path)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvSeries().path)
     }
 
-    func testTVShowsReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock()
+    func testTVSeriesReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(sortedBy: nil, page: nil)
+        let result = try await service.tvSeries(sortedBy: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows().path)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvSeries().path)
     }
 
-    func testTVShowsWithSortByReturnsTVShows() async throws {
-        let sortBy = TVShowSort.firstAirDate(descending: false)
-        let expectedResult = TVShowPageableList.mock()
+    func testTVSeriesWithSortByReturnsTVSeries() async throws {
+        let sortBy = TVSeriesSort.firstAirDate(descending: false)
+        let expectedResult = TVSeriesPageableList.mock()
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(sortedBy: sortBy, page: nil)
+        let result = try await service.tvSeries(sortedBy: sortBy, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy).path)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvSeries(sortedBy: sortBy).path)
     }
 
-    func testTVShowsWithPageReturnsTVShows() async throws {
-        let expectedResult = TVShowPageableList.mock()
+    func testTVSeriesWithPageReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(sortedBy: nil, page: page)
+        let result = try await service.tvSeries(sortedBy: nil, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(page: page).path)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvSeries(page: page).path)
     }
 
-    func testTVShowsWithSortByAndPageReturnsTVShows() async throws {
-        let sortBy = TVShowSort.firstAirDate(descending: false)
-        let expectedResult = TVShowPageableList.mock()
+    func testTVSeriesWithSortByAndPageReturnsTVSeries() async throws {
+        let sortBy = TVSeriesSort.firstAirDate(descending: false)
+        let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShows(sortedBy: sortBy, page: page)
+        let result = try await service.tvSeries(sortedBy: sortBy, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvShows(sortedBy: sortBy, page: page).path)
+        XCTAssertEqual(apiClient.lastPath, DiscoverEndpoint.tvSeries(sortedBy: sortBy, page: page).path)
     }
 
 }

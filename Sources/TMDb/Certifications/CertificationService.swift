@@ -48,12 +48,12 @@ public final class CertificationService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A dictionary of TV show certifications.
-    /// 
-    public func tvShowCertifications() async throws -> [String: [Certification]] {
+    /// - Returns: A dictionary of TV series certifications.
+    ///
+    public func tvSeriesCertifications() async throws -> [String: [Certification]] {
         let certifications: Certifications
         do {
-            certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvShow)
+            certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvSeries)
         } catch let error {
             throw TMDbError(error: error)
         }

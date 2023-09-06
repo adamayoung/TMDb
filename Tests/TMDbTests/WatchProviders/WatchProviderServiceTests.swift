@@ -43,15 +43,15 @@ final class WatchProviderServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: locale.regionCode).path)
     }
 
-    func testTVShowWatchProvidersReturnsWatchProviders() async throws {
+    func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.result = .success(watchProviderResult)
 
-        let result = try await service.tvShowWatchProviders()
+        let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvShow(regionCode: locale.regionCode).path)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: locale.regionCode).path)
     }
 
 }

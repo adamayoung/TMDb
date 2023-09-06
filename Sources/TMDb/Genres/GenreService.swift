@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// Provides an interface for obtaining movie and TV show genres from TMDb.
+/// Provides an interface for obtaining movie and TV series genres from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class GenreService {
@@ -42,7 +42,7 @@ public final class GenreService {
     }
 
     ///
-    /// Returns the list of official genres for TV shows.
+    /// Returns the list of official genres for TV series.
     ///
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
@@ -50,10 +50,10 @@ public final class GenreService {
     ///
     /// - Returns: A list of genres.
     /// 
-    public func tvShowGenres() async throws -> [Genre] {
+    public func tvSeriesGenres() async throws -> [Genre] {
         let genreList: GenreList
         do {
-            genreList = try await apiClient.get(endpoint: GenresEndpoint.tvShow)
+            genreList = try await apiClient.get(endpoint: GenresEndpoint.tvSeries)
         } catch let error {
             throw TMDbError(error: error)
         }

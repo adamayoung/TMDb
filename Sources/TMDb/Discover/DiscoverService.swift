@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// Provides an interface for discovering movies and TV shows from TMDb.
+/// Provides an interface for discovering movies and TV series from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class DiscoverService {
@@ -52,9 +52,9 @@ public final class DiscoverService {
     }
 
     ///
-    /// Returns TV shows to be discovered.
+    /// Returns TV series to be discovered.
     ///
-    /// [TMDb API - Discover: TV](https://developer.themoviedb.org/reference/discover-tv)
+    /// [TMDb API - Discover: TV Series](https://developer.themoviedb.org/reference/discover-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -64,17 +64,17 @@ public final class DiscoverService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Matching TV shows as a pageable list.
+    /// - Returns: Matching TV series as a pageable list.
     ///
-    public func tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil) async throws -> TVShowPageableList {
-        let tvShowList: TVShowPageableList
+    public func tvSeries(sortedBy: TVSeriesSort? = nil, page: Int? = nil) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
         do {
-            tvShowList = try await apiClient.get(endpoint: DiscoverEndpoint.tvShows(sortedBy: sortedBy, page: page))
+            tvSeriesList = try await apiClient.get(endpoint: DiscoverEndpoint.tvSeries(sortedBy: sortedBy, page: page))
         } catch let error {
             throw TMDbError(error: error)
         }
 
-        return tvShowList
+        return tvSeriesList
     }
 
 }

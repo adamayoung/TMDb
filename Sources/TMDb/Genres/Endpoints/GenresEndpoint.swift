@@ -3,7 +3,7 @@ import Foundation
 enum GenresEndpoint {
 
     case movie
-    case tvShow
+    case tvSeries
 
 }
 
@@ -18,7 +18,7 @@ extension GenresEndpoint: Endpoint {
                 .appendingPathComponent("movie")
                 .appendingPathComponent("list")
 
-        case .tvShow:
+        case .tvSeries:
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingPathComponent("list")

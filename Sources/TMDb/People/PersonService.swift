@@ -47,7 +47,7 @@ public final class PersonService {
     }
 
     ///
-    /// Returns the combined movie and TV show credits of a person.
+    /// Returns the combined movie and TV series credits of a person.
     ///
     /// [TMDb API - People: Combined Credits](https://developer.themoviedb.org/reference/person-combined-credits)
     ///
@@ -56,7 +56,7 @@ public final class PersonService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: The matching person's combined movie and TV show credits.
+    /// - Returns: The matching person's combined movie and TV series credits.
     /// 
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
         let credits: PersonCombinedCredits
@@ -93,7 +93,7 @@ public final class PersonService {
     }
 
     ///
-    /// Returns the TV show credits of a person.
+    /// Returns the TV series credits of a person.
     ///
     /// [TMDb API - People: TV Credits](https://developer.themoviedb.org/reference/person-tv-credits)
     ///
@@ -102,12 +102,12 @@ public final class PersonService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: The matching person's TV show credits.
+    /// - Returns: The matching person's TV series credits.
     /// 
-    public func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
-        let credits: PersonTVShowCredits
+    public func tvSeriesCredits(forPerson personID: Person.ID) async throws -> PersonTVSeriesCredits {
+        let credits: PersonTVSeriesCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
+            credits = try await apiClient.get(endpoint: PeopleEndpoint.tvSeriesCredits(personID: personID))
         } catch let error {
             throw TMDbError(error: error)
         }

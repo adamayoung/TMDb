@@ -51,34 +51,34 @@ final class SearchEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpointReturnsURL() throws {
+    func testTVSeriesSearchEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/search/tv?query=The%20Boys"))
 
-        let url = SearchEndpoint.tvShows(query: "The Boys").path
+        let url = SearchEndpoint.tvSeries(query: "The Boys").path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpointWithFirstAirDateYearReturnsURL() throws {
+    func testTVSeriesSearchEndpointWithFirstAirDateYearReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/search/tv?query=The%20Boys&first_air_date_year=2020"))
 
-        let url = SearchEndpoint.tvShows(query: "The Boys", firstAirDateYear: 2020).path
+        let url = SearchEndpoint.tvSeries(query: "The Boys", firstAirDateYear: 2020).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpointWithPageReturnsURL() throws {
+    func testTVSeriesSearchEndpointWithPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/search/tv?query=The%20Boys&page=2"))
 
-        let url = SearchEndpoint.tvShows(query: "The Boys", page: 2).path
+        let url = SearchEndpoint.tvSeries(query: "The Boys", page: 2).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsSearchEndpointWithYearAndPageReturnsURL() throws {
+    func testTVSeriesSearchEndpointWithYearAndPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/search/tv?query=The%20Boys&first_air_date_year=2020&page=2"))
 
-        let url = SearchEndpoint.tvShows(query: "The Boys", firstAirDateYear: 2020, page: 2).path
+        let url = SearchEndpoint.tvSeries(query: "The Boys", firstAirDateYear: 2020, page: 2).path
 
         XCTAssertEqual(url, expectedURL)
     }

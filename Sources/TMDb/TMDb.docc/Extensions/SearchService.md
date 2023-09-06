@@ -14,9 +14,9 @@
 
 - ``searchMovies(query:year:page:)``
 
-### TV Shows
+### TV Series
 
-- ``searchTVShows(query:firstAirDateYear:page:)``
+- ``searchTVSeries(query:firstAirDateYear:page:)``
 
 ### People
 

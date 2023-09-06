@@ -3,7 +3,7 @@ import Foundation
 enum DiscoverEndpoint {
 
     case movies(sortedBy: MovieSort? = nil, people: [Person.ID]? = nil, page: Int? = nil)
-    case tvShows(sortedBy: TVShowSort? = nil, page: Int? = nil)
+    case tvSeries(sortedBy: TVSeriesSort? = nil, page: Int? = nil)
 
 }
 
@@ -20,7 +20,7 @@ extension DiscoverEndpoint: Endpoint {
                 .appendingWithPeople(people)
                 .appendingPage(page)
 
-        case .tvShows(let sortedBy, let page):
+        case .tvSeries(let sortedBy, let page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingSortBy(sortedBy)
