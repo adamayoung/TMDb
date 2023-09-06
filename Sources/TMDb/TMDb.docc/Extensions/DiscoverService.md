@@ -10,6 +10,6 @@
 
 - ``movies(sortedBy:withPeople:page:)``
 
-### Discover TV Shows
+### Discover TV Series
 
-- ``tvShows(sortedBy:page:)``
+- ``tvSeries(sortedBy:page:)``

@@ -11,7 +11,7 @@ public struct CrewMember: Identifiable, Codable, Equatable, Hashable {
     public let id: Int
 
     ///
-    /// Crew member's identifier for the particular movie or TV show.
+    /// Crew member's identifier for the particular movie or TV series.
     ///
     public let creditID: String
 
@@ -47,7 +47,7 @@ public struct CrewMember: Identifiable, Codable, Equatable, Hashable {
     ///
     /// - Parameters:
     ///    - id: Crew member's identifier.
-    ///    - creditID: Crew member's identifier for the particular movie or TV show.
+    ///    - creditID: Crew member's identifier for the particular movie or TV series.
     ///    - name: Crew member's name.
     ///    - job: Crew member's job.
     ///    - department: Crew member's department.

@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// A model representing a show - movie or TV show.
+/// A model representing a show - movie or TV series.
 ///
 public enum Show: Identifiable, Equatable, Hashable {
 
@@ -13,8 +13,8 @@ public enum Show: Identifiable, Equatable, Hashable {
         case .movie(let movie):
             return movie.id
 
-        case .tvShow(let tvShow):
-            return tvShow.id
+        case .tvSeries(let tvSeries):
+            return tvSeries.id
         }
     }
 
@@ -26,8 +26,8 @@ public enum Show: Identifiable, Equatable, Hashable {
         case .movie(let movie):
             return movie.popularity
 
-        case .tvShow(let tvShow):
-            return tvShow.popularity
+        case .tvSeries(let tvSeries):
+            return tvSeries.popularity
         }
     }
 
@@ -39,8 +39,8 @@ public enum Show: Identifiable, Equatable, Hashable {
         case .movie(let movie):
             return movie.releaseDate
 
-        case .tvShow(let tvShow):
-            return tvShow.firstAirDate
+        case .tvSeries(let tvSeries):
+            return tvSeries.firstAirDate
         }
     }
 
@@ -50,9 +50,9 @@ public enum Show: Identifiable, Equatable, Hashable {
     case movie(Movie)
 
     ///
-    /// TV show.
+    /// TV series.
     ///
-    case tvShow(TVShow)
+    case tvSeries(TVSeries)
 
 }
 
@@ -64,7 +64,7 @@ extension Show: Decodable {
 
     private enum MediaType: String, Decodable, Equatable {
         case movie
-        case tvShow = "tv"
+        case tvSeries = "tv"
     }
 
     public init(from decoder: Decoder) throws {
@@ -75,8 +75,8 @@ extension Show: Decodable {
         case .movie:
             self = .movie(try Movie(from: decoder))
 
-        case .tvShow:
-            self = .tvShow(try TVShow(from: decoder))
+        case .tvSeries:
+            self = .tvSeries(try TVSeries(from: decoder))
         }
     }
 

@@ -22,7 +22,7 @@ public final class SearchService {
     }
 
     ///
-    /// Returns search results for movies, TV shows and people based on a query.
+    /// Returns search results for movies, TV series and people based on a query.
     ///
     /// [TMDb API - Search: Multi](https://developer.themoviedb.org/reference/search-multi)
     ///
@@ -34,7 +34,7 @@ public final class SearchService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Movies, TV shows and people matching the query.
+    /// - Returns: Movies, TV series and people matching the query.
     /// 
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
         let mediaList: MediaPageableList
@@ -75,7 +75,7 @@ public final class SearchService {
     }
 
     ///
-    /// Returns search results for TV shows.
+    /// Returns search results for TV series.
     ///
     /// [TMDb API - Search: TV](https://developer.themoviedb.org/reference/search-tv)
     ///
@@ -88,20 +88,20 @@ public final class SearchService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: TV shows matching the query.
+    /// - Returns: TV series matching the query.
     ///
-    public func searchTVShows(query: String, firstAirDateYear: Int? = nil,
-                              page: Int? = nil) async throws -> TVShowPageableList {
-        let tvShowList: TVShowPageableList
+    public func searchTVSeries(query: String, firstAirDateYear: Int? = nil,
+                               page: Int? = nil) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
         do {
-            tvShowList = try await apiClient.get(
-                endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear, page: page)
+            tvSeriesList = try await apiClient.get(
+                endpoint: SearchEndpoint.tvSeries(query: query, firstAirDateYear: firstAirDateYear, page: page)
             )
         } catch let error {
             throw TMDbError(error: error)
         }
 
-        return tvShowList
+        return tvSeriesList
     }
 
     ///

@@ -53,16 +53,16 @@ final class PersonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).path)
     }
 
-    func testTVShowCreditsReturnsTVShowCredits() async throws {
-        let mock = PersonTVShowCredits.mock()
-        let expectedResult = PersonTVShowCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
+    func testTVSeriesCreditsReturnsTVSeriesCredits() async throws {
+        let mock = PersonTVSeriesCredits.mock()
+        let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.tvShowCredits(forPerson: personID)
+        let result = try await service.tvSeriesCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvShowCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvSeriesCredits(personID: personID).path)
     }
 
     func testImagesReturnsImageCollection() async throws {

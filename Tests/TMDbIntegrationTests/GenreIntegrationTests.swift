@@ -22,8 +22,8 @@ final class GenreIntegrationTests: XCTestCase {
         XCTAssertFalse(genres.isEmpty)
     }
 
-    func testTVShowGenres() async throws {
-        let genres = try await genreService.tvShowGenres()
+    func testTVSeriesGenres() async throws {
+        let genres = try await genreService.tvSeriesGenres()
 
         XCTAssertFalse(genres.isEmpty)
     }

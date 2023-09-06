@@ -10,6 +10,6 @@
 
 - ``movieGenres()``
 
-### TV Show Genres
+### TV Series Genres
 
-- ``tvShowGenres()``
+- ``tvSeriesGenres()``

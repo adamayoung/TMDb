@@ -68,20 +68,20 @@ public final class WatchProviderService {
     }
 
     ///
-    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV shows.
+    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV series.
     ///
     /// [TMDb API - Watch Providers: TV Providers](https://developer.themoviedb.org/reference/watch-provider-tv-list)
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Watch providers for TV shows.
+    /// - Returns: Watch providers for TV series.
     /// 
-    public func tvShowWatchProviders() async throws -> [WatchProvider] {
+    public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider().regionCode
         let result: WatchProviderResult
         do {
             result = try await apiClient.get(
-                endpoint: WatchProviderEndpoint.tvShow(regionCode: regionCode)
+                endpoint: WatchProviderEndpoint.tvSeries(regionCode: regionCode)
             )
         } catch let error {
             throw TMDbError(error: error)

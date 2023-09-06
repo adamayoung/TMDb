@@ -7,14 +7,14 @@ extension PersonCombinedCredits {
         id: Int = .randomID,
         cast: [Show] = [
             .movie(.jurassicWorldDominion),
-            .tvShow(.theSandman),
+            .tvSeries(.theSandman),
             .movie(.topGunMaverick),
-            .tvShow(.sheHulk),
-            .tvShow(.strangerThings)
+            .tvSeries(.sheHulk),
+            .tvSeries(.strangerThings)
         ],
         crew: [Show] = [
             .movie(.bulletTrain),
-            .tvShow(.theSandman),
+            .tvSeries(.theSandman),
             .movie(.thorLoveAndThunder)
         ]
     ) -> Self {

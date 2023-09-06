@@ -1,6 +1,6 @@
 import Foundation
 
-/// Sort specifier when fetching TV shows.
+/// Sort specifier when fetching TV series.
 public enum TrendingTimeWindowFilterType: String {
 
     /// Day time window filter.

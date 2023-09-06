@@ -28,19 +28,19 @@ final class WatchProviderEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowWhenGivenRegionCodeEndpointReturnsURL() throws {
+    func testTVSeriesWhenGivenRegionCodeEndpointReturnsURL() throws {
         let regionCode = "GB"
         let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/tv?watch_region=\(regionCode)"))
 
-        let url = WatchProviderEndpoint.tvShow(regionCode: regionCode).path
+        let url = WatchProviderEndpoint.tvSeries(regionCode: regionCode).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowWhenNotGivenRegionCodeEndpointReturnsURL() throws {
+    func testTVSeriesWhenNotGivenRegionCodeEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/watch/providers/tv"))
 
-        let url = WatchProviderEndpoint.tvShow(regionCode: nil).path
+        let url = WatchProviderEndpoint.tvSeries(regionCode: nil).path
 
         XCTAssertEqual(url, expectedURL)
     }

@@ -14,7 +14,7 @@
 
 - ``combinedCredits(forPerson:)``
 - ``movieCredits(forPerson:)``
-- ``tvShowCredits(forPerson:)``
+- ``tvSeriesCredits(forPerson:)``
 
 ### Media
 

@@ -13,8 +13,8 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
         case .movie(let movie):
             return movie.id
 
-        case .tvShow(let tvShow):
-            return tvShow.id
+        case .tvSeries(let tvSeries):
+            return tvSeries.id
 
         case .person(let person):
             return person.id
@@ -27,9 +27,9 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
     case movie(Movie)
 
     ///
-    /// TV show.
+    /// TV series.
     ///
-    case tvShow(TVShow)
+    case tvSeries(TVSeries)
 
     ///
     /// Person.
@@ -46,7 +46,7 @@ extension Media {
 
     private enum MediaType: String, Decodable, Equatable {
         case movie
-        case tvShow = "tv"
+        case tvSeries = "tv"
         case person
     }
 
@@ -58,8 +58,8 @@ extension Media {
         case .movie:
             self = .movie(try Movie(from: decoder))
 
-        case .tvShow:
-            self = .tvShow(try TVShow(from: decoder))
+        case .tvSeries:
+            self = .tvSeries(try TVSeries(from: decoder))
 
         case .person:
             self = .person(try Person(from: decoder))
@@ -73,8 +73,8 @@ extension Media {
         case .movie(let movie):
             try singleContainer.encode(movie)
 
-        case .tvShow(let tvShow):
-            try singleContainer.encode(tvShow)
+        case .tvSeries(let tvSeries):
+            try singleContainer.encode(tvSeries)
 
         case .person(let person):
             try singleContainer.encode(person)

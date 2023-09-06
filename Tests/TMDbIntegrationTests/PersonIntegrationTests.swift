@@ -45,10 +45,10 @@ final class PersonIntegrationTests: XCTestCase {
         XCTAssertFalse(credits.crew.isEmpty)
     }
 
-    func testTVShowCredits() async throws {
+    func testTVSeriesCredits() async throws {
         let personID = 500
 
-        let credits = try await personService.tvShowCredits(forPerson: personID)
+        let credits = try await personService.tvSeriesCredits(forPerson: personID)
 
         XCTAssertEqual(credits.id, personID)
         XCTAssertFalse(credits.cast.isEmpty)

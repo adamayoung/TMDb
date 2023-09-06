@@ -51,50 +51,50 @@ final class TrendingEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointReturnsURL() throws {
+    func testTrendingTVSeriesEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/day"))
 
-        let url = TrendingEndpoint.tvShows().path
+        let url = TrendingEndpoint.tvSeries().path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointWithPageReturnsURL() throws {
+    func testTrendingTVSeriesEndpointWithPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/day?page=1"))
 
-        let url = TrendingEndpoint.tvShows(page: 1).path
+        let url = TrendingEndpoint.tvSeries(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointWithTimeWindowDayReturnsURL() throws {
+    func testTrendingTVSeriesEndpointWithTimeWindowDayReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/day"))
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .day).path
+        let url = TrendingEndpoint.tvSeries(timeWindow: .day).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointWithTimeWindowDayAndPageReturnsURL() throws {
+    func testTrendingTVSeriesEndpointWithTimeWindowDayAndPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/day?page=1"))
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .day, page: 1).path
+        let url = TrendingEndpoint.tvSeries(timeWindow: .day, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointWithTimeWindowWeekReturnsURL() throws {
+    func testTrendingTVSeriesEndpointWithTimeWindowWeekReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/week"))
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .week).path
+        let url = TrendingEndpoint.tvSeries(timeWindow: .week).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTrendingTVShowsEndpointWithTimeWindowWeekAndPageReturnsURL() throws {
+    func testTrendingTVSeriesEndpointWithTimeWindowWeekAndPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/trending/tv/week?page=1"))
 
-        let url = TrendingEndpoint.tvShows(timeWindow: .week, page: 1).path
+        let url = TrendingEndpoint.tvSeries(timeWindow: .week, page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }

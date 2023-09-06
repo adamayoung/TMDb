@@ -5,7 +5,7 @@ enum PeopleEndpoint {
     case details(personID: Person.ID)
     case combinedCredits(personID: Person.ID)
     case movieCredits(personID: Person.ID)
-    case tvShowCredits(personID: Person.ID)
+    case tvSeriesCredits(personID: Person.ID)
     case images(personID: Person.ID)
     case popular(page: Int? = nil)
 
@@ -31,7 +31,7 @@ extension PeopleEndpoint: Endpoint {
                 .appendingPathComponent(personID)
                 .appendingPathComponent("movie_credits")
 
-        case .tvShowCredits(let personID):
+        case .tvSeriesCredits(let personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("tv_credits")

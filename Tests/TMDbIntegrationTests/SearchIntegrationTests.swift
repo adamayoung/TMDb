@@ -32,12 +32,12 @@ final class SearchIntegrationTests: XCTestCase {
         XCTAssertFalse(movieList.results.isEmpty)
     }
 
-    func testSearchTVShows() async throws {
+    func testSearchTVSeries() async throws {
         let query = "game of thrones"
 
-        let tvShowList = try await searchService.searchTVShows(query: query)
+        let tvSeriesList = try await searchService.searchTVSeries(query: query)
 
-        XCTAssertFalse(tvShowList.results.isEmpty)
+        XCTAssertFalse(tvSeriesList.results.isEmpty)
     }
 
     func testSearchPeople() async throws {

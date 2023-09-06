@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// A model representing combined movie and tv show credits for a person.
+/// A model representing combined movie and TV series credits for a person.
 ///
 /// A person can be both a cast member and crew member of the same show.
 ///
