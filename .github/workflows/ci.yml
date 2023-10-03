@@ -19,7 +19,7 @@ env:
 jobs:
   build-test:
     name: Build and Test
-    runs-on: macos-13
+    runs-on: macos-13-xlarge
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
-    runs-on: macos-13
+    runs-on: macos-13-xlarge
     continue-on-error: true
     strategy:
       matrix:
@@ -75,7 +75,7 @@ jobs:
 
   build-documentation:
     name: Build Documentation
-    runs-on: macos-13
+    runs-on: macos-13-xlarge
     env:
       SWIFTCI_DOCC: 1
     steps:

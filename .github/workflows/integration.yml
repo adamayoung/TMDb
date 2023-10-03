@@ -19,7 +19,7 @@ env:
 jobs:
   integration-test:
     name: Integration Test
-    runs-on: macos-13
+    runs-on: macos-13-xlarge
     steps:
       - name: Checkout
         uses: actions/checkout@v3
