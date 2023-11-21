@@ -37,7 +37,7 @@ extension URL {
         guard let languageCode else {
             return self
         }
-
+        
         return appendingQueryItem(name: QueryItemName.language, value: languageCode)
     }
 
