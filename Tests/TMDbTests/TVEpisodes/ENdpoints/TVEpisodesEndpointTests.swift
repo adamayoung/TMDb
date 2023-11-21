@@ -35,7 +35,7 @@ final class TVEpisodesEndpointTests: XCTestCase {
         let url = TVEpisodesEndpoint.videos(
             tvSeriesID: 1,
             seasonNumber: 2,
-            episodeNumber: 3, 
+            episodeNumber: 3,
             languageCode: languageCode).path
 
         XCTAssertEqual(url, expectedURL)
