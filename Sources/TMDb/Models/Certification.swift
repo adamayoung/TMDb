@@ -1,3 +1,10 @@
+//
+//  Certification.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -22,7 +29,7 @@ public struct Certification: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Order number of certification in list.
-    /// 
+    ///
     public let order: Int
 
     ///

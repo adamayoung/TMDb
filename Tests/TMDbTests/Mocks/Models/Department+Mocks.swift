@@ -1,3 +1,10 @@
+//
+//  Department+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -36,7 +43,7 @@ extension Department {
 
 }
 
-extension Array where Element == Department {
+extension [Department] {
 
     static var mocks: [Department] {
         [.costumeAndMakeUp, .production]

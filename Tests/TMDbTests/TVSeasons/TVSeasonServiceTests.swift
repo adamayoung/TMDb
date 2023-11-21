@@ -1,3 +1,10 @@
+//
+//  TVSeasonServiceTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -45,7 +52,7 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(
             apiClient.lastPath,
             TVSeasonsEndpoint.images(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                         languageCode: locale.languageCode).path
+                                     languageCode: locale.languageCode).path
         )
     }
 
@@ -61,7 +68,7 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(
             apiClient.lastPath,
             TVSeasonsEndpoint.videos(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                         languageCode: locale.languageCode).path
+                                     languageCode: locale.languageCode).path
         )
     }
 

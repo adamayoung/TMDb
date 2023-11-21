@@ -1,3 +1,10 @@
+//
+//  ProductionCompany+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -19,7 +26,7 @@ extension ProductionCompany {
 
 }
 
-extension Array where Element == ProductionCompany {
+extension [ProductionCompany] {
 
     static var mocks: [Element] {
         [.mock(), .mock(), .mock()]

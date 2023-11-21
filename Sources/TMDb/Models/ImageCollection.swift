@@ -1,3 +1,10 @@
+//
+//  ImageCollection.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -34,7 +41,7 @@ public struct ImageCollection: Codable, Equatable, Hashable {
     ///    - id: Movie or TV series identifier for these images.
     ///    - posters: Poster images.
     ///    - backdrops: Backdrop images.
-    ///    
+    ///
     public init(
         id: Int,
         posters: [ImageMetadata],

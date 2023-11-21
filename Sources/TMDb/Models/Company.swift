@@ -1,3 +1,10 @@
+//
+//  Company.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -82,12 +89,12 @@ public struct Company: Identifiable, Codable, Equatable, Hashable {
 
 }
 
-extension Company {
+public extension Company {
 
     ///
     /// A model representing a parent company.
     ///
-    public struct Parent: Identifiable, Codable, Equatable, Hashable {
+    struct Parent: Identifiable, Codable, Equatable, Hashable {
 
         ///
         /// Company identifier.
@@ -113,7 +120,7 @@ extension Company {
         ///   - id: Company identifier.
         ///   - name: Company name.
         ///   - logoPath: Company's logo path.
-        /// 
+        ///
         public init(
             id: Company.ID,
             name: String,

@@ -1,3 +1,10 @@
+//
+//  Country.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -45,7 +52,7 @@ extension Country {
     private enum CodingKeys: String, CodingKey {
         case countryCode = "iso31661"
         case name = "nativeName"
-        case englishName = "englishName"
+        case englishName
     }
 
 }

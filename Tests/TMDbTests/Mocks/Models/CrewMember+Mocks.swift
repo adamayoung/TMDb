@@ -1,3 +1,10 @@
+//
+//  CrewMember+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -25,7 +32,7 @@ extension CrewMember {
 
 }
 
-extension Array where Element == CrewMember {
+extension [CrewMember] {
 
     static var mocks: [Element] {
         []

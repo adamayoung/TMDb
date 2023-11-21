@@ -1,3 +1,10 @@
+//
+//  WatchProviderService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -32,12 +39,12 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries TMDb have watch provider data for.
-    /// 
+    ///
     public func countries() async throws -> [Country] {
         let regions: WatchProviderRegions
         do {
             regions = try await apiClient.get(endpoint: WatchProviderEndpoint.regions)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -52,7 +59,7 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movies.
-    /// 
+    ///
     public func movieWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider().regionCode
         let result: WatchProviderResult
@@ -60,7 +67,7 @@ public final class WatchProviderService {
             result = try await apiClient.get(
                 endpoint: WatchProviderEndpoint.movie(regionCode: regionCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -75,7 +82,7 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV series.
-    /// 
+    ///
     public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider().regionCode
         let result: WatchProviderResult
@@ -83,7 +90,7 @@ public final class WatchProviderService {
             result = try await apiClient.get(
                 endpoint: WatchProviderEndpoint.tvSeries(regionCode: regionCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

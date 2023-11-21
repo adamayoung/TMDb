@@ -1,3 +1,10 @@
+//
+//  WatchProviderEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum WatchProviderEndpoint {
@@ -18,12 +25,12 @@ extension WatchProviderEndpoint: Endpoint {
             return Self.basePath
                 .appendingPathComponent("regions")
 
-        case .movie(let regionCode):
+        case let .movie(regionCode):
             return Self.basePath
                 .appendingPathComponent("movie")
                 .appendingWatchRegion(regionCode)
 
-        case .tvSeries(let regionCode):
+        case let .tvSeries(regionCode):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingWatchRegion(regionCode)
@@ -43,7 +50,7 @@ private extension URL {
             return self
         }
 
-        return self.appendingQueryItem(name: QueryItemName.watchRegion, value: regionCode)
+        return appendingQueryItem(name: QueryItemName.watchRegion, value: regionCode)
     }
 
 }

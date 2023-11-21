@@ -1,3 +1,10 @@
+//
+//  TVSeriesService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -40,7 +47,7 @@ public final class TVSeriesService {
         let tvSeries: TVSeries
         do {
             tvSeries = try await apiClient.get(endpoint: TVSeriesEndpoint.details(tvSeriesID: id))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -58,12 +65,12 @@ public final class TVSeriesService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV series.
-    /// 
+    ///
     public func credits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowCredits {
         let credits: ShowCredits
         do {
             credits = try await apiClient.get(endpoint: TVSeriesEndpoint.credits(tvSeriesID: tvSeriesID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -84,12 +91,12 @@ public final class TVSeriesService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
-    /// 
+    ///
     public func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> ReviewPageableList {
         let reviewList: ReviewPageableList
         do {
             reviewList = try await apiClient.get(endpoint: TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -115,7 +122,7 @@ public final class TVSeriesService {
             imageCollection = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -141,7 +148,7 @@ public final class TVSeriesService {
             videoCollection = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -164,13 +171,14 @@ public final class TVSeriesService {
     /// - Returns: Recommended TV series for the matching TV series as a pageable list.
     ///
     public func recommendations(forTVSeries tvSeriesID: TVSeries.ID,
-                                page: Int? = nil) async throws -> TVSeriesPageableList {
+                                page: Int? = nil) async throws -> TVSeriesPageableList
+    {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -193,14 +201,14 @@ public final class TVSeriesService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar TV series for the matching TV series as a pageable list.
-    /// 
+    ///
     public func similar(toTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> TVSeriesPageableList {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID, page: page)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -225,7 +233,7 @@ public final class TVSeriesService {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(endpoint: TVSeriesEndpoint.popular(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

@@ -1,3 +1,10 @@
+//
+//  Media+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -9,7 +16,7 @@ extension Media {
 
 }
 
-extension Array where Element == Media {
+extension [Media] {
 
     static var mocks: [Element] {
         [

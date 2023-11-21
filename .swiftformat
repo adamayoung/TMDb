@@ -1,5 +1,6 @@
 --typeblanklines preserve
---blankLinesAtEndOfScope preserve
 --indent 4
+--commas inline
+--self init-only
 
---header \n {file}\n\n Copyright © {created.year} Adam Young.\n
+--header \n {file}\n TMDb\n\n Copyright © {created.year} Adam Young.\n

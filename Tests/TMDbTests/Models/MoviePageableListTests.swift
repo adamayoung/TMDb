@@ -1,3 +1,10 @@
+//
+//  MoviePageableListTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 

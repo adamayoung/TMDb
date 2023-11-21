@@ -1,3 +1,10 @@
+//
+//  WatchProvider+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 

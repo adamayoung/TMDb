@@ -1,3 +1,10 @@
+//
+//  MovieSort.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -75,25 +82,25 @@ extension MovieSort {
 
     private var isDescending: Bool {
         switch self {
-        case .popularity(let descending):
+        case let .popularity(descending):
             return descending
 
-        case .releaseDate(let descending):
+        case let .releaseDate(descending):
             return descending
 
-        case .revenue(let descending):
+        case let .revenue(descending):
             return descending
 
-        case .primaryReleaseDate(let descending):
+        case let .primaryReleaseDate(descending):
             return descending
 
-        case .originalTitle(let descending):
+        case let .originalTitle(descending):
             return descending
 
-        case .voteAverage(let descending):
+        case let .voteAverage(descending):
             return descending
 
-        case .voteCount(let descending):
+        case let .voteCount(descending):
             return descending
         }
     }

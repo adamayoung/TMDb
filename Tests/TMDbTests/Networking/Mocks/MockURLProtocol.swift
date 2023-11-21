@@ -1,6 +1,13 @@
+//
+//  MockURLProtocol.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 final class MockURLProtocol: URLProtocol {
@@ -8,9 +15,9 @@ final class MockURLProtocol: URLProtocol {
     static var data: Data?
     static var failError: Error?
     static var responseStatusCode: Int = 200
-    static private(set) var lastRequest: URLRequest?
+    private(set) static var lastRequest: URLRequest?
 
-    override class func canInit(with request: URLRequest) -> Bool {
+    override class func canInit(with _: URLRequest) -> Bool {
         true
     }
 
@@ -21,7 +28,7 @@ final class MockURLProtocol: URLProtocol {
 
     override func startLoading() {
         if let failError = Self.failError {
-            self.client?.urlProtocol(self, didFailWithError: failError)
+            client?.urlProtocol(self, didFailWithError: failError)
             return
         }
 
@@ -30,16 +37,16 @@ final class MockURLProtocol: URLProtocol {
         }
 
         if let data = Self.data {
-            self.client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocol(self, didLoad: data)
         }
 
         let response = HTTPURLResponse(url: url, statusCode: Self.responseStatusCode, httpVersion: "2.0",
                                        headerFields: nil)!
-        self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        self.client?.urlProtocolDidFinishLoading(self)
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocolDidFinishLoading(self)
     }
 
-    override func stopLoading() { }
+    override func stopLoading() {}
 
     static func reset() {
         data = nil

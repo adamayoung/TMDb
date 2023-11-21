@@ -1,3 +1,10 @@
+//
+//  DiscoverEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum DiscoverEndpoint {
@@ -13,14 +20,14 @@ extension DiscoverEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .movies(let sortedBy, let people, let page):
+        case let .movies(sortedBy, people, page):
             return Self.basePath
                 .appendingPathComponent("movie")
                 .appendingSortBy(sortedBy)
                 .appendingWithPeople(people)
                 .appendingPage(page)
 
-        case .tvSeries(let sortedBy, let page):
+        case let .tvSeries(sortedBy, page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingSortBy(sortedBy)

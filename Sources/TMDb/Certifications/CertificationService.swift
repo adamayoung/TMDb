@@ -1,3 +1,10 @@
+//
+//  CertificationService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -29,12 +36,12 @@ public final class CertificationService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A dictionary of movie certifications.
-    /// 
+    ///
     public func movieCertifications() async throws -> [String: [Certification]] {
         let certifications: Certifications
         do {
             certifications = try await apiClient.get(endpoint: CertificationsEndpoint.movie)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -54,7 +61,7 @@ public final class CertificationService {
         let certifications: Certifications
         do {
             certifications = try await apiClient.get(endpoint: CertificationsEndpoint.tvSeries)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

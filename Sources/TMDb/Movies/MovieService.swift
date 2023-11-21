@@ -1,3 +1,10 @@
+//
+//  MovieService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -35,12 +42,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie.
-    /// 
+    ///
     public func details(forMovie id: Movie.ID) async throws -> Movie {
         let movie: Movie
         do {
             movie = try await apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -58,12 +65,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching movie.
-    /// 
+    ///
     public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
         let credits: ShowCredits
         do {
             credits = try await apiClient.get(endpoint: MoviesEndpoint.credits(movieID: movieID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -84,12 +91,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
-    /// 
+    ///
     public func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {
         let reviewList: ReviewPageableList
         do {
             reviewList = try await apiClient.get(endpoint: MoviesEndpoint.reviews(movieID: movieID, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -107,7 +114,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
-    /// 
+    ///
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
         let languageCode = localeProvider().languageCode
         let imageCollection: ImageCollection
@@ -115,7 +122,7 @@ public final class MovieService {
             imageCollection = try await apiClient.get(
                 endpoint: MoviesEndpoint.images(movieID: movieID, languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -141,7 +148,7 @@ public final class MovieService {
             videoCollection = try await apiClient.get(
                 endpoint: MoviesEndpoint.videos(movieID: movieID, languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -162,12 +169,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
-    /// 
+    ///
     public func recommendations(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.recommendations(movieID: movieID, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -190,12 +197,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
-    /// 
+    ///
     public func similar(toMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.similar(movieID: movieID, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -215,12 +222,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Now playing movies as a pageable list.
-    /// 
+    ///
     public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.nowPlaying(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -240,12 +247,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    /// 
+    ///
     public func popular(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.popular(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -265,12 +272,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Top rated movies as a pageable list.
-    /// 
+    ///
     public func topRated(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.topRated(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -290,12 +297,12 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Upcoming movies as a pageable list.
-    /// 
+    ///
     public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: MoviesEndpoint.upcoming(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

@@ -1,3 +1,10 @@
+//
+//  DiscoverService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -36,15 +43,16 @@ public final class DiscoverService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching movies as a pageable list.
-    /// 
+    ///
     public func movies(sortedBy: MovieSort? = nil, withPeople people: [Person.ID]? = nil,
-                       page: Int? = nil) async throws -> MoviePageableList {
+                       page: Int? = nil) async throws -> MoviePageableList
+    {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(
                 endpoint: DiscoverEndpoint.movies(sortedBy: sortedBy, people: people, page: page)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -70,7 +78,7 @@ public final class DiscoverService {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(endpoint: DiscoverEndpoint.tvSeries(sortedBy: sortedBy, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

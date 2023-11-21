@@ -1,3 +1,10 @@
+//
+//  PersonServiceTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -83,14 +90,14 @@ final class PersonServiceTests: XCTestCase {
         let topCastShows = Array(credits.cast.prefix(10))
         let topCrewShows = Array(credits.crew.prefix(10))
         var topShows = topCastShows + topCrewShows
-        topShows = topShows.reduce([], { shows, show in
+        topShows = topShows.reduce([]) { shows, show in
             var shows = shows
             if !shows.contains(where: { $0.id == show.id }) {
                 shows.append(show)
             }
 
             return shows
-        })
+        }
 
         topShows.sort { $0.popularity ?? 0 > $1.popularity ?? 0 }
 

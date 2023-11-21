@@ -1,3 +1,10 @@
+//
+//  Media.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -10,13 +17,13 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
     ///
     public var id: Int {
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             return movie.id
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             return tvSeries.id
 
-        case .person(let person):
+        case let .person(person):
             return person.id
         }
     }
@@ -56,13 +63,13 @@ extension Media {
 
         switch mediaType {
         case .movie:
-            self = .movie(try Movie(from: decoder))
+            self = try .movie(Movie(from: decoder))
 
         case .tvSeries:
-            self = .tvSeries(try TVSeries(from: decoder))
+            self = try .tvSeries(TVSeries(from: decoder))
 
         case .person:
-            self = .person(try Person(from: decoder))
+            self = try .person(Person(from: decoder))
         }
     }
 
@@ -70,13 +77,13 @@ extension Media {
         var singleContainer = encoder.singleValueContainer()
 
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             try singleContainer.encode(movie)
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             try singleContainer.encode(tvSeries)
 
-        case .person(let person):
+        case let .person(person):
             try singleContainer.encode(person)
         }
     }

@@ -1,3 +1,10 @@
+//
+//  Person+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -14,7 +21,7 @@ extension Person {
         gender: Gender = .unknown,
         placeOfBirth: String? = .randomString,
         profilePath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1...10),
+        popularity: Double? = Double.random(in: 1 ... 10),
         imdbID: String? = .randomString,
         homepageURL: URL? = .randomWebSite
     ) -> Self {
@@ -53,7 +60,7 @@ extension Person {
 
 }
 
-extension Array where Element == Person {
+extension [Person] {
 
     static var mocks: [Element] {
         [

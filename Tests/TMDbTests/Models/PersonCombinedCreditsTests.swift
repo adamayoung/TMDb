@@ -1,3 +1,10 @@
+//
+//  PersonCombinedCreditsTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -31,7 +38,7 @@ final class PersonCombinedCreditsTests: XCTestCase {
                 voteCount: 25
             )),
             .movie(Movie(
-                id: 109091,
+                id: 109_091,
                 title: "The Counselor",
                 originalTitle: "The Counselor",
                 originalLanguage: "en",
@@ -61,7 +68,7 @@ final class PersonCombinedCreditsTests: XCTestCase {
                 voteCount: 121
             )),
             .movie(Movie(
-                id: 174349,
+                id: 174_349,
                 title: "Big Men",
                 originalTitle: "Big Men",
                 originalLanguage: "en",

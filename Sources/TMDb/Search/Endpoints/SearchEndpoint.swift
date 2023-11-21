@@ -1,3 +1,10 @@
+//
+//  SearchEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum SearchEndpoint {
@@ -19,28 +26,27 @@ extension SearchEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-
-        case .multi(let query, let page):
+        case let .multi(query, page):
             return Self.basePath
                 .appendingPathComponent("multi")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingPage(page)
 
-        case .movies(let query, let year, let page):
+        case let .movies(query, year, page):
             return Self.basePath
                 .appendingPathComponent("movie")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingYear(year)
                 .appendingPage(page)
 
-        case .tvSeries(let query, let firstAirDateYear, let page):
+        case let .tvSeries(query, firstAirDateYear, page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingFirstAirDateYear(firstAirDateYear)
                 .appendingPage(page)
 
-        case .people(let query, let page):
+        case let .people(query, page):
             return Self.basePath
                 .appendingPathComponent("person")
                 .appendingQueryItem(name: QueryItemName.query, value: query)

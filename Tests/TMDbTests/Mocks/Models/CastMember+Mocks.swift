@@ -1,3 +1,10 @@
+//
+//  CastMember+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -8,10 +15,10 @@ extension CastMember {
         castID: Int? = .randomID,
         creditID: String = .randomID,
         name: String? = .randomString,
-        character: String? = .randomString,
+        character _: String? = .randomString,
         gender: Gender? = .male,
         profilePath: URL? = .randomImagePath,
-        order: Int = Int.random(in: 1...10)
+        order: Int = Int.random(in: 1 ... 10)
     ) -> Self {
         .init(
             id: id,
@@ -53,7 +60,7 @@ extension CastMember {
 
 }
 
-extension Array where Element == CastMember {
+extension [CastMember] {
 
     static var mocks: [Element] {
         [

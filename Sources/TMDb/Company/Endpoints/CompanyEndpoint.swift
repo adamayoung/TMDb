@@ -1,3 +1,10 @@
+//
+//  CompanyEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum CompanyEndpoint {
@@ -12,7 +19,7 @@ extension CompanyEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let companyID):
+        case let .details(companyID):
             return Self.basePath
                 .appendingPathComponent(companyID)
         }

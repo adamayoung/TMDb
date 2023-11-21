@@ -1,3 +1,10 @@
+//
+//  TVEpisodeService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -39,7 +46,8 @@ public final class TVEpisodeService {
     /// - Returns: A episode of the matching TV series.
     ///
     public func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisode {
+                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisode
+    {
         let episode: TVEpisode
         do {
             episode = try await apiClient.get(
@@ -49,7 +57,7 @@ public final class TVEpisodeService {
                     episodeNumber: episodeNumber
                 )
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -71,7 +79,8 @@ public final class TVEpisodeService {
     /// - Returns: A collection of images for the matching TV's episode.
     ///
     public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisodeImageCollection {
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisodeImageCollection
+    {
         let languageCode = localeProvider().languageCode
         let imageCollection: TVEpisodeImageCollection
         do {
@@ -83,7 +92,7 @@ public final class TVEpisodeService {
                     languageCode: languageCode
                 )
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -105,7 +114,8 @@ public final class TVEpisodeService {
     /// - Returns: A collection of videos for the matching TV's episode.
     ///
     public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection
+    {
         let languageCode = localeProvider().languageCode
         let videoCollection: VideoCollection
         do {
@@ -117,7 +127,7 @@ public final class TVEpisodeService {
                     languageCode: languageCode
                 )
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

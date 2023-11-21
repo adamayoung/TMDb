@@ -1,3 +1,10 @@
+//
+//  Show.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -10,10 +17,10 @@ public enum Show: Identifiable, Equatable, Hashable {
     ///
     public var id: Int {
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             return movie.id
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             return tvSeries.id
         }
     }
@@ -23,10 +30,10 @@ public enum Show: Identifiable, Equatable, Hashable {
     ///
     var popularity: Double? {
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             return movie.popularity
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             return tvSeries.popularity
         }
     }
@@ -36,10 +43,10 @@ public enum Show: Identifiable, Equatable, Hashable {
     ///
     var date: Date? {
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             return movie.releaseDate
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             return tvSeries.firstAirDate
         }
     }
@@ -73,10 +80,10 @@ extension Show: Decodable {
 
         switch mediaType {
         case .movie:
-            self = .movie(try Movie(from: decoder))
+            self = try .movie(Movie(from: decoder))
 
         case .tvSeries:
-            self = .tvSeries(try TVSeries(from: decoder))
+            self = try .tvSeries(TVSeries(from: decoder))
         }
     }
 

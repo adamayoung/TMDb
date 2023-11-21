@@ -1,3 +1,10 @@
+//
+//  URL+QueryItem.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 extension URL {
@@ -66,7 +73,7 @@ extension URL {
     }
 
     func appendingPage(_ page: Int?) -> Self {
-        guard var page = page else {
+        guard var page else {
             return self
         }
 

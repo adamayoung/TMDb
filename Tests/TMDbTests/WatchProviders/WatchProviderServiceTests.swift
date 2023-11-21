@@ -1,3 +1,10 @@
+//
+//  WatchProviderServiceTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -11,7 +18,7 @@ final class WatchProviderServiceTests: XCTestCase {
         super.setUp()
         apiClient = MockAPIClient()
         locale = Locale(identifier: "en_GB")
-        service = WatchProviderService(apiClient: apiClient, localeProvider: { [unowned self] in self.locale })
+        service = WatchProviderService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
     }
 
     override func tearDown() {

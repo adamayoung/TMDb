@@ -26,6 +26,18 @@ jobs:
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
 
+  swiftformt:
+    name: SwiftFormat
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/nicklockwood/swiftformat:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: SwiftFormat
+        run: swiftformat --lint .
+
   markdownlint:
     name: Markdownlint
     runs-on: ubuntu-latest

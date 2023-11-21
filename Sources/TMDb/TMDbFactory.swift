@@ -1,11 +1,18 @@
+//
+//  TMDbFactory.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 final class TMDbFactory {
 
-    private init() { }
+    private init() {}
 
 }
 
@@ -45,17 +52,17 @@ extension TMDbFactory {
         configuration.timeoutIntervalForRequest = 30
 
         #if !canImport(FoundationNetworking)
-        configuration.waitsForConnectivity = true
-        configuration.urlCache = urlCache
+            configuration.waitsForConnectivity = true
+            configuration.urlCache = urlCache
         #endif
 
         return configuration
     }
 
     #if !canImport(FoundationNetworking)
-    private static var urlCache: URLCache {
-        URLCache(memoryCapacity: 50_000_000, diskCapacity: 1_000_000_000)
-    }
+        private static var urlCache: URLCache {
+            URLCache(memoryCapacity: 50_000_000, diskCapacity: 1_000_000_000)
+        }
     #endif
 
     private static var serialiser: some Serialiser {

@@ -1,3 +1,10 @@
+//
+//  Genre+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 @testable import TMDb
 
@@ -27,7 +34,7 @@ extension Genre {
 
 }
 
-extension Array where Element == Genre {
+extension [Genre] {
 
     static var mocks: [Element] {
         [.action, .drama, .sciFi]

@@ -1,3 +1,10 @@
+//
+//  PeopleEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum PeopleEndpoint {
@@ -17,35 +24,34 @@ extension PeopleEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let personID):
+        case let .details(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
 
-        case .combinedCredits(let personID):
+        case let .combinedCredits(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("combined_credits")
 
-        case .movieCredits(let personID):
+        case let .movieCredits(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("movie_credits")
 
-        case .tvSeriesCredits(let personID):
+        case let .tvSeriesCredits(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("tv_credits")
 
-        case .images(let personID):
+        case let .images(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("images")
 
-        case .popular(let page):
+        case let .popular(page):
             return Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
-
         }
     }
 

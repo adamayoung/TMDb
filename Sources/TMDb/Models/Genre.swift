@@ -1,3 +1,10 @@
+//
+//  Genre.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -21,7 +28,7 @@ public struct Genre: Identifiable, Codable, Equatable, Hashable {
     /// - Parameters:
     ///    - id: Genre Identifier.
     ///    - name: Genre name.
-    ///    
+    ///
     public init(id: Int, name: String) {
         self.id = id
         self.name = name

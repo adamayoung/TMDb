@@ -1,3 +1,10 @@
+//
+//  MoviesEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum MoviesEndpoint {
@@ -22,61 +29,61 @@ extension MoviesEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let movieID):
+        case let .details(movieID):
             return Self.basePath
                 .appendingPathComponent(movieID)
 
-        case .credits(let movieID):
+        case let .credits(movieID):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("credits")
 
-        case .reviews(let movieID, let page):
+        case let .reviews(movieID, page):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("reviews")
                 .appendingPage(page)
 
-        case .images(let movieID, let languageCode):
+        case let .images(movieID, languageCode):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
-        case .videos(let movieID, let languageCode):
+        case let .videos(movieID, languageCode):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("videos")
                 .appendingVideoLanguage(languageCode)
 
-        case .recommendations(let movieID, let page):
+        case let .recommendations(movieID, page):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("recommendations")
                 .appendingPage(page)
 
-        case .similar(let movieID, let page):
+        case let .similar(movieID, page):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
 
-        case .nowPlaying(let page):
+        case let .nowPlaying(page):
             return Self.basePath
                 .appendingPathComponent("now_playing")
                 .appendingPage(page)
 
-        case .popular(let page):
+        case let .popular(page):
             return Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
-        case .topRated(let page):
+        case let .topRated(page):
             return Self.basePath
                 .appendingPathComponent("top_rated")
                 .appendingPage(page)
 
-        case .upcoming(let page):
+        case let .upcoming(page):
             return Self.basePath
                 .appendingPathComponent("upcoming")
                 .appendingPage(page)

@@ -1,3 +1,10 @@
+//
+//  TVSeriesSort.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -49,13 +56,13 @@ extension TVSeriesSort {
 
     private var isDescending: Bool {
         switch self {
-        case .popularity(let descending):
+        case let .popularity(descending):
             return descending
 
-        case .firstAirDate(let descending):
+        case let .firstAirDate(descending):
             return descending
 
-        case .voteAverage(let descending):
+        case let .voteAverage(descending):
             return descending
         }
     }

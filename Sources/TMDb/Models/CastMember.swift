@@ -1,3 +1,10 @@
+//
+//  CastMember.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -59,7 +66,7 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable {
     ///    - gender: Cast member's gender.
     ///    - profilePath: Cast member's profile image.
     ///    - order: Order number in the cast list.
-    /// 
+    ///
     public init(
         id: Int,
         castID: Int? = nil,

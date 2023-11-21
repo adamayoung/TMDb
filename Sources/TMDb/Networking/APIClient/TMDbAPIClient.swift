@@ -1,3 +1,10 @@
+//
+//  TMDbAPIClient.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 final class TMDbAPIClient: APIClient {
@@ -45,7 +52,7 @@ final class TMDbAPIClient: APIClient {
         let decodedResponse: Response
         do {
             decodedResponse = try await serialiser.decode(Response.self, from: data)
-        } catch let error {
+        } catch {
             throw TMDbAPIError.decode(error)
         }
 
@@ -72,7 +79,7 @@ extension TMDbAPIClient {
 
     private func validate(response: HTTPResponse) async throws {
         let statusCode = response.statusCode
-        if (200...299).contains(statusCode) {
+        if (200 ... 299).contains(statusCode) {
             return
         }
 

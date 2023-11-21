@@ -1,3 +1,10 @@
+//
+//  TVEpisodesEndpointTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -21,7 +28,8 @@ final class TVEpisodesEndpointTests: XCTestCase {
             tvSeriesID: 1,
             seasonNumber: 2,
             episodeNumber: 3,
-            languageCode: languageCode).path
+            languageCode: languageCode
+        ).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -36,7 +44,8 @@ final class TVEpisodesEndpointTests: XCTestCase {
             tvSeriesID: 1,
             seasonNumber: 2,
             episodeNumber: 3,
-            languageCode: languageCode).path
+            languageCode: languageCode
+        ).path
 
         XCTAssertEqual(url, expectedURL)
     }

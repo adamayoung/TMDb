@@ -1,3 +1,10 @@
+//
+//  ConfigurationService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -30,12 +37,12 @@ public final class ConfigurationService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The API configuration.
-    /// 
+    ///
     public func apiConfiguration() async throws -> APIConfiguration {
         let apiConfiguration: APIConfiguration
         do {
             apiConfiguration = try await apiClient.get(endpoint: ConfigurationEndpoint.api)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -50,12 +57,12 @@ public final class ConfigurationService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries used throughout TMDb,
-    /// 
+    ///
     public func countries() async throws -> [Country] {
         let countries: [Country]
         do {
             countries = try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -70,12 +77,12 @@ public final class ConfigurationService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Jobs and departments used on TMDb.
-    /// 
+    ///
     public func jobsByDepartment() async throws -> [Department] {
         let departments: [Department]
         do {
             departments = try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -95,7 +102,7 @@ public final class ConfigurationService {
         let languages: [Language]
         do {
             languages = try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

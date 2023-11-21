@@ -1,3 +1,10 @@
+//
+//  Language+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -33,7 +40,7 @@ extension Language {
 
 }
 
-extension Array where Element == Language {
+extension [Language] {
 
     static var mocks: [Language] {
         [.african, .hungarian, .irish, .english]

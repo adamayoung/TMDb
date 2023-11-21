@@ -1,3 +1,10 @@
+//
+//  TVEpisode+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -6,8 +13,8 @@ extension TVEpisode {
     static func mock(
         id: Int = .randomID,
         name: String? = nil,
-        episodeNumber: Int = .random(in: 0...23),
-        seasonNumber: Int = .random(in: 0...10),
+        episodeNumber: Int = .random(in: 0 ... 23),
+        seasonNumber: Int = .random(in: 0 ... 10),
         overview: String? = .randomString,
         airDate: Date? = .random,
         productionCode: String? = nil,
@@ -35,7 +42,7 @@ extension TVEpisode {
 
 }
 
-extension Array where Element == TVEpisode {
+extension [TVEpisode] {
 
     static var mocks: [Element] {
         [.mock(), .mock(), .mock(), .mock()]

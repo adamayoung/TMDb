@@ -1,3 +1,10 @@
+//
+//  TMDbError.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 public enum TMDbError: Equatable, LocalizedError {
@@ -29,10 +36,10 @@ public enum TMDbError: Equatable, LocalizedError {
 
 }
 
-extension TMDbError {
+public extension TMDbError {
 
     /// A localized message describing what error occurred.
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .notFound:
             return "Not found"

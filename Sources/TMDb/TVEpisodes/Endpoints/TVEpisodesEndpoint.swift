@@ -1,3 +1,10 @@
+//
+//  TVEpisodesEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum TVEpisodesEndpoint {
@@ -17,13 +24,13 @@ extension TVEpisodesEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let tvSeriesID, let seasonNumber, let episodeNumber):
+        case let .details(tvSeriesID, seasonNumber, episodeNumber):
             return Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")
                 .appendingPathComponent(episodeNumber)
 
-        case .images(let tvSeriesID, let seasonNumber, let episodeNumber, let languageCode):
+        case let .images(tvSeriesID, seasonNumber, episodeNumber, languageCode):
             return Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")
@@ -31,7 +38,7 @@ extension TVEpisodesEndpoint: Endpoint {
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
-        case .videos(let tvSeriesID, let seasonNumber, let episodeNumber, let languageCode):
+        case let .videos(tvSeriesID, seasonNumber, episodeNumber, languageCode):
             return Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("episode")

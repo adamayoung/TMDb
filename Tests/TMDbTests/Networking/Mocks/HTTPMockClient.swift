@@ -1,3 +1,10 @@
+//
+//  HTTPMockClient.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -9,9 +16,9 @@ final class HTTPMockClient: HTTPClient {
     private(set) var getCount = 0
 
     func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
-        self.lastURL = url
-        self.lastHeaders = headers
-        self.getCount += 1
+        lastURL = url
+        lastHeaders = headers
+        getCount += 1
 
         guard let result else {
             preconditionFailure("Result not set.")

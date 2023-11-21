@@ -1,3 +1,10 @@
+//
+//  SpokenLanguage+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -15,7 +22,7 @@ extension SpokenLanguage {
 
 }
 
-extension Array where Element == SpokenLanguage {
+extension [SpokenLanguage] {
 
     static var mocks: [Element] {
         [.mocks(), .mocks(), .mocks()]

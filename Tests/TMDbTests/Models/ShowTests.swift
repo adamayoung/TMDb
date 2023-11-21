@@ -1,10 +1,17 @@
+//
+//  ShowTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
 final class ShowTests: XCTestCase {
 
     func testIDWhenMovieReturnsMovieID() {
-        XCTAssertEqual(movieShow.id, 109091)
+        XCTAssertEqual(movieShow.id, 109_091)
     }
 
     func testIDWhenTVSeriesReturnsTVSeriesID() {
@@ -49,7 +56,7 @@ extension ShowTests {
     private var movieShow: Show {
         .movie(
             .init(
-                id: 109091,
+                id: 109_091,
                 title: "The Counselor",
                 originalTitle: "The Counselor",
                 originalLanguage: "en",

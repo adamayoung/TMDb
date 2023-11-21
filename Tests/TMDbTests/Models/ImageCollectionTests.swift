@@ -1,3 +1,10 @@
+//
+//  ImageCollectionTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -25,6 +32,7 @@ final class ImageCollectionTests: XCTestCase {
         backdrops: [
             ImageMetadata(filePath: URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg")!, width: 1280, height: 720,
                           aspectRatio: 1.77777777777778, voteAverage: 1.21, voteCount: 435, languageCode: nil)
-        ])
+        ]
+    )
 
 }

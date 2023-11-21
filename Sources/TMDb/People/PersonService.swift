@@ -1,3 +1,10 @@
+//
+//  PersonService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -34,12 +41,12 @@ public final class PersonService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person.
-    /// 
+    ///
     public func details(forPerson id: Person.ID) async throws -> Person {
         let person: Person
         do {
             person = try await apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -57,12 +64,12 @@ public final class PersonService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
-    /// 
+    ///
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -80,12 +87,12 @@ public final class PersonService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's movie credits.
-    /// 
+    ///
     public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
         let credits: PersonMovieCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -103,12 +110,12 @@ public final class PersonService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's TV series credits.
-    /// 
+    ///
     public func tvSeriesCredits(forPerson personID: Person.ID) async throws -> PersonTVSeriesCredits {
         let credits: PersonTVSeriesCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.tvSeriesCredits(personID: personID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -131,7 +138,7 @@ public final class PersonService {
         let imageCollection: PersonImageCollection
         do {
             imageCollection = try await apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -147,12 +154,12 @@ public final class PersonService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's show credits.
-    /// 
+    ///
     public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -182,7 +189,7 @@ public final class PersonService {
         let personList: PersonPageableList
         do {
             personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

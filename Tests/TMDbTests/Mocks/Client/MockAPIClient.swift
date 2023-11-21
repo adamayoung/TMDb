@@ -1,3 +1,10 @@
+//
+//  MockAPIClient.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -15,8 +22,8 @@ final class MockAPIClient: APIClient {
     }
 
     func get<Response: Decodable>(path: URL) async throws -> Response {
-        self.lastPath = path
-        self.getCount += 1
+        lastPath = path
+        getCount += 1
 
         if requestTime > 0 {
             try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)

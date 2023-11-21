@@ -1,3 +1,10 @@
+//
+//  TrendingTimeWindowFilterType.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 /// Sort specifier when fetching TV series.

@@ -1,7 +1,14 @@
+//
+//  TMDbAPIClientTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 final class TMDbAPIClientTests: XCTestCase {
@@ -24,7 +31,7 @@ final class TMDbAPIClientTests: XCTestCase {
         serialiser = Serialiser(decoder: .theMovieDatabase)
         locale = Locale(identifier: "en_GB")
         apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
-                                  localeProvider: { [unowned self] in self.locale })
+                                  localeProvider: { [unowned self] in locale })
     }
 
     override func tearDown() {
@@ -41,7 +48,7 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 401))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
             case .unauthorised:
@@ -59,7 +66,7 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 404))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
             case .notFound:
@@ -79,10 +86,10 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 404, data: statusResponse))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
-            case .notFound(let message):
+            case let .notFound(message):
                 XCTAssertEqual(message, expectedStatusMessage)
                 return
 

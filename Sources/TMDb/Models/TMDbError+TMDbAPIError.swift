@@ -1,3 +1,10 @@
+//
+//  TMDbError+TMDbAPIError.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 extension TMDbError {
@@ -12,7 +19,7 @@ extension TMDbError {
         case .notFound:
             self = .notFound
 
-        case .network(let error):
+        case let .network(error):
             self = .network(error)
 
         default:

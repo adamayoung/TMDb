@@ -1,3 +1,10 @@
+//
+//  TVEpisodeTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -42,7 +49,7 @@ final class TVTests: XCTestCase {
         ],
         guestStars: [
             CastMember(
-                id: 117642,
+                id: 117_642,
                 creditID: "5256c8a219c2956ff6046f40",
                 name: "Jason Momoa",
                 character: "Khal Drogo",

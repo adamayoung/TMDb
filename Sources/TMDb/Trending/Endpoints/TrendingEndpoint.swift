@@ -1,3 +1,10 @@
+//
+//  TrendingEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 enum TrendingEndpoint {
@@ -14,19 +21,19 @@ extension TrendingEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .movies(let timeWindow, let page):
+        case let .movies(timeWindow, page):
             return Self.basePath
                 .appendingPathComponent("movie")
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
 
-        case .tvSeries(let timeWindow, let page):
+        case let .tvSeries(timeWindow, page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
 
-        case .people(let timeWindow, let page):
+        case let .people(timeWindow, page):
             return Self.basePath
                 .appendingPathComponent("person")
                 .appendingPathComponent(timeWindow)

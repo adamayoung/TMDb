@@ -1,3 +1,10 @@
+//
+//  Country+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 import TMDb
 
@@ -25,7 +32,7 @@ extension Country {
 
 }
 
-extension Array where Element == Country {
+extension [Country] {
 
     static var mocks: [Element] {
         [.unitedKingdom, .unitedStates]

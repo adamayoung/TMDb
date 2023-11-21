@@ -1,3 +1,10 @@
+//
+//  MovieTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -37,8 +44,8 @@ extension MovieTests {
             releaseDate: DateFormatter.theMovieDatabase.date(from: "1999-10-12"),
             posterPath: nil,
             backdropPath: URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg"),
-            budget: 63000000,
-            revenue: 100853753,
+            budget: 63_000_000,
+            revenue: 100_853_753,
             homepageURL: URL(string: ""),
             imdbID: "tt0137523",
             status: .released,

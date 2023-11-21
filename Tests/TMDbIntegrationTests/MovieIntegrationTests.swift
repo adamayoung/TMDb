@@ -1,3 +1,10 @@
+//
+//  MovieIntegrationTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import TMDb
 import XCTest
 
@@ -17,7 +24,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testDetails() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let movie = try await movieService.details(forMovie: movieID)
 
@@ -26,7 +33,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testCredits() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let credits = try await movieService.credits(forMovie: movieID)
 
@@ -36,7 +43,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testReviews() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let reviewList = try await movieService.reviews(forMovie: movieID)
 
@@ -44,7 +51,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testImages() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let imageCollection = try await movieService.images(forMovie: movieID)
 
@@ -55,7 +62,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testVideos() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let videoCollection = try await movieService.videos(forMovie: movieID)
 
@@ -64,7 +71,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testRecommendations() async throws {
-        let movieID = 921636
+        let movieID = 921_636
 
         let recommendationList = try await movieService.recommendations(forMovie: movieID)
 
@@ -72,7 +79,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testSimilar() async throws {
-        let movieID = 921636
+        let movieID = 921_636
 
         let movieList = try await movieService.similar(toMovie: movieID)
 

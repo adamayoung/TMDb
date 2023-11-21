@@ -1,3 +1,10 @@
+//
+//  ImagesConfiguration+URLsTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import TMDb
 import XCTest
 
@@ -53,7 +60,7 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         let path = try XCTUnwrap(URL(string: "/image.jpg"))
         let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
-        let result = configuration.backdropURL(for: path, idealWidth: 100000)
+        let result = configuration.backdropURL(for: path, idealWidth: 100_000)
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -107,7 +114,7 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         let path = try XCTUnwrap(URL(string: "/image.jpg"))
         let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
-        let result = configuration.logoURL(for: path, idealWidth: 100000)
+        let result = configuration.logoURL(for: path, idealWidth: 100_000)
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -161,7 +168,7 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         let path = try XCTUnwrap(URL(string: "/image.jpg"))
         let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
-        let result = configuration.posterURL(for: path, idealWidth: 100000)
+        let result = configuration.posterURL(for: path, idealWidth: 100_000)
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -215,7 +222,7 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         let path = try XCTUnwrap(URL(string: "/image.jpg"))
         let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
-        let result = configuration.profileURL(for: path, idealWidth: 100000)
+        let result = configuration.profileURL(for: path, idealWidth: 100_000)
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -269,7 +276,7 @@ final class ImagesConfigurationURLsTests: XCTestCase {
         let path = try XCTUnwrap(URL(string: "/image.jpg"))
         let expectedResult = try XCTUnwrap(URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
 
-        let result = configuration.stillURL(for: path, idealWidth: 100000)
+        let result = configuration.stillURL(for: path, idealWidth: 100_000)
 
         XCTAssertEqual(result, expectedResult)
     }

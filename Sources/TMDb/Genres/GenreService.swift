@@ -1,3 +1,10 @@
+//
+//  GenreService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -34,7 +41,7 @@ public final class GenreService {
         let genreList: GenreList
         do {
             genreList = try await apiClient.get(endpoint: GenresEndpoint.movie)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -49,12 +56,12 @@ public final class GenreService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
-    /// 
+    ///
     public func tvSeriesGenres() async throws -> [Genre] {
         let genreList: GenreList
         do {
             genreList = try await apiClient.get(endpoint: GenresEndpoint.tvSeries)
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

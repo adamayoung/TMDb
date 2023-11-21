@@ -1,3 +1,10 @@
+//
+//  TVSeasonService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -43,7 +50,7 @@ public final class TVSeasonService {
             season = try await apiClient.get(
                 endpoint: TVSeasonsEndpoint.details(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -64,7 +71,8 @@ public final class TVSeasonService {
     /// - Returns: A collection of images for the matching TV's season.
     ///
     public func images(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeasonImageCollection {
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeasonImageCollection
+    {
         let languageCode = localeProvider().languageCode
         let imageCollection: TVSeasonImageCollection
         do {
@@ -72,7 +80,7 @@ public final class TVSeasonService {
                 endpoint: TVSeasonsEndpoint.images(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
                                                    languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -93,7 +101,8 @@ public final class TVSeasonService {
     /// - Returns: A collection of videos for the matching TV series season.
     ///
     public func videos(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection
+    {
         let languageCode = localeProvider().languageCode
         let videoCollection: VideoCollection
         do {
@@ -101,7 +110,7 @@ public final class TVSeasonService {
                 endpoint: TVSeasonsEndpoint.videos(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
                                                    languageCode: languageCode)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

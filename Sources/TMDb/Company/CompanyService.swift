@@ -1,3 +1,10 @@
+//
+//  CompanyService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -37,7 +44,7 @@ public final class CompanyService {
         let company: Company
         do {
             company = try await apiClient.get(endpoint: CompanyEndpoint.details(companyID: id))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 

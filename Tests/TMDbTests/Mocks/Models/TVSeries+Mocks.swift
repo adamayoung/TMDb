@@ -1,3 +1,10 @@
+//
+//  TVSeries+Mocks.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 @testable import TMDb
 
@@ -88,7 +95,7 @@ extension TVSeries {
 
 }
 
-extension Array where Element == TVSeries {
+extension [TVSeries] {
 
     static var mocks: [Element] {
         [.sheHulk, .theSandman, .strangerThings]

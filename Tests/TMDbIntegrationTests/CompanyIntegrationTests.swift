@@ -1,3 +1,10 @@
+//
+//  CompanyIntegrationTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import TMDb
 import XCTest
 

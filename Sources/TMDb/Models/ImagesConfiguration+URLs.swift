@@ -1,6 +1,13 @@
+//
+//  ImagesConfiguration+URLs.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
-extension ImagesConfiguration {
+public extension ImagesConfiguration {
 
     ///
     /// Generates the fully qualified URL for a backdrop image.
@@ -12,7 +19,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a backdrop image.
     ///
-    public func backdropURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
+    func backdropURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: backdropSizes)
     }
 
@@ -26,7 +33,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a logo image.
     ///
-    public func logoURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
+    func logoURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: logoSizes)
     }
 
@@ -40,7 +47,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a poster image.
     ///
-    public func posterURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
+    func posterURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: posterSizes)
     }
 
@@ -54,7 +61,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a profile image.
     ///
-    public func profileURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
+    func profileURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: profileSizes)
     }
 
@@ -68,7 +75,7 @@ extension ImagesConfiguration {
     ///
     /// - Returns: A fully qualified URL to a still image.
     ///
-    public func stillURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
+    func stillURL(for path: URL?, idealWidth width: Int = Int.max) -> URL? {
         imageURL(for: path, idealWidth: width, sizes: stillSizes)
     }
 

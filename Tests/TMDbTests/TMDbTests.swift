@@ -1,3 +1,10 @@
+//
+//  TMDbTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -38,9 +45,9 @@ extension TMDbTest {
 
     private final class MockHTTPClient: HTTPClient {
 
-        init() { }
+        init() {}
 
-        func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
+        func get(url _: URL, headers _: [String: String]) async throws -> HTTPResponse {
             HTTPResponse()
         }
     }

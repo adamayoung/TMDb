@@ -1,3 +1,10 @@
+//
+//  SearchService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+
 import Foundation
 
 ///
@@ -35,12 +42,12 @@ public final class SearchService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies, TV series and people matching the query.
-    /// 
+    ///
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
         let mediaList: MediaPageableList
         do {
             mediaList = try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -67,7 +74,7 @@ public final class SearchService {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -91,13 +98,14 @@ public final class SearchService {
     /// - Returns: TV series matching the query.
     ///
     public func searchTVSeries(query: String, firstAirDateYear: Int? = nil,
-                               page: Int? = nil) async throws -> TVSeriesPageableList {
+                               page: Int? = nil) async throws -> TVSeriesPageableList
+    {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(
                 endpoint: SearchEndpoint.tvSeries(query: query, firstAirDateYear: firstAirDateYear, page: page)
             )
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
@@ -123,7 +131,7 @@ public final class SearchService {
         let peopleList: PersonPageableList
         do {
             peopleList = try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
-        } catch let error {
+        } catch {
             throw TMDbError(error: error)
         }
 
