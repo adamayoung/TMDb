@@ -1,0 +1,4 @@
+--allman true
+--typeblanklines preserve
+
+--header \n {file}\n\n Copyright © {created.year} Adam Young.\n
