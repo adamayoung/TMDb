@@ -17,7 +17,11 @@ final class TVEpisodesEndpointTests: XCTestCase {
             string: "/tv/1/season/2/episode/3/images?include_image_language=\(languageCode),null"
         ))
 
-        let url = TVEpisodesEndpoint.images(tvSeriesID: 1, seasonNumber: 2, episodeNumber: 3, languageCode: languageCode).path
+        let url = TVEpisodesEndpoint.images(
+            tvSeriesID: 1,
+            seasonNumber: 2,
+            episodeNumber: 3,
+            languageCode: languageCode).path
 
         XCTAssertEqual(url, expectedURL)
     }
@@ -28,7 +32,11 @@ final class TVEpisodesEndpointTests: XCTestCase {
             string: "/tv/1/season/2/episode/3/videos?include_video_language=\(languageCode),null"
         ))
 
-        let url = TVEpisodesEndpoint.videos(tvSeriesID: 1, seasonNumber: 2, episodeNumber: 3, languageCode: languageCode).path
+        let url = TVEpisodesEndpoint.videos(
+            tvSeriesID: 1,
+            seasonNumber: 2,
+            episodeNumber: 3, 
+            languageCode: languageCode).path
 
         XCTAssertEqual(url, expectedURL)
     }
