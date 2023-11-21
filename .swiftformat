@@ -1,4 +1,5 @@
---allman true
 --typeblanklines preserve
+--blankLinesAtEndOfScope preserve
+--indent 4
 
 --header \n {file}\n\n Copyright © {created.year} Adam Young.\n
