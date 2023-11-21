@@ -7,18 +7,21 @@ import Foundation
 public final class TVEpisodeService {
 
     private let apiClient: APIClient
+    private let localeProvider: () -> Locale
 
     ///
     /// Creates a TV episode service object.
     ///
     public convenience init() {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient,
+            localeProvider: TMDbFactory.localeProvider
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
         self.apiClient = apiClient
+        self.localeProvider = localeProvider
     }
 
     ///
@@ -69,13 +72,15 @@ public final class TVEpisodeService {
     ///
     public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisodeImageCollection {
+        let languageCode = localeProvider().languageCode
         let imageCollection: TVEpisodeImageCollection
         do {
             imageCollection = try await apiClient.get(
                 endpoint: TVEpisodesEndpoint.images(
                     tvSeriesID: tvSeriesID,
                     seasonNumber: seasonNumber,
-                    episodeNumber: episodeNumber
+                    episodeNumber: episodeNumber,
+                    languageCode: languageCode
                 )
             )
         } catch let error {
@@ -101,13 +106,15 @@ public final class TVEpisodeService {
     ///
     public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+        let languageCode = localeProvider().languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(
                 endpoint: TVEpisodesEndpoint.videos(
                     tvSeriesID: tvSeriesID,
                     seasonNumber: seasonNumber,
-                    episodeNumber: episodeNumber
+                    episodeNumber: episodeNumber,
+                    languageCode: languageCode
                 )
             )
         } catch let error {
