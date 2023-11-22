@@ -50,6 +50,20 @@ public final class DiscoverService {
 
         return movieList
     }
+    
+    public func movies(sortedBy: MovieSort? = nil, withFilters filters: [String: String] = [:],
+                       page: Int? = nil) async throws -> MoviePageableList {
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(
+                endpoint: DiscoverEndpoint.moviesFiltered(sortedBy: sortedBy, filters: filters, page: page)
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
 
     ///
     /// Returns TV series to be discovered.
@@ -70,6 +84,20 @@ public final class DiscoverService {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(endpoint: DiscoverEndpoint.tvSeries(sortedBy: sortedBy, page: page))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+    
+    public func tvSeries(sortedBy: TVSeriesSort? = nil, withFilters filters: [String: String] = [:],
+                       page: Int? = nil) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.get(
+                endpoint: DiscoverEndpoint.tvSeriesFiltered(sortedBy: sortedBy, filters: filters, page: page)
+            )
         } catch let error {
             throw TMDbError(error: error)
         }

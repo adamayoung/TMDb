@@ -301,5 +301,15 @@ public final class MovieService {
 
         return movieList
     }
+    
+    public func watchProviders(forMovie: Movie.ID) async throws -> MovieAvailability {
+        let watchRegions: MovieAvailability
+        do {
+            watchRegions = try await apiClient.get(endpoint: MoviesEndpoint.watchProviders(movieID: forMovie))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+        return watchRegions
+    }
 
 }

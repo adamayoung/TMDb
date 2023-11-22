@@ -103,5 +103,16 @@ extension URL {
 
         return appendingQueryItem(name: QueryItemName.withPeople, value: value)
     }
+    
+    func appendingFilters(_ filters: [String: String]?) -> Self {
+        guard let filters else {
+            return self
+        }
+        var currentState: URL = self
+        filters.forEach { (filterName, filterValue) in
+            currentState = currentState.appendingQueryItem(name: filterName, value: filterValue)
+        }
+        return currentState
+    }
 
 }

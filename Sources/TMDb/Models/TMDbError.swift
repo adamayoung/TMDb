@@ -10,6 +10,8 @@ public enum TMDbError: Equatable, LocalizedError {
 
     /// An unknown error.
     case unknown
+    
+    case apiError(TMDbAPIError)
 
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
@@ -42,6 +44,54 @@ extension TMDbError {
 
         case .unknown:
             return "Unknown"
+                
+            case .apiError(let error):
+                switch error {
+                    case .network(let error):
+                        return error.localizedDescription
+                    case .badRequest(let string):
+                        return string
+                    case .unauthorised(let string):
+                        return string
+                    case .forbidden(let string):
+                        return string
+
+                    case .notFound(let string):
+                        return string
+
+                    case .methodNotAllowed(let string):
+                        return string
+
+                    case .notAcceptable(let string):
+                        return string
+
+                    case .unprocessableContent(let string):
+                        return string
+
+                    case .tooManyRequests(let string):
+                        return string
+
+                    case .internalServerError(let string):
+                        return string
+
+                    case .notImplemented(let string):
+                        return string
+
+                    case .badGateway(let string):
+                        return string
+
+                    case .serviceUnavailable(let string):
+                        return string
+
+                    case .gatewayTimeout(let string):
+                        return string
+
+                    case .decode(let error):
+                        return error.localizedDescription
+                    case .unknown:
+                        return "Really unknown"
+                }
+                
         }
     }
 

@@ -3,7 +3,7 @@ import Foundation
 ///
 /// A model representing a TMDb API error.
 ///
-enum TMDbAPIError: Error {
+public enum TMDbAPIError: Error {
 
     ///
     /// Network error.

@@ -43,7 +43,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
     ///
     /// Movie genres.
     ///
-    public let genres: [Genre]?
+    public let genreIds: [Int]?
 
     ///
     /// Movie release date.
@@ -166,7 +166,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
         originalLanguage: String? = nil,
         overview: String? = nil,
         runtime: Int? = nil,
-        genres: [Genre]? = nil,
+        genres: [Int]? = nil,
         releaseDate: Date? = nil,
         posterPath: URL? = nil,
         backdropPath: URL? = nil,
@@ -191,7 +191,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable {
         self.originalLanguage = originalLanguage
         self.overview = overview
         self.runtime = runtime
-        self.genres = genres
+        self.genreIds = genres
         self.releaseDate = releaseDate
         self.posterPath = posterPath
         self.backdropPath = backdropPath
@@ -222,7 +222,7 @@ extension Movie {
         case originalLanguage
         case overview
         case runtime
-        case genres
+        case genreIds
         case releaseDate
         case posterPath
         case backdropPath
@@ -252,7 +252,7 @@ extension Movie {
         self.originalLanguage = try container.decodeIfPresent(String.self, forKey: .originalLanguage)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
-        self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
+        self.genreIds = try container.decodeIfPresent([Int].self, forKey: .genreIds)
 
         // Need to deal with empty strings - date decoding will fail with an empty string
         let releaseDateString = try container.decodeIfPresent(String.self, forKey: .releaseDate)

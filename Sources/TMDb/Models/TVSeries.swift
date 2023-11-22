@@ -58,7 +58,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable {
     ///
     /// TV series genres.
     ///
-    public let genres: [Genre]?
+    public let genreIds: [Int]?
 
     ///
     /// TV series' first air date.
@@ -186,7 +186,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable {
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
         seasons: [TVSeason]? = nil,
-        genres: [Genre]? = nil,
+        genres: [Int]? = nil,
         firstAirDate: Date? = nil,
         originCountry: [String]? = nil,
         posterPath: URL? = nil,
@@ -214,7 +214,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable {
         self.numberOfSeasons = numberOfSeasons
         self.numberOfEpisodes = numberOfEpisodes
         self.seasons = seasons
-        self.genres = genres
+        self.genreIds = genres
         self.firstAirDate = firstAirDate
         self.originCountry = originCountry
         self.posterPath = posterPath
@@ -248,7 +248,7 @@ extension TVSeries {
         case numberOfSeasons
         case numberOfEpisodes
         case seasons
-        case genres
+        case genreIds
         case originCountry
         case posterPath
         case backdropPath
@@ -281,7 +281,7 @@ extension TVSeries {
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
         self.numberOfEpisodes = try container.decodeIfPresent(Int.self, forKey: .numberOfEpisodes)
         self.seasons = try container.decodeIfPresent([TVSeason].self, forKey: .seasons)
-        self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
+        self.genreIds = try container.decodeIfPresent([Int].self, forKey: .genreIds)
 
         // Need to deal with empty strings - date decoding will fail with an empty string
         let firstAirDateString = try container.decodeIfPresent(String.self, forKey: .firstAirDate)

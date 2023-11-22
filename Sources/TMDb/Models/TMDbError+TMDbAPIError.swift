@@ -16,7 +16,7 @@ extension TMDbError {
             self = .network(error)
 
         default:
-            self = .unknown
+            self = .apiError(apiError)
         }
     }
 

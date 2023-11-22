@@ -231,5 +231,15 @@ public final class TVSeriesService {
 
         return tvSeriesList
     }
+    
+    public func watchProviders(forSeries: TVSeries.ID) async throws -> MovieAvailability {
+        let watchRegions: MovieAvailability
+        do {
+            watchRegions = try await apiClient.get(endpoint: TVSeriesEndpoint.watchProviders(tvSeriesID:  forSeries))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+        return watchRegions
+    }
 
 }
