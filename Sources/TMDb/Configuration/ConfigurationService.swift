@@ -25,9 +25,9 @@ public final class ConfigurationService {
     /// Returns the TMDb API system wide configuration information. The result is cached, so there is no overhead in
     /// making multiple calls.
     ///
-    /// [TMDb API - Configuration: API Configuration](https://developers.themoviedb.org/3/configuration/get-api-configuration)
+    /// [TMDb API - Configuration: Details](https://developer.themoviedb.org/reference/configuration-details)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The API configuration.
     /// 
@@ -45,9 +45,9 @@ public final class ConfigurationService {
     ///
     /// Returns the list of countries used throughout TMDb.
     ///
-    /// [TMDb API - Configuration: Countries](https://developers.themoviedb.org/3/configuration/get-countries)
+    /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries used throughout TMDb,
     /// 
@@ -65,9 +65,9 @@ public final class ConfigurationService {
     ///
     /// Returns a list of the jobs and departments used on TMDb.
     ///
-    /// [TMDb API - Configuration: Jobs](https://developers.themoviedb.org/3/configuration/get-jobs)
+    /// [TMDb API - Configuration: Jobs](https://developer.themoviedb.org/reference/configuration-jobs)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Jobs and departments used on TMDb.
     /// 
@@ -85,9 +85,9 @@ public final class ConfigurationService {
     ///
     /// Returns the list of languages (ISO 639-1 tags) used throughout TMDb.
     ///
-    /// [TMDb API - Configuration: Languages](https://developers.themoviedb.org/3/configuration/get-languages)
+    /// [TMDb API - Configuration: Languages](https://developer.themoviedb.org/reference/configuration-languages)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Languages used throughout TMDb.
     ///

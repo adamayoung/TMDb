@@ -22,9 +22,9 @@ public final class SearchService {
     }
 
     ///
-    /// Returns search results for movies, TV shows and people based on a query.
+    /// Returns search results for movies, TV series and people based on a query.
     ///
-    /// [TMDb API - Search: Multi](https://developers.themoviedb.org/3/search/multi-search)
+    /// [TMDb API - Search: Multi](https://developer.themoviedb.org/reference/search-multi)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -32,9 +32,9 @@ public final class SearchService {
     ///    - query: A text query to search for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Movies, TV shows and people matching the query.
+    /// - Returns: Movies, TV series and people matching the query.
     /// 
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
         let mediaList: MediaPageableList
@@ -50,7 +50,7 @@ public final class SearchService {
     ///
     /// Returns search results for movies.
     ///
-    /// [TMDb API - Search: Movies](https://developers.themoviedb.org/3/search/search-movies)
+    /// [TMDb API - Search: Movies](https://developer.themoviedb.org/reference/search-movie)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -59,7 +59,7 @@ public final class SearchService {
     ///    - year: The year to filter results for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies matching the query.
     ///
@@ -75,9 +75,9 @@ public final class SearchService {
     }
 
     ///
-    /// Returns search results for TV shows.
+    /// Returns search results for TV series.
     ///
-    /// [TMDb API - Search: TV Shows](https://developers.themoviedb.org/3/search/search-tv-shows)
+    /// [TMDb API - Search: TV](https://developer.themoviedb.org/reference/search-tv)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -86,28 +86,28 @@ public final class SearchService {
     ///    - firstAirDateYear: The year of first air date to filter results for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: TV shows matching the query.
+    /// - Returns: TV series matching the query.
     ///
-    public func searchTVShows(query: String, firstAirDateYear: Int? = nil,
-                              page: Int? = nil) async throws -> TVShowPageableList {
-        let tvShowList: TVShowPageableList
+    public func searchTVSeries(query: String, firstAirDateYear: Int? = nil,
+                               page: Int? = nil) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
         do {
-            tvShowList = try await apiClient.get(
-                endpoint: SearchEndpoint.tvShows(query: query, firstAirDateYear: firstAirDateYear, page: page)
+            tvSeriesList = try await apiClient.get(
+                endpoint: SearchEndpoint.tvSeries(query: query, firstAirDateYear: firstAirDateYear, page: page)
             )
         } catch let error {
             throw TMDbError(error: error)
         }
 
-        return tvShowList
+        return tvSeriesList
     }
 
     ///
     /// Returns search results for people.
     ///
-    /// [TMDb API - Search: People](https://developers.themoviedb.org/3/search/search-people)
+    /// [TMDb API - Search: Person](https://developer.themoviedb.org/reference/search-person)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
@@ -115,7 +115,7 @@ public final class SearchService {
     ///    - query: A text query to search for.
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: People matching the query.
     ///

@@ -45,34 +45,34 @@ final class DiscoverEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsEndpointReturnsURL() throws {
+    func testTVSeriesEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/discover/tv"))
 
-        let url = DiscoverEndpoint.tvShows().path
+        let url = DiscoverEndpoint.tvSeries().path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsEndpointWithSortedByReturnsURL() throws {
+    func testTVSeriesEndpointWithSortedByReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/discover/tv?sort_by=first_air_date.asc"))
 
-        let url = DiscoverEndpoint.tvShows(sortedBy: .firstAirDate(descending: false)).path
+        let url = DiscoverEndpoint.tvSeries(sortedBy: .firstAirDate(descending: false)).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsEndpointWithPageReturnsURL() throws {
+    func testTVSeriesEndpointWithPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/discover/tv?page=1"))
 
-        let url = DiscoverEndpoint.tvShows(page: 1).path
+        let url = DiscoverEndpoint.tvSeries(page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowsEndpointWithSortedByAndPageReturnsURL() throws {
+    func testTVSeriesEndpointWithSortedByAndPageReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/discover/tv?sort_by=first_air_date.asc&page=1"))
 
-        let url = DiscoverEndpoint.tvShows(sortedBy: .firstAirDate(descending: false), page: 1).path
+        let url = DiscoverEndpoint.tvSeries(sortedBy: .firstAirDate(descending: false), page: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }

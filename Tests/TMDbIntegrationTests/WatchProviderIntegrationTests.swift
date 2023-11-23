@@ -5,9 +5,9 @@ final class WatchProviderIntegrationTests: XCTestCase {
 
     var watchProviderService: WatchProviderService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         watchProviderService = WatchProviderService()
     }
 
@@ -28,8 +28,8 @@ final class WatchProviderIntegrationTests: XCTestCase {
         XCTAssertFalse(watchProviders.isEmpty)
     }
 
-    func testTVShowWatchProviders() async throws {
-        let watchProviders = try await watchProviderService.tvShowWatchProviders()
+    func testTVSeriesWatchProviders() async throws {
+        let watchProviders = try await watchProviderService.tvSeriesWatchProviders()
 
         XCTAssertFalse(watchProviders.isEmpty)
     }

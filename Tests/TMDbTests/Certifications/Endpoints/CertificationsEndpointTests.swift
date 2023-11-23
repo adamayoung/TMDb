@@ -11,10 +11,10 @@ final class CertificationsEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowEndpointReturnsURL() throws {
+    func testTVSeriesEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/certification/tv/list"))
 
-        let url = CertificationsEndpoint.tvShow.path
+        let url = CertificationsEndpoint.tvSeries.path
 
         XCTAssertEqual(url, expectedURL)
     }

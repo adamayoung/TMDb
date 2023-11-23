@@ -5,9 +5,9 @@ final class GenreIntegrationTests: XCTestCase {
 
     var genreService: GenreService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         genreService = GenreService()
     }
 
@@ -22,8 +22,8 @@ final class GenreIntegrationTests: XCTestCase {
         XCTAssertFalse(genres.isEmpty)
     }
 
-    func testTVShowGenres() async throws {
-        let genres = try await genreService.tvShowGenres()
+    func testTVSeriesGenres() async throws {
+        let genres = try await genreService.tvSeriesGenres()
 
         XCTAssertFalse(genres.isEmpty)
     }

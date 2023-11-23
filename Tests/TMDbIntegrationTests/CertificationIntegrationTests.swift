@@ -5,9 +5,9 @@ final class CertificationIntegrationTests: XCTestCase {
 
     var certificationService: CertificationService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         certificationService = CertificationService()
     }
 
@@ -24,8 +24,8 @@ final class CertificationIntegrationTests: XCTestCase {
         XCTAssertEqual(gbCertifications.count, 7)
     }
 
-    func testTVShowCertifications() async throws {
-        let certifications = try await certificationService.tvShowCertifications()
+    func testTVSeriesCertifications() async throws {
+        let certifications = try await certificationService.tvSeriesCertifications()
 
         let gbCertifications = try XCTUnwrap(certifications["GB"])
 

@@ -31,7 +31,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "9.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "10.0.0")
   ],
 
   targets: [

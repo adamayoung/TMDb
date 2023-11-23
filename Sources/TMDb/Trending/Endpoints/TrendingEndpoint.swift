@@ -3,7 +3,7 @@ import Foundation
 enum TrendingEndpoint {
 
     case movies(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
-    case tvShows(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
+    case tvSeries(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
     case people(timeWindow: TrendingTimeWindowFilterType = .day, page: Int? = nil)
 
 }
@@ -20,7 +20,7 @@ extension TrendingEndpoint: Endpoint {
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
 
-        case .tvShows(let timeWindow, let page):
+        case .tvSeries(let timeWindow, let page):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingPathComponent(timeWindow)

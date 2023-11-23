@@ -26,12 +26,12 @@ public final class PersonService {
     ///
     /// Returns the primary information about a person.
     ///
-    /// [TMDb API - People: Details](https://developers.themoviedb.org/3/people/get-person-details)
+    /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person.
     /// 
@@ -47,16 +47,16 @@ public final class PersonService {
     }
 
     ///
-    /// Returns the combined movie and TV show credits of a person.
+    /// Returns the combined movie and TV series credits of a person.
     ///
-    /// [TMDb API - People: Combined Credits](https://developers.themoviedb.org/3/people/get-person-combined-credits)
+    /// [TMDb API - People: Combined Credits](https://developer.themoviedb.org/reference/person-combined-credits)
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: The matching person's combined movie and TV show credits.
+    /// - Returns: The matching person's combined movie and TV series credits.
     /// 
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
         let credits: PersonCombinedCredits
@@ -72,12 +72,12 @@ public final class PersonService {
     ///
     /// Returns the movie credits of a person.
     ///
-    /// [TMDb API - People: Movie Credits](https://developers.themoviedb.org/3/people/get-person-movie-credits)
+    /// [TMDb API - People: Movie Credits](https://developer.themoviedb.org/reference/person-movie-credits)
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's movie credits.
     /// 
@@ -93,21 +93,21 @@ public final class PersonService {
     }
 
     ///
-    /// Returns the TV show credits of a person.
+    /// Returns the TV series credits of a person.
     ///
-    /// [TMDb API - People: TV Show Credits](https://developers.themoviedb.org/3/people/get-person-tv-credits)
+    /// [TMDb API - People: TV Credits](https://developer.themoviedb.org/reference/person-tv-credits)
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: The matching person's TV show credits.
+    /// - Returns: The matching person's TV series credits.
     /// 
-    public func tvShowCredits(forPerson personID: Person.ID) async throws -> PersonTVShowCredits {
-        let credits: PersonTVShowCredits
+    public func tvSeriesCredits(forPerson personID: Person.ID) async throws -> PersonTVSeriesCredits {
+        let credits: PersonTVSeriesCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.tvShowCredits(personID: personID))
+            credits = try await apiClient.get(endpoint: PeopleEndpoint.tvSeriesCredits(personID: personID))
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -118,12 +118,12 @@ public final class PersonService {
     ///
     /// Returns the images for a person.
     ///
-    /// [TMDb API - People: Images](https://developers.themoviedb.org/3/people/get-person-images)
+    /// [TMDb API - People: Images](https://developer.themoviedb.org/reference/person-images)
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's images.
     ///
@@ -144,7 +144,7 @@ public final class PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's show credits.
     /// 
@@ -167,14 +167,14 @@ public final class PersonService {
     ///
     /// Returns the list of popular people.
     ///
-    /// [TMDb API - People: Popular](https://developers.themoviedb.org/3/people/get-popular-people)
+    /// [TMDb API - People Lists: Popular](https://developer.themoviedb.org/reference/person-popular-list)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular people as a pageable list.
     ///

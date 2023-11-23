@@ -5,9 +5,9 @@ final class CompanyIntegrationTests: XCTestCase {
 
     var companyService: CompanyService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         companyService = CompanyService()
     }
 

@@ -5,9 +5,9 @@ final class PersonIntegrationTests: XCTestCase {
 
     var personService: PersonService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         personService = PersonService()
     }
 
@@ -45,10 +45,10 @@ final class PersonIntegrationTests: XCTestCase {
         XCTAssertFalse(credits.crew.isEmpty)
     }
 
-    func testTVShowCredits() async throws {
+    func testTVSeriesCredits() async throws {
         let personID = 500
 
-        let credits = try await personService.tvShowCredits(forPerson: personID)
+        let credits = try await personService.tvSeriesCredits(forPerson: personID)
 
         XCTAssertEqual(credits.id, personID)
         XCTAssertFalse(credits.cast.isEmpty)

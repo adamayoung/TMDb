@@ -4,7 +4,7 @@ enum WatchProviderEndpoint {
 
     case regions
     case movie(regionCode: String?)
-    case tvShow(regionCode: String?)
+    case tvSeries(regionCode: String?)
 
 }
 
@@ -23,7 +23,7 @@ extension WatchProviderEndpoint: Endpoint {
                 .appendingPathComponent("movie")
                 .appendingWatchRegion(regionCode)
 
-        case .tvShow(let regionCode):
+        case .tvSeries(let regionCode):
             return Self.basePath
                 .appendingPathComponent("tv")
                 .appendingWatchRegion(regionCode)

@@ -9,7 +9,7 @@
 ### Providers
 
 - ``movieWatchProviders()``
-- ``tvShowWatchProviders()``
+- ``tvSeriesWatchProviders()``
 
 ### Countries with Watch Provider data
 

@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// Provides an interface for obtaining movie and TV show genres from TMDb.
+/// Provides an interface for obtaining movie and TV series genres from TMDb.
 ///
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class GenreService {
@@ -24,9 +24,9 @@ public final class GenreService {
     ///
     /// Returns the list of official genres for movies.
     ///
-    /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-movie-list)
+    /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
@@ -42,18 +42,18 @@ public final class GenreService {
     }
 
     ///
-    /// Returns the list of official genres for TV shows.
+    /// Returns the list of official genres for TV series.
     ///
-    /// [TMDb API - Genres: Movies](https://developers.themoviedb.org/3/genres/get-tv-list)
+    /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
-    /// - Throws: TMDb data error ``TMDbError``.
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     /// 
-    public func tvShowGenres() async throws -> [Genre] {
+    public func tvSeriesGenres() async throws -> [Genre] {
         let genreList: GenreList
         do {
-            genreList = try await apiClient.get(endpoint: GenresEndpoint.tvShow)
+            genreList = try await apiClient.get(endpoint: GenresEndpoint.tvSeries)
         } catch let error {
             throw TMDbError(error: error)
         }

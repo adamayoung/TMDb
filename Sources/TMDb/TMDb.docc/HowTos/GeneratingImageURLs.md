@@ -4,7 +4,7 @@ Instructions on how to generate the full URL from an image path.
 
 ## Overview
 
-TMDb returns paths to images in objects such as ``Movie``, ``TVShow`` and
+TMDb returns paths to images in objects such as ``Movie``, ``TVSeries`` and
 ``Person``. In order to get the actual image the full URL needs to be
 generated.
 

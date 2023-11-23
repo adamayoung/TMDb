@@ -3,12 +3,12 @@ import Foundation
 ///
 /// A model representing an image collection.
 ///
-/// A collection of poster and backdrop images for a movie or TV show.
+/// A collection of poster and backdrop images for a movie or TV series.
 ///
 public struct ImageCollection: Codable, Equatable, Hashable {
 
     ///
-    /// Movie or TV show identifier for these images.
+    /// Movie or TV series identifier for these images.
     ///
     public let id: Int
 
@@ -31,7 +31,7 @@ public struct ImageCollection: Codable, Equatable, Hashable {
     /// Creates an image collection object.
     ///
     /// - Parameters:
-    ///    - id: Movie or TV show identifier for these images.
+    ///    - id: Movie or TV series identifier for these images.
     ///    - posters: Poster images.
     ///    - backdrops: Backdrop images.
     ///    

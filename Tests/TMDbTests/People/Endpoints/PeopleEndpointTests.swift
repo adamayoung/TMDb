@@ -27,10 +27,10 @@ final class PeopleEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testPersonTVShowCreditsEndpointReturnsURL() throws {
+    func testPersonTVSeriesCreditsEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/person/1/tv_credits"))
 
-        let url = PeopleEndpoint.tvShowCredits(personID: 1).path
+        let url = PeopleEndpoint.tvSeriesCredits(personID: 1).path
 
         XCTAssertEqual(url, expectedURL)
     }

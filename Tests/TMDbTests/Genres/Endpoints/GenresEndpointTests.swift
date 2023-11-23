@@ -11,10 +11,10 @@ final class GenresEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
-    func testTVShowEndpointReturnsURL() throws {
+    func testTVSeriesEndpointReturnsURL() throws {
         let expectedURL = try XCTUnwrap(URL(string: "/genre/tv/list"))
 
-        let url = GenresEndpoint.tvShow.path
+        let url = GenresEndpoint.tvSeries.path
 
         XCTAssertEqual(url, expectedURL)
     }

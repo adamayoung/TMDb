@@ -5,9 +5,9 @@ final class DiscoverIntegrationTests: XCTestCase {
 
     var discoverService: DiscoverService!
 
-    override func setUp() {
-        super.setUp()
-        TMDb.configure(TMDbConfiguration(apiKey: tmdbAPIKey))
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try configureTMDb()
         discoverService = DiscoverService()
     }
 
@@ -22,10 +22,10 @@ final class DiscoverIntegrationTests: XCTestCase {
         XCTAssertFalse(movieList.results.isEmpty)
     }
 
-    func testTVShows() async throws {
-        let tvShowList = try await discoverService.tvShows()
+    func testTVSeries() async throws {
+        let tvSeriesList = try await discoverService.tvSeries()
 
-        XCTAssertFalse(tvShowList.results.isEmpty)
+        XCTAssertFalse(tvSeriesList.results.isEmpty)
     }
 
 }

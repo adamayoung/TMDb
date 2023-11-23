@@ -1,12 +1,12 @@
 import Foundation
 
 ///
-/// A model representing a collection of video images for a movie or TV show.
+/// A model representing a collection of video images for a movie or TV series.
 ///
 public struct VideoCollection: Identifiable, Codable, Equatable, Hashable {
 
     ///
-    /// Movie or TV show identifier.
+    /// Movie or TV series identifier.
     ///
     public let id: Int
 
@@ -19,7 +19,7 @@ public struct VideoCollection: Identifiable, Codable, Equatable, Hashable {
     /// Creates a video collection object.
     ///
     /// - Parameters:
-    ///    - id: Movie or TV show identifier.
+    ///    - id: Movie or TV series identifier.
     ///    - results: Videos.
     ///
     public init(id: Int, results: [VideoMetadata]) {

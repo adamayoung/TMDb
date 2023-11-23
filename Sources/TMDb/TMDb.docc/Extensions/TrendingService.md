@@ -10,9 +10,9 @@
 
 - ``movies(inTimeWindow:page:)``
 
-### TV Shows
+### TV Series
 
-- ``tvShows(inTimeWindow:page:)``
+- ``tvSeries(inTimeWindow:page:)``
 
 ### People
 
