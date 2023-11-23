@@ -2,6 +2,7 @@ import Foundation
 @testable import TMDb
 
 extension ShowWatchProvider {
+
     static func mock(
         link: String = "",
         free: [WatchProvider]? = [.netflix],
