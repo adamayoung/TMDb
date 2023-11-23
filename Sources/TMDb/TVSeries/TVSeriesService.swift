@@ -244,7 +244,9 @@ public final class TVSeriesService {
     /// - Returns: Watch providers for TV series in current region.
     ///
     public func watchProviders(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider().regionCode?.uppercased() else { return nil }
+        guard let regionCode = localeProvider().regionCode?.uppercased() else {
+            return nil
+        }
         let result: ShowWatchProviderResult
         do {
             result = try await apiClient.get(endpoint: TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID))
