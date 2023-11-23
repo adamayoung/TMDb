@@ -203,5 +203,17 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.popular(page: page).path)
     }
+    
+    func testWatchReturnsWatchProviders() async throws {
+        let expectedResult = ShowWatchProviderResult.mock()
+        let tvSeriesID = 1
+        apiClient.result = .success(expectedResult)
+        
+        let result = try await service.watchProviders(forTVSeries: tvSeriesID)
+        
+        let regionCode = try XCTUnwrap(locale.regionCode)
+        XCTAssertEqual(result, expectedResult.results[regionCode])
+        XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
+    }
 
 }

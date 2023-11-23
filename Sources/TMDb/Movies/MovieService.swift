@@ -314,7 +314,7 @@ public final class MovieService {
     /// - Returns: Watch providers for movie in current region.
     ///
     public func watchProviders(forMovie id: Movie.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider().regionCode?.uppercased() else {
+        guard let regionCode = localeProvider().regionCode else {
             return nil
         }
         let result: ShowWatchProviderResult
