@@ -4,6 +4,18 @@
 //
 //  Copyright © 2023 Adam Young.
 //
+//  Licensed under the Apache License, Version 2.0 (the License );
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
 
 import Foundation
 
@@ -47,7 +59,7 @@ public final class TVSeriesService {
         let tvSeries: TVSeries
         do {
             tvSeries = try await apiClient.get(endpoint: TVSeriesEndpoint.details(tvSeriesID: id))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -70,7 +82,7 @@ public final class TVSeriesService {
         let credits: ShowCredits
         do {
             credits = try await apiClient.get(endpoint: TVSeriesEndpoint.credits(tvSeriesID: tvSeriesID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -96,7 +108,7 @@ public final class TVSeriesService {
         let reviewList: ReviewPageableList
         do {
             reviewList = try await apiClient.get(endpoint: TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID, page: page))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -122,7 +134,7 @@ public final class TVSeriesService {
             imageCollection = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: languageCode)
             )
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -148,7 +160,7 @@ public final class TVSeriesService {
             videoCollection = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: languageCode)
             )
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -170,15 +182,16 @@ public final class TVSeriesService {
     ///
     /// - Returns: Recommended TV series for the matching TV series as a pageable list.
     ///
-    public func recommendations(forTVSeries tvSeriesID: TVSeries.ID,
-                                page: Int? = nil) async throws -> TVSeriesPageableList
-    {
+    public func recommendations(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil
+    ) async throws -> TVSeriesPageableList {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page)
             )
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -208,7 +221,7 @@ public final class TVSeriesService {
             tvSeriesList = try await apiClient.get(
                 endpoint: TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID, page: page)
             )
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -233,7 +246,7 @@ public final class TVSeriesService {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(endpoint: TVSeriesEndpoint.popular(page: page))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 

@@ -4,6 +4,18 @@
 //
 //  Copyright © 2023 Adam Young.
 //
+//  Licensed under the Apache License, Version 2.0 (the License );
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
 
 import Foundation
 
@@ -46,7 +58,7 @@ public final class PersonService {
         let person: Person
         do {
             person = try await apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -69,7 +81,7 @@ public final class PersonService {
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -92,7 +104,7 @@ public final class PersonService {
         let credits: PersonMovieCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -115,7 +127,7 @@ public final class PersonService {
         let credits: PersonTVSeriesCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.tvSeriesCredits(personID: personID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -138,7 +150,7 @@ public final class PersonService {
         let imageCollection: PersonImageCollection
         do {
             imageCollection = try await apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -159,7 +171,7 @@ public final class PersonService {
         let credits: PersonCombinedCredits
         do {
             credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -189,7 +201,7 @@ public final class PersonService {
         let personList: PersonPageableList
         do {
             personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 

@@ -4,6 +4,18 @@
 //
 //  Copyright © 2023 Adam Young.
 //
+//  Licensed under the Apache License, Version 2.0 (the License );
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
 
 import Foundation
 
@@ -46,13 +58,14 @@ public final class TrendingService {
     ///
     /// - Returns: Trending movies in a time window as a pageable list.
     ///
-    public func movies(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-                       page: Int? = nil) async throws -> MoviePageableList
-    {
+    public func movies(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil
+    ) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
             movieList = try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -77,15 +90,16 @@ public final class TrendingService {
     ///
     /// - Returns: Trending TV series in a time window as a pageable list.
     ///
-    public func tvSeries(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-                         page: Int? = nil) async throws -> TVSeriesPageableList
-    {
+    public func tvSeries(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil
+    ) async throws -> TVSeriesPageableList {
         let tvSeriesList: TVSeriesPageableList
         do {
             tvSeriesList = try await apiClient.get(
                 endpoint: TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page)
             )
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
@@ -110,13 +124,14 @@ public final class TrendingService {
     ///
     /// - Returns: Trending people in a time window as a pageable list.
     ///
-    public func people(inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-                       page: Int? = nil) async throws -> PersonPageableList
-    {
+    public func people(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil
+    ) async throws -> PersonPageableList {
         let peopleList: PersonPageableList
         do {
             peopleList = try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
-        } catch {
+        } catch let error {
             throw TMDbError(error: error)
         }
 
