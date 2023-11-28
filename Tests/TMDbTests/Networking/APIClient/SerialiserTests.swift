@@ -39,7 +39,7 @@ final class SerialiserTests: XCTestCase {
 
         do {
             _ = try await serialiser.decode(MockObject.self, from: data)
-        } catch let error {
+        } catch {
             XCTAssertTrue(true)
             return
         }

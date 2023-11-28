@@ -53,7 +53,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         do {
             let url = try XCTUnwrap(URL(string: "/error"))
             response = try await httpClient.get(url: url, headers: [:])
-        } catch let error {
+        } catch {
             XCTFail("Unexpected error thrown")
             return
         }
@@ -68,7 +68,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         do {
             let url = try XCTUnwrap(URL(string: "/error"))
             response = try await httpClient.get(url: url, headers: [:])
-        } catch let error {
+        } catch {
             XCTFail("Unexpected error thrown")
             return
         }
@@ -85,7 +85,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         do {
             let url = try XCTUnwrap(URL(string: "/error"))
             response = try await httpClient.get(url: url, headers: [:])
-        } catch let error {
+        } catch {
             XCTFail("Unexpected error thrown")
             return
         }

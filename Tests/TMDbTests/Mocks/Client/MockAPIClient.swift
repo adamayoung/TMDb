@@ -48,13 +48,12 @@ final class MockAPIClient: APIClient {
         do {
             guard let value = try result.get() as? Response else {
                 preconditionFailure("Can't cast response to type \(String(describing: Response.self))")
-//                throw TMDbAPIError.unknown
             }
 
             return value
         } catch let error as TMDbAPIError {
             throw error
-        } catch let error {
+        } catch {
             throw TMDbAPIError.unknown
         }
     }
