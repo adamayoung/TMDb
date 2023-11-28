@@ -110,4 +110,12 @@ final class TVSeriesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testTVSeriesWatchEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/tv/1/watch/providers"))
+
+        let url = TVSeriesEndpoint.watch(tvSeriesID: 1).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }

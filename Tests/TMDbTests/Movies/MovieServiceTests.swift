@@ -304,4 +304,16 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.upcoming(page: page).path)
     }
 
+    func testWatchReturnsWatchProviders() async throws {
+        let expectedResult = ShowWatchProviderResult.mock()
+        let movieID = 1
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.watchProviders(forMovie: movieID)
+
+        let regionCode = try XCTUnwrap(locale.regionCode)
+        XCTAssertEqual(result, expectedResult.results[regionCode])
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
+    }
+
 }
