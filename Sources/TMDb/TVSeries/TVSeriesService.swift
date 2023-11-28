@@ -232,4 +232,29 @@ public final class TVSeriesService {
         return tvSeriesList
     }
 
+    ///
+    /// Returns watch providers for a TV series
+    ///
+    /// [TMDb API - TVSeries: Watch providers](https://developers.themoviedb.org/3/tv/get-tv-watch-providers)
+    /// - Parameters:
+    ///    - id: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
+    /// - Returns: Watch providers for TV series in current region.
+    ///
+    public func watchProviders(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowWatchProvider? {
+        guard let regionCode = localeProvider().regionCode else {
+            return nil
+        }
+        let result: ShowWatchProviderResult
+        do {
+            result = try await apiClient.get(endpoint: TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result.results[regionCode]
+    }
+
 }

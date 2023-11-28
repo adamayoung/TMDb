@@ -1,0 +1,32 @@
+{
+    "id": "1",
+    "results": [
+        ["GB": {
+            "link": "",
+            "free": {
+                "display_priority": 0,
+                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+                "provider_name": "Netflix",
+                "provider_id": 8
+            },
+            "flatrate": {
+                "display_priority": 0,
+                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+                "provider_name": "Netflix",
+                "provider_id": 8
+            },
+            "rent": {
+                "display_priority": 0,
+                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+                "provider_name": "Netflix",
+                "provider_id": 8
+            },
+            "buy": {
+                "display_priority": 0,
+                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+                "provider_name": "Netflix",
+                "provider_id": 8
+            },
+        }]
+    ]
+}
