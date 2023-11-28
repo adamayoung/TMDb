@@ -68,7 +68,7 @@ final class TVSeasonServiceTests: XCTestCase {
             TVSeasonsEndpoint.images(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
-                languageCode: locale.languageCode
+                languageCode: locale.language.languageCode?.identifier
             ).path
         )
     }
@@ -87,7 +87,7 @@ final class TVSeasonServiceTests: XCTestCase {
             TVSeasonsEndpoint.videos(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
-                languageCode: locale.languageCode
+                languageCode: locale.language.languageCode?.identifier
             ).path
         )
     }

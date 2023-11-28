@@ -106,7 +106,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: locale.languageCode).path
+            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: locale.language.languageCode?.identifier).path
         )
     }
 
@@ -120,7 +120,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: locale.languageCode).path
+            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: locale.language.languageCode?.identifier).path
         )
     }
 
@@ -230,7 +230,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forTVSeries: tvSeriesID)
 
-        let regionCode = try XCTUnwrap(locale.regionCode)
+        let regionCode = try XCTUnwrap(locale.region?.identifier)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
     }

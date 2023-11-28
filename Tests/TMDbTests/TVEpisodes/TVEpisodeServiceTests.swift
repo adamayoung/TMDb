@@ -84,7 +84,7 @@ final class TVEpisodeServiceTests: XCTestCase {
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
                 episodeNumber: episodeNumber,
-                languageCode: locale.languageCode
+                languageCode: locale.language.languageCode?.identifier
             ).path
         )
     }
@@ -109,7 +109,7 @@ final class TVEpisodeServiceTests: XCTestCase {
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
                 episodeNumber: episodeNumber,
-                languageCode: locale.languageCode
+                languageCode: locale.language.languageCode?.identifier
             ).path
         )
     }
