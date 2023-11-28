@@ -8,7 +8,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.7+
+* Swift 5.8+
 * OS
   * macOS 11+
   * iOS 14+
