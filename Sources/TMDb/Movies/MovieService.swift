@@ -327,4 +327,8 @@ public final class MovieService {
         return result.results[regionCode]
     }
 
+    public func externalLinks() async throws {
+
+    }
+
 }

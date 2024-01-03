@@ -157,4 +157,12 @@ final class MoviesEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testMovieExternalIDsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/movie/1/external_ids"))
+
+        let url = MoviesEndpoint.externalIDs(movieID: 1).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }
