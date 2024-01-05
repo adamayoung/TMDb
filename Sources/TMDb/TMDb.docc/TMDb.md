@@ -72,7 +72,6 @@ For the TMDb API documentation, see
 - ``Review``
 - ``ImageCollection``
 - ``VideoCollection``
-- ``TVSeriesExnte``
 - ``TVSeriesExternalLinksCollection``
 
 ### TV Seasons
