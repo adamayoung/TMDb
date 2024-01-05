@@ -44,7 +44,6 @@ extension WikiDataLink {
 
 }
 
-
 extension WikiDataLink {
 
     private static func wikiDataURL(for id: String) -> URL? {
