@@ -133,4 +133,15 @@ final class PersonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).path)
     }
 
+    func testExternalLinksReturnsExternalLinks() async throws {
+        let expectedResult = PersonExternalLinksCollection.sydneySweeney
+        let personID = 115440
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.externalLinks(forPerson: personID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.externalIDs(personID: personID).path)
+    }
+
 }

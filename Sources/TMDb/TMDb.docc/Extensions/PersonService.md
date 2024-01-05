@@ -24,3 +24,4 @@
 
 - ``knownFor(forPerson:)``
 - ``popular(page:)``
+- ``externalLinks(forPerson:)``
