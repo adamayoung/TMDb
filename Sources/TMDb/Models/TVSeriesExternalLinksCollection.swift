@@ -1,14 +1,14 @@
 import Foundation
 
 ///
-/// A model representing a collection of media databases and social IDs and links for a person.
+/// A model representing a collection of media databases and social IDs and links for a TV series.
 ///
-public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
+public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
 
     ///
-    /// The TMDb person identifier.
+    /// The TMDb TV series identifier.
     ///
-    public let id: Person.ID
+    public let id: TVSeries.ID
 
     ///
     /// IMDb link.
@@ -36,30 +36,23 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
     public let twitter: TwitterLink?
 
     ///
-    /// TikTok llink.
-    ///
-    public let tikTok: TikTokLink?
-
-    ///
     /// Creates an external links collection for a movie.
     ///
     /// - Parameters:
-    ///   - id: The TMDb person identifier.
+    ///   - id: The TMDb TV series identifier.
     ///   - imdb: IMDb link.
     ///   - wikiData: WikiData link.
     ///   - facebook: Facebook link.
     ///   - instagram: Instagram link.
     ///   - twitter: Twitter link.
-    ///   - tikTok: TikTok link.
     ///
     public init(
-        id: Movie.ID,
+        id: TVSeries.ID,
         imdb: IMDbLink? = nil,
         wikiData: WikiDataLink? = nil,
         facebook: FacebookLink? = nil,
         instagram: InstagramLink? = nil,
-        twitter: TwitterLink? = nil,
-        tikTok: TikTokLink? = nil
+        twitter: TwitterLink? = nil
     ) {
         self.id = id
         self.imdb = imdb
@@ -67,7 +60,6 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
         self.facebook = facebook
         self.instagram = instagram
         self.twitter = twitter
-        self.tikTok = tikTok
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -77,22 +69,20 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
         hasher.combine(facebook?.id)
         hasher.combine(instagram?.id)
         hasher.combine(twitter?.id)
-        hasher.combine(tikTok?.id)
     }
 
-    public static func == (lhs: PersonExternalLinksCollection, rhs: PersonExternalLinksCollection) -> Bool {
+    public static func == (lhs: TVSeriesExternalLinksCollection, rhs: TVSeriesExternalLinksCollection) -> Bool {
         lhs.id == rhs.id
         && lhs.imdb == rhs.imdb
         && lhs.wikiData == rhs.wikiData
         && lhs.facebook == rhs.facebook
         && lhs.instagram == rhs.instagram
         && lhs.twitter == rhs.twitter
-        && lhs.tikTok == rhs.tikTok
     }
 
 }
 
-extension PersonExternalLinksCollection {
+extension TVSeriesExternalLinksCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -101,27 +91,24 @@ extension PersonExternalLinksCollection {
         case facebookID = "facebookId"
         case instagramID = "instagramId"
         case twitterID = "twitterId"
-        case tikTokID = "tiktokId"
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let id = try container.decode(Person.ID.self, forKey: .id)
+        let id = try container.decode(TVSeries.ID.self, forKey: .id)
 
         let imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
         let wikiDataID = try container.decodeIfPresent(String.self, forKey: .wikiDataID)
         let facebookID = try container.decodeIfPresent(String.self, forKey: .facebookID)
         let instagramID = try container.decodeIfPresent(String.self, forKey: .instagramID)
         let twitterID = try container.decodeIfPresent(String.self, forKey: .twitterID)
-        let tikTokID = try container.decodeIfPresent(String.self, forKey: .tikTokID)
 
-        let imdbLink = IMDbLink(imdbNameID: imdbID)
+        let imdbLink = IMDbLink(imdbTitleID: imdbID)
         let wikiDataLink = WikiDataLink(wikiDataID: wikiDataID)
         let facebookLink = FacebookLink(facebookID: facebookID)
         let instagramLink = InstagramLink(instagramID: instagramID)
         let twitterLink = TwitterLink(twitterID: twitterID)
-        let tikTokLink = TikTokLink(tikTokID: tikTokID)
 
         self.init(
             id: id,
@@ -129,8 +116,7 @@ extension PersonExternalLinksCollection {
             wikiData: wikiDataLink,
             facebook: facebookLink,
             instagram: instagramLink,
-            twitter: twitterLink,
-            tikTok: tikTokLink
+            twitter: twitterLink
         )
     }
 
@@ -143,7 +129,6 @@ extension PersonExternalLinksCollection {
         try container.encodeIfPresent(facebook?.id, forKey: .facebookID)
         try container.encodeIfPresent(instagram?.id, forKey: .instagramID)
         try container.encodeIfPresent(twitter?.id, forKey: .twitterID)
-        try container.encodeIfPresent(tikTok?.id, forKey: .tikTokID)
     }
 
 }

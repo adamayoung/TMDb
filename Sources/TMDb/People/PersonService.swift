@@ -192,6 +192,8 @@ public final class PersonService {
     ///
     /// Returns a collection of media databases and social links for a person.
     ///
+    /// [TMDb API - People: External IDs](https://developer.themoviedb.org/reference/person-external-ids)
+    ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///
