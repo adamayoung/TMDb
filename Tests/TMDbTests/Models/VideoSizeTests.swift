@@ -20,7 +20,7 @@ final class VideoSizeTests: XCTestCase {
     }
 
     func testDecodeWhenInvalidValueReturnsUnknown() throws {
-        let data = "{\"videoSize\": 999}".data(using: .utf8)!
+        let data = Data("{\"videoSize\": 999}".utf8)
         let decoder = JSONDecoder()
 
         let result = try decoder.decode(MockObject.self, from: data).videoSize
