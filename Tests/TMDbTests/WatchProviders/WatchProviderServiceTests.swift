@@ -7,6 +7,14 @@ final class WatchProviderServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
+    var regionCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.region?.identifier
+        } else {
+            locale.regionCode
+        }
+    }
+
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -40,7 +48,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let result = try await service.movieWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: locale.regionCode).path)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: regionCode).path)
     }
 
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
@@ -51,7 +59,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: locale.regionCode).path)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: regionCode).path)
     }
 
 }

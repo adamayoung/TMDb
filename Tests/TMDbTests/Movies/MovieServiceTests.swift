@@ -7,6 +7,22 @@ final class MovieServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
+    var languageCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+    }
+
+    var regionCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.region?.identifier
+        } else {
+            locale.regionCode
+        }
+    }
+
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -87,7 +103,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.images(movieID: movieID, languageCode: locale.languageCode).path
+            MoviesEndpoint.images(movieID: movieID, languageCode: languageCode).path
         )
     }
 
@@ -101,7 +117,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.videos(movieID: movieID, languageCode: locale.languageCode).path
+            MoviesEndpoint.videos(movieID: movieID, languageCode: languageCode).path
         )
     }
 
@@ -304,7 +320,7 @@ final class MovieServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID)
 
-        let regionCode = try XCTUnwrap(locale.regionCode)
+        let regionCode = try XCTUnwrap(self.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
     }

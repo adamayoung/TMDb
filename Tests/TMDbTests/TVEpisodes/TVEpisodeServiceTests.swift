@@ -7,6 +7,14 @@ final class TVEpisodeServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
+    var languageCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+    }
+
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -55,7 +63,7 @@ final class TVEpisodeServiceTests: XCTestCase {
                        TVEpisodesEndpoint.images(tvSeriesID: tvSeriesID,
                                                  seasonNumber: seasonNumber,
                                                  episodeNumber: episodeNumber,
-                                                 languageCode: locale.languageCode).path)
+                                                 languageCode: languageCode).path)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -74,7 +82,7 @@ final class TVEpisodeServiceTests: XCTestCase {
                        TVEpisodesEndpoint.videos(tvSeriesID: tvSeriesID,
                                                  seasonNumber: seasonNumber,
                                                  episodeNumber: episodeNumber,
-                                                 languageCode: locale.languageCode).path)
+                                                 languageCode: languageCode).path)
     }
 
 }

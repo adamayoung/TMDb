@@ -7,6 +7,14 @@ final class TVSeasonServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
+    var languageCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+    }
+
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -45,7 +53,7 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(
             apiClient.lastPath,
             TVSeasonsEndpoint.images(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                         languageCode: locale.languageCode).path
+                                     languageCode: languageCode).path
         )
     }
 
@@ -61,7 +69,7 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(
             apiClient.lastPath,
             TVSeasonsEndpoint.videos(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                         languageCode: locale.languageCode).path
+                                         languageCode: languageCode).path
         )
     }
 

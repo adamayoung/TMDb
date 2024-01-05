@@ -7,6 +7,22 @@ final class TVSeriesServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
+    var languageCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+    }
+
+    var regionCode: String? {
+        if #available(macOS 13.0, *) {
+            locale.region?.identifier
+        } else {
+            locale.regionCode
+        }
+    }
+
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -87,7 +103,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: locale.languageCode).path
+            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: languageCode).path
         )
     }
 
@@ -101,7 +117,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: locale.languageCode).path
+            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: languageCode).path
         )
     }
 
@@ -211,7 +227,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forTVSeries: tvSeriesID)
 
-        let regionCode = try XCTUnwrap(locale.regionCode)
+        let regionCode = try XCTUnwrap(self.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
     }
