@@ -309,4 +309,15 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
     }
 
+    func testExternalLinksReturnsExternalLinks() async throws {
+        let expectedResult = MovieExternalLinksCollection.barbie
+        let movieID = 346698
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.externalLinks(forMovie: movieID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.externalIDs(movieID: movieID).path)
+    }
+
 }

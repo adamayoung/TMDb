@@ -31,3 +31,4 @@
 - ``popular(page:)``
 - ``topRated(page:)``
 - ``upcoming(page:)``
+- ``externalLinks(forMovie:)``
