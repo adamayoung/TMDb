@@ -59,4 +59,12 @@ final class PeopleEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testExternalIDsEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/person/1/external_ids"))
+
+        let url = PeopleEndpoint.externalIDs(personID: 1).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }

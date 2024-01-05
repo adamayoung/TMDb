@@ -331,14 +331,14 @@ public final class MovieService {
     /// Returns a collection of media databases and social links for a movie.
     /// 
     /// - Parameters:
-    ///    - id: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///
     /// - Returns: A collection of external links for the specificed movie.
     ///
-    public func externalLinks(forMovie id: Movie.ID) async throws -> MovieExternalLinksCollection {
+    public func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection {
         let linksCollection: MovieExternalLinksCollection
         do {
-            linksCollection = try await apiClient.get(endpoint: MoviesEndpoint.externalIDs(movieID: id))
+            linksCollection = try await apiClient.get(endpoint: MoviesEndpoint.externalIDs(movieID: movieID))
         } catch let error {
             throw TMDbError(error: error)
         }
