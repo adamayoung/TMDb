@@ -20,9 +20,9 @@ public struct IMDbLink: ExternalLink {
     ///
     /// Creates an IMDb link object using an IMDb title identifier.
     ///
-    /// e.g. for a movie or TV show.
+    /// e.g. for a movie or TV series.
     ///
-    /// - Parameter imdbTitleID: The IMDb movie or TV show identifier.
+    /// - Parameter imdbTitleID: The IMDb movie or TV series identifier.
     ///
     public init?(imdbTitleID: String?) {
         guard

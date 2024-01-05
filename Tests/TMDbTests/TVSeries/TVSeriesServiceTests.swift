@@ -216,4 +216,15 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
     }
 
+    func testExternalLinksReturnsExternalLinks() async throws {
+        let expectedResult = TVSeriesExternalLinksCollection.lockeAndKey
+        let tvSeriesID = 86423
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.externalLinks(forTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID).path)
+    }
+
 }

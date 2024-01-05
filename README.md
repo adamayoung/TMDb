@@ -59,7 +59,7 @@ Documentation and examples of usage can be found at
 ## References
 
 * [https://www.themoviedb.org](https://www.themoviedb.org)
-* [https://developers.themoviedb.org](https://developers.themoviedb.org)
+* [https://developer.themoviedb.org](https://developer.themoviedb.org)
 
 ## License
 
