@@ -1,21 +1,49 @@
 import Foundation
 
-struct WikiDataLink: ExternalLink {
+///
+/// A WikiData external link.
+///
+/// e.g. to a movie's WikiData page.
+///
+public struct WikiDataLink: ExternalLink {
 
-    let id: String
-    let url: URL
+    ///
+    /// WikiData page identifier.
+    ///
+    public let id: String
 
-    init?(wikiDataID: String) {
-        self.id = wikiDataID
+    ///
+    /// URL of the WikiData web page.
+    ///
+    public let url: URL
 
-        guard let url = Self.wikiDataURL(for: wikiDataID) else {
+    ///
+    /// Creates a WikiData link object using a WikiData page identifier.
+    ///
+    /// - Parameter wikiDataID: The WikiData page identifier.
+    ///
+    public init?(wikiDataID: String?) {
+        guard
+            let wikiDataID,
+            let url = Self.wikiDataURL(for: wikiDataID)
+        else {
             return nil
         }
 
+        self.init(id: wikiDataID, url: url)
+    }
+
+}
+
+extension WikiDataLink {
+
+    private init(id: String, url: URL) {
+        self.id = id
         self.url = url
     }
 
 }
+
 
 extension WikiDataLink {
 

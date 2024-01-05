@@ -1,17 +1,44 @@
 import Foundation
 
-struct InstagramLink: ExternalLink {
+///
+/// An Instagram external link.
+///
+/// e.g. to a movie's Instagram profile.
+///
+public struct InstagramLink: ExternalLink {
 
-    let id: String
-    let url: URL
+    ///
+    /// Instagram profile identifier.
+    ///
+    public let id: String
 
-    init?(instagramID: String) {
-        self.id = instagramID
+    ///
+    /// URL of the Instagram profile page.
+    ///
+    public let url: URL
 
-        guard let url = Self.instagramURL(for: instagramID) else {
+    ///
+    /// Creates an Instagram link object using an Instagram profile identifier.
+    ///
+    /// - Parameter instagramID: The Instagram profile identifier.
+    ///
+    public init?(instagramID: String?) {
+        guard
+            let instagramID,
+            let url = Self.instagramURL(for: instagramID)
+        else {
             return nil
         }
 
+        self.init(id: instagramID, url: url)
+    }
+
+}
+
+extension InstagramLink {
+
+    private init(id: String, url: URL) {
+        self.id = id
         self.url = url
     }
 

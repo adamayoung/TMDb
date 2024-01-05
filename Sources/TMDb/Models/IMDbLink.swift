@@ -1,31 +1,64 @@
 import Foundation
 
-struct IMDbLink: ExternalLink {
+///
+/// An IMDb external link.
+///
+/// e.g. to a movie's IMDb page.
+///
+public struct IMDbLink: ExternalLink {
 
-    let id: String
-    let url: URL
+    ///
+    /// IMDb identifier.
+    ///
+    public let id: String
 
-    init?(imdbTitleID: String?) {
-        guard let imdbTitleID else {
+    ///
+    /// URL of the IMDb web page.
+    ///
+    public let url: URL
+
+    ///
+    /// Creates an IMDb link object using an IMDb title identifier.
+    ///
+    /// e.g. for a movie or TV show.
+    ///
+    /// - Parameter imdbTitleID: The IMDb movie or TV show identifier.
+    ///
+    public init?(imdbTitleID: String?) {
+        guard
+            let imdbTitleID,
+            let url = Self.imdbURL(forTitle: imdbTitleID)
+        else {
             return nil
         }
 
-        self.id = imdbTitleID
-
-        guard let url = Self.imdbURL(forTitle: imdbTitleID) else {
-            return nil
-        }
-
-        self.url = url
+        self.init(id: imdbTitleID, url: url)
     }
 
-    init?(imdbNameID: String) {
-        self.id = imdbNameID
-
-        guard let url = Self.imdbURL(forName: imdbNameID) else {
+    ///
+    /// Creates an IMDb link object using an IMDb name identifier.
+    ///
+    /// e.g. for a person.
+    ///
+    /// - Parameter imdbNameID: The IMDb person identifier.
+    ///
+    public init?(imdbNameID: String?) {
+        guard
+            let imdbNameID,
+            let url = Self.imdbURL(forName: imdbNameID)
+        else {
             return nil
         }
 
+        self.init(id: imdbNameID, url: url)
+    }
+
+}
+
+extension IMDbLink {
+
+    private init(id: String, url: URL) {
+        self.id = id
         self.url = url
     }
 

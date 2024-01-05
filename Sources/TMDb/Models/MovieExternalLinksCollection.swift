@@ -5,12 +5,80 @@ import Foundation
 ///
 public struct MovieExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
 
+    ///
+    /// The TMDb movie identifier.
+    ///
     public let id: Movie.ID
-    public let imdb: (any ExternalLink)?
-    public let wikiData: (any ExternalLink)?
-    public let facebook: (any ExternalLink)?
-    public let instagram: (any ExternalLink)?
-    public let twitter: (any ExternalLink)?
+
+    ///
+    /// IMDb link.
+    ///
+    public let imdb: IMDbLink?
+
+    ///
+    /// WikiData link.
+    ///
+    public let wikiData: WikiDataLink?
+
+    ///
+    /// Facebook link.
+    ///
+    public let facebook: FacebookLink?
+
+    ///
+    /// Instagram link.
+    ///
+    public let instagram: InstagramLink?
+
+    ///
+    /// Twitter link.
+    ///
+    public let twitter: TwitterLink?
+
+    ///
+    /// Creates an external links collection for a movie.
+    ///
+    /// - Parameters:
+    ///   - id: The TMDb movie identifier.
+    ///   - imdb: IMDb link.
+    ///   - wikiData: WikiData link.
+    ///   - facebook: Facebook link.
+    ///   - instagram: Instagram link.
+    ///   - twitter: Twitter link.
+    ///
+    public init(
+        id: Movie.ID,
+        imdb: IMDbLink? = nil,
+        wikiData: WikiDataLink? = nil,
+        facebook: FacebookLink? = nil,
+        instagram: InstagramLink? = nil,
+        twitter: TwitterLink? = nil
+    ) {
+        self.id = id
+        self.imdb = imdb
+        self.wikiData = wikiData
+        self.facebook = facebook
+        self.instagram = instagram
+        self.twitter = twitter
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(imdb?.id)
+        hasher.combine(wikiData?.id)
+        hasher.combine(facebook?.id)
+        hasher.combine(instagram?.id)
+        hasher.combine(twitter?.id)
+    }
+
+    public static func == (lhs: MovieExternalLinksCollection, rhs: MovieExternalLinksCollection) -> Bool {
+        lhs.id == rhs.id
+        && lhs.imdb?.id == rhs.imdb?.id
+        && lhs.wikiData?.id == rhs.wikiData?.id
+        && lhs.facebook?.id == rhs.facebook?.id
+        && lhs.instagram?.id == rhs.instagram?.id
+        && lhs.twitter?.id == rhs.twitter?.id
+    }
 
 }
 
@@ -29,37 +97,38 @@ extension MovieExternalLinksCollection {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(Movie.ID.self, forKey: .id)
+
         let imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
         let wikiDataID = try container.decodeIfPresent(String.self, forKey: .wikiDataID)
         let facebookID = try container.decodeIfPresent(String.self, forKey: .facebookID)
         let instagramID = try container.decodeIfPresent(String.self, forKey: .instagramID)
         let twitterID = try container.decodeIfPresent(String.self, forKey: .twitterID)
 
-        self.id = id
-        self.imdb = {
-            guard let imdbID else {
-                return nil
-            }
+        let imdbLink = IMDbLink(imdbTitleID: imdbID)
+        let wikiDataLink = WikiDataLink(wikiDataID: wikiDataID)
+        let facebookLink = FacebookLink(facebookID: facebookID)
+        let instagramLink = InstagramLink(instagramID: instagramID)
+        let twitterLink = TwitterLink(twitterID: twitterID)
 
-            return IMDbLink(imdbTitleID: imdbID)
-        }()
-
-        
+        self.init(
+            id: id,
+            imdb: imdbLink,
+            wikiData: wikiDataLink,
+            facebook: facebookLink,
+            instagram: instagramLink,
+            twitter: twitterLink
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
-        var singleContainer = encoder.singleValueContainer()
+        var container = encoder.container(keyedBy: CodingKeys.self)
 
-        switch self {
-        case .movie(let movie):
-            try singleContainer.encode(movie)
-
-        case .tvSeries(let tvSeries):
-            try singleContainer.encode(tvSeries)
-
-        case .person(let person):
-            try singleContainer.encode(person)
-        }
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(imdb?.id, forKey: .imdbID)
+        try container.encodeIfPresent(wikiData?.id, forKey: .wikiDataID)
+        try container.encodeIfPresent(facebook?.id, forKey: .facebookID)
+        try container.encodeIfPresent(instagram?.id, forKey: .instagramID)
+        try container.encodeIfPresent(twitter?.id, forKey: .twitterID)
     }
 
 }

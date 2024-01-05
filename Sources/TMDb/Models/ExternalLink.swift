@@ -5,15 +5,15 @@ import Foundation
 ///
 /// e.g. to a Movie's IMDb page.
 ///
-public protocol ExternalLink: Equatable {
+public protocol ExternalLink: Equatable, Hashable {
 
     ///
-    /// The external site's identifier.
+    /// The external site's item identifier.
     ///
     var id: String { get }
 
     ///
-    /// The URL of the external site's page.
+    /// The URL of the external site's item page.
     ///
     var url: URL { get }
 

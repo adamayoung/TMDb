@@ -3,6 +3,14 @@ import XCTest
 
 final class IMDbLinkTests: XCTestCase {
 
+    func testInitWithIMDbTitleIDWhenIDIsNilReturnsNil() {
+        XCTAssertNil(IMDbLink(imdbTitleID: nil))
+    }
+
+    func testInitWithIMDbNameIDWhenIDIsNilReturnsNil() {
+        XCTAssertNil(IMDbLink(imdbNameID: nil))
+    }
+
     func testShowURL() throws {
         let imdbID = "tt1517268"
         let expectedURL = try XCTUnwrap(URL(string: "https://www.imdb.com/title/\(imdbID)/"))
