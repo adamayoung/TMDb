@@ -21,7 +21,7 @@ jobs:
       image: docker://ghcr.io/realm/swiftlint:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Lint README
         run: docker run -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "README.md"

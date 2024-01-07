@@ -23,7 +23,7 @@ final class JSONDecoderTMDbTests: XCTestCase {
             "date_of_birth": "1990-01-02"
         }
         """
-        let data = jsonString.data(using: .utf8)!
+        let data = Data(jsonString.utf8)
 
         let result = try JSONDecoder.theMovieDatabase.decode(SomeThing.self, from: data)
 

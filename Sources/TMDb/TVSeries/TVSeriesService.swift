@@ -235,7 +235,8 @@ public final class TVSeriesService {
     ///
     /// Returns watch providers for a TV series
     ///
-    /// [TMDb API - TVSeries: Watch providers](https://developers.themoviedb.org/3/tv/get-tv-watch-providers)
+    /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
+    ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
     ///
@@ -255,6 +256,27 @@ public final class TVSeriesService {
         }
 
         return result.results[regionCode]
+    }
+
+    ///
+    /// Returns a collection of media databases and social links for a TV series.
+    ///
+    /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Returns: A collection of external links for the specificed TV series.
+    ///
+    public func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
+        let linksCollection: TVSeriesExternalLinksCollection
+        do {
+            linksCollection = try await apiClient.get(endpoint: TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return linksCollection
     }
 
 }

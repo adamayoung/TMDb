@@ -103,4 +103,17 @@ final class MovieIntegrationTests: XCTestCase {
         XCTAssertFalse(movieList.results.isEmpty)
     }
 
+    func testExternalLinks() async throws {
+        let movieID = 346698
+
+        let linksCollection = try await movieService.externalLinks(forMovie: movieID)
+
+        XCTAssertEqual(linksCollection.id, movieID)
+        XCTAssertNotNil(linksCollection.imdb)
+        XCTAssertNotNil(linksCollection.wikiData)
+        XCTAssertNotNil(linksCollection.facebook)
+        XCTAssertNotNil(linksCollection.instagram)
+        XCTAssertNotNil(linksCollection.twitter)
+    }
+
 }

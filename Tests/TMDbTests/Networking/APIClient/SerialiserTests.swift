@@ -16,7 +16,7 @@ final class SerialiserTests: XCTestCase {
     }
 
     func testDecodeWhenDataCannotBeDecodedThrowsDecodeError() async throws {
-        let data = "aaa".data(using: .utf8)!
+        let data = Data("aaa".utf8)
 
         do {
             _ = try await serialiser.decode(MockObject.self, from: data)

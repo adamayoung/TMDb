@@ -189,4 +189,25 @@ public final class PersonService {
         return personList
     }
 
+    ///
+    /// Returns a collection of media databases and social links for a person.
+    ///
+    /// [TMDb API - People: External IDs](https://developer.themoviedb.org/reference/person-external-ids)
+    ///
+    /// - Parameters:
+    ///    - personID: The identifier of the person.
+    ///
+    /// - Returns: A collection of external links for the specificed person.
+    ///
+    public func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection {
+        let linksCollection: PersonExternalLinksCollection
+        do {
+            linksCollection = try await apiClient.get(endpoint: PeopleEndpoint.externalIDs(personID: personID))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return linksCollection
+    }
+
 }

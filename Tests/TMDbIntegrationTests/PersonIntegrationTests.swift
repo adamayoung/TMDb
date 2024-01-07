@@ -78,4 +78,18 @@ final class PersonIntegrationTests: XCTestCase {
         XCTAssertFalse(personList.results.isEmpty)
     }
 
+    func testExternalLinks() async throws {
+        let personID = 115440
+
+        let linksCollection = try await personService.externalLinks(forPerson: personID)
+
+        XCTAssertEqual(linksCollection.id, personID)
+        XCTAssertNotNil(linksCollection.imdb)
+        XCTAssertNotNil(linksCollection.wikiData)
+        XCTAssertNil(linksCollection.facebook)
+        XCTAssertNotNil(linksCollection.instagram)
+        XCTAssertNotNil(linksCollection.twitter)
+        XCTAssertNotNil(linksCollection.tikTok)
+    }
+
 }

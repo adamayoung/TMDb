@@ -60,6 +60,7 @@ For the TMDb API documentation, see
 - ``Review``
 - ``ImageCollection``
 - ``VideoCollection``
+- ``MovieExternalLinksCollection``
 - ``MoviePageableList``
 
 ### TV Series
@@ -71,7 +72,7 @@ For the TMDb API documentation, see
 - ``Review``
 - ``ImageCollection``
 - ``VideoCollection``
-- ``TVSeriesPageableList``
+- ``TVSeriesExternalLinksCollection``
 
 ### TV Seasons
 
@@ -96,6 +97,7 @@ For the TMDb API documentation, see
 - ``PersonTVSeriesCredits``
 - ``PersonImageCollection``
 - ``Show``
+- ``PersonExternalLinksCollection``
 - ``PersonPageableList``
 
 ### Discover

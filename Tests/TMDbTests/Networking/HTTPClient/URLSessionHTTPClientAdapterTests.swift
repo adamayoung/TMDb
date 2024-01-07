@@ -77,7 +77,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
 
     func testGetWhenResponseHasValidDataReturnsDecodedObject() async throws {
         let expectedStatusCode = 200
-        let expectedData = try XCTUnwrap("abc".data(using: .utf8))
+        let expectedData = Data("abc".utf8)
         MockURLProtocol.data = expectedData
 
         let url = try XCTUnwrap(URL(string: "/object"))
