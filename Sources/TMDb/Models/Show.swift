@@ -3,7 +3,7 @@ import Foundation
 ///
 /// A model representing a show - movie or TV series.
 ///
-public enum Show: Identifiable, Equatable, Hashable {
+public enum Show: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Show identifier.
@@ -56,7 +56,7 @@ public enum Show: Identifiable, Equatable, Hashable {
 
 }
 
-extension Show: Decodable {
+extension Show {
 
     private enum CodingKeys: String, CodingKey {
         case mediaType
@@ -80,4 +80,15 @@ extension Show: Decodable {
         }
     }
 
+    public func encode(to encoder: Encoder) throws {
+        var singleContainer = encoder.singleValueContainer()
+
+        switch self {
+        case .movie(let movie):
+            try singleContainer.encode(movie)
+
+        case .tvSeries(let tvSeries):
+            try singleContainer.encode(tvSeries)
+        }
+    }
 }
