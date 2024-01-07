@@ -82,11 +82,11 @@ extension Show {
 
     public func encode(to encoder: Encoder) throws {
         var singleContainer = encoder.singleValueContainer()
-        
+
         switch self {
         case .movie(let movie):
             try singleContainer.encode(movie)
-            
+
         case .tvSeries(let tvSeries):
             try singleContainer.encode(tvSeries)
         }
