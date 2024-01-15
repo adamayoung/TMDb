@@ -22,7 +22,7 @@ import Foundation
 ///
 /// Provides an interface for obtaining configuration data from TMDb.
 ///
-@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public final class ConfigurationService {
 
     private let apiClient: any APIClient
