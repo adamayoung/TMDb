@@ -4,16 +4,16 @@ final class TMDbAPIClient: APIClient {
 
     private let apiKey: String
     private let baseURL: URL
-    private let httpClient: HTTPClient
+    private let httpClient: any HTTPClient
     private let serialiser: Serialiser
-    private let localeProvider: () -> Locale
+    private let localeProvider: any LocaleProviding
 
     init(
         apiKey: String,
         baseURL: URL,
-        httpClient: HTTPClient,
+        httpClient: some HTTPClient,
         serialiser: Serialiser,
-        localeProvider: @escaping () -> Locale
+        localeProvider: some LocaleProviding
     ) {
         self.apiKey = apiKey
         self.baseURL = baseURL
@@ -67,7 +67,7 @@ extension TMDbAPIClient {
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)
-            .appendingLanguage(localeProvider().languageCode)
+            .appendingLanguage(localeProvider.languageCode)
     }
 
     private func validate(response: HTTPResponse) async throws {

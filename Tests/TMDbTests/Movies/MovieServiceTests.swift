@@ -5,18 +5,18 @@ final class MovieServiceTests: XCTestCase {
 
     var service: MovieService!
     var apiClient: MockAPIClient!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        locale = Locale(identifier: "en_GB")
-        service = MovieService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
+        service = MovieService(apiClient: apiClient, localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -87,7 +87,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.images(movieID: movieID, languageCode: languageCode).path
+            MoviesEndpoint.images(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -101,7 +101,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.videos(movieID: movieID, languageCode: languageCode).path
+            MoviesEndpoint.videos(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -304,7 +304,7 @@ final class MovieServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID)
 
-        let regionCode = try XCTUnwrap(self.regionCode)
+        let regionCode = try XCTUnwrap(self.localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
     }
@@ -318,34 +318,6 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.externalIDs(movieID: movieID).path)
-    }
-
-}
-
-extension MovieServiceTests {
-
-    var languageCode: String? {
-        #if os(Linux)
-        locale.languageCode
-        #else
-        if #available(macOS 13.0, *) {
-            locale.language.languageCode?.identifier
-        } else {
-            locale.languageCode
-        }
-        #endif
-    }
-
-    var regionCode: String? {
-        #if os(Linux)
-        locale.regionCode
-        #else
-        if #available(macOS 13.0, *) {
-            locale.region?.identifier
-        } else {
-            locale.regionCode
-        }
-        #endif
     }
 
 }

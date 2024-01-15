@@ -11,7 +11,7 @@ final class TMDbAPIClientTests: XCTestCase {
     var baseURL: URL!
     var httpClient: HTTPMockClient!
     var serialiser: Serialiser!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -22,14 +22,14 @@ final class TMDbAPIClientTests: XCTestCase {
         configuration.protocolClasses = [MockURLProtocol.self]
         httpClient = HTTPMockClient()
         serialiser = Serialiser(decoder: .theMovieDatabase)
-        locale = Locale(identifier: "en_GB")
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
-                                  localeProvider: { [unowned self] in self.locale })
+                                  localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         serialiser = nil
         httpClient = nil
         baseURL = nil

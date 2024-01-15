@@ -6,8 +6,8 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVSeriesService {
 
-    private let apiClient: APIClient
-    private let localeProvider: () -> Locale
+    private let apiClient: any APIClient
+    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV series service object.
@@ -15,11 +15,11 @@ public final class TVSeriesService {
     public convenience init() {
         self.init(
             apiClient: TMDbFactory.apiClient,
-            localeProvider: TMDbFactory.localeProvider
+            localeProvider: TMDbFactory.localeProvider()
         )
     }
 
-    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
+    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
         self.apiClient = apiClient
         self.localeProvider = localeProvider
     }
@@ -109,7 +109,7 @@ public final class TVSeriesService {
     /// - Returns: A collection of images for the matching TV series.
     ///
     public func images(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let imageCollection: ImageCollection
         do {
             imageCollection = try await apiClient.get(
@@ -135,7 +135,7 @@ public final class TVSeriesService {
     /// - Returns: A collection of videos for the matching TV series.
     ///
     public func videos(forTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(
@@ -245,7 +245,7 @@ public final class TVSeriesService {
     /// - Returns: Watch providers for TV series in current region.
     ///
     public func watchProviders(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider().regionCode else {
+        guard let regionCode = localeProvider.regionCode else {
             return nil
         }
         let result: ShowWatchProviderResult

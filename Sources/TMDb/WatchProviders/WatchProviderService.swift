@@ -6,8 +6,8 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class WatchProviderService {
 
-    private let apiClient: APIClient
-    private let localeProvider: () -> Locale
+    private let apiClient: any APIClient
+    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a watch provider service object.
@@ -15,11 +15,11 @@ public final class WatchProviderService {
     public convenience init() {
         self.init(
             apiClient: TMDbFactory.apiClient,
-            localeProvider: TMDbFactory.localeProvider
+            localeProvider: TMDbFactory.localeProvider()
         )
     }
 
-    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
+    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
         self.apiClient = apiClient
         self.localeProvider = localeProvider
     }
@@ -54,7 +54,7 @@ public final class WatchProviderService {
     /// - Returns: Watch providers for movies.
     /// 
     public func movieWatchProviders() async throws -> [WatchProvider] {
-        let regionCode = localeProvider().regionCode
+        let regionCode = localeProvider.regionCode
         let result: WatchProviderResult
         do {
             result = try await apiClient.get(
@@ -77,7 +77,7 @@ public final class WatchProviderService {
     /// - Returns: Watch providers for TV series.
     /// 
     public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
-        let regionCode = localeProvider().regionCode
+        let regionCode = localeProvider.regionCode
         let result: WatchProviderResult
         do {
             result = try await apiClient.get(
