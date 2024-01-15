@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.1.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
 
 jobs:
   build-test:
@@ -46,9 +46,14 @@ jobs:
             destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2
           - name: Apple TV
             destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
+          - name: VisionOS
+            destination: platform=visionOS Simulator,name=Vision,OS=1.0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Devices
+        run: xcrun simctl list devices
 
       - name: Build
         run: set -o pipefail && env NSUnbufferedIO=YES && xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
