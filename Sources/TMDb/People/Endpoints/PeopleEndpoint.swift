@@ -38,36 +38,36 @@ extension PeopleEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .details(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
 
         case let .combinedCredits(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("combined_credits")
 
         case let .movieCredits(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("movie_credits")
 
         case let .tvSeriesCredits(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("tv_credits")
 
         case let .images(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("images")
 
         case let .popular(page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
         case let .externalIDs(personID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("external_ids")
         }

@@ -35,18 +35,18 @@ extension ConfigurationEndpoint: Endpoint {
     var path: URL {
         switch self {
         case .api:
-            return Self.basePath
+            Self.basePath
 
         case .countries:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("countries")
 
         case .jobs:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("jobs")
 
         case .languages:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("languages")
         }
     }

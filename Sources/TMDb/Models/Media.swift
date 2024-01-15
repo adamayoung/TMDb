@@ -30,13 +30,13 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
     public var id: Int {
         switch self {
         case let .movie(movie):
-            return movie.id
+            movie.id
 
         case let .tvSeries(tvSeries):
-            return tvSeries.id
+            tvSeries.id
 
         case let .person(person):
-            return person.id
+            person.id
         }
     }
 

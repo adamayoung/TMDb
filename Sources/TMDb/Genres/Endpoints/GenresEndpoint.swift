@@ -33,12 +33,12 @@ extension GenresEndpoint: Endpoint {
     var path: URL {
         switch self {
         case .movie:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingPathComponent("list")
 
         case .tvSeries:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingPathComponent("list")
         }

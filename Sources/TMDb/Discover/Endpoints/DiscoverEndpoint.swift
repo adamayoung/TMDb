@@ -33,14 +33,14 @@ extension DiscoverEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .movies(sortedBy, people, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingSortBy(sortedBy)
                 .appendingWithPeople(people)
                 .appendingPage(page)
 
         case let .tvSeries(sortedBy, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingSortBy(sortedBy)
                 .appendingPage(page)

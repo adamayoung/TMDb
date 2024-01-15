@@ -37,17 +37,17 @@ extension TVSeasonsEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .details(tvSeriesID, seasonNumber):
-            return Self.basePath(for: tvSeriesID)
+            Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
 
         case let .images(tvSeriesID, seasonNumber, languageCode):
-            return Self.basePath(for: tvSeriesID)
+            Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
         case let .videos(tvSeriesID, seasonNumber, languageCode):
-            return Self.basePath(for: tvSeriesID)
+            Self.basePath(for: tvSeriesID)
                 .appendingPathComponent(seasonNumber)
                 .appendingPathComponent("videos")
                 .appendingVideoLanguage(languageCode)

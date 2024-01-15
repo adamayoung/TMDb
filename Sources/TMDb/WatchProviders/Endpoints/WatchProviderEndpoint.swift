@@ -34,16 +34,16 @@ extension WatchProviderEndpoint: Endpoint {
     var path: URL {
         switch self {
         case .regions:
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("regions")
 
         case let .movie(regionCode):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingWatchRegion(regionCode)
 
         case let .tvSeries(regionCode):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingWatchRegion(regionCode)
         }

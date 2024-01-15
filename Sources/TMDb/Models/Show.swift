@@ -30,10 +30,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable {
     public var id: Int {
         switch self {
         case let .movie(movie):
-            return movie.id
+            movie.id
 
         case let .tvSeries(tvSeries):
-            return tvSeries.id
+            tvSeries.id
         }
     }
 
@@ -43,10 +43,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable {
     var popularity: Double? {
         switch self {
         case let .movie(movie):
-            return movie.popularity
+            movie.popularity
 
         case let .tvSeries(tvSeries):
-            return tvSeries.popularity
+            tvSeries.popularity
         }
     }
 
@@ -56,10 +56,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable {
     var date: Date? {
         switch self {
         case let .movie(movie):
-            return movie.releaseDate
+            movie.releaseDate
 
         case let .tvSeries(tvSeries):
-            return tvSeries.firstAirDate
+            tvSeries.firstAirDate
         }
     }
 

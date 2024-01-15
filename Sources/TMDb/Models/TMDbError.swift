@@ -33,16 +33,16 @@ public enum TMDbError: Equatable, LocalizedError {
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
         case (.notFound, .notFound):
-            return true
+            true
 
         case (.network, .network):
-            return true
+            true
 
         case (.unknown, .unknown):
-            return true
+            true
 
         default:
-            return false
+            false
         }
     }
 
@@ -54,13 +54,13 @@ public extension TMDbError {
     var errorDescription: String? {
         switch self {
         case .notFound:
-            return "Not found"
+            "Not found"
 
         case .network:
-            return "Network error"
+            "Network error"
 
         case .unknown:
-            return "Unknown"
+            "Unknown"
         }
     }
 

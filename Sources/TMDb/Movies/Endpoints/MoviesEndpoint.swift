@@ -44,71 +44,71 @@ extension MoviesEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .details(movieID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
 
         case let .credits(movieID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("credits")
 
         case let .reviews(movieID, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("reviews")
                 .appendingPage(page)
 
         case let .images(movieID, languageCode):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
         case let .videos(movieID, languageCode):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("videos")
                 .appendingVideoLanguage(languageCode)
 
         case let .recommendations(movieID, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("recommendations")
                 .appendingPage(page)
 
         case let .similar(movieID, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
 
         case let .nowPlaying(page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("now_playing")
                 .appendingPage(page)
 
         case let .popular(page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
         case let .topRated(page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("top_rated")
                 .appendingPage(page)
 
         case let .upcoming(page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("upcoming")
                 .appendingPage(page)
 
         case let .watch(movieID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("watch/providers")
 
         case let .externalIDs(movieID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("external_ids")
         }

@@ -32,7 +32,7 @@ extension CompanyEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .details(companyID):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent(companyID)
         }
     }

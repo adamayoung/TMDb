@@ -39,27 +39,27 @@ extension SearchEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .multi(query, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("multi")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingPage(page)
 
         case let .movies(query, year, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingYear(year)
                 .appendingPage(page)
 
         case let .tvSeries(query, firstAirDateYear, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingFirstAirDateYear(firstAirDateYear)
                 .appendingPage(page)
 
         case let .people(query, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("person")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingPage(page)

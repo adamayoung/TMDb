@@ -70,50 +70,50 @@ extension MovieSort {
     private var fieldName: String {
         switch self {
         case .popularity:
-            return "popularity"
+            "popularity"
 
         case .releaseDate:
-            return "release_date"
+            "release_date"
 
         case .primaryReleaseDate:
-            return "primary_release_date"
+            "primary_release_date"
 
         case .revenue:
-            return "revenue"
+            "revenue"
 
         case .originalTitle:
-            return "original_title"
+            "original_title"
 
         case .voteAverage:
-            return "vote_average"
+            "vote_average"
 
         case .voteCount:
-            return "vote_count"
+            "vote_count"
         }
     }
 
     private var isDescending: Bool {
         switch self {
         case let .popularity(descending):
-            return descending
+            descending
 
         case let .releaseDate(descending):
-            return descending
+            descending
 
         case let .revenue(descending):
-            return descending
+            descending
 
         case let .primaryReleaseDate(descending):
-            return descending
+            descending
 
         case let .originalTitle(descending):
-            return descending
+            descending
 
         case let .voteAverage(descending):
-            return descending
+            descending
 
         case let .voteCount(descending):
-            return descending
+            descending
         }
     }
 

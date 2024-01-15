@@ -56,26 +56,26 @@ extension TVSeriesSort {
     private var fieldName: String {
         switch self {
         case .popularity:
-            return FieldName.popularity
+            FieldName.popularity
 
         case .firstAirDate:
-            return FieldName.firstAirDate
+            FieldName.firstAirDate
 
         case .voteAverage:
-            return FieldName.voteAverage
+            FieldName.voteAverage
         }
     }
 
     private var isDescending: Bool {
         switch self {
         case let .popularity(descending):
-            return descending
+            descending
 
         case let .firstAirDate(descending):
-            return descending
+            descending
 
         case let .voteAverage(descending):
-            return descending
+            descending
         }
     }
 

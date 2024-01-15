@@ -34,19 +34,19 @@ extension TrendingEndpoint: Endpoint {
     var path: URL {
         switch self {
         case let .movies(timeWindow, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
 
         case let .tvSeries(timeWindow, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
 
         case let .people(timeWindow, page):
-            return Self.basePath
+            Self.basePath
                 .appendingPathComponent("person")
                 .appendingPathComponent(timeWindow)
                 .appendingPage(page)
