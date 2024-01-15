@@ -25,7 +25,7 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class CompanyService {
 
-    private let apiClient: APIClient
+    private let apiClient: any APIClient
 
     ///
     /// Creates a company service object.
@@ -36,7 +36,7 @@ public final class CompanyService {
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
     }
 

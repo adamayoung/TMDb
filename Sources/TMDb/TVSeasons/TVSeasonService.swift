@@ -25,8 +25,8 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVSeasonService {
 
-    private let apiClient: APIClient
-    private let localeProvider: () -> Locale
+    private let apiClient: any APIClient
+    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV season service object.
@@ -34,11 +34,11 @@ public final class TVSeasonService {
     public convenience init() {
         self.init(
             apiClient: TMDbFactory.apiClient,
-            localeProvider: TMDbFactory.localeProvider
+            localeProvider: TMDbFactory.localeProvider()
         )
     }
 
-    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
+    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
         self.apiClient = apiClient
         self.localeProvider = localeProvider
     }
@@ -82,11 +82,9 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV's season.
     ///
-    public func images(
-        forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVSeasonImageCollection {
-        let languageCode = localeProvider().languageCode
+    public func images(forSeason seasonNumber: Int,
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeasonImageCollection {
+        let languageCode = localeProvider.languageCode
         let imageCollection: TVSeasonImageCollection
         do {
             imageCollection = try await apiClient.get(
@@ -116,11 +114,9 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
-    public func videos(
-        forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+    public func videos(forSeason seasonNumber: Int,
+                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+        let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(

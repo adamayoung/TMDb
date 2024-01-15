@@ -24,18 +24,18 @@ final class WatchProviderServiceTests: XCTestCase {
 
     var service: WatchProviderService!
     var apiClient: MockAPIClient!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        locale = Locale(identifier: "en_GB")
-        service = WatchProviderService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
+        service = WatchProviderService(apiClient: apiClient, localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -59,7 +59,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let result = try await service.movieWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: locale.region?.identifier).path)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: localeProvider.regionCode).path)
     }
 
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
@@ -70,7 +70,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: locale.region?.identifier).path)
+        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: localeProvider.regionCode).path)
     }
 
 }

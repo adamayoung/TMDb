@@ -25,8 +25,8 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVSeriesService {
 
-    private let apiClient: APIClient
-    private let localeProvider: () -> Locale
+    private let apiClient: any APIClient
+    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV series service object.
@@ -34,11 +34,11 @@ public final class TVSeriesService {
     public convenience init() {
         self.init(
             apiClient: TMDbFactory.apiClient,
-            localeProvider: TMDbFactory.localeProvider
+            localeProvider: TMDbFactory.localeProvider()
         )
     }
 
-    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
+    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
         self.apiClient = apiClient
         self.localeProvider = localeProvider
     }
@@ -128,7 +128,7 @@ public final class TVSeriesService {
     /// - Returns: A collection of images for the matching TV series.
     ///
     public func images(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let imageCollection: ImageCollection
         do {
             imageCollection = try await apiClient.get(
@@ -154,7 +154,7 @@ public final class TVSeriesService {
     /// - Returns: A collection of videos for the matching TV series.
     ///
     public func videos(forTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(
@@ -256,7 +256,8 @@ public final class TVSeriesService {
     ///
     /// Returns watch providers for a TV series
     ///
-    /// [TMDb API - TVSeries: Watch providers](https://developers.themoviedb.org/3/tv/get-tv-watch-providers)
+    /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
+    ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
     ///
@@ -265,7 +266,7 @@ public final class TVSeriesService {
     /// - Returns: Watch providers for TV series in current region.
     ///
     public func watchProviders(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider().regionCode else {
+        guard let regionCode = localeProvider.regionCode else {
             return nil
         }
         let result: ShowWatchProviderResult
@@ -276,6 +277,27 @@ public final class TVSeriesService {
         }
 
         return result.results[regionCode]
+    }
+
+    ///
+    /// Returns a collection of media databases and social links for a TV series.
+    ///
+    /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Returns: A collection of external links for the specificed TV series.
+    ///
+    public func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
+        let linksCollection: TVSeriesExternalLinksCollection
+        do {
+            linksCollection = try await apiClient.get(endpoint: TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID))
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return linksCollection
     }
 
 }

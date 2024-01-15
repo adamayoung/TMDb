@@ -36,12 +36,12 @@ extension TMDbFactory {
             baseURL: .tmdbAPIBaseURL,
             httpClient: TMDb.configuration.httpClient(),
             serialiser: serialiser,
-            localeProvider: localeProvider
+            localeProvider: localeProvider()
         )
     }
 
-    static func localeProvider() -> Locale {
-        .current
+    static func localeProvider() -> some LocaleProviding {
+        LocaleProvider(locale: .current)
     }
 
 }

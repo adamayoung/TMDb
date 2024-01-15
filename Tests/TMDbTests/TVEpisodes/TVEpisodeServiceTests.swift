@@ -24,18 +24,18 @@ final class TVEpisodeServiceTests: XCTestCase {
 
     var service: TVEpisodeService!
     var apiClient: MockAPIClient!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        locale = Locale(identifier: "en_GB")
-        service = TVEpisodeService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
+        service = TVEpisodeService(apiClient: apiClient, localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -78,15 +78,11 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastPath,
-            TVEpisodesEndpoint.images(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                episodeNumber: episodeNumber,
-                languageCode: locale.language.languageCode?.identifier
-            ).path
-        )
+        XCTAssertEqual(apiClient.lastPath,
+                       TVEpisodesEndpoint.images(tvSeriesID: tvSeriesID,
+                                                 seasonNumber: seasonNumber,
+                                                 episodeNumber: episodeNumber,
+                                                 languageCode: localeProvider.languageCode).path)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -103,15 +99,11 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastPath,
-            TVEpisodesEndpoint.videos(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                episodeNumber: episodeNumber,
-                languageCode: locale.language.languageCode?.identifier
-            ).path
-        )
+        XCTAssertEqual(apiClient.lastPath,
+                       TVEpisodesEndpoint.videos(tvSeriesID: tvSeriesID,
+                                                 seasonNumber: seasonNumber,
+                                                 episodeNumber: episodeNumber,
+                                                 languageCode: localeProvider.languageCode).path)
     }
 
 }

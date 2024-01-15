@@ -24,18 +24,18 @@ final class MovieServiceTests: XCTestCase {
 
     var service: MovieService!
     var apiClient: MockAPIClient!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        locale = Locale(identifier: "en_GB")
-        service = MovieService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
+        service = MovieService(apiClient: apiClient, localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -106,7 +106,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.images(movieID: movieID, languageCode: locale.language.languageCode?.identifier).path
+            MoviesEndpoint.images(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -120,7 +120,7 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            MoviesEndpoint.videos(movieID: movieID, languageCode: locale.language.languageCode?.identifier).path
+            MoviesEndpoint.videos(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -323,9 +323,20 @@ final class MovieServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID)
 
-        let regionCode = try XCTUnwrap(locale.region?.identifier)
+        let regionCode = try XCTUnwrap(self.localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
+    }
+
+    func testExternalLinksReturnsExternalLinks() async throws {
+        let expectedResult = MovieExternalLinksCollection.barbie
+        let movieID = 346698
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.externalLinks(forMovie: movieID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.externalIDs(movieID: movieID).path)
     }
 
 }

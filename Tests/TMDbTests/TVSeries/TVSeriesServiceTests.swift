@@ -24,18 +24,18 @@ final class TVSeriesServiceTests: XCTestCase {
 
     var service: TVSeriesService!
     var apiClient: MockAPIClient!
-    var locale: Locale!
+    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        locale = Locale(identifier: "en_GB")
-        service = TVSeriesService(apiClient: apiClient, localeProvider: { [unowned self] in locale })
+        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
+        service = TVSeriesService(apiClient: apiClient, localeProvider: localeProvider)
     }
 
     override func tearDown() {
         apiClient = nil
-        locale = nil
+        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -106,7 +106,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: locale.language.languageCode?.identifier).path
+            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -120,7 +120,7 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: locale.language.languageCode?.identifier).path
+            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
         )
     }
 
@@ -230,9 +230,20 @@ final class TVSeriesServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forTVSeries: tvSeriesID)
 
-        let regionCode = try XCTUnwrap(locale.region?.identifier)
+        let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
+    }
+
+    func testExternalLinksReturnsExternalLinks() async throws {
+        let expectedResult = TVSeriesExternalLinksCollection.lockeAndKey
+        let tvSeriesID = 86423
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.externalLinks(forTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID).path)
     }
 
 }
