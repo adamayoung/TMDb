@@ -33,7 +33,7 @@ jobs:
       image: docker://ghcr.io/nicklockwood/swiftformat:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: SwiftFormat
         run: swiftformat --lint .
