@@ -25,14 +25,14 @@ extension ShowWatchProvider {
     static func mock(
         link: String = "",
         free: [WatchProvider]? = [.netflix],
-        flatrate: [WatchProvider]? = [.netflix],
+        flatRate: [WatchProvider]? = [.netflix],
         buy: [WatchProvider]? = [.netflix],
         rent: [WatchProvider]? = [.netflix]
     ) -> Self {
         .init(
             link: link,
             free: free,
-            flatrate: flatrate,
+            flatRate: flatRate,
             buy: buy,
             rent: rent
         )

@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a person image collection.
 ///
-public struct PersonImageCollection: Identifiable, Decodable, Equatable, Hashable {
+public struct PersonImageCollection: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Person identifier.

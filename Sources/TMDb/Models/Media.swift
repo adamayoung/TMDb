@@ -63,7 +63,7 @@ extension Media {
         case mediaType
     }
 
-    private enum MediaType: String, Decodable, Equatable {
+    private enum MediaType: String, Codable, Equatable {
         case movie
         case tvSeries = "tv"
         case person

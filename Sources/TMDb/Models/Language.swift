@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a language.
 ///
-public struct Language: Identifiable, Decodable, Equatable, Hashable {
+public struct Language: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Language code.
