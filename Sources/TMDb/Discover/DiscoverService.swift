@@ -6,7 +6,7 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class DiscoverService {
 
-    private let apiClient: APIClient
+    private let apiClient: any APIClient
 
     ///
     /// Creates a discover service object.
@@ -17,7 +17,7 @@ public final class DiscoverService {
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
     }
 

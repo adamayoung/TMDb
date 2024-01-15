@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_14.3.1.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
 
 jobs:
   build-test:
@@ -40,26 +40,27 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: iPhone
-            destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
-          - name: Apple Watch
-            destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
-          - name: Apple TV
-            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+          - name: iOS
+            destination: platform=iOS Simulator,name=iPhone 15,OS=17.2
+          - name: watchOS
+            destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2
+          - name: tvOS
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build
-        run: xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: set -o pipefail && env NSUnbufferedIO=YES && xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
       
       - name: Test
-        run: xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: set -o pipefail && env NSUnbufferedIO=YES && xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
   
   build-test-linux:
     name: Build and Test (Linux)
     runs-on: ubuntu-latest
+    container: swift:5.9-jammy
     steps:
       - name: Checkout
         uses: actions/checkout@v4

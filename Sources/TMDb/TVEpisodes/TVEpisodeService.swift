@@ -6,8 +6,8 @@ import Foundation
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
 public final class TVEpisodeService {
 
-    private let apiClient: APIClient
-    private let localeProvider: () -> Locale
+    private let apiClient: any APIClient
+    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV episode service object.
@@ -15,11 +15,11 @@ public final class TVEpisodeService {
     public convenience init() {
         self.init(
             apiClient: TMDbFactory.apiClient,
-            localeProvider: TMDbFactory.localeProvider
+            localeProvider: TMDbFactory.localeProvider()
         )
     }
 
-    init(apiClient: APIClient, localeProvider: @escaping () -> Locale) {
+    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
         self.apiClient = apiClient
         self.localeProvider = localeProvider
     }
@@ -72,7 +72,7 @@ public final class TVEpisodeService {
     ///
     public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisodeImageCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let imageCollection: TVEpisodeImageCollection
         do {
             imageCollection = try await apiClient.get(
@@ -106,7 +106,7 @@ public final class TVEpisodeService {
     ///
     public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider().languageCode
+        let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(

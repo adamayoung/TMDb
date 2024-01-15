@@ -8,7 +8,7 @@ public final class PersonService {
 
     private static let knownForShowsMaxCount = 10
 
-    private let apiClient: APIClient
+    private let apiClient: any APIClient
 
     ///
     /// Creates a person service object.
@@ -19,7 +19,7 @@ public final class PersonService {
         )
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
     }
 
