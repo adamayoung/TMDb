@@ -1,5 +1,5 @@
 {
-  "image": "swift:5.7.1",
+  "image": "swift:5.9.2",
   "customizations": {
     "vscode": {
       "settings": {
