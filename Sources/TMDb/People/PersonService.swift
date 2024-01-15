@@ -22,7 +22,7 @@ import Foundation
 ///
 /// Provides an interface for obtaining people from TMDb.
 ///
-@available(iOS 14.0, tvOS 14.0, watchOS 7.0, macOS 11.0, *)
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, visionOS 1.0, *)
 public final class PersonService {
 
     private static let knownForShowsMaxCount = 10
