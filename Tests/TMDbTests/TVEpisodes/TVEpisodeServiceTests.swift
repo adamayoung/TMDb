@@ -78,11 +78,15 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath,
-                       TVEpisodesEndpoint.images(tvSeriesID: tvSeriesID,
-                                                 seasonNumber: seasonNumber,
-                                                 episodeNumber: episodeNumber,
-                                                 languageCode: localeProvider.languageCode).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVEpisodesEndpoint.images(
+                tvSeriesID: tvSeriesID,
+                seasonNumber: seasonNumber,
+                episodeNumber: episodeNumber,
+                languageCode: localeProvider.languageCode
+            ).path
+        )
     }
 
     func testVideosReturnsVideos() async throws {
@@ -99,11 +103,15 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath,
-                       TVEpisodesEndpoint.videos(tvSeriesID: tvSeriesID,
-                                                 seasonNumber: seasonNumber,
-                                                 episodeNumber: episodeNumber,
-                                                 languageCode: localeProvider.languageCode).path)
+        XCTAssertEqual(
+            apiClient.lastPath,
+            TVEpisodesEndpoint.videos(
+                tvSeriesID: tvSeriesID,
+                seasonNumber: seasonNumber,
+                episodeNumber: episodeNumber,
+                languageCode: localeProvider.languageCode
+            ).path
+        )
     }
 
 }

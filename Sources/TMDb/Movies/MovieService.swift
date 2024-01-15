@@ -346,7 +346,7 @@ public final class MovieService {
         return result.results[regionCode]
     }
 
-    /// 
+    ///
     /// Returns a collection of media databases and social links for a movie.
     ///
     /// [TMDb API - Movie: External IDs](https://developer.themoviedb.org/reference/movie-external-ids)

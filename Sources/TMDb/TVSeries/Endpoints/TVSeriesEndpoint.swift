@@ -89,7 +89,7 @@ extension TVSeriesEndpoint: Endpoint {
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("watch/providers")
 
-        case .externalIDs(let tvSeriesID):
+        case let .externalIDs(tvSeriesID):
             return Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("external_ids")

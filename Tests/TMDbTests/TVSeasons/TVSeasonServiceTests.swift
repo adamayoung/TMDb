@@ -66,8 +66,11 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeasonsEndpoint.images(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                     languageCode: localeProvider.languageCode).path
+            TVSeasonsEndpoint.images(
+                tvSeriesID: tvSeriesID,
+                seasonNumber: seasonNumber,
+                languageCode: localeProvider.languageCode
+            ).path
         )
     }
 
@@ -82,8 +85,11 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
             apiClient.lastPath,
-            TVSeasonsEndpoint.videos(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                     languageCode: localeProvider.languageCode).path
+            TVSeasonsEndpoint.videos(
+                tvSeriesID: tvSeriesID,
+                seasonNumber: seasonNumber,
+                languageCode: localeProvider.languageCode
+            ).path
         )
     }
 

@@ -154,7 +154,7 @@ final class PersonServiceTests: XCTestCase {
 
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = PersonExternalLinksCollection.sydneySweeney
-        let personID = 115440
+        let personID = 115_440
         apiClient.result = .success(expectedResult)
 
         let result = try await service.externalLinks(forPerson: personID)

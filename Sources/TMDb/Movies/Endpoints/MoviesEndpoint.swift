@@ -107,7 +107,7 @@ extension MoviesEndpoint: Endpoint {
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("watch/providers")
 
-        case .externalIDs(let movieID):
+        case let .externalIDs(movieID):
             return Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("external_ids")

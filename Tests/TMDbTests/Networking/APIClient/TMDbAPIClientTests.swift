@@ -42,8 +42,13 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient = HTTPMockClient()
         serialiser = Serialiser(decoder: .theMovieDatabase)
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
-                                  localeProvider: localeProvider)
+        apiClient = TMDbAPIClient(
+            apiKey: apiKey,
+            baseURL: baseURL,
+            httpClient: httpClient,
+            serialiser: serialiser,
+            localeProvider: localeProvider
+        )
     }
 
     override func tearDown() {

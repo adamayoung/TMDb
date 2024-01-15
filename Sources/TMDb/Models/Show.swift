@@ -103,10 +103,10 @@ extension Show {
         var singleContainer = encoder.singleValueContainer()
 
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             try singleContainer.encode(movie)
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             try singleContainer.encode(tvSeries)
         }
     }

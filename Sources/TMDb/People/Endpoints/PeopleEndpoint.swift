@@ -66,7 +66,7 @@ extension PeopleEndpoint: Endpoint {
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
-        case .externalIDs(let personID):
+        case let .externalIDs(personID):
             return Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("external_ids")

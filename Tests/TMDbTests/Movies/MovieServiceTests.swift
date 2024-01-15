@@ -323,14 +323,14 @@ final class MovieServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID)
 
-        let regionCode = try XCTUnwrap(self.localeProvider.regionCode)
+        let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = MovieExternalLinksCollection.barbie
-        let movieID = 346698
+        let movieID = 346_698
         apiClient.result = .success(expectedResult)
 
         let result = try await service.externalLinks(forMovie: movieID)

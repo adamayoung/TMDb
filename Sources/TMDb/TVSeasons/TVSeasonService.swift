@@ -82,8 +82,10 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV's season.
     ///
-    public func images(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeasonImageCollection {
+    public func images(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVSeasonImageCollection {
         let languageCode = localeProvider.languageCode
         let imageCollection: TVSeasonImageCollection
         do {
@@ -114,8 +116,10 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
-    public func videos(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+    public func videos(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> VideoCollection {
         let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {

@@ -98,7 +98,7 @@ final class PersonIntegrationTests: XCTestCase {
     }
 
     func testExternalLinks() async throws {
-        let personID = 115440
+        let personID = 115_440
 
         let linksCollection = try await personService.externalLinks(forPerson: personID)
 

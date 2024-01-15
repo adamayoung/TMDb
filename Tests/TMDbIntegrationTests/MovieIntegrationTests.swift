@@ -123,7 +123,7 @@ final class MovieIntegrationTests: XCTestCase {
     }
 
     func testExternalLinks() async throws {
-        let movieID = 346698
+        let movieID = 346_698
 
         let linksCollection = try await movieService.externalLinks(forMovie: movieID)
 
