@@ -7,22 +7,6 @@ final class MovieServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
-    var languageCode: String? {
-        if #available(macOS 13.0, *) {
-            locale.language.languageCode?.identifier
-        } else {
-            locale.languageCode
-        }
-    }
-
-    var regionCode: String? {
-        if #available(macOS 13.0, *) {
-            locale.region?.identifier
-        } else {
-            locale.regionCode
-        }
-    }
-
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -334,6 +318,34 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.externalIDs(movieID: movieID).path)
+    }
+
+}
+
+extension MovieServiceTests {
+
+    var languageCode: String? {
+        #if os(Linux)
+        locale.languageCode
+        #else
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+        #endif
+    }
+
+    var regionCode: String? {
+        #if os(Linux)
+        locale.regionCode
+        #else
+        if #available(macOS 13.0, *) {
+            locale.region?.identifier
+        } else {
+            locale.regionCode
+        }
+        #endif
     }
 
 }

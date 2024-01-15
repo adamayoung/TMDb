@@ -7,14 +7,6 @@ final class TVEpisodeServiceTests: XCTestCase {
     var apiClient: MockAPIClient!
     var locale: Locale!
 
-    var languageCode: String? {
-        if #available(macOS 13.0, *) {
-            locale.language.languageCode?.identifier
-        } else {
-            locale.languageCode
-        }
-    }
-
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
@@ -83,6 +75,22 @@ final class TVEpisodeServiceTests: XCTestCase {
                                                  seasonNumber: seasonNumber,
                                                  episodeNumber: episodeNumber,
                                                  languageCode: languageCode).path)
+    }
+
+}
+
+extension TVEpisodeServiceTests {
+
+    var languageCode: String? {
+        #if os(Linux)
+        locale.languageCode
+        #else
+        if #available(macOS 13.0, *) {
+            locale.language.languageCode?.identifier
+        } else {
+            locale.languageCode
+        }
+        #endif
     }
 
 }
