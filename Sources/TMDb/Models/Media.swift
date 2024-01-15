@@ -1,3 +1,22 @@
+//
+//  Media.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 ///
@@ -10,14 +29,14 @@ public enum Media: Identifiable, Codable, Equatable, Hashable {
     ///
     public var id: Int {
         switch self {
-        case .movie(let movie):
-            return movie.id
+        case let .movie(movie):
+            movie.id
 
-        case .tvSeries(let tvSeries):
-            return tvSeries.id
+        case let .tvSeries(tvSeries):
+            tvSeries.id
 
-        case .person(let person):
-            return person.id
+        case let .person(person):
+            person.id
         }
     }
 
@@ -56,13 +75,13 @@ extension Media {
 
         switch mediaType {
         case .movie:
-            self = .movie(try Movie(from: decoder))
+            self = try .movie(Movie(from: decoder))
 
         case .tvSeries:
-            self = .tvSeries(try TVSeries(from: decoder))
+            self = try .tvSeries(TVSeries(from: decoder))
 
         case .person:
-            self = .person(try Person(from: decoder))
+            self = try .person(Person(from: decoder))
         }
     }
 
@@ -70,13 +89,13 @@ extension Media {
         var singleContainer = encoder.singleValueContainer()
 
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             try singleContainer.encode(movie)
 
-        case .tvSeries(let tvSeries):
+        case let .tvSeries(tvSeries):
             try singleContainer.encode(tvSeries)
 
-        case .person(let person):
+        case let .person(person):
             try singleContainer.encode(person)
         }
     }

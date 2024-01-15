@@ -1,7 +1,26 @@
+//
+//  TMDbAPIClientTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 @testable import TMDb
 import XCTest
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 final class TMDbAPIClientTests: XCTestCase {
@@ -23,8 +42,13 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient = HTTPMockClient()
         serialiser = Serialiser(decoder: .theMovieDatabase)
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        apiClient = TMDbAPIClient(apiKey: apiKey, baseURL: baseURL, httpClient: httpClient, serialiser: serialiser,
-                                  localeProvider: localeProvider)
+        apiClient = TMDbAPIClient(
+            apiKey: apiKey,
+            baseURL: baseURL,
+            httpClient: httpClient,
+            serialiser: serialiser,
+            localeProvider: localeProvider
+        )
     }
 
     override func tearDown() {
@@ -41,7 +65,7 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 401))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
             case .unauthorised:
@@ -59,7 +83,7 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 404))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
             case .notFound:
@@ -79,10 +103,10 @@ final class TMDbAPIClientTests: XCTestCase {
         httpClient.result = .success(HTTPResponse(statusCode: 404, data: statusResponse))
 
         do {
-           _ = try await apiClient.get(path: URL(string: "/error")!) as String
+            _ = try await apiClient.get(path: URL(string: "/error")!) as String
         } catch let error as TMDbAPIError {
             switch error {
-            case .notFound(let message):
+            case let .notFound(message):
                 XCTAssertEqual(message, expectedStatusMessage)
                 return
 

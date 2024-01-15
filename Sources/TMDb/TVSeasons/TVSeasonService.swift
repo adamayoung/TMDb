@@ -1,3 +1,22 @@
+//
+//  TVSeasonService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 ///
@@ -63,14 +82,19 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV's season.
     ///
-    public func images(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeasonImageCollection {
+    public func images(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVSeasonImageCollection {
         let languageCode = localeProvider.languageCode
         let imageCollection: TVSeasonImageCollection
         do {
             imageCollection = try await apiClient.get(
-                endpoint: TVSeasonsEndpoint.images(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                                   languageCode: languageCode)
+                endpoint: TVSeasonsEndpoint.images(
+                    tvSeriesID: tvSeriesID,
+                    seasonNumber: seasonNumber,
+                    languageCode: languageCode
+                )
             )
         } catch let error {
             throw TMDbError(error: error)
@@ -92,14 +116,19 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
-    public func videos(forSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+    public func videos(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> VideoCollection {
         let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {
             videoCollection = try await apiClient.get(
-                endpoint: TVSeasonsEndpoint.videos(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber,
-                                                   languageCode: languageCode)
+                endpoint: TVSeasonsEndpoint.videos(
+                    tvSeriesID: tvSeriesID,
+                    seasonNumber: seasonNumber,
+                    languageCode: languageCode
+                )
             )
         } catch let error {
             throw TMDbError(error: error)

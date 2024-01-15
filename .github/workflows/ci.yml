@@ -46,7 +46,6 @@ jobs:
             destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2
           - name: tvOS
             destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4

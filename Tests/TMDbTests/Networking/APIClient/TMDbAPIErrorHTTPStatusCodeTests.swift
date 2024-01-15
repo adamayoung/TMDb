@@ -1,3 +1,22 @@
+//
+//  TMDbAPIErrorHTTPStatusCodeTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -10,7 +29,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .badRequest(let message):
+        case let .badRequest(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -25,7 +44,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .unauthorised(let message):
+        case let .unauthorised(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -40,7 +59,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .forbidden(let message):
+        case let .forbidden(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -55,7 +74,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .notFound(let message):
+        case let .notFound(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -70,7 +89,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .methodNotAllowed(let message):
+        case let .methodNotAllowed(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -85,7 +104,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .notAcceptable(let message):
+        case let .notAcceptable(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -100,7 +119,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .unprocessableContent(let message):
+        case let .unprocessableContent(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -115,7 +134,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .tooManyRequests(let message):
+        case let .tooManyRequests(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -130,7 +149,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .internalServerError(let message):
+        case let .internalServerError(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -145,7 +164,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .notImplemented(let message):
+        case let .notImplemented(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -160,7 +179,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .badGateway(let message):
+        case let .badGateway(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -175,7 +194,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .serviceUnavailable(let message):
+        case let .serviceUnavailable(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:
@@ -190,7 +209,7 @@ final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
         let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
 
         switch error {
-        case .gatewayTimeout(let message):
+        case let .gatewayTimeout(message):
             XCTAssertEqual(message, expectedMessage)
 
         default:

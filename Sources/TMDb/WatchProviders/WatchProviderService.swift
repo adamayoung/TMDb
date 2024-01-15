@@ -1,3 +1,22 @@
+//
+//  WatchProviderService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 ///
@@ -32,7 +51,7 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries TMDb have watch provider data for.
-    /// 
+    ///
     public func countries() async throws -> [Country] {
         let regions: WatchProviderRegions
         do {
@@ -52,7 +71,7 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movies.
-    /// 
+    ///
     public func movieWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
         let result: WatchProviderResult
@@ -75,7 +94,7 @@ public final class WatchProviderService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV series.
-    /// 
+    ///
     public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
         let result: WatchProviderResult

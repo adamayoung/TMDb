@@ -1,3 +1,22 @@
+//
+//  PeopleEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 enum PeopleEndpoint {
@@ -18,37 +37,37 @@ extension PeopleEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let personID):
-            return Self.basePath
+        case let .details(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
 
-        case .combinedCredits(let personID):
-            return Self.basePath
+        case let .combinedCredits(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("combined_credits")
 
-        case .movieCredits(let personID):
-            return Self.basePath
+        case let .movieCredits(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("movie_credits")
 
-        case .tvSeriesCredits(let personID):
-            return Self.basePath
+        case let .tvSeriesCredits(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("tv_credits")
 
-        case .images(let personID):
-            return Self.basePath
+        case let .images(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("images")
 
-        case .popular(let page):
-            return Self.basePath
+        case let .popular(page):
+            Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
-        case .externalIDs(let personID):
-            return Self.basePath
+        case let .externalIDs(personID):
+            Self.basePath
                 .appendingPathComponent(personID)
                 .appendingPathComponent("external_ids")
         }

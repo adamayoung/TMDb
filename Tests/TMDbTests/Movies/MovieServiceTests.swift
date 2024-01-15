@@ -1,3 +1,22 @@
+//
+//  MovieServiceTests.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 @testable import TMDb
 import XCTest
 
@@ -304,14 +323,14 @@ final class MovieServiceTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID)
 
-        let regionCode = try XCTUnwrap(self.localeProvider.regionCode)
+        let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastPath, MoviesEndpoint.watch(movieID: movieID).path)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = MovieExternalLinksCollection.barbie
-        let movieID = 346698
+        let movieID = 346_698
         apiClient.result = .success(expectedResult)
 
         let result = try await service.externalLinks(forMovie: movieID)

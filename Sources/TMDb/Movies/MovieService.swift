@@ -1,3 +1,22 @@
+//
+//  MovieService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 ///
@@ -35,7 +54,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie.
-    /// 
+    ///
     public func details(forMovie id: Movie.ID) async throws -> Movie {
         let movie: Movie
         do {
@@ -58,7 +77,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching movie.
-    /// 
+    ///
     public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
         let credits: ShowCredits
         do {
@@ -84,7 +103,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
-    /// 
+    ///
     public func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {
         let reviewList: ReviewPageableList
         do {
@@ -107,7 +126,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
-    /// 
+    ///
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
         let languageCode = localeProvider.languageCode
         let imageCollection: ImageCollection
@@ -162,7 +181,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
-    /// 
+    ///
     public func recommendations(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -190,7 +209,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
-    /// 
+    ///
     public func similar(toMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -215,7 +234,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Now playing movies as a pageable list.
-    /// 
+    ///
     public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -240,7 +259,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular movies as a pageable list.
-    /// 
+    ///
     public func popular(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -265,7 +284,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Top rated movies as a pageable list.
-    /// 
+    ///
     public func topRated(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -290,7 +309,7 @@ public final class MovieService {
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Upcoming movies as a pageable list.
-    /// 
+    ///
     public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
         let movieList: MoviePageableList
         do {
@@ -327,7 +346,7 @@ public final class MovieService {
         return result.results[regionCode]
     }
 
-    /// 
+    ///
     /// Returns a collection of media databases and social links for a movie.
     ///
     /// [TMDb API - Movie: External IDs](https://developer.themoviedb.org/reference/movie-external-ids)

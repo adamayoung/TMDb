@@ -1,3 +1,22 @@
+//
+//  MoviesEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 enum MoviesEndpoint {
@@ -24,72 +43,72 @@ extension MoviesEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let movieID):
-            return Self.basePath
+        case let .details(movieID):
+            Self.basePath
                 .appendingPathComponent(movieID)
 
-        case .credits(let movieID):
-            return Self.basePath
+        case let .credits(movieID):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("credits")
 
-        case .reviews(let movieID, let page):
-            return Self.basePath
+        case let .reviews(movieID, page):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("reviews")
                 .appendingPage(page)
 
-        case .images(let movieID, let languageCode):
-            return Self.basePath
+        case let .images(movieID, languageCode):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
-        case .videos(let movieID, let languageCode):
-            return Self.basePath
+        case let .videos(movieID, languageCode):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("videos")
                 .appendingVideoLanguage(languageCode)
 
-        case .recommendations(let movieID, let page):
-            return Self.basePath
+        case let .recommendations(movieID, page):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("recommendations")
                 .appendingPage(page)
 
-        case .similar(let movieID, let page):
-            return Self.basePath
+        case let .similar(movieID, page):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
 
-        case .nowPlaying(let page):
-            return Self.basePath
+        case let .nowPlaying(page):
+            Self.basePath
                 .appendingPathComponent("now_playing")
                 .appendingPage(page)
 
-        case .popular(let page):
-            return Self.basePath
+        case let .popular(page):
+            Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
-        case .topRated(let page):
-            return Self.basePath
+        case let .topRated(page):
+            Self.basePath
                 .appendingPathComponent("top_rated")
                 .appendingPage(page)
 
-        case .upcoming(let page):
-            return Self.basePath
+        case let .upcoming(page):
+            Self.basePath
                 .appendingPathComponent("upcoming")
                 .appendingPage(page)
 
-        case .watch(let movieID):
-            return Self.basePath
+        case let .watch(movieID):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("watch/providers")
 
-        case .externalIDs(let movieID):
-            return Self.basePath
+        case let .externalIDs(movieID):
+            Self.basePath
                 .appendingPathComponent(movieID)
                 .appendingPathComponent("external_ids")
         }

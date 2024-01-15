@@ -1,3 +1,22 @@
+//
+//  TVSeriesEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 enum TVSeriesEndpoint {
@@ -21,57 +40,57 @@ extension TVSeriesEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case .details(let tvSeriesID):
-            return Self.basePath
+        case let .details(tvSeriesID):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
 
-        case .credits(let tvSeriesID):
-            return Self.basePath
+        case let .credits(tvSeriesID):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("credits")
 
-        case .reviews(let tvSeriesID, let page):
-            return Self.basePath
+        case let .reviews(tvSeriesID, page):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("reviews")
                 .appendingPage(page)
 
-        case .images(let tvSeriesID, let languageCode):
-            return Self.basePath
+        case let .images(tvSeriesID, languageCode):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("images")
                 .appendingImageLanguage(languageCode)
 
-        case .videos(let tvSeriesID, let languageCode):
-            return Self.basePath
+        case let .videos(tvSeriesID, languageCode):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("videos")
                 .appendingVideoLanguage(languageCode)
 
-        case .recommendations(let tvSeriesID, let page):
-            return Self.basePath
+        case let .recommendations(tvSeriesID, page):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("recommendations")
                 .appendingPage(page)
 
-        case .similar(let tvSeriesID, let page):
-            return Self.basePath
+        case let .similar(tvSeriesID, page):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("similar")
                 .appendingPage(page)
 
-        case .popular(let page):
-            return Self.basePath
+        case let .popular(page):
+            Self.basePath
                 .appendingPathComponent("popular")
                 .appendingPage(page)
 
-        case .watch(let tvSeriesID):
-            return Self.basePath
+        case let .watch(tvSeriesID):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("watch/providers")
 
-        case .externalIDs(let tvSeriesID):
-            return Self.basePath
+        case let .externalIDs(tvSeriesID):
+            Self.basePath
                 .appendingPathComponent(tvSeriesID)
                 .appendingPathComponent("external_ids")
         }

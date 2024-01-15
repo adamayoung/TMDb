@@ -1,3 +1,22 @@
+//
+//  TVEpisodeService.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 ///
@@ -38,8 +57,11 @@ public final class TVEpisodeService {
     ///
     /// - Returns: A episode of the matching TV series.
     ///
-    public func details(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                        inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisode {
+    public func details(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVEpisode {
         let episode: TVEpisode
         do {
             episode = try await apiClient.get(
@@ -70,8 +92,11 @@ public final class TVEpisodeService {
     ///
     /// - Returns: A collection of images for the matching TV's episode.
     ///
-    public func images(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVEpisodeImageCollection {
+    public func images(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVEpisodeImageCollection {
         let languageCode = localeProvider.languageCode
         let imageCollection: TVEpisodeImageCollection
         do {
@@ -104,8 +129,11 @@ public final class TVEpisodeService {
     ///
     /// - Returns: A collection of videos for the matching TV's episode.
     ///
-    public func videos(forEpisode episodeNumber: Int, inSeason seasonNumber: Int,
-                       inTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
+    public func videos(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> VideoCollection {
         let languageCode = localeProvider.languageCode
         let videoCollection: VideoCollection
         do {

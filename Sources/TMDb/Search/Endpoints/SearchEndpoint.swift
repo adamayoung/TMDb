@@ -1,3 +1,22 @@
+//
+//  SearchEndpoint.swift
+//  TMDb
+//
+//  Copyright © 2023 Adam Young.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an AS IS BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
 import Foundation
 
 enum SearchEndpoint {
@@ -19,29 +38,28 @@ extension SearchEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-
-        case .multi(let query, let page):
-            return Self.basePath
+        case let .multi(query, page):
+            Self.basePath
                 .appendingPathComponent("multi")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingPage(page)
 
-        case .movies(let query, let year, let page):
-            return Self.basePath
+        case let .movies(query, year, page):
+            Self.basePath
                 .appendingPathComponent("movie")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingYear(year)
                 .appendingPage(page)
 
-        case .tvSeries(let query, let firstAirDateYear, let page):
-            return Self.basePath
+        case let .tvSeries(query, firstAirDateYear, page):
+            Self.basePath
                 .appendingPathComponent("tv")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingFirstAirDateYear(firstAirDateYear)
                 .appendingPage(page)
 
-        case .people(let query, let page):
-            return Self.basePath
+        case let .people(query, page):
+            Self.basePath
                 .appendingPathComponent("person")
                 .appendingQueryItem(name: QueryItemName.query, value: query)
                 .appendingPage(page)
