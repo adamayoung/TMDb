@@ -8,12 +8,12 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.7+
+* Swift 5.9+
 * OS
-  * macOS 11+
-  * iOS 14+
-  * watchOS 7+
-  * tvOS 14+
+  * macOS 13+
+  * iOS 16+
+  * watchOS 9+
+  * tvOS 16+
 
 ## Installation
 
@@ -23,7 +23,7 @@ Add the TMDb package as a dependency to your `Package.swift` file, and add it
 as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 
 import PackageDescription
 
@@ -31,7 +31,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "10.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "11.0.0")
   ],
 
   targets: [
