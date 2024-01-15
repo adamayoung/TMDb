@@ -14,6 +14,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   * iOS 16+
   * watchOS 9+
   * tvOS 16+
+  * visionOS 1+
 
 ## Installation
 
