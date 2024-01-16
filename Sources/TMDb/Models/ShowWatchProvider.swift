@@ -33,7 +33,7 @@ public struct ShowWatchProvider: Equatable, Codable {
     /// A list of free watch providers.
     ///
     public let free: [WatchProvider]?
-    
+
     ///
     /// A list of flat rate watch providers.
     ///
@@ -49,8 +49,7 @@ public struct ShowWatchProvider: Equatable, Codable {
     ///
     public let rent: [WatchProvider]?
 
-
-    /// 
+    ///
     /// Creates a show credits object.
     ///
     /// - Parameters:
@@ -59,7 +58,7 @@ public struct ShowWatchProvider: Equatable, Codable {
     ///   - flatRate: A list of flat rate watch providers.
     ///   - buy: A list of watch providers to buy from.
     ///   - rent: A list of watch providers to rent from.
-    ///   
+    ///
     public init(
         link: String,
         free: [WatchProvider]? = nil,
