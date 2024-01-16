@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct WatchProviderRegions: Decodable {
+struct WatchProviderRegions: Codable {
 
     let results: [Country]
 

@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a department and jobs.
 ///
-public struct Department: Identifiable, Decodable, Equatable, Hashable {
+public struct Department: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Departments's identifier (same as `name`).

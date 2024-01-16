@@ -24,7 +24,7 @@ import Foundation
 ///
 /// A person can be both a cast member and crew member of the same show.
 ///
-public struct ShowCredits: Identifiable, Decodable, Equatable, Hashable {
+public struct ShowCredits: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Movie or TV series identifier.

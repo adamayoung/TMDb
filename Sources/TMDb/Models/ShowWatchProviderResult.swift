@@ -19,15 +19,9 @@
 
 import Foundation
 
-struct ShowWatchProviderResult: Equatable, Decodable {
+struct ShowWatchProviderResult: Equatable, Codable {
+
     let id: Int
     let results: [String: ShowWatchProvider]
-}
 
-public struct ShowWatchProvider: Equatable, Decodable {
-    public let link: String
-    public let free: [WatchProvider]?
-    public let flatrate: [WatchProvider]?
-    public let buy: [WatchProvider]?
-    public let rent: [WatchProvider]?
 }

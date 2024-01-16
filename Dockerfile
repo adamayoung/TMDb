@@ -1,4 +1,4 @@
-FROM swift:5.9-jammy
+FROM swift:5.9.2-jammy
 
 WORKDIR /tmp
 

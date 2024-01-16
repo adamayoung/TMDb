@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TV season image collection.
 ///
-public struct TVSeasonImageCollection: Identifiable, Decodable, Equatable, Hashable {
+public struct TVSeasonImageCollection: Identifiable, Codable, Equatable, Hashable {
 
     ///
     /// Collection identifier.
