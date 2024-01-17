@@ -26,7 +26,7 @@ jobs:
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
 
-  swiftformt:
+  swiftformat:
     name: SwiftFormat
     runs-on: ubuntu-latest
     container:
@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Lint README
-        run: docker run -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "README.md"
+        run: docker run --rm -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "README.md"
 
       - name: Lint DocC files
-        run: docker run -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.docc/**/*.md"
+        run: docker run --rm -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.docc/**/*.md"
