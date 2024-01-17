@@ -48,7 +48,7 @@ build-docs:
 	SWIFTCI_DOCC=1 swift package generate-documentation --product $(TARGET)
 	swift package resolve
 
-.PHONY: docs
+.PHONY: preview-docs
 preview-docs:
 	SWIFTCI_DOCC=1 swift package --disable-sandbox preview-documentation --target $(TARGET)
 
