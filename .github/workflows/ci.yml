@@ -35,7 +35,7 @@ jobs:
       - name: Test
         run: swift test --skip-build --parallel --filter $TEST_TARGET
         env:
-          TEST_TARGET: $TEST_TARGET
+          TEST_TARGET: ${{ env.TEST_TARGET }}
       
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
