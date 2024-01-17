@@ -97,7 +97,7 @@ make format
 
 #### DocC Documentation
 
-Ensure all all `public` classes, structs, properties and methods are commented
+Ensure all `public` classes, structs, properties and methods are commented
 
 The DocC documentation can be built and hosted locally by
 
