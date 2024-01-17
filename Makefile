@@ -33,8 +33,7 @@ build:
 
 .PHONY: build-linux
 build-linux:
-	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -Xswiftc -warnings-as-errors --build-tests"
-
+	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -Xswiftc -warnings-as-errors"
 
 .PHONY: build-release
 build-release:
@@ -92,7 +91,7 @@ integration-test: .check-env-vars
 	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET)
 
 .PHONY: ci
-ci: .check-env-vars lint lint-markddown test test-ios test-watchos test-tvos test-linux integration-test build-release build-docs
+ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-linux integration-test build-release build-docs
 
 .check-env-vars:
 	@test $${TMDB_API_KEY?Please set environment variable TMDB_API_KEY}
