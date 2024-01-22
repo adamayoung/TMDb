@@ -163,3 +163,8 @@ For the TMDb API documentation, see
 - ``Country``
 - ``Department``
 - ``Language``
+
+### Authentication
+
+- ``AuthenticationService``
+- ``GuestSession``

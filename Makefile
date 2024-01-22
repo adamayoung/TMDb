@@ -14,6 +14,7 @@ clean:
 	rm -rf docs
 
 .PHONY: format
+format:
 	swiftlint --fix
 	swiftformat .
 

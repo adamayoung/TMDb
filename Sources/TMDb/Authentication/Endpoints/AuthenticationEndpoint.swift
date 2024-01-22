@@ -1,5 +1,5 @@
 //
-//  DateFormatter+TMDb.swift
+//  AuthenticationEndpoint.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,20 +19,23 @@
 
 import Foundation
 
-extension DateFormatter {
+enum AuthenticationEndpoint {
 
-    static var theMovieDatabase: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }
+    case createGuestSession
 
-    static var theMovieDatabaseAuth: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC '"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter
+}
+
+extension AuthenticationEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/authentication")!
+
+    var path: URL {
+        switch self {
+        case .createGuestSession:
+            Self.basePath
+                .appendingPathComponent("guest_session")
+                .appendingPathComponent("new")
+        }
     }
 
 }

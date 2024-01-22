@@ -1,5 +1,5 @@
 //
-//  DateFormatter+TMDb.swift
+//  GuestSession.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,20 +19,36 @@
 
 import Foundation
 
-extension DateFormatter {
+///
+/// A model representing a guest session.
+///
+public struct GuestSession: Codable, Equatable, Hashable {
 
-    static var theMovieDatabase: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }
+    ///
+    /// Was session creation successful.
+    ///
+    public let success: Bool
 
-    static var theMovieDatabaseAuth: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC '"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter
+    ///
+    /// The identifier of this session.
+    ///
+    public let guestSessionID: String
+
+    ///
+    /// Date of session expiry.
+    ///
+    public let expiresAt: Date
+
+}
+
+extension GuestSession {
+
+    private enum CodingKeys: String, CodingKey {
+
+        case success
+        case guestSessionID = "guestSessionId"
+        case expiresAt
+
     }
 
 }

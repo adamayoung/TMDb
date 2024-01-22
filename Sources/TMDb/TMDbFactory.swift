@@ -40,6 +40,16 @@ extension TMDbFactory {
         )
     }
 
+    static var authAPIClient: some APIClient {
+        TMDbAPIClient(
+            apiKey: TMDb.configuration.apiKey(),
+            baseURL: .tmdbAPIBaseURL,
+            httpClient: TMDb.configuration.httpClient(),
+            serialiser: authSerialiser,
+            localeProvider: localeProvider()
+        )
+    }
+
     static func localeProvider() -> some LocaleProviding {
         LocaleProvider(locale: .current)
     }
@@ -79,6 +89,10 @@ extension TMDbFactory {
 
     private static var serialiser: some Serialiser {
         Serialiser(decoder: .theMovieDatabase)
+    }
+
+    private static var authSerialiser: some Serialiser {
+        Serialiser(decoder: .theMovieDatabaseAuth)
     }
 
 }

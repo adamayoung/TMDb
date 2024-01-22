@@ -28,4 +28,11 @@ extension JSONDecoder {
         return decoder
     }
 
+    static var theMovieDatabaseAuth: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .formatted(.theMovieDatabaseAuth)
+        return decoder
+    }
+
 }
