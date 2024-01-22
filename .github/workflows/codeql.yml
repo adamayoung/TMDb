@@ -16,6 +16,9 @@ concurrency:
   group: "codeql-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+
 jobs:
   analyze:
     name: Analyze
