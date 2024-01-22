@@ -1,0 +1,47 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Every Sunday at 12am
+    - cron:  '0 0 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: "codeql-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: macos-13
+    timeout-minutes: 120
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: swift
+        config-file: ./.github/codeql/codeql-config.yml
+
+    - name: Build
+      run: swift build --arch arm64 --build-tests 
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:swift"
