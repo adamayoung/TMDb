@@ -1,5 +1,5 @@
 //
-//  DateFormatter+TMDb.swift
+//  GuestSession+Mocks.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -18,21 +18,20 @@
 //
 
 import Foundation
+@testable import TMDb
 
-extension DateFormatter {
+extension GuestSession {
 
-    static var theMovieDatabase: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }
-
-    static var theMovieDatabaseAuth: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC '"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter
+    static func mock(
+        success: Bool = true,
+        guestSessionID: String = "jdbqej40d9b562zk42ma8u4tp1saup5q",
+        expiresAt: Date
+    ) -> GuestSession {
+        GuestSession(
+            success: success,
+            guestSessionID: guestSessionID,
+            expiresAt: expiresAt
+        )
     }
 
 }

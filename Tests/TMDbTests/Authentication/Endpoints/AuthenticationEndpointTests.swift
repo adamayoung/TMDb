@@ -1,5 +1,5 @@
 //
-//  DateFormatter+TMDb.swift
+//  AuthenticationEndpointTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,22 +17,17 @@
 //  limitations under the License.
 //
 
-import Foundation
+@testable import TMDb
+import XCTest
 
-extension DateFormatter {
+final class AuthenticationEndpointTests: XCTestCase {
 
-    static var theMovieDatabase: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter
-    }
+    func testCreateGuestSessionEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/guest_session/new"))
 
-    static var theMovieDatabaseAuth: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC '"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter
+        let url = AuthenticationEndpoint.createGuestSession.path
+
+        XCTAssertEqual(url, expectedURL)
     }
 
 }
