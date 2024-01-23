@@ -22,6 +22,7 @@ import Foundation
 enum AuthenticationEndpoint {
 
     case createGuestSession
+    case createRequestToken
 
 }
 
@@ -34,6 +35,11 @@ extension AuthenticationEndpoint: Endpoint {
         case .createGuestSession:
             Self.basePath
                 .appendingPathComponent("guest_session")
+                .appendingPathComponent("new")
+
+        case .createRequestToken:
+            Self.basePath
+                .appendingPathComponent("token")
                 .appendingPathComponent("new")
         }
     }

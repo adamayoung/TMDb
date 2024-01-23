@@ -30,4 +30,12 @@ final class AuthenticationEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testCreateRequetTokenEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/token/new"))
+
+        let url = AuthenticationEndpoint.createRequestToken.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }
