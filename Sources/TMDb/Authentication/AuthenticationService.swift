@@ -43,13 +43,11 @@ public final class AuthenticationService {
     ///
     /// Creates a guest session with TMDb.
     ///
-    /// Guest sessions are a special kind of session that give you some of the
-    /// functionality of an account, but not all. For example, some of the
-    /// things you can do with a guest session are; maintain a rated list, a
-    /// watchlist and a favourite list.
+    /// Guest sessions are a special kind of session that give you some of the functionality of an account, but not
+    /// all. For example, some of the things you can do with a guest session are; maintain a rated list, a watchlist
+    /// and a favourite list.
     ///
-    /// Guest sessions will automatically be deleted if they are not used
-    /// within 60 minutes of it being issued.
+    /// Guest sessions will automatically be deleted if they are not used within 60 minutes of it being issued.
     ///
     /// [TMDb API - Authentication: Create Guest Session](https://developer.themoviedb.org/reference/certifications-tv-list)
     ///
@@ -57,7 +55,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: A guest session.
     ///
-    public func createGuestSession() async throws -> GuestSession {
+    public func guestSession() async throws -> GuestSession {
         let session: GuestSession
         do {
             session = try await apiClient.get(endpoint: AuthenticationEndpoint.createGuestSession)
@@ -66,6 +64,25 @@ public final class AuthenticationService {
         }
 
         return session
+    }
+
+    ///
+    /// Creates an intermediate request token that can be used to validate a TMDb user login.
+    ///
+    /// This is a temporary token that is required to ask the user for permission to access their account. This token
+    /// will auto expire after 60 minutes if it's not used.
+    ///
+    /// - Returns: An intermediate request token.
+    ///
+    public func requestToken() async throws -> Token {
+        let token: Token
+        do {
+            token = try await apiClient.get(endpoint: AuthenticationEndpoint.createRequestToken)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return token
     }
 
 }

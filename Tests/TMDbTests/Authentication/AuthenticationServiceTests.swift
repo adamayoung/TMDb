@@ -37,23 +37,49 @@ final class AuthenticationServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCreateGuestSessionReturnsGuestSession() async throws {
-        let expectedResult = GuestSession.mock(expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+    func testGuestSessionReturnsGuestSession() async throws {
+        let expectedResult = GuestSession.mock()
 
         apiClient.result = .success(expectedResult)
 
-        let result = try await service.createGuestSession()
+        let result = try await service.guestSession()
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastPath, AuthenticationEndpoint.createGuestSession.path)
     }
 
-    func testCreateGuestSessionWhenErrorsThrowsError() async throws {
+    func testGuestSessionWhenErrorsThrowsError() async throws {
         apiClient.result = .failure(.unknown)
 
         var error: Error?
         do {
-            _ = try await service.createGuestSession()
+            _ = try await service.guestSession()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testRequestTokenReturnsToken() async throws {
+        let expectedResult = Token.mock()
+
+        apiClient.result = .success(expectedResult)
+
+        let result = try await service.requestToken()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPath, AuthenticationEndpoint.createRequestToken.path)
+    }
+
+    func testRequestTokenWhenErrorsThrowsError() async throws {
+        apiClient.result = .failure(.unknown)
+
+        var error: Error?
+        do {
+            _ = try await service.requestToken()
         } catch let err {
             error = err
         }

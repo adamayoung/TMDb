@@ -1,5 +1,5 @@
 //
-//  GuestSession+Mocks.swift
+//  Token+Mocks.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,16 +20,16 @@
 import Foundation
 @testable import TMDb
 
-extension GuestSession {
+extension Token {
 
     static func mock(
         success: Bool = true,
-        guestSessionID: String = "jdbqej40d9b562zk42ma8u4tp1saup5q",
+        requestToken: String = "10530f2246e244555d122016db7c65599c8d6f4d",
         expiresAt: Date = Date(timeIntervalSince1970: 1_705_956_596)
-    ) -> GuestSession {
-        GuestSession(
+    ) -> Token {
+        Token(
             success: success,
-            guestSessionID: guestSessionID,
+            requestToken: requestToken,
             expiresAt: expiresAt
         )
     }

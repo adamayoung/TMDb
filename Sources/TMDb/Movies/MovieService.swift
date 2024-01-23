@@ -325,6 +325,7 @@ public final class MovieService {
     /// Returns watch providers for a movie
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
+    ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
     ///
