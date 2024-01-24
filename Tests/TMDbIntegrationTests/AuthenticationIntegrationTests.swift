@@ -35,11 +35,18 @@ final class AuthenticationIntegrationTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCreateGuestSession() async throws {
-        let session = try await authenticationService.createGuestSession()
+    func testGuestSession() async throws {
+        let session = try await authenticationService.guestSession()
 
         XCTAssertTrue(session.success)
         XCTAssertNotEqual(session.guestSessionID, "")
+    }
+
+    func testRequestToken() async throws {
+        let token = try await authenticationService.requestToken()
+
+        XCTAssertTrue(token.success)
+        XCTAssertNotEqual(token.requestToken, "")
     }
 
 }

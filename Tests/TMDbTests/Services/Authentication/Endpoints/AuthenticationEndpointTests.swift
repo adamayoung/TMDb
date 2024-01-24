@@ -1,5 +1,5 @@
 //
-//  GuestSession+Mocks.swift
+//  AuthenticationEndpointTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,21 +17,25 @@
 //  limitations under the License.
 //
 
-import Foundation
 @testable import TMDb
+import XCTest
 
-extension GuestSession {
+final class AuthenticationEndpointTests: XCTestCase {
 
-    static func mock(
-        success: Bool = true,
-        guestSessionID: String = "jdbqej40d9b562zk42ma8u4tp1saup5q",
-        expiresAt: Date = Date(timeIntervalSince1970: 1_705_956_596)
-    ) -> GuestSession {
-        GuestSession(
-            success: success,
-            guestSessionID: guestSessionID,
-            expiresAt: expiresAt
-        )
+    func testCreateGuestSessionEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/guest_session/new"))
+
+        let url = AuthenticationEndpoint.createGuestSession.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testCreateRequetTokenEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/token/new"))
+
+        let url = AuthenticationEndpoint.createRequestToken.path
+
+        XCTAssertEqual(url, expectedURL)
     }
 
 }

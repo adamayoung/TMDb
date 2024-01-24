@@ -1,5 +1,5 @@
 //
-//  URL+TMDb.swift
+//  AuthenticationEndpoint.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,14 +19,29 @@
 
 import Foundation
 
-extension URL {
+enum AuthenticationEndpoint {
 
-    static var tmdbAPIBaseURL: URL {
-        URL(string: "https://api.themoviedb.org/3")!
-    }
+    case createGuestSession
+    case createRequestToken
 
-    static var tmdbWebSiteURL: URL {
-        URL(string: "https://www.themoviedb.org")!
+}
+
+extension AuthenticationEndpoint: Endpoint {
+
+    private static let basePath = URL(string: "/authentication")!
+
+    var path: URL {
+        switch self {
+        case .createGuestSession:
+            Self.basePath
+                .appendingPathComponent("guest_session")
+                .appendingPathComponent("new")
+
+        case .createRequestToken:
+            Self.basePath
+                .appendingPathComponent("token")
+                .appendingPathComponent("new")
+        }
     }
 
 }

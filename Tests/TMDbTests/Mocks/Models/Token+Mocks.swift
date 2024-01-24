@@ -1,5 +1,5 @@
 //
-//  URL+TMDb.swift
+//  Token+Mocks.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -18,15 +18,20 @@
 //
 
 import Foundation
+@testable import TMDb
 
-extension URL {
+extension Token {
 
-    static var tmdbAPIBaseURL: URL {
-        URL(string: "https://api.themoviedb.org/3")!
-    }
-
-    static var tmdbWebSiteURL: URL {
-        URL(string: "https://www.themoviedb.org")!
+    static func mock(
+        success: Bool = true,
+        requestToken: String = "10530f2246e244555d122016db7c65599c8d6f4d",
+        expiresAt: Date = Date(timeIntervalSince1970: 1_705_956_596)
+    ) -> Token {
+        Token(
+            success: success,
+            requestToken: requestToken,
+            expiresAt: expiresAt
+        )
     }
 
 }

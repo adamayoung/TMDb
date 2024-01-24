@@ -1,5 +1,5 @@
 //
-//  URL+TMDb.swift
+//  AuthenticateURLBuilding.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,14 +19,10 @@
 
 import Foundation
 
-extension URL {
+protocol AuthenticateURLBuilding {
 
-    static var tmdbAPIBaseURL: URL {
-        URL(string: "https://api.themoviedb.org/3")!
-    }
+    func authenticateURL(with requestToken: String) -> URL
 
-    static var tmdbWebSiteURL: URL {
-        URL(string: "https://www.themoviedb.org")!
-    }
+    func authenticateURL(with requestToken: String, redirectURL: URL?) -> URL
 
 }
