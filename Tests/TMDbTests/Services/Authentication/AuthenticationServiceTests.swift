@@ -24,16 +24,19 @@ final class AuthenticationServiceTests: XCTestCase {
 
     var service: AuthenticationService!
     var apiClient: MockAPIClient!
+    var authenticateURLBuilder: AuthenticateURLMockBuilder!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = AuthenticationService(apiClient: apiClient)
+        authenticateURLBuilder = AuthenticateURLMockBuilder()
+        service = AuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
     }
 
     override func tearDown() {
-        apiClient = nil
         service = nil
+        authenticateURLBuilder = nil
+        apiClient = nil
         super.tearDown()
     }
 
@@ -87,6 +90,33 @@ final class AuthenticationServiceTests: XCTestCase {
         let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
 
         XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testAuthenticateURLReturnsURL() throws {
+        let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
+        let token = Token(success: true, requestToken: "abc123", expiresAt: expiresAt)
+        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/authenticate/abc123"))
+        authenticateURLBuilder.authenticateURLResult = expectedURL
+
+        let url = service.authenticateURL(for: token)
+
+        XCTAssertEqual(url, expectedURL)
+        XCTAssertEqual(authenticateURLBuilder.lastRequestToken, token.requestToken)
+        XCTAssertNil(authenticateURLBuilder.lastRedirectURL)
+    }
+
+    func testAuthenticateURLWithRedirectURLReturnsURL() throws {
+        let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
+        let token = Token(success: true, requestToken: "abc123", expiresAt: expiresAt)
+        let redirectURL = try XCTUnwrap(URL(string: "https://some.domain.com/auth/callback"))
+        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/authenticate/abc123"))
+        authenticateURLBuilder.authenticateURLResult = expectedURL
+
+        let url = service.authenticateURL(for: token, redirectURL: redirectURL)
+
+        XCTAssertEqual(url, expectedURL)
+        XCTAssertEqual(authenticateURLBuilder.lastRequestToken, token.requestToken)
+        XCTAssertEqual(authenticateURLBuilder.lastRedirectURL, redirectURL)
     }
 
 }

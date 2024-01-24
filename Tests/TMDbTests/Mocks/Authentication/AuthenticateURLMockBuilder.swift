@@ -1,5 +1,5 @@
 //
-//  URL+TMDb.swift
+//  AuthenticateURLMockBuilder.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -18,15 +18,23 @@
 //
 
 import Foundation
+@testable import TMDb
 
-extension URL {
+final class AuthenticateURLMockBuilder: AuthenticateURLBuilding {
 
-    static var tmdbAPIBaseURL: URL {
-        URL(string: "https://api.themoviedb.org/3")!
+    var authenticateURLResult: URL = .init(string: "https://some.domain.com/authenticate")!
+    private(set) var lastRequestToken: String?
+    private(set) var lastRedirectURL: URL?
+
+    func authenticateURL(with requestToken: String) -> URL {
+        authenticateURL(with: requestToken, redirectURL: nil)
     }
 
-    static var tmdbWebSiteURL: URL {
-        URL(string: "https://www.themoviedb.org")!
+    func authenticateURL(with requestToken: String, redirectURL: URL?) -> URL {
+        lastRequestToken = requestToken
+        lastRedirectURL = redirectURL
+
+        return authenticateURLResult
     }
 
 }

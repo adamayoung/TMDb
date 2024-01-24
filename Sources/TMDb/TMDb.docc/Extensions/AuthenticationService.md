@@ -8,4 +8,6 @@
 
 ### Creating Sessions
 
-- ``createGuestSession()``
+- ``guestSession()``
+- ``requestToken()``
+- ``authenticateURL(for:redirectURL:)``

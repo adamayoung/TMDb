@@ -20,7 +20,7 @@
 import Foundation
 
 ///
-/// A model representing a token request.
+/// A model representing an internediate request token.
 ///
 public struct Token: Codable, Equatable, Hashable {
 
@@ -38,5 +38,19 @@ public struct Token: Codable, Equatable, Hashable {
     /// Date of token expiry.
     ///
     public let expiresAt: Date
+
+    ///
+    /// Creates an internediate request token.
+    ///
+    /// - Parameters:
+    ///   - success: Was token creation successful.
+    ///   - requestToken: An intermediate request token.
+    ///   - expiresAt: Date of token expiry.
+    ///
+    public init(success: Bool, requestToken: String, expiresAt: Date) {
+        self.success = success
+        self.requestToken = requestToken
+        self.expiresAt = expiresAt
+    }
 
 }
