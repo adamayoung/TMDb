@@ -1,12 +1,15 @@
 name: Lint
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/lint.yml"
+      - "**/*.swift"
   workflow_dispatch:
 
 concurrency:
@@ -37,31 +40,3 @@ jobs:
       
       - name: SwiftFormat
         run: swiftformat --lint .
-  
-  markdownlint:
-    name: Markdownlint
-    runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/igorshubovych/markdownlint-cli:latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Lint README
-        run: markdownlint "README.md"
-
-      - name: Lint DocC files
-        run: markdownlint "**/*.docc/**/*.md"
-
-  # markdownlint:
-  #   name: Markdownlint
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Lint README
-  #       run: docker run --rm -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "README.md"
-
-  #     - name: Lint DocC files
-  #       run: docker run --rm -v $PWD:/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.docc/**/*.md"

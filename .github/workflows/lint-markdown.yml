@@ -1,0 +1,33 @@
+name: Lint Markdown
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/lint-markdown.yml"
+      - "**/*.swift" 
+  workflow_dispatch:
+
+concurrency:
+  group: "lint-markdown-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+jobs:
+  markdownlint:
+    name: Markdownlint
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/igorshubovych/markdownlint-cli:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint README
+        run: markdownlint "README.md"
+
+      - name: Lint DocC files
+        run: markdownlint "**/*.docc/**/*.md"
