@@ -1,0 +1,21 @@
+name: CodeQL
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/workflows/codeql.yml"
+      - "**/*.swift"
+
+concurrency:
+  group: "codeql-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform CodeQL Analysis
+        run: 'echo "No analysis required"'

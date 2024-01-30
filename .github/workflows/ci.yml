@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - ".github/workflows/ci.yml"
+      - "**/*.swift"
   pull_request:
     branches:
       - main
+    paths:
+      - ".github/workflows/ci.yml"
+      - "**/*.swift"
   workflow_dispatch:
 
 concurrency:
@@ -72,15 +78,3 @@ jobs:
       
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
-
-  build-documentation:
-    name: Build Documentation
-    runs-on: macos-13
-    env:
-      SWIFTCI_DOCC: 1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build
-        run: swift package generate-documentation --product TMDb

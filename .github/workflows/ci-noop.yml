@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/workflows/ci.yml"
+      - "**/*.swift"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/workflows/ci.yml"
+      - "**/*.swift"
+
+concurrency:
+  group: "ci-${{ github.head_ref || github.run_id }}"
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: 'echo "No build required"'
+  
+  build-and-test-platforms:
+    name: Build and Test (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - name: iOS
+          - name: watchOS
+          - name: tvOS
+    steps:
+      - name: Build
+        run: 'echo "No build required"'
+  
+  build-test-linux:
+    name: Build and Test (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: 'echo "No build required"'

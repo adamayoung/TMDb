@@ -4,16 +4,15 @@ on:
   push:
     branches:
       - main
-    paths:
+    paths-ignore:
       - ".github/workflows/lint.yml"
       - "**/*.swift"
   pull_request:
     branches:
       - main
-    paths:
+    paths-ignore:
       - ".github/workflows/lint.yml"
       - "**/*.swift"
-  workflow_dispatch:
 
 concurrency:
   group: "lint-${{ github.head_ref || github.run_id }}"
@@ -23,23 +22,13 @@ jobs:
   swiftlint:
     name: Swiftlint
     runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/realm/swiftlint:latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
       - name: Swiftlint
-        run: swiftlint --strict --reporter github-actions-logging
+        run: 'echo "No linting required"'
 
   swiftformat:
     name: SwiftFormat
     runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/nicklockwood/swiftformat:latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
       - name: SwiftFormat
-        run: swiftformat --lint .
+        run: 'echo "No linting required"'
