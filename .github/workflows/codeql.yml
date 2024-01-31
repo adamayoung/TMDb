@@ -39,7 +39,7 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Build
-        run: swift build --build-tests
+        run: swift build --arch arm64 --build-tests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
