@@ -1,5 +1,5 @@
 //
-//  Token.swift
+//  Session.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,37 +20,39 @@
 import Foundation
 
 ///
-/// A model representing an internediate request token.
+/// A model representing a TMDb session.
 ///
-public struct Token: Codable, Equatable, Hashable {
+public struct Session: Codable, Equatable, Hashable {
 
     ///
-    /// Was token creation successful.
+    /// Was session creation successful.
     ///
     public let success: Bool
 
     ///
-    /// An intermediate request token.
+    /// The session identifier.
     ///
-    public let requestToken: String
+    public let sessionID: String
 
     ///
-    /// Date of token expiry.
-    ///
-    public let expiresAt: Date
-
-    ///
-    /// Creates an internediate request token object.
+    /// Creates a TMDb session object..
     ///
     /// - Parameters:
     ///   - success: Was token creation successful.
-    ///   - requestToken: An intermediate request token.
-    ///   - expiresAt: Date of token expiry.
+    ///   - sessionID: The session identifier.
     ///
-    public init(success: Bool, requestToken: String, expiresAt: Date) {
+    public init(success: Bool, sessionID: String) {
         self.success = success
-        self.requestToken = requestToken
-        self.expiresAt = expiresAt
+        self.sessionID = sessionID
+    }
+
+}
+
+extension Session {
+
+    private enum CodingKeys: String, CodingKey {
+        case success
+        case sessionID = "sessionId"
     }
 
 }

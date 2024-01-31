@@ -35,4 +35,16 @@ public protocol HTTPClient {
     ///
     func get(url: URL, headers: [String: String]) async throws -> HTTPResponse
 
+    ///
+    /// Performs an HTTP POST request.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to use for the request.
+    ///   - body: The body of the request.
+    ///   - headers: Additional HTTP headers to use in the request.
+    ///
+    /// - Returns: An HTTP response object.
+    ///
+    func post(url: URL, body: Data, headers: [String: String]) async throws -> HTTPResponse
+
 }

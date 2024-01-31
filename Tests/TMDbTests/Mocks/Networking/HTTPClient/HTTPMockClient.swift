@@ -27,6 +27,14 @@ final class HTTPMockClient: HTTPClient {
     private(set) var lastHeaders: [String: String]?
     private(set) var getCount = 0
 
+    var postResult: Result<HTTPResponse, Error>?
+    private(set) var lastPostURL: URL?
+    private(set) var lastPostBody: Data?
+    private(set) var lastPostHeaders: [String: String]?
+    private(set) var postCount = 0
+
+    init() {}
+
     func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
         lastURL = url
         lastHeaders = headers
@@ -37,6 +45,19 @@ final class HTTPMockClient: HTTPClient {
         }
 
         return try result.get()
+    }
+
+    func post(url: URL, body: Data, headers: [String: String]) async throws -> HTTPResponse {
+        lastPostURL = url
+        lastPostBody = body
+        lastPostHeaders = headers
+        postCount += 1
+
+        guard let postResult else {
+            preconditionFailure("Result not set.")
+        }
+
+        return try postResult.get()
     }
 
 }

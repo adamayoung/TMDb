@@ -55,18 +55,28 @@ final class TMDbAPIClient: APIClient {
             throw TMDbAPIError.network(error)
         }
 
-        try await validate(response: response)
+        let decodedResponse: Response = try await decodeResponse(response: response)
 
-        guard let data = response.data else {
-            throw TMDbAPIError.unknown
-        }
+        return decodedResponse
+    }
 
-        let decodedResponse: Response
+    func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
+        let url = urlFromPath(path)
+        let headers = [
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        ]
+        let bodyData = try await serialiser.encode(body)
+
+        let response: HTTPResponse
+
         do {
-            decodedResponse = try await serialiser.decode(Response.self, from: data)
+            response = try await httpClient.post(url: url, body: bodyData, headers: headers)
         } catch let error {
-            throw TMDbAPIError.decode(error)
+            throw TMDbAPIError.network(error)
         }
+
+        let decodedResponse: Response = try await decodeResponse(response: response)
 
         return decodedResponse
     }
@@ -87,6 +97,23 @@ extension TMDbAPIClient {
         return urlComponents.url!
             .appendingAPIKey(apiKey)
             .appendingLanguage(localeProvider.languageCode)
+    }
+
+    private func decodeResponse<Response: Decodable>(response: HTTPResponse) async throws -> Response {
+        try await validate(response: response)
+
+        guard let data = response.data else {
+            throw TMDbAPIError.unknown
+        }
+
+        let decodedResponse: Response
+        do {
+            decodedResponse = try await serialiser.decode(Response.self, from: data)
+        } catch let error {
+            throw TMDbAPIError.decode(error)
+        }
+
+        return decodedResponse
     }
 
     private func validate(response: HTTPResponse) async throws {

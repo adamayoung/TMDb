@@ -40,7 +40,7 @@ final class TMDbAPIClientTests: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         httpClient = HTTPMockClient()
-        serialiser = Serialiser(decoder: .theMovieDatabase)
+        serialiser = Serialiser(decoder: .theMovieDatabase, encoder: .theMovieDatabase)
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(
             apiKey: apiKey,

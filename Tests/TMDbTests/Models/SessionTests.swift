@@ -1,5 +1,5 @@
 //
-//  AuthenticationEndpointTests.swift
+//  SessionTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,22 +20,18 @@
 @testable import TMDb
 import XCTest
 
-final class AuthenticationEndpointTests: XCTestCase {
+final class SessionTests: XCTestCase {
 
-    func testCreateGuestSessionEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/authentication/guest_session/new"))
+    func testDecodeReturnsSession() throws {
+        let expectedResult = Session(
+            success: true,
+            sessionID: "5f038ae0ee88737033fb7371dfbf6e3f386e9c78"
+        )
 
-        let url = AuthenticationEndpoint.createGuestSession.path
+        let result = try JSONDecoder.theMovieDatabaseAuth.decode(Session.self, fromResource: "session")
 
-        XCTAssertEqual(url, expectedURL)
-    }
-
-    func testCreateRequetTokenEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/authentication/token/new"))
-
-        let url = AuthenticationEndpoint.createRequestToken.path
-
-        XCTAssertEqual(url, expectedURL)
+        XCTAssertEqual(result.success, expectedResult.success)
+        XCTAssertEqual(result.sessionID, expectedResult.sessionID)
     }
 
 }

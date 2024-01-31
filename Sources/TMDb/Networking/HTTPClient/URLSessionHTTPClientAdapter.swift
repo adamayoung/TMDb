@@ -54,6 +54,31 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
         return HTTPResponse(statusCode: statusCode, data: data)
     }
 
+    func post(url: URL, body: Data, headers: [String: String]) async throws -> HTTPResponse {
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = body
+        for header in headers {
+            urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+
+        let data: Data
+        let response: URLResponse
+
+        do {
+            (data, response) = try await perform(urlRequest)
+        } catch let error {
+            throw error
+        }
+
+        guard let httpURLResponse = response as? HTTPURLResponse else {
+            return HTTPResponse(statusCode: -1, data: nil)
+        }
+
+        let statusCode = httpURLResponse.statusCode
+        return HTTPResponse(statusCode: statusCode, data: data)
+    }
+
 }
 
 extension URLSessionHTTPClientAdapter {

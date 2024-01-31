@@ -92,11 +92,11 @@ extension TMDbFactory {
     #endif
 
     private static var serialiser: some Serialiser {
-        Serialiser(decoder: .theMovieDatabase)
+        Serialiser(decoder: .theMovieDatabase, encoder: .theMovieDatabase)
     }
 
     private static var authSerialiser: some Serialiser {
-        Serialiser(decoder: .theMovieDatabaseAuth)
+        Serialiser(decoder: .theMovieDatabaseAuth, encoder: .theMovieDatabaseAuth)
     }
 
 }

@@ -1,5 +1,5 @@
 //
-//  Serialiser.swift
+//  JSONEncoder+TMDb.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,22 +19,20 @@
 
 import Foundation
 
-actor Serialiser {
+extension JSONEncoder {
 
-    private let decoder: JSONDecoder
-    private let encoder: JSONEncoder
-
-    init(decoder: JSONDecoder, encoder: JSONEncoder) {
-        self.decoder = decoder
-        self.encoder = encoder
+    static var theMovieDatabase: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.dateEncodingStrategy = .formatted(.theMovieDatabase)
+        return encoder
     }
 
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        try decoder.decode(type, from: data)
-    }
-
-    func encode(_ value: some Encodable) async throws -> Data {
-        try encoder.encode(value)
+    static var theMovieDatabaseAuth: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.dateEncodingStrategy = .formatted(.theMovieDatabaseAuth)
+        return encoder
     }
 
 }

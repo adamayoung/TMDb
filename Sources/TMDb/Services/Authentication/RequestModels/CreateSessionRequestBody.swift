@@ -1,5 +1,5 @@
 //
-//  Serialiser.swift
+//  CreateSessionRequestBody.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,22 +19,8 @@
 
 import Foundation
 
-actor Serialiser {
+struct CreateSessionRequestBody: Encodable {
 
-    private let decoder: JSONDecoder
-    private let encoder: JSONEncoder
-
-    init(decoder: JSONDecoder, encoder: JSONEncoder) {
-        self.decoder = decoder
-        self.encoder = encoder
-    }
-
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        try decoder.decode(type, from: data)
-    }
-
-    func encode(_ value: some Encodable) async throws -> Data {
-        try encoder.encode(value)
-    }
+    let requestToken: String
 
 }
