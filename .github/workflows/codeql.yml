@@ -22,7 +22,7 @@ env:
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-14
+    runs-on: macos-13
     timeout-minutes: 120
     permissions:
       actions: read
@@ -36,7 +36,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: swift
-          # config-file: ./.github/codeql/codeql-config.yml
+          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Build
         run: swift build  --build-tests
