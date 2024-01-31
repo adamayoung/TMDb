@@ -33,13 +33,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v2
         with:
           languages: swift
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Build
-        run: swift build --build-tests 
+        run: swift build --build-tests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
