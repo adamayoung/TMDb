@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct CreateSessionRequestBody: Encodable {
+struct CreateSessionRequestBody: Encodable, Equatable {
 
     let requestToken: String
 

@@ -152,6 +152,45 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    func testPostURLRequestAcceptHeaderSetToApplicationJSON() async throws {
+        httpClient.postResult = .success(HTTPResponse())
+        let expectedResult = "application/json"
+        let pathURL = try XCTUnwrap(URL(string: "/object"))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastPostHeaders?["Accept"]
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testPostURLRequestContentTypeHeaderSetToApplicationJSON() async throws {
+        httpClient.postResult = .success(HTTPResponse())
+        let expectedResult = "application/json"
+        let pathURL = try XCTUnwrap(URL(string: "/object"))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastPostHeaders?["Content-Type"]
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testPostURLRequestHasCorrectURL() async throws {
+        httpClient.postResult = .success(HTTPResponse())
+        let path = "/object"
+        let pathURL = try XCTUnwrap(URL(string: path))
+        let language = "en"
+        let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
+        let expectedResult = try XCTUnwrap(URL(string: urlString))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastPostURL
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
 }
 
 extension TMDbAPIClientTests {

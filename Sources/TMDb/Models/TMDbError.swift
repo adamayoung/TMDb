@@ -24,6 +24,8 @@ public enum TMDbError: Equatable, LocalizedError {
     /// An error indicating the resource could not be found.
     case notFound
 
+    case unauthorised(String?)
+
     /// An error indicating there was a network problem.
     case network(Error)
 
@@ -34,6 +36,9 @@ public enum TMDbError: Equatable, LocalizedError {
         switch (lhs, rhs) {
         case (.notFound, .notFound):
             true
+
+        case (let .unauthorised(lhsMessage), let .unauthorised(rhsMessage)):
+            lhsMessage == rhsMessage
 
         case (.network, .network):
             true
@@ -55,6 +60,9 @@ public extension TMDbError {
         switch self {
         case .notFound:
             "Not found"
+
+        case .unauthorised:
+            "Unauthorised"
 
         case .network:
             "Network error"

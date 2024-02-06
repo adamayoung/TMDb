@@ -106,7 +106,11 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.data, expectedData)
     }
 
-    #if !canImport(FoundationNetworking)
+}
+
+#if !canImport(FoundationNetworking)
+    extension URLSessionHTTPClientAdapterTests {
+
         func testGetURLRequestHasCorrectURL() async throws {
             let path = "/object?key1=value1&key2=value2"
             let expectedURL = try XCTUnwrap(URL(string: path))
@@ -117,9 +121,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
 
             XCTAssertEqual(result, expectedURL)
         }
-    #endif
 
-    #if !canImport(FoundationNetworking)
         func testGetWhenHeaderSetShouldBePresentInURLRequest() async throws {
             let header1Name = "Accept"
             let header1Value = "application/json"
@@ -140,6 +142,6 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
             XCTAssertEqual(result1, header1Value)
             XCTAssertEqual(result2, header2Value)
         }
-    #endif
 
-}
+    }
+#endif

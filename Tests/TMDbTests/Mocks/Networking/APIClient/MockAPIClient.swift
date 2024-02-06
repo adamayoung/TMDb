@@ -66,8 +66,9 @@ final class MockAPIClient: APIClient {
         }
     }
 
-    func post<Response: Decodable>(path: URL, body _: some Encodable) async throws -> Response {
+    func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
         lastPostPath = path
+        lastPostBody = body
         postCount += 1
 
         if requestTime > 0 {

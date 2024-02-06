@@ -119,4 +119,32 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(authenticateURLBuilder.lastRedirectURL, redirectURL)
     }
 
+    func testCreateSessionReturnsSession() async throws {
+        let requestToken = "abc123"
+        let expectedRequestBody = CreateSessionRequestBody(requestToken: requestToken)
+        let expectedResult = Session(success: true, sessionID: "987yxz")
+        apiClient.postResult = .success(expectedResult)
+
+        let result = try await service.createSession(withRequestToken: requestToken)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastPostPath, AuthenticationEndpoint.createSession.path)
+        XCTAssertEqual(apiClient.lastPostBody as? CreateSessionRequestBody, expectedRequestBody)
+    }
+
+    func testCreateErrorWhenErrorsThrowsError() async throws {
+        apiClient.result = .failure(.unknown)
+
+        var error: Error?
+        do {
+            _ = try await service.requestToken()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
 }
