@@ -50,5 +50,5 @@ let tmdbConfiguration = TMDbConfiguration(
 Once a configuration object has been created, configure TMDb with it.
 
 ```swift
-TMDb.configure(tmdbConfiguration)
+TMDbConfiguration.configure(tmdbConfiguration)
 ```
