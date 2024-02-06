@@ -1,5 +1,5 @@
 //
-//  TMDbError+TMDbAPIError.swift
+//  JSONEncoder+TMDb.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,27 +19,20 @@
 
 import Foundation
 
-extension TMDbError {
+extension JSONEncoder {
 
-    init(error: Error) {
-        guard let apiError = error as? TMDbAPIError else {
-            self = .unknown
-            return
-        }
+    static var theMovieDatabase: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.dateEncodingStrategy = .formatted(.theMovieDatabase)
+        return encoder
+    }
 
-        switch apiError {
-        case .notFound:
-            self = .notFound
-
-        case let .unauthorised(message):
-            self = .unauthorised(message)
-
-        case let .network(error):
-            self = .network(error)
-
-        default:
-            self = .unknown
-        }
+    static var theMovieDatabaseAuth: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.dateEncodingStrategy = .formatted(.theMovieDatabaseAuth)
+        return encoder
     }
 
 }

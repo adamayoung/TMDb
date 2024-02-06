@@ -41,18 +41,20 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
 
     override func tearDown() {
         httpClient = nil
+        urlSession = nil
         baseURL = nil
         MockURLProtocol.reset()
         super.tearDown()
     }
 
-    func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
+    func testPerformWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         MockURLProtocol.responseStatusCode = 401
+        let url = try XCTUnwrap(URL(string: "/error"))
+        let request = HTTPRequest(url: url)
 
         let response: HTTPResponse
         do {
-            let url = try XCTUnwrap(URL(string: "/error"))
-            response = try await httpClient.get(url: url, headers: [:])
+            response = try await httpClient.perform(request: request)
         } catch {
             XCTFail("Unexpected error thrown")
             return
@@ -61,13 +63,14 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.statusCode, 401)
     }
 
-    func testGetWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
+    func testPerformWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
         MockURLProtocol.responseStatusCode = 404
+        let url = try XCTUnwrap(URL(string: "/error"))
+        let request = HTTPRequest(url: url)
 
         let response: HTTPResponse
         do {
-            let url = try XCTUnwrap(URL(string: "/error"))
-            response = try await httpClient.get(url: url, headers: [:])
+            response = try await httpClient.perform(request: request)
         } catch {
             XCTFail("Unexpected error thrown")
             return
@@ -76,15 +79,16 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.statusCode, 404)
     }
 
-    func testGetWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
+    func testPerformWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
         MockURLProtocol.responseStatusCode = 404
         let expectedData = try Data(fromResource: "error-status-response", withExtension: "json")
         MockURLProtocol.data = expectedData
+        let url = try XCTUnwrap(URL(string: "/error"))
+        let request = HTTPRequest(url: url)
 
         let response: HTTPResponse
         do {
-            let url = try XCTUnwrap(URL(string: "/error"))
-            response = try await httpClient.get(url: url, headers: [:])
+            response = try await httpClient.perform(request: request)
         } catch {
             XCTFail("Unexpected error thrown")
             return
@@ -98,40 +102,45 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         let expectedStatusCode = 200
         let expectedData = Data("abc".utf8)
         MockURLProtocol.data = expectedData
-
         let url = try XCTUnwrap(URL(string: "/object"))
-        let response = try await httpClient.get(url: url, headers: [:])
+        let request = HTTPRequest(url: url)
+
+        let response = try await httpClient.perform(request: request)
 
         XCTAssertEqual(response.statusCode, expectedStatusCode)
         XCTAssertEqual(response.data, expectedData)
     }
 
-    #if !canImport(FoundationNetworking)
-        func testGetURLRequestHasCorrectURL() async throws {
+}
+
+#if !canImport(FoundationNetworking)
+    extension URLSessionHTTPClientAdapterTests {
+
+        func testPerformURLRequestHasCorrectURL() async throws {
             let path = "/object?key1=value1&key2=value2"
             let expectedURL = try XCTUnwrap(URL(string: path))
+            let request = HTTPRequest(url: expectedURL)
 
-            _ = try? await httpClient.get(url: expectedURL, headers: [:])
+            _ = try? await httpClient.perform(request: request)
 
             let result = MockURLProtocol.lastRequest?.url
 
             XCTAssertEqual(result, expectedURL)
         }
-    #endif
 
-    #if !canImport(FoundationNetworking)
-        func testGetWhenHeaderSetShouldBePresentInURLRequest() async throws {
+        func testPerformWhenHeaderSetShouldBePresentInURLRequest() async throws {
+            let url = try XCTUnwrap(URL(string: "/object"))
             let header1Name = "Accept"
             let header1Value = "application/json"
             let header2Name = "Content-Type"
             let header2Value = "text/html"
-
-            let url = try XCTUnwrap(URL(string: "/object"))
             let headers = [
                 header1Name: header1Value,
                 header2Name: header2Value
             ]
-            _ = try? await httpClient.get(url: url, headers: headers)
+            let request = HTTPRequest(url: url, headers: headers)
+
+            _ = try? await httpClient.perform(request: request)
 
             let lastURLRequest = try XCTUnwrap(MockURLProtocol.lastRequest)
             let result1 = lastURLRequest.value(forHTTPHeaderField: header1Name)
@@ -140,6 +149,6 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
             XCTAssertEqual(result1, header1Value)
             XCTAssertEqual(result2, header2Value)
         }
-    #endif
 
-}
+    }
+#endif

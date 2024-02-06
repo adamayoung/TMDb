@@ -59,9 +59,10 @@ extension TMDbTest {
 
         init() {}
 
-        func get(url _: URL, headers _: [String: String]) async throws -> HTTPResponse {
+        func perform(request _: HTTPRequest) async throws -> HTTPResponse {
             HTTPResponse()
         }
+
     }
 
 }

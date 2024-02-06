@@ -83,6 +83,8 @@ public final class AuthenticationService {
     ///
     /// [TMDb API - Authentication: Create Request Token](https://developer.themoviedb.org/reference/authentication-create-request-token)
     ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
     /// - Returns: An intermediate request token.
     ///
     public func requestToken() async throws -> Token {
@@ -111,6 +113,31 @@ public final class AuthenticationService {
         let url = authenticateURLBuilder.authenticateURL(with: token.requestToken, redirectURL: redirectURL)
 
         return url
+    }
+
+    ///
+    /// Creates a TMDb session with a valid request token.
+    ///
+    /// - Note: Ensure this request token has been authorised in a web browser by taking the user to the URL generated
+    /// by ``authenticateURL(for:redirectURL:)``.
+    ///
+    /// - Parameter requestToken: An authorised request token.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A TMDb session.
+    ///
+    public func createSession(withRequestToken requestToken: String) async throws -> Session {
+        let body = CreateSessionRequestBody(requestToken: requestToken)
+
+        let session: Session
+        do {
+            session = try await apiClient.post(endpoint: AuthenticationEndpoint.createSession, body: body)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return session
     }
 
 }

@@ -95,6 +95,11 @@ enum TMDbAPIError: Error {
     case gatewayTimeout(String?)
 
     ///
+    /// Data encode error.
+    ///
+    case encode(Error)
+
+    ///
     /// Data decode error.
     ///
     case decode(Error)

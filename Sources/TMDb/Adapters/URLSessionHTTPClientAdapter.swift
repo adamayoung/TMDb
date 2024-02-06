@@ -30,10 +30,11 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
         self.urlSession = urlSession
     }
 
-    func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "GET"
-        for header in headers {
+    func perform(request: HTTPRequest) async throws -> HTTPResponse {
+        var urlRequest = URLRequest(url: request.url)
+        urlRequest.httpMethod = request.method.rawValue
+        urlRequest.httpBody = request.body
+        for header in request.headers {
             urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
         }
 

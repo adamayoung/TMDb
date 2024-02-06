@@ -40,7 +40,7 @@ final class TMDbAPIClientTests: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         httpClient = HTTPMockClient()
-        serialiser = Serialiser(decoder: .theMovieDatabase)
+        serialiser = Serialiser(decoder: .theMovieDatabase, encoder: .theMovieDatabase)
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(
             apiKey: apiKey,
@@ -133,7 +133,7 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.get(path: URL(string: "/object")!) as String
 
-        let result = httpClient.lastHeaders?["Accept"]
+        let result = httpClient.lastRequest?.headers["Accept"]
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -147,7 +147,46 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.get(path: URL(string: path)!) as String
 
-        let result = httpClient.lastURL
+        let result = httpClient.lastRequest?.url
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testPostURLRequestAcceptHeaderSetToApplicationJSON() async throws {
+        httpClient.result = .success(HTTPResponse())
+        let expectedResult = "application/json"
+        let pathURL = try XCTUnwrap(URL(string: "/object"))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastRequest?.headers["Accept"]
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testPostURLRequestContentTypeHeaderSetToApplicationJSON() async throws {
+        httpClient.result = .success(HTTPResponse())
+        let expectedResult = "application/json"
+        let pathURL = try XCTUnwrap(URL(string: "/object"))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastRequest?.headers["Content-Type"]
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testPostURLRequestHasCorrectURL() async throws {
+        httpClient.result = .success(HTTPResponse())
+        let path = "/object"
+        let pathURL = try XCTUnwrap(URL(string: path))
+        let language = "en"
+        let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
+        let expectedResult = try XCTUnwrap(URL(string: urlString))
+
+        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+
+        let result = httpClient.lastRequest?.url
 
         XCTAssertEqual(result, expectedResult)
     }

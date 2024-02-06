@@ -1,5 +1,5 @@
 //
-//  TMDbError+TMDbAPIError.swift
+//  Serialiser.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,27 +19,22 @@
 
 import Foundation
 
-extension TMDbError {
+actor Serialiser {
 
-    init(error: Error) {
-        guard let apiError = error as? TMDbAPIError else {
-            self = .unknown
-            return
-        }
+    private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
 
-        switch apiError {
-        case .notFound:
-            self = .notFound
+    init(decoder: JSONDecoder, encoder: JSONEncoder) {
+        self.decoder = decoder
+        self.encoder = encoder
+    }
 
-        case let .unauthorised(message):
-            self = .unauthorised(message)
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
+        try decoder.decode(type, from: data)
+    }
 
-        case let .network(error):
-            self = .network(error)
-
-        default:
-            self = .unknown
-        }
+    func encode(_ value: some Encodable) async throws -> Data {
+        try encoder.encode(value)
     }
 
 }

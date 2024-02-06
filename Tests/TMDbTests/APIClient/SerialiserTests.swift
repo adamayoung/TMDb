@@ -26,7 +26,7 @@ final class SerialiserTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        serialiser = Serialiser(decoder: JSONDecoder())
+        serialiser = Serialiser(decoder: JSONDecoder(), encoder: JSONEncoder())
     }
 
     override func tearDown() {
@@ -37,14 +37,14 @@ final class SerialiserTests: XCTestCase {
     func testDecodeWhenDataCannotBeDecodedThrowsDecodeError() async throws {
         let data = Data("aaa".utf8)
 
+        var error: Error?
         do {
             _ = try await serialiser.decode(MockObject.self, from: data)
-        } catch {
-            XCTAssertTrue(true)
-            return
+        } catch let decodeError {
+            error = decodeError
         }
 
-        XCTFail("Expected decode error to be thrown")
+        XCTAssertNotNil(error)
     }
 
     func testDecodeWhenDataCanBeDecodedReturnsDecodedObject() async throws {
@@ -52,6 +52,28 @@ final class SerialiserTests: XCTestCase {
         let data = expectedResult.data
 
         let result = try await serialiser.decode(MockObject.self, from: data)
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testEncodeWhenDataCannotBeEncodedThrowsEncodeError() async throws {
+        let data = Data()
+
+        var error: Error?
+        do {
+            _ = try await serialiser.decode(MockObject.self, from: data)
+        } catch let decodeError {
+            error = decodeError
+        }
+
+        XCTAssertNotNil(error)
+    }
+
+    func testEncodeWhenDataCanBeEncodedReturnsData() async throws {
+        let value = MockObject()
+        let expectedResult = value.data
+
+        let result = try await serialiser.encode(value)
 
         XCTAssertEqual(result, expectedResult)
     }

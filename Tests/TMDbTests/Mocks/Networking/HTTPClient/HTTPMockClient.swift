@@ -23,14 +23,14 @@ import XCTest
 final class HTTPMockClient: HTTPClient {
 
     var result: Result<HTTPResponse, Error>?
-    private(set) var lastURL: URL?
-    private(set) var lastHeaders: [String: String]?
-    private(set) var getCount = 0
+    private(set) var lastRequest: HTTPRequest?
+    private(set) var performCount = 0
 
-    func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
-        lastURL = url
-        lastHeaders = headers
-        getCount += 1
+    init() {}
+
+    func perform(request: HTTPRequest) async throws -> HTTPResponse {
+        lastRequest = request
+        performCount += 1
 
         guard let result else {
             preconditionFailure("Result not set.")

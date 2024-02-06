@@ -30,4 +30,12 @@ final class URLTMDbTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    func testTMDbWebSiteBaseURLReturnsCorrectURL() throws {
+        let expectedResult = try XCTUnwrap(URL(string: "https://www.themoviedb.org"))
+
+        let result = URL.tmdbWebSiteURL
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
 }

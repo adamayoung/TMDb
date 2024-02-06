@@ -1,5 +1,5 @@
 //
-//  Serialiser.swift
+//  HTTPClient.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,16 +19,19 @@
 
 import Foundation
 
-actor Serialiser {
+///
+/// An interface for performing network tasks.
+///
+public protocol HTTPClient {
 
-    private let decoder: JSONDecoder
-
-    init(decoder: JSONDecoder) {
-        self.decoder = decoder
-    }
-
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        try decoder.decode(type, from: data)
-    }
+    ///
+    /// Performs an HTTP request.
+    ///
+    /// - Parameters:
+    ///   - request: The HTTP request.
+    ///
+    /// - Returns: An HTTP response object.
+    ///
+    func perform(request: HTTPRequest) async throws -> HTTPResponse
 
 }
