@@ -1,5 +1,5 @@
 //
-//  TMDbTests.swift
+//  TMDbConfigurationTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,14 +20,14 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbTest: XCTestCase {
+final class TMDbConfigurationTests: XCTestCase {
 
     func testConfigureSetsAPIKey() {
         let expectedAPIKey = "abc123"
         let configuration = TMDbConfiguration(apiKey: expectedAPIKey)
 
-        TMDb.configure(configuration)
-        let apiKey = TMDb.configuration.apiKey()
+        TMDbConfiguration.configure(configuration)
+        let apiKey = TMDbConfiguration.shared.apiKey()
 
         XCTAssertEqual(apiKey, expectedAPIKey)
     }
@@ -35,8 +35,8 @@ final class TMDbTest: XCTestCase {
     func testConfigurationWhenHTTPClientNotSetUsesDefaultAdapter() {
         let configuration = TMDbConfiguration(apiKey: "")
 
-        TMDb.configure(configuration)
-        let httpClient = TMDb.configuration.httpClient()
+        TMDbConfiguration.configure(configuration)
+        let httpClient = TMDbConfiguration.shared.httpClient()
 
         XCTAssertTrue(httpClient is URLSessionHTTPClientAdapter)
     }
@@ -45,15 +45,15 @@ final class TMDbTest: XCTestCase {
         let expectedHTTPClient = MockHTTPClient()
         let configuration = TMDbConfiguration(apiKey: "", httpClient: expectedHTTPClient)
 
-        TMDb.configure(configuration)
-        let httpClient = TMDb.configuration.httpClient()
+        TMDbConfiguration.configure(configuration)
+        let httpClient = TMDbConfiguration.shared.httpClient()
 
         XCTAssertIdentical(httpClient as AnyObject, expectedHTTPClient)
     }
 
 }
 
-extension TMDbTest {
+extension TMDbConfigurationTests {
 
     private final class MockHTTPClient: HTTPClient {
 

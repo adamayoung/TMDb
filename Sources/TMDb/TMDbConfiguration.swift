@@ -26,6 +26,15 @@ import Foundation
 ///
 public struct TMDbConfiguration {
 
+    private(set) static var shared = TMDbConfiguration(
+        apiKey: {
+            preconditionFailure("Configuration must first be set by calling TMDbConfiguration.configure(_:).")
+        },
+        httpClient: {
+            preconditionFailure("Configuration must first be set by calling TMDbConfiguration.configure(_:).")
+        }
+    )
+
     let apiKey: @Sendable () -> String
     let httpClient: @Sendable () -> any HTTPClient
 
@@ -59,6 +68,16 @@ public struct TMDbConfiguration {
     init(apiKey: @escaping @Sendable () -> String, httpClient: @escaping @Sendable () -> any HTTPClient) {
         self.apiKey = apiKey
         self.httpClient = httpClient
+    }
+
+    ///
+    /// Sets the configuration to be used with TMDb services.
+    ///
+    /// - Parameters:
+    ///    - configuration: A TMDb configuration object.
+    ///
+    public static func configure(_ configuration: TMDbConfiguration) {
+        shared = configuration
     }
 
 }

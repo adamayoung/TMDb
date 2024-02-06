@@ -43,7 +43,6 @@ For the TMDb API documentation, see
 
 - <doc:/CreatingTMDbAPIKey>
 - <doc:/ConfiguringTMDb>
-- ``TMDb/TMDb``
 - ``TMDbConfiguration``
 - ``HTTPClient``
 
