@@ -77,7 +77,7 @@ public struct TMDbConfiguration {
     ///    - configuration: A TMDb configuration object.
     ///
     public static func configure(_ configuration: TMDbConfiguration) {
-        Self.shared = configuration
+        shared = configuration
     }
 
 }
