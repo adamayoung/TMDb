@@ -97,7 +97,7 @@ extension TMDbAPIClient {
 
         urlComponents.scheme = baseURL.scheme
         urlComponents.host = baseURL.host
-        urlComponents.path = baseURL.appending(path: urlComponents.path).path()
+        urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)
