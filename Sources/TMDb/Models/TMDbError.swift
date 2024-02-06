@@ -37,7 +37,7 @@ public enum TMDbError: Equatable, LocalizedError {
         case (.notFound, .notFound):
             true
 
-        case (let .unauthorised(lhsMessage), let .unauthorised(rhsMessage)):
+        case let (.unauthorised(lhsMessage), .unauthorised(rhsMessage)):
             lhsMessage == rhsMessage
 
         case (.network, .network):

@@ -47,17 +47,10 @@ final class TMDbAPIClient: APIClient {
             "Accept": "application/json"
         ]
 
-        let response: HTTPResponse
+        let request = HTTPRequest(url: url, headers: headers)
+        let responseObject: Response = try await perform(request: request)
 
-        do {
-            response = try await httpClient.get(url: url, headers: headers)
-        } catch let error {
-            throw TMDbAPIError.network(error)
-        }
-
-        let decodedResponse: Response = try await decodeResponse(response: response)
-
-        return decodedResponse
+        return responseObject
     }
 
     func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
@@ -66,12 +59,28 @@ final class TMDbAPIClient: APIClient {
             "Content-Type": "application/json",
             "Accept": "application/json"
         ]
-        let bodyData = try await serialiser.encode(body)
+        let data: Data
+        do {
+            data = try await serialiser.encode(body)
+        } catch let error {
+            throw TMDbAPIError.encode(error)
+        }
 
+        let request = HTTPRequest(url: url, method: .post, headers: headers, body: data)
+        let responseObject: Response = try await perform(request: request)
+
+        return responseObject
+    }
+
+}
+
+extension TMDbAPIClient {
+
+    private func perform<Response: Decodable>(request: HTTPRequest) async throws -> Response {
         let response: HTTPResponse
 
         do {
-            response = try await httpClient.post(url: url, body: bodyData, headers: headers)
+            response = try await httpClient.perform(request: request)
         } catch let error {
             throw TMDbAPIError.network(error)
         }
@@ -81,10 +90,6 @@ final class TMDbAPIClient: APIClient {
         return decodedResponse
     }
 
-}
-
-extension TMDbAPIClient {
-
     private func urlFromPath(_ path: URL) -> URL {
         guard var urlComponents = URLComponents(url: path, resolvingAgainstBaseURL: true) else {
             return path
@@ -92,7 +97,7 @@ extension TMDbAPIClient {
 
         urlComponents.scheme = baseURL.scheme
         urlComponents.host = baseURL.host
-        urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
+        urlComponents.path = baseURL.appending(path: urlComponents.path).path()
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)

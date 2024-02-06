@@ -1,5 +1,5 @@
 //
-//  HTTPMockClient.swift
+//  HTTPRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,26 +17,34 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class HTTPMockClient: HTTPClient {
+public struct HTTPRequest {
 
-    var result: Result<HTTPResponse, Error>?
-    private(set) var lastRequest: HTTPRequest?
-    private(set) var performCount = 0
+    public let url: URL
+    public let method: HTTPRequest.Method
+    public let headers: [String: String]
+    public let body: Data?
 
-    init() {}
+    public init(
+        url: URL,
+        method: HTTPRequest.Method = .get,
+        headers: [String: String] = [:],
+        body: Data? = nil
+    ) {
+        self.url = url
+        self.method = method
+        self.headers = headers
+        self.body = body
+    }
 
-    func perform(request: HTTPRequest) async throws -> HTTPResponse {
-        lastRequest = request
-        performCount += 1
+}
 
-        guard let result else {
-            preconditionFailure("Result not set.")
-        }
+public extension HTTPRequest {
 
-        return try result.get()
+    enum Method: String {
+        case get = "GET"
+        case post = "POST"
     }
 
 }

@@ -2,7 +2,7 @@
 
 ## Topics
 
-### Creating am Authentication Service
+### Creating an Authentication Service
 
 - ``init()``
 
@@ -11,3 +11,4 @@
 - ``guestSession()``
 - ``requestToken()``
 - ``authenticateURL(for:redirectURL:)``
+- ``createSession(withRequestToken:)``

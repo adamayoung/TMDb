@@ -28,7 +28,7 @@ The adapter should conform to ``HTTPClient``.
 
 ```swift
 class MyHTTPClient: HTTPClient {
-    func get(url: URL, headers: [String: String]) async throws -> HTTPResponse {
+    func perform(request: HTTPRequest) async throws -> HTTPResponse {
         // Implement performing a network request.
     }
 }

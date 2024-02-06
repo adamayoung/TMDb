@@ -133,7 +133,7 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.get(path: URL(string: "/object")!) as String
 
-        let result = httpClient.lastHeaders?["Accept"]
+        let result = httpClient.lastRequest?.headers["Accept"]
 
         XCTAssertEqual(result, expectedResult)
     }
@@ -147,37 +147,37 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.get(path: URL(string: path)!) as String
 
-        let result = httpClient.lastURL
+        let result = httpClient.lastRequest?.url
 
         XCTAssertEqual(result, expectedResult)
     }
 
     func testPostURLRequestAcceptHeaderSetToApplicationJSON() async throws {
-        httpClient.postResult = .success(HTTPResponse())
+        httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
         let pathURL = try XCTUnwrap(URL(string: "/object"))
 
         _ = try? await apiClient.post(path: pathURL, body: "adam") as String
 
-        let result = httpClient.lastPostHeaders?["Accept"]
+        let result = httpClient.lastRequest?.headers["Accept"]
 
         XCTAssertEqual(result, expectedResult)
     }
 
     func testPostURLRequestContentTypeHeaderSetToApplicationJSON() async throws {
-        httpClient.postResult = .success(HTTPResponse())
+        httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
         let pathURL = try XCTUnwrap(URL(string: "/object"))
 
         _ = try? await apiClient.post(path: pathURL, body: "adam") as String
 
-        let result = httpClient.lastPostHeaders?["Content-Type"]
+        let result = httpClient.lastRequest?.headers["Content-Type"]
 
         XCTAssertEqual(result, expectedResult)
     }
 
     func testPostURLRequestHasCorrectURL() async throws {
-        httpClient.postResult = .success(HTTPResponse())
+        httpClient.result = .success(HTTPResponse())
         let path = "/object"
         let pathURL = try XCTUnwrap(URL(string: path))
         let language = "en"
@@ -186,7 +186,7 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.post(path: pathURL, body: "adam") as String
 
-        let result = httpClient.lastPostURL
+        let result = httpClient.lastRequest?.url
 
         XCTAssertEqual(result, expectedResult)
     }
