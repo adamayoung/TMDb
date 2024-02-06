@@ -44,7 +44,7 @@ final class JSONEncoderTMDbTests: XCTestCase {
         let expectedDataOfBirthResult = "\"date_of_birth\":\"1990-01-02\""
 
         let data = try jsonEncoder.encode(value)
-        let dataAsString = try XCTUnwrap(String(data: data, encoding: .utf8))
+        let dataAsString = try XCTUnwrap(String(decoding: data, as: UTF8.self))
 
         XCTAssertTrue(dataAsString.contains(expectedIDResult))
         XCTAssertTrue(dataAsString.contains(expectedFirstNameResult))
