@@ -27,6 +27,14 @@ extension XCTestCase {
         TMDbConfiguration.configure(configuration)
     }
 
+    func tmdbCredential() throws -> Credential {
+        try Self.tmdbCredential()
+    }
+
+}
+
+extension XCTestCase {
+
     private func tmdbAPIKey() throws -> String {
         try Self.tmdbAPIKey()
     }
@@ -40,6 +48,36 @@ extension XCTestCase {
         }
 
         return apiKey
+    }
+
+    private static func tmdbCredential() throws -> Credential {
+        let username = try tmdbUsername()
+        let password = try tmdbPassword()
+        let credential = Credential(username: username, password: password)
+
+        return credential
+    }
+
+    private static func tmdbUsername() throws -> String {
+        guard
+            let username = ProcessInfo.processInfo.environment["TMDB_USERNAME"],
+            !username.isEmpty
+        else {
+            throw XCTSkip("TMDB_USERNAME environment variable not set.")
+        }
+
+        return username
+    }
+
+    private static func tmdbPassword() throws -> String {
+        guard
+            let password = ProcessInfo.processInfo.environment["TMDB_PASSWORD"],
+            !password.isEmpty
+        else {
+            throw XCTSkip("TMDB_PASSWORD environment variable not set.")
+        }
+
+        return password
     }
 
 }

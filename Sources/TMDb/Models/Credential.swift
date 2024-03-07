@@ -1,5 +1,5 @@
 //
-//  TMDbError+TMDbAPIError.swift
+//  Credential.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,27 +19,31 @@
 
 import Foundation
 
-extension TMDbError {
+///
+/// A model representing a user's TMDb username and password.
+///
+public struct Credential {
 
-    init(error: some Error) {
-        guard let apiError = error as? TMDbAPIError else {
-            self = .unknown
-            return
-        }
+    ///
+    /// User's username.
+    ///
+    public let username: String
 
-        switch apiError {
-        case .notFound:
-            self = .notFound
+    ///
+    /// User's password.
+    ///
+    public let password: String
 
-        case let .unauthorised(message):
-            self = .unauthorised(message)
-
-        case let .network(error):
-            self = .network(error)
-
-        default:
-            self = .unknown
-        }
+    ///
+    /// Creates a user credential object.
+    ///
+    /// - Parameters:
+    ///   - username: User's username.
+    ///   - password: User's password.
+    ///
+    public init(username: String, password: String) {
+        self.username = username
+        self.password = password
     }
 
 }

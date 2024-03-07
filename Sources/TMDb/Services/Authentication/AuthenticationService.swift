@@ -127,8 +127,8 @@ public final class AuthenticationService {
     ///
     /// - Returns: A TMDb session.
     ///
-    public func createSession(withRequestToken requestToken: String) async throws -> Session {
-        let body = CreateSessionRequestBody(requestToken: requestToken)
+    public func createSession(withToken token: Token) async throws -> Session {
+        let body = CreateSessionRequestBody(requestToken: token.requestToken)
 
         let session: Session
         do {
@@ -136,6 +136,40 @@ public final class AuthenticationService {
         } catch let error {
             throw TMDbError(error: error)
         }
+
+        return session
+    }
+
+    ///
+    /// Creates a TMDb session using a user's username and password.
+    ///
+    /// - Parameters:
+    ///   - credential: The user's TMDb credential.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A TMDb session.
+    ///
+    public func createSession(withCredential credential: Credential) async throws -> Session {
+        let token = try await requestToken()
+
+        let body = CreateSessionWithLoginRequestBody(
+            username: credential.username,
+            password: credential.password,
+            requestToken: token.requestToken
+        )
+
+        let validatedToken: Token
+        do {
+            validatedToken = try await apiClient.post(
+                endpoint: AuthenticationEndpoint.validateWithLogin,
+                body: body
+            ) as Token
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        let session = try await createSession(withToken: validatedToken)
 
         return session
     }

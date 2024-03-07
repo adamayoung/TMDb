@@ -167,3 +167,6 @@ For the TMDb API documentation, see
 
 - ``AuthenticationService``
 - ``GuestSession``
+- ``Credential``
+- ``Token``
+- ``Session``

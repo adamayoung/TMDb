@@ -40,23 +40,23 @@ final class GenreServiceTests: XCTestCase {
     func testMovieGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
-        apiClient.result = .success(genreList)
+        apiClient.addResponse(.success(genreList))
 
         let result = try await service.movieGenres()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, GenresEndpoint.movie.path)
+        XCTAssertEqual(apiClient.lastRequestURL, GenresEndpoint.movie.path)
     }
 
     func testTVSeriesGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
-        apiClient.result = .success(genreList)
+        apiClient.addResponse(.success(genreList))
 
         let result = try await service.tvSeriesGenres()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, GenresEndpoint.tvSeries.path)
+        XCTAssertEqual(apiClient.lastRequestURL, GenresEndpoint.tvSeries.path)
     }
 
 }

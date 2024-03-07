@@ -40,65 +40,65 @@ final class PersonServiceTests: XCTestCase {
     func testDetailsReturnsPerson() async throws {
         let expectedResult = Person.johnnyDepp
         let personID = expectedResult.id
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.details(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.details(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.details(personID: personID).path)
     }
 
     func testCombinedCreditsReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock()
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.combinedCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.combinedCredits(personID: personID).path)
     }
 
     func testMovieCreditsReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock()
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.movieCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.movieCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.movieCredits(personID: personID).path)
     }
 
     func testTVSeriesCreditsReturnsTVSeriesCredits() async throws {
         let mock = PersonTVSeriesCredits.mock()
         let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.tvSeriesCredits(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.tvSeriesCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.tvSeriesCredits(personID: personID).path)
     }
 
     func testImagesReturnsImageCollection() async throws {
         let expectedResult = PersonImageCollection.mock()
         let personID = expectedResult.id
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.images(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.images(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.images(personID: personID).path)
     }
 
     func testKnownForReturnsShows() async throws {
         let credits = PersonCombinedCredits.mock()
         let personID = credits.id
-        apiClient.result = .success(credits)
+        apiClient.addResponse(.success(credits))
         let topCastShows = Array(credits.cast.prefix(10))
         let topCrewShows = Array(credits.crew.prefix(10))
         var topShows = topCastShows + topCrewShows
@@ -118,49 +118,49 @@ final class PersonServiceTests: XCTestCase {
         let result = try await service.knownFor(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.combinedCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.combinedCredits(personID: personID).path)
     }
 
     func testPopularWithDefaultParametersReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.popular()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular().path)
     }
 
     func testPopularReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.popular(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular().path)
     }
 
     func testPopularWithPageReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock()
         let page = expectedResult.page
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.popular(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.popular(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular(page: page).path)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = PersonExternalLinksCollection.sydneySweeney
         let personID = 115_440
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.externalLinks(forPerson: personID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, PeopleEndpoint.externalIDs(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.externalIDs(personID: personID).path)
     }
 
 }

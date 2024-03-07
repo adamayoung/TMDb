@@ -11,4 +11,5 @@
 - ``guestSession()``
 - ``requestToken()``
 - ``authenticateURL(for:redirectURL:)``
-- ``createSession(withRequestToken:)``
+- ``createSession(withToken:)``
+- ``createSession(withCredential:)``

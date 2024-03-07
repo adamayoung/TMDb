@@ -1,5 +1,5 @@
 //
-//  TMDbError+TMDbAPIError.swift
+//  CreateSessionWithLoginRequestBody.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,27 +19,10 @@
 
 import Foundation
 
-extension TMDbError {
+struct CreateSessionWithLoginRequestBody: Encodable, Equatable {
 
-    init(error: some Error) {
-        guard let apiError = error as? TMDbAPIError else {
-            self = .unknown
-            return
-        }
-
-        switch apiError {
-        case .notFound:
-            self = .notFound
-
-        case let .unauthorised(message):
-            self = .unauthorised(message)
-
-        case let .network(error):
-            self = .network(error)
-
-        default:
-            self = .unknown
-        }
-    }
+    let username: String
+    let password: String
+    let requestToken: String
 
 }
