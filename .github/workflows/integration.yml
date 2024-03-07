@@ -37,3 +37,5 @@ jobs:
         run: swift test --skip-build --filter TMDbIntegrationTests
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
+          TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
