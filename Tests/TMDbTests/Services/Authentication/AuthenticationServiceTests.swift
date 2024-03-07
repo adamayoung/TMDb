@@ -148,15 +148,14 @@ final class AuthenticationServiceTests: XCTestCase {
     }
 
     func testCreateSessionWithUsernameReturnsSession() async throws {
-        let username = "test"
-        let password = "pass123"
+        let credential = Credential(username: "test", password: "pass123")
 
         let token = Token.mock()
         apiClient.addResponse(.success(token))
 
         let expectedCreateSessionWithLoginRequestBody = CreateSessionWithLoginRequestBody(
-            username: username,
-            password: password,
+            username: credential.username,
+            password: credential.password,
             requestToken: token.requestToken
         )
         apiClient.addResponse(.success(token))
@@ -165,7 +164,7 @@ final class AuthenticationServiceTests: XCTestCase {
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
 
-        let result = try await service.createSession(withUsername: username, password: password)
+        let result = try await service.createSession(withCredential: credential)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 0), AuthenticationEndpoint.createRequestToken.path)

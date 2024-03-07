@@ -96,3 +96,5 @@ ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test
 
 .check-env-vars:
 	@test $${TMDB_API_KEY?Please set environment variable TMDB_API_KEY}
+	@test $${TMDB_USERNAME?Please set environment variable TMDB_USERNAME}
+	@test $${TMDB_PASSWORD?Please set environment variable TMDB_PASSWORD}

@@ -144,19 +144,18 @@ public final class AuthenticationService {
     /// Creates a TMDb session using a user's username and password.
     ///
     /// - Parameters:
-    ///   - username: The user's TMDb username.
-    ///   - password: The user's TMDb password.
+    ///   - credential: The user's TMDb credential.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A TMDb session.
     ///
-    public func createSession(withUsername username: String, password: String) async throws -> Session {
+    public func createSession(withCredential credential: Credential) async throws -> Session {
         let token = try await requestToken()
 
         let body = CreateSessionWithLoginRequestBody(
-            username: username,
-            password: password,
+            username: credential.username,
+            password: credential.password,
             requestToken: token.requestToken
         )
 
