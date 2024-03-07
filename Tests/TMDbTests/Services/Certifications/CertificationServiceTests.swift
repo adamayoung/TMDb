@@ -41,24 +41,24 @@ final class CertificationServiceTests: XCTestCase {
         let certifications = Certifications.gbAndUS
         let expectedResult = certifications.certifications
 
-        apiClient.result = .success(certifications)
+        apiClient.addResponse(.success(certifications))
 
         let result = try await service.movieCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.movie.path)
+        XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.movie.path)
     }
 
     func testTVSeriesCertificationsReturnsTVSeriesCertifications() async throws {
         let certifications = Certifications.gbAndUS
         let expectedResult = certifications.certifications
 
-        apiClient.result = .success(certifications)
+        apiClient.addResponse(.success(certifications))
 
         let result = try await service.tvSeriesCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, CertificationsEndpoint.tvSeries.path)
+        XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.tvSeries.path)
     }
 
 }

@@ -44,13 +44,13 @@ final class TVSeasonServiceTests: XCTestCase {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVSeasonsEndpoint.details(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber).path
         )
     }
@@ -59,13 +59,13 @@ final class TVSeasonServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeasonImageCollection.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVSeasonsEndpoint.images(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
@@ -78,13 +78,13 @@ final class TVSeasonServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
         let expectedResult = VideoCollection.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVSeasonsEndpoint.videos(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,

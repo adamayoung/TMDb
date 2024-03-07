@@ -21,7 +21,7 @@ import Foundation
 
 extension TMDbError {
 
-    init(error: Error) {
+    init(error: some Error) {
         guard let apiError = error as? TMDbAPIError else {
             self = .unknown
             return

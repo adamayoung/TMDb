@@ -43,34 +43,34 @@ final class WatchProviderServiceTests: XCTestCase {
     func testCountriesReturnsCountries() async throws {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
-        apiClient.result = .success(regions)
+        apiClient.addResponse(.success(regions))
 
         let result = try await service.countries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.regions.path)
+        XCTAssertEqual(apiClient.lastRequestURL, WatchProviderEndpoint.regions.path)
     }
 
     func testMovieWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
-        apiClient.result = .success(watchProviderResult)
+        apiClient.addResponse(.success(watchProviderResult))
 
         let result = try await service.movieWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.movie(regionCode: localeProvider.regionCode).path)
+        XCTAssertEqual(apiClient.lastRequestURL, WatchProviderEndpoint.movie(regionCode: localeProvider.regionCode).path)
     }
 
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
-        apiClient.result = .success(watchProviderResult)
+        apiClient.addResponse(.success(watchProviderResult))
 
         let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, WatchProviderEndpoint.tvSeries(regionCode: localeProvider.regionCode).path)
+        XCTAssertEqual(apiClient.lastRequestURL, WatchProviderEndpoint.tvSeries(regionCode: localeProvider.regionCode).path)
     }
 
 }

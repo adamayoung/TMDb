@@ -45,7 +45,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         let expectedResult = TVEpisode.mock()
         let seasonNumber = expectedResult.seasonNumber
         let episodeNumber = expectedResult.episodeNumber
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.details(
             forEpisode: episodeNumber,
@@ -55,7 +55,7 @@ final class TVEpisodeServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVEpisodesEndpoint.details(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
@@ -69,7 +69,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
         let expectedResult = TVEpisodeImageCollection.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.images(
             forEpisode: episodeNumber,
@@ -79,7 +79,7 @@ final class TVEpisodeServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVEpisodesEndpoint.images(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,
@@ -94,7 +94,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
         let expectedResult = VideoCollection.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.videos(
             forEpisode: episodeNumber,
@@ -104,7 +104,7 @@ final class TVEpisodeServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(
-            apiClient.lastPath,
+            apiClient.lastRequestURL,
             TVEpisodesEndpoint.videos(
                 tvSeriesID: tvSeriesID,
                 seasonNumber: seasonNumber,

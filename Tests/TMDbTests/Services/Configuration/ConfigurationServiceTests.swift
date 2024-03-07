@@ -39,42 +39,42 @@ final class ConfigurationServiceTests: XCTestCase {
 
     func testAPIConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock()
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.apiConfiguration()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.api.path)
+        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.api.path)
     }
 
     func testCountriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.countries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.countries.path)
+        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.countries.path)
     }
 
     func testJobsByDepartmentReturnsDepartments() async throws {
         let expectedResult = [Department].mocks
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.jobsByDepartment()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.jobs.path)
+        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.jobs.path)
     }
 
     func testLanguagesReturnsLanguages() async throws {
         let expectedResult = [Language].mocks
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.languages()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, ConfigurationEndpoint.languages.path)
+        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.languages.path)
     }
 
 }

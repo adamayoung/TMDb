@@ -23,8 +23,8 @@ enum AuthenticationEndpoint {
 
     case createGuestSession
     case createRequestToken
+    case validateWithLogin
     case createSession
-    case createSessionWithLogin
 
 }
 
@@ -44,15 +44,15 @@ extension AuthenticationEndpoint: Endpoint {
                 .appendingPathComponent("token")
                 .appendingPathComponent("new")
 
+        case .validateWithLogin:
+            Self.basePath
+                .appendingPathComponent("token")
+                .appendingPathComponent("validate_with_login")
+
         case .createSession:
             Self.basePath
                 .appendingPathComponent("session")
                 .appendingPathComponent("new")
-
-        case .createSessionWithLogin:
-            Self.basePath
-                .appendingPathComponent("token")
-                .appendingPathComponent("validate_with_login")
         }
     }
 

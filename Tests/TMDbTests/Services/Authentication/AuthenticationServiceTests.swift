@@ -43,16 +43,16 @@ final class AuthenticationServiceTests: XCTestCase {
     func testGuestSessionReturnsGuestSession() async throws {
         let expectedResult = GuestSession.mock()
 
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.guestSession()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, AuthenticationEndpoint.createGuestSession.path)
+        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createGuestSession.path)
     }
 
     func testGuestSessionWhenErrorsThrowsError() async throws {
-        apiClient.result = .failure(.unknown)
+        apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
@@ -69,16 +69,16 @@ final class AuthenticationServiceTests: XCTestCase {
     func testRequestTokenReturnsToken() async throws {
         let expectedResult = Token.mock()
 
-        apiClient.result = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.requestToken()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPath, AuthenticationEndpoint.createRequestToken.path)
+        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createRequestToken.path)
     }
 
     func testRequestTokenWhenErrorsThrowsError() async throws {
-        apiClient.result = .failure(.unknown)
+        apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
@@ -119,21 +119,21 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(authenticateURLBuilder.lastRedirectURL, redirectURL)
     }
 
-    func testCreateSessionReturnsSession() async throws {
-        let requestToken = "abc123"
-        let expectedRequestBody = CreateSessionRequestBody(requestToken: requestToken)
+    func testCreateSessionWithTokenReturnsSession() async throws {
+        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+        let expectedRequestBody = CreateSessionRequestBody(requestToken: token.requestToken)
         let expectedResult = Session(success: true, sessionID: "987yxz")
-        apiClient.postResult = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
 
-        let result = try await service.createSession(withRequestToken: requestToken)
+        let result = try await service.createSession(withToken: token)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastPostPath, AuthenticationEndpoint.createSession.path)
-        XCTAssertEqual(apiClient.lastPostBody as? CreateSessionRequestBody, expectedRequestBody)
+        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createSession.path)
+        XCTAssertEqual(apiClient.lastRequestBody as? CreateSessionRequestBody, expectedRequestBody)
     }
 
-    func testCreateErrorWhenErrorsThrowsError() async throws {
-        apiClient.result = .failure(.unknown)
+    func testCreateSessionWithTokenWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
@@ -145,6 +145,40 @@ final class AuthenticationServiceTests: XCTestCase {
         let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
 
         XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testCreateSessionWithUsernameReturnsSession() async throws {
+        let username = "test"
+        let password = "pass123"
+
+        let token = Token.mock()
+        apiClient.addResponse(.success(token))
+
+        let expectedCreateSessionWithLoginRequestBody = CreateSessionWithLoginRequestBody(
+            username: username,
+            password: password,
+            requestToken: token.requestToken
+        )
+        apiClient.addResponse(.success(token))
+
+        let expectedCreateSessionRequestBody = CreateSessionRequestBody(requestToken: token.requestToken)
+        let expectedResult = Session(success: true, sessionID: "987yxz")
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.createSession(withUsername: username, password: password)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 0), AuthenticationEndpoint.createRequestToken.path)
+        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 1), AuthenticationEndpoint.validateWithLogin.path)
+        XCTAssertEqual(
+            apiClient.requestBody(atRequestIndex: 1) as? CreateSessionWithLoginRequestBody,
+            expectedCreateSessionWithLoginRequestBody
+        )
+        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 2), AuthenticationEndpoint.createSession.path)
+        XCTAssertEqual(
+            apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody,
+            expectedCreateSessionRequestBody
+        )
     }
 
 }
