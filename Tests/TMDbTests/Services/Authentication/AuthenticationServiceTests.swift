@@ -153,14 +153,14 @@ final class AuthenticationServiceTests: XCTestCase {
         let token = Token.mock()
         apiClient.addResponse(.success(token))
 
-        let expectedCreateSessionWithLoginRequestBody = CreateSessionWithLoginRequestBody(
+        let expectedCreateSessionWithLogin = CreateSessionWithLoginRequestBody(
             username: credential.username,
             password: credential.password,
             requestToken: token.requestToken
         )
         apiClient.addResponse(.success(token))
 
-        let expectedCreateSessionRequestBody = CreateSessionRequestBody(requestToken: token.requestToken)
+        let expectedCreateSession = CreateSessionRequestBody(requestToken: token.requestToken)
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
 
@@ -171,13 +171,10 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 1), AuthenticationEndpoint.validateWithLogin.path)
         XCTAssertEqual(
             apiClient.requestBody(atRequestIndex: 1) as? CreateSessionWithLoginRequestBody,
-            expectedCreateSessionWithLoginRequestBody
+            expectedCreateSessionWithLogin
         )
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 2), AuthenticationEndpoint.createSession.path)
-        XCTAssertEqual(
-            apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody,
-            expectedCreateSessionRequestBody
-        )
+        XCTAssertEqual(apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody, expectedCreateSession)
     }
 
 }

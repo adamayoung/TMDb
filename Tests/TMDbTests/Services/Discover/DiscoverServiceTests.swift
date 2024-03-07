@@ -100,7 +100,10 @@ final class DiscoverServiceTests: XCTestCase {
         let result = try await service.movies(sortedBy: sortBy, withPeople: people, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).path)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).path
+        )
     }
 
     func testTVSeriesWithDefaultParametersReturnsTVSeries() async throws {

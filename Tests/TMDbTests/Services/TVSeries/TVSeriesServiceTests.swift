@@ -155,7 +155,10 @@ final class TVSeriesServiceTests: XCTestCase {
         let result = try await service.recommendations(forTVSeries: tvSeriesID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page).path)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page).path
+        )
     }
 
     func testSimilarWithDefaultParametersReturnsTVSeries() async throws {
