@@ -46,4 +46,12 @@ final class AuthenticationEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testCreateSessionWithLoginEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/token/validate_with_login"))
+
+        let url = AuthenticationEndpoint.createSessionWithLogin.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }
