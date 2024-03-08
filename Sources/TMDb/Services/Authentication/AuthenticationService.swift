@@ -174,7 +174,7 @@ public final class AuthenticationService {
         return session
     }
 
-    /// 
+    ///
     /// Deletes a user's session on TMDb.
     ///
     /// - Parameter session: The user's session.
