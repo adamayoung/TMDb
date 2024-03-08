@@ -49,13 +49,16 @@ final class AuthenticationIntegrationTests: XCTestCase {
         XCTAssertNotEqual(token.requestToken, "")
     }
 
-    func testCreateSessionWithCredential() async throws {
+    func testCreateAndDeleteSessionWithCredential() async throws {
         let credential = try tmdbCredential()
 
         let session = try await authenticationService.createSession(withCredential: credential)
 
         XCTAssertTrue(session.success)
         XCTAssertNotEqual(session.sessionID, "")
+
+        let deleteResult = try await authenticationService.deleteSession(session)
+        XCTAssertTrue(deleteResult)
     }
 
 }
