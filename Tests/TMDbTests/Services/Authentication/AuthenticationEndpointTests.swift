@@ -54,4 +54,12 @@ final class AuthenticationEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testDeleteSessionEndpointReturnsURL() throws {
+        let expectedURL = try XCTUnwrap(URL(string: "/authentication/session"))
+
+        let url = AuthenticationEndpoint.deleteSession.path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }
