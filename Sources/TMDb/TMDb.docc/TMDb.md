@@ -163,6 +163,14 @@ For the TMDb API documentation, see
 - ``Department``
 - ``Language``
 
+### Account
+
+- ``AccountService``
+- ``AccountDetails``
+- ``AccountAvatar``
+- ``AccountAvatar/Gravatar``
+- ``AccountAvatar/TMDb``
+
 ### Authentication
 
 - ``AuthenticationService``
