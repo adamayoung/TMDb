@@ -46,6 +46,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.multi(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchAllReturnsMedia() async throws {
@@ -57,6 +58,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.multi(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchAllWithPageReturnsMedia() async throws {
@@ -70,6 +72,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.multi(query: query, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchMoviesWithDefaultParametersReturnsMovies() async throws {
@@ -81,6 +84,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.movies(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchMoviesReturnsMovies() async throws {
@@ -92,6 +96,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.movies(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchMoviesWithYearReturnsMovies() async throws {
@@ -104,6 +109,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.movies(query: query, year: year).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchMoviesWithPageReturnsMovies() async throws {
@@ -116,6 +122,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.movies(query: query, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchMoviesWithYearAndPageReturnsMovies() async throws {
@@ -129,6 +136,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.movies(query: query, year: year, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchTVSeriesWithDefaultParametersReturnsTVSeries() async throws {
@@ -140,6 +148,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.tvSeries(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchTVSeriesReturnsTVSeries() async throws {
@@ -151,6 +160,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.tvSeries(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchTVSeriesWithFirstAirDateYearReturnsTVSeries() async throws {
@@ -163,6 +173,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.tvSeries(query: query, firstAirDateYear: year).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchTVSeriesWithPageReturnsTVSeries() async throws {
@@ -175,6 +186,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.tvSeries(query: query, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchTVSeriesWithFirstAirDateYearANdPageReturnsTVSeries() async throws {
@@ -191,6 +203,7 @@ final class SearchServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             SearchEndpoint.tvSeries(query: query, firstAirDateYear: year, page: page).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchPeopleWithDefaultParametersReturnsPeople() async throws {
@@ -202,6 +215,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.people(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchPeopleReturnsPeople() async throws {
@@ -213,6 +227,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.people(query: query).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSearchPeopleWithPageReturnsPeople() async throws {
@@ -225,6 +240,7 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, SearchEndpoint.people(query: query, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

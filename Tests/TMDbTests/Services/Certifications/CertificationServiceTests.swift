@@ -47,6 +47,7 @@ final class CertificationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.movie.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesCertificationsReturnsTVSeriesCertifications() async throws {
@@ -59,6 +60,7 @@ final class CertificationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.tvSeries.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

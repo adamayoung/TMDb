@@ -174,4 +174,18 @@ public final class AuthenticationService {
         return session
     }
 
+    @discardableResult
+    public func deleteSession(_ session: Session) async throws -> Bool {
+        let body = DeleteSessionRequestBody(sessionID: session.sessionID)
+
+        let result: SuccessResult
+        do {
+            result = try await apiClient.post(endpoint: AuthenticationEndpoint.deleteSession, body: body)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result.success
+    }
+
 }

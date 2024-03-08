@@ -47,6 +47,7 @@ final class CompanyServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, CompanyEndpoint.details(companyID: companyID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

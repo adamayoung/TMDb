@@ -23,7 +23,9 @@ protocol APIClient {
 
     func get<Response: Decodable>(path: URL) async throws -> Response
 
-    func post<Body: Encodable, Response: Decodable>(path: URL, body: Body) async throws -> Response
+    func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response
+
+    func delete<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response
 
 }
 
@@ -35,6 +37,10 @@ extension APIClient {
 
     func post<Response: Decodable>(endpoint: Endpoint, body: some Encodable) async throws -> Response {
         try await post(path: endpoint.path, body: body)
+    }
+
+    func delete<Response: Decodable>(endpoint: Endpoint, body: some Encodable) async throws -> Response {
+        try await delete(path: endpoint.path, body: body)
     }
 
 }

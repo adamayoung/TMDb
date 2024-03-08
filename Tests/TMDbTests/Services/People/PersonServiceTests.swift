@@ -46,6 +46,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.details(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testCombinedCreditsReturnsCombinedCredits() async throws {
@@ -58,6 +59,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.combinedCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMovieCreditsReturnsMovieCredits() async throws {
@@ -70,6 +72,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.movieCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesCreditsReturnsTVSeriesCredits() async throws {
@@ -82,6 +85,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.tvSeriesCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testImagesReturnsImageCollection() async throws {
@@ -93,6 +97,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.images(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testKnownForReturnsShows() async throws {
@@ -119,6 +124,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.combinedCredits(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithDefaultParametersReturnsPeople() async throws {
@@ -129,6 +135,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularReturnsPeople() async throws {
@@ -139,6 +146,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithPageReturnsPeople() async throws {
@@ -150,6 +158,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.popular(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
@@ -161,6 +170,7 @@ final class PersonServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, PeopleEndpoint.externalIDs(personID: personID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

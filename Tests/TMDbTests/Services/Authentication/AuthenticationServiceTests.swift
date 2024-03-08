@@ -49,6 +49,7 @@ final class AuthenticationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createGuestSession.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testGuestSessionWhenErrorsThrowsError() async throws {
@@ -75,6 +76,7 @@ final class AuthenticationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createRequestToken.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRequestTokenWhenErrorsThrowsError() async throws {
@@ -129,6 +131,7 @@ final class AuthenticationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createSession.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
         XCTAssertEqual(apiClient.lastRequestBody as? CreateSessionRequestBody, expectedRequestBody)
     }
 
@@ -168,12 +171,15 @@ final class AuthenticationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 0), AuthenticationEndpoint.createRequestToken.path)
+        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 0), .get)
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 1), AuthenticationEndpoint.validateWithLogin.path)
+        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 1), .post)
         XCTAssertEqual(
             apiClient.requestBody(atRequestIndex: 1) as? CreateSessionWithLoginRequestBody,
             expectedCreateSessionWithLogin
         )
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 2), AuthenticationEndpoint.createSession.path)
+        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 2), .post)
         XCTAssertEqual(apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody, expectedCreateSession)
     }
 
