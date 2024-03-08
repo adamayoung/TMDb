@@ -197,7 +197,7 @@ public final class AuthenticationService {
         return result.success
     }
 
-    /// 
+    ///
     /// Validates the configured API key.
     ///
     /// - Returns: Whether or not the API key is valid.
