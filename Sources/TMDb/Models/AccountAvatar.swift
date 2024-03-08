@@ -87,7 +87,7 @@ public extension AccountAvatar {
         ///
         public let avatarPath: String?
 
-        /// 
+        ///
         /// Creates a TMDb avatar object.
         ///
         /// - Parameter avatarPath: Path of the avatar image.
