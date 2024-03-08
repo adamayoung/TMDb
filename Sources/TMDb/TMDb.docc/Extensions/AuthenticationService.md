@@ -13,3 +13,4 @@
 - ``authenticateURL(for:redirectURL:)``
 - ``createSession(withToken:)``
 - ``createSession(withCredential:)``
+- ``deleteSession(_:)``
