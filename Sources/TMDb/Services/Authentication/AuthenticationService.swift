@@ -197,4 +197,20 @@ public final class AuthenticationService {
         return result.success
     }
 
+    /// 
+    /// Validates the configured API key.
+    ///
+    /// - Returns: Whether or not the API key is valid.
+    ///
+    public func validateKey() async throws -> Bool {
+        let result: SuccessResult
+        do {
+            result = try await apiClient.get(endpoint: AuthenticationEndpoint.validateKey)
+        } catch {
+            return false
+        }
+
+        return result.success
+    }
+
 }
