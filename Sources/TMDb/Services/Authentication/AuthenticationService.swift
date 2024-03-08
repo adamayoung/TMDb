@@ -162,7 +162,7 @@ public final class AuthenticationService {
         let validatedToken: Token
         do {
             validatedToken = try await apiClient.post(
-                endpoint: AuthenticationEndpoint.validateWithLogin,
+                endpoint: AuthenticationEndpoint.validateRequestTokenWithLogin,
                 body: body
             ) as Token
         } catch let error {

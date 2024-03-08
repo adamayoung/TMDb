@@ -172,7 +172,10 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.requestURL(atRequestIndex: 0), AuthenticationEndpoint.createRequestToken.path)
         XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 0), .get)
-        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 1), AuthenticationEndpoint.validateWithLogin.path)
+        XCTAssertEqual(
+            apiClient.requestURL(atRequestIndex: 1),
+            AuthenticationEndpoint.validateRequestTokenWithLogin.path
+        )
         XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 1), .post)
         XCTAssertEqual(
             apiClient.requestBody(atRequestIndex: 1) as? CreateSessionWithLoginRequestBody,
