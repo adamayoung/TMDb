@@ -162,7 +162,7 @@ public final class AuthenticationService {
         let validatedToken: Token
         do {
             validatedToken = try await apiClient.post(
-                endpoint: AuthenticationEndpoint.validateWithLogin,
+                endpoint: AuthenticationEndpoint.validateRequestTokenWithLogin,
                 body: body
             ) as Token
         } catch let error {
@@ -192,6 +192,22 @@ public final class AuthenticationService {
             result = try await apiClient.delete(endpoint: AuthenticationEndpoint.deleteSession, body: body)
         } catch let error {
             throw TMDbError(error: error)
+        }
+
+        return result.success
+    }
+
+    ///
+    /// Validates the configured API key.
+    ///
+    /// - Returns: Whether or not the API key is valid.
+    ///
+    public func validateKey() async throws -> Bool {
+        let result: SuccessResult
+        do {
+            result = try await apiClient.get(endpoint: AuthenticationEndpoint.validateKey)
+        } catch {
+            return false
         }
 
         return result.success

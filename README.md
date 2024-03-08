@@ -132,8 +132,15 @@ make build-release
 make build-docs
 ```
 
-In order to run integration tests the `TMDB_API_KEY` environment variable needs
-to be set.
+In order to run integration tests the following environment variables need to
+be set.
+
+* `TMDB_API_KEY` - Your TMDb API key
+* `TMDB_USERNAME` - Your TMDb username
+* `TMDB_PASSWORD` - Your TMDB password
+
+If these environment variables aren't set then integration tests are skipped
+when not using `make`.
 
 Running unit tests on Linux requires [Docker](https://www.docker.com) to be
 running.

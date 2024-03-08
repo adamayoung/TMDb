@@ -61,4 +61,10 @@ final class AuthenticationIntegrationTests: XCTestCase {
         XCTAssertTrue(deleteResult)
     }
 
+    func testValidateKeyWhenValid() async throws {
+        let isValid = try await authenticationService.validateKey()
+
+        XCTAssertTrue(isValid)
+    }
+
 }
