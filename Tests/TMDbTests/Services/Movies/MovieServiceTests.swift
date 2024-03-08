@@ -20,6 +20,7 @@
 @testable import TMDb
 import XCTest
 
+// swiftlint:disable:next type_body_length
 final class MovieServiceTests: XCTestCase {
 
     var service: MovieService!
@@ -49,6 +50,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.details(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testCreditsReturnsCredits() async throws {
@@ -60,6 +62,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.credits(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
@@ -71,6 +74,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.reviews(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsReturnsReviews() async throws {
@@ -82,6 +86,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.reviews(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsWithPageReturnsReviews() async throws {
@@ -94,6 +99,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.reviews(movieID: movieID, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testImagesReturnsImageCollection() async throws {
@@ -108,6 +114,7 @@ final class MovieServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             MoviesEndpoint.images(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testVideosReturnsVideoCollection() async throws {
@@ -122,6 +129,7 @@ final class MovieServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             MoviesEndpoint.videos(movieID: movieID, languageCode: localeProvider.languageCode).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsWithDefaultParametersReturnsMovies() async throws {
@@ -133,6 +141,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.recommendations(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsReturnsMovies() async throws {
@@ -144,6 +153,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.recommendations(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsWithPageReturnsMovies() async throws {
@@ -156,6 +166,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.recommendations(movieID: movieID, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarWithDefaultParametersReturnsMovies() async throws {
@@ -167,6 +178,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.similar(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarReturnsMovies() async throws {
@@ -178,6 +190,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.similar(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarWithPageReturnsMovies() async throws {
@@ -190,6 +203,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.similar(movieID: movieID, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testNowPlayingWithDefaultParametersReturnsMovies() async throws {
@@ -200,6 +214,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.nowPlaying().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testNowPlayingReturnsMovies() async throws {
@@ -210,6 +225,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.nowPlaying().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testNowPlayingWithPageReturnsMovies() async throws {
@@ -221,6 +237,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.nowPlaying(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithDefaultParametersReturnsMovies() async throws {
@@ -231,6 +248,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularReturnsMovies() async throws {
@@ -241,6 +259,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithPageReturnsMovies() async throws {
@@ -252,6 +271,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.popular(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTopRatedWithDefaultParametersReturnsMovies() async throws {
@@ -262,6 +282,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.topRated().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTopRatedReturnsMovies() async throws {
@@ -272,6 +293,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.topRated().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTopRatedWithPageReturnsMovies() async throws {
@@ -283,6 +305,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.topRated(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testUpcomingWithDefaultParametersReturnsMovies() async throws {
@@ -293,6 +316,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.upcoming().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testUpcomingReturnsMovies() async throws {
@@ -303,6 +327,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.upcoming().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testUpcomingWithPageReturnsMovies() async throws {
@@ -314,6 +339,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.upcoming(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testWatchReturnsWatchProviders() async throws {
@@ -326,6 +352,7 @@ final class MovieServiceTests: XCTestCase {
         let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.watch(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
@@ -337,6 +364,7 @@ final class MovieServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.externalIDs(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

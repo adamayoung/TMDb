@@ -1,5 +1,5 @@
 //
-//  HTTPRequest.swift
+//  SuccessResult.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,33 +19,8 @@
 
 import Foundation
 
-public struct HTTPRequest {
+struct SuccessResult: Decodable {
 
-    public let url: URL
-    public let method: HTTPRequest.Method
-    public let headers: [String: String]
-    public let body: Data?
-
-    public init(
-        url: URL,
-        method: HTTPRequest.Method = .get,
-        headers: [String: String] = [:],
-        body: Data? = nil
-    ) {
-        self.url = url
-        self.method = method
-        self.headers = headers
-        self.body = body
-    }
-
-}
-
-public extension HTTPRequest {
-
-    enum Method: String {
-        case get = "GET"
-        case post = "POST"
-        case delete = "DELETE"
-    }
+    let success: Bool
 
 }

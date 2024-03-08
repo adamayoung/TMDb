@@ -53,6 +53,7 @@ final class TVSeasonServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             TVSeasonsEndpoint.details(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testImagesReturnsImages() async throws {
@@ -72,6 +73,7 @@ final class TVSeasonServiceTests: XCTestCase {
                 languageCode: localeProvider.languageCode
             ).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -91,6 +93,7 @@ final class TVSeasonServiceTests: XCTestCase {
                 languageCode: localeProvider.languageCode
             ).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

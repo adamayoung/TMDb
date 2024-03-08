@@ -46,6 +46,7 @@ final class GenreServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, GenresEndpoint.movie.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesGenresReturnsGenres() async throws {
@@ -57,6 +58,7 @@ final class GenreServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, GenresEndpoint.tvSeries.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

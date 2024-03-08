@@ -45,6 +45,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesReturnsMovies() async throws {
@@ -55,6 +56,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesWithSortByReturnsMovies() async throws {
@@ -66,6 +68,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies(sortedBy: sortBy).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesWithWithPeopleReturnsMovies() async throws {
@@ -77,6 +80,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies(people: people).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesWithWithPageReturnsMovies() async throws {
@@ -88,6 +92,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.movies(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesWithSortByAndWithPeopleAndPageReturnsMovies() async throws {
@@ -104,6 +109,7 @@ final class DiscoverServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             DiscoverEndpoint.movies(sortedBy: sortBy, people: people, page: page).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesWithDefaultParametersReturnsTVSeries() async throws {
@@ -114,6 +120,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.tvSeries().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesReturnsTVSeries() async throws {
@@ -124,6 +131,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.tvSeries().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesWithSortByReturnsTVSeries() async throws {
@@ -135,6 +143,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.tvSeries(sortedBy: sortBy).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesWithPageReturnsTVSeries() async throws {
@@ -146,6 +155,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.tvSeries(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesWithSortByAndPageReturnsTVSeries() async throws {
@@ -158,6 +168,7 @@ final class DiscoverServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, DiscoverEndpoint.tvSeries(sortedBy: sortBy, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

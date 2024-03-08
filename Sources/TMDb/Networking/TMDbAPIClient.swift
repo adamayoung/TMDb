@@ -72,6 +72,25 @@ final class TMDbAPIClient: APIClient {
         return responseObject
     }
 
+    func delete<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
+        let url = urlFromPath(path)
+        let headers = [
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        ]
+        let data: Data
+        do {
+            data = try await serialiser.encode(body)
+        } catch let error {
+            throw TMDbAPIError.encode(error)
+        }
+
+        let request = HTTPRequest(url: url, method: .delete, headers: headers, body: data)
+        let responseObject: Response = try await perform(request: request)
+
+        return responseObject
+    }
+
 }
 
 extension TMDbAPIClient {

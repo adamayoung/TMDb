@@ -1,5 +1,5 @@
 //
-//  HTTPRequest.swift
+//  DeleteSessionRequestBody.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,33 +19,16 @@
 
 import Foundation
 
-public struct HTTPRequest {
+struct DeleteSessionRequestBody: Encodable, Equatable {
 
-    public let url: URL
-    public let method: HTTPRequest.Method
-    public let headers: [String: String]
-    public let body: Data?
-
-    public init(
-        url: URL,
-        method: HTTPRequest.Method = .get,
-        headers: [String: String] = [:],
-        body: Data? = nil
-    ) {
-        self.url = url
-        self.method = method
-        self.headers = headers
-        self.body = body
-    }
+    let sessionID: String
 
 }
 
-public extension HTTPRequest {
+extension DeleteSessionRequestBody {
 
-    enum Method: String {
-        case get = "GET"
-        case post = "POST"
-        case delete = "DELETE"
+    private enum CodingKeys: String, CodingKey {
+        case sessionID = "sessionId"
     }
 
 }

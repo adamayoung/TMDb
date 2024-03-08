@@ -45,6 +45,7 @@ final class ConfigurationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.api.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testCountriesReturnsCountries() async throws {
@@ -55,6 +56,7 @@ final class ConfigurationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.countries.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testJobsByDepartmentReturnsDepartments() async throws {
@@ -65,6 +67,7 @@ final class ConfigurationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.jobs.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testLanguagesReturnsLanguages() async throws {
@@ -75,6 +78,7 @@ final class ConfigurationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.languages.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

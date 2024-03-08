@@ -46,6 +46,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.movies(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesForDayReturnsMovies() async throws {
@@ -57,6 +58,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.movies(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesForDayWithPageReturnsMovies() async throws {
@@ -69,6 +71,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesForWeekReturnsMovies() async throws {
@@ -80,6 +83,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.movies(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testMoviesForWeekWithPageReturnsMovies() async throws {
@@ -92,6 +96,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.movies(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesWithDefaultReturnsTVSeries() async throws {
@@ -103,6 +108,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesForDayReturnsTVSeries() async throws {
@@ -114,6 +120,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesForDayWithPageReturnsTVSeries() async throws {
@@ -126,6 +133,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesForWeekReturnsTVSeries() async throws {
@@ -137,6 +145,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.tvSeries(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testTVSeriesForWeekWithPageReturnsTVSeries() async throws {
@@ -149,6 +158,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPeopleWithDefaultParametersReturnsPeople() async throws {
@@ -160,6 +170,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.people(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPeopleForDayReturnsPeople() async throws {
@@ -171,6 +182,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.people(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPeopleForDayWithPageReturnsPeople() async throws {
@@ -183,6 +195,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.people(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPeopleForWeekReturnsPeople() async throws {
@@ -194,6 +207,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.people(timeWindow: timeWindow).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPeopleForWeekWithPageReturnsPeople() async throws {
@@ -206,6 +220,7 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TrendingEndpoint.people(timeWindow: timeWindow, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }

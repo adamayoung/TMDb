@@ -49,6 +49,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.details(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testCreditsReturnsShowsCredits() async throws {
@@ -60,6 +61,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.credits(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
@@ -71,6 +73,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsReturnsReviews() async throws {
@@ -82,6 +85,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testReviewsWithPageReturnsReviews() async throws {
@@ -94,6 +98,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testImagesReturnsImages() async throws {
@@ -108,6 +113,7 @@ final class TVSeriesServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -122,6 +128,7 @@ final class TVSeriesServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsWithDefaultParametersReturnsTVSeries() async throws {
@@ -133,6 +140,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsReturnsTVSeries() async throws {
@@ -144,6 +152,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testRecommendationsWithPageReturnsTVSeries() async throws {
@@ -159,6 +168,7 @@ final class TVSeriesServiceTests: XCTestCase {
             apiClient.lastRequestURL,
             TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page).path
         )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarWithDefaultParametersReturnsTVSeries() async throws {
@@ -170,6 +180,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarReturnsTVSeries() async throws {
@@ -181,6 +192,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testSimilarWithPageReturnsTVSeries() async throws {
@@ -193,6 +205,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID, page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithDefaultParametersReturnsTVSeries() async throws {
@@ -203,6 +216,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularReturnsTVSeries() async throws {
@@ -213,6 +227,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular().path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testPopularWithPageReturnsTVSeries() async throws {
@@ -224,6 +239,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular(page: page).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testWatchReturnsWatchProviders() async throws {
@@ -236,6 +252,7 @@ final class TVSeriesServiceTests: XCTestCase {
         let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
@@ -247,6 +264,7 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID).path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
 }
