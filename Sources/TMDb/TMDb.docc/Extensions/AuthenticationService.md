@@ -14,3 +14,4 @@
 - ``createSession(withToken:)``
 - ``createSession(withCredential:)``
 - ``deleteSession(_:)``
+- ``validateKey()``
