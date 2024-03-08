@@ -183,4 +183,44 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody, expectedCreateSession)
     }
 
+    func testDeleteSessionWhenSuccessfulReturnsTrue() async throws {
+        let response = SuccessResult(success: true)
+        apiClient.addResponse(.success(response))
+        let session = Session(success: true, sessionID: "abc123")
+        let expectedDeleteSession = DeleteSessionRequestBody(sessionID: session.sessionID)
+
+        let result = try await service.deleteSession(session)
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.deleteSession.path)
+        XCTAssertEqual(apiClient.lastRequestMethod, .delete)
+        XCTAssertEqual(apiClient.lastRequestBody as? DeleteSessionRequestBody, expectedDeleteSession)
+    }
+
+    func testDeleteSessionWhenNotSuccessfulReturnsFalse() async throws {
+        let response = SuccessResult(success: false)
+        apiClient.addResponse(.success(response))
+        let session = Session(success: true, sessionID: "abc123")
+
+        let result = try await service.deleteSession(session)
+
+        XCTAssertFalse(result)
+    }
+
+    func testDeleteSessionWhenErrorsThrowsError() async throws {
+        let session = Session(success: true, sessionID: "abc123")
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.deleteSession(session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
 }

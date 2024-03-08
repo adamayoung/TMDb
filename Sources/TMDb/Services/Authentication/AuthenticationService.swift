@@ -174,13 +174,22 @@ public final class AuthenticationService {
         return session
     }
 
+    /// 
+    /// Deletes a user's session on TMDb.
+    ///
+    /// - Parameter session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Whether or not the session was successfully delete.
+    ///
     @discardableResult
     public func deleteSession(_ session: Session) async throws -> Bool {
         let body = DeleteSessionRequestBody(sessionID: session.sessionID)
 
         let result: SuccessResult
         do {
-            result = try await apiClient.post(endpoint: AuthenticationEndpoint.deleteSession, body: body)
+            result = try await apiClient.delete(endpoint: AuthenticationEndpoint.deleteSession, body: body)
         } catch let error {
             throw TMDbError(error: error)
         }
