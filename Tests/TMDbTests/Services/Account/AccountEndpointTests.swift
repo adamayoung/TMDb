@@ -23,10 +23,22 @@ import XCTest
 final class AccountEndpointTests: XCTestCase {
 
     func testDetailsEndpointReturnsURL() throws {
-        let session = Session(success: true, sessionID: "abc123")
+        let session = Session.mock()
         let expectedURL = try XCTUnwrap(URL(string: "/account?session_id=\(session.sessionID)"))
 
-        let url = AccountEndpoint.details(session: session).path
+        let url = AccountEndpoint.details(sessionID: session.sessionID).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testAddFavouriteEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/favorite?session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.addFavourite(accountID: accountDetails.id, sessionID: session.sessionID).path
 
         XCTAssertEqual(url, expectedURL)
     }

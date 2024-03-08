@@ -52,7 +52,7 @@ public final class AccountService {
     public func details(session: Session) async throws -> AccountDetails {
         let accountDetails: AccountDetails
         do {
-            accountDetails = try await apiClient.get(endpoint: AccountEndpoint.details(session: session))
+            accountDetails = try await apiClient.get(endpoint: AccountEndpoint.details(sessionID: session.sessionID))
         } catch let error {
             throw TMDbError(error: error)
         }
