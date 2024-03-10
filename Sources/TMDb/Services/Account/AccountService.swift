@@ -60,4 +60,66 @@ public final class AccountService {
         return accountDetails
     }
 
+    public func addFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: movieID,
+            showType: .movie,
+            isFavourite: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    public func removeFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: movieID,
+            showType: .movie,
+            isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    public func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: tvSeriesID,
+            showType: .tvSeries,
+            isFavourite: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    public func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: tvSeriesID,
+            showType: .tvSeries,
+            isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+}
+
+extension AccountService {
+
+    private func addFavourite(
+        showID: Show.ID,
+        showType: ShowType,
+        isFavourite: Bool,
+        accountID: Int,
+        session: Session
+    ) async throws {
+        let body = AddFavouriteRequestBody(showType: showType, showID: showID, isFavourite: isFavourite)
+        do {
+            _ = try await apiClient.post(
+                endpoint: AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID),
+                body: body
+            ) as SuccessResult
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
 }

@@ -66,4 +66,151 @@ final class AccountServiceTests: XCTestCase {
         XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
+    func testAddFavouriteMovieReturnsSuccessfully() async throws {
+        let movieID = 550
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddFavourite = AddFavouriteRequestBody(showType: .movie, showID: movieID, isFavourite: true)
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+    }
+
+    func testAddFavouriteMovieWhenErrorsThrowsError() async throws {
+        let movieID = 550
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testRemoveFavouriteMovieReturnsSuccessfully() async throws {
+        let movieID = 550
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddFavourite = AddFavouriteRequestBody(showType: .movie, showID: movieID, isFavourite: false)
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+    }
+
+    func testRemoveFavouriteMovieWhenErrorsThrowsError() async throws {
+        let movieID = 550
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+
+
+
+    func testAddFavouriteTVSeriesReturnsSuccessfully() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddFavourite = AddFavouriteRequestBody(showType: .tvSeries, showID: tvSeriesID, isFavourite: true)
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.addFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+    }
+
+    func testAddFavouriteTVSeriesWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.addFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testRemoveFavouriteTVSeriesReturnsSuccessfully() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddFavourite = AddFavouriteRequestBody(showType: .tvSeries, showID: tvSeriesID, isFavourite: false)
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.removeFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+    }
+
+    func testRemoveFavouriteTVSeriesWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.removeFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
 }
