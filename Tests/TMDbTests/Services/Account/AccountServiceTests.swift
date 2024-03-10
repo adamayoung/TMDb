@@ -138,9 +138,6 @@ final class AccountServiceTests: XCTestCase {
         XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-
-
-
     func testAddFavouriteTVSeriesReturnsSuccessfully() async throws {
         let tvSeriesID = 101
         let accountID = 123

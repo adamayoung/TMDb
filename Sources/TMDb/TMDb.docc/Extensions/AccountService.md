@@ -9,3 +9,10 @@
 ### Account Details
 
 - ``details(session:)``
+
+### Favourites
+
+- ``addFavourite(movie:accountID:session:)``
+- ``removeFavourite(movie:accountID:session:)``
+- ``addFavourite(tvSeries:accountID:session:)``
+- ``removeFavourite(tvSeries:accountID:session:)``

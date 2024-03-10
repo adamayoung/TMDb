@@ -60,6 +60,16 @@ public final class AccountService {
         return accountDetails
     }
 
+    ///
+    /// Adds a movie to a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
     public func addFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
             showID: movieID,
@@ -70,6 +80,16 @@ public final class AccountService {
         )
     }
 
+    ///
+    /// Removes a movie from a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
     public func removeFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
             showID: movieID,
@@ -80,6 +100,16 @@ public final class AccountService {
         )
     }
 
+    ///
+    /// Adds a TV series to a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
     public func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
             showID: tvSeriesID,
@@ -90,6 +120,16 @@ public final class AccountService {
         )
     }
 
+    ///
+    /// Removes a TV series from a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
     public func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
             showID: tvSeriesID,
