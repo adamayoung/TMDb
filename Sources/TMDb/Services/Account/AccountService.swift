@@ -60,8 +60,22 @@ public final class AccountService {
         return accountDetails
     }
 
+
+    /// 
+    /// Returns a list of the user's favourited movies.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited movies.
+    ///
     public func favouriteMovies(
-        sortedBy: FavouriteMovieSort? = nil,
+        sortedBy: FavouriteSort? = nil,
         page: Int? = nil,
         accountID: Int,
         session: Session

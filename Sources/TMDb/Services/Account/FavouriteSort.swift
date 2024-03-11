@@ -1,5 +1,5 @@
 //
-//  MovieSort.swift
+//  FavouriteSort.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A sort specifier when fetching movies.
 ///
-public enum FavouriteMovieSort: CustomStringConvertible {
+public enum FavouriteSort: CustomStringConvertible {
 
     ///
     /// By created at.
@@ -35,7 +35,7 @@ public enum FavouriteMovieSort: CustomStringConvertible {
 
 }
 
-extension FavouriteMovieSort {
+extension FavouriteSort {
 
     private var fieldName: String {
         switch self {
@@ -59,7 +59,7 @@ extension URL {
         static let sortBy = "sort_by"
     }
 
-    func appendingSortBy(_ sortBy: FavouriteMovieSort?) -> Self {
+    func appendingSortBy(_ sortBy: FavouriteSort?) -> Self {
         guard let sortBy else {
             return self
         }

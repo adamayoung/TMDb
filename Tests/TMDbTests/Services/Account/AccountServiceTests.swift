@@ -85,7 +85,7 @@ final class AccountServiceTests: XCTestCase {
     func testFavouriteMoviesWhenFetchingWithSortedByReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
-        let sortedBy = FavouriteMovieSort.createdAt()
+        let sortedBy = FavouriteSort.createdAt()
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
 
@@ -102,7 +102,7 @@ final class AccountServiceTests: XCTestCase {
     func testFavouriteMoviesWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
-        let sortedBy = FavouriteMovieSort.createdAt()
+        let sortedBy = FavouriteSort.createdAt()
         let page = 2
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))

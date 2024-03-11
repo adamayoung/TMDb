@@ -22,7 +22,7 @@ import Foundation
 enum AccountEndpoint {
 
     case details(sessionID: String)
-    case favouriteMovies(sortedBy: FavouriteMovieSort? = nil, page: Int? = nil, accountID: Int, sessionID: String)
+    case favouriteMovies(sortedBy: FavouriteSort? = nil, page: Int? = nil, accountID: Int, sessionID: String)
     case addFavourite(accountID: Int, sessionID: String)
 
 }

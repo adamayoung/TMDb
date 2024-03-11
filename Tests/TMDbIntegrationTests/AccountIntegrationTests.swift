@@ -51,4 +51,28 @@ final class AccountIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(details.id, 0)
     }
 
+    func testAddingAndRemovingFavouriteMovies() async throws {
+        let accountDetails = try await accountService.details(session: session)
+        let movieID = 550
+
+        try await accountService.addFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterFavorited = try await accountService.favouriteMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+        let isMovieFavourited = movieListAfterFavorited.results.contains { $0.id == movieID }
+        XCTAssertTrue(isMovieFavourited)
+
+        try await accountService.removeFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterFavoriteRemoved = try await accountService.favouriteMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let isMovieFavouritedAfterRemoved = movieListAfterFavoriteRemoved.results.contains { $0.id == movieID }
+        XCTAssertFalse(isMovieFavouritedAfterRemoved)
+    }
+
 }

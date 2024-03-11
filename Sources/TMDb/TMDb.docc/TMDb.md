@@ -170,6 +170,7 @@ For the TMDb API documentation, see
 - ``AccountAvatar``
 - ``AccountAvatar/Gravatar``
 - ``AccountAvatar/TMDb``
+- ``FavouriteSort``
 
 ### Authentication
 
