@@ -22,6 +22,7 @@ import Foundation
 enum AccountEndpoint {
 
     case details(sessionID: String)
+    case favouriteMovies(page: Int? = nil, accountID: Int, sessionID: String)
     case addFavourite(accountID: Int, sessionID: String)
 
 }
@@ -38,6 +39,14 @@ extension AccountEndpoint: Endpoint {
         switch self {
         case let .details(sessionID):
             Self.basePath
+                .appendingQueryItem(name: QueryItemName.sessionID, value: sessionID)
+
+        case let .favouriteMovies(page, accountID, sessionID):
+            Self.basePath
+                .appendingPathComponent(accountID)
+                .appendingPathComponent("favorite")
+                .appendingPathComponent("movies")
+                .appendingPage(page)
                 .appendingQueryItem(name: QueryItemName.sessionID, value: sessionID)
 
         case let .addFavourite(accountID, sessionID):

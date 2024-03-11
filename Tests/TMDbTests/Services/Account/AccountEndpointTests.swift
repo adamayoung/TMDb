@@ -31,6 +31,35 @@ final class AccountEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testFavouriteMoviesEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/favorite/movies?session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.favouriteMovies(accountID: accountDetails.id, sessionID: session.sessionID).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testFavouriteMoviesWhenPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/favorite/movies?page=\(page)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.favouriteMovies(
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
     func testAddFavouriteEndpointReturnsURL() throws {
         let accountDetails = AccountDetails.mock()
         let session = Session.mock()
