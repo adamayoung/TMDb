@@ -66,6 +66,101 @@ final class AccountServiceTests: XCTestCase {
         XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
+    func testFavouriteMoviesReturnsMoviesList() async throws {
+        let accountID = 123
+        let session = Session.mock()
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.favouriteMovies(accountID: accountID, session: session)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.favouriteMovies(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+    }
+
+    func testFavouriteMoviesWhenFetchingWithSortedByReturnsMoviesList() async throws {
+        let accountID = 123
+        let session = Session.mock()
+        let sortedBy = FavouriteMovieSort.createdAt()
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.favouriteMovies(sortedBy: sortedBy, accountID: accountID, session: session)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.favouriteMovies(sortedBy: sortedBy, accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+    }
+
+    func testFavouriteMoviesWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
+        let accountID = 123
+        let session = Session.mock()
+        let sortedBy = FavouriteMovieSort.createdAt()
+        let page = 2
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.favouriteMovies(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            session: session
+        )
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.favouriteMovies(
+                sortedBy: sortedBy,
+                page: page,
+                accountID: accountID,
+                sessionID: session.sessionID
+            ).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+    }
+
+    func testFavouriteMoviesWhenFetchingByPageReturnsMoviesList() async throws {
+        let accountID = 123
+        let session = Session.mock()
+        let page = 2
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.favouriteMovies(page: page, accountID: accountID, session: session)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.favouriteMovies(page: page, accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+    }
+
+    func testFavouriteMoviesWhenErrorThrowsError() async throws {
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.favouriteMovies(accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testAddFavouriteMovieReturnsSuccessfully() async throws {
         let movieID = 550
         let accountID = 123

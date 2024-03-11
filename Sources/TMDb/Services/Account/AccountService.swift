@@ -60,6 +60,29 @@ public final class AccountService {
         return accountDetails
     }
 
+    public func favouriteMovies(
+        sortedBy: FavouriteMovieSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(
+                endpoint: AccountEndpoint.favouriteMovies(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
+
     ///
     /// Adds a movie to a user's favourites.
     ///

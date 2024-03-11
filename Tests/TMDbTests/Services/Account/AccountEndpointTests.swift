@@ -43,6 +43,24 @@ final class AccountEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testFavouriteMoviesWhenSortedByIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = FavouriteMovieSort.createdAt()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/favorite/movies"
+                + "?sort_by=\(sortedBy.description)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.favouriteMovies(
+            sortedBy: sortedBy,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
     func testFavouriteMoviesWhenPageIncludedEndpointReturnsURL() throws {
         let accountDetails = AccountDetails.mock()
         let session = Session.mock()
@@ -52,6 +70,26 @@ final class AccountEndpointTests: XCTestCase {
         )
 
         let url = AccountEndpoint.favouriteMovies(
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+    
+    func testFavouriteMoviesWhenSortedByAndPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = FavouriteMovieSort.createdAt()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/favorite/movies"
+                + "?sort_by=\(sortedBy.description)&page=\(page)&session_id=\(session.sessionID)")
+        )
+        
+        let url = AccountEndpoint.favouriteMovies(
+            sortedBy: sortedBy,
             page: page,
             accountID: accountDetails.id,
             sessionID: session.sessionID
