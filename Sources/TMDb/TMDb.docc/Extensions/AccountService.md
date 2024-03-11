@@ -18,5 +18,6 @@
 
 ### Favourite TV Series
 
+- ``favouriteTVSeries(sortedBy:page:accountID:session:)``
 - ``addFavourite(tvSeries:accountID:session:)``
 - ``removeFavourite(tvSeries:accountID:session:)``

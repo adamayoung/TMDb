@@ -97,6 +97,42 @@ public final class AccountService {
     }
 
     ///
+    /// Returns a list of the user's favourited TV series.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited TV series.
+    ///
+    public func favouriteTVSeries(
+        sortedBy: FavouriteSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.get(
+                endpoint: AccountEndpoint.favouriteTVSeries(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    ///
     /// Adds a movie to a user's favourites.
     ///
     /// - Parameters:
