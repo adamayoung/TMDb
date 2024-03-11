@@ -60,8 +60,7 @@ public final class AccountService {
         return accountDetails
     }
 
-
-    /// 
+    ///
     /// Returns a list of the user's favourited movies.
     ///
     /// - Parameters:
