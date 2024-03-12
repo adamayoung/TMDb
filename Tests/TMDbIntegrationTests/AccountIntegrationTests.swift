@@ -51,4 +51,52 @@ final class AccountIntegrationTests: XCTestCase {
         XCTAssertGreaterThan(details.id, 0)
     }
 
+    func testAddingAndRemovingFavouriteMovies() async throws {
+        let accountDetails = try await accountService.details(session: session)
+        let movieID = 550
+
+        try await accountService.addFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterFavorited = try await accountService.favouriteMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+        let isMovieFavourited = movieListAfterFavorited.results.contains { $0.id == movieID }
+        XCTAssertTrue(isMovieFavourited)
+
+        try await accountService.removeFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterFavoriteRemoved = try await accountService.favouriteMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let isMovieFavouritedAfterRemoved = movieListAfterFavoriteRemoved.results.contains { $0.id == movieID }
+        XCTAssertFalse(isMovieFavouritedAfterRemoved)
+    }
+
+    func testAddingAndRemovingFavouriteTVSeries() async throws {
+        let accountDetails = try await accountService.details(session: session)
+        let tvSeriesID = 2261
+
+        try await accountService.addFavourite(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+
+        let tvSeriesListAfterFavorited = try await accountService.favouriteTVSeries(
+            accountID: accountDetails.id,
+            session: session
+        )
+        let isTVSeriesFavourited = tvSeriesListAfterFavorited.results.contains { $0.id == tvSeriesID }
+        XCTAssertTrue(isTVSeriesFavourited)
+
+        try await accountService.removeFavourite(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+
+        let tvSeriesListAfterFavoriteRemoved = try await accountService.favouriteTVSeries(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let isTVSeriesFavouritedAfterRemoved = tvSeriesListAfterFavoriteRemoved.results.contains { $0.id == tvSeriesID }
+        XCTAssertFalse(isTVSeriesFavouritedAfterRemoved)
+    }
+
 }

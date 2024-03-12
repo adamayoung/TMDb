@@ -1,5 +1,5 @@
 //
-//  AccountServiceTests.swift
+//  AccountServiceDetailsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class AccountServiceTests: XCTestCase {
+final class AccountServiceDetails: XCTestCase {
 
     var service: AccountService!
     var apiClient: MockAPIClient!
@@ -47,7 +47,7 @@ final class AccountServiceTests: XCTestCase {
         let result = try await service.details(session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, AccountEndpoint.details(session: session).path)
+        XCTAssertEqual(apiClient.lastRequestURL, AccountEndpoint.details(sessionID: session.sessionID).path)
         XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 

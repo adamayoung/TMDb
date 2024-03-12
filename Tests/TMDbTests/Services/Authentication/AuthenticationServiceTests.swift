@@ -189,7 +189,7 @@ final class AuthenticationServiceTests: XCTestCase {
     func testDeleteSessionWhenSuccessfulReturnsTrue() async throws {
         let response = SuccessResult(success: true)
         apiClient.addResponse(.success(response))
-        let session = Session(success: true, sessionID: "abc123")
+        let session = Session.mock()
         let expectedDeleteSession = DeleteSessionRequestBody(sessionID: session.sessionID)
 
         let result = try await service.deleteSession(session)
@@ -203,7 +203,7 @@ final class AuthenticationServiceTests: XCTestCase {
     func testDeleteSessionWhenNotSuccessfulReturnsFalse() async throws {
         let response = SuccessResult(success: false)
         apiClient.addResponse(.success(response))
-        let session = Session(success: true, sessionID: "abc123")
+        let session = Session.mock()
 
         let result = try await service.deleteSession(session)
 
@@ -211,7 +211,7 @@ final class AuthenticationServiceTests: XCTestCase {
     }
 
     func testDeleteSessionWhenErrorsThrowsError() async throws {
-        let session = Session(success: true, sessionID: "abc123")
+        let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
         var error: Error?

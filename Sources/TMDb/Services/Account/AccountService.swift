@@ -52,12 +52,186 @@ public final class AccountService {
     public func details(session: Session) async throws -> AccountDetails {
         let accountDetails: AccountDetails
         do {
-            accountDetails = try await apiClient.get(endpoint: AccountEndpoint.details(session: session))
+            accountDetails = try await apiClient.get(endpoint: AccountEndpoint.details(sessionID: session.sessionID))
         } catch let error {
             throw TMDbError(error: error)
         }
 
         return accountDetails
+    }
+
+    ///
+    /// Returns a list of the user's favourited movies.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited movies.
+    ///
+    public func favouriteMovies(
+        sortedBy: FavouriteSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(
+                endpoint: AccountEndpoint.favouriteMovies(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
+
+    ///
+    /// Returns a list of the user's favourited TV series.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited TV series.
+    ///
+    public func favouriteTVSeries(
+        sortedBy: FavouriteSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.get(
+                endpoint: AccountEndpoint.favouriteTVSeries(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    ///
+    /// Adds a movie to a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: movieID,
+            showType: .movie,
+            isFavourite: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Removes a movie from a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: movieID,
+            showType: .movie,
+            isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Adds a TV series to a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: tvSeriesID,
+            showType: .tvSeries,
+            isFavourite: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Removes a TV series from a user's favourites.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addFavourite(
+            showID: tvSeriesID,
+            showType: .tvSeries,
+            isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+}
+
+extension AccountService {
+
+    private func addFavourite(
+        showID: Show.ID,
+        showType: ShowType,
+        isFavourite: Bool,
+        accountID: Int,
+        session: Session
+    ) async throws {
+        let body = AddFavouriteRequestBody(showType: showType, showID: showID, isFavourite: isFavourite)
+        do {
+            _ = try await apiClient.post(
+                endpoint: AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID),
+                body: body
+            ) as SuccessResult
+        } catch let error {
+            throw TMDbError(error: error)
+        }
     }
 
 }
