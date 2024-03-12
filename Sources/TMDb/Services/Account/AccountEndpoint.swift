@@ -25,6 +25,7 @@ enum AccountEndpoint {
     case favouriteMovies(sortedBy: FavouriteSort? = nil, page: Int? = nil, accountID: Int, sessionID: String)
     case favouriteTVSeries(sortedBy: FavouriteSort? = nil, page: Int? = nil, accountID: Int, sessionID: String)
     case addFavourite(accountID: Int, sessionID: String)
+    case addToWatchlist(accountID: Int, sessionID: String)
 
 }
 
@@ -64,6 +65,12 @@ extension AccountEndpoint: Endpoint {
             Self.basePath
                 .appendingPathComponent(accountID)
                 .appendingPathComponent("favorite")
+                .appendingQueryItem(name: QueryItemName.sessionID, value: sessionID)
+
+        case let .addToWatchlist(accountID, sessionID):
+            Self.basePath
+                .appendingPathComponent(accountID)
+                .appendingPathComponent("watchlist")
                 .appendingQueryItem(name: QueryItemName.sessionID, value: sessionID)
         }
     }

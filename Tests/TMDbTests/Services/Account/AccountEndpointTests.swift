@@ -177,4 +177,16 @@ final class AccountEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testAddToWatchlistEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist?session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.addToWatchlist(accountID: accountDetails.id, sessionID: session.sessionID).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
 }
