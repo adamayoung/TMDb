@@ -144,8 +144,8 @@ public final class AccountService {
     ///
     public func addFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: movieID,
             showType: .movie,
+            showID: movieID,
             isFavourite: true,
             accountID: accountID,
             session: session
@@ -164,8 +164,8 @@ public final class AccountService {
     ///
     public func removeFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: movieID,
             showType: .movie,
+            showID: movieID,
             isFavourite: false,
             accountID: accountID,
             session: session
@@ -184,8 +184,8 @@ public final class AccountService {
     ///
     public func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: tvSeriesID,
             showType: .tvSeries,
+            showID: tvSeriesID,
             isFavourite: true,
             accountID: accountID,
             session: session
@@ -204,9 +204,29 @@ public final class AccountService {
     ///
     public func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: tvSeriesID,
             showType: .tvSeries,
+            showID: tvSeriesID,
             isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Adds a movie to a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addToWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: true,
             accountID: accountID,
             session: session
         )
@@ -217,8 +237,8 @@ public final class AccountService {
 extension AccountService {
 
     private func addFavourite(
-        showID: Show.ID,
         showType: ShowType,
+        showID: Show.ID,
         isFavourite: Bool,
         accountID: Int,
         session: Session
@@ -227,6 +247,24 @@ extension AccountService {
         do {
             _ = try await apiClient.post(
                 endpoint: AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID),
+                body: body
+            ) as SuccessResult
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    private func addToWatchlist(
+        showType: ShowType,
+        showID: Show.ID,
+        isInWatchlist: Bool,
+        accountID: Int,
+        session: Session
+    ) async throws {
+        let body = AddToWatchlistRequestBody(showType: showType, showID: showID, isInWatchlist: isInWatchlist)
+        do {
+            _ = try await apiClient.post(
+                endpoint: AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID),
                 body: body
             ) as SuccessResult
         } catch let error {
