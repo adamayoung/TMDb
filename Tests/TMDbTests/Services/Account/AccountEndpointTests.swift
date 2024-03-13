@@ -177,6 +177,140 @@ final class AccountEndpointTests: XCTestCase {
         XCTAssertEqual(url, expectedURL)
     }
 
+    func testMovieWatchlistEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/movies?session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.movieWatchlist(accountID: accountDetails.id, sessionID: session.sessionID).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieWatchlistWhenSortedByIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = WatchlistSort.createdAt()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/movies"
+                + "?sort_by=\(sortedBy.description)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.movieWatchlist(
+            sortedBy: sortedBy,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieWatchlistWhenPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/movies?page=\(page)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.movieWatchlist(
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testMovieWatchlistWhenSortedByAndPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = WatchlistSort.createdAt()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/movies"
+                + "?sort_by=\(sortedBy.description)&page=\(page)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.movieWatchlist(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVSeriesWatchlistEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/tv?session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.tvSeriesWatchlist(accountID: accountDetails.id, sessionID: session.sessionID).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVSeriesWatchlistWhenSortedByIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = WatchlistSort.createdAt()
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/tv"
+                + "?sort_by=\(sortedBy.description)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.tvSeriesWatchlist(
+            sortedBy: sortedBy,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVSeriesWatchlistWhenPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/tv?page=\(page)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.tvSeriesWatchlist(
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
+    func testTVSeriesWatchlistWhenSortedByAndPageIncludedEndpointReturnsURL() throws {
+        let accountDetails = AccountDetails.mock()
+        let session = Session.mock()
+        let sortedBy = WatchlistSort.createdAt()
+        let page = 2
+        let expectedURL = try XCTUnwrap(
+            URL(string: "/account/\(accountDetails.id)/watchlist/tv"
+                + "?sort_by=\(sortedBy.description)&page=\(page)&session_id=\(session.sessionID)")
+        )
+
+        let url = AccountEndpoint.tvSeriesWatchlist(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountDetails.id,
+            sessionID: session.sessionID
+        ).path
+
+        XCTAssertEqual(url, expectedURL)
+    }
+
     func testAddToWatchlistEndpointReturnsURL() throws {
         let accountDetails = AccountDetails.mock()
         let session = Session.mock()
