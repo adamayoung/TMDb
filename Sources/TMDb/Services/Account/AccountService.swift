@@ -232,6 +232,26 @@ public final class AccountService {
         )
     }
 
+    ///
+    /// Removes a movie from a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFromWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
 }
 
 extension AccountService {
