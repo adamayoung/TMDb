@@ -252,6 +252,46 @@ public final class AccountService {
         )
     }
 
+    ///
+    /// Adds a TV series to a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addToWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Removes a TV series from a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFromWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
 }
 
 extension AccountService {

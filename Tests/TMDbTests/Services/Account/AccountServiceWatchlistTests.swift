@@ -117,3 +117,87 @@ extension AccountServiceWatchlistTests {
     }
 
 }
+
+extension AccountServiceWatchlistTests {
+
+    func testAddTVSeriesToWatchlistReturnsSuccessfully() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddToWatchlist = AddToWatchlistRequestBody(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: true
+        )
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+    }
+
+    func testAddTVSeriesToWatchlistWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testRemoveTVSeriesFromWatchlistReturnsSuccessfully() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        let expectedAddToWatchlist = AddToWatchlistRequestBody(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: false
+        )
+        let responseResult = SuccessResult(success: true)
+        apiClient.addResponse(.success(responseResult))
+
+        try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+
+        XCTAssertEqual(
+            apiClient.lastRequestURL,
+            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
+        )
+        XCTAssertEqual(apiClient.lastRequestMethod, .post)
+        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+    }
+
+    func testRemoveTVSeriesFromWatchlistWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 101
+        let accountID = 123
+        let session = Session.mock()
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+}
