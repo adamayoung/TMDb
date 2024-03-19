@@ -136,7 +136,11 @@ final class AccountIntegrationTests: XCTestCase {
         let isTVSeriesAddedToWatchlist = tvSeriesListAfterAddedToWatchlist.results.contains { $0.id == tvSeriesID }
         XCTAssertTrue(isTVSeriesAddedToWatchlist)
 
-        try await accountService.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+        try await accountService.removeFromWatchlist(
+            tvSeries: tvSeriesID,
+            accountID: accountDetails.id,
+            session: session
+        )
 
         let tvSeriesListAfterRemovedFromWatchlist = try await accountService.tvSeriesWatchlist(
             accountID: accountDetails.id,
