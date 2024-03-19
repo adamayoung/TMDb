@@ -143,7 +143,9 @@ final class AccountIntegrationTests: XCTestCase {
             session: session
         )
 
-        let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results.contains { $0.id == tvSeriesID }
+        let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results.contains {
+            $0.id == tvSeriesID
+        }
         XCTAssertFalse(isTVSeriesInWatchlistAfterRemoved)
     }
 
