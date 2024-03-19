@@ -19,6 +19,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 ///
 /// Provides an interface for obtaining account data from TMDb.
 ///
@@ -144,8 +146,8 @@ public final class AccountService {
     ///
     public func addFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: movieID,
             showType: .movie,
+            showID: movieID,
             isFavourite: true,
             accountID: accountID,
             session: session
@@ -164,8 +166,8 @@ public final class AccountService {
     ///
     public func removeFavourite(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: movieID,
             showType: .movie,
+            showID: movieID,
             isFavourite: false,
             accountID: accountID,
             session: session
@@ -184,8 +186,8 @@ public final class AccountService {
     ///
     public func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: tvSeriesID,
             showType: .tvSeries,
+            showID: tvSeriesID,
             isFavourite: true,
             accountID: accountID,
             session: session
@@ -204,9 +206,161 @@ public final class AccountService {
     ///
     public func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
         try await addFavourite(
-            showID: tvSeriesID,
             showType: .tvSeries,
+            showID: tvSeriesID,
             isFavourite: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Returns a list of movies in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of movies in the user's watchlist.
+    ///
+    public func movieWatchlist(
+        sortedBy: WatchlistSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(
+                endpoint: AccountEndpoint.movieWatchlist(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
+
+    ///
+    /// Returns a list of TV series in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV series in the user's watchlist.
+    ///
+    public func tvSeriesWatchlist(
+        sortedBy: WatchlistSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.get(
+                endpoint: AccountEndpoint.tvSeriesWatchlist(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    ///
+    /// Adds a movie to a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addToWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Removes a movie from a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The movie identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFromWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: false,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Adds a TV series to a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func addToWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: true,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Removes a TV series from a user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - movieID: The TV series identifier.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    public func removeFromWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+        try await addToWatchlist(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: false,
             accountID: accountID,
             session: session
         )
@@ -217,8 +371,8 @@ public final class AccountService {
 extension AccountService {
 
     private func addFavourite(
-        showID: Show.ID,
         showType: ShowType,
+        showID: Show.ID,
         isFavourite: Bool,
         accountID: Int,
         session: Session
@@ -227,6 +381,24 @@ extension AccountService {
         do {
             _ = try await apiClient.post(
                 endpoint: AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID),
+                body: body
+            ) as SuccessResult
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    private func addToWatchlist(
+        showType: ShowType,
+        showID: Show.ID,
+        isInWatchlist: Bool,
+        accountID: Int,
+        session: Session
+    ) async throws {
+        let body = AddToWatchlistRequestBody(showType: showType, showID: showID, isInWatchlist: isInWatchlist)
+        do {
+            _ = try await apiClient.post(
+                endpoint: AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID),
                 body: body
             ) as SuccessResult
         } catch let error {

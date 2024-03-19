@@ -99,4 +99,58 @@ final class AccountIntegrationTests: XCTestCase {
         XCTAssertFalse(isTVSeriesFavouritedAfterRemoved)
     }
 
+    func testAddingAndRemovingToMoviesWatchlist() async throws {
+        let accountDetails = try await accountService.details(session: session)
+        let movieID = 550
+
+        try await accountService.addToWatchlist(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterAddToWatchlist = try await accountService.movieWatchlist(
+            accountID: accountDetails.id,
+            session: session
+        )
+        let isMovieAddedToWatchlist = movieListAfterAddToWatchlist.results.contains { $0.id == movieID }
+        XCTAssertTrue(isMovieAddedToWatchlist)
+
+        try await accountService.removeFromWatchlist(movie: movieID, accountID: accountDetails.id, session: session)
+
+        let movieListAfterRemovedFromWatchlist = try await accountService.movieWatchlist(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let isMovieInWatchlistAfterRemoved = movieListAfterRemovedFromWatchlist.results.contains { $0.id == movieID }
+        XCTAssertFalse(isMovieInWatchlistAfterRemoved)
+    }
+
+    func testAddingAndRemovingTVSeriesToWatchlist() async throws {
+        let accountDetails = try await accountService.details(session: session)
+        let tvSeriesID = 2261
+
+        try await accountService.addToWatchlist(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+
+        let tvSeriesListAfterAddedToWatchlist = try await accountService.tvSeriesWatchlist(
+            accountID: accountDetails.id,
+            session: session
+        )
+        let isTVSeriesAddedToWatchlist = tvSeriesListAfterAddedToWatchlist.results.contains { $0.id == tvSeriesID }
+        XCTAssertTrue(isTVSeriesAddedToWatchlist)
+
+        try await accountService.removeFromWatchlist(
+            tvSeries: tvSeriesID,
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let tvSeriesListAfterRemovedFromWatchlist = try await accountService.tvSeriesWatchlist(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results.contains {
+            $0.id == tvSeriesID
+        }
+        XCTAssertFalse(isTVSeriesInWatchlistAfterRemoved)
+    }
+
 }
