@@ -171,6 +171,11 @@ For the TMDb API documentation, see
 - ``AccountAvatar/Gravatar``
 - ``AccountAvatar/TMDb``
 - ``FavouriteSort``
+- ``WatchlistSort``
+- ``MoviePageableList``
+- ``Movie``
+- ``TVSeriesPageableList``
+- ``TVSeries``
 
 ### Authentication
 
