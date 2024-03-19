@@ -19,6 +19,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 ///
 /// Provides an interface for obtaining account data from TMDb.
 ///
@@ -210,6 +212,78 @@ public final class AccountService {
             accountID: accountID,
             session: session
         )
+    }
+
+    ///
+    /// Returns a list of movies in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of movies in the user's watchlist.
+    ///
+    public func movieWatchlist(
+        sortedBy: WatchlistSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.get(
+                endpoint: AccountEndpoint.movieWatchlist(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
+
+    ///
+    /// Returns a list of TV series in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV series in the user's watchlist.
+    ///
+    public func tvSeriesWatchlist(
+        sortedBy: WatchlistSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.get(
+                endpoint: AccountEndpoint.tvSeriesWatchlist(
+                    sortedBy: sortedBy,
+                    page: page,
+                    accountID: accountID,
+                    sessionID: session.sessionID
+                )
+            )
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
     }
 
     ///
