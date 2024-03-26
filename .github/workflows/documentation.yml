@@ -30,6 +30,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
       
       - name: Build documentation
         run: |
@@ -42,10 +45,6 @@ jobs:
           --output-path docs
         env:
           SWIFTCI_DOCC: 1
-
-      - name: Setup Pages
-        if: github.ref == 'refs/heads/main'
-        uses: actions/configure-pages@v4
 
       - name: Upload documentation
         if: github.ref == 'refs/heads/main'
