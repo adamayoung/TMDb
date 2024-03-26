@@ -28,26 +28,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: |
-          set -o pipefail && NSUnbufferedIO=YES \
-          swift build \
-            --build-tests \
-            --jobs 4 \
-            -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
+        run: set -o pipefail && NSUnbufferedIO=YES swift build --build-tests --jobs 4 -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
 
       - name: Test
-        run: |
-          set -o pipefail && NSUnbufferedIO=YES \
-          swift test \
-            --skip-build \
-            --parallel \
-            --filter TMDbTests 2>&1 | xcbeautify --renderer github-actions
+        run: set -o pipefail && NSUnbufferedIO=YES swift test --skip-build --parallel --filter TMDbTests 2>&1 | xcbeautify --renderer github-actions
       
       - name: Build for Release
-        run: |
-          set -o pipefail && NSUnbufferedIO=YES \
-          swift build -c release --jobs 4 \              
-            -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
+        run: set -o pipefail && NSUnbufferedIO=YES swift build -c release --jobs 4 -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
@@ -67,21 +54,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: |
-          set -o pipefail && env NSUnbufferedIO=YES && \
-          xcodebuild build-for-testing \
-            -scheme TMDb \
-            -only-testing TMDbTests \
-            -destination '${{ matrix.destination }}' \
-            -parallelizeTargets 2>&1 | xcbeautify --renderer github-actions
+        run: set -o pipefail && env NSUnbufferedIO=YES && xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' -parallelizeTargets 2>&1 | xcbeautify --renderer github-actions
       
       - name: Test
-        run: |
-          set -o pipefail && env NSUnbufferedIO=YES && \
-          xcodebuild test-without-building \
-            -scheme TMDb \
-            -only-testing TMDbTests \
-            -destination '${{ matrix.destination }}' 2>&1 | xcbeautify --renderer github-actions
+        run: set -o pipefail && env NSUnbufferedIO=YES && xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' 2>&1 | xcbeautify --renderer github-actions
   
   build-test-linux:
     name: Build and Test (Linux)
@@ -92,22 +68,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: |
-          swift build \
-            --build-tests \
-            --jobs 4 \
-            -Xswiftc -warnings-as-errors 
+        run: swift build --build-tests --jobs 4 -Xswiftc -warnings-as-errors 
 
       - name: Test
-        run: |
-          swift test \
-            --skip-build \
-            --parallel \
-            --filter TMDbTests
+        run: swift test --skip-build --parallel --filter TMDbTests
       
       - name: Build for Release
-        run: |
-          swift build \
-            -c release \
-            --jobs 4 \
-            -Xswiftc -warnings-as-errors
+        run: swift build -c release --jobs 4 -Xswiftc -warnings-as-errors
