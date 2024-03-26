@@ -34,12 +34,12 @@ jobs:
       - name: Build documentation
         run: |
           swift package generate-documentation \
-            --allow-writing-to-directory docs \
-            --target TMDb \
-            --disable-indexing \
-            --transform-for-static-hosting \
-            --hosting-base-path TMDb \
-            --output-path docs
+          --allow-writing-to-directory docs \
+          --target TMDb \
+          --disable-indexing \
+          --transform-for-static-hosting \
+          --hosting-base-path TMDb \
+          --output-path docs
         env:
           SWIFTCI_DOCC: 1
 

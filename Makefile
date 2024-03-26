@@ -67,7 +67,7 @@ generate-docs:
 .PHONY: test
 test:
 	swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -warnings-as-errors
-	swift test --skip-build --filter $(TEST_TARGET)
+	swift test --skip-build --parallel --filter $(TEST_TARGET)
 
 .PHONY: test-ios
 test-ios:
