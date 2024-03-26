@@ -38,7 +38,7 @@ jobs:
             --disable-indexing \
             --transform-for-static-hosting \
             --hosting-base-path TMDb \
-            --output-path docs 2>&1 | xcbeautify --renderer github-actions
+            --output-path docs | xcbeautify --renderer github-actions
         env:
           SWIFTCI_DOCC: 1
 
