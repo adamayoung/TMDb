@@ -51,7 +51,7 @@ jobs:
           - name: tvOS
             destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
           - name: visionOS
-            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1
+            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
