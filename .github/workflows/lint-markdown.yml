@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - ".github/workflows/lint-markdown.yml"
-      - "**/*.swift" 
+      - "**/*.md" 
   workflow_dispatch:
 
 concurrency:
