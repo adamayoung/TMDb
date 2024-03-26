@@ -46,9 +46,7 @@ jobs:
       - name: Build for Release
         run: |
           set -o pipefail && NSUnbufferedIO=YES \
-          swift build \
-            -c release \
-            --jobs 4 \              
+          swift build -c release --jobs 4 \              
             -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
   
   build-and-test-platforms:
