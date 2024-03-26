@@ -30,7 +30,7 @@ lint-markdown:
 
 .PHONY: build
 build:
-	swift build
+	swift build --jobs 8
 
 .PHONY: build-linux
 build-linux:
@@ -64,7 +64,7 @@ generate-docs:
 
 .PHONY: test
 test:
-	swift build -Xswiftc -warnings-as-errors --build-tests
+	swift build -Xswiftc -warnings-as-errors --jobs 8 --build-tests
 	swift test --skip-build --filter $(TEST_TARGET)
 
 .PHONY: test-ios
