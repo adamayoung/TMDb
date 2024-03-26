@@ -31,8 +31,8 @@ jobs:
         run: |
           set -o pipefail && NSUnbufferedIO=YES \
           swift build \
-            --jobs 4 \
             --build-tests \
+            --jobs 4 \
             -Xswiftc -warnings-as-errors 2>&1 | xcbeautify --renderer github-actions
 
       - name: Test
@@ -96,8 +96,8 @@ jobs:
       - name: Build
         run: |
           swift build \
-            --jobs 4 \
             --build-tests \
+            --jobs 4 \
             -Xswiftc -warnings-as-errors 
 
       - name: Test

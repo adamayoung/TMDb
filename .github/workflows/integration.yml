@@ -31,10 +31,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: set -o pipefail && NSUnbufferedIO=YES swift build --build-tests 2>&1 | xcbeautify --renderer github-actions
+        run: |
+          set -o pipefail && NSUnbufferedIO=YES \
+          swift build \
+            --build-tests \
+            --jobs 4 2>&1 | xcbeautify --renderer github-actions
 
       - name: Test
-        run: set -o pipefail && NSUnbufferedIO=YES swift test --skip-build --filter TMDbIntegrationTests 2>&1 | xcbeautify --renderer github-actions
+        run: |
+          set -o pipefail && NSUnbufferedIO=YES \
+          swift test \
+          --skip-build \
+          --filter TMDbIntegrationTests 2>&1 | xcbeautify --renderer github-actions
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}

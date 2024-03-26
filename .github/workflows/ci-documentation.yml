@@ -13,7 +13,7 @@ concurrency:
 jobs:
   build-documentation:
     name: Build Documentation
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     env:
       SWIFTCI_DOCC: 1
     steps:
@@ -21,4 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: swift package generate-documentation --product TMDb
+        run: |
+          set -o pipefail && NSUnbufferedIO=YES \
+          swift package generate-documentation \
+            --product TMDb 2>&1 | xcbeautify --renderer github-actions

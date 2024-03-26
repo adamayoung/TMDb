@@ -22,8 +22,7 @@ concurrency:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    container: swift:5.9.2-jammy
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,12 +32,13 @@ jobs:
       
       - name: Build documentation
         run: |
-          swift package --allow-writing-to-directory docs \
-          generate-documentation --target TMDb \
-          --disable-indexing \
-          --transform-for-static-hosting \
-          --hosting-base-path TMDb \
-          --output-path docs
+          swift package generate-documentation \
+            --allow-writing-to-directory docs \
+            --target TMDb \
+            --disable-indexing \
+            --transform-for-static-hosting \
+            --hosting-base-path TMDb \
+            --output-path docs 2>&1 | xcbeautify --renderer github-actions
         env:
           SWIFTCI_DOCC: 1
 
