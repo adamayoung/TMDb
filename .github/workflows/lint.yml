@@ -17,8 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  swiftlint:
-    name: Swiftlint
+  swiftLint:
+    name: SwiftLint
     runs-on: ubuntu-latest
     container:
       image: docker://ghcr.io/realm/swiftlint:0.53.0
@@ -29,7 +29,7 @@ jobs:
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
 
-  swiftformat:
+  swiftFormat:
     name: SwiftFormat
     runs-on: ubuntu-latest
     container:
@@ -39,4 +39,4 @@ jobs:
         uses: actions/checkout@v4
       
       - name: SwiftFormat
-        run: swiftformat --lint .
+        run: swiftformat --lint --reporter github-actions-log .

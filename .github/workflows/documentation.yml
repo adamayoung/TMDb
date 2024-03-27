@@ -1,6 +1,9 @@
 name: Documentation
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -33,22 +36,26 @@ jobs:
       
       - name: Build documentation
         run: |
-          swift package --allow-writing-to-directory docs \
-          generate-documentation --target TMDb \
+          swift package \
+          --allow-writing-to-directory docs \
+          generate-documentation \
+          --target TMDb \
           --disable-indexing \
           --transform-for-static-hosting \
-          --hosting-base-path TMDb \
+          --hosting-base-path tmdb \
           --output-path docs
         env:
           SWIFTCI_DOCC: 1
 
       - name: Upload documentation
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'docs'
   
   deploy:
     name: Deploy
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     environment:
