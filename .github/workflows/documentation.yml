@@ -42,7 +42,7 @@ jobs:
           --target TMDb \
           --disable-indexing \
           --transform-for-static-hosting \
-          --hosting-base-path tmdb \
+          --hosting-base-path TMDb \
           --output-path docs
         env:
           SWIFTCI_DOCC: 1
