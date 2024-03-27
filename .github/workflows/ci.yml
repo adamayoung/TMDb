@@ -32,7 +32,21 @@ jobs:
         run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
 
       - name: Test
-        run: swift test --skip-build --parallel --filter TMDbTests
+        run: swift test --filter TMDbTests --enable-code-coverage
+
+      - name: Prepare Code Coverage
+        run: |
+          xcrun llvm-cov \
+          export -format="lcov" \
+          .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata > info.lcov
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: info.lcov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
       - name: Build for Release
         run: swift build -c release --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
