@@ -7,3 +7,4 @@ xcuserdata/
 .vscode
 *.xctestplan
 docs/
+info.lcov
