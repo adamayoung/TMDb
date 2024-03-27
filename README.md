@@ -64,12 +64,13 @@ Documentation and examples of usage can be found at
 
 Install [homebrew](https://brew.sh) and the follow formulae
 
-* swiftlint
-* swiftformat
-* markdownlint
+* [swiftlint](https://github.com/realm/SwiftLint)
+* [swiftformat](https://github.com/nicklockwood/SwiftFormat)
+* [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
+* [xcbeautify](https://github.com/cpisciotta/xcbeautify)
 
 ```bash
-brew install swiftlint swiftformat markdownlint
+brew install swiftlint swiftformat markdownlint xcbeautify
 ```
 
 ### Before submitting a PR
@@ -126,6 +127,7 @@ make test
 make test-ios
 make test-watchos
 make test-tvos
+make test-visionos
 make test-linux
 make integration-test
 make build-release
