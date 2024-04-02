@@ -23,27 +23,18 @@ let package = Package(
 
     targets: [
         .target(
-            name: "TMDb",
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            name: "TMDb"
         ),
         .testTarget(
             name: "TMDbTests",
             dependencies: ["TMDb"],
             resources: [
                 .process("Resources")
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "TMDbIntegrationTests",
-            dependencies: ["TMDb"],
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            dependencies: ["TMDb"]
         )
     ]
 )

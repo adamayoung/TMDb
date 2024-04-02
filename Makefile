@@ -32,7 +32,7 @@ lint-markdown:
 
 .PHONY: build
 build:
-	swift build --jobs 4 -Xswiftc -warnings-as-errors
+	swift build --jobs 4 -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
 .PHONY: build-linux
 build-linux:
@@ -40,7 +40,7 @@ build-linux:
 
 .PHONY: build-release
 build-release:
-	swift build -c release --jobs 4 -Xswiftc -warnings-as-errors
+	swift build -c release --jobs 4 -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
 .PHONY: build-linux-release
 build-linux-release:
@@ -66,8 +66,8 @@ generate-docs:
 
 .PHONY: test
 test:
-	swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -warnings-as-errors
-	swift test --skip-build --parallel --filter $(TEST_TARGET)
+	swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+	swift test --skip-build --parallel --filter $(TEST_TARGET) -Xswiftc -strict-concurrency=complete
 
 .PHONY: test-ios
 test-ios:
@@ -95,8 +95,8 @@ test-linux:
 
 .PHONY: integration-test
 integration-test: .check-env-vars
-	swift build --build-tests --jobs $(BUILD_JOB_COUNT)
-	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET)
+	swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -strict-concurrency=complete
+	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) -Xswiftc -strict-concurrency=complete
 
 .PHONY: ci
 ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos test-linux integration-test build-release build-docs
