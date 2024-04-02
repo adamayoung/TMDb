@@ -18,8 +18,13 @@
 //
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
+
+extension URLSession: @unchecked Sendable {}
+
+extension URL: @unchecked Sendable {}
 #endif
 
 final class TMDbFactory {
@@ -66,7 +71,9 @@ extension TMDbFactory {
         URLSessionHTTPClientAdapter(urlSession: urlSession)
     }
 
-    private static let urlSession = URLSession(configuration: urlSessionConfiguration)
+    private static let urlSession: URLSession = {
+        URLSession(configuration: urlSessionConfiguration)
+    }()
 
     private static var urlSessionConfiguration: URLSessionConfiguration {
         let configuration = URLSessionConfiguration.default

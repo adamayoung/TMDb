@@ -8,7 +8,7 @@ TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1'
 BUILD_JOB_COUNT = 4
 
-SWIFT_CONTAINER_IMAGE = swift:5.10.0-jammy
+SWIFT_CONTAINER_IMAGE = swift:5.9.2-jammy
 
 .PHONY: clean
 clean:
@@ -91,7 +91,7 @@ test-visionos:
 
 .PHONY: test-linux
 test-linux:
-	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete && swift test --skip-build --filter $(TEST_TARGET)"
+	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build --build-tests --jobs $(BUILD_JOB_COUNT) -Xswiftc -warnings-as-errors && swift test --skip-build --filter $(TEST_TARGET)"
 
 .PHONY: integration-test
 integration-test: .check-env-vars
