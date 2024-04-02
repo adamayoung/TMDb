@@ -39,7 +39,7 @@ final class LocaleProviderTests: XCTestCase {
 
     func testLanguageCode() {
         let expectedLanguageCode: String? = {
-            #if os(Linux)
+            #if os(Linux) || os(Windows)
                 return locale.languageCode
             #else
                 if #available(macOS 13.0, *) {
@@ -55,7 +55,7 @@ final class LocaleProviderTests: XCTestCase {
 
     func testRegion() {
         let expectedRegionCode: String? = {
-            #if os(Linux)
+            #if os(Linux) || os(Windows)
                 return locale.regionCode
             #else
                 if #available(macOS 13.0, *) {
