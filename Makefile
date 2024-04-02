@@ -8,7 +8,7 @@ TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1'
 BUILD_JOB_COUNT = 4
 
-SWIFT_CONTAINER_IMAGE = swift:5.9.2
+SWIFT_CONTAINER_IMAGE = swift:5.10.0-jammy
 
 .PHONY: clean
 clean:
