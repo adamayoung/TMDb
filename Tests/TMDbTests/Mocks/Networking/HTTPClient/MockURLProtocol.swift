@@ -24,22 +24,20 @@ import Foundation
 
 final class MockURLProtocol: URLProtocol {
 
-    @MainActor static var data: Data?
-    @MainActor static var failError: Error?
-    @MainActor static var responseStatusCode: Int = 200
-    @MainActor private(set) static var lastRequest: URLRequest?
+    static var data: Data?
+    static var failError: Error?
+    static var responseStatusCode: Int = 200
+    private(set) static var lastRequest: URLRequest?
 
     override class func canInit(with _: URLRequest) -> Bool {
         true
     }
 
-    @MainActor
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
         lastRequest = request
         return request
     }
 
-    @MainActor
     override func startLoading() {
         if let failError = Self.failError {
             client?.urlProtocol(self, didFailWithError: failError)
@@ -66,7 +64,6 @@ final class MockURLProtocol: URLProtocol {
 
     override func stopLoading() {}
 
-    @MainActor
     static func reset() {
         data = nil
         failError = nil

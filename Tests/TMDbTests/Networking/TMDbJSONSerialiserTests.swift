@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class TMDbSerialiserTests: XCTestCase {
+final class TMDbJSONSerialiserTests: XCTestCase {
 
     var serialiser: Serialiser!
 
@@ -80,7 +80,7 @@ final class TMDbSerialiserTests: XCTestCase {
 
 }
 
-extension TMDbSerialiserTests {
+extension TMDbJSONSerialiserTests {
 
     private struct MockObject: Codable, Equatable {
 
