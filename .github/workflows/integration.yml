@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
   BUILD_JOB_COUNT: 4
 
 jobs:
