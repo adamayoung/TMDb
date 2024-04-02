@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining watch providers from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class WatchProviderService {
+public final class WatchProviderService: @unchecked Sendable {
 
     private let apiClient: any APIClient
     private let localeProvider: any LocaleProviding

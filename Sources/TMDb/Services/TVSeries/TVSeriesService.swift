@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining TV series from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class TVSeriesService {
+public final class TVSeriesService: @unchecked Sendable {
 
     private let apiClient: any APIClient
     private let localeProvider: any LocaleProviding

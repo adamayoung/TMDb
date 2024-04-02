@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for searching content from TMDb..
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class SearchService {
+public final class SearchService: @unchecked Sendable {
 
     private let apiClient: any APIClient
 

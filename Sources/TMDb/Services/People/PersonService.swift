@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining people from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class PersonService {
+public final class PersonService: @unchecked Sendable {
 
     private static let knownForShowsMaxCount = 10
 

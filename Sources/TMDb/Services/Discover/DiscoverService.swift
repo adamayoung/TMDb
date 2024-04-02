@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for discovering movies and TV series from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class DiscoverService {
+public final class DiscoverService: @unchecked Sendable {
 
     private let apiClient: any APIClient
 
