@@ -1,5 +1,5 @@
 //
-//  TMDbAuthSerialiser.swift
+//  TMDbAuthJSONSerialiser.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.

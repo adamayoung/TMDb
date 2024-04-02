@@ -1,5 +1,5 @@
 //
-//  TMDbSerialiserTests.swift
+//  TMDbJSONSerialiserTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
