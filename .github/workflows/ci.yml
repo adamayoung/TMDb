@@ -79,16 +79,16 @@ jobs:
   build-test-linux:
     name: Build and Test (Linux)
     runs-on: ubuntu-latest
-    container: swift:5.9.2-jammy
+    container: swift:5.9.2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build
-        run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors 
+        run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors  -Xswiftc -strict-concurrency=complete
 
       - name: Test
         run: swift test --skip-build --parallel --filter TMDbTests
       
       - name: Build for Release
-        run: swift build -c release --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
+        run: swift build -c release --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
