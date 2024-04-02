@@ -6,9 +6,9 @@ import PackageDescription
 
 let package = Package(
     name: "TMDb",
-
+    
     defaultLocalization: "en",
-
+    
     platforms: [
         .macOS(.v13),
         .iOS(.v16),
@@ -16,25 +16,34 @@ let package = Package(
         .tvOS(.v16),
         .visionOS(.v1)
     ],
-
+    
     products: [
         .library(name: "TMDb", targets: ["TMDb"])
     ],
-
+    
     targets: [
         .target(
-            name: "TMDb"
+            name: "TMDb",
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .testTarget(
             name: "TMDbTests",
             dependencies: ["TMDb"],
             resources: [
                 .process("Resources")
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "TMDbIntegrationTests",
-            dependencies: ["TMDb"]
+            dependencies: ["TMDb"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         )
     ]
 )

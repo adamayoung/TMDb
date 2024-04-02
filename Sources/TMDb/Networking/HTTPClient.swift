@@ -22,7 +22,7 @@ import Foundation
 ///
 /// An interface for performing network tasks.
 ///
-public protocol HTTPClient {
+public protocol HTTPClient: Sendable {
 
     ///
     /// Performs an HTTP request.

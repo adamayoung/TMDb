@@ -24,9 +24,9 @@ import Foundation
 ///
 /// Create an API key at [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 ///
-public struct TMDbConfiguration {
+public struct TMDbConfiguration: Sendable {
 
-    private(set) static var shared = TMDbConfiguration(
+    nonisolated(unsafe) static var shared = TMDbConfiguration(
         apiKey: {
             preconditionFailure("Configuration must first be set by calling TMDbConfiguration.configure(_:).")
         },

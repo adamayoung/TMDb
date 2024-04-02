@@ -20,13 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class SerialiserTests: XCTestCase {
+final class TMDbSerialiserTests: XCTestCase {
 
     var serialiser: Serialiser!
 
     override func setUp() {
         super.setUp()
-        serialiser = Serialiser(decoder: JSONDecoder(), encoder: JSONEncoder())
+        serialiser = TMDbJSONSerialiser()
     }
 
     override func tearDown() {
@@ -80,7 +80,7 @@ final class SerialiserTests: XCTestCase {
 
 }
 
-extension SerialiserTests {
+extension TMDbSerialiserTests {
 
     private struct MockObject: Codable, Equatable {
 

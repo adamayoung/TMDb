@@ -20,6 +20,7 @@
 @testable import TMDb
 import XCTest
 
+@MainActor
 final class HTTPMockClient: HTTPClient {
 
     var result: Result<HTTPResponse, Error>?

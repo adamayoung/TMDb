@@ -92,11 +92,11 @@ extension TMDbFactory {
     #endif
 
     private static var serialiser: some Serialiser {
-        Serialiser(decoder: .theMovieDatabase, encoder: .theMovieDatabase)
+        TMDbJSONSerialiser()
     }
 
     private static var authSerialiser: some Serialiser {
-        Serialiser(decoder: .theMovieDatabaseAuth, encoder: .theMovieDatabaseAuth)
+        TMDbAuthJSONSerialiser()
     }
 
 }
@@ -114,7 +114,7 @@ extension TMDbFactory {
     private static var apiKey: String {
         TMDbConfiguration.shared.apiKey()
     }
-
+    
     private static var httpClient: any HTTPClient {
         TMDbConfiguration.shared.httpClient()
     }

@@ -1,5 +1,5 @@
 //
-//  HTTPResponse.swift
+//  Serialiser.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,31 +19,20 @@
 
 import Foundation
 
-///
-/// A model representing an HTTP response.
-///
-public struct HTTPResponse: Sendable {
+final class TMDbJSONSerialiser: Serialiser {
 
-    ///
-    /// The HTTP status code of the response.
-    ///
-    public let statusCode: Int
+    init() { }
 
-    ///
-    /// Data returned in the response body.
-    ///
-    public let data: Data?
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
+        let decoder = JSONDecoder.theMovieDatabase
 
-    ///
-    /// Creates an HTTP response object.
-    ///
-    /// - Parameters:
-    ///   - statusCode: The HTTP status code of the response.
-    ///   - data: Data returned in the response body.
-    ///
-    public init(statusCode: Int = 200, data: Data? = nil) {
-        self.statusCode = statusCode
-        self.data = data
+        return try decoder.decode(type, from: data)
+    }
+
+    func encode(_ value: some Encodable) async throws -> Data {
+        let encoder = JSONEncoder.theMovieDatabase
+
+        return try encoder.encode(value)
     }
 
 }
