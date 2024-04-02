@@ -20,8 +20,7 @@
 @testable import TMDb
 import XCTest
 
-@MainActor
-final class HTTPMockClient: HTTPClient {
+final class HTTPMockClient: HTTPClient, @unchecked Sendable {
 
     var result: Result<HTTPResponse, Error>?
     private(set) var lastRequest: HTTPRequest?
