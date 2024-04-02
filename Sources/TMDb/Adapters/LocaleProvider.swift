@@ -22,7 +22,7 @@ import Foundation
 final class LocaleProvider: LocaleProviding {
 
     var languageCode: String? {
-        #if os(Linux)
+        #if os(Linux) || os(Windows)
             locale.languageCode
         #else
             if #available(macOS 13.0, *) {
@@ -34,7 +34,7 @@ final class LocaleProvider: LocaleProviding {
     }
 
     var regionCode: String? {
-        #if os(Linux)
+        #if os(Linux) || os(Windows)
             locale.regionCode
         #else
             if #available(macOS 13.0, *) {
