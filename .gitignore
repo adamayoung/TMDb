@@ -8,3 +8,4 @@ xcuserdata/
 *.xctestplan
 docs/
 info.lcov
+default.profraw
