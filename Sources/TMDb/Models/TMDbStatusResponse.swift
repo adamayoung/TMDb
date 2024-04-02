@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct TMDbStatusResponse: Decodable {
+struct TMDbStatusResponse: Decodable, Sendable {
 
     let success: Bool
     let statusCode: Int

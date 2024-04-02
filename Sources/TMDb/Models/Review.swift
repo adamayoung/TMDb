@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a review.
 ///
-public struct Review: Identifiable, Codable, Equatable, Hashable {
+public struct Review: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Review identifier.

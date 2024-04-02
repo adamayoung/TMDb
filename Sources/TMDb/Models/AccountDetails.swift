@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TMDb user's account details.
 ///
-public struct AccountDetails: Identifiable, Codable, Equatable, Hashable {
+public struct AccountDetails: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// User identifier.

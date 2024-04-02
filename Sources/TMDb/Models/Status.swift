@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a show's status.
 ///
-public enum Status: String, Codable, Equatable, Hashable {
+public enum Status: String, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Rumoured.

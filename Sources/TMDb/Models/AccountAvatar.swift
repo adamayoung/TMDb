@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TMDb user's avatar.
 ///
-public struct AccountAvatar: Codable, Equatable, Hashable {
+public struct AccountAvatar: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Gravatar avatar.
@@ -56,7 +56,7 @@ public extension AccountAvatar {
     ///
     /// A model representing a TMDb user's Gravatar avatar.
     ///
-    struct Gravatar: Codable, Equatable, Hashable {
+    struct Gravatar: Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Gravatar hash.
@@ -80,7 +80,7 @@ public extension AccountAvatar {
     ///
     /// A model representing a TMDb user's TMDb avatar.
     ///
-    struct TMDb: Codable, Equatable, Hashable {
+    struct TMDb: Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Path of the avatar image.

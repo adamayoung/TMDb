@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TV network.
 ///
-public struct Network: Identifiable, Codable, Equatable, Hashable {
+public struct Network: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Network identifier.

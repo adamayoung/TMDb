@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a show - movie or TV series.
 ///
-public enum Show: Identifiable, Codable, Equatable, Hashable {
+public enum Show: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Show identifier.

@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a media.
 ///
-public enum Media: Identifiable, Codable, Equatable, Hashable {
+public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Media's identifier.

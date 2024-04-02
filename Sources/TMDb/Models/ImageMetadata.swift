@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing image metadata.
 ///
-public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable {
+public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Image metadata's identifier (same as `filePath`).

@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a genre.
 ///
-public struct Genre: Identifiable, Codable, Equatable, Hashable {
+public struct Genre: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Genre Identifier.

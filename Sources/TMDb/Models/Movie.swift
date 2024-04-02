@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a movie.
 ///
-public struct Movie: Identifiable, Codable, Equatable, Hashable {
+public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Movie identifier.

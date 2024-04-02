@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct SuccessResult: Decodable {
+struct SuccessResult: Decodable, Sendable {
 
     let success: Bool
 

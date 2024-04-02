@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TMDb session.
 ///
-public struct Session: Codable, Equatable, Hashable {
+public struct Session: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Was session creation successful.

@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing an officially supported certification.
 ///
-public struct Certification: Identifiable, Codable, Equatable, Hashable {
+public struct Certification: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Certification's identifier (same as ``code``).

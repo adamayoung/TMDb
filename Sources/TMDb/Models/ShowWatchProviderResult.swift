@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct ShowWatchProviderResult: Equatable, Codable {
+struct ShowWatchProviderResult: Equatable, Codable, Sendable {
 
     let id: Int
     let results: [String: ShowWatchProvider]

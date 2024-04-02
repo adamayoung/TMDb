@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a guest session.
 ///
-public struct GuestSession: Codable, Equatable, Hashable {
+public struct GuestSession: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Was session creation successful.

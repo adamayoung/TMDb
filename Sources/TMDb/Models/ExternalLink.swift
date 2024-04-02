@@ -24,7 +24,7 @@ import Foundation
 ///
 /// e.g. to a Movie's IMDb page.
 ///
-public protocol ExternalLink: Equatable, Hashable {
+public protocol ExternalLink: Equatable, Hashable, Sendable {
 
     ///
     /// The external site's item identifier.

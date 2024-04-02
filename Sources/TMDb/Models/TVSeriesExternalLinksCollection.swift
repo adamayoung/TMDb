@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a collection of media databases and social IDs and links for a TV series.
 ///
-public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
+public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The TMDb TV series identifier.

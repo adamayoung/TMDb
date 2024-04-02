@@ -114,7 +114,7 @@ extension TMDbFactory {
     private static var apiKey: String {
         TMDbConfiguration.shared.apiKey()
     }
-    
+
     private static var httpClient: any HTTPClient {
         TMDbConfiguration.shared.httpClient()
     }

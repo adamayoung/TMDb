@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a video size.
 ///
-public enum VideoSize: Int, Codable, Equatable, Hashable {
+public enum VideoSize: Int, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// 360.

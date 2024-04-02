@@ -6,9 +6,9 @@ import PackageDescription
 
 let package = Package(
     name: "TMDb",
-    
+
     defaultLocalization: "en",
-    
+
     platforms: [
         .macOS(.v13),
         .iOS(.v16),
@@ -16,11 +16,11 @@ let package = Package(
         .tvOS(.v16),
         .visionOS(.v1)
     ],
-    
+
     products: [
         .library(name: "TMDb", targets: ["TMDb"])
     ],
-    
+
     targets: [
         .target(
             name: "TMDb",

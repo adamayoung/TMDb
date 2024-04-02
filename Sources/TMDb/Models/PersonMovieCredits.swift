@@ -24,7 +24,7 @@ import Foundation
 ///
 /// A person can be both a cast member and crew member of the same movie.
 ///
-public struct PersonMovieCredits: Identifiable, Codable, Equatable, Hashable {
+public struct PersonMovieCredits: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Person identifier.

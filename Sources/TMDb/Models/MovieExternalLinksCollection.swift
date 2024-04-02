@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a collection of media databases and social IDs and links for a movie.
 ///
-public struct MovieExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
+public struct MovieExternalLinksCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The TMDb movie identifier.

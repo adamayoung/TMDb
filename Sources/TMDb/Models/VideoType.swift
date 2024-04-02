@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a video type.
 ///
-public enum VideoType: String, Codable, Equatable, Hashable {
+public enum VideoType: String, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Trailer.
