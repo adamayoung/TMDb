@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing details of a video.
 ///
-public struct VideoMetadata: Identifiable, Codable, Equatable, Hashable {
+public struct VideoMetadata: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Video identifier.

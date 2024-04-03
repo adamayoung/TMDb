@@ -24,19 +24,17 @@ import Foundation
 ///
 /// Create an API key at [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 ///
-public struct TMDbConfiguration {
+public final class TMDbConfiguration: Sendable {
 
-    private(set) static var shared = TMDbConfiguration(
-        apiKey: {
-            preconditionFailure("Configuration must first be set by calling TMDbConfiguration.configure(_:).")
-        },
-        httpClient: {
-            preconditionFailure("Configuration must first be set by calling TMDbConfiguration.configure(_:).")
-        }
-    )
+    ///
+    /// TMDb API key.
+    ///
+    public let apiKey: String
 
-    let apiKey: @Sendable () -> String
-    let httpClient: @Sendable () -> any HTTPClient
+    ///
+    /// The HTTP client adapter for making HTTP requests.
+    ///
+    public let httpClient: any HTTPClient
 
     ///
     /// Creates a TMDb configuration object using URLSession as the HTTP client.
@@ -44,10 +42,10 @@ public struct TMDbConfiguration {
     /// - Parameters:
     ///    - apiKey: The TMDb API key to use.
     ///
-    public init(apiKey: String) {
+    public convenience init(apiKey: String) {
         self.init(
-            apiKey: { apiKey },
-            httpClient: { TMDbFactory.defaultHTTPClientAdapter }
+            apiKey: apiKey,
+            httpClient: TMDbFactory.defaultHTTPClientAdapter()
         )
     }
 
@@ -59,25 +57,8 @@ public struct TMDbConfiguration {
     ///    - httpClient: A custom HTTP client adapter for making HTTP requests.
     ///
     public init(apiKey: String, httpClient: some HTTPClient) {
-        self.init(
-            apiKey: { apiKey },
-            httpClient: { httpClient }
-        )
-    }
-
-    init(apiKey: @escaping @Sendable () -> String, httpClient: @escaping @Sendable () -> any HTTPClient) {
         self.apiKey = apiKey
         self.httpClient = httpClient
-    }
-
-    ///
-    /// Sets the configuration to be used with TMDb services.
-    ///
-    /// - Parameters:
-    ///    - configuration: A TMDb configuration object.
-    ///
-    public static func configure(_ configuration: TMDbConfiguration) {
-        shared = configuration
     }
 
 }

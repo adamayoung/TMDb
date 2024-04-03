@@ -28,13 +28,11 @@ final class AccountIntegrationTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        try configureTMDb()
-
-        authenticationService = AuthenticationService()
+        let configuration = try tmdbConfiguration()
+        authenticationService = AuthenticationService(configuration: configuration)
         let credential = try tmdbCredential()
         session = try await authenticationService.createSession(withCredential: credential)
-
-        accountService = AccountService()
+        accountService = AccountService(configuration: configuration)
     }
 
     override func tearDown() async throws {

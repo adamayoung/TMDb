@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct GenreList: Codable {
+struct GenreList: Codable, Sendable {
 
     let genres: [Genre]
 

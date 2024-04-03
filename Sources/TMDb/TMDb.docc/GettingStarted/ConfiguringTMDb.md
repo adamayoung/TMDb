@@ -4,7 +4,7 @@ Instructions on how to configure TMDb before using services.
 
 ## Overview
 
-Before creating any of the TMDb services the configuration needs to be set.
+Before creating any of the TMDb services a configuration needs to be created.
 
 ## Creating the Configuration object
 
@@ -43,12 +43,4 @@ let tmdbConfiguration = TMDbConfiguration(
     apiKey: "<your-tmdb-api-key>",
     httpClient: customHTTPClient
 )
-```
-
-## Setting the configuration
-
-Once a configuration object has been created, configure TMDb with it.
-
-```swift
-TMDbConfiguration.configure(tmdbConfiguration)
 ```

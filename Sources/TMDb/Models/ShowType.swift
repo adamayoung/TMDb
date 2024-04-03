@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a show type.
 ///
-public enum ShowType: String, Codable {
+public enum ShowType: String, Codable, Sendable {
 
     ///
     /// Movie.

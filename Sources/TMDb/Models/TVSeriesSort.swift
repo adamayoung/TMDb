@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A sort specifier when fetching TV series.
 ///
-public enum TVSeriesSort: CustomStringConvertible {
+public enum TVSeriesSort: CustomStringConvertible, Sendable {
 
     ///
     /// By popularity.

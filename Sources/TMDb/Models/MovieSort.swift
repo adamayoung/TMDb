@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A sort specifier when fetching movies.
 ///
-public enum MovieSort: CustomStringConvertible {
+public enum MovieSort: CustomStringConvertible, Sendable {
 
     ///
     /// By popularity.

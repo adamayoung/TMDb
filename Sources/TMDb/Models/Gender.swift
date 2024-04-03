@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing the gender of a person.
 ///
-public enum Gender: Int, Codable, Equatable, Hashable {
+public enum Gender: Int, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// An unknown gender.

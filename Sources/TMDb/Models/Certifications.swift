@@ -19,7 +19,7 @@
 
 import Foundation
 
-struct Certifications: Codable, Equatable, Hashable {
+struct Certifications: Codable, Equatable, Hashable, Sendable {
 
     let certifications: [String: [Certification]]
 

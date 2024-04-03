@@ -1,5 +1,5 @@
 //
-//  SerialiserTests.swift
+//  TMDbJSONSerialiserTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,13 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class SerialiserTests: XCTestCase {
+final class TMDbJSONSerialiserTests: XCTestCase {
 
     var serialiser: Serialiser!
 
     override func setUp() {
         super.setUp()
-        serialiser = Serialiser(decoder: JSONDecoder(), encoder: JSONEncoder())
+        serialiser = TMDbJSONSerialiser()
     }
 
     override func tearDown() {
@@ -80,7 +80,7 @@ final class SerialiserTests: XCTestCase {
 
 }
 
-extension SerialiserTests {
+extension TMDbJSONSerialiserTests {
 
     private struct MockObject: Codable, Equatable {
 

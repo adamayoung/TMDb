@@ -9,7 +9,7 @@ on:
       - main
   schedule:
     # Every Sunday at 12am
-    - cron:  '0 0 * * 0'
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 concurrency:
@@ -17,8 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
-  BUILD_JOB_COUNT: 4
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
 
 jobs:
   analyze:
@@ -40,7 +39,7 @@ jobs:
           config-file: ./.github/codeql/codeql-config.yml
 
       - name: Build
-        run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }}
+        run: swift build --build-tests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

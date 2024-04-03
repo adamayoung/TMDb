@@ -26,8 +26,8 @@ final class TVSeriesServiceTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        tvSeriesService = TVSeriesService()
+        let configuration = try tmdbConfiguration()
+        tvSeriesService = TVSeriesService(configuration: configuration)
     }
 
     override func tearDown() {

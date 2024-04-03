@@ -27,7 +27,7 @@ import Foundation
 ///
 /// See <doc:/GeneratingImageURLs> for more details.
 ///
-public struct ImagesConfiguration: Codable, Equatable, Hashable {
+public struct ImagesConfiguration: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Base image URL (http).

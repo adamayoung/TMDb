@@ -1,5 +1,5 @@
 //
-//  PersonImageCollection.swift
+//  TMDbJSONSerialiser.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,31 +19,20 @@
 
 import Foundation
 
-///
-/// A model representing a person image collection.
-///
-public struct PersonImageCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
+final class TMDbJSONSerialiser: Serialiser {
 
-    ///
-    /// Person identifier.
-    ///
-    public let id: Int
+    init() {}
 
-    ///
-    /// Profile images.
-    ///
-    public let profiles: [ImageMetadata]
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
+        let decoder = JSONDecoder.theMovieDatabase
 
-    ///
-    /// Creates a person image collection object.
-    ///
-    /// - Parameters:
-    ///    - id: Person identifier.
-    ///    - profiles: Profile images.
-    ///
-    public init(id: Int, profiles: [ImageMetadata]) {
-        self.id = id
-        self.profiles = profiles
+        return try decoder.decode(type, from: data)
+    }
+
+    func encode(_ value: some Encodable) async throws -> Data {
+        let encoder = JSONEncoder.theMovieDatabase
+
+        return try encoder.encode(value)
     }
 
 }

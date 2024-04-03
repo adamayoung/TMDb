@@ -26,8 +26,8 @@ final class SearchIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        searchService = SearchService()
+        let configuration = try tmdbConfiguration()
+        searchService = SearchService(configuration: configuration)
     }
 
     override func tearDown() {

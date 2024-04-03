@@ -19,22 +19,10 @@
 
 import Foundation
 
-actor Serialiser {
+protocol Serialiser {
 
-    private let decoder: JSONDecoder
-    private let encoder: JSONEncoder
+    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T
 
-    init(decoder: JSONDecoder, encoder: JSONEncoder) {
-        self.decoder = decoder
-        self.encoder = encoder
-    }
-
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        try decoder.decode(type, from: data)
-    }
-
-    func encode(_ value: some Encodable) async throws -> Data {
-        try encoder.encode(value)
-    }
+    func encode(_ value: some Encodable) async throws -> Data
 
 }

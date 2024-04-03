@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a collection of media databases and social IDs and links for a person.
 ///
-public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, Hashable {
+public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The TMDb person identifier.

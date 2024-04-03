@@ -24,7 +24,7 @@ import Foundation
 ///
 /// A collection of poster and backdrop images for a movie or TV series.
 ///
-public struct ImageCollection: Codable, Equatable, Hashable {
+public struct ImageCollection: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Movie or TV series identifier for these images.

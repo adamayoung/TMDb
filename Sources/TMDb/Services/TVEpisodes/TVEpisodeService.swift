@@ -31,9 +31,11 @@ public final class TVEpisodeService {
     ///
     /// Creates a TV episode service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient,
+            apiClient: TMDbFactory.apiClient(configuration: configuration),
             localeProvider: TMDbFactory.localeProvider()
         )
     }

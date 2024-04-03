@@ -19,51 +19,59 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+    @preconcurrency import FoundationNetworking
 #endif
 
-final class MockURLProtocol: URLProtocol {
+final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
-    static var data: Data?
-    static var failError: Error?
-    static var responseStatusCode: Int = 200
-    private(set) static var lastRequest: URLRequest?
+    @MainActor static var data: Data?
+    @MainActor static var failError: Error?
+    @MainActor static var responseStatusCode: Int?
+    @MainActor private(set) static var lastRequest: URLRequest?
 
     override class func canInit(with _: URLRequest) -> Bool {
         true
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-        lastRequest = request
+        Task {
+            await MainActor.run {
+                lastRequest = request
+            }
+        }
+
         return request
     }
 
     override func startLoading() {
-        if let failError = Self.failError {
-            client?.urlProtocol(self, didFailWithError: failError)
-            return
-        }
+        Task {
+            if let failError = await Self.failError {
+                client?.urlProtocol(self, didFailWithError: failError)
+                return
+            }
 
-        guard let url = request.url else {
-            return
-        }
+            guard let url = request.url else {
+                return
+            }
 
-        if let data = Self.data {
-            client?.urlProtocol(self, didLoad: data)
-        }
+            if let data = await Self.data {
+                client?.urlProtocol(self, didLoad: data)
+            }
 
-        let response = HTTPURLResponse(
-            url: url,
-            statusCode: Self.responseStatusCode,
-            httpVersion: "2.0",
-            headerFields: nil
-        )!
-        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        client?.urlProtocolDidFinishLoading(self)
+            let response = await HTTPURLResponse(
+                url: url,
+                statusCode: Self.responseStatusCode ?? 200,
+                httpVersion: "2.0",
+                headerFields: nil
+            )!
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocolDidFinishLoading(self)
+        }
     }
 
     override func stopLoading() {}
 
+    @MainActor
     static func reset() {
         data = nil
         failError = nil

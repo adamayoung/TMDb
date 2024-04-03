@@ -39,14 +39,15 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         httpClient = URLSessionHTTPClientAdapter(urlSession: urlSession)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         httpClient = nil
         urlSession = nil
         baseURL = nil
-        MockURLProtocol.reset()
-        super.tearDown()
+        await MockURLProtocol.reset()
+        try await super.tearDown()
     }
 
+    @MainActor
     func testPerformWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         MockURLProtocol.responseStatusCode = 401
         let url = try XCTUnwrap(URL(string: "/error"))
@@ -63,6 +64,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.statusCode, 401)
     }
 
+    @MainActor
     func testPerformWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
         MockURLProtocol.responseStatusCode = 404
         let url = try XCTUnwrap(URL(string: "/error"))
@@ -79,6 +81,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.statusCode, 404)
     }
 
+    @MainActor
     func testPerformWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
         MockURLProtocol.responseStatusCode = 404
         let expectedData = try Data(fromResource: "error-status-response", withExtension: "json")
@@ -98,6 +101,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         XCTAssertEqual(response.data, expectedData)
     }
 
+    @MainActor
     func testGetWhenResponseHasValidDataReturnsDecodedObject() async throws {
         let expectedStatusCode = 200
         let expectedData = Data("abc".utf8)
@@ -116,6 +120,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
 #if !canImport(FoundationNetworking)
     extension URLSessionHTTPClientAdapterTests {
 
+        @MainActor
         func testPerformURLRequestHasCorrectURL() async throws {
             let path = "/object?key1=value1&key2=value2"
             let expectedURL = try XCTUnwrap(URL(string: path))
@@ -128,6 +133,7 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
             XCTAssertEqual(result, expectedURL)
         }
 
+        @MainActor
         func testPerformWhenHeaderSetShouldBePresentInURLRequest() async throws {
             let url = try XCTUnwrap(URL(string: "/object"))
             let header1Name = "Accept"

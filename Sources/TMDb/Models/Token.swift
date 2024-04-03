@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing an internediate request token.
 ///
-public struct Token: Codable, Equatable, Hashable {
+public struct Token: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Was token creation successful.

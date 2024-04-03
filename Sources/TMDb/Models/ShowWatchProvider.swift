@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a show's watch provider.
 ///
-public struct ShowWatchProvider: Equatable, Codable {
+public struct ShowWatchProvider: Equatable, Codable, Sendable {
 
     ///
     /// A link to the watch provider.

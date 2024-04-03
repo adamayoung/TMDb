@@ -26,8 +26,8 @@ final class TrendingIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        trendingService = TrendingService()
+        let configuration = try tmdbConfiguration()
+        trendingService = TrendingService(configuration: configuration)
     }
 
     override func tearDown() {

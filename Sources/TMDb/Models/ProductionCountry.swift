@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a production country.
 ///
-public struct ProductionCountry: Identifiable, Codable, Equatable, Hashable {
+public struct ProductionCountry: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Country's identifier (same as `countryCode`).

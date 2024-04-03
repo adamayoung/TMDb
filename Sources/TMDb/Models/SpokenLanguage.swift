@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a spoken language.
 ///
-public struct SpokenLanguage: Identifiable, Codable, Equatable, Hashable {
+public struct SpokenLanguage: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Language code.

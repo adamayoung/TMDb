@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a collection of video images for a movie or TV series.
 ///
-public struct VideoCollection: Identifiable, Codable, Equatable, Hashable {
+public struct VideoCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Movie or TV series identifier.

@@ -19,7 +19,7 @@
 
 import Foundation
 
-public enum TMDbError: Equatable, LocalizedError {
+public enum TMDbError: Equatable, LocalizedError, Sendable {
 
     /// An error indicating the resource could not be found.
     case notFound

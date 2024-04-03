@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a cast member.
 ///
-public struct CastMember: Identifiable, Codable, Equatable, Hashable {
+public struct CastMember: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Cast member's identifier.

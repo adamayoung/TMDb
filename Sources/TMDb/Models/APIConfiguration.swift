@@ -26,7 +26,7 @@ import Foundation
 /// the actual API responses as light as possible. It is recommended you cache this data within your application and
 /// check for updates every few days.
 ///
-public struct APIConfiguration: Codable, Equatable, Hashable {
+public struct APIConfiguration: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Images configuration.

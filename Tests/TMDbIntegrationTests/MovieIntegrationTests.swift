@@ -26,8 +26,8 @@ final class MovieIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        movieService = MovieService()
+        let configuration = try tmdbConfiguration()
+        movieService = MovieService(configuration: configuration)
     }
 
     override func tearDown() {

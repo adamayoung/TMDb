@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing  a production company.
 ///
-public struct Company: Identifiable, Codable, Equatable, Hashable {
+public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Company identifier.
@@ -106,7 +106,7 @@ public extension Company {
     ///
     /// A model representing a parent company.
     ///
-    struct Parent: Identifiable, Codable, Equatable, Hashable {
+    struct Parent: Identifiable, Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Company identifier.

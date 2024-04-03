@@ -28,7 +28,7 @@ Add the TMDb package as a dependency to your `Package.swift` file, and add it
 as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -36,7 +36,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "11.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "12.0.0")
   ],
 
   targets: [

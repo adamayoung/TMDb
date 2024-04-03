@@ -19,7 +19,7 @@
 
 import Foundation
 
-public struct HTTPRequest {
+public struct HTTPRequest: Sendable {
 
     public let url: URL
     public let method: HTTPRequest.Method
@@ -42,7 +42,7 @@ public struct HTTPRequest {
 
 public extension HTTPRequest {
 
-    enum Method: String {
+    enum Method: String, Sendable {
         case get = "GET"
         case post = "POST"
         case delete = "DELETE"

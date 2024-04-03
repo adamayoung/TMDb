@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing an HTTP response.
 ///
-public struct HTTPResponse {
+public struct HTTPResponse: Sendable {
 
     ///
     /// The HTTP status code of the response.

@@ -32,9 +32,11 @@ public final class AccountService {
     ///
     /// Creates an account service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 

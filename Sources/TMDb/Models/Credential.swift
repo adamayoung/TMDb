@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a user's TMDb username and password.
 ///
-public struct Credential {
+public struct Credential: Sendable {
 
     ///
     /// User's username.

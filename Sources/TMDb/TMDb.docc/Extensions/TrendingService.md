@@ -4,7 +4,7 @@
 
 ### Creating a Trending Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Movies
 

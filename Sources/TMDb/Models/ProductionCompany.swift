@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a production company.
 ///
-public struct ProductionCompany: Identifiable, Codable, Equatable, Hashable {
+public struct ProductionCompany: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Company identifier.

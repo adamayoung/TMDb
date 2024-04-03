@@ -22,7 +22,8 @@ import Foundation
 ///
 /// A model representing a pageable list of items.
 ///
-public struct PageableListResult<Result: Codable & Identifiable & Equatable & Hashable>: Codable, Equatable, Hashable {
+public struct PageableListResult<Result: Codable & Identifiable & Equatable & Hashable & Sendable>:
+Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Page number.

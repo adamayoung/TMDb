@@ -17,8 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
-  BUILD_JOB_COUNT: 4
+  DEVELOPER_DIR: /Applications/Xcode_15.3.app/Contents/Developer
 
 jobs:
   build-test:
@@ -29,10 +28,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
+        run: swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
       - name: Test
-        run: swift test --filter TMDbTests --enable-code-coverage
+        run: swift test --filter TMDbTests --enable-code-coverage -Xswiftc -strict-concurrency=complete
 
       - name: Prepare Code Coverage
         run: |
@@ -49,7 +48,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
       - name: Build for Release
-        run: swift build -c release --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
+        run: swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
@@ -59,22 +58,22 @@ jobs:
       matrix:
         include:
           - name: iOS
-            destination: platform=iOS Simulator,name=iPhone 15,OS=17.2
+            destination: platform=iOS Simulator,name=iPhone 15,OS=17.4
           - name: watchOS
-            destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2
+            destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.4
           - name: tvOS
-            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.4
           - name: visionOS
-            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.0
+            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' -parallelizeTargets 2>&1 | xcbeautify
+        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcbeautify
       
       - name: Test
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' -parallel-testing-enabled YES 2>&1 | xcbeautify
+        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcbeautify
   
   build-test-linux:
     name: Build and Test (Linux)
@@ -85,10 +84,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: swift build --build-tests --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors 
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
 
       - name: Test
-        run: swift test --skip-build --parallel --filter TMDbTests
+        run: swift test --skip-build --filter TMDbTests
       
       - name: Build for Release
-        run: swift build -c release --jobs ${{ env.BUILD_JOB_COUNT }} -Xswiftc -warnings-as-errors
+        run: swift build -c release -Xswiftc -warnings-as-errors

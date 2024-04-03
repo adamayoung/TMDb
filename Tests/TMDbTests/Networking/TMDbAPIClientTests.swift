@@ -29,18 +29,18 @@ final class TMDbAPIClientTests: XCTestCase {
     var apiKey: String!
     var baseURL: URL!
     var httpClient: HTTPMockClient!
-    var serialiser: Serialiser!
+    var serialiser: TMDbJSONSerialiser!
     var localeProvider: LocaleMockProvider!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         apiKey = "abc123"
         baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
-        httpClient = HTTPMockClient()
-        serialiser = Serialiser(decoder: .theMovieDatabase, encoder: .theMovieDatabase)
+        httpClient = await HTTPMockClient()
+        serialiser = TMDbJSONSerialiser()
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(
             apiKey: apiKey,
@@ -51,16 +51,17 @@ final class TMDbAPIClientTests: XCTestCase {
         )
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         apiClient = nil
         localeProvider = nil
         serialiser = nil
         httpClient = nil
         baseURL = nil
         apiKey = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
+    @MainActor
     func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         httpClient.result = .success(HTTPResponse(statusCode: 401))
 
@@ -79,6 +80,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTFail("Expected unauthorised error to be thrown")
     }
 
+    @MainActor
     func testGetWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
         httpClient.result = .success(HTTPResponse(statusCode: 404))
 
@@ -97,6 +99,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTFail("Expected not found error to be thrown")
     }
 
+    @MainActor
     func testGetWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
         let expectedStatusMessage = "The resource you requested could not be found."
         let statusResponse = try Data(fromResource: "error-status-response", withExtension: "json")
@@ -118,6 +121,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTFail("Expected unknown error to be thrown")
     }
 
+    @MainActor
     func testGetWhenResponseHasValidDataReturnsDecodedObject() async throws {
         let expectedResult = MockObject()
         httpClient.result = .success(HTTPResponse(data: expectedResult.data))
@@ -127,6 +131,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    @MainActor
     func testGetURLRequestAcceptHeaderSetToApplicationJSON() async throws {
         httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
@@ -138,6 +143,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    @MainActor
     func testGetURLRequestHasCorrectURL() async throws {
         httpClient.result = .success(HTTPResponse())
         let path = "/object"
@@ -152,6 +158,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    @MainActor
     func testPostURLRequestAcceptHeaderSetToApplicationJSON() async throws {
         httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
@@ -164,6 +171,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    @MainActor
     func testPostURLRequestContentTypeHeaderSetToApplicationJSON() async throws {
         httpClient.result = .success(HTTPResponse())
         let expectedResult = "application/json"
@@ -176,6 +184,7 @@ final class TMDbAPIClientTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    @MainActor
     func testPostURLRequestHasCorrectURL() async throws {
         httpClient.result = .success(HTTPResponse())
         let path = "/object"

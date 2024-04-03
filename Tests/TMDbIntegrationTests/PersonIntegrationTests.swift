@@ -26,8 +26,8 @@ final class PersonIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        personService = PersonService()
+        let configuration = try tmdbConfiguration()
+        personService = PersonService(configuration: configuration)
     }
 
     override func tearDown() {

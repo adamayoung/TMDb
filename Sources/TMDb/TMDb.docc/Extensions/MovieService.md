@@ -4,7 +4,7 @@
 
 ### Creating a Movie Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Details
 
