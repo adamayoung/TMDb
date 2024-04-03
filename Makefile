@@ -2,9 +2,9 @@ TARGET = TMDb
 TEST_TARGET = TMDbTests
 INTEGRATION_TEST_TARGET = TMDbIntegrationTests
 
-IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15,OS=17.2'
-WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2'
-TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2'
+IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15,OS=17.4'
+WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.4'
+TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.4'
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1'
 
 SWIFT_CONTAINER_IMAGE = swift:5.9.2-jammy

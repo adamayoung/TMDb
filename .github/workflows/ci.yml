@@ -58,13 +58,13 @@ jobs:
       matrix:
         include:
           - name: iOS
-            destination: platform=iOS Simulator,name=iPhone 15,OS=17.2
+            destination: platform=iOS Simulator,name=iPhone 15,OS=17.4
           - name: watchOS
-            destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.2
+            destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.4
           - name: tvOS
-            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.2
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.4
           - name: visionOS
-            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.0
+            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=1.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
