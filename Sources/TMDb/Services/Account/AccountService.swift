@@ -24,9 +24,7 @@ import Foundation
 ///
 /// Provides an interface for obtaining account data from TMDb.
 ///
-#if canImport(Darwin)
-    @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-#endif
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public final class AccountService {
 
     private let apiClient: any APIClient
