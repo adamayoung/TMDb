@@ -22,12 +22,12 @@ import Foundation
     import FoundationNetworking
 #endif
 
-final class MockURLProtocol: URLProtocol {
+final class MockURLProtocol: URLProtocol, @unchecked Sendable{
 
-    nonisolated(unsafe) static var data: Data?
-    nonisolated(unsafe) static var failError: Error?
-    nonisolated(unsafe) static var responseStatusCode: Int?
-    private(set) nonisolated(unsafe) static var lastRequest: URLRequest?
+    static var data: Data?
+    static var failError: Error?
+    static var responseStatusCode: Int?
+    private(set) static var lastRequest: URLRequest?
 
     override class func canInit(with _: URLRequest) -> Bool {
         true
