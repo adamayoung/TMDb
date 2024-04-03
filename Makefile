@@ -31,7 +31,7 @@ lint-markdown:
 
 .PHONY: build
 build:
-	swift build --jobs 4 -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+	swift build -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
 .PHONY: build-linux
 build-linux:
@@ -39,7 +39,7 @@ build-linux:
 
 .PHONY: build-release
 build-release:
-	swift build -c release --jobs 4 -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+	swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
 .PHONY: build-linux-release
 build-linux-release:

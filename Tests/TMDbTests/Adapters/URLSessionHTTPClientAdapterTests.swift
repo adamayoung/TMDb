@@ -39,14 +39,15 @@ final class URLSessionHTTPClientAdapterTests: XCTestCase {
         httpClient = URLSessionHTTPClientAdapter(urlSession: urlSession)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         httpClient = nil
         urlSession = nil
         baseURL = nil
-        MockURLProtocol.reset()
-        super.tearDown()
+        await MockURLProtocol.reset()
+        try await super.tearDown()
     }
 
+    @MainActor
     func testPerformWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         MockURLProtocol.responseStatusCode = 401
         let url = try XCTUnwrap(URL(string: "/error"))
