@@ -26,8 +26,8 @@ final class AuthenticationIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        authenticationService = AuthenticationService()
+        let configuration = try tmdbConfiguration()
+        authenticationService = AuthenticationService(configuration: configuration)
     }
 
     override func tearDown() {

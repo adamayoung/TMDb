@@ -4,7 +4,7 @@
 
 ### Creating an Account Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Account Details
 

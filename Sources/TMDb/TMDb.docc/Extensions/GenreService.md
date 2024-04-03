@@ -4,7 +4,7 @@
 
 ### Creating a Genre Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Movie Genres
 

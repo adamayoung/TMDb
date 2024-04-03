@@ -26,8 +26,8 @@ final class DiscoverIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        discoverService = DiscoverService()
+        let configuration = try tmdbConfiguration()
+        discoverService = DiscoverService(configuration: configuration)
     }
 
     override func tearDown() {

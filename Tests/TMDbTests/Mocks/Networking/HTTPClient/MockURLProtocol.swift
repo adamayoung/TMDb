@@ -24,10 +24,10 @@ import Foundation
 
 final class MockURLProtocol: URLProtocol {
 
-    static var data: Data?
-    static var failError: Error?
-    static var responseStatusCode: Int = 200
-    private(set) static var lastRequest: URLRequest?
+    nonisolated(unsafe) static var data: Data?
+    nonisolated(unsafe) static var failError: Error?
+    nonisolated(unsafe) static var responseStatusCode: Int?
+    private(set) nonisolated(unsafe) static var lastRequest: URLRequest?
 
     override class func canInit(with _: URLRequest) -> Bool {
         true
@@ -54,7 +54,7 @@ final class MockURLProtocol: URLProtocol {
 
         let response = HTTPURLResponse(
             url: url,
-            statusCode: Self.responseStatusCode,
+            statusCode: Self.responseStatusCode ?? 200,
             httpVersion: "2.0",
             headerFields: nil
         )!

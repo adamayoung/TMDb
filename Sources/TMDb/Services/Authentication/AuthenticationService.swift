@@ -26,7 +26,7 @@ import Foundation
 /// [TMDb API - How do I generate a session ID?](https://developer.themoviedb.org/reference/authentication-how-do-i-generate-a-session-id)
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class AuthenticationService: @unchecked Sendable {
+public final class AuthenticationService {
 
     private let apiClient: any APIClient
     private let authenticateURLBuilder: any AuthenticateURLBuilding
@@ -34,10 +34,12 @@ public final class AuthenticationService: @unchecked Sendable {
     ///
     /// Creates an authentication service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.authAPIClient,
-            authenticateURLBuilder: TMDbFactory.authenticateURLBuilder
+            apiClient: TMDbFactory.authAPIClient(configuration: configuration),
+            authenticateURLBuilder: TMDbFactory.authenticateURLBuilder()
         )
     }
 

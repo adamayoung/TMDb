@@ -23,16 +23,18 @@ import Foundation
 /// Provides an interface for discovering movies and TV series from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class DiscoverService: @unchecked Sendable {
+public final class DiscoverService {
 
     private let apiClient: any APIClient
 
     ///
     /// Creates a discover service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 

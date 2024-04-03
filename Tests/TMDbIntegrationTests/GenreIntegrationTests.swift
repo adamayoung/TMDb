@@ -26,8 +26,8 @@ final class GenreIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        genreService = GenreService()
+        let configuration = try tmdbConfiguration()
+        genreService = GenreService(configuration: configuration)
     }
 
     override func tearDown() {

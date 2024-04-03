@@ -26,8 +26,8 @@ final class WatchProviderIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        watchProviderService = WatchProviderService()
+        let configuration = try tmdbConfiguration()
+        watchProviderService = WatchProviderService(configuration: configuration)
     }
 
     override func tearDown() {

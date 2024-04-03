@@ -4,7 +4,7 @@
 
 ### Creating an Authentication Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Creating Sessions
 

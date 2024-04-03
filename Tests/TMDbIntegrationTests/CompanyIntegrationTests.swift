@@ -26,8 +26,8 @@ final class CompanyIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        companyService = CompanyService()
+        let configuration = try tmdbConfiguration()
+        companyService = CompanyService(configuration: configuration)
     }
 
     override func tearDown() {

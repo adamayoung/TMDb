@@ -26,8 +26,8 @@ final class CertificationIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        certificationService = CertificationService()
+        let configuration = try tmdbConfiguration()
+        certificationService = CertificationService(configuration: configuration)
     }
 
     override func tearDown() {

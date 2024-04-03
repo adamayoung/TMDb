@@ -4,7 +4,7 @@
 
 ### Creating a Watch Provider Service
 
-- ``init()``
+- ``init(configuration:)``
 
 ### Providers
 

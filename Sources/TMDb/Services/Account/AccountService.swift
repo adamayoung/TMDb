@@ -24,17 +24,21 @@ import Foundation
 ///
 /// Provides an interface for obtaining account data from TMDb.
 ///
-@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class AccountService: @unchecked Sendable {
+#if canImport(Darwin)
+    @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+#endif
+public final class AccountService {
 
     private let apiClient: any APIClient
 
     ///
     /// Creates an account service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 

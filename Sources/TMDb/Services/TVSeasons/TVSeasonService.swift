@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining TV seasons from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class TVSeasonService: @unchecked Sendable {
+public final class TVSeasonService {
 
     private let apiClient: any APIClient
     private let localeProvider: any LocaleProviding
@@ -31,9 +31,11 @@ public final class TVSeasonService: @unchecked Sendable {
     ///
     /// Creates a TV season service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient,
+            apiClient: TMDbFactory.apiClient(configuration: configuration),
             localeProvider: TMDbFactory.localeProvider()
         )
     }

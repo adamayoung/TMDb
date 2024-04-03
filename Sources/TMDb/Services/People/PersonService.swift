@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining people from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class PersonService: @unchecked Sendable {
+public final class PersonService {
 
     private static let knownForShowsMaxCount = 10
 
@@ -32,9 +32,11 @@ public final class PersonService: @unchecked Sendable {
     ///
     /// Creates a person service object.
     ///
-    public convenience init() {
+    /// - Parameter session: A TMDb configuration object.
+    ///
+    public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 

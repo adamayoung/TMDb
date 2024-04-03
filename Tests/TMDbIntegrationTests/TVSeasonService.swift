@@ -26,8 +26,8 @@ final class TVSeasonServiceTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        try configureTMDb()
-        tvSeasonService = TVSeasonService()
+        let configuration = try tmdbConfiguration()
+        tvSeasonService = TVSeasonService(configuration: configuration)
     }
 
     override func tearDown() {

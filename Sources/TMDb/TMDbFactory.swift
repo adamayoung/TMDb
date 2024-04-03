@@ -35,27 +35,27 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static var apiClient: some APIClient {
+    static func apiClient(configuration: TMDbConfiguration) -> some APIClient {
         TMDbAPIClient(
-            apiKey: apiKey,
+            apiKey: configuration.apiKey,
             baseURL: tmdbAPIBaseURL,
-            httpClient: httpClient,
-            serialiser: serialiser,
+            httpClient: configuration.httpClient,
+            serialiser: serialiser(),
             localeProvider: localeProvider()
         )
     }
 
-    static var authAPIClient: some APIClient {
+    static func authAPIClient(configuration: TMDbConfiguration) -> some APIClient {
         TMDbAPIClient(
-            apiKey: apiKey,
+            apiKey: configuration.apiKey,
             baseURL: .tmdbAPIBaseURL,
-            httpClient: httpClient,
-            serialiser: authSerialiser,
+            httpClient: configuration.httpClient,
+            serialiser: authSerialiser(),
             localeProvider: localeProvider()
         )
     }
 
-    static var authenticateURLBuilder: some AuthenticateURLBuilding {
+    static func authenticateURLBuilder() -> some AuthenticateURLBuilding {
         AuthenticateURLBuilder(baseURL: tmdbWebSiteURL)
     }
 
@@ -67,13 +67,13 @@ extension TMDbFactory {
 
 extension TMDbFactory {
 
-    static var defaultHTTPClientAdapter: some HTTPClient {
+    static func defaultHTTPClientAdapter() -> some HTTPClient {
         URLSessionHTTPClientAdapter(urlSession: urlSession)
     }
 
-    private static let urlSession: URLSession = .init(configuration: urlSessionConfiguration)
+    private static let urlSession = URLSession(configuration: urlSessionConfiguration())
 
-    private static var urlSessionConfiguration: URLSessionConfiguration {
+    private static func urlSessionConfiguration() -> URLSessionConfiguration {
         let configuration = URLSessionConfiguration.default
         #if os(iOS)
             configuration.multipathServiceType = .handover
@@ -84,23 +84,23 @@ extension TMDbFactory {
 
         #if !canImport(FoundationNetworking)
             configuration.waitsForConnectivity = true
-            configuration.urlCache = urlCache
+            configuration.urlCache = urlCache()
         #endif
 
         return configuration
     }
 
     #if !canImport(FoundationNetworking)
-        private static var urlCache: URLCache {
+        private static func urlCache() -> URLCache {
             URLCache(memoryCapacity: 50_000_000, diskCapacity: 1_000_000_000)
         }
     #endif
 
-    private static var serialiser: some Serialiser {
+    private static func serialiser() -> some Serialiser {
         TMDbJSONSerialiser()
     }
 
-    private static var authSerialiser: some Serialiser {
+    private static func authSerialiser() -> some Serialiser {
         TMDbAuthJSONSerialiser()
     }
 
@@ -114,14 +114,6 @@ extension TMDbFactory {
 
     private static var tmdbWebSiteURL: URL {
         URL.tmdbWebSiteURL
-    }
-
-    private static var apiKey: String {
-        TMDbConfiguration.shared.apiKey()
-    }
-
-    private static var httpClient: any HTTPClient {
-        TMDbConfiguration.shared.httpClient()
     }
 
 }
