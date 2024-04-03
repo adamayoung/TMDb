@@ -19,19 +19,19 @@
 
 import Foundation
 
-final class TMDbAPIClient: APIClient {
+final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
     private let apiKey: String
     private let baseURL: URL
     private let httpClient: any HTTPClient
-    private let serialiser: Serialiser
+    private let serialiser: any Serialiser
     private let localeProvider: any LocaleProviding
 
     init(
         apiKey: String,
         baseURL: URL,
         httpClient: some HTTPClient,
-        serialiser: Serialiser,
+        serialiser: some Serialiser,
         localeProvider: some LocaleProviding
     ) {
         self.apiKey = apiKey

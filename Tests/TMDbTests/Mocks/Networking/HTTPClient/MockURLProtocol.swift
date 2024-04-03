@@ -19,10 +19,10 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-    import FoundationNetworking
+    @preconcurrency import FoundationNetworking
 #endif
 
-final class MockURLProtocol: URLProtocol {
+final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     @MainActor static var data: Data?
     @MainActor static var failError: Error?
@@ -45,29 +45,27 @@ final class MockURLProtocol: URLProtocol {
 
     override func startLoading() {
         Task {
-            await MainActor.run {
-                if let failError = Self.failError {
-                    client?.urlProtocol(self, didFailWithError: failError)
-                    return
-                }
-
-                guard let url = request.url else {
-                    return
-                }
-
-                if let data = Self.data {
-                    client?.urlProtocol(self, didLoad: data)
-                }
-
-                let response = HTTPURLResponse(
-                    url: url,
-                    statusCode: Self.responseStatusCode ?? 200,
-                    httpVersion: "2.0",
-                    headerFields: nil
-                )!
-                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-                client?.urlProtocolDidFinishLoading(self)
+            if let failError = await Self.failError {
+                client?.urlProtocol(self, didFailWithError: failError)
+                return
             }
+
+            guard let url = request.url else {
+                return
+            }
+
+            if let data = await Self.data {
+                client?.urlProtocol(self, didLoad: data)
+            }
+
+            let response = await HTTPURLResponse(
+                url: url,
+                statusCode: Self.responseStatusCode ?? 200,
+                httpVersion: "2.0",
+                headerFields: nil
+            )!
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocolDidFinishLoading(self)
         }
     }
 
