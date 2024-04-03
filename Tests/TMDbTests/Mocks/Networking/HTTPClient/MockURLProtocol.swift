@@ -22,7 +22,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
-final class MockURLProtocol: URLProtocol, @unchecked Sendable{
+final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     static var data: Data?
     static var failError: Error?
