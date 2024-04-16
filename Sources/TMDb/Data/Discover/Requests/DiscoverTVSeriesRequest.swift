@@ -1,5 +1,5 @@
 //
-//  TMDbJSONSerialiser.swift
+//  DiscoverTVSeriesRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,22 +19,18 @@
 
 import Foundation
 
-final class TMDbJSONSerialiser: Serialiser {
+final class DiscoverTVSeriesRequest: DecodableAPIRequest<EmptyBody, TVSeriesPageableList> {
 
-    let mimeType = "application/json"
+    init(
+        sortedBy: TVSeriesSort? = nil,
+        page: Int? = nil
+    ) {
+        let path = URL(string: "/discover")!
+            .appendingPathComponent("tv")
+            .appendingSortBy(sortedBy)
+            .appendingPage(page)
 
-    init() {}
-
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        let decoder = JSONDecoder.theMovieDatabase
-
-        return try decoder.decode(type, from: data)
-    }
-
-    func encode(_ value: some Encodable) async throws -> Data {
-        let encoder = JSONEncoder.theMovieDatabase
-
-        return try encoder.encode(value)
+        super.init(path: path)
     }
 
 }

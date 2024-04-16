@@ -91,6 +91,46 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
         return responseObject
     }
 
+    func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
+        let url = urlFromPath(request.path)
+        var headers = request.headers
+        headers["Accept"] = request.serialiser.mimeType
+
+        var data: Data?
+        if let body = request.body {
+            do {
+                data = try await serialiser.encode(body)
+                headers["Content-Type"] = request.serialiser.mimeType
+            } catch let error {
+                throw TMDbAPIError.encode(error)
+            }
+        }
+
+        let httpRequest = HTTPRequest(url: url, headers: headers, body: data)
+        let httpResponse: HTTPResponse
+
+        do {
+            httpResponse = try await httpClient.perform(request: httpRequest)
+        } catch let error {
+            throw TMDbAPIError.network(error)
+        }
+
+        try await validate(response: httpResponse)
+
+        guard let data = httpResponse.data else {
+            throw TMDbAPIError.unknown
+        }
+
+        let response: Request.Response
+        do {
+            response = try await request.serialiser.decode(Request.Response.self, from: data)
+        } catch let error {
+            throw TMDbAPIError.decode(error)
+        }
+
+        return response
+    }
+
 }
 
 extension TMDbAPIClient {

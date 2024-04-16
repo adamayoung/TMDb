@@ -27,6 +27,8 @@ protocol APIClient {
 
     func delete<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response
 
+    func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response
+
 }
 
 extension APIClient {

@@ -1,5 +1,5 @@
 //
-//  TMDbJSONSerialiser.swift
+//  DiscoverRepository.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,22 +19,10 @@
 
 import Foundation
 
-final class TMDbJSONSerialiser: Serialiser {
+protocol DiscoverRepository {
 
-    let mimeType = "application/json"
+    func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList
 
-    init() {}
-
-    func decode<T: Decodable>(_ type: T.Type, from data: Data) async throws -> T {
-        let decoder = JSONDecoder.theMovieDatabase
-
-        return try decoder.decode(type, from: data)
-    }
-
-    func encode(_ value: some Encodable) async throws -> Data {
-        let encoder = JSONEncoder.theMovieDatabase
-
-        return try encoder.encode(value)
-    }
+    func tvSeries(sortedBy: TVSeriesSort?, page: Int?) async throws -> TVSeriesPageableList
 
 }
