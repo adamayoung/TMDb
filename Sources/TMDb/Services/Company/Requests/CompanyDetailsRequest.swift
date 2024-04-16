@@ -1,5 +1,5 @@
 //
-//  CompanyEndpointTests.swift
+//  CompanyDetailsRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,17 +17,14 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class CompanyEndpointTests: XCTestCase {
+final class CompanyDetailsRequest: DecodableAPIRequest<Company> {
 
-    func testCompanyEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/company/1"))
+    init(id: Company.ID) {
+        let path = "/company/\(id)"
 
-        let url = CompanyEndpoint.details(companyID: 1).path
-
-        XCTAssertEqual(url, expectedURL)
+        super.init(path: path)
     }
 
 }

@@ -40,14 +40,14 @@ final class CompanyServiceTests: XCTestCase {
     func testDetailsReturnsCompany() async throws {
         let expectedResult = Company.lucasfilm
         let companyID = expectedResult.id
+        let expectedRequest = CompanyDetailsRequest(id: companyID)
 
         apiClient.addResponse(.success(expectedResult))
 
         let result = try await service.details(forCompany: companyID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, CompanyEndpoint.details(companyID: companyID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? CompanyDetailsRequest, expectedRequest)
     }
 
 }
