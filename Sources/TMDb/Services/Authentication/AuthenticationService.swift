@@ -34,7 +34,7 @@ public final class AuthenticationService {
     ///
     /// Creates an authentication service object.
     ///
-    /// - Parameter session: A TMDb configuration object.
+    /// - Parameter configuration: A TMDb configuration object.
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(

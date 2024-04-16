@@ -31,7 +31,7 @@ public final class TVSeasonService {
     ///
     /// Creates a TV season service object.
     ///
-    /// - Parameter session: A TMDb configuration object.
+    /// - Parameter configuration: A TMDb configuration object.
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(

@@ -30,7 +30,7 @@ public final class ConfigurationService {
     ///
     /// Creates a configuration service object.
     ///
-    /// - Parameter session: A TMDb configuration object.
+    /// - Parameter configuration: A TMDb configuration object.
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(

@@ -30,7 +30,7 @@ public final class CertificationService {
     ///
     /// Creates a certificate service object.
     ///
-    /// - Parameter session: A TMDb configuration object.
+    /// - Parameter configuration: A TMDb configuration object.
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(

@@ -25,21 +25,21 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public final class GenreService {
 
-    private let repository: any GenreRepository
+    private let apiClient: any APIClient
 
     ///
     /// Creates a genre service object.
     ///
-    /// - Parameter session: A TMDb configuration object.
+    /// - Parameter configuration: A TMDb configuration object.
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            repository: TMDbFactory.genreRepository(configuration: configuration)
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(repository: some GenreRepository) {
-        self.repository = repository
+    init(apiClient: some APIClient) {
+        self.apiClient = apiClient
     }
 
     ///
@@ -52,7 +52,16 @@ public final class GenreService {
     /// - Returns: A list of genres.
     ///
     public func movieGenres() async throws -> [Genre] {
-        try await repository.movieGenres()
+        let request = MovieGenresRequests()
+
+        let genreList: GenreList
+        do {
+            genreList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return genreList.genres
     }
 
     ///
@@ -65,7 +74,16 @@ public final class GenreService {
     /// - Returns: A list of genres.
     ///
     public func tvSeriesGenres() async throws -> [Genre] {
-        try await repository.tvSeriesGenres()
+        let request = TVSeriesGenresRequests()
+
+        let genreList: GenreList
+        do {
+            genreList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return genreList.genres
     }
 
 }
