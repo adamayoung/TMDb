@@ -25,6 +25,11 @@ import Foundation
 enum TMDbAPIError: Error {
 
     ///
+    /// Invalid URL.
+    ///
+    case invalidURL(String)
+
+    ///
     /// Network error.
     ///
     case network(Error)

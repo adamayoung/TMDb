@@ -33,8 +33,8 @@ final class DiscoverStubRepository: DiscoverRepository {
     func movies(sortedBy: MovieSort?, withPeople people: [Person.ID]?, page: Int?) async throws -> MoviePageableList {
         lastMoviesParameters = (sortedBy, people, page)
 
-        guard let movieList = try moviesResult?.get() as? MoviePageableList else {
-            preconditionFailure("Can't cast result to type \(String(describing: MoviePageableList.self))")
+        guard let movieList = try moviesResult?.get() else {
+            preconditionFailure("moviesResult not set")
         }
 
         return movieList
@@ -43,8 +43,8 @@ final class DiscoverStubRepository: DiscoverRepository {
     func tvSeries(sortedBy: TVSeriesSort?, page: Int?) async throws -> TVSeriesPageableList {
         lastTVSeriesParameters = (sortedBy, page)
 
-        guard let tvSeriesList = try tvSeriesResult?.get() as? TVSeriesPageableList else {
-            preconditionFailure("Can't cast result to type \(String(describing: TVSeriesPageableList.self))")
+        guard let tvSeriesList = try tvSeriesResult?.get() else {
+            preconditionFailure("tvSeriesResult not set")
         }
 
         return tvSeriesList

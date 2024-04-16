@@ -92,7 +92,11 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
     }
 
     func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
-        let url = urlFromPath(request.path)
+        guard let path = URL(string: request.path) else {
+            throw TMDbAPIError.invalidURL(request.path)
+        }
+
+        let url = urlFromPath(path)
         var headers = request.headers
         headers["Accept"] = request.serialiser.mimeType
 
@@ -149,7 +153,7 @@ extension TMDbAPIClient {
         return decodedResponse
     }
 
-    private func urlFromPath(_ path: URL) -> URL {
+    private func urlFromPath(_ path: URL, queryItems _: [String: any CustomStringConvertible] = [:]) -> URL {
         guard var urlComponents = URLComponents(url: path, resolvingAgainstBaseURL: true) else {
             return path
         }
@@ -157,6 +161,10 @@ extension TMDbAPIClient {
         urlComponents.scheme = baseURL.scheme
         urlComponents.host = baseURL.host
         urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
+        var queryItems = urlComponents.queryItems ?? []
+        for queryItem in queryItems {
+            queryItems.append(URLQueryItem(name: queryItem.name, value: queryItem.value))
+        }
 
         return urlComponents.url!
             .appendingAPIKey(apiKey)

@@ -22,46 +22,34 @@ import XCTest
 
 final class DiscoverMoviesRequestTests: XCTestCase {
 
-    func testPathReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/movie"))
-
+    func testPathReturnsURL() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.path, "/discover/movie")
     }
 
-    func testPathWithSortedByReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/movie?sort_by=original_title.asc"))
-
+    func testQueryItemsWithSortedBy() {
         let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
     }
 
-    func testPathWithWithPeopleReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/movie?with_people=1,2,3"))
-
+    func testQueryItemsWithPeople() {
         let request = DiscoverMoviesRequest(people: [1, 2, 3])
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["with_people": "1,2,3"])
     }
 
-    func testPathWithPageReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/movie?page=1"))
-
+    func testQueryItemsWithPage() {
         let request = DiscoverMoviesRequest(page: 1)
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
-    func testPathWithSortedByAndWithPeopleAndPageReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(
-            string: "/discover/movie?sort_by=original_title.asc&with_people=1,2,3&page=1")
-        )
-
+    func testQueryItemsWithSortByAndPeopleAndPage() throws {
         let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false), people: [1, 2, 3], page: 1)
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "1"])
     }
 
     func testMethodIsGet() {

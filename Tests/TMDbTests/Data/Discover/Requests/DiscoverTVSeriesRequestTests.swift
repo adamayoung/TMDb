@@ -22,36 +22,28 @@ import XCTest
 
 final class DiscoverTVSeriesRequestTests: XCTestCase {
 
-    func testPathReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/tv"))
-
+    func testPathReturnsURL() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.path, "/discover/tv")
     }
 
-    func testPathWithSortedByReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/tv?sort_by=first_air_date.asc"))
-
+    func testQueryItemsWithSortedBy() {
         let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false))
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc"])
     }
 
     func testPathWithPageReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/tv?page=1"))
-
         let request = DiscoverTVSeriesRequest(page: 1)
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
     func testTVSeriesEndpointWithSortedByAndPageReturnsURL() throws {
-        let expectedPath = try XCTUnwrap(URL(string: "/discover/tv?sort_by=first_air_date.asc&page=1"))
-
         let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false), page: 1)
 
-        XCTAssertEqual(request.path, expectedPath)
+        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc", "page": "1"])
     }
 
     func testMethodIsGet() {

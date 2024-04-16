@@ -19,20 +19,45 @@
 
 import Foundation
 
-final class DiscoverMoviesRequest: DecodableAPIRequest<EmptyBody, MoviePageableList> {
+final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(
-        sortedBy: MovieSort? = nil,
-        people: [Person.ID]? = nil,
-        page: Int? = nil
-    ) {
-        let path = URL(string: "/discover")!
-            .appendingPathComponent("movie")
-            .appendingSortBy(sortedBy)
-            .appendingWithPeople(people)
-            .appendingPage(page)
+    init(sortedBy: MovieSort? = nil, people: [Person.ID]? = nil, page: Int? = nil) {
+        let path = "/discover/movie"
+        let queryItems = APIRequestQueryItems(sortedBy: sortedBy, people: people, page: page)
 
-        super.init(path: path)
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    private enum QueryItemName {
+        static let sortBy = "sort_by"
+        static let withPeople = "with_people"
+        static let page = "page"
+    }
+
+    init(sortedBy: MovieSort?, people: [Person.ID]?, page: Int?) {
+        self.init()
+
+        if let sortedBy {
+            self[QueryItemName.sortBy] = "\(sortedBy)"
+        }
+
+        if let people {
+            self[QueryItemName.withPeople] = Self.peopleQueryItemValue(for: people)
+        }
+
+        if let page {
+            self[QueryItemName.page] = "\(page)"
+        }
+    }
+
+    private static func peopleQueryItemValue(for people: [Person.ID]) -> String {
+        people
+            .map(\.description)
+            .joined(separator: ",")
     }
 
 }

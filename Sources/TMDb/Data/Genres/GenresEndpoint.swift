@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  GenresEndpoint.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,29 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+enum GenresEndpoint {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
-
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: APIRequestQueryItems { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+    case movie
+    case tvSeries
 
 }
 
-enum APIRequestMethod: String, Sendable {
-    case get = "GET"
-    case post = "POST"
-    case delete = "DELETE"
-}
+extension GenresEndpoint: Endpoint {
 
-typealias APIRequestQueryItems = [String: String]
+    private static let basePath = URL(string: "/genre")!
+
+    var path: URL {
+        switch self {
+        case .movie:
+            URL(string: "/genre")!
+                .appendingPathComponent("movie")
+                .appendingPathComponent("list")
+
+        case .tvSeries:
+            Self.basePath
+                .appendingPathComponent("tv")
+                .appendingPathComponent("list")
+        }
+    }
+
+}

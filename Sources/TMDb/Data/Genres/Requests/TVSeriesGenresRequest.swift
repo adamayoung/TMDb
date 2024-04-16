@@ -1,5 +1,5 @@
 //
-//  GenresEndpoint.swift
+//  TVSeriesGenresRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,29 +19,12 @@
 
 import Foundation
 
-enum GenresEndpoint {
+final class TVSeriesGenresRequests: DecodableAPIRequest<GenreList> {
 
-    case movie
-    case tvSeries
+    init() {
+        let path = "/genre/tv/list"
 
-}
-
-extension GenresEndpoint: Endpoint {
-
-    private static let basePath = URL(string: "/genre")!
-
-    var path: URL {
-        switch self {
-        case .movie:
-            Self.basePath
-                .appendingPathComponent("movie")
-                .appendingPathComponent("list")
-
-        case .tvSeries:
-            Self.basePath
-                .appendingPathComponent("tv")
-                .appendingPathComponent("list")
-        }
+        super.init(path: path)
     }
 
 }

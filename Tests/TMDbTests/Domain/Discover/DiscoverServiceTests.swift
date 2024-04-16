@@ -66,7 +66,7 @@ final class DiscoverServiceTests: XCTestCase {
         XCTAssertEqual(parameters.2, page)
     }
 
-    func testMoviesWhenFailureThrowsError() async throws {
+    func testMoviesWhenFailureThrowsError() async {
         let expectedError = TMDbError.unknown
         repository.moviesResult = .failure(expectedError)
 
@@ -106,7 +106,7 @@ final class DiscoverServiceTests: XCTestCase {
         XCTAssertEqual(parameters.1, page)
     }
 
-    func testTVSeriesWhenFailureThrowsError() async throws {
+    func testTVSeriesWhenFailureThrowsError() async {
         let expectedError = TMDbError.unknown
         repository.tvSeriesResult = .failure(expectedError)
 

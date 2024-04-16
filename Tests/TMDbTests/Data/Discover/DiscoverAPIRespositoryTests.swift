@@ -32,8 +32,8 @@ final class DiscoverAPIRespositoryTests: XCTestCase {
     }
 
     override func tearDown() {
-        apiClient = nil
         repository = nil
+        apiClient = nil
         super.tearDown()
     }
 

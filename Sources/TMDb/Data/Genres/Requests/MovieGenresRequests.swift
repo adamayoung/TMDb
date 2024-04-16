@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  MovieGenresRequests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,12 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class MovieGenresRequests: DecodableAPIRequest<GenreList> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init() {
+        let path = "/genre/movie/list"
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: APIRequestQueryItems { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path)
+    }
 
 }
-
-enum APIRequestMethod: String, Sendable {
-    case get = "GET"
-    case post = "POST"
-    case delete = "DELETE"
-}
-
-typealias APIRequestQueryItems = [String: String]

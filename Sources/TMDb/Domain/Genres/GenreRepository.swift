@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  GenreRepository.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,10 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+protocol GenreRepository {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    func movieGenres() async throws -> [Genre]
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: APIRequestQueryItems { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+    func tvSeriesGenres() async throws -> [Genre]
 
 }
-
-enum APIRequestMethod: String, Sendable {
-    case get = "GET"
-    case post = "POST"
-    case delete = "DELETE"
-}
-
-typealias APIRequestQueryItems = [String: String]

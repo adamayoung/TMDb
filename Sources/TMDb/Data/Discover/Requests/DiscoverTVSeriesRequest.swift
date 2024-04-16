@@ -19,18 +19,34 @@
 
 import Foundation
 
-final class DiscoverTVSeriesRequest: DecodableAPIRequest<EmptyBody, TVSeriesPageableList> {
+final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
-    init(
-        sortedBy: TVSeriesSort? = nil,
-        page: Int? = nil
-    ) {
-        let path = URL(string: "/discover")!
-            .appendingPathComponent("tv")
-            .appendingSortBy(sortedBy)
-            .appendingPage(page)
+    init(sortedBy: TVSeriesSort? = nil, page: Int? = nil) {
+        let path = "/discover/tv"
+        let queryItems = APIRequestQueryItems(sortedBy: sortedBy, page: page)
 
-        super.init(path: path)
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    private enum QueryItemName {
+        static let sortBy = "sort_by"
+        static let page = "page"
+    }
+
+    init(sortedBy: TVSeriesSort?, page: Int?) {
+        self.init()
+
+        if let sortedBy {
+            self[QueryItemName.sortBy] = "\(sortedBy)"
+        }
+
+        if let page {
+            self[QueryItemName.page] = "\(page)"
+        }
     }
 
 }

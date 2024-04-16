@@ -25,12 +25,22 @@ extension URL {
         appendingPathComponent(String(value))
     }
 
-    func appendingQueryItem(name: String, value: CustomStringConvertible) -> Self {
+    func appendingQueryItem(name: String, value: some CustomStringConvertible) -> Self {
         var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false)!
         var queryItems = urlComponents.queryItems ?? []
         queryItems.append(URLQueryItem(name: name, value: value.description))
         urlComponents.queryItems = queryItems
         return urlComponents.url!
+    }
+
+    func apendingQueryItems(_ queryItems: [String: (any CustomStringConvertible)?]) -> Self {
+        queryItems.reduce(self) {
+            guard let queryItemValue = $1.1 else {
+                return $0
+            }
+
+            return $0.appendingQueryItem(name: $1.key, value: queryItemValue)
+        }
     }
 
 }
