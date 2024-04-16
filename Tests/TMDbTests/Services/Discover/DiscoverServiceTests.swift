@@ -23,101 +23,127 @@ import XCTest
 final class DiscoverServiceTests: XCTestCase {
 
     var service: DiscoverService!
-    var repository: DiscoverStubRepository!
+    var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
-        repository = DiscoverStubRepository()
-        service = DiscoverService(repository: repository)
+        apiClient = MockAPIClient()
+        service = DiscoverService(apiClient: apiClient)
     }
 
     override func tearDown() {
         service = nil
-        repository = nil
+        apiClient = nil
         super.tearDown()
     }
 
-    func testMoviesWithNoParametersWhenSuccessfulReturnsMovieList() async throws {
+    func testMoviesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
-        repository.moviesResult = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: nil)
 
-        let result = try await service.movies()
+        let result = try await service.movies(sortedBy: nil, withPeople: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        let parameters = try XCTUnwrap(repository.lastMoviesParameters)
-        XCTAssertNil(parameters.0)
-        XCTAssertNil(parameters.1)
-        XCTAssertNil(parameters.2)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
     }
 
-    func testMoviesWithParametersWhenSuccessfulReturnsMovieList() async throws {
+    func testMoviesWithSortByReturnsMovies() async throws {
+        let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock()
-        repository.moviesResult = .success(expectedResult)
-        let sortedBy = MovieSort.originalTitle(descending: true)
-        let people = [1, 2, 3, 4]
-        let page = 4
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: nil, page: nil)
 
-        let result = try await service.movies(sortedBy: sortedBy, withPeople: people, page: page)
+        let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        let parameters = try XCTUnwrap(repository.lastMoviesParameters)
-        XCTAssertEqual(parameters.0, sortedBy)
-        XCTAssertEqual(parameters.1, people)
-        XCTAssertEqual(parameters.2, page)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
     }
 
-    func testMoviesWhenFailureThrowsError() async {
-        let expectedError = TMDbError.unknown
-        repository.moviesResult = .failure(expectedError)
+    func testMoviesWithWithPeopleReturnsMovies() async throws {
+        let people: [Int] = [1, 2, 3, 4]
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: people, page: nil)
 
-        var error: TMDbError?
-        do {
-            _ = try await service.movies()
-        } catch let err {
-            error = err as? TMDbError
-        }
+        let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil)
 
-        XCTAssertEqual(error, expectedError)
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
     }
 
-    func testTVSeriesWithNoParametersWhenSuccessfulReturnsTVSeriesList() async throws {
+    func testMoviesWithWithPageReturnsMovies() async throws {
+        let expectedResult = MoviePageableList.mock()
+        let page = expectedResult.page
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: page)
+
+        let result = try await service.movies(sortedBy: nil, withPeople: nil, page: page)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
+    }
+
+    func testMoviesWithSortByAndWithPeopleAndPageReturnsMovies() async throws {
+        let sortBy = MovieSort.originalTitle(descending: false)
+        let people: [Int] = [4, 5, 6, 7, 8]
+        let expectedResult = MoviePageableList.mock()
+        let page = expectedResult.page
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: people, page: page)
+
+        let result = try await service.movies(sortedBy: sortBy, withPeople: people, page: page)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
+    }
+
+    func testTVSeriesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
-        repository.tvSeriesResult = .success(expectedResult)
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: nil)
 
-        let result = try await service.tvSeries()
+        let result = try await service.tvSeries(sortedBy: nil, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        let parameters = try XCTUnwrap(repository.lastTVSeriesParameters)
-        XCTAssertNil(parameters.0)
-        XCTAssertNil(parameters.1)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
     }
 
-    func testTVSeriesWithParametersWhenSuccessfulReturnsTVSeriesList() async throws {
+    func testTVSeriesWithSortByReturnsTVSeries() async throws {
+        let sortBy = TVSeriesSort.firstAirDate(descending: false)
         let expectedResult = TVSeriesPageableList.mock()
-        repository.tvSeriesResult = .success(expectedResult)
-        let sortedBy = TVSeriesSort.popularity(descending: false)
-        let page = 4
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: nil)
 
-        let result = try await service.tvSeries(sortedBy: sortedBy, page: page)
+        let result = try await service.tvSeries(sortedBy: sortBy, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        let parameters = try XCTUnwrap(repository.lastTVSeriesParameters)
-        XCTAssertEqual(parameters.0, sortedBy)
-        XCTAssertEqual(parameters.1, page)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
     }
 
-    func testTVSeriesWhenFailureThrowsError() async {
-        let expectedError = TMDbError.unknown
-        repository.tvSeriesResult = .failure(expectedError)
+    func testTVSeriesWithPageReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
+        let page = expectedResult.page
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: page)
 
-        var error: TMDbError?
-        do {
-            _ = try await service.tvSeries()
-        } catch let err {
-            error = err as? TMDbError
-        }
+        let result = try await service.tvSeries(sortedBy: nil, page: page)
 
-        XCTAssertEqual(error, expectedError)
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
+    }
+
+    func testTVSeriesWithSortByAndPageReturnsTVSeries() async throws {
+        let sortBy = TVSeriesSort.firstAirDate(descending: false)
+        let expectedResult = TVSeriesPageableList.mock()
+        let page = expectedResult.page
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: page)
+
+        let result = try await service.tvSeries(sortedBy: sortBy, page: page)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
     }
 
 }

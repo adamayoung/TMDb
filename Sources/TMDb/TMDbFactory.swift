@@ -35,11 +35,6 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static func discoverRepository(configuration: TMDbConfiguration) -> some DiscoverRepository {
-        let apiClient = apiClient(configuration: configuration)
-        return DiscoverAPIRepository(apiClient: apiClient)
-    }
-
     static func genreRepository(configuration: TMDbConfiguration) -> some GenreRepository {
         let apiClient = apiClient(configuration: configuration)
         return GenreAPIRepository(apiClient: apiClient)

@@ -25,7 +25,7 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public final class DiscoverService {
 
-    private let repository: any DiscoverRepository
+    private let apiClient: any APIClient
 
     ///
     /// Creates a discover service object.
@@ -34,12 +34,12 @@ public final class DiscoverService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            repository: TMDbFactory.discoverRepository(configuration: configuration)
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(repository: some DiscoverRepository) {
-        self.repository = repository
+    init(apiClient: some APIClient) {
+        self.apiClient = apiClient
     }
 
     ///
@@ -63,7 +63,16 @@ public final class DiscoverService {
         withPeople people: [Person.ID]? = nil,
         page: Int? = nil
     ) async throws -> MoviePageableList {
-        try await repository.movies(sortedBy: sortedBy, withPeople: people, page: page)
+        let request = DiscoverMoviesRequest(sortedBy: sortedBy, people: people, page: page)
+
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
     }
 
     ///
@@ -82,7 +91,16 @@ public final class DiscoverService {
     /// - Returns: Matching TV series as a pageable list.
     ///
     public func tvSeries(sortedBy: TVSeriesSort? = nil, page: Int? = nil) async throws -> TVSeriesPageableList {
-        try await repository.tvSeries(sortedBy: sortedBy, page: page)
+        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page)
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
     }
 
 }
