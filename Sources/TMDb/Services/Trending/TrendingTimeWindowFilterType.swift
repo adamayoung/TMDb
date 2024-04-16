@@ -28,11 +28,3 @@ public enum TrendingTimeWindowFilterType: String {
     case week
 
 }
-
-extension URL {
-
-    func appendingPathComponent(_ filterType: TrendingTimeWindowFilterType) -> Self {
-        appendingPathComponent(filterType.rawValue)
-    }
-
-}
