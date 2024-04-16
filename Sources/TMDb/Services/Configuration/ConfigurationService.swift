@@ -53,9 +53,11 @@ public final class ConfigurationService {
     /// - Returns: The API configuration.
     ///
     public func apiConfiguration() async throws -> APIConfiguration {
+        let request = APIConfigurationRequest()
+
         let apiConfiguration: APIConfiguration
         do {
-            apiConfiguration = try await apiClient.get(endpoint: ConfigurationEndpoint.api)
+            apiConfiguration = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -73,9 +75,11 @@ public final class ConfigurationService {
     /// - Returns: Countries used throughout TMDb,
     ///
     public func countries() async throws -> [Country] {
+        let request = CountriesConfigurationRequest()
+
         let countries: [Country]
         do {
-            countries = try await apiClient.get(endpoint: ConfigurationEndpoint.countries)
+            countries = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -93,9 +97,11 @@ public final class ConfigurationService {
     /// - Returns: Jobs and departments used on TMDb.
     ///
     public func jobsByDepartment() async throws -> [Department] {
+        let request = JobsByDepartmentConfigurationRequest()
+
         let departments: [Department]
         do {
-            departments = try await apiClient.get(endpoint: ConfigurationEndpoint.jobs)
+            departments = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -113,9 +119,11 @@ public final class ConfigurationService {
     /// - Returns: Languages used throughout TMDb.
     ///
     public func languages() async throws -> [Language] {
+        let request = LanguaguesConfigurationRequest()
+
         let languages: [Language]
         do {
-            languages = try await apiClient.get(endpoint: ConfigurationEndpoint.languages)
+            languages = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

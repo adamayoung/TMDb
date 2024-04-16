@@ -1,5 +1,5 @@
 //
-//  ConfigurationEndpoint.swift
+//  JobsByDepartmentConfigurationRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,36 +19,12 @@
 
 import Foundation
 
-enum ConfigurationEndpoint {
+final class JobsByDepartmentConfigurationRequest: DecodableAPIRequest<[Department]> {
 
-    case api
-    case countries
-    case jobs
-    case languages
+    init() {
+        let path = "/configuration/jobs"
 
-}
-
-extension ConfigurationEndpoint: Endpoint {
-
-    private static let basePath = URL(string: "/configuration")!
-
-    var path: URL {
-        switch self {
-        case .api:
-            Self.basePath
-
-        case .countries:
-            Self.basePath
-                .appendingPathComponent("countries")
-
-        case .jobs:
-            Self.basePath
-                .appendingPathComponent("jobs")
-
-        case .languages:
-            Self.basePath
-                .appendingPathComponent("languages")
-        }
+        super.init(path: path)
     }
 
 }

@@ -40,45 +40,45 @@ final class ConfigurationServiceTests: XCTestCase {
     func testAPIConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = APIConfigurationRequest()
 
         let result = try await service.apiConfiguration()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.api.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? APIConfigurationRequest, expectedRequest)
     }
 
     func testCountriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CountriesConfigurationRequest()
 
         let result = try await service.countries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.countries.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)
     }
 
     func testJobsByDepartmentReturnsDepartments() async throws {
         let expectedResult = [Department].mocks
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = JobsByDepartmentConfigurationRequest()
 
         let result = try await service.jobsByDepartment()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.jobs.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? JobsByDepartmentConfigurationRequest, expectedRequest)
     }
 
     func testLanguagesReturnsLanguages() async throws {
         let expectedResult = [Language].mocks
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = LanguaguesConfigurationRequest()
 
         let result = try await service.languages()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, ConfigurationEndpoint.languages.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? LanguaguesConfigurationRequest, expectedRequest)
     }
 
 }
