@@ -44,42 +44,36 @@ final class WatchProviderServiceTests: XCTestCase {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
         apiClient.addResponse(.success(regions))
+        let expectedRequest = WatchProviderRegionsRequest()
 
         let result = try await service.countries()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, WatchProviderEndpoint.regions.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
     }
 
     func testMovieWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
+        let expectedRequest = MovieWatchProvidersRequest(regionCode: localeProvider.regionCode)
 
         let result = try await service.movieWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            WatchProviderEndpoint.movie(regionCode: localeProvider.regionCode).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieWatchProvidersRequest, expectedRequest)
     }
 
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
+        let expectedRequest = TVSeriesWatchProvidersRequest(regionCode: localeProvider.regionCode)
 
         let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            WatchProviderEndpoint.tvSeries(regionCode: localeProvider.regionCode).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchProvidersRequest, expectedRequest)
     }
 
 }

@@ -55,9 +55,11 @@ public final class WatchProviderService {
     /// - Returns: Countries TMDb have watch provider data for.
     ///
     public func countries() async throws -> [Country] {
+        let request = WatchProviderRegionsRequest()
+
         let regions: WatchProviderRegions
         do {
-            regions = try await apiClient.get(endpoint: WatchProviderEndpoint.regions)
+            regions = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -76,11 +78,11 @@ public final class WatchProviderService {
     ///
     public func movieWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
+        let request = MovieWatchProvidersRequest(regionCode: regionCode)
+
         let result: WatchProviderResult
         do {
-            result = try await apiClient.get(
-                endpoint: WatchProviderEndpoint.movie(regionCode: regionCode)
-            )
+            result = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -99,11 +101,11 @@ public final class WatchProviderService {
     ///
     public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
+        let request = TVSeriesWatchProvidersRequest(regionCode: regionCode)
+
         let result: WatchProviderResult
         do {
-            result = try await apiClient.get(
-                endpoint: WatchProviderEndpoint.tvSeries(regionCode: regionCode)
-            )
+            result = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
