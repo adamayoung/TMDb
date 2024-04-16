@@ -25,7 +25,7 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public final class CertificationService {
 
-    private let repository: any CertificationRepository
+    private let apiClient: any APIClient
 
     ///
     /// Creates a certificate service object.
@@ -34,12 +34,12 @@ public final class CertificationService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            repository: TMDbFactory.certificationRepository(configuration: configuration)
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(repository: some CertificationRepository) {
-        self.repository = repository
+    init(apiClient: some APIClient) {
+        self.apiClient = apiClient
     }
 
     ///
@@ -52,7 +52,16 @@ public final class CertificationService {
     /// - Returns: A dictionary of movie certifications.
     ///
     public func movieCertifications() async throws -> [String: [Certification]] {
-        try await repository.movieCertifications()
+        let request = MovieCertificationsRequest()
+
+        let certifications: Certifications
+        do {
+            certifications = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return certifications.certifications
     }
 
     ///
@@ -65,7 +74,16 @@ public final class CertificationService {
     /// - Returns: A dictionary of TV series certifications.
     ///
     public func tvSeriesCertifications() async throws -> [String: [Certification]] {
-        try await repository.tvSeriesCertifications()
+        let request = TVSeriesCertificationsRequest()
+
+        let certifications: Certifications
+        do {
+            certifications = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return certifications.certifications
     }
 
 }

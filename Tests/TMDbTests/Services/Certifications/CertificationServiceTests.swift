@@ -1,5 +1,5 @@
 //
-//  CertificationAPIRepositoryTests.swift
+//  CertificationServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,19 +20,19 @@
 @testable import TMDb
 import XCTest
 
-final class CertificationAPIRepositoryTests: XCTestCase {
+final class CertificationServiceTests: XCTestCase {
 
-    var repository: CertificationAPIRepository!
+    var service: CertificationService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        repository = CertificationAPIRepository(apiClient: apiClient)
+        service = CertificationService(apiClient: apiClient)
     }
 
     override func tearDown() {
-        repository = nil
+        service = nil
         apiClient = nil
         super.tearDown()
     }
@@ -44,7 +44,7 @@ final class CertificationAPIRepositoryTests: XCTestCase {
 
         apiClient.addResponse(.success(certifications))
 
-        let result = try await repository.movieCertifications()
+        let result = try await service.movieCertifications()
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? MovieCertificationsRequest, expectedRequest)
@@ -57,7 +57,7 @@ final class CertificationAPIRepositoryTests: XCTestCase {
 
         apiClient.addResponse(.success(certifications))
 
-        let result = try await repository.tvSeriesCertifications()
+        let result = try await service.tvSeriesCertifications()
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesCertificationsRequest, expectedRequest)
