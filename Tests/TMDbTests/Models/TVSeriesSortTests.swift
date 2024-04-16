@@ -71,25 +71,3 @@ final class TVSeriesSortTests: XCTestCase {
     }
 
 }
-
-extension TVSeriesSortTests {
-
-    func testURLAppendingSortByReturnsURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "/some/path?sort_by=popularity.asc"))
-
-        let result = try XCTUnwrap(URL(string: "/some/path"))
-            .appendingSortBy(TVSeriesSort.popularity(descending: false))
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
-    func testURLAppendingNilSortByReturnsURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "/some/path"))
-
-        let result = try XCTUnwrap(URL(string: "/some/path"))
-            .appendingSortBy(nil as TVSeriesSort?)
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
-}

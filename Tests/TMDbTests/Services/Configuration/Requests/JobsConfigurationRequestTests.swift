@@ -1,5 +1,5 @@
 //
-//  JobsByDepartmentConfigurationRequestTests.swift
+//  JobsConfigurationRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,40 +20,40 @@
 @testable import TMDb
 import XCTest
 
-final class JobsByDepartmentConfigurationRequestTests: XCTestCase {
+final class JobsConfigurationRequestTests: XCTestCase {
 
     func testPathReturnsURL() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertEqual(request.path, "/configuration/jobs")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

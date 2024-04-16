@@ -97,7 +97,7 @@ public final class ConfigurationService {
     /// - Returns: Jobs and departments used on TMDb.
     ///
     public func jobsByDepartment() async throws -> [Department] {
-        let request = JobsByDepartmentConfigurationRequest()
+        let request = JobsConfigurationRequest()
 
         let departments: [Department]
         do {

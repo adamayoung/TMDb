@@ -118,19 +118,3 @@ extension MovieSort {
     }
 
 }
-
-extension URL {
-
-    private enum QueryItemName {
-        static let sortBy = "sort_by"
-    }
-
-    func appendingSortBy(_ sortBy: MovieSort?) -> Self {
-        guard let sortBy else {
-            return self
-        }
-
-        return appendingQueryItem(name: QueryItemName.sortBy, value: sortBy)
-    }
-
-}

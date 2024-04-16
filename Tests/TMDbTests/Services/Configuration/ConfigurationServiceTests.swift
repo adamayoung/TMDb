@@ -62,12 +62,12 @@ final class ConfigurationServiceTests: XCTestCase {
     func testJobsByDepartmentReturnsDepartments() async throws {
         let expectedResult = [Department].mocks
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = JobsByDepartmentConfigurationRequest()
+        let expectedRequest = JobsConfigurationRequest()
 
         let result = try await service.jobsByDepartment()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? JobsByDepartmentConfigurationRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? JobsConfigurationRequest, expectedRequest)
     }
 
     func testLanguagesReturnsLanguages() async throws {

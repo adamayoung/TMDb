@@ -1,5 +1,5 @@
 //
-//  JobsByDepartmentConfigurationRequest.swift
+//  JobsConfigurationRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,7 +19,7 @@
 
 import Foundation
 
-final class JobsByDepartmentConfigurationRequest: DecodableAPIRequest<[Department]> {
+final class JobsConfigurationRequest: DecodableAPIRequest<[Department]> {
 
     init() {
         let path = "/configuration/jobs"
