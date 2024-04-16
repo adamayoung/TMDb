@@ -22,7 +22,7 @@ import XCTest
 
 final class MovieCertificationsRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = MovieCertificationsRequest()
 
         XCTAssertEqual(request.path, "/certification/movie/list")

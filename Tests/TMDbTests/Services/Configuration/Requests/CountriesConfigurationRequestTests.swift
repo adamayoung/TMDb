@@ -22,7 +22,7 @@ import XCTest
 
 final class CountriesConfigurationRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = CountriesConfigurationRequest()
 
         XCTAssertEqual(request.path, "/configuration/countries")

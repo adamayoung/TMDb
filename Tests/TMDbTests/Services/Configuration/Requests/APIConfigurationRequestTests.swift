@@ -22,7 +22,7 @@ import XCTest
 
 final class APIConfigurationRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = APIConfigurationRequest()
 
         XCTAssertEqual(request.path, "/configuration")

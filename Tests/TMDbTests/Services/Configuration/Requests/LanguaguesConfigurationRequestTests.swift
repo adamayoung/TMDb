@@ -22,7 +22,7 @@ import XCTest
 
 final class LanguaguesConfigurationRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = LanguaguesConfigurationRequest()
 
         XCTAssertEqual(request.path, "/configuration/languages")

@@ -61,7 +61,7 @@ final class DiscoverServiceTests: XCTestCase {
     }
 
     func testMoviesWithWithPeopleReturnsMovies() async throws {
-        let people: [Int] = [1, 2, 3, 4]
+        let people = [1, 2, 3, 4]
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: people, page: nil)
@@ -86,7 +86,7 @@ final class DiscoverServiceTests: XCTestCase {
 
     func testMoviesWithSortByAndWithPeopleAndPageReturnsMovies() async throws {
         let sortBy = MovieSort.originalTitle(descending: false)
-        let people: [Int] = [4, 5, 6, 7, 8]
+        let people = [4, 5, 6, 7, 8]
         let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))

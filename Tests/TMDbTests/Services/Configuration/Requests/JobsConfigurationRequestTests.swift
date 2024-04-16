@@ -22,7 +22,7 @@ import XCTest
 
 final class JobsConfigurationRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = JobsConfigurationRequest()
 
         XCTAssertEqual(request.path, "/configuration/jobs")

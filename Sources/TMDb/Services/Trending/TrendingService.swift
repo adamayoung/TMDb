@@ -64,9 +64,11 @@ public final class TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil
     ) async throws -> MoviePageableList {
+        let request = TrendingMoviesRequest(timeWindow: timeWindow, page: page)
+
         let movieList: MoviePageableList
         do {
-            movieList = try await apiClient.get(endpoint: TrendingEndpoint.movies(timeWindow: timeWindow, page: page))
+            movieList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -96,11 +98,11 @@ public final class TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil
     ) async throws -> TVSeriesPageableList {
+        let request = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page)
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: TrendingEndpoint.tvSeries(timeWindow: timeWindow, page: page)
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -130,9 +132,11 @@ public final class TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil
     ) async throws -> PersonPageableList {
+        let request = TrendingPeopleRequest(timeWindow: timeWindow, page: page)
+
         let peopleList: PersonPageableList
         do {
-            peopleList = try await apiClient.get(endpoint: TrendingEndpoint.people(timeWindow: timeWindow, page: page))
+            peopleList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

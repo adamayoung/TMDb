@@ -22,7 +22,7 @@ import XCTest
 
 final class CompanyDetailsRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
+    func testPath() {
         let request = CompanyDetailsRequest(id: 1)
 
         XCTAssertEqual(request.path, "/company/1")
