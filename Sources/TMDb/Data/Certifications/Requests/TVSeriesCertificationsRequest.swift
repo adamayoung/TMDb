@@ -1,5 +1,5 @@
 //
-//  GenresEndpointTests.swift
+//  TVSeriesCertificationsRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,25 +17,14 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class GenresEndpointTests: XCTestCase {
+final class TVSeriesCertificationsRequest: DecodableAPIRequest<Certifications> {
 
-    func testMovieEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/genre/movie/list"))
+    init() {
+        let path = "/certification/tv/list"
 
-        let url = GenresEndpoint.movie.path
-
-        XCTAssertEqual(url, expectedURL)
-    }
-
-    func testTVSeriesEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/genre/tv/list"))
-
-        let url = GenresEndpoint.tvSeries.path
-
-        XCTAssertEqual(url, expectedURL)
+        super.init(path: path)
     }
 
 }

@@ -1,5 +1,5 @@
 //
-//  GenresEndpoint.swift
+//  CertificationRepository.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,29 +19,10 @@
 
 import Foundation
 
-enum GenresEndpoint {
+protocol CertificationRepository {
 
-    case movie
-    case tvSeries
+    func movieCertifications() async throws -> [String: [Certification]]
 
-}
-
-extension GenresEndpoint: Endpoint {
-
-    private static let basePath = URL(string: "/genre")!
-
-    var path: URL {
-        switch self {
-        case .movie:
-            URL(string: "/genre")!
-                .appendingPathComponent("movie")
-                .appendingPathComponent("list")
-
-        case .tvSeries:
-            Self.basePath
-                .appendingPathComponent("tv")
-                .appendingPathComponent("list")
-        }
-    }
+    func tvSeriesCertifications() async throws -> [String: [Certification]]
 
 }

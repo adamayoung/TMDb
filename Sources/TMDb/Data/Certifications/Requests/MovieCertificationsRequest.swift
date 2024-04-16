@@ -1,5 +1,5 @@
 //
-//  CertificationsEndpointTests.swift
+//  MovieCertificationsRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,25 +17,14 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class CertificationsEndpointTests: XCTestCase {
+final class MovieCertificationsRequest: DecodableAPIRequest<Certifications> {
 
-    func testMovieEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/certification/movie/list"))
+    init() {
+        let path = "/certification/movie/list"
 
-        let url = CertificationsEndpoint.movie.path
-
-        XCTAssertEqual(url, expectedURL)
-    }
-
-    func testTVSeriesEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/certification/tv/list"))
-
-        let url = CertificationsEndpoint.tvSeries.path
-
-        XCTAssertEqual(url, expectedURL)
+        super.init(path: path)
     }
 
 }

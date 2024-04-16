@@ -32,7 +32,7 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
     init(
         path: String,
         queryItems: [String: String] = [:],
-        method: APIRequestMethod = .get,
+        method: APIRequestMethod = .post,
         body: Body? = nil,
         headers: [String: String] = [:],
         serialiser: some Serialiser = TMDbJSONSerialiser()

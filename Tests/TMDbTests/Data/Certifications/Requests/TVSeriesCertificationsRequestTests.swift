@@ -1,5 +1,5 @@
 //
-//  DiscoverTVSeriesRequestTests.swift
+//  TVSeriesCertificationsRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,58 +20,40 @@
 @testable import TMDb
 import XCTest
 
-final class DiscoverTVSeriesRequestTests: XCTestCase {
+final class TVSeriesCertificationsRequestTests: XCTestCase {
 
     func testPathReturnsURL() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
-        XCTAssertEqual(request.path, "/discover/tv")
+        XCTAssertEqual(request.path, "/certification/tv/list")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithSortedBy() {
-        let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false))
-
-        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc"])
-    }
-
-    func testPathWithPageReturnsURL() throws {
-        let request = DiscoverTVSeriesRequest(page: 1)
-
-        XCTAssertEqual(request.queryItems, ["page": "1"])
-    }
-
-    func testTVSeriesEndpointWithSortedByAndPageReturnsURL() throws {
-        let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false), page: 1)
-
-        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc", "page": "1"])
-    }
-
     func testMethodIsGet() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = DiscoverTVSeriesRequest()
+        let request = TVSeriesCertificationsRequest()
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

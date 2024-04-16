@@ -23,44 +23,64 @@ import XCTest
 final class CertificationServiceTests: XCTestCase {
 
     var service: CertificationService!
-    var apiClient: MockAPIClient!
+    var repository: CertificationStubRepository!
 
     override func setUp() {
         super.setUp()
-        apiClient = MockAPIClient()
-        service = CertificationService(apiClient: apiClient)
+        repository = CertificationStubRepository()
+        service = CertificationService(repository: repository)
     }
 
     override func tearDown() {
-        apiClient = nil
         service = nil
+        repository = nil
         super.tearDown()
     }
 
-    func testMovieCertificationsReturnsMovieCertifications() async throws {
-        let certifications = Certifications.gbAndUS
-        let expectedResult = certifications.certifications
-
-        apiClient.addResponse(.success(certifications))
+    func testMovieCertificationsWhenSuccessfulReturnsMovieCertifications() async throws {
+        let expectedResult = Certifications.gbAndUS.certifications
+        repository.movieCertificationsResult = .success(expectedResult)
 
         let result = try await service.movieCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.movie.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 
-    func testTVSeriesCertificationsReturnsTVSeriesCertifications() async throws {
-        let certifications = Certifications.gbAndUS
-        let expectedResult = certifications.certifications
+    func testMovieCertificationsWhenFailureThrowsError() async throws {
+        let expectedError = TMDbError.unknown
+        repository.movieCertificationsResult = .failure(expectedError)
 
-        apiClient.addResponse(.success(certifications))
+        var error: TMDbError?
+        do {
+            _ = try await service.movieCertifications()
+        } catch let err {
+            error = err as? TMDbError
+        }
+
+        XCTAssertEqual(error, expectedError)
+    }
+
+    func testTVSeriesCertificationsWhenSuccessfulReturnsTVSeriesCertifications() async throws {
+        let expectedResult = Certifications.gbAndUS.certifications
+        repository.tvSeriesCertificationsResult = .success(expectedResult)
 
         let result = try await service.tvSeriesCertifications()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, CertificationsEndpoint.tvSeries.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+    }
+
+    func testTVSeriesCertificationsWhenFailureThrowsError() async throws {
+        let expectedError = TMDbError.unknown
+        repository.tvSeriesCertificationsResult = .failure(expectedError)
+
+        var error: TMDbError?
+        do {
+            _ = try await service.tvSeriesCertifications()
+        } catch let err {
+            error = err as? TMDbError
+        }
+
+        XCTAssertEqual(error, expectedError)
     }
 
 }

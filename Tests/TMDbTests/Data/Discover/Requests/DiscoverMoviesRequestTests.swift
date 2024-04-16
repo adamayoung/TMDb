@@ -28,6 +28,12 @@ final class DiscoverMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/discover/movie")
     }
 
+    func testQueryItemsAreEmpty() {
+        let request = DiscoverMoviesRequest()
+
+        XCTAssertTrue(request.queryItems.isEmpty)
+    }
+
     func testQueryItemsWithSortedBy() {
         let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
 
