@@ -22,39 +22,39 @@ import XCTest
 
 final class CountriesConfigurationRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = CountriesConfigurationRequest()
+    var request: CountriesConfigurationRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = CountriesConfigurationRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/configuration/countries")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = CountriesConfigurationRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = CountriesConfigurationRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = CountriesConfigurationRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = CountriesConfigurationRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = CountriesConfigurationRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

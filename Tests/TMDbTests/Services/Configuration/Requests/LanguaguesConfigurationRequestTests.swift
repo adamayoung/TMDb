@@ -22,39 +22,39 @@ import XCTest
 
 final class LanguaguesConfigurationRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = LanguaguesConfigurationRequest()
+    var request: LanguaguesConfigurationRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = LanguaguesConfigurationRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/configuration/languages")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = LanguaguesConfigurationRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = LanguaguesConfigurationRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = LanguaguesConfigurationRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = LanguaguesConfigurationRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = LanguaguesConfigurationRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

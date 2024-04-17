@@ -83,9 +83,11 @@ public final class MovieService {
     /// - Returns: Credits for the matching movie.
     ///
     public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
+        let request = MovieCreditsRequest(id: movieID)
+
         let credits: ShowCredits
         do {
-            credits = try await apiClient.get(endpoint: MoviesEndpoint.credits(movieID: movieID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

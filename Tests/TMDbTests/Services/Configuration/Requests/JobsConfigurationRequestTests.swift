@@ -22,39 +22,39 @@ import XCTest
 
 final class JobsConfigurationRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = JobsConfigurationRequest()
+    var request: JobsConfigurationRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = JobsConfigurationRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/configuration/jobs")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = JobsConfigurationRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = JobsConfigurationRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = JobsConfigurationRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = JobsConfigurationRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = JobsConfigurationRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

@@ -22,39 +22,39 @@ import XCTest
 
 final class MovieGenresRequestTests: XCTestCase {
 
-    func testPathReturnsURL() {
-        let request = MovieGenresRequests()
+    var request: MovieGenresRequests!
 
+    override func setUp() {
+        super.setUp()
+        request = MovieGenresRequests()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPathReturnsURL() {
         XCTAssertEqual(request.path, "/genre/movie/list")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = MovieGenresRequests()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = MovieGenresRequests()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieGenresRequests()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = MovieGenresRequests()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieGenresRequests()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

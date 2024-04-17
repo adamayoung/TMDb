@@ -22,39 +22,39 @@ import XCTest
 
 final class APIConfigurationRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = APIConfigurationRequest()
+    var request: APIConfigurationRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = APIConfigurationRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/configuration")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = APIConfigurationRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = APIConfigurationRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = APIConfigurationRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = APIConfigurationRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = APIConfigurationRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

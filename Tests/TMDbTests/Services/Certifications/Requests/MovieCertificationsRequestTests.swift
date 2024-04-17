@@ -22,39 +22,39 @@ import XCTest
 
 final class MovieCertificationsRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = MovieCertificationsRequest()
+    var request: MovieCertificationsRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = MovieCertificationsRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/certification/movie/list")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = MovieCertificationsRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = MovieCertificationsRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieCertificationsRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = MovieCertificationsRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieCertificationsRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

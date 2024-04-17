@@ -1,5 +1,5 @@
 //
-//  MovieRequestTests.swift
+//  MovieCreditsRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,13 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class MovieRequestTests: XCTestCase {
+final class MovieCreditsRequestTests: XCTestCase {
 
-    var request: MovieRequest!
+    var request: MovieCreditsRequest!
 
     override func setUp() {
         super.setUp()
-        request = MovieRequest(id: 1)
+        request = MovieCreditsRequest(id: 1)
     }
 
     override func tearDown() {
@@ -35,7 +35,7 @@ final class MovieRequestTests: XCTestCase {
     }
 
     func testPathReturnsURL() {
-        XCTAssertEqual(request.path, "/movie/1")
+        XCTAssertEqual(request.path, "/movie/1/credits")
     }
 
     func testQueryItemsAreEmpty() {

@@ -22,39 +22,39 @@ import XCTest
 
 final class WatchProviderRegionsRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = WatchProviderRegionsRequest()
+    var request: WatchProviderRegionsRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = WatchProviderRegionsRequest()
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/watch/providers/regions")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = WatchProviderRegionsRequest()
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = WatchProviderRegionsRequest()
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = WatchProviderRegionsRequest()
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = WatchProviderRegionsRequest()
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = WatchProviderRegionsRequest()
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

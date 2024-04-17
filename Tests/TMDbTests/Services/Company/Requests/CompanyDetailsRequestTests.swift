@@ -22,39 +22,39 @@ import XCTest
 
 final class CompanyDetailsRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = CompanyDetailsRequest(id: 1)
+    var request: CompanyDetailsRequest!
 
+    override func setUp() {
+        super.setUp()
+        request = CompanyDetailsRequest(id: 1)
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
+
+    func testPath() {
         XCTAssertEqual(request.path, "/company/1")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = CompanyDetailsRequest(id: 1)
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = CompanyDetailsRequest(id: 1)
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = CompanyDetailsRequest(id: 1)
-
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = CompanyDetailsRequest(id: 1)
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = CompanyDetailsRequest(id: 1)
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 
