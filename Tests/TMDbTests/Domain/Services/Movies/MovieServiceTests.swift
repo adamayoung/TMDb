@@ -102,19 +102,29 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
     }
 
-    func testImagesReturnsImageCollection() async throws {
+    func testImagesWhenLanguageCodeAvailableReturnsImageCollection() async throws {
         let expectedResult = ImageCollection.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieImagesRequest(id: movieID, languageCode: localeProvider.languageCode)
 
         let result = try await service.images(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            MoviesEndpoint.images(movieID: movieID, languageCode: localeProvider.languageCode).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieImagesRequest, expectedRequest)
+    }
+
+    func testImagesWhenLanguageCodeNotAvailableReturnsImageCollection() async throws {
+        let expectedResult = ImageCollection.mock()
+        let movieID = expectedResult.id
+        apiClient.addResponse(.success(expectedResult))
+        localeProvider.languageCode = nil
+        let expectedRequest = MovieImagesRequest(id: movieID, languageCode: nil)
+
+        let result = try await service.images(forMovie: movieID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieImagesRequest, expectedRequest)
     }
 
     func testVideosReturnsVideoCollection() async throws {

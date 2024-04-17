@@ -55,5 +55,6 @@ extension APIRequestQueryItem.Name {
     static let sortBy = APIRequestQueryItem.Name("sort_by")
     static let withPeople = APIRequestQueryItem.Name("with_people")
     static let watchRegion = APIRequestQueryItem.Name("watch_region")
+    static let includeImageLanguage = APIRequestQueryItem.Name("include_image_language")
 
 }

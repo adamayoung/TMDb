@@ -137,11 +137,11 @@ public final class MovieService {
     ///
     public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
         let languageCode = localeProvider.languageCode
+        let request = MovieImagesRequest(id: movieID, languageCode: languageCode)
+
         let imageCollection: ImageCollection
         do {
-            imageCollection = try await apiClient.get(
-                endpoint: MoviesEndpoint.images(movieID: movieID, languageCode: languageCode)
-            )
+            imageCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
