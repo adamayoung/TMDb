@@ -1,5 +1,5 @@
 //
-//  TVSeriesGenresRequests.swift
+//  TVSeriesGenresRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class TVSeriesGenresRequestsTests: XCTestCase {
+final class TVSeriesGenresRequestTests: XCTestCase {
 
     func testPathReturnsURL() {
         let request = TVSeriesGenresRequests()

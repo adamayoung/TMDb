@@ -58,9 +58,11 @@ public final class MovieService {
     /// - Returns: The matching movie.
     ///
     public func details(forMovie id: Movie.ID) async throws -> Movie {
+        let request = MovieRequest(id: id)
+
         let movie: Movie
         do {
-            movie = try await apiClient.get(endpoint: MoviesEndpoint.details(movieID: id))
+            movie = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

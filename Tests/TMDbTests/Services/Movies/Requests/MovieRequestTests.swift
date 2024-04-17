@@ -1,5 +1,5 @@
 //
-//  MovieGenresRequestsTests.swift
+//  MovieRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,40 +20,40 @@
 @testable import TMDb
 import XCTest
 
-final class MovieGenresRequestsTests: XCTestCase {
+final class MovieRequestTests: XCTestCase {
 
     func testPathReturnsURL() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/genre/movie/list")
+        XCTAssertEqual(request.path, "/movie/1")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testMethodIsGet() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
         XCTAssertEqual(request.headers, [:])
     }
 
     func testBodyIsNil() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieGenresRequests()
+        let request = MovieRequest(id: 1)
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
