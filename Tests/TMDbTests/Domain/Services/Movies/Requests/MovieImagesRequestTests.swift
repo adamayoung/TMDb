@@ -1,5 +1,5 @@
 //
-//  MovieImagesRequest.swift
+//  MovieImagesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
