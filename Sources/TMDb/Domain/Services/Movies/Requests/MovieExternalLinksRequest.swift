@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  MovieExternalLinksRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,17 +19,12 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class MovieExternalLinksRequest: DecodableAPIRequest<MovieExternalLinksCollection> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init(id: Movie.ID) {
+        let path = "/movie/\(id)/external_ids"
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: [String: String] { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path)
+    }
 
 }

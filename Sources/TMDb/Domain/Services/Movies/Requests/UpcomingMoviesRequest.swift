@@ -1,5 +1,5 @@
 //
-//  TVSeriesWatchProvidersRequest.swift
+//  UpcomingMoviesRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,11 +19,11 @@
 
 import Foundation
 
-final class TVSeriesWatchProvidersRequest: DecodableAPIRequest<WatchProviderResult> {
+final class UpcomingMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(regionCode: String?) {
-        let path = "/watch/providers/tv"
-        let queryItems = APIRequestQueryItems(regionCode: regionCode)
+    init(page: Int? = nil) {
+        let path = "/movie/upcoming"
+        let queryItems = APIRequestQueryItems(page: page)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,11 @@ final class TVSeriesWatchProvidersRequest: DecodableAPIRequest<WatchProviderResu
 
 private extension APIRequestQueryItems {
 
-    init(regionCode: String?) {
+    init(page: Int?) {
         self.init()
 
-        if let regionCode {
-            self[.watchRegion] = regionCode
+        if let page {
+            self[.page] = page
         }
     }
 

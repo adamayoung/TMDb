@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  SimilarMoviesRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,17 +19,25 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class SimilarMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init(id: Movie.ID, page: Int? = nil) {
+        let path = "/movie/\(id)/similar"
+        let queryItems = APIRequestQueryItems(page: page)
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: [String: String] { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(page: Int?) {
+        self.init()
+
+        if let page {
+            self[.page] = page
+        }
+    }
 
 }

@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  TopRatedMoviesRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,17 +19,25 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class TopRatedMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init(page: Int? = nil) {
+        let path = "/movie/top_rated"
+        let queryItems = APIRequestQueryItems(page: page)
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: [String: String] { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(page: Int?) {
+        self.init()
+
+        if let page {
+            self[.page] = page
+        }
+    }
 
 }

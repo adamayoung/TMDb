@@ -1,5 +1,5 @@
 //
-//  CompanyDetailsRequestTests.swift
+//  PopularMoviesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,41 +20,47 @@
 @testable import TMDb
 import XCTest
 
-final class CompanyDetailsRequestTests: XCTestCase {
-
-    var request: CompanyDetailsRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = CompanyDetailsRequest(id: 1)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
+final class PopularMoviesRequestTests: XCTestCase {
 
     func testPath() {
-        XCTAssertEqual(request.path, "/company/1")
+        let request = PopularMoviesRequest()
+
+        XCTAssertEqual(request.path, "/movie/popular")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+        let request = PopularMoviesRequest()
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWhenPageQueryItemsHasPage() {
+        let request = PopularMoviesRequest(page: 3)
+
+        XCTAssertEqual(request.queryItems, ["page": "3"])
+    }
+
     func testMethodIsGet() {
+        let request = PopularMoviesRequest()
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = PopularMoviesRequest()
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = PopularMoviesRequest()
+
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
+        let request = PopularMoviesRequest()
+
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

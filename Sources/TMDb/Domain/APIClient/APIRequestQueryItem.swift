@@ -19,7 +19,7 @@
 
 import Foundation
 
-typealias APIRequestQueryItems = [APIRequestQueryItem.Name: String]
+typealias APIRequestQueryItems = [APIRequestQueryItem.Name: CustomStringConvertible]
 
 struct APIRequestQueryItem {
 
@@ -56,5 +56,6 @@ extension APIRequestQueryItem.Name {
     static let withPeople = APIRequestQueryItem.Name("with_people")
     static let watchRegion = APIRequestQueryItem.Name("watch_region")
     static let includeImageLanguage = APIRequestQueryItem.Name("include_image_language")
+    static let includeVideoLanguage = APIRequestQueryItem.Name("include_video_language")
 
 }

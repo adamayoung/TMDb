@@ -19,25 +19,12 @@
 
 import Foundation
 
-final class MovieWatchProvidersRequest: DecodableAPIRequest<WatchProviderResult> {
+final class MovieWatchProvidersRequest: DecodableAPIRequest<ShowWatchProviderResult> {
 
-    init(regionCode: String?) {
-        let path = "/watch/providers/movie"
-        let queryItems = APIRequestQueryItems(regionCode: regionCode)
+    init(id: Movie.ID) {
+        let path = "/movie/\(id)/watch/providers"
 
-        super.init(path: path, queryItems: queryItems)
-    }
-
-}
-
-private extension APIRequestQueryItems {
-
-    init(regionCode: String?) {
-        self.init()
-
-        if let regionCode {
-            self[.watchRegion] = regionCode
-        }
+        super.init(path: path)
     }
 
 }

@@ -1,5 +1,5 @@
 //
-//  MovieWatchProvidersRequestTests.swift
+//  MovieVideosRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,46 +20,47 @@
 @testable import TMDb
 import XCTest
 
-final class MovieWatchProvidersRequestTests: XCTestCase {
+final class MovieVideosRequestTests: XCTestCase {
 
     func testPath() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+        let request = MovieVideosRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/watch/providers/movie")
+        XCTAssertEqual(request.path, "/movie/1/videos")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+        let request = MovieVideosRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithWatchRegion() {
-        let request = MovieWatchProvidersRequest(regionCode: "GB")
+    func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
+        let request = MovieVideosRequest(id: 1, languageCode: "en")
 
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
+        XCTAssertEqual(request.queryItems.count, 1)
+        XCTAssertEqual(request.queryItems["include_video_language"], "en,null")
     }
 
     func testMethodIsGet() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+        let request = MovieVideosRequest(id: 1)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+        let request = MovieVideosRequest(id: 1)
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+        let request = MovieVideosRequest(id: 1)
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieWatchProvidersRequest(regionCode: nil)
+        let request = MovieVideosRequest(id: 1)
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

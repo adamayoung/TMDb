@@ -36,7 +36,7 @@ private extension APIRequestQueryItems {
         self.init()
 
         if let languageCode {
-            self[.includeImageLanguage] = "\(languageCode),null"
+            self[.includeImageLanguage] = [languageCode, "null"].joined(separator: ",")
         }
     }
 

@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  WatchProvidersForTVSeriesRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,17 +19,25 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class WatchProvidersForTVSeriesRequest: DecodableAPIRequest<WatchProviderResult> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init(regionCode: String?) {
+        let path = "/watch/providers/tv"
+        let queryItems = APIRequestQueryItems(regionCode: regionCode)
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: [String: String] { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(regionCode: String?) {
+        self.init()
+
+        if let regionCode {
+            self[.watchRegion] = regionCode
+        }
+    }
 
 }

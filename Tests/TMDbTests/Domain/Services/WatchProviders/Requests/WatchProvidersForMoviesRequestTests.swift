@@ -1,5 +1,5 @@
 //
-//  TVSeriesWatchProvidersRequestTests.swift
+//  WatchProvidersForMoviesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,46 +20,46 @@
 @testable import TMDb
 import XCTest
 
-final class TVSeriesWatchProvidersRequestTests: XCTestCase {
+final class WatchProvidersForMoviesRequestTests: XCTestCase {
 
     func testPath() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
-        XCTAssertEqual(request.path, "/watch/providers/tv")
+        XCTAssertEqual(request.path, "/watch/providers/movie")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testQueryItemsWithWatchRegion() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: "GB")
+        let request = WatchProvidersForMoviesRequest(regionCode: "GB")
 
         XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
     }
 
     func testMethodIsGet() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = TVSeriesWatchProvidersRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest(regionCode: nil)
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

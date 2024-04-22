@@ -61,7 +61,7 @@ final class DiscoverTVSeriesRequestTests: XCTestCase {
     func testHeadersIsEmpty() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {

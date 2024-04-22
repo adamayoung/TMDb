@@ -36,7 +36,7 @@ private extension APIRequestQueryItems {
         self.init()
 
         if let page {
-            self[.page] = "\(page)"
+            self[.page] = page
         }
     }
 

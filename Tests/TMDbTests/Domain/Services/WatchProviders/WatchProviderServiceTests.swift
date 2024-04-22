@@ -56,24 +56,24 @@ final class WatchProviderServiceTests: XCTestCase {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = MovieWatchProvidersRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForMoviesRequest(regionCode: localeProvider.regionCode)
 
         let result = try await service.movieWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchProvidersRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
     }
 
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = TVSeriesWatchProvidersRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForTVSeriesRequest(regionCode: localeProvider.regionCode)
 
         let result = try await service.tvSeriesWatchProviders()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchProvidersRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)
     }
 
 }

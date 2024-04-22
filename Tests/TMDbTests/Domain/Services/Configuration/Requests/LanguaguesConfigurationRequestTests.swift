@@ -47,7 +47,7 @@ final class LanguaguesConfigurationRequestTests: XCTestCase {
     }
 
     func testHeadersIsEmpty() {
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {

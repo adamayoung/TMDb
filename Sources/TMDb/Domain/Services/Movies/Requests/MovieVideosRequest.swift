@@ -1,5 +1,5 @@
 //
-//  APIRequest.swift
+//  MovieVideosRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,17 +19,25 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+final class MovieVideosRequest: DecodableAPIRequest<VideoCollection> {
 
-    associatedtype Body: Encodable & Equatable
-    associatedtype Response: Decodable
+    init(id: Movie.ID, languageCode: String? = nil) {
+        let path = "/movie/\(id)/videos"
+        let queryItems = APIRequestQueryItems(languageCode: languageCode)
 
-    var id: UUID { get }
-    var path: String { get }
-    var queryItems: [String: String] { get }
-    var method: APIRequestMethod { get }
-    var headers: [String: String] { get }
-    var body: Body? { get }
-    var serialiser: any Serialiser { get }
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(languageCode: String?) {
+        self.init()
+
+        if let languageCode {
+            self[.includeVideoLanguage] = [languageCode, "null"].joined(separator: ",")
+        }
+    }
 
 }

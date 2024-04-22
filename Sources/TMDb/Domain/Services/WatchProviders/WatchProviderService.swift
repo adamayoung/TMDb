@@ -78,7 +78,7 @@ public final class WatchProviderService {
     ///
     public func movieWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
-        let request = MovieWatchProvidersRequest(regionCode: regionCode)
+        let request = WatchProvidersForMoviesRequest(regionCode: regionCode)
 
         let result: WatchProviderResult
         do {
@@ -101,7 +101,7 @@ public final class WatchProviderService {
     ///
     public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
         let regionCode = localeProvider.regionCode
-        let request = TVSeriesWatchProvidersRequest(regionCode: regionCode)
+        let request = WatchProvidersForTVSeriesRequest(regionCode: regionCode)
 
         let result: WatchProviderResult
         do {

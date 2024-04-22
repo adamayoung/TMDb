@@ -19,15 +19,32 @@
 
 import Foundation
 
-class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest {
+class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest, CustomStringConvertible {
 
     let id = UUID()
     let path: String
-    let queryItems: APIRequestQueryItems
+    let queryItems: [String: String]
     let method: APIRequestMethod
     let headers: [String: String]
     let body: Body?
     let serialiser: any Serialiser
+
+    var description: String {
+        var description = """
+        APIRequest:
+        \tid: \(id.uuidString)
+        \tpath: \(path)
+        \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
+        \tmethod: \(method.rawValue)
+        \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
+        """
+
+        if let body {
+            description += "\nBody:\n\(body)"
+        }
+
+        return description
+    }
 
     init(
         path: String,
@@ -38,7 +55,10 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         serialiser: some Serialiser = TMDbJSONSerialiser()
     ) {
         self.path = path
-        self.queryItems = queryItems
+        let queryItems = queryItems.map { (key: APIRequestQueryItem.Name, value: any CustomStringConvertible) in
+            (key.description, value.description)
+        }
+        self.queryItems = Dictionary(uniqueKeysWithValues: queryItems)
         self.method = method
         self.body = body
         self.headers = headers

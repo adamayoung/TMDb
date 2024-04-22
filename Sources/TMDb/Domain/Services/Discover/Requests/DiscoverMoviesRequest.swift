@@ -36,7 +36,7 @@ private extension APIRequestQueryItems {
         self.init()
 
         if let sortedBy {
-            self[.sortBy] = "\(sortedBy)"
+            self[.sortBy] = sortedBy
         }
 
         if let people {
@@ -44,7 +44,7 @@ private extension APIRequestQueryItems {
         }
 
         if let page {
-            self[.page] = "\(page)"
+            self[.page] = page
         }
     }
 

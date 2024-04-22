@@ -55,7 +55,7 @@ final class TrendingMoviesRequestTests: XCTestCase {
     func testHeadersIsEmpty() {
         let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {

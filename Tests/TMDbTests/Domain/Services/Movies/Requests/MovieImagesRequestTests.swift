@@ -38,7 +38,7 @@ final class MovieImagesRequestTests: XCTestCase {
         let request = MovieImagesRequest(id: 1, languageCode: "en")
 
         XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems[.includeImageLanguage], "en,null")
+        XCTAssertEqual(request.queryItems["include_image_language"]?.description, "en,null")
     }
 
     func testMethodIsGet() {
@@ -50,7 +50,7 @@ final class MovieImagesRequestTests: XCTestCase {
     func testHeadersIsEmpty() {
         let request = MovieImagesRequest(id: 1)
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {

@@ -37,8 +37,7 @@ final class MovieReviewsRequestTests: XCTestCase {
     func testQueryItemsWhenPageQueryItemsHasPage() {
         let request = MovieReviewsRequest(id: 1, page: 3)
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems[.page], "3")
+        XCTAssertEqual(request.queryItems, ["page": "3"])
     }
 
     func testMethodIsGet() {
@@ -50,7 +49,7 @@ final class MovieReviewsRequestTests: XCTestCase {
     func testHeadersIsEmpty() {
         let request = MovieReviewsRequest(id: 1)
 
-        XCTAssertEqual(request.headers, [:])
+        XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {

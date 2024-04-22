@@ -1,5 +1,5 @@
 //
-//  CompanyDetailsRequestTests.swift
+//  MovieWatchProvidersRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,13 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class CompanyDetailsRequestTests: XCTestCase {
+final class MovieWatchProvidersRequestTests: XCTestCase {
 
-    var request: CompanyDetailsRequest!
+    var request: MovieWatchProvidersRequest!
 
     override func setUp() {
         super.setUp()
-        request = CompanyDetailsRequest(id: 1)
+        request = MovieWatchProvidersRequest(id: 1)
     }
 
     override func tearDown() {
@@ -35,7 +35,7 @@ final class CompanyDetailsRequestTests: XCTestCase {
     }
 
     func testPath() {
-        XCTAssertEqual(request.path, "/company/1")
+        XCTAssertEqual(request.path, "/movie/1/watch/providers")
     }
 
     func testQueryItemsAreEmpty() {
