@@ -57,9 +57,11 @@ public final class PersonService {
     /// - Returns: The matching person.
     ///
     public func details(forPerson id: Person.ID) async throws -> Person {
+        let request = PersonRequest(id: id)
+
         let person: Person
         do {
-            person = try await apiClient.get(endpoint: PeopleEndpoint.details(personID: id))
+            person = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -80,9 +82,11 @@ public final class PersonService {
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
     public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
+        let request = PersonCombinedCreditsRequest(id: personID)
+
         let credits: PersonCombinedCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -103,9 +107,11 @@ public final class PersonService {
     /// - Returns: The matching person's movie credits.
     ///
     public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
+        let request = PersonMovieCreditsRequest(id: personID)
+
         let credits: PersonMovieCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.movieCredits(personID: personID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -126,9 +132,11 @@ public final class PersonService {
     /// - Returns: The matching person's TV series credits.
     ///
     public func tvSeriesCredits(forPerson personID: Person.ID) async throws -> PersonTVSeriesCredits {
+        let request = PersonTVSeriesCreditsRequest(id: personID)
+
         let credits: PersonTVSeriesCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.tvSeriesCredits(personID: personID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -149,9 +157,11 @@ public final class PersonService {
     /// - Returns: The matching person's images.
     ///
     public func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
+        let request = PersonImagesRequest(id: personID)
+
         let imageCollection: PersonImageCollection
         do {
-            imageCollection = try await apiClient.get(endpoint: PeopleEndpoint.images(personID: personID))
+            imageCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -170,9 +180,11 @@ public final class PersonService {
     /// - Returns: The matching person's show credits.
     ///
     public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
+        let request = PersonCombinedCreditsRequest(id: personID)
+
         let credits: PersonCombinedCredits
         do {
-            credits = try await apiClient.get(endpoint: PeopleEndpoint.combinedCredits(personID: personID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -200,9 +212,11 @@ public final class PersonService {
     /// - Returns: Current popular people as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> PersonPageableList {
+        let request = PopularPeopleRequest(page: page)
+
         let personList: PersonPageableList
         do {
-            personList = try await apiClient.get(endpoint: PeopleEndpoint.popular(page: page))
+            personList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -221,9 +235,11 @@ public final class PersonService {
     /// - Returns: A collection of external links for the specificed person.
     ///
     public func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection {
+        let request = PersonExternalLinksRequest(id: personID)
+
         let linksCollection: PersonExternalLinksCollection
         do {
-            linksCollection = try await apiClient.get(endpoint: PeopleEndpoint.externalIDs(personID: personID))
+            linksCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
