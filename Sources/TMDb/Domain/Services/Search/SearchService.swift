@@ -58,9 +58,11 @@ public final class SearchService {
     /// - Returns: Movies, TV series and people matching the query.
     ///
     public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
+        let request = MultiSearchRequest(query: query, page: page)
+
         let mediaList: MediaPageableList
         do {
-            mediaList = try await apiClient.get(endpoint: SearchEndpoint.multi(query: query, page: page))
+            mediaList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -85,9 +87,11 @@ public final class SearchService {
     /// - Returns: Movies matching the query.
     ///
     public func searchMovies(query: String, year: Int? = nil, page: Int? = nil) async throws -> MoviePageableList {
+        let request = MovieSearchRequest(query: query, year: year, page: page)
+
         let movieList: MoviePageableList
         do {
-            movieList = try await apiClient.get(endpoint: SearchEndpoint.movies(query: query, year: year, page: page))
+            movieList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -116,11 +120,11 @@ public final class SearchService {
         firstAirDateYear: Int? = nil,
         page: Int? = nil
     ) async throws -> TVSeriesPageableList {
+        let request = TVSeriesSearchRequest(query: query, firstAirDateYear: firstAirDateYear, page: page)
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: SearchEndpoint.tvSeries(query: query, firstAirDateYear: firstAirDateYear, page: page)
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -144,9 +148,11 @@ public final class SearchService {
     /// - Returns: People matching the query.
     ///
     public func searchPeople(query: String, page: Int? = nil) async throws -> PersonPageableList {
+        let request = PersonSearchRequest(query: query, page: page)
+
         let peopleList: PersonPageableList
         do {
-            peopleList = try await apiClient.get(endpoint: SearchEndpoint.people(query: query, page: page))
+            peopleList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

@@ -57,5 +57,8 @@ extension APIRequestQueryItem.Name {
     static let watchRegion = APIRequestQueryItem.Name("watch_region")
     static let includeImageLanguage = APIRequestQueryItem.Name("include_image_language")
     static let includeVideoLanguage = APIRequestQueryItem.Name("include_video_language")
+    static let query = APIRequestQueryItem.Name("query")
+    static let year = APIRequestQueryItem.Name("year")
+    static let firstAirDateYear = APIRequestQueryItem.Name("first_air_date_year")
 
 }
