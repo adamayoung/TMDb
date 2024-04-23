@@ -1,5 +1,5 @@
 //
-//  DecodableAPIRequest.swift
+//  CreateGuestSessionRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,13 @@
 
 import Foundation
 
-class DecodableAPIRequest<Response: Decodable>: CodableAPIRequest<EmptyBody, Response> {
+final class CreateGuestSessionRequest: DecodableAPIRequest<GuestSession> {
 
-    init(
-        path: String,
-        queryItems: APIRequestQueryItems = [:],
-        method: APIRequestMethod = .get,
-        headers: [String: String] = [:],
-        serialiser: some Serialiser = TMDbJSONSerialiser()
-    ) {
-        super.init(
-            path: path,
-            queryItems: queryItems,
-            method: method,
-            body: nil,
-            headers: headers,
-            serialiser: serialiser
-        )
+    init() {
+        let path = "/authentication/guest_session/new"
+        let serialiser = TMDbAuthJSONSerialiser()
+
+        super.init(path: path, serialiser: serialiser)
     }
 
 }
-
-struct EmptyBody: Encodable, Equatable {}

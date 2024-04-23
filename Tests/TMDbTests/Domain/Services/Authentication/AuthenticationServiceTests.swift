@@ -42,14 +42,13 @@ final class AuthenticationServiceTests: XCTestCase {
 
     func testGuestSessionReturnsGuestSession() async throws {
         let expectedResult = GuestSession.mock()
-
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CreateGuestSessionRequest()
 
         let result = try await service.guestSession()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createGuestSession.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? CreateGuestSessionRequest, expectedRequest)
     }
 
     func testGuestSessionWhenErrorsThrowsError() async throws {
@@ -69,14 +68,13 @@ final class AuthenticationServiceTests: XCTestCase {
 
     func testRequestTokenReturnsToken() async throws {
         let expectedResult = Token.mock()
-
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CreateRequestTokenRequest()
 
         let result = try await service.requestToken()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createRequestToken.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? CreateRequestTokenRequest, expectedRequest)
     }
 
     func testRequestTokenWhenErrorsThrowsError() async throws {

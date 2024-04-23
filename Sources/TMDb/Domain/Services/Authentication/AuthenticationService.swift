@@ -67,9 +67,11 @@ public final class AuthenticationService {
     /// - Returns: A guest session.
     ///
     public func guestSession() async throws -> GuestSession {
+        let request = CreateGuestSessionRequest()
+
         let session: GuestSession
         do {
-            session = try await apiClient.get(endpoint: AuthenticationEndpoint.createGuestSession)
+            session = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -90,9 +92,11 @@ public final class AuthenticationService {
     /// - Returns: An intermediate request token.
     ///
     public func requestToken() async throws -> Token {
+        let request = CreateRequestTokenRequest()
+
         let token: Token
         do {
-            token = try await apiClient.get(endpoint: AuthenticationEndpoint.createRequestToken)
+            token = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -155,7 +159,7 @@ public final class AuthenticationService {
     public func createSession(withCredential credential: Credential) async throws -> Session {
         let token = try await requestToken()
 
-        let body = CreateSessionWithLoginRequestBody(
+        let request = ValidateTokenWithLoginRequest(
             username: credential.username,
             password: credential.password,
             requestToken: token.requestToken
@@ -163,10 +167,7 @@ public final class AuthenticationService {
 
         let validatedToken: Token
         do {
-            validatedToken = try await apiClient.post(
-                endpoint: AuthenticationEndpoint.validateRequestTokenWithLogin,
-                body: body
-            ) as Token
+            validatedToken = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
