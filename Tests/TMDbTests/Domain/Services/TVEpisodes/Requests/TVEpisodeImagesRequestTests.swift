@@ -1,5 +1,5 @@
 //
-//  MovieImagesRequestTests.swift
+//  TVEpisodeImagesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,47 +20,47 @@
 @testable import TMDb
 import XCTest
 
-final class MovieImagesRequestTests: XCTestCase {
+final class TVEpisodeImagesRequestTests: XCTestCase {
 
     func testPath() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.path, "/movie/1/images")
+        XCTAssertEqual(request.path, "/tv/3/season/2/episode/1/images")
     }
 
     func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
-        let request = MovieImagesRequest(id: 1, languageCode: "en")
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3, languageCode: "en")
 
         XCTAssertEqual(request.queryItems.count, 1)
         XCTAssertEqual(request.queryItems["include_image_language"], "en,null")
     }
 
     func testMethodIsGet() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieImagesRequest(id: 1)
+        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

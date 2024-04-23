@@ -28,7 +28,7 @@ final class MovieVideosRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/1/videos")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
         let request = MovieVideosRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)

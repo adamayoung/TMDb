@@ -1,5 +1,5 @@
 //
-//  MovieImagesRequestTests.swift
+//  TVEpisodeRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,48 +20,41 @@
 @testable import TMDb
 import XCTest
 
-final class MovieImagesRequestTests: XCTestCase {
+final class TVEpisodeRequestTests: XCTestCase {
 
-    func testPath() {
-        let request = MovieImagesRequest(id: 1)
+    var request: TVEpisodeRequest!
 
-        XCTAssertEqual(request.path, "/movie/1/images")
+    override func setUp() {
+        super.setUp()
+        request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
     }
 
-    func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
-        let request = MovieImagesRequest(id: 1)
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
 
+    func testPath() {
+        XCTAssertEqual(request.path, "/tv/3/season/2/episode/1")
+    }
+
+    func testQueryItemsAreEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
-        let request = MovieImagesRequest(id: 1, languageCode: "en")
-
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["include_image_language"], "en,null")
-    }
-
     func testMethodIsGet() {
-        let request = MovieImagesRequest(id: 1)
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = MovieImagesRequest(id: 1)
-
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = MovieImagesRequest(id: 1)
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = MovieImagesRequest(id: 1)
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

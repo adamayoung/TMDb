@@ -46,6 +46,11 @@ final class TVEpisodeServiceTests: XCTestCase {
         let seasonNumber = expectedResult.seasonNumber
         let episodeNumber = expectedResult.episodeNumber
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID
+        )
 
         let result = try await service.details(
             forEpisode: episodeNumber,
@@ -54,15 +59,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVEpisodesEndpoint.details(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                episodeNumber: episodeNumber
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeRequest, expectedRequest)
     }
 
     func testImagesReturnsImages() async throws {
@@ -71,6 +68,12 @@ final class TVEpisodeServiceTests: XCTestCase {
         let tvSeriesID = Int.randomID
         let expectedResult = TVEpisodeImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeImagesRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: localeProvider.languageCode
+        )
 
         let result = try await service.images(
             forEpisode: episodeNumber,
@@ -79,16 +82,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVEpisodesEndpoint.images(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                episodeNumber: episodeNumber,
-                languageCode: localeProvider.languageCode
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -97,6 +91,12 @@ final class TVEpisodeServiceTests: XCTestCase {
         let tvSeriesID = Int.randomID
         let expectedResult = VideoCollection.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeVideosRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: localeProvider.languageCode
+        )
 
         let result = try await service.videos(
             forEpisode: episodeNumber,
@@ -105,16 +105,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVEpisodesEndpoint.videos(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                episodeNumber: episodeNumber,
-                languageCode: localeProvider.languageCode
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeVideosRequest, expectedRequest)
     }
 
 }
