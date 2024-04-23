@@ -1,5 +1,5 @@
 //
-//  WatchProvidersForTVSeriesRequestTests.swift
+//  TVSeriesWatchProvidersRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,47 +20,41 @@
 @testable import TMDb
 import XCTest
 
-final class WatchProvidersForTVSeriesRequestTests: XCTestCase {
+final class TVSeriesWatchProvidersRequestTests: XCTestCase {
+
+    var request: TVSeriesWatchProvidersRequest!
+
+    override func setUp() {
+        super.setUp()
+        request = TVSeriesWatchProvidersRequest(id: 1)
+    }
+
+    override func tearDown() {
+        request = nil
+        super.tearDown()
+    }
 
     func testPath() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
-        XCTAssertEqual(request.path, "/watch/providers/tv")
+        XCTAssertEqual(request.path, "/tv/1/watch/providers")
     }
 
     func testQueryItemsAreEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithWatchRegion() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: "GB")
-
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
-    }
-
     func testMethodIsGet() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }
 

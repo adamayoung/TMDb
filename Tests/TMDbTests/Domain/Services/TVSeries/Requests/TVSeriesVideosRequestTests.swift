@@ -1,5 +1,5 @@
 //
-//  WatchProvidersForTVSeriesRequestTests.swift
+//  TVSeriesVideosRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,46 +20,47 @@
 @testable import TMDb
 import XCTest
 
-final class WatchProvidersForTVSeriesRequestTests: XCTestCase {
+final class TVSeriesVideosRequestTests: XCTestCase {
 
     func testPath() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = TVSeriesVideosRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/watch/providers/tv")
+        XCTAssertEqual(request.path, "/tv/1/videos")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+    func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
+        let request = TVSeriesVideosRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithWatchRegion() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: "GB")
+    func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
+        let request = TVSeriesVideosRequest(id: 1, languageCode: "en")
 
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
+        XCTAssertEqual(request.queryItems.count, 1)
+        XCTAssertEqual(request.queryItems["include_video_language"], "en,null")
     }
 
     func testMethodIsGet() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = TVSeriesVideosRequest(id: 1)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = TVSeriesVideosRequest(id: 1)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = TVSeriesVideosRequest(id: 1)
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = TVSeriesVideosRequest(id: 1)
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

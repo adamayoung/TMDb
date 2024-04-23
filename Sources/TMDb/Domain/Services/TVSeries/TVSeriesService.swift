@@ -58,9 +58,11 @@ public final class TVSeriesService {
     /// - Returns: The matching TV series.
     ///
     public func details(forTVSeries id: TVSeries.ID) async throws -> TVSeries {
+        let request = TVSeriesRequest(id: id)
+
         let tvSeries: TVSeries
         do {
-            tvSeries = try await apiClient.get(endpoint: TVSeriesEndpoint.details(tvSeriesID: id))
+            tvSeries = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -81,9 +83,11 @@ public final class TVSeriesService {
     /// - Returns: Show credits for the matching TV series.
     ///
     public func credits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowCredits {
+        let request = TVSeriesCreditsRequest(id: tvSeriesID)
+
         let credits: ShowCredits
         do {
-            credits = try await apiClient.get(endpoint: TVSeriesEndpoint.credits(tvSeriesID: tvSeriesID))
+            credits = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -107,9 +111,11 @@ public final class TVSeriesService {
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
     public func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> ReviewPageableList {
+        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page)
+
         let reviewList: ReviewPageableList
         do {
-            reviewList = try await apiClient.get(endpoint: TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID, page: page))
+            reviewList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -131,11 +137,11 @@ public final class TVSeriesService {
     ///
     public func images(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ImageCollection {
         let languageCode = localeProvider.languageCode
+        let request = TVSeriesImagesRequest(id: tvSeriesID, languageCode: languageCode)
+
         let imageCollection: ImageCollection
         do {
-            imageCollection = try await apiClient.get(
-                endpoint: TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: languageCode)
-            )
+            imageCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -157,11 +163,11 @@ public final class TVSeriesService {
     ///
     public func videos(forTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
         let languageCode = localeProvider.languageCode
+        let request = TVSeriesVideosRequest(id: tvSeriesID, languageCode: languageCode)
+
         let videoCollection: VideoCollection
         do {
-            videoCollection = try await apiClient.get(
-                endpoint: TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: languageCode)
-            )
+            videoCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -188,11 +194,11 @@ public final class TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil
     ) async throws -> TVSeriesPageableList {
+        let request = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page)
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page)
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -218,11 +224,11 @@ public final class TVSeriesService {
     /// - Returns: Similar TV series for the matching TV series as a pageable list.
     ///
     public func similar(toTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> TVSeriesPageableList {
+        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page)
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID, page: page)
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -245,9 +251,11 @@ public final class TVSeriesService {
     /// - Returns: Current popular TV series as a pageable list.
     ///
     public func popular(page: Int? = nil) async throws -> TVSeriesPageableList {
+        let request = PopularTVSeriesRequest(page: page)
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(endpoint: TVSeriesEndpoint.popular(page: page))
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -271,9 +279,12 @@ public final class TVSeriesService {
         guard let regionCode = localeProvider.regionCode else {
             return nil
         }
+
+        let request = TVSeriesWatchProvidersRequest(id: tvSeriesID)
+
         let result: ShowWatchProviderResult
         do {
-            result = try await apiClient.get(endpoint: TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID))
+            result = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -292,9 +303,11 @@ public final class TVSeriesService {
     /// - Returns: A collection of external links for the specificed TV series.
     ///
     public func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
+        let request = TVSeriesExternalLinksRequest(id: tvSeriesID)
+
         let linksCollection: TVSeriesExternalLinksCollection
         do {
-            linksCollection = try await apiClient.get(endpoint: TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID))
+            linksCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

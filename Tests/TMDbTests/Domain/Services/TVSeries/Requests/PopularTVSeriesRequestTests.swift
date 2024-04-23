@@ -1,5 +1,5 @@
 //
-//  WatchProvidersForTVSeriesRequestTests.swift
+//  PopularTVSeriesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,46 +20,46 @@
 @testable import TMDb
 import XCTest
 
-final class WatchProvidersForTVSeriesRequestTests: XCTestCase {
+final class PopularTVSeriesRequestTests: XCTestCase {
 
     func testPath() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = PopularTVSeriesRequest()
 
-        XCTAssertEqual(request.path, "/watch/providers/tv")
+        XCTAssertEqual(request.path, "/tv/popular")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+        let request = PopularTVSeriesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithWatchRegion() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: "GB")
+    func testQueryItemsWhenPageQueryItemsHasPage() {
+        let request = PopularTVSeriesRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
+        XCTAssertEqual(request.queryItems, ["page": "3"])
     }
 
     func testMethodIsGet() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = PopularTVSeriesRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = PopularTVSeriesRequest()
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = PopularTVSeriesRequest()
 
         XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
+        let request = PopularTVSeriesRequest()
 
         XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
     }

@@ -44,48 +44,48 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedResult = TVSeries.theSandman
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRequest(id: tvSeriesID)
 
         let result = try await service.details(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.details(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
     }
 
     func testCreditsReturnsShowsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesCreditsRequest(id: tvSeriesID)
 
         let result = try await service.credits(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.credits(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesCreditsRequest, expectedRequest)
     }
 
     func testReviewsWithDefaultParametersReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.reviews(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
     }
 
     func testReviewsReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.reviews(forTVSeries: tvSeriesID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
     }
 
     func testReviewsWithPageReturnsReviews() async throws {
@@ -93,66 +93,60 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedResult = ReviewPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: page)
 
         let result = try await service.reviews(forTVSeries: tvSeriesID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.reviews(tvSeriesID: tvSeriesID, page: page).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
     }
 
     func testImagesReturnsImages() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesImagesRequest(id: tvSeriesID, languageCode: localeProvider.languageCode)
 
         let result = try await service.images(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeriesEndpoint.images(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesImagesRequest, expectedRequest)
     }
 
     func testVideosReturnsVideos() async throws {
         let expectedResult = VideoCollection.mock()
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesVideosRequest(id: tvSeriesID, languageCode: localeProvider.languageCode)
 
         let result = try await service.videos(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeriesEndpoint.videos(tvSeriesID: tvSeriesID, languageCode: localeProvider.languageCode).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesVideosRequest, expectedRequest)
     }
 
     func testRecommendationsWithDefaultParametersReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.recommendations(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
     }
 
     func testRecommendationsReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.recommendations(forTVSeries: tvSeriesID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
     }
 
     func testRecommendationsWithPageReturnsTVSeries() async throws {
@@ -160,39 +154,36 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page)
 
         let result = try await service.recommendations(forTVSeries: tvSeriesID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeriesEndpoint.recommendations(tvSeriesID: tvSeriesID, page: page).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
     }
 
     func testSimilarWithDefaultParametersReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.similar(toTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
     }
 
     func testSimilarReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: nil)
 
         let result = try await service.similar(toTVSeries: tvSeriesID, page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
     }
 
     func testSimilarWithPageReturnsTVSeries() async throws {
@@ -200,71 +191,71 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: page)
 
         let result = try await service.similar(toTVSeries: tvSeriesID, page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.similar(tvSeriesID: tvSeriesID, page: page).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
     }
 
     func testPopularWithDefaultParametersReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularTVSeriesRequest(page: nil)
 
         let result = try await service.popular()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular().path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)
     }
 
     func testPopularReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularTVSeriesRequest(page: nil)
 
         let result = try await service.popular(page: nil)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular().path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)
     }
 
     func testPopularWithPageReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularTVSeriesRequest(page: page)
 
         let result = try await service.popular(page: page)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.popular(page: page).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)
     }
 
     func testWatchReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let tvSeriesID = 1
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
         let result = try await service.watchProviders(forTVSeries: tvSeriesID)
 
         let regionCode = try XCTUnwrap(localeProvider.regionCode)
         XCTAssertEqual(result, expectedResult.results[regionCode])
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.watch(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchProvidersRequest, expectedRequest)
     }
 
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = TVSeriesExternalLinksCollection.lockeAndKey
         let tvSeriesID = 86423
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesExternalLinksRequest(id: tvSeriesID)
 
         let result = try await service.externalLinks(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, TVSeriesEndpoint.externalIDs(tvSeriesID: tvSeriesID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesExternalLinksRequest, expectedRequest)
     }
 
 }
