@@ -59,11 +59,11 @@ public final class TVSeasonService {
     /// - Returns: A season of the matching TV series.
     ///
     public func details(forSeason seasonNumber: Int, inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeason {
+        let request = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+
         let season: TVSeason
         do {
-            season = try await apiClient.get(
-                endpoint: TVSeasonsEndpoint.details(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber)
-            )
+            season = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -89,15 +89,15 @@ public final class TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID
     ) async throws -> TVSeasonImageCollection {
         let languageCode = localeProvider.languageCode
+        let request = TVSeasonImagesRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: languageCode
+        )
+
         let imageCollection: TVSeasonImageCollection
         do {
-            imageCollection = try await apiClient.get(
-                endpoint: TVSeasonsEndpoint.images(
-                    tvSeriesID: tvSeriesID,
-                    seasonNumber: seasonNumber,
-                    languageCode: languageCode
-                )
-            )
+            imageCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -123,15 +123,15 @@ public final class TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID
     ) async throws -> VideoCollection {
         let languageCode = localeProvider.languageCode
+        let request = TVSeasonVideosRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: languageCode
+        )
+
         let videoCollection: VideoCollection
         do {
-            videoCollection = try await apiClient.get(
-                endpoint: TVSeasonsEndpoint.videos(
-                    tvSeriesID: tvSeriesID,
-                    seasonNumber: seasonNumber,
-                    languageCode: languageCode
-                )
-            )
+            videoCollection = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

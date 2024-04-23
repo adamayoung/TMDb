@@ -45,15 +45,12 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
 
         let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeasonsEndpoint.details(tvSeriesID: tvSeriesID, seasonNumber: seasonNumber).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonRequest, expectedRequest)
     }
 
     func testImagesReturnsImages() async throws {
@@ -61,19 +58,16 @@ final class TVSeasonServiceTests: XCTestCase {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeasonImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonImagesRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: localeProvider.languageCode
+        )
 
         let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeasonsEndpoint.images(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                languageCode: localeProvider.languageCode
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonImagesRequest, expectedRequest)
     }
 
     func testVideosReturnsVideos() async throws {
@@ -81,19 +75,16 @@ final class TVSeasonServiceTests: XCTestCase {
         let tvSeriesID = Int.randomID
         let expectedResult = VideoCollection.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonVideosRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languageCode: localeProvider.languageCode
+        )
 
         let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            TVSeasonsEndpoint.videos(
-                tvSeriesID: tvSeriesID,
-                seasonNumber: seasonNumber,
-                languageCode: localeProvider.languageCode
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonVideosRequest, expectedRequest)
     }
 
 }

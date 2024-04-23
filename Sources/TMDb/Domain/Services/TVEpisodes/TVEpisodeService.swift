@@ -137,7 +137,7 @@ public final class TVEpisodeService {
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: localeProvider.languageCode
+            languageCode: languageCode
         )
 
         let videoCollection: VideoCollection
