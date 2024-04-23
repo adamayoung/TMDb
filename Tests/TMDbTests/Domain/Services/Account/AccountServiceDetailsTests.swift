@@ -43,12 +43,12 @@ final class AccountServiceDetails: XCTestCase {
     func testDetailsReturnsAccountDetails() async throws {
         let expectedResult = AccountDetails.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = AccountRequest(sessionID: session.sessionID)
 
         let result = try await service.details(session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, AccountEndpoint.details(sessionID: session.sessionID).path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? AccountRequest, expectedRequest)
     }
 
     func testDetailsWhenErrorThrowsError() async throws {

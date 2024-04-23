@@ -49,15 +49,17 @@ extension AccountFavouriteServiceTests {
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteMoviesRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteMovies(accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteMovies(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
     }
 
     func testFavouriteMoviesWhenFetchingWithSortedByReturnsMoviesList() async throws {
@@ -66,15 +68,17 @@ extension AccountFavouriteServiceTests {
         let sortedBy = FavouriteSort.createdAt()
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteMoviesRequest(
+            sortedBy: sortedBy,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteMovies(sortedBy: sortedBy, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteMovies(sortedBy: sortedBy, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
     }
 
     func testFavouriteMoviesWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
@@ -84,6 +88,12 @@ extension AccountFavouriteServiceTests {
         let page = 2
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteMoviesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteMovies(
             sortedBy: sortedBy,
@@ -93,16 +103,7 @@ extension AccountFavouriteServiceTests {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteMovies(
-                sortedBy: sortedBy,
-                page: page,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
     }
 
     func testFavouriteMoviesWhenFetchingByPageReturnsMoviesList() async throws {
@@ -111,15 +112,17 @@ extension AccountFavouriteServiceTests {
         let page = 2
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteMoviesRequest(
+            sortedBy: nil,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteMovies(page: page, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteMovies(page: page, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
     }
 
     func testFavouriteMoviesWhenErrorThrowsError() async throws {
@@ -143,18 +146,19 @@ extension AccountFavouriteServiceTests {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
-        let expectedAddFavourite = AddFavouriteRequestBody(showType: .movie, showID: movieID, isFavourite: true)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddFavouriteRequest(
+            showType: .movie,
+            showID: movieID,
+            isFavourite: true,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
     }
 
     func testAddFavouriteMovieWhenErrorsThrowsError() async throws {
@@ -179,18 +183,19 @@ extension AccountFavouriteServiceTests {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
-        let expectedAddFavourite = AddFavouriteRequestBody(showType: .movie, showID: movieID, isFavourite: false)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddFavouriteRequest(
+            showType: .movie,
+            showID: movieID,
+            isFavourite: false,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
     }
 
     func testRemoveFavouriteMovieWhenErrorsThrowsError() async throws {
@@ -220,15 +225,17 @@ extension AccountFavouriteServiceTests {
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteTVSeriesRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteTVSeries(accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteTVSeries(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
     }
 
     func testFavouriteTVSeriesWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
@@ -237,19 +244,17 @@ extension AccountFavouriteServiceTests {
         let sortedBy = FavouriteSort.createdAt()
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteTVSeriesRequest(
+            sortedBy: sortedBy,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteTVSeries(sortedBy: sortedBy, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteTVSeries(
-                sortedBy: sortedBy,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
     }
 
     func testFavouriteTVSeriesWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
@@ -259,6 +264,12 @@ extension AccountFavouriteServiceTests {
         let page = 2
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteTVSeriesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteTVSeries(
             sortedBy: sortedBy,
@@ -268,16 +279,7 @@ extension AccountFavouriteServiceTests {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteTVSeries(
-                sortedBy: sortedBy,
-                page: page,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
     }
 
     func testFavouriteTVSeriesWhenFetchingByPageReturnsTVSeriesList() async throws {
@@ -286,15 +288,17 @@ extension AccountFavouriteServiceTests {
         let page = 2
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteTVSeriesRequest(
+            sortedBy: nil,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteTVSeries(page: page, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.favouriteTVSeries(page: page, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
     }
 
     func testFavouriteTVSeriesWhenErrorThrowsError() async throws {
@@ -318,18 +322,19 @@ extension AccountFavouriteServiceTests {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
-        let expectedAddFavourite = AddFavouriteRequestBody(showType: .tvSeries, showID: tvSeriesID, isFavourite: true)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddFavouriteRequest(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isFavourite: true,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.addFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
     }
 
     func testAddFavouriteTVSeriesWhenErrorsThrowsError() async throws {
@@ -354,18 +359,19 @@ extension AccountFavouriteServiceTests {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
-        let expectedAddFavourite = AddFavouriteRequestBody(showType: .tvSeries, showID: tvSeriesID, isFavourite: false)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddFavouriteRequest(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isFavourite: false,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.removeFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddFavouriteRequestBody, expectedAddFavourite)
+        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
     }
 
     func testRemoveFavouriteTVSeriesWhenErrorsThrowsError() async throws {

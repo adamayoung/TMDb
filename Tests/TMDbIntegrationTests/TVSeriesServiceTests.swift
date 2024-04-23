@@ -82,7 +82,7 @@ final class TVSeriesServiceTests: XCTestCase {
     }
 
     func testRecommendations() async throws {
-        let tvSeriesID = 76479
+        let tvSeriesID = 549
 
         let tvSeriesList = try await tvSeriesService.recommendations(forTVSeries: tvSeriesID)
 

@@ -1,5 +1,5 @@
 //
-//  AddToWatchlistRequestBody.swift
+//  AccountRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,20 +19,23 @@
 
 import Foundation
 
-struct AddToWatchlistRequestBody: Encodable, Equatable {
+final class AccountRequest: DecodableAPIRequest<AccountDetails> {
 
-    let showType: ShowType
-    let showID: Show.ID
-    let isInWatchlist: Bool
+    init(sessionID: String) {
+        let path = "/account"
+        let queryItems = APIRequestQueryItems(sessionID: sessionID)
+
+        super.init(path: path, queryItems: queryItems)
+    }
 
 }
 
-extension AddToWatchlistRequestBody {
+private extension APIRequestQueryItems {
 
-    private enum CodingKeys: String, CodingKey {
-        case showType = "mediaType"
-        case showID = "mediaId"
-        case isInWatchlist = "watchlist"
+    init(sessionID: String) {
+        self.init()
+
+        self[.sessionID] = sessionID
     }
 
 }

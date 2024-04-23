@@ -45,7 +45,7 @@ public final class AccountService {
     }
 
     ///
-    /// Returns the TMDb user's account details..
+    /// Returns the TMDb user's account details.
     ///
     /// - Parameter session: The user's TMDb session.
     ///
@@ -54,9 +54,11 @@ public final class AccountService {
     /// - Returns: The user's account details.
     ///
     public func details(session: Session) async throws -> AccountDetails {
+        let request = AccountRequest(sessionID: session.sessionID)
+
         let accountDetails: AccountDetails
         do {
-            accountDetails = try await apiClient.get(endpoint: AccountEndpoint.details(sessionID: session.sessionID))
+            accountDetails = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -83,16 +85,16 @@ public final class AccountService {
         accountID: Int,
         session: Session
     ) async throws -> MoviePageableList {
+        let request = FavouriteMoviesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         let movieList: MoviePageableList
         do {
-            movieList = try await apiClient.get(
-                endpoint: AccountEndpoint.favouriteMovies(
-                    sortedBy: sortedBy,
-                    page: page,
-                    accountID: accountID,
-                    sessionID: session.sessionID
-                )
-            )
+            movieList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -119,16 +121,16 @@ public final class AccountService {
         accountID: Int,
         session: Session
     ) async throws -> TVSeriesPageableList {
+        let request = FavouriteTVSeriesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: AccountEndpoint.favouriteTVSeries(
-                    sortedBy: sortedBy,
-                    page: page,
-                    accountID: accountID,
-                    sessionID: session.sessionID
-                )
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -235,16 +237,16 @@ public final class AccountService {
         accountID: Int,
         session: Session
     ) async throws -> MoviePageableList {
+        let request = MovieWatchlistRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         let movieList: MoviePageableList
         do {
-            movieList = try await apiClient.get(
-                endpoint: AccountEndpoint.movieWatchlist(
-                    sortedBy: sortedBy,
-                    page: page,
-                    accountID: accountID,
-                    sessionID: session.sessionID
-                )
-            )
+            movieList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -271,16 +273,16 @@ public final class AccountService {
         accountID: Int,
         session: Session
     ) async throws -> TVSeriesPageableList {
+        let request = TVSeriesWatchlistRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         let tvSeriesList: TVSeriesPageableList
         do {
-            tvSeriesList = try await apiClient.get(
-                endpoint: AccountEndpoint.tvSeriesWatchlist(
-                    sortedBy: sortedBy,
-                    page: page,
-                    accountID: accountID,
-                    sessionID: session.sessionID
-                )
-            )
+            tvSeriesList = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -379,12 +381,16 @@ extension AccountService {
         accountID: Int,
         session: Session
     ) async throws {
-        let body = AddFavouriteRequestBody(showType: showType, showID: showID, isFavourite: isFavourite)
+        let request = AddFavouriteRequest(
+            showType: showType,
+            showID: showID,
+            isFavourite: isFavourite,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         do {
-            _ = try await apiClient.post(
-                endpoint: AccountEndpoint.addFavourite(accountID: accountID, sessionID: session.sessionID),
-                body: body
-            ) as SuccessResult
+            _ = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -397,12 +403,16 @@ extension AccountService {
         accountID: Int,
         session: Session
     ) async throws {
-        let body = AddToWatchlistRequestBody(showType: showType, showID: showID, isInWatchlist: isInWatchlist)
+        let request = AddToWatchlistRequest(
+            showType: showType,
+            showID: showID,
+            isInWatchlist: isInWatchlist,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
         do {
-            _ = try await apiClient.post(
-                endpoint: AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID),
-                body: body
-            ) as SuccessResult
+            _ = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }

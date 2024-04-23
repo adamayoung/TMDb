@@ -110,7 +110,16 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
             }
         }
 
-        let httpRequest = HTTPRequest(url: url, headers: headers, body: data)
+        let method: HTTPRequest.Method = switch request.method {
+        case .get:
+            .get
+        case .post:
+            .post
+        case .delete:
+            .delete
+        }
+
+        let httpRequest = HTTPRequest(url: url, method: method, headers: headers, body: data)
         let httpResponse: HTTPResponse
 
         do {

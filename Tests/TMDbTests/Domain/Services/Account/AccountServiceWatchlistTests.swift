@@ -49,15 +49,17 @@ extension AccountServiceWatchlistTests {
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchlistRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.movieWatchlist(accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.movieWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
     }
 
     func testMoviesWatchlistWhenFetchingWithSortedByReturnsMoviesList() async throws {
@@ -66,15 +68,17 @@ extension AccountServiceWatchlistTests {
         let sortedBy = WatchlistSort.createdAt()
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchlistRequest(
+            sortedBy: sortedBy,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.movieWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.movieWatchlist(sortedBy: sortedBy, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
     }
 
     func testMoviesWatchlistWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
@@ -84,6 +88,12 @@ extension AccountServiceWatchlistTests {
         let page = 2
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchlistRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.movieWatchlist(
             sortedBy: sortedBy,
@@ -93,16 +103,7 @@ extension AccountServiceWatchlistTests {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.movieWatchlist(
-                sortedBy: sortedBy,
-                page: page,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
     }
 
     func testMoviesWatchlistWhenFetchingByPageReturnsMoviesList() async throws {
@@ -111,15 +112,17 @@ extension AccountServiceWatchlistTests {
         let page = 2
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchlistRequest(
+            sortedBy: nil,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.movieWatchlist(page: page, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.movieWatchlist(page: page, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
     }
 
     func testMoviesWatchlistWhenErrorThrowsError() async throws {
@@ -143,18 +146,19 @@ extension AccountServiceWatchlistTests {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
-        let expectedAddToWatchlist = AddToWatchlistRequestBody(showType: .movie, showID: movieID, isInWatchlist: true)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddToWatchlistRequest(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: true,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.addToWatchlist(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
     }
 
     func testAddMovieToWatchlistWhenErrorsThrowsError() async throws {
@@ -179,18 +183,19 @@ extension AccountServiceWatchlistTests {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
-        let expectedAddToWatchlist = AddToWatchlistRequestBody(showType: .movie, showID: movieID, isInWatchlist: false)
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddToWatchlistRequest(
+            showType: .movie,
+            showID: movieID,
+            isInWatchlist: false,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.removeFromWatchlist(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
     }
 
     func testRemoveFavouriteTVSeriesWhenErrorsThrowsError() async throws {
@@ -220,15 +225,17 @@ extension AccountServiceWatchlistTests {
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchlistRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.tvSeriesWatchlist(accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.tvSeriesWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
     }
 
     func testTVSeriesWatchlistWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
@@ -237,19 +244,17 @@ extension AccountServiceWatchlistTests {
         let sortedBy = WatchlistSort.createdAt()
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchlistRequest(
+            sortedBy: sortedBy,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.tvSeriesWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.tvSeriesWatchlist(
-                sortedBy: sortedBy,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
     }
 
     func testTVSeriesWatchlistWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
@@ -259,6 +264,12 @@ extension AccountServiceWatchlistTests {
         let page = 2
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchlistRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.tvSeriesWatchlist(
             sortedBy: sortedBy,
@@ -268,16 +279,7 @@ extension AccountServiceWatchlistTests {
         )
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.tvSeriesWatchlist(
-                sortedBy: sortedBy,
-                page: page,
-                accountID: accountID,
-                sessionID: session.sessionID
-            ).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
     }
 
     func testTVSeriesWatchlistWhenFetchingByPageReturnsTVSeriesList() async throws {
@@ -286,15 +288,17 @@ extension AccountServiceWatchlistTests {
         let page = 2
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchlistRequest(
+            sortedBy: nil,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.tvSeriesWatchlist(page: page, accountID: accountID, session: session)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.tvSeriesWatchlist(page: page, accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .get)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
     }
 
     func testFavouriteTVSeriesWhenErrorThrowsError() async throws {
@@ -318,22 +322,19 @@ extension AccountServiceWatchlistTests {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
-        let expectedAddToWatchlist = AddToWatchlistRequestBody(
-            showType: .tvSeries,
-            showID: tvSeriesID,
-            isInWatchlist: true
-        )
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddToWatchlistRequest(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: true,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
     }
 
     func testAddTVSeriesToWatchlistWhenErrorsThrowsError() async throws {
@@ -358,22 +359,19 @@ extension AccountServiceWatchlistTests {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
-        let expectedAddToWatchlist = AddToWatchlistRequestBody(
-            showType: .tvSeries,
-            showID: tvSeriesID,
-            isInWatchlist: false
-        )
         let responseResult = SuccessResult(success: true)
         apiClient.addResponse(.success(responseResult))
+        let expectedRequest = AddToWatchlistRequest(
+            showType: .tvSeries,
+            showID: tvSeriesID,
+            isInWatchlist: false,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(
-            apiClient.lastRequestURL,
-            AccountEndpoint.addToWatchlist(accountID: accountID, sessionID: session.sessionID).path
-        )
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? AddToWatchlistRequestBody, expectedAddToWatchlist)
+        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
     }
 
     func testRemoveTVSeriesFromWatchlistWhenErrorsThrowsError() async throws {
