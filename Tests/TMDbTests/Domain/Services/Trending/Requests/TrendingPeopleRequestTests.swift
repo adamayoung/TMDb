@@ -64,10 +64,4 @@ final class TrendingPeopleRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = TrendingPeopleRequest(timeWindow: .day, page: nil)
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

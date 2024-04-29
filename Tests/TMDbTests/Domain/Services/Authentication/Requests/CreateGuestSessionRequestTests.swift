@@ -54,8 +54,4 @@ final class CreateGuestSessionRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        XCTAssertTrue(request.serialiser is TMDbAuthJSONSerialiser)
-    }
-
 }

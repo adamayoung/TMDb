@@ -58,10 +58,4 @@ final class WatchProvidersForTVSeriesRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = WatchProvidersForTVSeriesRequest(regionCode: nil)
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

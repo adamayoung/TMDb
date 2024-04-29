@@ -23,9 +23,8 @@ final class ValidateKeyRequest: DecodableAPIRequest<SuccessResult> {
 
     init() {
         let path = "/authentication"
-        let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, serialiser: serialiser)
+        super.init(path: path)
     }
 
 }

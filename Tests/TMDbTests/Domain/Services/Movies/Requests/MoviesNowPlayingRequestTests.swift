@@ -58,10 +58,4 @@ final class MoviesNowPlayingRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = MoviesNowPlayingRequest()
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

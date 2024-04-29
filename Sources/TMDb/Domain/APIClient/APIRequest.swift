@@ -30,8 +30,5 @@ protocol APIRequest: Identifiable, Equatable {
     var method: APIRequestMethod { get }
     var headers: [String: String] { get }
     var body: Body? { get }
-    var serialiser: any Serialiser { get }
-
-    func bodyData() async throws -> Data?
 
 }

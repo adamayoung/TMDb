@@ -23,9 +23,8 @@ final class CreateRequestTokenRequest: DecodableAPIRequest<Token> {
 
     init() {
         let path = "/authentication/token/new"
-        let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, serialiser: serialiser)
+        super.init(path: path)
     }
 
 }

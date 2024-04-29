@@ -56,8 +56,4 @@ final class DeleteSessionRequestTests: XCTestCase {
         XCTAssertEqual(body.sessionID, "qwerty")
     }
 
-    func testSerialiserIsTMDbJSON() {
-        XCTAssertTrue(request.serialiser is TMDbAuthJSONSerialiser)
-    }
-
 }

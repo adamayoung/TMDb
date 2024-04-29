@@ -82,10 +82,4 @@ final class TVSeriesSearchRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = TVSeriesSearchRequest(query: "")
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

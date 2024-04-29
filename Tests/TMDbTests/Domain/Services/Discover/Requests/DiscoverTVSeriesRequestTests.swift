@@ -70,10 +70,4 @@ final class DiscoverTVSeriesRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = DiscoverTVSeriesRequest()
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

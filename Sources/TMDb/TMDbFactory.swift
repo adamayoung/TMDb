@@ -39,6 +39,7 @@ extension TMDbFactory {
         TMDbAPIClient(
             apiKey: configuration.apiKey,
             baseURL: tmdbAPIBaseURL,
+            serialiser: serialiser(),
             httpClient: configuration.httpClient,
             localeProvider: localeProvider()
         )
@@ -48,6 +49,7 @@ extension TMDbFactory {
         TMDbAPIClient(
             apiKey: configuration.apiKey,
             baseURL: .tmdbAPIBaseURL,
+            serialiser: authSerialiser(),
             httpClient: configuration.httpClient,
             localeProvider: localeProvider()
         )

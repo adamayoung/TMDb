@@ -56,8 +56,4 @@ final class CreateSessionRequestTests: XCTestCase {
         XCTAssertEqual(body.requestToken, "ABC123")
     }
 
-    func testSerialiserIsTMDbJSON() {
-        XCTAssertTrue(request.serialiser is TMDbAuthJSONSerialiser)
-    }
-
 }

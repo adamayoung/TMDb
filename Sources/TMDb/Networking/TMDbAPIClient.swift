@@ -23,17 +23,20 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
     private let apiKey: String
     private let baseURL: URL
+    private let serialiser: any Serialiser
     private let httpClient: any HTTPClient
     private let localeProvider: any LocaleProviding
 
     init(
         apiKey: String,
         baseURL: URL,
+        serialiser: some Serialiser,
         httpClient: some HTTPClient,
         localeProvider: some LocaleProviding
     ) {
         self.apiKey = apiKey
         self.baseURL = baseURL
+        self.serialiser = serialiser
         self.httpClient = httpClient
         self.localeProvider = localeProvider
     }
@@ -43,19 +46,25 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
             throw TMDbAPIError.invalidURL(request.path)
         }
 
-        var queryItems = request.queryItems
-
         let url = urlFromPath(path, queryItems: request.queryItems)
         var data: Data?
-        do {
-            data = try await request.bodyData()
-        } catch let error {
-            throw TMDbAPIError.encode(error)
+        if let body = request.body {
+            do {
+                data = try await serialiser.encode(body)
+            } catch let error {
+                throw TMDbAPIError.encode(error)
+            }
         }
 
         let method = Self.method(from: request.method)
 
-        let httpRequest = HTTPRequest(url: url, method: method, headers: request.headers, body: data)
+        var headers = request.headers
+        headers["Accept"] = serialiser.mimeType
+        if data != nil {
+            headers["Content-Type"] = serialiser.mimeType
+        }
+
+        let httpRequest = HTTPRequest(url: url, method: method, headers: headers, body: data)
 
         let httpResponse: HTTPResponse
         do {
@@ -64,7 +73,7 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
             throw TMDbAPIError.network(error)
         }
 
-        try await validate(response: httpResponse, with: request.serialiser)
+        try await validate(response: httpResponse, with: serialiser)
 
         guard let data = httpResponse.data else {
             throw TMDbAPIError.unknown
@@ -72,7 +81,7 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
         let response: Request.Response
         do {
-            response = try await request.serialiser.decode(Request.Response.self, from: data)
+            response = try await serialiser.decode(Request.Response.self, from: data)
         } catch let error {
             throw TMDbAPIError.decode(error)
         }

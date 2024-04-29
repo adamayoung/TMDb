@@ -23,9 +23,8 @@ final class CreateGuestSessionRequest: DecodableAPIRequest<GuestSession> {
 
     init() {
         let path = "/authentication/guest_session/new"
-        let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, serialiser: serialiser)
+        super.init(path: path)
     }
 
 }

@@ -135,16 +135,4 @@ final class AddFavouriteRequestTests: XCTestCase {
         XCTAssertFalse(body.isFavourite)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = AddFavouriteRequest(
-            showType: .movie,
-            showID: 1,
-            isFavourite: true,
-            accountID: 1,
-            sessionID: "abc"
-        )
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

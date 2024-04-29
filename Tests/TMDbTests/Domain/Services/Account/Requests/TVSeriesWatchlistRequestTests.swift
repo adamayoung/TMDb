@@ -83,10 +83,4 @@ final class TVSeriesWatchlistRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = TVSeriesWatchlistRequest(accountID: 1, sessionID: "abc")
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

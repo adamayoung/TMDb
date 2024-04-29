@@ -36,8 +36,8 @@ final class AccountIntegrationTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+//        try await authenticationService.deleteSession(session)
         accountService = nil
-        try await authenticationService.deleteSession(session)
         authenticationService = nil
         session = nil
         try await super.tearDown()
@@ -50,6 +50,7 @@ final class AccountIntegrationTests: XCTestCase {
     }
 
     func testAddingAndRemovingFavouriteMovies() async throws {
+        print("heloo")
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 

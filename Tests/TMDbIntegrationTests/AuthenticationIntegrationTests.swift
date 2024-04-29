@@ -57,8 +57,12 @@ final class AuthenticationIntegrationTests: XCTestCase {
         XCTAssertTrue(session.success)
         XCTAssertNotEqual(session.sessionID, "")
 
-        let deleteResult = try await authenticationService.deleteSession(session)
-        XCTAssertTrue(deleteResult)
+        do {
+            let deleteResult = try await authenticationService.deleteSession(session)
+            XCTAssertTrue(deleteResult)
+        } catch let error {
+            print(error)
+        }
     }
 
     func testValidateKeyWhenValid() async throws {

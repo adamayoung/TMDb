@@ -21,13 +21,12 @@ import Foundation
 
 class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest, CustomStringConvertible {
 
-    let id = UUID()
+    let id: UUID
     let path: String
     let queryItems: [String: String]
     let method: APIRequestMethod
     let headers: [String: String]
     let body: Body?
-    let serialiser: any Serialiser
 
     var description: String {
         var description = """
@@ -47,19 +46,14 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
     }
 
     init(
+        id: UUID = UUID(),
         path: String,
         queryItems: APIRequestQueryItems = [:],
         method: APIRequestMethod = .post,
         body: Body? = nil,
-        headers: [String: String] = [:],
-        serialiser: some Serialiser = TMDbJSONSerialiser()
+        headers: [String: String] = [:]
     ) {
-        var headers = headers
-        headers["Accept"] = serialiser.mimeType
-        if body != nil {
-            headers["Content-Type"] = serialiser.mimeType
-        }
-
+        self.id = id
         self.path = path
         let queryItems = queryItems.map { (key: APIRequestQueryItem.Name, value: any CustomStringConvertible) in
             (key.description, value.description)
@@ -68,15 +62,6 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         self.method = method
         self.body = body
         self.headers = headers
-        self.serialiser = serialiser
-    }
-
-    func bodyData() async throws -> Data? {
-        guard let body else {
-            return nil
-        }
-
-        return try await serialiser.encode(body)
     }
 
     static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>) -> Bool {

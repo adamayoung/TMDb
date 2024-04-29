@@ -135,16 +135,4 @@ final class AddToWatchlistRequestTests: XCTestCase {
         XCTAssertFalse(body.isInWatchlist)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = AddToWatchlistRequest(
-            showType: .movie,
-            showID: 1,
-            isInWatchlist: true,
-            accountID: 1,
-            sessionID: "abc"
-        )
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }

@@ -62,8 +62,4 @@ final class ValidateTokenWithLoginRequestTests: XCTestCase {
         XCTAssertEqual(body.requestToken, "abc123")
     }
 
-    func testSerialiserIsTMDbJSON() {
-        XCTAssertTrue(request.serialiser is TMDbAuthJSONSerialiser)
-    }
-
 }

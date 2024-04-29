@@ -24,9 +24,8 @@ final class CreateSessionRequest: CodableAPIRequest<CreateSessionRequest.Body, S
     init(requestToken: String) {
         let path = "/authentication/session/new"
         let body = CreateSessionRequest.Body(requestToken: requestToken)
-        let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, body: body, serialiser: serialiser)
+        super.init(path: path, body: body)
     }
 
 }

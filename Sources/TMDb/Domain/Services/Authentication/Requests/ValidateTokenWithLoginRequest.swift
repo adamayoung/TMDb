@@ -28,9 +28,8 @@ final class ValidateTokenWithLoginRequest: CodableAPIRequest<ValidateTokenWithLo
             password: password,
             requestToken: requestToken
         )
-        let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, body: body, serialiser: serialiser)
+        super.init(path: path, body: body)
     }
 
 }

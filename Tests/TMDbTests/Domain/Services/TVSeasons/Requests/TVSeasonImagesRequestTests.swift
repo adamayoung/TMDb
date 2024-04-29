@@ -59,10 +59,4 @@ final class TVSeasonImagesRequestTests: XCTestCase {
         XCTAssertNil(request.body)
     }
 
-    func testSerialiserIsTMDbJSON() {
-        let request = TVSeasonImagesRequest(seasonNumber: 2, tvSeriesID: 3)
-
-        XCTAssertTrue(request.serialiser is TMDbJSONSerialiser)
-    }
-
 }
