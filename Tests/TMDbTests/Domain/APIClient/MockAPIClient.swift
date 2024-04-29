@@ -30,23 +30,8 @@ final class MockAPIClient: APIClient {
         requests.last
     }
 
-    var lastRequestURL: URL? {
-        requestURLs.last
-    }
-
-    var lastRequestMethod: HTTPRequest.Method? {
-        requestMethods.last
-    }
-
-    var lastRequestBody: (any Encodable)? {
-        requestBodies.last ?? nil
-    }
-
     private var responses: [Result<Any, TMDbAPIError>] = []
     private var requestIndex = 0
-    private var requestURLs: [URL] = []
-    private var requestMethods: [HTTPRequest.Method] = []
-    private var requestBodies: [(any Encodable)?] = []
 
     init() {}
 
@@ -54,129 +39,17 @@ final class MockAPIClient: APIClient {
         responses.append(result)
     }
 
-    func requestURL(atRequestIndex index: Int) -> URL? {
-        guard requestURLs.indices.contains(index) else {
+    func request(atRequestIndex index: Int) -> (any APIRequest)? {
+        guard requests.indices.contains(index) else {
             return nil
         }
 
-        return requestURLs[index]
-    }
-
-    func requestMethod(atRequestIndex index: Int) -> HTTPRequest.Method? {
-        guard requestMethods.indices.contains(index) else {
-            return nil
-        }
-
-        return requestMethods[index]
-    }
-
-    func requestBody(atRequestIndex index: Int) -> (any Encodable)? {
-        guard requestURLs.indices.contains(index) else {
-            return nil
-        }
-
-        return requestBodies[index]
+        return requests[index]
     }
 
 }
 
 extension MockAPIClient {
-
-    func get<Response: Decodable>(path: URL) async throws -> Response {
-        defer {
-            requestIndex += 1
-        }
-
-        requestURLs.append(path)
-        requestMethods.append(.get)
-        requestBodies.append(nil)
-
-        if requestTime > 0 {
-            try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
-        }
-
-        guard responses.indices.contains(requestIndex) else {
-            preconditionFailure("No response set for request index \(requestIndex)")
-        }
-
-        let result = responses[requestIndex]
-
-        do {
-            guard let value = try result.get() as? Response else {
-                preconditionFailure("Can't cast response to type \(String(describing: Response.self))")
-            }
-
-            return value
-        } catch let error as TMDbAPIError {
-            throw error
-        } catch {
-            throw TMDbAPIError.unknown
-        }
-    }
-
-    func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
-        defer {
-            requestIndex += 1
-        }
-
-        requestURLs.append(path)
-        requestMethods.append(.post)
-        requestBodies.append(body)
-
-        if requestTime > 0 {
-            try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
-        }
-
-        guard responses.indices.contains(requestIndex) else {
-            preconditionFailure("No response set for request index \(requestIndex)")
-        }
-
-        let result = responses[requestIndex]
-
-        do {
-            guard let value = try result.get() as? Response else {
-                preconditionFailure("Can't cast response to type \(String(describing: Response.self))")
-            }
-
-            return value
-        } catch let error as TMDbAPIError {
-            throw error
-        } catch {
-            throw TMDbAPIError.unknown
-        }
-    }
-
-    func delete<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
-        defer {
-            requestIndex += 1
-        }
-
-        requestURLs.append(path)
-        requestMethods.append(.delete)
-        requestBodies.append(body)
-
-        if requestTime > 0 {
-            try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
-        }
-
-        guard responses.indices.contains(requestIndex) else {
-            preconditionFailure("No response set for request index \(requestIndex)")
-        }
-
-        let result = responses[requestIndex]
-
-        do {
-            guard let value = try result.get() as? Response else {
-                preconditionFailure("Can't cast response to type \(String(describing: Response.self))")
-            }
-
-            return value
-        } catch let error as TMDbAPIError {
-            throw error
-        } catch {
-            throw TMDbAPIError.unknown
-        }
-    }
 
     func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
         defer {
@@ -216,9 +89,6 @@ extension MockAPIClient {
         requests = []
         requestIndex = 0
         responses = []
-        requestURLs = []
-        requestMethods = []
-        requestBodies = []
     }
 
 }

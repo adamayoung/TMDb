@@ -61,5 +61,7 @@ extension APIRequestQueryItem.Name {
     static let year = APIRequestQueryItem.Name("year")
     static let firstAirDateYear = APIRequestQueryItem.Name("first_air_date_year")
     static let sessionID = APIRequestQueryItem.Name("session_id")
+    static let language = APIRequestQueryItem.Name("language")
+    static let apiKey = APIRequestQueryItem.Name("api_key")
 
 }

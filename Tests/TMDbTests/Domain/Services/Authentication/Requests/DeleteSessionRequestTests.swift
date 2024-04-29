@@ -1,5 +1,5 @@
 //
-//  ValidateTokenWithLoginRequestTests.swift
+//  DeleteSessionRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,17 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class ValidateTokenWithLoginRequestTests: XCTestCase {
+final class DeleteSessionRequestTests: XCTestCase {
 
-    var request: ValidateTokenWithLoginRequest!
+    var request: DeleteSessionRequest!
 
     override func setUp() {
         super.setUp()
-        request = ValidateTokenWithLoginRequest(
-            username: "user1",
-            password: "pass1",
-            requestToken: "abc123"
-        )
+        request = DeleteSessionRequest(sessionID: "qwerty")
     }
 
     override func tearDown() {
@@ -39,7 +35,7 @@ final class ValidateTokenWithLoginRequestTests: XCTestCase {
     }
 
     func testPath() {
-        XCTAssertEqual(request.path, "/authentication/token/validate_with_login")
+        XCTAssertEqual(request.path, "/authentication/session")
     }
 
     func testQueryItemsIsEmpty() {
@@ -47,7 +43,7 @@ final class ValidateTokenWithLoginRequestTests: XCTestCase {
     }
 
     func testMethodIsPost() {
-        XCTAssertEqual(request.method, .post)
+        XCTAssertEqual(request.method, .delete)
     }
 
     func testHeadersIsEmpty() {
@@ -57,9 +53,7 @@ final class ValidateTokenWithLoginRequestTests: XCTestCase {
     func testBodyWhenMovieAndAddingAsFavourite() throws {
         let body = try XCTUnwrap(request.body)
 
-        XCTAssertEqual(body.username, "user1")
-        XCTAssertEqual(body.password, "pass1")
-        XCTAssertEqual(body.requestToken, "abc123")
+        XCTAssertEqual(body.sessionID, "qwerty")
     }
 
     func testSerialiserIsTMDbJSON() {

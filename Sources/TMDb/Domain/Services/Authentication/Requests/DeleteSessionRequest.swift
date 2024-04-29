@@ -1,5 +1,5 @@
 //
-//  ValidateTokenWithLoginRequest.swift
+//  DeleteSessionRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,30 +19,32 @@
 
 import Foundation
 
-final class ValidateTokenWithLoginRequest: CodableAPIRequest<ValidateTokenWithLoginRequest.Body, Token> {
+final class DeleteSessionRequest: CodableAPIRequest<DeleteSessionRequest.Body, SuccessResult> {
 
-    init(username: String, password: String, requestToken: String) {
-        let path = "/authentication/token/validate_with_login"
-        let body = ValidateTokenWithLoginRequest.Body(
-            username: username,
-            password: password,
-            requestToken: requestToken
-        )
+    init(sessionID: String) {
+        let path = "/authentication/session"
+        let body = DeleteSessionRequest.Body(sessionID: sessionID)
         let serialiser = TMDbAuthJSONSerialiser()
 
-        super.init(path: path, body: body, serialiser: serialiser)
+        super.init(path: path, method: .delete, body: body, serialiser: serialiser)
     }
 
 }
 
-extension ValidateTokenWithLoginRequest {
+extension DeleteSessionRequest {
 
     struct Body: Encodable, Equatable {
 
-        let username: String
-        let password: String
-        let requestToken: String
+        let sessionID: String
 
+    }
+
+}
+
+extension DeleteSessionRequest.Body {
+
+    private enum CodingKeys: String, CodingKey {
+        case sessionID = "sessionId"
     }
 
 }

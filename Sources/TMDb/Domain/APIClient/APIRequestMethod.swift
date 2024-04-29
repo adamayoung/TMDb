@@ -19,10 +19,10 @@
 
 import Foundation
 
-enum APIRequestMethod: String, Sendable {
+enum APIRequestMethod: Sendable {
 
-    case get = "GET"
-    case post = "POST"
-    case delete = "DELETE"
+    case get
+    case post
+    case delete
 
 }

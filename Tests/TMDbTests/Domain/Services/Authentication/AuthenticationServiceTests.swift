@@ -121,16 +121,14 @@ final class AuthenticationServiceTests: XCTestCase {
 
     func testCreateSessionWithTokenReturnsSession() async throws {
         let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
-        let expectedRequestBody = CreateSessionRequestBody(requestToken: token.requestToken)
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CreateSessionRequest(requestToken: token.requestToken)
 
         let result = try await service.createSession(withToken: token)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.createSession.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .post)
-        XCTAssertEqual(apiClient.lastRequestBody as? CreateSessionRequestBody, expectedRequestBody)
+        XCTAssertEqual(apiClient.lastRequest as? CreateSessionRequest, expectedRequest)
     }
 
     func testCreateSessionWithTokenWhenErrorsThrowsError() async throws {
@@ -148,54 +146,47 @@ final class AuthenticationServiceTests: XCTestCase {
         XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testCreateSessionWithUsernameReturnsSession() async throws {
+    func testCreateSessionWithCredentialReturnsSession() async throws {
         let credential = Credential(username: "test", password: "pass123")
-
         let token = Token.mock()
-        apiClient.addResponse(.success(token))
+        let expectedResult = Session(success: true, sessionID: "987yxz")
 
-        let expectedCreateSessionWithLogin = CreateSessionWithLoginRequestBody(
+        apiClient.addResponse(.success(token))
+        apiClient.addResponse(.success(token))
+        apiClient.addResponse(.success(expectedResult))
+
+        let expectedCreateRequestTokenRequest = CreateRequestTokenRequest()
+        let expectedValidateTokenWithLoginRequest = ValidateTokenWithLoginRequest(
             username: credential.username,
             password: credential.password,
             requestToken: token.requestToken
         )
-        apiClient.addResponse(.success(token))
-
-        let expectedCreateSession = CreateSessionRequestBody(requestToken: token.requestToken)
-        let expectedResult = Session(success: true, sessionID: "987yxz")
-        apiClient.addResponse(.success(expectedResult))
+        let expectedCreateSessionRequest = CreateSessionRequest(requestToken: token.requestToken)
 
         let result = try await service.createSession(withCredential: credential)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 0), AuthenticationEndpoint.createRequestToken.path)
-        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 0), .get)
-        XCTAssertEqual(
-            apiClient.requestURL(atRequestIndex: 1),
-            AuthenticationEndpoint.validateRequestTokenWithLogin.path
-        )
-        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 1), .post)
-        XCTAssertEqual(
-            apiClient.requestBody(atRequestIndex: 1) as? CreateSessionWithLoginRequestBody,
-            expectedCreateSessionWithLogin
-        )
-        XCTAssertEqual(apiClient.requestURL(atRequestIndex: 2), AuthenticationEndpoint.createSession.path)
-        XCTAssertEqual(apiClient.requestMethod(atRequestIndex: 2), .post)
-        XCTAssertEqual(apiClient.requestBody(atRequestIndex: 2) as? CreateSessionRequestBody, expectedCreateSession)
+
+        let createTokenRequest = apiClient.request(atRequestIndex: 0) as? CreateRequestTokenRequest
+        XCTAssertEqual(createTokenRequest, expectedCreateRequestTokenRequest)
+
+        let validateTokenWithLoginRequest = apiClient.request(atRequestIndex: 1) as? ValidateTokenWithLoginRequest
+        XCTAssertEqual(validateTokenWithLoginRequest, expectedValidateTokenWithLoginRequest)
+
+        let createSessionRequest = apiClient.request(atRequestIndex: 2) as? CreateSessionRequest
+        XCTAssertEqual(createSessionRequest, expectedCreateSessionRequest)
     }
 
     func testDeleteSessionWhenSuccessfulReturnsTrue() async throws {
         let response = SuccessResult(success: true)
-        apiClient.addResponse(.success(response))
         let session = Session.mock()
-        let expectedDeleteSession = DeleteSessionRequestBody(sessionID: session.sessionID)
+        apiClient.addResponse(.success(response))
+        let expectedRequest = DeleteSessionRequest(sessionID: session.sessionID)
 
         let result = try await service.deleteSession(session)
 
         XCTAssertTrue(result)
-        XCTAssertEqual(apiClient.lastRequestURL, AuthenticationEndpoint.deleteSession.path)
-        XCTAssertEqual(apiClient.lastRequestMethod, .delete)
-        XCTAssertEqual(apiClient.lastRequestBody as? DeleteSessionRequestBody, expectedDeleteSession)
+        XCTAssertEqual(apiClient.lastRequest as? DeleteSessionRequest, expectedRequest)
     }
 
     func testDeleteSessionWhenNotSuccessfulReturnsFalse() async throws {
@@ -222,6 +213,36 @@ final class AuthenticationServiceTests: XCTestCase {
         let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
 
         XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testValidateKeyWhenSuccessfulReturnsTrue() async throws {
+        let response = SuccessResult(success: true)
+        apiClient.addResponse(.success(response))
+        let expectedRequest = ValidateKeyRequest()
+
+        let result = try await service.validateKey()
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(apiClient.lastRequest as? ValidateKeyRequest, expectedRequest)
+    }
+
+    func testValidateKeyWhenNotSuccessfulReturnsFalse() async throws {
+        let response = SuccessResult(success: false)
+        apiClient.addResponse(.success(response))
+        let expectedRequest = ValidateKeyRequest()
+
+        let result = try await service.validateKey()
+
+        XCTAssertFalse(result)
+        XCTAssertEqual(apiClient.lastRequest as? ValidateKeyRequest, expectedRequest)
+    }
+
+    func testValidateKeyWhenErrorsReturnsFalse() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        let result = try await service.validateKey()
+
+        XCTAssertFalse(result)
     }
 
 }

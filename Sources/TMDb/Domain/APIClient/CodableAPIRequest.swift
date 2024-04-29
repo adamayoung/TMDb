@@ -35,7 +35,7 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         \tid: \(id.uuidString)
         \tpath: \(path)
         \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
-        \tmethod: \(method.rawValue)
+        \tmethod: \(method)
         \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
         """
 
@@ -54,6 +54,12 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         headers: [String: String] = [:],
         serialiser: some Serialiser = TMDbJSONSerialiser()
     ) {
+        var headers = headers
+        headers["Accept"] = serialiser.mimeType
+        if body != nil {
+            headers["Content-Type"] = serialiser.mimeType
+        }
+
         self.path = path
         let queryItems = queryItems.map { (key: APIRequestQueryItem.Name, value: any CustomStringConvertible) in
             (key.description, value.description)
@@ -63,6 +69,14 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         self.body = body
         self.headers = headers
         self.serialiser = serialiser
+    }
+
+    func bodyData() async throws -> Data? {
+        guard let body else {
+            return nil
+        }
+
+        return try await serialiser.encode(body)
     }
 
     static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>) -> Bool {

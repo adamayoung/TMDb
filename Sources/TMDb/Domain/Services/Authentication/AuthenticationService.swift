@@ -134,11 +134,11 @@ public final class AuthenticationService {
     /// - Returns: A TMDb session.
     ///
     public func createSession(withToken token: Token) async throws -> Session {
-        let body = CreateSessionRequestBody(requestToken: token.requestToken)
+        let request = CreateSessionRequest(requestToken: token.requestToken)
 
         let session: Session
         do {
-            session = try await apiClient.post(endpoint: AuthenticationEndpoint.createSession, body: body)
+            session = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -188,11 +188,11 @@ public final class AuthenticationService {
     ///
     @discardableResult
     public func deleteSession(_ session: Session) async throws -> Bool {
-        let body = DeleteSessionRequestBody(sessionID: session.sessionID)
+        let request = DeleteSessionRequest(sessionID: session.sessionID)
 
         let result: SuccessResult
         do {
-            result = try await apiClient.delete(endpoint: AuthenticationEndpoint.deleteSession, body: body)
+            result = try await apiClient.perform(request)
         } catch let error {
             throw TMDbError(error: error)
         }
@@ -206,9 +206,11 @@ public final class AuthenticationService {
     /// - Returns: Whether or not the API key is valid.
     ///
     public func validateKey() async throws -> Bool {
+        let request = ValidateKeyRequest()
+
         let result: SuccessResult
         do {
-            result = try await apiClient.get(endpoint: AuthenticationEndpoint.validateKey)
+            result = try await apiClient.perform(request)
         } catch {
             return false
         }

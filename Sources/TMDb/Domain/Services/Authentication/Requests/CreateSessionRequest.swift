@@ -1,5 +1,5 @@
 //
-//  Endpoint.swift
+//  CreateSessionRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,8 +19,24 @@
 
 import Foundation
 
-protocol Endpoint {
+final class CreateSessionRequest: CodableAPIRequest<CreateSessionRequest.Body, Session> {
 
-    var path: URL { get }
+    init(requestToken: String) {
+        let path = "/authentication/session/new"
+        let body = CreateSessionRequest.Body(requestToken: requestToken)
+        let serialiser = TMDbAuthJSONSerialiser()
+
+        super.init(path: path, body: body, serialiser: serialiser)
+    }
+
+}
+
+extension CreateSessionRequest {
+
+    struct Body: Encodable, Equatable {
+
+        let requestToken: String
+
+    }
 
 }

@@ -1,5 +1,5 @@
 //
-//  DeleteSessionRequestBody.swift
+//  ValidateKeyRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,16 +19,13 @@
 
 import Foundation
 
-struct DeleteSessionRequestBody: Encodable, Equatable {
+final class ValidateKeyRequest: DecodableAPIRequest<SuccessResult> {
 
-    let sessionID: String
+    init() {
+        let path = "/authentication"
+        let serialiser = TMDbAuthJSONSerialiser()
 
-}
-
-extension DeleteSessionRequestBody {
-
-    private enum CodingKeys: String, CodingKey {
-        case sessionID = "sessionId"
+        super.init(path: path, serialiser: serialiser)
     }
 
 }

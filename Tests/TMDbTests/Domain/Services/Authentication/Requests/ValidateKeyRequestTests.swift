@@ -1,5 +1,5 @@
 //
-//  ValidateTokenWithLoginRequestTests.swift
+//  ValidateKeyRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,17 +20,13 @@
 @testable import TMDb
 import XCTest
 
-final class ValidateTokenWithLoginRequestTests: XCTestCase {
+final class ValidateKeyRequestTests: XCTestCase {
 
-    var request: ValidateTokenWithLoginRequest!
+    var request: ValidateKeyRequest!
 
     override func setUp() {
         super.setUp()
-        request = ValidateTokenWithLoginRequest(
-            username: "user1",
-            password: "pass1",
-            requestToken: "abc123"
-        )
+        request = ValidateKeyRequest()
     }
 
     override func tearDown() {
@@ -39,27 +35,23 @@ final class ValidateTokenWithLoginRequestTests: XCTestCase {
     }
 
     func testPath() {
-        XCTAssertEqual(request.path, "/authentication/token/validate_with_login")
+        XCTAssertEqual(request.path, "/authentication")
     }
 
-    func testQueryItemsIsEmpty() {
+    func testQueryItemsAreEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testMethodIsPost() {
-        XCTAssertEqual(request.method, .post)
+    func testMethodIsGet() {
+        XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
         XCTAssertTrue(request.headers.isEmpty)
     }
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
-        let body = try XCTUnwrap(request.body)
-
-        XCTAssertEqual(body.username, "user1")
-        XCTAssertEqual(body.password, "pass1")
-        XCTAssertEqual(body.requestToken, "abc123")
+    func testBodyIsNil() {
+        XCTAssertNil(request.body)
     }
 
     func testSerialiserIsTMDbJSON() {

@@ -1,5 +1,5 @@
 //
-//  CreateGuestSessionRequestTests.swift
+//  CreateRequestTokenRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
