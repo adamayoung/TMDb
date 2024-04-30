@@ -22,8 +22,6 @@ import XCTest
 
 final class MockAPIClient: APIClient {
 
-    var requestTime: UInt64 = 0
-
     private(set) var requests: [any APIRequest] = []
 
     var lastRequest: (any APIRequest)? {
@@ -57,10 +55,6 @@ extension MockAPIClient {
         }
 
         requests.append(request)
-
-        if requestTime > 0 {
-            try await Task.sleep(nanoseconds: requestTime * 1_000_000_000)
-        }
 
         guard responses.indices.contains(requestIndex) else {
             preconditionFailure("No response set for request index \(requestIndex)")

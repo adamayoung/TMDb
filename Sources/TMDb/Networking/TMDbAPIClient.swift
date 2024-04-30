@@ -42,29 +42,7 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
     }
 
     func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
-        guard let path = URL(string: request.path) else {
-            throw TMDbAPIError.invalidURL(request.path)
-        }
-
-        let url = urlFromPath(path, queryItems: request.queryItems)
-        var data: Data?
-        if let body = request.body {
-            do {
-                data = try await serialiser.encode(body)
-            } catch let error {
-                throw TMDbAPIError.encode(error)
-            }
-        }
-
-        let method = Self.method(from: request.method)
-
-        var headers = request.headers
-        headers["Accept"] = serialiser.mimeType
-        if data != nil {
-            headers["Content-Type"] = serialiser.mimeType
-        }
-
-        let httpRequest = HTTPRequest(url: url, method: method, headers: headers, body: data)
+        let httpRequest = try await buildHTTPRequest(from: request)
 
         let httpResponse: HTTPResponse
         do {
@@ -93,6 +71,38 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
 extension TMDbAPIClient {
 
+    private func buildHTTPRequest<Request: APIRequest>(from request: Request) async throws -> HTTPRequest {
+        guard let path = URL(string: request.path) else {
+            throw TMDbAPIError.invalidURL(request.path)
+        }
+
+        var queryItems = request.queryItems
+        queryItems["api_key"] = apiKey
+        if let languageCode = localeProvider.languageCode {
+            queryItems["language"] = languageCode
+        }
+
+        let url = urlFromPath(path, queryItems: queryItems)
+
+        let method = Self.method(from: request.method)
+
+        var headers = request.headers
+        headers["Accept"] = serialiser.mimeType
+
+        var data: Data?
+        if let body = request.body {
+            do {
+                data = try await serialiser.encode(body)
+                headers["Content-Type"] = serialiser.mimeType
+            } catch let error {
+                throw TMDbAPIError.encode(error)
+            }
+        }
+
+        return HTTPRequest(url: url, method: method, headers: headers, body: data)
+
+    }
+
     private func urlFromPath(
         _ path: URL,
         queryItems requestQueryItems: [String: String] = [:]
@@ -112,8 +122,6 @@ extension TMDbAPIClient {
         urlComponents.queryItems = queryItems
 
         return urlComponents.url!
-            .appendingAPIKey(apiKey)
-            .appendingLanguage(localeProvider.languageCode)
     }
 
     private static func method(from apiMethod: APIRequestMethod) -> HTTPRequest.Method {

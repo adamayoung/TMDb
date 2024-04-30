@@ -24,7 +24,6 @@ final class DeleteSessionRequest: CodableAPIRequest<DeleteSessionRequest.Body, S
     init(sessionID: String) {
         let path = "/authentication/session"
         let body = DeleteSessionRequest.Body(sessionID: sessionID)
-        let serialiser = TMDbAuthJSONSerialiser()
 
         super.init(path: path, method: .delete, body: body)
     }
