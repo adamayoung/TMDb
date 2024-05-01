@@ -23,9 +23,10 @@ import XCTest
 final class MoviesEndpointTests: XCTestCase {
 
     func testMovieDetailsEndpointReturnsURL() throws {
-        let expectedURL = try XCTUnwrap(URL(string: "/movie/1"))
+        let languageCode = "en"
+        let expectedURL = try XCTUnwrap(URL(string: "/movie/1?language=\(languageCode)"))
 
-        let url = MoviesEndpoint.details(movieID: 1).path
+        let url = MoviesEndpoint.details(movieID: 1, languageCode: languageCode).path
 
         XCTAssertEqual(url, expectedURL)
     }

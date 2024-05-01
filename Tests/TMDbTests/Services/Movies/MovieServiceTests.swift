@@ -44,12 +44,13 @@ final class MovieServiceTests: XCTestCase {
     func testDetailsReturnsMovie() async throws {
         let expectedResult = Movie.thorLoveAndThunder
         let movieID = expectedResult.id
+        let languageCode = localeProvider.languageCode
         apiClient.addResponse(.success(expectedResult))
 
-        let result = try await service.details(forMovie: movieID)
+        let result = try await service.details(forMovie: movieID, languageCode: languageCode)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.details(movieID: movieID).path)
+        XCTAssertEqual(apiClient.lastRequestURL, MoviesEndpoint.details(movieID: movieID, languageCode: localeProvider.languageCode).path)
         XCTAssertEqual(apiClient.lastRequestMethod, .get)
     }
 

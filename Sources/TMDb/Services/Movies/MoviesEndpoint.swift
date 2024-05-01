@@ -21,7 +21,7 @@ import Foundation
 
 enum MoviesEndpoint {
 
-    case details(movieID: Movie.ID)
+    case details(movieID: Movie.ID, languageCode: String?)
     case credits(movieID: Movie.ID)
     case reviews(movieID: Movie.ID, page: Int? = nil)
     case images(movieID: Movie.ID, languageCode: String?)
@@ -43,10 +43,10 @@ extension MoviesEndpoint: Endpoint {
 
     var path: URL {
         switch self {
-        case let .details(movieID):
+        case let .details(movieID, languageCode):
             Self.basePath
                 .appendingPathComponent(movieID)
-
+                .appendingLanguage(languageCode)
         case let .credits(movieID):
             Self.basePath
                 .appendingPathComponent(movieID)
