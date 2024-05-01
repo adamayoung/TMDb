@@ -96,6 +96,35 @@ public final class TVSeriesService {
     }
 
     ///
+    /// Returns the aggregate cast and crew of a TV series.
+    ///
+    /// This call differs from the main credits call in that it does not return
+    /// the newest season. Instead, it is a view of all the entire cast & crew
+    /// for all episodes belonging to a TV series.
+    ///
+    /// [TMDb API - TV Series: Aggregate Credits](https://developer.themoviedb.org/reference/tv-series-aggregate-credits)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Show credits for the matching TV series.
+    ///
+    public func aggregateCredits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowCredits {
+        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID)
+
+        let credits: ShowCredits
+        do {
+            credits = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return credits
+    }
+
+    ///
     /// Returns the user reviews for a TV series.
     ///
     /// [TMDb API - TV Series: Reviews](https://developer.themoviedb.org/reference/tv-series-reviews)
