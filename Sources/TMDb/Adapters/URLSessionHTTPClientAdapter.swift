@@ -31,22 +31,36 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
-        var urlRequest = URLRequest(url: request.url)
-        urlRequest.httpMethod = request.method.rawValue
-        urlRequest.httpBody = request.body
-        for header in request.headers {
-            urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
-        }
+        let urlRequest = Self.urlRequest(from: request)
 
         let data: Data
         let response: URLResponse
-
         do {
             (data, response) = try await perform(urlRequest)
         } catch let error {
             throw error
         }
 
+        let httpResponse = Self.httpResponse(from: data, response: response)
+        return httpResponse
+    }
+
+}
+
+extension URLSessionHTTPClientAdapter {
+
+    private static func urlRequest(from httpRequest: HTTPRequest) -> URLRequest {
+        var urlRequest = URLRequest(url: httpRequest.url)
+        urlRequest.httpMethod = httpRequest.method.rawValue
+        urlRequest.httpBody = httpRequest.body
+        for header in httpRequest.headers {
+            urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+
+        return urlRequest
+    }
+
+    private static func httpResponse(from data: Data, response: URLResponse) -> HTTPResponse {
         guard let httpURLResponse = response as? HTTPURLResponse else {
             return HTTPResponse(statusCode: -1, data: nil)
         }

@@ -23,93 +23,89 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
     private let apiKey: String
     private let baseURL: URL
-    private let httpClient: any HTTPClient
     private let serialiser: any Serialiser
+    private let httpClient: any HTTPClient
     private let localeProvider: any LocaleProviding
 
     init(
         apiKey: String,
         baseURL: URL,
-        httpClient: some HTTPClient,
         serialiser: some Serialiser,
+        httpClient: some HTTPClient,
         localeProvider: some LocaleProviding
     ) {
         self.apiKey = apiKey
         self.baseURL = baseURL
-        self.httpClient = httpClient
         self.serialiser = serialiser
+        self.httpClient = httpClient
         self.localeProvider = localeProvider
     }
 
-    func get<Response: Decodable>(path: URL) async throws -> Response {
-        let url = urlFromPath(path)
-        let headers = [
-            "Accept": "application/json"
-        ]
+    func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
+        let httpRequest = try await buildHTTPRequest(from: request)
 
-        let request = HTTPRequest(url: url, headers: headers)
-        let responseObject: Response = try await perform(request: request)
-
-        return responseObject
-    }
-
-    func post<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
-        let url = urlFromPath(path)
-        let headers = [
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        ]
-        let data: Data
+        let httpResponse: HTTPResponse
         do {
-            data = try await serialiser.encode(body)
+            httpResponse = try await httpClient.perform(request: httpRequest)
         } catch let error {
-            throw TMDbAPIError.encode(error)
+            throw TMDbAPIError.network(error)
         }
 
-        let request = HTTPRequest(url: url, method: .post, headers: headers, body: data)
-        let responseObject: Response = try await perform(request: request)
+        try await validate(response: httpResponse, with: serialiser)
 
-        return responseObject
-    }
-
-    func delete<Response: Decodable>(path: URL, body: some Encodable) async throws -> Response {
-        let url = urlFromPath(path)
-        let headers = [
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        ]
-        let data: Data
-        do {
-            data = try await serialiser.encode(body)
-        } catch let error {
-            throw TMDbAPIError.encode(error)
+        guard let data = httpResponse.data else {
+            throw TMDbAPIError.unknown
         }
 
-        let request = HTTPRequest(url: url, method: .delete, headers: headers, body: data)
-        let responseObject: Response = try await perform(request: request)
+        let response: Request.Response
+        do {
+            response = try await serialiser.decode(Request.Response.self, from: data)
+        } catch let error {
+            throw TMDbAPIError.decode(error)
+        }
 
-        return responseObject
+        return response
     }
 
 }
 
 extension TMDbAPIClient {
 
-    private func perform<Response: Decodable>(request: HTTPRequest) async throws -> Response {
-        let response: HTTPResponse
-
-        do {
-            response = try await httpClient.perform(request: request)
-        } catch let error {
-            throw TMDbAPIError.network(error)
+    private func buildHTTPRequest(from request: some APIRequest) async throws -> HTTPRequest {
+        guard let path = URL(string: request.path) else {
+            throw TMDbAPIError.invalidURL(request.path)
         }
 
-        let decodedResponse: Response = try await decodeResponse(response: response)
+        var queryItems = request.queryItems
+        queryItems["api_key"] = apiKey
+        if let languageCode = localeProvider.languageCode {
+            queryItems["language"] = languageCode
+        }
 
-        return decodedResponse
+        let url = urlFromPath(path, queryItems: queryItems)
+
+        let method = Self.method(from: request.method)
+
+        var headers = request.headers
+        headers["Accept"] = serialiser.mimeType
+
+        var data: Data?
+        if let body = request.body {
+            do {
+                data = try await serialiser.encode(body)
+                headers["Content-Type"] = serialiser.mimeType
+            } catch let error {
+                throw TMDbAPIError.encode(error)
+            }
+        }
+
+        return HTTPRequest(url: url, method: method, headers: headers, body: data)
     }
 
-    private func urlFromPath(_ path: URL) -> URL {
+    private func urlFromPath(
+        _ path: URL,
+        queryItems requestQueryItems: [String: String] = [:]
+    ) -> URL {
         guard var urlComponents = URLComponents(url: path, resolvingAgainstBaseURL: true) else {
             return path
         }
@@ -117,30 +113,30 @@ extension TMDbAPIClient {
         urlComponents.scheme = baseURL.scheme
         urlComponents.host = baseURL.host
         urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
+        var queryItems = urlComponents.queryItems ?? []
+        for requestQueryItem in requestQueryItems {
+            queryItems.append(URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value))
+        }
+
+        urlComponents.queryItems = queryItems
 
         return urlComponents.url!
-            .appendingAPIKey(apiKey)
-            .appendingLanguage(localeProvider.languageCode)
     }
 
-    private func decodeResponse<Response: Decodable>(response: HTTPResponse) async throws -> Response {
-        try await validate(response: response)
+    private static func method(from apiMethod: APIRequestMethod) -> HTTPRequest.Method {
+        switch apiMethod {
+        case .get:
+            .get
 
-        guard let data = response.data else {
-            throw TMDbAPIError.unknown
+        case .post:
+            .post
+
+        case .delete:
+            .delete
         }
-
-        let decodedResponse: Response
-        do {
-            decodedResponse = try await serialiser.decode(Response.self, from: data)
-        } catch let error {
-            throw TMDbAPIError.decode(error)
-        }
-
-        return decodedResponse
     }
 
-    private func validate(response: HTTPResponse) async throws {
+    private func validate(response: HTTPResponse, with serialiser: some Serialiser) async throws {
         let statusCode = response.statusCode
         if (200 ... 299).contains(statusCode) {
             return

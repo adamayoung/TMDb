@@ -28,25 +28,24 @@ final class TMDbAPIClientTests: XCTestCase {
     var apiClient: TMDbAPIClient!
     var apiKey: String!
     var baseURL: URL!
-    var httpClient: HTTPMockClient!
     var serialiser: TMDbJSONSerialiser!
+    var httpClient: HTTPMockClient!
     var localeProvider: LocaleMockProvider!
 
     override func setUp() async throws {
         try await super.setUp()
         apiKey = "abc123"
         baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
-
+        serialiser = TMDbJSONSerialiser()
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         httpClient = await HTTPMockClient()
-        serialiser = TMDbJSONSerialiser()
         localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(
             apiKey: apiKey,
             baseURL: baseURL,
-            httpClient: httpClient,
             serialiser: serialiser,
+            httpClient: httpClient,
             localeProvider: localeProvider
         )
     }
@@ -54,150 +53,81 @@ final class TMDbAPIClientTests: XCTestCase {
     override func tearDown() async throws {
         apiClient = nil
         localeProvider = nil
-        serialiser = nil
         httpClient = nil
+        serialiser = nil
         baseURL = nil
         apiKey = nil
         try await super.tearDown()
     }
 
     @MainActor
-    func testGetWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
-        httpClient.result = .success(HTTPResponse(statusCode: 401))
+    func testPerformWhenInvalidPathThrowsError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "")
+        httpClient.result = .success(HTTPResponse())
 
+        var error: TMDbAPIError?
         do {
-            _ = try await apiClient.get(path: URL(string: "/error")!) as String
-        } catch let error as TMDbAPIError {
-            switch error {
-            case .unauthorised:
-                XCTAssertTrue(true)
-                return
-            default:
-                break
-            }
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
         }
 
-        XCTFail("Expected unauthorised error to be thrown")
-    }
+        switch error {
+        case let .invalidURL(path):
+            XCTAssertEqual(path, "")
 
-    @MainActor
-    func testGetWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
-        httpClient.result = .success(HTTPResponse(statusCode: 404))
-
-        do {
-            _ = try await apiClient.get(path: URL(string: "/error")!) as String
-        } catch let error as TMDbAPIError {
-            switch error {
-            case .notFound:
-                XCTAssertTrue(true)
-                return
-            default:
-                break
-            }
+        default:
+            XCTFail("Unexpected error")
         }
-
-        XCTFail("Expected not found error to be thrown")
     }
 
     @MainActor
-    func testGetWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
-        let expectedStatusMessage = "The resource you requested could not be found."
-        let statusResponse = try Data(fromResource: "error-status-response", withExtension: "json")
-        httpClient.result = .success(HTTPResponse(statusCode: 404, data: statusResponse))
-
-        do {
-            _ = try await apiClient.get(path: URL(string: "/error")!) as String
-        } catch let error as TMDbAPIError {
-            switch error {
-            case let .notFound(message):
-                XCTAssertEqual(message, expectedStatusMessage)
-                return
-
-            default:
-                break
-            }
-        }
-
-        XCTFail("Expected unknown error to be thrown")
-    }
-
-    @MainActor
-    func testGetWhenResponseHasValidDataReturnsDecodedObject() async throws {
-        let expectedResult = MockObject()
-        httpClient.result = .success(HTTPResponse(data: expectedResult.data))
-
-        let result: MockObject = try await apiClient.get(path: URL(string: "/object")!)
-
-        XCTAssertEqual(result, expectedResult)
-    }
-
-    @MainActor
-    func testGetURLRequestAcceptHeaderSetToApplicationJSON() async throws {
+    func testPerformHasCorrectURL() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/path/endpoint"))
         httpClient.result = .success(HTTPResponse())
-        let expectedResult = "application/json"
 
-        _ = try? await apiClient.get(path: URL(string: "/object")!) as String
+        _ = try? await apiClient.perform(stubRequest)
 
-        let result = httpClient.lastRequest?.headers["Accept"]
+        let request = try XCTUnwrap(httpClient.lastRequest)
 
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertTrue(request.url.absoluteString.starts(with: expectedURL.absoluteString))
     }
 
     @MainActor
-    func testGetURLRequestHasCorrectURL() async throws {
+    func testPerformWhenGetMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .get)
         httpClient.result = .success(HTTPResponse())
-        let path = "/object"
-        let language = "en"
-        let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
-        let expectedResult = try XCTUnwrap(URL(string: urlString))
 
-        _ = try? await apiClient.get(path: URL(string: path)!) as String
+        _ = try? await apiClient.perform(stubRequest)
 
-        let result = httpClient.lastRequest?.url
+        let request = try XCTUnwrap(httpClient.lastRequest)
 
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(request.method, .get)
     }
 
     @MainActor
-    func testPostURLRequestAcceptHeaderSetToApplicationJSON() async throws {
+    func testPerformWhenPostMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .post)
         httpClient.result = .success(HTTPResponse())
-        let expectedResult = "application/json"
-        let pathURL = try XCTUnwrap(URL(string: "/object"))
 
-        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+        _ = try? await apiClient.perform(stubRequest)
 
-        let result = httpClient.lastRequest?.headers["Accept"]
+        let request = try XCTUnwrap(httpClient.lastRequest)
 
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(request.method, .post)
     }
 
     @MainActor
-    func testPostURLRequestContentTypeHeaderSetToApplicationJSON() async throws {
+    func testPerformWhenDeleteMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .delete)
         httpClient.result = .success(HTTPResponse())
-        let expectedResult = "application/json"
-        let pathURL = try XCTUnwrap(URL(string: "/object"))
 
-        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
+        _ = try? await apiClient.perform(stubRequest)
 
-        let result = httpClient.lastRequest?.headers["Content-Type"]
+        let request = try XCTUnwrap(httpClient.lastRequest)
 
-        XCTAssertEqual(result, expectedResult)
-    }
-
-    @MainActor
-    func testPostURLRequestHasCorrectURL() async throws {
-        httpClient.result = .success(HTTPResponse())
-        let path = "/object"
-        let pathURL = try XCTUnwrap(URL(string: path))
-        let language = "en"
-        let urlString = "\(baseURL.absoluteURL)\(path)?api_key=\(apiKey!)&language=\(language)"
-        let expectedResult = try XCTUnwrap(URL(string: urlString))
-
-        _ = try? await apiClient.post(path: pathURL, body: "adam") as String
-
-        let result = httpClient.lastRequest?.url
-
-        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(request.method, .delete)
     }
 
 }
