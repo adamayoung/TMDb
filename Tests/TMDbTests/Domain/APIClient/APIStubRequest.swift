@@ -20,7 +20,8 @@
 import Foundation
 @testable import TMDb
 
-final class APIStubRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest, Equatable {
+final class APIStubRequest<Body: Encodable & Equatable & Sendable, Response: Decodable>:
+    APIRequest, Equatable, Sendable {
 
     let id: UUID
     let path: String
@@ -47,11 +48,11 @@ final class APIStubRequest<Body: Encodable & Equatable, Response: Decodable>: AP
 
     static func == (lhs: APIStubRequest<Body, Response>, rhs: APIStubRequest<Body, Response>) -> Bool {
         lhs.id == rhs.id
-            && lhs.path == rhs.path
-            && lhs.queryItems == rhs.queryItems
-            && lhs.method == rhs.method
-            && lhs.headers == rhs.headers
-            && lhs.body == rhs.body
+        && lhs.path == rhs.path
+        && lhs.queryItems == rhs.queryItems
+        && lhs.method == rhs.method
+        && lhs.headers == rhs.headers
+        && lhs.body == rhs.body
     }
 
 }
