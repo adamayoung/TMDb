@@ -60,6 +60,76 @@ final class TMDbAPIClientTests: XCTestCase {
         try await super.tearDown()
     }
 
+    @MainActor
+    func testPerformWhenInvalidPathThrowsError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "")
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        switch error {
+        case let .invalidURL(path):
+            XCTAssertEqual(path, "")
+
+        default:
+            XCTFail("Unexpected error")
+        }
+    }
+
+    @MainActor
+    func testPerformHasCorrectURL() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/path/endpoint"))
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try XCTUnwrap(httpClient.lastRequest)
+
+        XCTAssertTrue(request.url.absoluteString.starts(with: expectedURL.absoluteString))
+    }
+
+    @MainActor
+    func testPerformWhenGetMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .get)
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try XCTUnwrap(httpClient.lastRequest)
+
+        XCTAssertEqual(request.method, .get)
+    }
+
+    @MainActor
+    func testPerformWhenPostMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .post)
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try XCTUnwrap(httpClient.lastRequest)
+
+        XCTAssertEqual(request.method, .post)
+    }
+
+    @MainActor
+    func testPerformWhenDeleteMethod() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .delete)
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try XCTUnwrap(httpClient.lastRequest)
+
+        XCTAssertEqual(request.method, .delete)
+    }
+
 }
 
 extension TMDbAPIClientTests {

@@ -71,7 +71,7 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
 
 extension TMDbAPIClient {
 
-    private func buildHTTPRequest<Request: APIRequest>(from request: Request) async throws -> HTTPRequest {
+    private func buildHTTPRequest(from request: some APIRequest) async throws -> HTTPRequest {
         guard let path = URL(string: request.path) else {
             throw TMDbAPIError.invalidURL(request.path)
         }
@@ -100,7 +100,6 @@ extension TMDbAPIClient {
         }
 
         return HTTPRequest(url: url, method: method, headers: headers, body: data)
-
     }
 
     private func urlFromPath(
@@ -127,13 +126,13 @@ extension TMDbAPIClient {
     private static func method(from apiMethod: APIRequestMethod) -> HTTPRequest.Method {
         switch apiMethod {
         case .get:
-            return .get
+            .get
 
         case .post:
-            return .post
+            .post
 
         case .delete:
-            return .delete
+            .delete
         }
     }
 
