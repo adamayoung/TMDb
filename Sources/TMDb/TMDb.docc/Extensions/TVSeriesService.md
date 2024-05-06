@@ -13,6 +13,7 @@
 ### Credits
 
 - ``credits(forTVSeries:)``
+- ``aggregateCredits(forTVSeries:)``
 
 ### Reviews
 

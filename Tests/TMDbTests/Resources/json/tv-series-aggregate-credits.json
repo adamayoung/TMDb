@@ -1,0 +1,121 @@
+{
+    "cast": [
+        {
+            "adult": false,
+            "gender": 2,
+            "id": 11824,
+            "known_for_department": "Acting",
+            "name": "Tom Welling",
+            "original_name": "Tom Welling",
+            "popularity": 35.505,
+            "profile_path": "/iLyXgCimAWNHSjkTXb7e5KgcMWh.jpg",
+            "roles": [
+                {
+                    "credit_id": "5257751c760ee36aaa50e171",
+                    "character": "Clark Kent",
+                    "episode_count": 216
+                }
+            ],
+            "total_episode_count": 216,
+            "order": 0
+        },
+        {
+            "adult": false,
+            "gender": 1,
+            "id": 60253,
+            "known_for_department": "Acting",
+            "name": "Allison Mack",
+            "original_name": "Allison Mack",
+            "popularity": 19.689,
+            "profile_path": "/roawhm5chQexp1nP69rslFsp8ns.jpg",
+            "roles": [
+                {
+                    "credit_id": "5257751c760ee36aaa50e299",
+                    "character": "Chloe Sullivan",
+                    "episode_count": 195
+                }
+            ],
+            "total_episode_count": 195,
+            "order": 4
+        },
+        {
+            "adult": false,
+            "gender": 1,
+            "id": 55751,
+            "known_for_department": "Acting",
+            "name": "Kristin Kreuk",
+            "original_name": "Kristin Kreuk",
+            "popularity": 37.889,
+            "profile_path": "/vFA9YTXdgQ5VCkPzbdQfBC4tQrG.jpg",
+            "roles": [
+                {
+                    "credit_id": "5257751c760ee36aaa50e205",
+                    "character": "Lana Lang",
+                    "episode_count": 157
+                }
+            ],
+            "total_episode_count": 157,
+            "order": 1
+        },
+        {
+            "adult": false,
+            "gender": 2,
+            "id": 19975,
+            "known_for_department": "Acting",
+            "name": "Michael Rosenbaum",
+            "original_name": "Michael Rosenbaum",
+            "popularity": 38.373,
+            "profile_path": "/9a1wACjRIAg1cbTEsL5WrzPwnFi.jpg",
+            "roles": [
+                {
+                    "credit_id": "5257751c760ee36aaa50e24f",
+                    "character": "Lex Luthor",
+                    "episode_count": 153
+                }
+            ],
+            "total_episode_count": 153,
+            "order": 2
+        }
+    ],
+    "crew": [
+        {
+            "adult": false,
+            "gender": 0,
+            "id": 1856851,
+            "known_for_department": "Production",
+            "name": "Lance King",
+            "original_name": "Lance King",
+            "popularity": 1.646,
+            "profile_path": null,
+            "jobs": [
+                {
+                    "credit_id": "5ff88c4b383df2003c330070",
+                    "job": "Production Design",
+                    "episode_count": 1
+                }
+            ],
+            "department": "Art",
+            "total_episode_count": 1
+        },
+        {
+            "adult": false,
+            "gender": 2,
+            "id": 203444,
+            "known_for_department": "Directing",
+            "name": "Glen Winter",
+            "original_name": "Glen Winter",
+            "popularity": 18.95,
+            "profile_path": null,
+            "jobs": [
+                {
+                    "credit_id": "60b4763afd140b007ab37b1d",
+                    "job": "Director of Photography",
+                    "episode_count": 17
+                }
+            ],
+            "department": "Camera",
+            "total_episode_count": 17
+        }
+    ],
+    "id": 4604
+}

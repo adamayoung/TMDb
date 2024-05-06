@@ -67,6 +67,11 @@ For the TMDb API documentation, see
 - ``TVSeriesService``
 - ``TVSeries``
 - ``ShowCredits``
+- ``TVSeriesAggregateCredits``
+- ``AggregrateCastMember``
+- ``AggregrateCrewMember``
+- ``CastRole``
+- ``CrewJob``
 - ``ReviewPageableList``
 - ``Review``
 - ``ImageCollection``

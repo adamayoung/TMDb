@@ -53,6 +53,15 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertFalse(credits.crew.isEmpty)
     }
 
+    func testAggregateCredits() async throws {
+        let tvSeriesID = 4604
+
+        let credits = try await tvSeriesService.aggregateCredits(forTVSeries: tvSeriesID)
+
+        XCTAssertFalse(credits.cast.isEmpty)
+        XCTAssertFalse(credits.crew.isEmpty)
+    }
+
     func testReviews() async throws {
         let tvSeriesID = 76479
 

@@ -1,0 +1,19 @@
+{
+    "adult": false,
+    "gender": 0,
+    "id": 1856851,
+    "known_for_department": "Production",
+    "name": "Lance King",
+    "original_name": "Lance King",
+    "popularity": 1.646,
+    "profile_path": null,
+    "jobs": [
+        {
+            "credit_id": "5ff88c4b383df2003c330070",
+            "job": "Production Design",
+            "episode_count": 1
+        }
+    ],
+    "department": "Art",
+    "total_episode_count": 1
+}
