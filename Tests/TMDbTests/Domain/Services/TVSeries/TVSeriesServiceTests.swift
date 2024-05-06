@@ -65,7 +65,7 @@ final class TVSeriesServiceTests: XCTestCase {
     }
 
     func testAggregateCreditsReturnsShowsCredits() async throws {
-        let expectedResult = ShowCredits.mock()
+        let expectedResult = TVSeriesAggregateCredits(id: 1, cast: [], crew: [])
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesAggregateCreditsRequest(id: tvSeriesID)

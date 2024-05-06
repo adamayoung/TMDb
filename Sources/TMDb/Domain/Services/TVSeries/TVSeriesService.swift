@@ -111,10 +111,10 @@ public final class TVSeriesService {
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func aggregateCredits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowCredits {
+    public func aggregateCredits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesAggregateCredits {
         let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID)
 
-        let credits: ShowCredits
+        let credits: TVSeriesAggregateCredits
         do {
             credits = try await apiClient.perform(request)
         } catch let error {

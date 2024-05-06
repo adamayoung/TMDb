@@ -1,5 +1,5 @@
 //
-//  TVSeriesAggregateCreditsRequest.swift
+//  TVSeriesAggregateCreditsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,14 +17,20 @@
 //  limitations under the License.
 //
 
-import Foundation
+@testable import TMDb
+import XCTest
 
-final class TVSeriesAggregateCreditsRequest: DecodableAPIRequest<TVSeriesAggregateCredits> {
+final class TVSeriesAggregateCreditsTests: XCTestCase {
 
-    init(id: TVSeries.ID) {
-        let path = "/tv/\(id)/aggregate_credits"
+    func testDecodeReturnsTVSeriesAggregateCredits() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesAggregateCredits.self,
+            fromResource: "tv-series-aggregate-credits"
+        )
 
-        super.init(path: path)
+        XCTAssertEqual(result.id, 4604)
+        XCTAssertEqual(result.cast.count, 4)
+        XCTAssertEqual(result.crew.count, 2)
     }
 
 }
