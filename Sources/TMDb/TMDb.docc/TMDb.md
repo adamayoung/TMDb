@@ -70,6 +70,8 @@ For the TMDb API documentation, see
 - ``TVSeriesAggregateCredits``
 - ``AggregrateCastMember``
 - ``AggregrateCrewMember``
+- ``CastRole``
+- ``CrewJob``
 - ``ReviewPageableList``
 - ``Review``
 - ``ImageCollection``
