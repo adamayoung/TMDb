@@ -22,35 +22,39 @@ import XCTest
 
 final class CountriesConfigurationRequestTests: XCTestCase {
 
-    var request: CountriesConfigurationRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = CountriesConfigurationRequest()
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = CountriesConfigurationRequest()
+
         XCTAssertEqual(request.path, "/configuration/countries")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItems() {
+        let request = CountriesConfigurationRequest()
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = CountriesConfigurationRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
     func testMethodIsGet() {
+        let request = CountriesConfigurationRequest()
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = CountriesConfigurationRequest()
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = CountriesConfigurationRequest()
+
         XCTAssertNil(request.body)
     }
 

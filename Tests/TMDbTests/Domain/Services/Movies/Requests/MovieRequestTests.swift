@@ -22,35 +22,39 @@ import XCTest
 
 final class MovieRequestTests: XCTestCase {
 
-    var request: MovieRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = MovieRequest(id: 1)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = MovieRequest(id: 1)
+
         XCTAssertEqual(request.path, "/movie/1")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItems() {
+        let request = MovieRequest(id: 1)
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = MovieRequest(id: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
     func testMethodIsGet() {
+        let request = MovieRequest(id: 1)
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = MovieRequest(id: 1)
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = MovieRequest(id: 1)
+
         XCTAssertNil(request.body)
     }
 

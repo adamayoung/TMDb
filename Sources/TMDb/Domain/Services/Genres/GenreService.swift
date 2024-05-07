@@ -48,7 +48,7 @@ public final class GenreService {
     /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
     /// - Parameters:
-    ///    - language: ISO 639-1 language code. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -73,7 +73,7 @@ public final class GenreService {
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
     /// - Parameters:
-    ///    - language: ISO 639-1 language code. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

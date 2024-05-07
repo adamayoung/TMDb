@@ -70,12 +70,15 @@ public final class ConfigurationService {
     ///
     /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries used throughout TMDb,
     ///
-    public func countries() async throws -> [Country] {
-        let request = CountriesConfigurationRequest()
+    public func countries(language: String? = nil) async throws -> [Country] {
+        let request = CountriesConfigurationRequest(language: language)
 
         let countries: [Country]
         do {

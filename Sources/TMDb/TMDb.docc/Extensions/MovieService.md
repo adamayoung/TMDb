@@ -8,27 +8,28 @@
 
 ### Details
 
-- ``details(forMovie:)``
+- ``details(forMovie:language:)``
 
 ### Credits
 
-- ``credits(forMovie:)``
+- ``credits(forMovie:language:)``
 
 ### Reviews
 
-- ``reviews(forMovie:page:)``
+- ``reviews(forMovie:page:language:)``
 
 ### Media
 
-- ``images(forMovie:)``
-- ``videos(forMovie:)``
+- ``images(forMovie:language:)``
+- ``videos(forMovie:language:)``
 
 ### Lists and Releated Content
 
-- ``recommendations(forMovie:page:)``
-- ``similar(toMovie:page:)``
-- ``nowPlaying(page:)``
-- ``popular(page:)``
-- ``topRated(page:)``
-- ``upcoming(page:)``
+- ``recommendations(forMovie:page:language:)``
+- ``similar(toMovie:page:language:)``
+- ``nowPlaying(page:language:country:)``
+- ``popular(page:language:country:)``
+- ``topRated(page:language:country:)``
+- ``upcoming(page:language:country:)``
+- ``watchProviders(forMovie:country:)``
 - ``externalLinks(forMovie:)``

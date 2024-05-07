@@ -21,9 +21,9 @@ import Foundation
 
 final class MoviesNowPlayingRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(page: Int? = nil) {
+    init(page: Int? = nil, language: String? = nil, country: String? = nil) {
         let path = "/movie/now_playing"
-        let queryItems = APIRequestQueryItems(page: page)
+        let queryItems = APIRequestQueryItems(page: page, language: language, country: country)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,19 @@ final class MoviesNowPlayingRequest: DecodableAPIRequest<MoviePageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(page: Int?) {
+    init(page: Int?, language: String?, country: String?) {
         self.init()
 
         if let page {
             self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
+        }
+
+        if let country {
+            self[.region] = country
         }
     }
 

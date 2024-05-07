@@ -21,9 +21,9 @@ import Foundation
 
 final class MovieImagesRequest: DecodableAPIRequest<ImageCollection> {
 
-    init(id: Movie.ID, languageCode: String? = nil) {
+    init(id: Movie.ID, language: String? = nil) {
         let path = "/movie/\(id)/images"
-        let queryItems = APIRequestQueryItems(languageCode: languageCode)
+        let queryItems = APIRequestQueryItems(language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,11 @@ final class MovieImagesRequest: DecodableAPIRequest<ImageCollection> {
 
 private extension APIRequestQueryItems {
 
-    init(languageCode: String?) {
+    init(language: String?) {
         self.init()
 
-        if let languageCode {
-            self[.includeImageLanguage] = [languageCode, "null"].joined(separator: ",")
+        if let language {
+            self[.includeImageLanguage] = [language, "null"].joined(separator: ",")
         }
     }
 

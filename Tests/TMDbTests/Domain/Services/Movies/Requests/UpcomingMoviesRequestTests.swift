@@ -28,16 +28,36 @@ final class UpcomingMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/upcoming")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItems() {
         let request = UpcomingMoviesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
+    func testQueryItemsWithPage() {
         let request = UpcomingMoviesRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        XCTAssertEqual(request.queryItems["page"], "3")
+    }
+
+    func testQueryItemsWithLanguage() {
+        let request = UpcomingMoviesRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
+    func testQueryItemsWithCountry() {
+        let request = UpcomingMoviesRequest(country: "GB")
+
+        XCTAssertEqual(request.queryItems["region"], "GB")
+    }
+
+    func testQueryItemsWithPageAndLanguageAndCountry() {
+        let request = UpcomingMoviesRequest(page: 3, language: "en", country: "GB")
+
+        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems["region"], "GB")
     }
 
     func testMethodIsGet() {

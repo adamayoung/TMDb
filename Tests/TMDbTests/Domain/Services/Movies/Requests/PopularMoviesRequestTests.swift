@@ -28,16 +28,36 @@ final class PopularMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/popular")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItems() {
         let request = PopularMoviesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
+    func testQueryItemsWithPage() {
         let request = PopularMoviesRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        XCTAssertEqual(request.queryItems["page"], "3")
+    }
+
+    func testQueryItemsWithLanguage() {
+        let request = PopularMoviesRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
+    func testQueryItemsWithCountry() {
+        let request = PopularMoviesRequest(country: "GB")
+
+        XCTAssertEqual(request.queryItems["region"], "GB")
+    }
+
+    func testQueryItemsWithPageAndLanguageAndCountry() {
+        let request = PopularMoviesRequest(page: 3, language: "en", country: "GB")
+
+        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems["region"], "GB")
     }
 
     func testMethodIsGet() {

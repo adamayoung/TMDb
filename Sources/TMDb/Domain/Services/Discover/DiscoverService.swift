@@ -53,7 +53,7 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -92,7 +92,7 @@ public final class DiscoverService {
     /// - Parameters:
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

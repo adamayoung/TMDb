@@ -21,9 +21,9 @@ import Foundation
 
 final class SimilarMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(id: Movie.ID, page: Int? = nil) {
+    init(id: Movie.ID, page: Int? = nil, language: String? = nil) {
         let path = "/movie/\(id)/similar"
-        let queryItems = APIRequestQueryItems(page: page)
+        let queryItems = APIRequestQueryItems(page: page, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,15 @@ final class SimilarMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(page: Int?) {
+    init(page: Int?, language: String?) {
         self.init()
 
         if let page {
             self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 

@@ -51,7 +51,7 @@ final class ConfigurationServiceTests: XCTestCase {
     func testCountriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = CountriesConfigurationRequest()
+        let expectedRequest = CountriesConfigurationRequest(language: nil)
 
         let result = try await service.countries()
 

@@ -28,16 +28,29 @@ final class SimilarMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/1/similar")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItems() {
         let request = SimilarMoviesRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
+    func testQueryItemsWithPage() {
         let request = SimilarMoviesRequest(id: 1, page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        XCTAssertEqual(request.queryItems["page"], "3")
+    }
+
+    func testQueryItemsWithLanguage() {
+        let request = SimilarMoviesRequest(id: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
+    func testQueryItemsWithPageAndLanguage() {
+        let request = SimilarMoviesRequest(id: 1, page: 3, language: "en")
+
+        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems["language"], "en")
     }
 
     func testMethodIsGet() {
