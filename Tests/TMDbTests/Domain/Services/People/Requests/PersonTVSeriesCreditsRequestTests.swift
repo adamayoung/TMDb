@@ -22,35 +22,39 @@ import XCTest
 
 final class PersonTVSeriesCreditsRequestTests: XCTestCase {
 
-    var request: PersonTVSeriesCreditsRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = PersonTVSeriesCreditsRequest(id: 1)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = PersonTVSeriesCreditsRequest(id: 1)
+
         XCTAssertEqual(request.path, "/person/1/tv_credits")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItems() {
+        let request = PersonTVSeriesCreditsRequest(id: 1)
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = PersonTVSeriesCreditsRequest(id: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
     func testMethodIsGet() {
+        let request = PersonTVSeriesCreditsRequest(id: 1)
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = PersonTVSeriesCreditsRequest(id: 1)
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = PersonTVSeriesCreditsRequest(id: 1)
+
         XCTAssertNil(request.body)
     }
 

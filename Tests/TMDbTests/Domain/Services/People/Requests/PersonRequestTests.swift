@@ -22,35 +22,39 @@ import XCTest
 
 final class PersonRequestTests: XCTestCase {
 
-    var request: PersonRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = PersonRequest(id: 1)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = PersonRequest(id: 1)
+
         XCTAssertEqual(request.path, "/person/1")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItems() {
+        let request = PersonRequest(id: 1)
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = PersonRequest(id: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems["language"], "en")
+    }
+
     func testMethodIsGet() {
+        let request = PersonRequest(id: 1)
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = PersonRequest(id: 1)
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = PersonRequest(id: 1)
+
         XCTAssertNil(request.body)
     }
 

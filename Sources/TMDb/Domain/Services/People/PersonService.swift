@@ -51,13 +51,14 @@ public final class PersonService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person.
     ///
-    public func details(forPerson id: Person.ID) async throws -> Person {
-        let request = PersonRequest(id: id)
+    public func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+        let request = PersonRequest(id: id, language: language)
 
         let person: Person
         do {
@@ -76,13 +77,17 @@ public final class PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
-    public func combinedCredits(forPerson personID: Person.ID) async throws -> PersonCombinedCredits {
-        let request = PersonCombinedCreditsRequest(id: personID)
+    public func combinedCredits(
+        forPerson personID: Person.ID,
+        language: String? = nil
+    ) async throws -> PersonCombinedCredits {
+        let request = PersonCombinedCreditsRequest(id: personID, language: language)
 
         let credits: PersonCombinedCredits
         do {
@@ -101,13 +106,17 @@ public final class PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's movie credits.
     ///
-    public func movieCredits(forPerson personID: Person.ID) async throws -> PersonMovieCredits {
-        let request = PersonMovieCreditsRequest(id: personID)
+    public func movieCredits(
+        forPerson personID: Person.ID,
+        language: String? = nil
+    ) async throws -> PersonMovieCredits {
+        let request = PersonMovieCreditsRequest(id: personID, language: language)
 
         let credits: PersonMovieCredits
         do {
@@ -126,13 +135,17 @@ public final class PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's TV series credits.
     ///
-    public func tvSeriesCredits(forPerson personID: Person.ID) async throws -> PersonTVSeriesCredits {
-        let request = PersonTVSeriesCreditsRequest(id: personID)
+    public func tvSeriesCredits(
+        forPerson personID: Person.ID,
+        language: String? = nil
+    ) async throws -> PersonTVSeriesCredits {
+        let request = PersonTVSeriesCreditsRequest(id: personID, language: language)
 
         let credits: PersonTVSeriesCredits
         do {
@@ -170,34 +183,6 @@ public final class PersonService {
     }
 
     ///
-    /// Returns the list of known for shows for a person.
-    ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: The matching person's show credits.
-    ///
-    public func knownFor(forPerson personID: Person.ID) async throws -> [Show] {
-        let request = PersonCombinedCreditsRequest(id: personID)
-
-        let credits: PersonCombinedCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        let topShowsSubSequence = credits.allShows.lazy
-            .sorted { $0.popularity ?? 0 > $1.popularity ?? 0 }
-            .prefix(Self.knownForShowsMaxCount)
-        let shows = Array(topShowsSubSequence)
-
-        return shows
-    }
-
-    ///
     /// Returns the list of popular people.
     ///
     /// [TMDb API - People Lists: Popular](https://developer.themoviedb.org/reference/person-popular-list)
@@ -206,13 +191,14 @@ public final class PersonService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular people as a pageable list.
     ///
-    public func popular(page: Int? = nil) async throws -> PersonPageableList {
-        let request = PopularPeopleRequest(page: page)
+    public func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
+        let request = PopularPeopleRequest(page: page, language: language)
 
         let personList: PersonPageableList
         do {
