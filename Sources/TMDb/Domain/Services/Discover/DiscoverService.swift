@@ -53,7 +53,7 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
-    ///    - locale: The locale to use. Defaults to current.
+    ///    - language: ISO 639-1 language code to display results in.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -63,13 +63,13 @@ public final class DiscoverService {
         sortedBy: MovieSort? = nil,
         withPeople people: [Person.ID]? = nil,
         page: Int? = nil,
-        locale: Locale = .current
+        language: String? = nil
     ) async throws -> MoviePageableList {
         let request = DiscoverMoviesRequest(
             sortedBy: sortedBy,
             people: people,
             page: page,
-            locale: locale
+            language: language
         )
 
         let movieList: MoviePageableList
@@ -92,7 +92,7 @@ public final class DiscoverService {
     /// - Parameters:
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - locale: The locale to use. Defaults to current.
+    ///    - language: ISO 639-1 language code to display results in.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -101,9 +101,9 @@ public final class DiscoverService {
     public func tvSeries(
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
-        locale: Locale = .current
+        language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page, locale: locale)
+        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {

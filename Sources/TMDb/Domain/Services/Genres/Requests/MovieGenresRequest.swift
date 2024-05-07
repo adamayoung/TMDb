@@ -1,5 +1,5 @@
 //
-//  Locale+TMDb.swift
+//  MovieGenresRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,30 +19,25 @@
 
 import Foundation
 
-extension Locale {
+final class MovieGenresRequest: DecodableAPIRequest<GenreList> {
 
-    var tmdbLanguageCode: String? {
-        #if os(Linux) || os(Windows)
-            languageCode
-        #else
-            if #available(macOS 13.0, *) {
-                self.language.languageCode?.identifier
-            } else {
-                languageCode
-            }
-        #endif
+    init(language: String? = nil) {
+        let path = "/genre/movie/list"
+        let queryItems = APIRequestQueryItems(language: language)
+
+        super.init(path: path, queryItems: queryItems)
     }
 
-    var tmdbRegionCode: String? {
-        #if os(Linux) || os(Windows)
-            locale.regionCode
-        #else
-            if #available(macOS 13.0, *) {
-                self.region?.identifier
-            } else {
-                regionCode
-            }
-        #endif
+}
+
+private extension APIRequestQueryItems {
+
+    init(language: String?) {
+        self.init()
+
+        if let language {
+            self[.language] = language
+        }
     }
 
 }

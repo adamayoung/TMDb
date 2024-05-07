@@ -22,35 +22,39 @@ import XCTest
 
 final class MovieGenresRequestTests: XCTestCase {
 
-    var request: MovieGenresRequests!
-
-    override func setUp() {
-        super.setUp()
-        request = MovieGenresRequests()
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = MovieGenresRequest()
+
         XCTAssertEqual(request.path, "/genre/movie/list")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItems() {
+        let request = MovieGenresRequest()
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = MovieGenresRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
     func testMethodIsGet() {
+        let request = MovieGenresRequest()
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = MovieGenresRequest()
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = MovieGenresRequest()
+
         XCTAssertNil(request.body)
     }
 

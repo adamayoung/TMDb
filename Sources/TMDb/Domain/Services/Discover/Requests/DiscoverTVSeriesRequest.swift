@@ -21,13 +21,9 @@ import Foundation
 
 final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
-    init(
-        sortedBy: TVSeriesSort? = nil,
-        page: Int? = nil,
-        locale: Locale
-    ) {
+    init(sortedBy: TVSeriesSort? = nil, page: Int? = nil, language: String? = nil) {
         let path = "/discover/tv"
-        let queryItems = APIRequestQueryItems(sortedBy: sortedBy, page: page, locale: locale)
+        let queryItems = APIRequestQueryItems(sortedBy: sortedBy, page: page, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -36,11 +32,7 @@ final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(
-        sortedBy: TVSeriesSort?,
-        page: Int?,
-        locale: Locale
-    ) {
+    init(sortedBy: TVSeriesSort?, page: Int?, language: String?) {
         self.init()
 
         if let sortedBy {
@@ -51,7 +43,9 @@ private extension APIRequestQueryItems {
             self[.page] = page
         }
 
-        self[.language] = locale.tmdbLanguageCode
+        if let language {
+            self[.language] = language
+        }
     }
 
 }

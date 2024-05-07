@@ -22,62 +22,50 @@ import XCTest
 
 final class DiscoverMoviesRequestTests: XCTestCase {
 
-    var locale: Locale!
-
-    override func setUp() {
-        super.setUp()
-        locale = Locale(identifier: "en_GB")
-    }
-
-    override func tearDown() {
-        locale = nil
-        super.tearDown()
-    }
-
     func testPath() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest()
 
         XCTAssertEqual(request.path, "/discover/movie")
     }
 
     func testQueryItemsWithSortedBy() {
-        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false), locale: locale)
+        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
 
         XCTAssertEqual(request.queryItems["sort_by"], "original_title.asc")
     }
 
     func testQueryItemsWithPeople() {
-        let request = DiscoverMoviesRequest(people: [1, 2, 3], locale: locale)
+        let request = DiscoverMoviesRequest(people: [1, 2, 3])
 
         XCTAssertEqual(request.queryItems["with_people"], "1,2,3")
     }
 
     func testQueryItemsWithPage() {
-        let request = DiscoverMoviesRequest(page: 1, locale: locale)
+        let request = DiscoverMoviesRequest(page: 1)
 
         XCTAssertEqual(request.queryItems["page"], "1")
     }
 
     func testQueryItemsWithLanguage() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest(language: "en")
 
         XCTAssertEqual(request.queryItems["language"], "en")
     }
 
     func testMethodIsGet() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest()
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest()
 
         XCTAssertNil(request.body)
     }

@@ -22,56 +22,44 @@ import XCTest
 
 final class DiscoverTVSeriesRequestTests: XCTestCase {
 
-    var locale: Locale!
-
-    override func setUp() {
-        super.setUp()
-        locale = Locale(identifier: "en_GB")
-    }
-
-    override func tearDown() {
-        locale = nil
-        super.tearDown()
-    }
-
     func testPath() {
-        let request = DiscoverTVSeriesRequest(locale: locale)
+        let request = DiscoverTVSeriesRequest()
 
         XCTAssertEqual(request.path, "/discover/tv")
     }
 
     func testQueryItemsWithSortedBy() {
-        let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false), locale: locale)
+        let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false))
 
         XCTAssertEqual(request.queryItems["sort_by"], "first_air_date.asc")
     }
 
     func testQueryItemsWithPage() throws {
-        let request = DiscoverTVSeriesRequest(page: 1, locale: locale)
+        let request = DiscoverTVSeriesRequest(page: 1)
 
         XCTAssertEqual(request.queryItems["page"], "1")
     }
 
     func testQueryItemsWithLanguage() {
-        let request = DiscoverMoviesRequest(locale: locale)
+        let request = DiscoverMoviesRequest(language: "en")
 
         XCTAssertEqual(request.queryItems["language"], "en")
     }
 
     func testMethodIsGet() {
-        let request = DiscoverTVSeriesRequest(locale: locale)
+        let request = DiscoverTVSeriesRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = DiscoverTVSeriesRequest(locale: locale)
+        let request = DiscoverTVSeriesRequest()
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = DiscoverTVSeriesRequest(locale: locale)
+        let request = DiscoverTVSeriesRequest()
 
         XCTAssertNil(request.body)
     }

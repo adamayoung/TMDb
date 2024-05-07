@@ -27,7 +27,7 @@ final class LocaleProviderTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        locale = Locale(identifier: "en_GB")
+        locale = Locale(identifier: "en")
         provider = LocaleProvider(locale: locale)
     }
 

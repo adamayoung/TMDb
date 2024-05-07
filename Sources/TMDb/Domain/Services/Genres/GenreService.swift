@@ -47,12 +47,15 @@ public final class GenreService {
     ///
     /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
-    public func movieGenres() async throws -> [Genre] {
-        let request = MovieGenresRequests()
+    public func movieGenres(language: String? = nil) async throws -> [Genre] {
+        let request = MovieGenresRequest(language: language)
 
         let genreList: GenreList
         do {
@@ -69,12 +72,15 @@ public final class GenreService {
     ///
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
-    public func tvSeriesGenres() async throws -> [Genre] {
-        let request = TVSeriesGenresRequests()
+    public func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
+        let request = TVSeriesGenresRequest(language: language)
 
         let genreList: GenreList
         do {
