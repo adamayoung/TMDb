@@ -45,7 +45,27 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertFalse((season.episodes ?? []).isEmpty)
     }
 
+    func testAggregateCredits() async throws {
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let credits = try await tvSeasonService.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        XCTAssertEqual(credits.id, 3625)
+        XCTAssertFalse(credits.cast.isEmpty)
+        XCTAssertFalse(credits.crew.isEmpty)
+    }
+
     func testImages() async throws {
+        let seasonNumber = 1
+        let tvSeriesID = 1399
+
+        let imagesCollection = try await tvSeasonService.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        XCTAssertFalse(imagesCollection.posters.isEmpty)
+    }
+
+    func testVideos() async throws {
         let seasonNumber = 1
         let tvSeriesID = 1399
 

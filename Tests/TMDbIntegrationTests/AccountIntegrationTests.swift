@@ -50,7 +50,6 @@ final class AccountIntegrationTests: XCTestCase {
     }
 
     func testAddingAndRemovingFavouriteMovies() async throws {
-        print("heloo")
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 

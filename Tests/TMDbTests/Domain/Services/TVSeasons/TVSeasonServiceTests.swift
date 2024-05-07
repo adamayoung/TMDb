@@ -53,6 +53,19 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeasonRequest, expectedRequest)
     }
 
+    func testAggregateCreditsReturnsTVSeasonCredits() async throws {
+        let tvSeriesID = Int.randomID
+        let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
+        let seasonNumber = Int.randomID
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonAggregateCreditsRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+
+        let result = try await service.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonAggregateCreditsRequest, expectedRequest)
+    }
+
     func testImagesReturnsImages() async throws {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
