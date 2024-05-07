@@ -53,6 +53,7 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
+    ///    - locale: The locale to use.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
