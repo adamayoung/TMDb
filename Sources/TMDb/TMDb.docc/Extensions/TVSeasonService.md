@@ -10,6 +10,10 @@
 
 - ``details(forSeason:inTVSeries:)``
 
+### Credits
+
+- ``aggregateCredits(forSeason:inTVSeries:)``
+
 ### Media
 
 - ``images(forSeason:inTVSeries:)``
