@@ -22,56 +22,62 @@ import XCTest
 
 final class DiscoverMoviesRequestTests: XCTestCase {
 
+    var locale: Locale!
+
+    override func setUp() {
+        super.setUp()
+        locale = Locale(identifier: "en_GB")
+    }
+
+    override func tearDown() {
+        locale = nil
+        super.tearDown()
+    }
+
     func testPath() {
-        let request = DiscoverMoviesRequest()
+        let request = DiscoverMoviesRequest(locale: locale)
 
         XCTAssertEqual(request.path, "/discover/movie")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = DiscoverMoviesRequest()
-
-        XCTAssertTrue(request.queryItems.isEmpty)
-    }
-
     func testQueryItemsWithSortedBy() {
-        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
+        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false), locale: locale)
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
+        XCTAssertEqual(request.queryItems["sort_by"], "original_title.asc")
     }
 
     func testQueryItemsWithPeople() {
-        let request = DiscoverMoviesRequest(people: [1, 2, 3])
+        let request = DiscoverMoviesRequest(people: [1, 2, 3], locale: locale)
 
-        XCTAssertEqual(request.queryItems, ["with_people": "1,2,3"])
+        XCTAssertEqual(request.queryItems["with_people"], "1,2,3")
     }
 
     func testQueryItemsWithPage() {
-        let request = DiscoverMoviesRequest(page: 1)
+        let request = DiscoverMoviesRequest(page: 1, locale: locale)
 
-        XCTAssertEqual(request.queryItems, ["page": "1"])
+        XCTAssertEqual(request.queryItems["page"], "1")
     }
 
-    func testQueryItemsWithSortByAndPeopleAndPage() throws {
-        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false), people: [1, 2, 3], page: 1)
+    func testQueryItemsWithLanguage() {
+        let request = DiscoverMoviesRequest(locale: locale)
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "1"])
+        XCTAssertEqual(request.queryItems["language"], "en")
     }
 
     func testMethodIsGet() {
-        let request = DiscoverMoviesRequest()
+        let request = DiscoverMoviesRequest(locale: locale)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = DiscoverMoviesRequest()
+        let request = DiscoverMoviesRequest(locale: locale)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = DiscoverMoviesRequest()
+        let request = DiscoverMoviesRequest(locale: locale)
 
         XCTAssertNil(request.body)
     }

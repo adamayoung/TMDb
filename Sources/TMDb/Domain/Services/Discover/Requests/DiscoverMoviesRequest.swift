@@ -24,13 +24,15 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
     init(
         sortedBy: MovieSort? = nil,
         people: [Person.ID]? = nil,
-        page: Int? = nil
+        page: Int? = nil,
+        locale: Locale
     ) {
         let path = "/discover/movie"
         let queryItems = APIRequestQueryItems(
             sortedBy: sortedBy,
             people: people,
-            page: page
+            page: page,
+            locale: locale
         )
 
         super.init(path: path, queryItems: queryItems)
@@ -43,7 +45,8 @@ private extension APIRequestQueryItems {
     init(
         sortedBy: MovieSort?,
         people: [Person.ID]?,
-        page: Int?
+        page: Int?,
+        locale: Locale
     ) {
         self.init()
 
@@ -58,6 +61,8 @@ private extension APIRequestQueryItems {
         if let page {
             self[.page] = page
         }
+
+        self[.language] = locale.tmdbLanguageCode
     }
 
     private static func peopleQueryItemValue(for people: [Person.ID]) -> String {

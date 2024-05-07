@@ -24,14 +24,17 @@ final class DiscoverServiceTests: XCTestCase {
 
     var service: DiscoverService!
     var apiClient: MockAPIClient!
+    var locale: Locale!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
         service = DiscoverService(apiClient: apiClient)
+        locale = Locale(identifier: "en_GB")
     }
 
     override func tearDown() {
+        locale = nil
         service = nil
         apiClient = nil
         super.tearDown()
@@ -40,7 +43,7 @@ final class DiscoverServiceTests: XCTestCase {
     func testMoviesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: nil)
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: nil, locale: locale)
 
         let result = try await service.movies(sortedBy: nil, withPeople: nil, page: nil)
 
@@ -52,9 +55,9 @@ final class DiscoverServiceTests: XCTestCase {
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: nil, page: nil)
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: nil, page: nil, locale: locale)
 
-        let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil)
+        let result = try await service.movies(sortedBy: sortBy, withPeople: nil, page: nil, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
@@ -64,9 +67,9 @@ final class DiscoverServiceTests: XCTestCase {
         let people = [1, 2, 3, 4]
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: people, page: nil)
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: people, page: nil, locale: locale)
 
-        let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil)
+        let result = try await service.movies(sortedBy: nil, withPeople: people, page: nil, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
@@ -76,9 +79,9 @@ final class DiscoverServiceTests: XCTestCase {
         let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: page)
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: nil, people: nil, page: page, locale: locale)
 
-        let result = try await service.movies(sortedBy: nil, withPeople: nil, page: page)
+        let result = try await service.movies(sortedBy: nil, withPeople: nil, page: page, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
@@ -90,7 +93,7 @@ final class DiscoverServiceTests: XCTestCase {
         let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: people, page: page)
+        let expectedRequest = DiscoverMoviesRequest(sortedBy: sortBy, people: people, page: page, locale: locale)
 
         let result = try await service.movies(sortedBy: sortBy, withPeople: people, page: page)
 
@@ -101,9 +104,9 @@ final class DiscoverServiceTests: XCTestCase {
     func testTVSeriesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: nil)
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: nil, locale: locale)
 
-        let result = try await service.tvSeries(sortedBy: nil, page: nil)
+        let result = try await service.tvSeries(sortedBy: nil, page: nil, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
@@ -113,9 +116,9 @@ final class DiscoverServiceTests: XCTestCase {
         let sortBy = TVSeriesSort.firstAirDate(descending: false)
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: nil)
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: nil, locale: locale)
 
-        let result = try await service.tvSeries(sortedBy: sortBy, page: nil)
+        let result = try await service.tvSeries(sortedBy: sortBy, page: nil, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
@@ -125,9 +128,9 @@ final class DiscoverServiceTests: XCTestCase {
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: page)
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: page, locale: locale)
 
-        let result = try await service.tvSeries(sortedBy: nil, page: page)
+        let result = try await service.tvSeries(sortedBy: nil, page: page, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
@@ -138,9 +141,9 @@ final class DiscoverServiceTests: XCTestCase {
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: page)
+        let expectedRequest = DiscoverTVSeriesRequest(sortedBy: sortBy, page: page, locale: locale)
 
-        let result = try await service.tvSeries(sortedBy: sortBy, page: page)
+        let result = try await service.tvSeries(sortedBy: sortBy, page: page, locale: locale)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
