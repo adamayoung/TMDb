@@ -19,6 +19,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
