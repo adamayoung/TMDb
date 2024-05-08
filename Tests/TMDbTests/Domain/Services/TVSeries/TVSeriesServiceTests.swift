@@ -24,18 +24,15 @@ final class TVSeriesServiceTests: XCTestCase {
 
     var service: TVSeriesService!
     var apiClient: MockAPIClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        service = TVSeriesService(apiClient: apiClient, localeProvider: localeProvider)
+        service = TVSeriesService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient = nil
-        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -150,13 +147,13 @@ final class TVSeriesServiceTests: XCTestCase {
     func testWatchReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let tvSeriesID = 1
+        let country = "GB"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
-        let result = try await service.watchProviders(forTVSeries: tvSeriesID)
+        let result = try await service.watchProviders(forTVSeries: tvSeriesID, country: country)
 
-        let regionCode = try XCTUnwrap(localeProvider.regionCode)
-        XCTAssertEqual(result, expectedResult.results[regionCode])
+        XCTAssertEqual(result, expectedResult.results[country])
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchProvidersRequest, expectedRequest)
     }
 

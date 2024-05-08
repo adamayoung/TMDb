@@ -26,7 +26,6 @@ import Foundation
 public final class TVSeriesService {
 
     private let apiClient: any APIClient
-    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV series service object.
@@ -35,14 +34,12 @@ public final class TVSeriesService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration),
-            localeProvider: TMDbFactory.localeProvider()
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
-        self.localeProvider = localeProvider
     }
 
     ///
