@@ -8,24 +8,29 @@
 
 ### Details
 
-- ``details(forTVSeries:)``
+- ``details(forTVSeries:language:)``
 
 ### Credits
 
-- ``credits(forTVSeries:)``
-- ``aggregateCredits(forTVSeries:)``
+- ``credits(forTVSeries:language:)``
+- ``aggregateCredits(forTVSeries:language:)``
 
 ### Reviews
 
-- ``reviews(forTVSeries:page:)``
+- ``reviews(forTVSeries:page:language:)``
 
 ### Media
 
-- ``images(forTVSeries:)``
-- ``videos(forTVSeries:)``
+- ``images(forTVSeries:filter:)``
+- ``videos(forTVSeries:filter:)``
 
 ### Lists and Related Content
 
-- ``recommendations(forTVSeries:page:)``
-- ``similar(toTVSeries:page:)``
-- ``popular(page:)``
+- ``recommendations(forTVSeries:page:language:)``
+- ``similar(toTVSeries:page:language:)``
+- ``popular(page:language:)``
+
+### Other
+
+- ``watchProviders(forTVSeries:)``
+- ``externalLinks(forTVSeries:)``

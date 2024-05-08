@@ -52,13 +52,14 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching TV series.
     ///
-    public func details(forTVSeries id: TVSeries.ID) async throws -> TVSeries {
-        let request = TVSeriesRequest(id: id)
+    public func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
+        let request = TVSeriesRequest(id: id, language: language)
 
         let tvSeries: TVSeries
         do {
@@ -77,13 +78,14 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func credits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowCredits {
-        let request = TVSeriesCreditsRequest(id: tvSeriesID)
+    public func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws -> ShowCredits {
+        let request = TVSeriesCreditsRequest(id: tvSeriesID, language: language)
 
         let credits: ShowCredits
         do {
@@ -106,13 +108,17 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func aggregateCredits(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesAggregateCredits {
-        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID)
+    public func aggregateCredits(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeriesAggregateCredits {
+        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: language)
 
         let credits: TVSeriesAggregateCredits
         do {
@@ -134,13 +140,18 @@ public final class TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
-    public func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> ReviewPageableList {
-        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page)
+    public func reviews(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> ReviewPageableList {
+        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page, language: language)
 
         let reviewList: ReviewPageableList
         do {
@@ -159,14 +170,17 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of images for the matching TV series.
     ///
-    public func images(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider.languageCode
-        let request = TVSeriesImagesRequest(id: tvSeriesID, languageCode: languageCode)
+    public func images(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesImageFilter? = nil
+    ) async throws -> ImageCollection {
+        let request = TVSeriesImagesRequest(id: tvSeriesID, languages: filter?.languages)
 
         let imageCollection: ImageCollection
         do {
@@ -185,14 +199,17 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of videos for the matching TV series.
     ///
-    public func videos(forTVSeries tvSeriesID: TVSeries.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider.languageCode
-        let request = TVSeriesVideosRequest(id: tvSeriesID, languageCode: languageCode)
+    public func videos(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesVideoFilter? = nil
+    ) async throws -> VideoCollection {
+        let request = TVSeriesVideosRequest(id: tvSeriesID, languages: filter?.languages)
 
         let videoCollection: VideoCollection
         do {
@@ -214,6 +231,7 @@ public final class TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -221,9 +239,10 @@ public final class TVSeriesService {
     ///
     public func recommendations(
         forTVSeries tvSeriesID: TVSeries.ID,
-        page: Int? = nil
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page)
+        let request = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -247,13 +266,18 @@ public final class TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series for get similar TV series for.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar TV series for the matching TV series as a pageable list.
     ///
-    public func similar(toTVSeries tvSeriesID: TVSeries.ID, page: Int? = nil) async throws -> TVSeriesPageableList {
-        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page)
+    public func similar(
+        toTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -274,13 +298,14 @@ public final class TVSeriesService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular TV series as a pageable list.
     ///
-    public func popular(page: Int? = nil) async throws -> TVSeriesPageableList {
-        let request = PopularTVSeriesRequest(page: page)
+    public func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        let request = PopularTVSeriesRequest(page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -297,18 +322,20 @@ public final class TVSeriesService {
     ///
     /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
     ///
+    /// Data provided by [JustWatch](https://www.justwatch.com).
+    ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV series in current region.
     ///
-    public func watchProviders(forTVSeries tvSeriesID: TVSeries.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider.regionCode else {
-            return nil
-        }
-
+    public func watchProviders(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String = "US"
+    ) async throws -> ShowWatchProvider? {
         let request = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
         let result: ShowWatchProviderResult
@@ -318,7 +345,7 @@ public final class TVSeriesService {
             throw TMDbError(error: error)
         }
 
-        return result.results[regionCode]
+        return result.results[country]
     }
 
     ///

@@ -1,5 +1,5 @@
 //
-//  TVSeriesVideosRequest.swift
+//  TVSeriesImageFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,23 @@
 
 import Foundation
 
-final class TVSeriesVideosRequest: DecodableAPIRequest<VideoCollection> {
+///
+/// A filter for fetching TV series images.
+///
+public struct TVSeriesImageFilter {
 
-    init(id: TVSeries.ID, languages: [String]? = nil) {
-        let path = "/tv/\(id)/videos"
-        let queryItems = APIRequestQueryItems(languages: languages)
+    ///
+    /// A list of ISO 639-1 language codes to filter images by.
+    ///
+    public let languages: [String]?
 
-        super.init(path: path, queryItems: queryItems)
-    }
-
-}
-
-private extension APIRequestQueryItems {
-
-    init(languages: [String]?) {
-        self.init()
-
-        if let languages {
-            self[.includeVideoLanguage] = languages.joined(separator: ",")
-        }
+    ///
+    /// Creates a TV series image filter.
+    ///
+    /// - Parameter languages: A list of ISO 639-1 language codes to filter images by.
+    ///
+    public init(languages: [String]? = nil) {
+        self.languages = languages
     }
 
 }

@@ -136,14 +136,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
     ///
-    public func images(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ImageCollection {
-        let request = MovieImagesRequest(id: movieID, language: language)
+    public func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
+        let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
         let imageCollection: ImageCollection
         do {
@@ -162,14 +162,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
-    public func videos(forMovie movieID: Movie.ID, language: String? = nil) async throws -> VideoCollection {
-        let request = MovieVideosRequest(id: movieID, language: language)
+    public func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
+        let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 
         let videoCollection: VideoCollection
         do {
@@ -385,6 +385,8 @@ public final class MovieService {
     /// Returns watch providers for a movie
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
+    ///
+    /// Data provided by [JustWatch](https://www.justwatch.com).
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.

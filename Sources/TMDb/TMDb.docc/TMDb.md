@@ -37,6 +37,8 @@ For the TMDb API documentation, see
 
 > Important: This product uses the TMDb API but is not endorsed or certified by TMDb.
 
+> Important: Watch providers provided by [JustWatch](https://www.justwatch.com).
+
 ## Topics
 
 ### Getting Started
@@ -61,6 +63,8 @@ For the TMDb API documentation, see
 - ``VideoCollection``
 - ``MovieExternalLinksCollection``
 - ``MoviePageableList``
+- ``MovieImageFilter``
+- ``MovieVideoFilter``
 
 ### TV Series
 
@@ -77,6 +81,8 @@ For the TMDb API documentation, see
 - ``ImageCollection``
 - ``VideoCollection``
 - ``TVSeriesExternalLinksCollection``
+- ``TVSeriesImageFilter``
+- ``TVSeriesVideoFilter``
 
 ### TV Seasons
 

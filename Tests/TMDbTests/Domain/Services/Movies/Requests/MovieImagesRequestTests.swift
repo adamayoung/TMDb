@@ -35,9 +35,9 @@ final class MovieImagesRequestTests: XCTestCase {
     }
 
     func testQueryItemsWithLanguage() {
-        let request = MovieImagesRequest(id: 1, language: "en")
+        let request = MovieImagesRequest(id: 1, languages: ["en-GB", "fr"])
 
-        XCTAssertEqual(request.queryItems, ["include_image_language": "en,null"])
+        XCTAssertEqual(request.queryItems, ["include_image_language": "en,fr,null"])
     }
 
     func testMethodIsGet() {

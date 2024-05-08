@@ -1,5 +1,5 @@
 //
-//  TVSeriesAggregateCreditsRequestTests.swift
+//  TVSeriesRecommendationsRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,40 +20,52 @@
 @testable import TMDb
 import XCTest
 
-final class TVSeriesAggregateCreditsRequestTests: XCTestCase {
+final class TVSeriesRecommendationsRequestTests: XCTestCase {
 
     func testPath() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1)
+        let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/tv/1/aggregate_credits")
+        XCTAssertEqual(request.path, "/tv/1/recommendations")
     }
 
     func testQueryItemsIsEmpty() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1)
+        let request = TVSeriesRecommendationsRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithPage() {
+        let request = TVSeriesRecommendationsRequest(id: 1, page: 3)
+
+        XCTAssertEqual(request.queryItems, ["page": "3"])
+    }
+
     func testQueryItemsWithLanguage() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1, language: "en")
+        let request = TVSeriesRecommendationsRequest(id: 1, language: "en")
 
         XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
+    func testQueryItemsWithPageAndLanguage() {
+        let request = TVSeriesRecommendationsRequest(id: 1, page: 3, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
+    }
+
     func testMethodIsGet() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1)
+        let request = TVSeriesRecommendationsRequest(id: 1)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1)
+        let request = TVSeriesRecommendationsRequest(id: 1)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = TVSeriesAggregateCreditsRequest(id: 1)
+        let request = TVSeriesRecommendationsRequest(id: 1)
 
         XCTAssertNil(request.body)
     }

@@ -102,7 +102,7 @@ final class MovieServiceTests: XCTestCase {
         let expectedResult = ImageCollection.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieImagesRequest(id: movieID, language: nil)
+        let expectedRequest = MovieImagesRequest(id: movieID, languages: nil)
 
         let result = try await service.images(forMovie: movieID)
 
@@ -114,7 +114,7 @@ final class MovieServiceTests: XCTestCase {
         let expectedResult = VideoCollection.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieVideosRequest(id: movieID, language: nil)
+        let expectedRequest = MovieVideosRequest(id: movieID, languages: nil)
 
         let result = try await service.videos(forMovie: movieID)
 

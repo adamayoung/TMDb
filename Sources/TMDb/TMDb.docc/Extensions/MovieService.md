@@ -20,8 +20,8 @@
 
 ### Media
 
-- ``images(forMovie:language:)``
-- ``videos(forMovie:language:)``
+- ``images(forMovie:filter:)``
+- ``videos(forMovie:filter:)``
 
 ### Lists and Releated Content
 
@@ -31,5 +31,10 @@
 - ``popular(page:language:country:)``
 - ``topRated(page:language:country:)``
 - ``upcoming(page:language:country:)``
+- ``watchProviders(forMovie:country:)``
+- ``externalLinks(forMovie:)``
+
+### Other
+
 - ``watchProviders(forMovie:country:)``
 - ``externalLinks(forMovie:)``

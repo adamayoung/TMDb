@@ -8,12 +8,12 @@
 
 ### Movies
 
-- ``movies(inTimeWindow:page:)``
+- ``movies(inTimeWindow:page:language:)``
 
 ### TV Series
 
-- ``tvSeries(inTimeWindow:page:)``
+- ``tvSeries(inTimeWindow:page:language:)``
 
 ### People
 
-- ``people(inTimeWindow:page:)``
+- ``people(inTimeWindow:page:language:)``

@@ -21,9 +21,9 @@ import Foundation
 
 final class PopularTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
-    init(page: Int? = nil) {
+    init(page: Int? = nil, language: String? = nil) {
         let path = "/tv/popular"
-        let queryItems = APIRequestQueryItems(page: page)
+        let queryItems = APIRequestQueryItems(page: page, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,15 @@ final class PopularTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(page: Int?) {
+    init(page: Int?, language: String? = nil) {
         self.init()
 
         if let page {
             self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 
