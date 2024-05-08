@@ -28,7 +28,7 @@ final class MovieGenresRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/genre/movie/list")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = MovieGenresRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)

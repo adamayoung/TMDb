@@ -136,6 +136,10 @@ For the TMDb API documentation, see
 - ``TVSeries``
 - ``PersonPageableList``
 - ``Person``
+- ``AllMediaSearchFilter``
+- ``MovieSearchFilter``
+- ``TVSeriesSearchFilter``
+- ``PersonSearchFilter``
 
 ### Certifications
 

@@ -28,7 +28,7 @@ final class MovieReviewsRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/1/reviews")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         let request = MovieReviewsRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,20 +37,19 @@ final class MovieReviewsRequestTests: XCTestCase {
     func testQueryItemsWithPage() {
         let request = MovieReviewsRequest(id: 1, page: 3)
 
-        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems, ["page": "3"])
     }
 
     func testQueryItemsWithLanguage() {
         let request = MovieReviewsRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testQueryItemsWithPageAndLanguage() {
         let request = MovieReviewsRequest(id: 1, page: 3, language: "en")
 
-        XCTAssertEqual(request.queryItems["page"], "3")
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
     }
 
     func testMethodIsGet() {

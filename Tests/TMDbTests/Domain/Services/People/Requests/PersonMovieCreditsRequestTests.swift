@@ -28,7 +28,7 @@ final class PersonMovieCreditsRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/person/1/movie_credits")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = PersonMovieCreditsRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,7 +37,7 @@ final class PersonMovieCreditsRequestTests: XCTestCase {
     func testQueryItemsWithLanguage() {
         let request = PersonMovieCreditsRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testMethodIsGet() {

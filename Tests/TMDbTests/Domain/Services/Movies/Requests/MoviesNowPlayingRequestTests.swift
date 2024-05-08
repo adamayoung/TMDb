@@ -28,7 +28,7 @@ final class MoviesNowPlayingRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/now_playing")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = MoviesNowPlayingRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,27 +37,25 @@ final class MoviesNowPlayingRequestTests: XCTestCase {
     func testQueryItemsWithPage() {
         let request = MoviesNowPlayingRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems, ["page": "3"])
     }
 
     func testQueryItemsWithLanguage() {
         let request = MoviesNowPlayingRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testQueryItemsWithCountry() {
         let request = MoviesNowPlayingRequest(country: "GB")
 
-        XCTAssertEqual(request.queryItems["region"], "GB")
+        XCTAssertEqual(request.queryItems, ["region": "GB"])
     }
 
     func testQueryItemsWithPageAndLanguageAndCountry() {
         let request = MoviesNowPlayingRequest(page: 3, language: "en", country: "GB")
 
-        XCTAssertEqual(request.queryItems["page"], "3")
-        XCTAssertEqual(request.queryItems["language"], "en")
-        XCTAssertEqual(request.queryItems["region"], "GB")
+        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en", "region": "GB"])
     }
 
     func testMethodIsGet() {

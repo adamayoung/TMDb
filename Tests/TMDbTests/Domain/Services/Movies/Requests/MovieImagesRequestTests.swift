@@ -28,7 +28,7 @@ final class MovieImagesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/movie/1/images")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = MovieImagesRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,7 +37,7 @@ final class MovieImagesRequestTests: XCTestCase {
     func testQueryItemsWithLanguage() {
         let request = MovieImagesRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems["include_image_language"], "en,null")
+        XCTAssertEqual(request.queryItems, ["include_image_language": "en,null"])
     }
 
     func testMethodIsGet() {

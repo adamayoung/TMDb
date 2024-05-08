@@ -38,7 +38,7 @@ final class PersonImagesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/person/1/images")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 

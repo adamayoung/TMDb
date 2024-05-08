@@ -28,7 +28,7 @@ final class PopularPeopleRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/person/popular")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = PopularPeopleRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,20 +37,19 @@ final class PopularPeopleRequestTests: XCTestCase {
     func testQueryItemsWithPage() {
         let request = PopularPeopleRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems["page"], "3")
+        XCTAssertEqual(request.queryItems, ["page": "3"])
     }
 
     func testQueryItemsWithLanguage() {
         let request = PopularPeopleRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testQueryItemsWithPageAndLanguage() {
         let request = PopularPeopleRequest(page: 3, language: "en")
 
-        XCTAssertEqual(request.queryItems["page"], "3")
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
     }
 
     func testMethodIsGet() {

@@ -38,7 +38,7 @@ final class PersonExternalLinksRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/person/1/external_ids")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 

@@ -28,7 +28,7 @@ final class PersonRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/person/1")
     }
 
-    func testQueryItems() {
+    func testQueryItemsIsEmpty() {
         let request = PersonRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -37,7 +37,7 @@ final class PersonRequestTests: XCTestCase {
     func testQueryItemsWithLanguage() {
         let request = PersonRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testMethodIsGet() {

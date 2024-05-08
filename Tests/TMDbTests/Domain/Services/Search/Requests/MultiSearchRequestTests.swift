@@ -34,16 +34,36 @@ final class MultiSearchRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["query": "fight club"])
     }
 
-    func testQueryItemsWhenPageIsNil() {
-        let request = MultiSearchRequest(query: "")
+    func testQueryItemsWithQueryAndIncludeAdult() {
+        let request = MultiSearchRequest(query: "fight club", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": ""])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "include_adult": "true"])
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
-        let request = MultiSearchRequest(query: "", page: 3)
+    func testQueryItemsWithQueryAndPage() {
+        let request = MultiSearchRequest(query: "fight club", page: 2)
 
-        XCTAssertEqual(request.queryItems, ["query": "", "page": "3"])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "page": "2"])
+    }
+
+    func testQueryItemsWithQueryAndLanguage() {
+        let request = MultiSearchRequest(query: "fight club", language: "en")
+
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "language": "en"])
+    }
+
+    func testQueryItemsWithQueryAndPageAndIncludeAdultAndLanguage() {
+        let request = MultiSearchRequest(
+            query: "fight club",
+            includeAdult: false,
+            page: 2,
+            language: "en"
+        )
+
+        XCTAssertEqual(
+            request.queryItems,
+            ["query": "fight club", "page": "2", "include_adult": "false", "language": "en"]
+        )
     }
 
     func testMethodIsGet() {

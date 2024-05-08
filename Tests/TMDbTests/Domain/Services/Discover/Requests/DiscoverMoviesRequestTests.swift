@@ -28,28 +28,48 @@ final class DiscoverMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/discover/movie")
     }
 
+    func testQueryItemsIsEmpty() {
+        let request = DiscoverMoviesRequest()
+
+        XCTAssertTrue(request.queryItems.isEmpty)
+    }
+
     func testQueryItemsWithSortedBy() {
         let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
 
-        XCTAssertEqual(request.queryItems["sort_by"], "original_title.asc")
+        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
     }
 
     func testQueryItemsWithPeople() {
         let request = DiscoverMoviesRequest(people: [1, 2, 3])
 
-        XCTAssertEqual(request.queryItems["with_people"], "1,2,3")
+        XCTAssertEqual(request.queryItems, ["with_people": "1,2,3"])
     }
 
     func testQueryItemsWithPage() {
         let request = DiscoverMoviesRequest(page: 1)
 
-        XCTAssertEqual(request.queryItems["page"], "1")
+        XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
     func testQueryItemsWithLanguage() {
         let request = DiscoverMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithSortedByAndPeopleAndPageAndLanguage() {
+        let request = DiscoverMoviesRequest(
+            sortedBy: .originalTitle(descending: false),
+            people: [1, 2, 3],
+            page: 2,
+            language: "en"
+        )
+
+        XCTAssertEqual(
+            request.queryItems,
+            ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "2", "language": "en"]
+        )
     }
 
     func testMethodIsGet() {

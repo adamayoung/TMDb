@@ -37,7 +37,7 @@ final class CountriesConfigurationRequestTests: XCTestCase {
     func testQueryItemsWithLanguage() {
         let request = CountriesConfigurationRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems["language"], "en")
+        XCTAssertEqual(request.queryItems, ["language": "en"])
     }
 
     func testMethodIsGet() {

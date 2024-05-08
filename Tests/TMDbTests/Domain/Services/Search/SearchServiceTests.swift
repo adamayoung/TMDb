@@ -37,11 +37,11 @@ final class SearchServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSearchAllWithDefaultParametersReturnsMedia() async throws {
+    func testSearchAllReturnsMedia() async throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MultiSearchRequest(query: query)
+        let expectedRequest = MultiSearchRequest(query: query, includeAdult: nil, page: nil, language: nil)
 
         let result = try await service.searchAll(query: query)
 
@@ -49,37 +49,17 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
     }
 
-    func testSearchAllReturnsMedia() async throws {
-        let query = String.randomString
-        let expectedResult = MediaPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MultiSearchRequest(query: query)
-
-        let result = try await service.searchAll(query: query, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
-    }
-
-    func testSearchAllWithPageReturnsMedia() async throws {
-        let query = String.randomString
-        let expectedResult = MediaPageableList.mock()
-        let page = expectedResult.page
-        let expectedRequest = MultiSearchRequest(query: query, page: page)
-
-        apiClient.addResponse(.success(expectedResult))
-
-        let result = try await service.searchAll(query: query, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
-    }
-
-    func testSearchMoviesWithDefaultParametersReturnsMovies() async throws {
+    func testSearchMoviesReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieSearchRequest(query: query, year: nil, page: nil)
+        let expectedRequest = MovieSearchRequest(
+            query: query,
+            primaryReleaseYear: nil,
+            includeAdult: nil,
+            page: nil,
+            language: nil
+        )
 
         let result = try await service.searchMovies(query: query)
 
@@ -87,117 +67,20 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
     }
 
-    func testSearchMoviesReturnsMovies() async throws {
-        let query = String.randomString
-        let expectedResult = MoviePageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieSearchRequest(query: query, year: nil, page: nil)
-
-        let result = try await service.searchMovies(query: query, year: nil, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
-    }
-
-    func testSearchMoviesWithYearReturnsMovies() async throws {
-        let query = String.randomString
-        let year = 2020
-        let expectedResult = MoviePageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieSearchRequest(query: query, year: year, page: nil)
-
-        let result = try await service.searchMovies(query: query, year: year, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
-    }
-
-    func testSearchMoviesWithPageReturnsMovies() async throws {
-        let query = String.randomString
-        let expectedResult = MoviePageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieSearchRequest(query: query, year: nil, page: page)
-
-        let result = try await service.searchMovies(query: query, year: nil, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
-    }
-
-    func testSearchMoviesWithYearAndPageReturnsMovies() async throws {
-        let query = String.randomString
-        let year = 2020
-        let expectedResult = MoviePageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieSearchRequest(query: query, year: year, page: page)
-
-        let result = try await service.searchMovies(query: query, year: year, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
-    }
-
-    func testSearchTVSeriesWithDefaultParametersReturnsTVSeries() async throws {
-        let query = String.randomString
-        let expectedResult = TVSeriesPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesSearchRequest(query: query, firstAirDateYear: nil, page: nil)
-
-        let result = try await service.searchTVSeries(query: query)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
-    }
-
     func testSearchTVSeriesReturnsTVSeries() async throws {
         let query = String.randomString
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesSearchRequest(query: query, firstAirDateYear: nil, page: nil)
+        let expectedRequest = TVSeriesSearchRequest(
+            query: query,
+            firstAirDateYear: nil,
+            year: nil,
+            includeAdult: nil,
+            page: nil,
+            language: nil
+        )
 
-        let result = try await service.searchTVSeries(query: query, firstAirDateYear: nil, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
-    }
-
-    func testSearchTVSeriesWithFirstAirDateYearReturnsTVSeries() async throws {
-        let query = String.randomString
-        let year = 2020
-        let expectedResult = TVSeriesPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesSearchRequest(query: query, firstAirDateYear: year, page: nil)
-
-        let result = try await service.searchTVSeries(query: query, firstAirDateYear: year, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
-    }
-
-    func testSearchTVSeriesWithPageReturnsTVSeries() async throws {
-        let query = String.randomString
-        let expectedResult = TVSeriesPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesSearchRequest(query: query, firstAirDateYear: nil, page: page)
-
-        let result = try await service.searchTVSeries(query: query, firstAirDateYear: nil, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
-    }
-
-    func testSearchTVSeriesWithFirstAirDateYearANdPageReturnsTVSeries() async throws {
-        let query = String.randomString
-        let year = 2020
-        let expectedResult = TVSeriesPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesSearchRequest(query: query, firstAirDateYear: year, page: page)
-
-        let result = try await service.searchTVSeries(query: query, firstAirDateYear: year, page: page)
+        let result = try await service.searchTVSeries(query: query)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
