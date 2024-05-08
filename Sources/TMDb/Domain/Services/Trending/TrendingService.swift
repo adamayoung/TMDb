@@ -55,6 +55,7 @@ public final class TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -62,9 +63,10 @@ public final class TrendingService {
     ///
     public func movies(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-        page: Int? = nil
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = TrendingMoviesRequest(timeWindow: timeWindow, page: page)
+        let request = TrendingMoviesRequest(timeWindow: timeWindow, page: page, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -89,6 +91,7 @@ public final class TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -96,9 +99,10 @@ public final class TrendingService {
     ///
     public func tvSeries(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-        page: Int? = nil
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page)
+        let request = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -123,6 +127,7 @@ public final class TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -130,9 +135,10 @@ public final class TrendingService {
     ///
     public func people(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-        page: Int? = nil
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> PersonPageableList {
-        let request = TrendingPeopleRequest(timeWindow: timeWindow, page: page)
+        let request = TrendingPeopleRequest(timeWindow: timeWindow, page: page, language: language)
 
         let peopleList: PersonPageableList
         do {

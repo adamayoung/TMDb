@@ -23,19 +23,19 @@ import XCTest
 final class TrendingMoviesRequestTests: XCTestCase {
 
     func testPathWithDayTimeWindow() {
-        let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
+        let request = TrendingMoviesRequest(timeWindow: .day)
 
         XCTAssertEqual(request.path, "/trending/movie/day")
     }
 
     func testPathWithWeekTimeWindow() {
-        let request = TrendingMoviesRequest(timeWindow: .week, page: nil)
+        let request = TrendingMoviesRequest(timeWindow: .week)
 
         XCTAssertEqual(request.path, "/trending/movie/week")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
+    func testQueryItemsIsEmpty() {
+        let request = TrendingMoviesRequest(timeWindow: .day)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
@@ -46,20 +46,32 @@ final class TrendingMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = TrendingMoviesRequest(timeWindow: .day, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithPageAndLanguage() {
+        let request = TrendingMoviesRequest(timeWindow: .day, page: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["page": "1", "language": "en"])
+    }
+
     func testMethodIsGet() {
-        let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
+        let request = TrendingMoviesRequest(timeWindow: .day)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
+        let request = TrendingMoviesRequest(timeWindow: .day)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = TrendingMoviesRequest(timeWindow: .day, page: nil)
+        let request = TrendingMoviesRequest(timeWindow: .day)
 
         XCTAssertNil(request.body)
     }

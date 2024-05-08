@@ -23,19 +23,19 @@ import XCTest
 final class TrendingTVSeriesRequestTests: XCTestCase {
 
     func testPathWithDayTimeWindow() {
-        let request = TrendingTVSeriesRequest(timeWindow: .day, page: nil)
+        let request = TrendingTVSeriesRequest(timeWindow: .day)
 
         XCTAssertEqual(request.path, "/trending/tv/day")
     }
 
     func testPathWithWeekTimeWindow() {
-        let request = TrendingTVSeriesRequest(timeWindow: .week, page: nil)
+        let request = TrendingTVSeriesRequest(timeWindow: .week)
 
         XCTAssertEqual(request.path, "/trending/tv/week")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = TrendingTVSeriesRequest(timeWindow: .day, page: nil)
+    func testQueryItemsIsEmpty() {
+        let request = TrendingTVSeriesRequest(timeWindow: .day)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
@@ -46,20 +46,32 @@ final class TrendingTVSeriesRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = TrendingTVSeriesRequest(timeWindow: .day, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithPageAndLanguage() {
+        let request = TrendingTVSeriesRequest(timeWindow: .day, page: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["page": "1", "language": "en"])
+    }
+
     func testMethodIsGet() {
-        let request = TrendingTVSeriesRequest(timeWindow: .day, page: nil)
+        let request = TrendingTVSeriesRequest(timeWindow: .day)
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = TrendingTVSeriesRequest(timeWindow: .day, page: nil)
+        let request = TrendingTVSeriesRequest(timeWindow: .day)
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = TrendingTVSeriesRequest(timeWindow: .day, page: nil)
+        let request = TrendingTVSeriesRequest(timeWindow: .day)
 
         XCTAssertNil(request.body)
     }

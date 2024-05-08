@@ -21,9 +21,9 @@ import Foundation
 
 final class TrendingTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
-    init(timeWindow: TrendingTimeWindowFilterType, page: Int?) {
+    init(timeWindow: TrendingTimeWindowFilterType, page: Int? = nil, language: String? = nil) {
         let path = "/trending/tv/\(timeWindow.rawValue)"
-        let queryItems = APIRequestQueryItems(page: page)
+        let queryItems = APIRequestQueryItems(page: page, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,15 @@ final class TrendingTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(page: Int?) {
+    init(page: Int?, language: String?) {
         self.init()
 
         if let page {
             self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 

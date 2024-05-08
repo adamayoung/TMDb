@@ -37,187 +37,37 @@ final class TrendingServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testMoviesWithDefaultParametersReturnsMovies() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = MoviePageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.movies()
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
-    }
-
     func testMoviesForDayReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: nil)
+        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
-    }
-
-    func testMoviesForDayWithPageReturnsMovies() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = MoviePageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.movies(inTimeWindow: timeWindow, page: page)
+        let result = try await service.movies(inTimeWindow: timeWindow)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
-    }
-
-    func testMoviesForWeekReturnsMovies() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = MoviePageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.movies(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
-    }
-
-    func testMoviesForWeekWithPageReturnsMovies() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = MoviePageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.movies(inTimeWindow: timeWindow, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
-    }
-
-    func testTVSeriesWithDefaultReturnsTVSeries() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVSeriesPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.tvSeries()
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
     }
 
     func testTVSeriesForDayReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: nil)
+        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
-    }
-
-    func testTVSeriesForDayWithPageReturnsTVSeries() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = TVSeriesPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page)
+        let result = try await service.tvSeries(inTimeWindow: timeWindow)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
-    }
-
-    func testTVSeriesForWeekReturnsTVSeries() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = TVSeriesPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
-    }
-
-    func testTVSeriesForWeekWithPageReturnsTVSeries() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = TVSeriesPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
-    }
-
-    func testPeopleWithDefaultParametersReturnsPeople() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = PersonPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.people()
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
     }
 
     func testPeopleForDayReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: nil)
+        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.people(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
-    }
-
-    func testPeopleForDayWithPageReturnsPeople() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.day
-        let expectedResult = PersonPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.people(inTimeWindow: timeWindow, page: page)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
-    }
-
-    func testPeopleForWeekReturnsPeople() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = PersonPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: nil)
-
-        let result = try await service.people(inTimeWindow: timeWindow, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
-    }
-
-    func testPeopleForWeekWithPageReturnsPeople() async throws {
-        let timeWindow = TrendingTimeWindowFilterType.week
-        let expectedResult = PersonPageableList.mock()
-        let page = expectedResult.page
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: page)
-
-        let result = try await service.people(inTimeWindow: timeWindow, page: page)
+        let result = try await service.people(inTimeWindow: timeWindow)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
