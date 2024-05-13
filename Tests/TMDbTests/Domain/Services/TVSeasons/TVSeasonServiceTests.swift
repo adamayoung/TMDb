@@ -45,7 +45,11 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let expectedRequest = TVSeasonRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
 
         let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
@@ -58,7 +62,11 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
         let seasonNumber = Int.randomID
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeasonAggregateCreditsRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let expectedRequest = TVSeasonAggregateCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
 
         let result = try await service.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 

@@ -22,35 +22,39 @@ import XCTest
 
 final class TVSeasonAggregateCreditsRequestTests: XCTestCase {
 
-    var request: TVSeasonAggregateCreditsRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
+
         XCTAssertEqual(request.path, "/tv/1/season/2/aggregate_credits")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
     func testMethodIsGet() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
+
         XCTAssertNil(request.body)
     }
 

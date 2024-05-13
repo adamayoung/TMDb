@@ -8,11 +8,11 @@
 
 ### Details
 
-- ``details(forSeason:inTVSeries:)``
+- ``details(forSeason:inTVSeries:language:)``
 
 ### Credits
 
-- ``aggregateCredits(forSeason:inTVSeries:)``
+- ``aggregateCredits(forSeason:inTVSeries:language:)``
 
 ### Media
 

@@ -53,13 +53,22 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A season of the matching TV series.
     ///
-    public func details(forSeason seasonNumber: Int, inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeason {
-        let request = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+    public func details(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeason {
+        let request = TVSeasonRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
 
         let season: TVSeason
         do {
@@ -83,6 +92,7 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -90,9 +100,14 @@ public final class TVSeasonService {
     ///
     public func aggregateCredits(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
     ) async throws -> TVSeasonAggregateCredits {
-        let request = TVSeasonAggregateCreditsRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let request = TVSeasonAggregateCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
 
         let credits: TVSeasonAggregateCredits
         do {

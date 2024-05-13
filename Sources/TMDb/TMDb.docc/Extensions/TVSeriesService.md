@@ -32,5 +32,5 @@
 
 ### Other
 
-- ``watchProviders(forTVSeries:)``
+- ``watchProviders(forTVSeries:country:)``
 - ``externalLinks(forTVSeries:)``
