@@ -1,5 +1,5 @@
 //
-//  TVSeasonVideoFilter.swift
+//  TVEpisodeVideoFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,9 +20,9 @@
 import Foundation
 
 ///
-/// A filter for fetching TV season videos.
+/// A filter for fetching TV episode videos.
 ///
-public struct TVSeasonVideoFilter {
+public struct TVEpisodeVideoFilter {
 
     ///
     /// A list of ISO 639-1 language codes to filter videos by.

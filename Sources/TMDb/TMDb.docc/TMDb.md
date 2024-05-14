@@ -90,6 +90,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeason``
 - ``TVSeasonImageCollection``
 - ``VideoCollection``
+- ``TVSeasonImageFilter``
+- ``TVSeasonVideoFilter``
 
 ### TV Episodes
 
@@ -97,6 +99,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVEpisode``
 - ``TVEpisodeImageCollection``
 - ``VideoCollection``
+- ``TVEpisodeImageFilter``
+- ``TVEpisodeVideoFilter``
 
 ### People
 

@@ -168,7 +168,7 @@ public final class TVSeasonService {
     public func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonImageFilter? = nil
+        filter: TVSeasonVideoFilter? = nil
     ) async throws -> VideoCollection {
         let request = TVSeasonVideosRequest(
             seasonNumber: seasonNumber,

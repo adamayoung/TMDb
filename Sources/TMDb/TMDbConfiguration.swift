@@ -37,25 +37,15 @@ public final class TMDbConfiguration: Sendable {
     public let httpClient: any HTTPClient
 
     ///
-    /// The default locale.
-    ///
-    public let defaultLocale: Locale
-
-    ///
     /// Creates a TMDb configuration object using URLSession as the HTTP client.
     ///
     /// - Parameters:
     ///    - apiKey: The TMDb API key to use.
-    ///    - defaultLocale: The default locale to use.
     ///
-    public convenience init(
-        apiKey: String,
-        defaultLocale: Locale = .current
-    ) {
+    public convenience init(apiKey: String) {
         self.init(
             apiKey: apiKey,
-            httpClient: TMDbFactory.defaultHTTPClientAdapter(),
-            defaultLocale: defaultLocale
+            httpClient: TMDbFactory.defaultHTTPClientAdapter()
         )
     }
 
@@ -65,16 +55,13 @@ public final class TMDbConfiguration: Sendable {
     /// - Parameters:
     ///    - apiKey: The TMDb API key to use.
     ///    - httpClient: A custom HTTP client adapter for making HTTP requests.
-    ///    - defaultLocale: The default locale to use.
     ///
     public init(
         apiKey: String,
-        httpClient: some HTTPClient,
-        defaultLocale: Locale = .current
+        httpClient: some HTTPClient
     ) {
         self.apiKey = apiKey
         self.httpClient = httpClient
-        self.defaultLocale = defaultLocale
     }
 
 }

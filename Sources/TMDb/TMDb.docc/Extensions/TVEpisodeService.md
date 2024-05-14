@@ -8,9 +8,9 @@
 
 ### Details
 
-- ``details(forEpisode:inSeason:inTVSeries:)``
+- ``details(forEpisode:inSeason:inTVSeries:language:)``
 
 ### Media
 
-- ``images(forEpisode:inSeason:inTVSeries:)``
-- ``videos(forEpisode:inSeason:inTVSeries:)``
+- ``images(forEpisode:inSeason:inTVSeries:filter:)``
+- ``videos(forEpisode:inSeason:inTVSeries:filter:)``
