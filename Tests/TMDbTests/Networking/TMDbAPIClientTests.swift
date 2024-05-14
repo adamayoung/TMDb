@@ -30,7 +30,6 @@ final class TMDbAPIClientTests: XCTestCase {
     var baseURL: URL!
     var serialiser: TMDbJSONSerialiser!
     var httpClient: HTTPMockClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -40,19 +39,16 @@ final class TMDbAPIClientTests: XCTestCase {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         httpClient = await HTTPMockClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
         apiClient = TMDbAPIClient(
             apiKey: apiKey,
             baseURL: baseURL,
             serialiser: serialiser,
-            httpClient: httpClient,
-            localeProvider: localeProvider
+            httpClient: httpClient
         )
     }
 
     override func tearDown() async throws {
         apiClient = nil
-        localeProvider = nil
         httpClient = nil
         serialiser = nil
         baseURL = nil

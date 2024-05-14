@@ -8,9 +8,9 @@
 
 ### Providers
 
-- ``movieWatchProviders()``
-- ``tvSeriesWatchProviders()``
+- ``movieWatchProviders(filter:language:)``
+- ``tvSeriesWatchProviders(filter:language:)``
 
 ### Countries with Watch Provider data
 
-- ``countries()``
+- ``countries(language:)``

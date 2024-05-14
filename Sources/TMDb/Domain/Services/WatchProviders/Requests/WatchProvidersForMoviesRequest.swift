@@ -21,9 +21,9 @@ import Foundation
 
 final class WatchProvidersForMoviesRequest: DecodableAPIRequest<WatchProviderResult> {
 
-    init(regionCode: String?) {
+    init(country: String? = nil, language: String? = nil) {
         let path = "/watch/providers/movie"
-        let queryItems = APIRequestQueryItems(regionCode: regionCode)
+        let queryItems = APIRequestQueryItems(country: country, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,15 @@ final class WatchProvidersForMoviesRequest: DecodableAPIRequest<WatchProviderRes
 
 private extension APIRequestQueryItems {
 
-    init(regionCode: String?) {
+    init(country: String?, language: String?) {
         self.init()
 
-        if let regionCode {
-            self[.watchRegion] = regionCode
+        if let country {
+            self[.watchRegion] = country
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 

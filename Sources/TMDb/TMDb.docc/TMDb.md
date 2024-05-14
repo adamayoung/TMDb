@@ -172,6 +172,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``WatchProviderService``
 - ``WatchProvider``
 - ``Country``
+- ``WatchProviderFilter``
 
 ### Configuration
 

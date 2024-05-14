@@ -24,18 +24,15 @@ final class WatchProviderServiceTests: XCTestCase {
 
     var service: WatchProviderService!
     var apiClient: MockAPIClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        service = WatchProviderService(apiClient: apiClient, localeProvider: localeProvider)
+        service = WatchProviderService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient = nil
-        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -44,7 +41,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
         apiClient.addResponse(.success(regions))
-        let expectedRequest = WatchProviderRegionsRequest()
+        let expectedRequest = WatchProviderRegionsRequest(language: nil)
 
         let result = try await service.countries()
 
@@ -56,7 +53,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = WatchProvidersForMoviesRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForMoviesRequest(country: nil, language: nil)
 
         let result = try await service.movieWatchProviders()
 
@@ -68,7 +65,7 @@ final class WatchProviderServiceTests: XCTestCase {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = WatchProvidersForTVSeriesRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForTVSeriesRequest(country: nil, language: nil)
 
         let result = try await service.tvSeriesWatchProviders()
 

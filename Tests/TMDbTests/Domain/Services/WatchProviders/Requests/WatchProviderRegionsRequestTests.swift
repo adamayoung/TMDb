@@ -35,22 +35,38 @@ final class WatchProviderRegionsRequestTests: XCTestCase {
     }
 
     func testPath() {
+        let request = WatchProviderRegionsRequest()
+
         XCTAssertEqual(request.path, "/watch/providers/regions")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
+        let request = WatchProviderRegionsRequest()
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = WatchProviderRegionsRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
     func testMethodIsGet() {
+        let request = WatchProviderRegionsRequest()
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = WatchProviderRegionsRequest()
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = WatchProviderRegionsRequest()
+
         XCTAssertNil(request.body)
     }
 

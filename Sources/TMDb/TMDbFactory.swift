@@ -40,8 +40,7 @@ extension TMDbFactory {
             apiKey: configuration.apiKey,
             baseURL: tmdbAPIBaseURL,
             serialiser: serialiser(),
-            httpClient: configuration.httpClient,
-            localeProvider: localeProvider()
+            httpClient: configuration.httpClient
         )
     }
 
@@ -50,17 +49,12 @@ extension TMDbFactory {
             apiKey: configuration.apiKey,
             baseURL: .tmdbAPIBaseURL,
             serialiser: authSerialiser(),
-            httpClient: configuration.httpClient,
-            localeProvider: localeProvider()
+            httpClient: configuration.httpClient
         )
     }
 
     static func authenticateURLBuilder() -> some AuthenticateURLBuilding {
         AuthenticateURLBuilder(baseURL: tmdbWebSiteURL)
-    }
-
-    static func localeProvider() -> some LocaleProviding {
-        LocaleProvider(locale: .current)
     }
 
 }

@@ -25,20 +25,17 @@ final class TMDbAPIClient: APIClient, @unchecked Sendable {
     private let baseURL: URL
     private let serialiser: any Serialiser
     private let httpClient: any HTTPClient
-    private let localeProvider: any LocaleProviding
 
     init(
         apiKey: String,
         baseURL: URL,
         serialiser: some Serialiser,
-        httpClient: some HTTPClient,
-        localeProvider: some LocaleProviding
+        httpClient: some HTTPClient
     ) {
         self.apiKey = apiKey
         self.baseURL = baseURL
         self.serialiser = serialiser
         self.httpClient = httpClient
-        self.localeProvider = localeProvider
     }
 
     func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
@@ -78,9 +75,6 @@ extension TMDbAPIClient {
 
         var queryItems = request.queryItems
         queryItems["api_key"] = apiKey
-        if let languageCode = localeProvider.languageCode {
-            queryItems["language"] = languageCode
-        }
 
         let url = urlFromPath(path, queryItems: queryItems)
 

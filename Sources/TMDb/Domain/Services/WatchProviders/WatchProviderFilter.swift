@@ -1,5 +1,5 @@
 //
-//  WatchProviderRegionsRequest.swift
+//  WatchProviderFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,25 +19,23 @@
 
 import Foundation
 
-final class WatchProviderRegionsRequest: DecodableAPIRequest<WatchProviderRegions> {
+///
+/// A filter for fetching watch providers.
+///
+public struct WatchProviderFilter {
 
-    init(language: String? = nil) {
-        let path = "/watch/providers/regions"
-        let queryItems = APIRequestQueryItems(language: language)
+    ///
+    /// ISO-3166-1 country code to filter results for.
+    ///
+    public let country: String?
 
-        super.init(path: path, queryItems: queryItems)
-    }
-
-}
-
-private extension APIRequestQueryItems {
-
-    init(language: String?) {
-        self.init()
-
-        if let language {
-            self[.language] = language
-        }
+    ///
+    /// Creates a watch provider filter.
+    ///
+    /// - Parameter country: ISO-3166-1 country code to filter results for.
+    ///
+    public init(country: String? = nil) {
+        self.country = country
     }
 
 }
