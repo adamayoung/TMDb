@@ -24,18 +24,15 @@ final class TVSeasonServiceTests: XCTestCase {
 
     var service: TVSeasonService!
     var apiClient: MockAPIClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        service = TVSeasonService(apiClient: apiClient, localeProvider: localeProvider)
+        service = TVSeasonService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient = nil
-        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -82,7 +79,7 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedRequest = TVSeasonImagesRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: localeProvider.languageCode
+            languages: nil
         )
 
         let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
@@ -99,7 +96,7 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedRequest = TVSeasonVideosRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: localeProvider.languageCode
+            languages: nil
         )
 
         let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)

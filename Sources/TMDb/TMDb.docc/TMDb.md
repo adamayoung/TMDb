@@ -35,9 +35,9 @@ a service that can be trusted and relied on.
 For the TMDb API documentation, see
 [https://developer.themoviedb.org/docs](https://developer.themoviedb.org/docs).
 
-> Important: This product uses the TMDb API but is not endorsed or certified by TMDb.
+This product uses the TMDb API but is not endorsed or certified by TMDb.
 
-> Important: Watch providers provided by [JustWatch](https://www.justwatch.com).
+Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 ## Topics
 

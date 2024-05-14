@@ -16,5 +16,5 @@
 
 ### Media
 
-- ``images(forSeason:inTVSeries:)``
-- ``videos(forSeason:inTVSeries:)``
+- ``images(forSeason:inTVSeries:filter:)``
+- ``videos(forSeason:inTVSeries:filter:)``
