@@ -24,6 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Install swiftlint
+        run: brew install swiftlint
+
       - name: Swiftlint
         run: swiftlint --strict --reporter github-actions-logging
 
