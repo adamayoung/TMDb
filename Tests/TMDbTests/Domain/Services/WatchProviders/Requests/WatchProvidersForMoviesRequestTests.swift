@@ -23,37 +23,49 @@ import XCTest
 final class WatchProvidersForMoviesRequestTests: XCTestCase {
 
     func testPath() {
-        let request = WatchProvidersForMoviesRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest()
 
         XCTAssertEqual(request.path, "/watch/providers/movie")
     }
 
-    func testQueryItemsAreEmpty() {
-        let request = WatchProvidersForMoviesRequest(regionCode: nil)
+    func testQueryItemsIsEmpty() {
+        let request = WatchProvidersForMoviesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
     func testQueryItemsWithWatchRegion() {
-        let request = WatchProvidersForMoviesRequest(regionCode: "GB")
+        let request = WatchProvidersForMoviesRequest(country: "GB")
 
         XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = WatchProvidersForMoviesRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithWatchRegionAndLanguage() {
+        let request = WatchProvidersForMoviesRequest(country: "GB", language: "en")
+
+        XCTAssertEqual(request.queryItems, ["watch_region": "GB", "language": "en"])
+    }
+
     func testMethodIsGet() {
-        let request = WatchProvidersForMoviesRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest()
 
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
-        let request = WatchProvidersForMoviesRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest()
 
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
-        let request = WatchProvidersForMoviesRequest(regionCode: nil)
+        let request = WatchProvidersForMoviesRequest()
 
         XCTAssertNil(request.body)
     }

@@ -34,16 +34,31 @@ final class PersonSearchRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["query": "edward norton"])
     }
 
-    func testQueryItemsWhenPageIsNil() {
-        let request = PersonSearchRequest(query: "")
+    func testQueryItemsWithQueryAndIncludeAdult() {
+        let request = PersonSearchRequest(query: "edward norton", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": ""])
+        XCTAssertEqual(request.queryItems, ["query": "edward norton", "include_adult": "true"])
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
-        let request = PersonSearchRequest(query: "", page: 3)
+    func testQueryItemsWithPage() {
+        let request = PersonSearchRequest(query: "edward norton", page: 3)
 
-        XCTAssertEqual(request.queryItems, ["query": "", "page": "3"])
+        XCTAssertEqual(request.queryItems, ["query": "edward norton", "page": "3"])
+    }
+
+    func testQueryItemsWithLanguage() {
+        let request = PersonSearchRequest(query: "edward norton", language: "en")
+
+        XCTAssertEqual(request.queryItems, ["query": "edward norton", "language": "en"])
+    }
+
+    func testQueryItemsWithQueryAndIncludeAdultAndPageAndLanguage() {
+        let request = PersonSearchRequest(query: "edward norton", includeAdult: false, page: 2, language: "en")
+
+        XCTAssertEqual(
+            request.queryItems,
+            ["query": "edward norton", "include_adult": "false", "page": "2", "language": "en"]
+        )
     }
 
     func testMethodIsGet() {

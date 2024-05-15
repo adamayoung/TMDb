@@ -8,16 +8,16 @@
 
 ### Media
 
-- ``searchAll(query:page:)``
+- ``searchAll(query:filter:page:language:)``
 
 ### Movies
 
-- ``searchMovies(query:year:page:)``
+- ``searchMovies(query:filter:page:language:)``
 
 ### TV Series
 
-- ``searchTVSeries(query:firstAirDateYear:page:)``
+- ``searchTVSeries(query:filter:page:language:)``
 
 ### People
 
-- ``searchPeople(query:page:)``
+- ``searchPeople(query:filter:page:language:)``

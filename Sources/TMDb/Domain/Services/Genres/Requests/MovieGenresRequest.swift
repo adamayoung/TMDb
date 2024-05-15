@@ -1,5 +1,5 @@
 //
-//  LocaleProviding.swift
+//  MovieGenresRequest.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,10 +19,25 @@
 
 import Foundation
 
-protocol LocaleProviding {
+final class MovieGenresRequest: DecodableAPIRequest<GenreList> {
 
-    var languageCode: String? { get }
+    init(language: String? = nil) {
+        let path = "/genre/movie/list"
+        let queryItems = APIRequestQueryItems(language: language)
 
-    var regionCode: String? { get }
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(language: String?) {
+        self.init()
+
+        if let language {
+            self[.language] = language
+        }
+    }
 
 }

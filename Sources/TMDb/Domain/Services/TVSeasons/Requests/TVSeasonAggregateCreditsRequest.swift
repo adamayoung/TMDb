@@ -21,10 +21,23 @@ import Foundation
 
 final class TVSeasonAggregateCreditsRequest: DecodableAPIRequest<TVSeasonAggregateCredits> {
 
-    init(seasonNumber: Int, tvSeriesID: TVSeries.ID) {
+    init(seasonNumber: Int, tvSeriesID: TVSeries.ID, language: String? = nil) {
         let path = "/tv/\(tvSeriesID)/season/\(seasonNumber)/aggregate_credits"
+        let queryItems = APIRequestQueryItems(language: language)
 
-        super.init(path: path)
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(language: String?) {
+        self.init()
+
+        if let language {
+            self[.language] = language
+        }
     }
 
 }

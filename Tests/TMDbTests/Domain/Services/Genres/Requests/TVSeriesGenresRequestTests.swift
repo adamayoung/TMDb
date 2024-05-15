@@ -22,35 +22,39 @@ import XCTest
 
 final class TVSeriesGenresRequestTests: XCTestCase {
 
-    var request: TVSeriesGenresRequests!
-
-    override func setUp() {
-        super.setUp()
-        request = TVSeriesGenresRequests()
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = TVSeriesGenresRequest()
+
         XCTAssertEqual(request.path, "/genre/tv/list")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
+        let request = TVSeriesGenresRequest()
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = TVSeriesGenresRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
     func testMethodIsGet() {
+        let request = TVSeriesGenresRequest()
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = TVSeriesGenresRequest()
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = TVSeriesGenresRequest()
+
         XCTAssertNil(request.body)
     }
 

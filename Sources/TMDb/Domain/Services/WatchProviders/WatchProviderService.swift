@@ -26,7 +26,6 @@ import Foundation
 public final class WatchProviderService {
 
     private let apiClient: any APIClient
-    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a watch provider service object.
@@ -35,14 +34,12 @@ public final class WatchProviderService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration),
-            localeProvider: TMDbFactory.localeProvider()
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
-        self.localeProvider = localeProvider
     }
 
     ///
@@ -50,12 +47,15 @@ public final class WatchProviderService {
     ///
     /// [TMDb API - Watch Providers: Available Regions](https://developer.themoviedb.org/reference/watch-providers-available-regions)
     ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     ///
-    public func countries() async throws -> [Country] {
-        let request = WatchProviderRegionsRequest()
+    public func countries(language: String? = nil) async throws -> [Country] {
+        let request = WatchProviderRegionsRequest(language: language)
 
         let regions: WatchProviderRegions
         do {
@@ -72,13 +72,19 @@ public final class WatchProviderService {
     ///
     /// [TMDb API - Watch Providers: Movie Providers](https://developer.themoviedb.org/reference/watch-providers-movie-list)
     ///
+    /// - Parameters:
+    ///    - filter: Watch provider filter.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movies.
     ///
-    public func movieWatchProviders() async throws -> [WatchProvider] {
-        let regionCode = localeProvider.regionCode
-        let request = WatchProvidersForMoviesRequest(regionCode: regionCode)
+    public func movieWatchProviders(
+        filter: WatchProviderFilter? = nil,
+        language: String? = nil
+    ) async throws -> [WatchProvider] {
+        let request = WatchProvidersForMoviesRequest(country: filter?.country, language: language)
 
         let result: WatchProviderResult
         do {
@@ -95,13 +101,19 @@ public final class WatchProviderService {
     ///
     /// [TMDb API - Watch Providers: TV Providers](https://developer.themoviedb.org/reference/watch-provider-tv-list)
     ///
+    /// - Parameters:
+    ///    - filter: Watch provider filter.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Watch providers for TV series.
     ///
-    public func tvSeriesWatchProviders() async throws -> [WatchProvider] {
-        let regionCode = localeProvider.regionCode
-        let request = WatchProvidersForTVSeriesRequest(regionCode: regionCode)
+    public func tvSeriesWatchProviders(
+        filter: WatchProviderFilter? = nil,
+        language: String? = nil
+    ) async throws -> [WatchProvider] {
+        let request = WatchProvidersForTVSeriesRequest(country: filter?.country, language: language)
 
         let result: WatchProviderResult
         do {

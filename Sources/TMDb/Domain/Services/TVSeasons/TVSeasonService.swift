@@ -26,7 +26,6 @@ import Foundation
 public final class TVSeasonService {
 
     private let apiClient: any APIClient
-    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV season service object.
@@ -35,14 +34,12 @@ public final class TVSeasonService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration),
-            localeProvider: TMDbFactory.localeProvider()
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
-        self.localeProvider = localeProvider
     }
 
     ///
@@ -53,13 +50,22 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A season of the matching TV series.
     ///
-    public func details(forSeason seasonNumber: Int, inTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeason {
-        let request = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+    public func details(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeason {
+        let request = TVSeasonRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
 
         let season: TVSeason
         do {
@@ -83,6 +89,7 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -90,9 +97,14 @@ public final class TVSeasonService {
     ///
     public func aggregateCredits(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
     ) async throws -> TVSeasonAggregateCredits {
-        let request = TVSeasonAggregateCreditsRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let request = TVSeasonAggregateCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
 
         let credits: TVSeasonAggregateCredits
         do {
@@ -112,6 +124,7 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -119,13 +132,13 @@ public final class TVSeasonService {
     ///
     public func images(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeasonImageFilter? = nil
     ) async throws -> TVSeasonImageCollection {
-        let languageCode = localeProvider.languageCode
         let request = TVSeasonImagesRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: languageCode
+            languages: filter?.languages
         )
 
         let imageCollection: TVSeasonImageCollection
@@ -146,6 +159,7 @@ public final class TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -153,13 +167,13 @@ public final class TVSeasonService {
     ///
     public func videos(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeasonVideoFilter? = nil
     ) async throws -> VideoCollection {
-        let languageCode = localeProvider.languageCode
         let request = TVSeasonVideosRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: languageCode
+            languages: filter?.languages
         )
 
         let videoCollection: VideoCollection

@@ -8,13 +8,13 @@
 
 ### Details
 
-- ``details(forPerson:)``
+- ``details(forPerson:language:)``
 
 ### Credits
 
-- ``combinedCredits(forPerson:)``
-- ``movieCredits(forPerson:)``
-- ``tvSeriesCredits(forPerson:)``
+- ``combinedCredits(forPerson:language:)``
+- ``movieCredits(forPerson:language:)``
+- ``tvSeriesCredits(forPerson:language:)``
 
 ### Media
 
@@ -22,6 +22,5 @@
 
 ### Lists and Related Content
 
-- ``knownFor(forPerson:)``
-- ``popular(page:)``
+- ``popular(page:language:)``
 - ``externalLinks(forPerson:)``

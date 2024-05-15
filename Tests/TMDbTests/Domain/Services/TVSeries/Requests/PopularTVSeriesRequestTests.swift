@@ -28,16 +28,28 @@ final class PopularTVSeriesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/tv/popular")
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         let request = PopularTVSeriesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenPageQueryItemsHasPage() {
+    func testQueryItemsWithPage() {
         let request = PopularTVSeriesRequest(page: 3)
 
         XCTAssertEqual(request.queryItems, ["page": "3"])
+    }
+
+    func testQueryItemsWithLanguage() {
+        let request = PopularTVSeriesRequest(language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithPageAndLanguage() {
+        let request = PopularTVSeriesRequest(page: 3, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
     }
 
     func testMethodIsGet() {

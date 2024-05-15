@@ -8,13 +8,13 @@
 
 ### Details
 
-- ``details(forSeason:inTVSeries:)``
+- ``details(forSeason:inTVSeries:language:)``
 
 ### Credits
 
-- ``aggregateCredits(forSeason:inTVSeries:)``
+- ``aggregateCredits(forSeason:inTVSeries:language:)``
 
 ### Media
 
-- ``images(forSeason:inTVSeries:)``
-- ``videos(forSeason:inTVSeries:)``
+- ``images(forSeason:inTVSeries:filter:)``
+- ``videos(forSeason:inTVSeries:filter:)``

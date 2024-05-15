@@ -83,14 +83,6 @@ final class PersonIntegrationTests: XCTestCase {
         XCTAssertFalse(imageCollection.profiles.isEmpty)
     }
 
-    func testKnownFor() async throws {
-        let personID = 500
-
-        let shows = try await personService.knownFor(forPerson: personID)
-
-        XCTAssertFalse(shows.isEmpty)
-    }
-
     func testPopular() async throws {
         let personList = try await personService.popular()
 

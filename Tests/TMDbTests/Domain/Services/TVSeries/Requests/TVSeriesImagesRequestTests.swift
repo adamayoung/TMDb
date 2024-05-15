@@ -28,17 +28,16 @@ final class TVSeriesImagesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/tv/1/images")
     }
 
-    func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         let request = TVSeriesImagesRequest(id: 1)
 
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
-        let request = TVSeriesImagesRequest(id: 1, languageCode: "en")
+    func testQueryItemsWithLanguages() {
+        let request = TVSeriesImagesRequest(id: 1, languages: ["en-GB", "fr"])
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["include_image_language"], "en,null")
+        XCTAssertEqual(request.queryItems, ["include_image_language": "en,fr,null"])
     }
 
     func testMethodIsGet() {

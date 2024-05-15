@@ -35,7 +35,9 @@ a service that can be trusted and relied on.
 For the TMDb API documentation, see
 [https://developer.themoviedb.org/docs](https://developer.themoviedb.org/docs).
 
-> Important: This product uses the TMDb API but is not endorsed or certified by TMDb.
+This product uses the TMDb API but is not endorsed or certified by TMDb.
+
+Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 ## Topics
 
@@ -61,6 +63,8 @@ For the TMDb API documentation, see
 - ``VideoCollection``
 - ``MovieExternalLinksCollection``
 - ``MoviePageableList``
+- ``MovieImageFilter``
+- ``MovieVideoFilter``
 
 ### TV Series
 
@@ -77,6 +81,8 @@ For the TMDb API documentation, see
 - ``ImageCollection``
 - ``VideoCollection``
 - ``TVSeriesExternalLinksCollection``
+- ``TVSeriesImageFilter``
+- ``TVSeriesVideoFilter``
 
 ### TV Seasons
 
@@ -84,6 +90,8 @@ For the TMDb API documentation, see
 - ``TVSeason``
 - ``TVSeasonImageCollection``
 - ``VideoCollection``
+- ``TVSeasonImageFilter``
+- ``TVSeasonVideoFilter``
 
 ### TV Episodes
 
@@ -91,6 +99,8 @@ For the TMDb API documentation, see
 - ``TVEpisode``
 - ``TVEpisodeImageCollection``
 - ``VideoCollection``
+- ``TVEpisodeImageFilter``
+- ``TVEpisodeVideoFilter``
 
 ### People
 
@@ -136,6 +146,10 @@ For the TMDb API documentation, see
 - ``TVSeries``
 - ``PersonPageableList``
 - ``Person``
+- ``AllMediaSearchFilter``
+- ``MovieSearchFilter``
+- ``TVSeriesSearchFilter``
+- ``PersonSearchFilter``
 
 ### Certifications
 
@@ -158,6 +172,7 @@ For the TMDb API documentation, see
 - ``WatchProviderService``
 - ``WatchProvider``
 - ``Country``
+- ``WatchProviderFilter``
 
 ### Configuration
 

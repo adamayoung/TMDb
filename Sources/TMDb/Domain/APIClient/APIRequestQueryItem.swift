@@ -57,11 +57,14 @@ extension APIRequestQueryItem.Name {
     static let watchRegion = APIRequestQueryItem.Name("watch_region")
     static let includeImageLanguage = APIRequestQueryItem.Name("include_image_language")
     static let includeVideoLanguage = APIRequestQueryItem.Name("include_video_language")
+    static let includeAdult = APIRequestQueryItem.Name("include_adult")
     static let query = APIRequestQueryItem.Name("query")
     static let year = APIRequestQueryItem.Name("year")
+    static let primaryReleaseYear = APIRequestQueryItem.Name("primary_release_year")
     static let firstAirDateYear = APIRequestQueryItem.Name("first_air_date_year")
     static let sessionID = APIRequestQueryItem.Name("session_id")
     static let language = APIRequestQueryItem.Name("language")
+    static let region = APIRequestQueryItem.Name("region")
     static let apiKey = APIRequestQueryItem.Name("api_key")
 
 }

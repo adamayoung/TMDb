@@ -19,12 +19,25 @@
 
 import Foundation
 
-final class TVSeriesGenresRequests: DecodableAPIRequest<GenreList> {
+final class TVSeriesGenresRequest: DecodableAPIRequest<GenreList> {
 
-    init() {
+    init(language: String? = nil) {
         let path = "/genre/tv/list"
+        let queryItems = APIRequestQueryItems(language: language)
 
-        super.init(path: path)
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(language: String?) {
+        self.init()
+
+        if let language {
+            self[.language] = language
+        }
     }
 
 }

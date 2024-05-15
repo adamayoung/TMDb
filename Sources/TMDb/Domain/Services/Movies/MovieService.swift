@@ -19,6 +19,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
@@ -26,7 +28,6 @@ import Foundation
 public final class MovieService {
 
     private let apiClient: any APIClient
-    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a movie service object.
@@ -35,14 +36,12 @@ public final class MovieService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration),
-            localeProvider: TMDbFactory.localeProvider()
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
-        self.localeProvider = localeProvider
     }
 
     ///
@@ -52,13 +51,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie.
     ///
-    public func details(forMovie id: Movie.ID) async throws -> Movie {
-        let request = MovieRequest(id: id)
+    public func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
+        let request = MovieRequest(id: id, language: language)
 
         let movie: Movie
         do {
@@ -77,13 +77,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching movie.
     ///
-    public func credits(forMovie movieID: Movie.ID) async throws -> ShowCredits {
-        let request = MovieCreditsRequest(id: movieID)
+    public func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
+        let request = MovieCreditsRequest(id: movieID, language: language)
 
         let credits: ShowCredits
         do {
@@ -105,13 +106,18 @@ public final class MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
     ///
-    public func reviews(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> ReviewPageableList {
-        let request = MovieReviewsRequest(id: movieID, page: page)
+    public func reviews(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> ReviewPageableList {
+        let request = MovieReviewsRequest(id: movieID, page: page, language: language)
 
         let reviewList: ReviewPageableList
         do {
@@ -130,14 +136,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
+    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
     ///
-    public func images(forMovie movieID: Movie.ID) async throws -> ImageCollection {
-        let languageCode = localeProvider.languageCode
-        let request = MovieImagesRequest(id: movieID, languageCode: languageCode)
+    public func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
+        let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
         let imageCollection: ImageCollection
         do {
@@ -156,14 +162,14 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
+    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
-    public func videos(forMovie movieID: Movie.ID) async throws -> VideoCollection {
-        let languageCode = localeProvider.languageCode
-        let request = MovieVideosRequest(id: movieID, languageCode: languageCode)
+    public func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
+        let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 
         let videoCollection: VideoCollection
         do {
@@ -185,13 +191,18 @@ public final class MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get recommendations for.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     ///
-    public func recommendations(forMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        let request = MovieRecommendationsRequest(id: movieID, page: page)
+    public func recommendations(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = MovieRecommendationsRequest(id: movieID, page: page, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -215,13 +226,18 @@ public final class MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get similar movies for.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
     ///
-    public func similar(toMovie movieID: Movie.ID, page: Int? = nil) async throws -> MoviePageableList {
-        let request = SimilarMoviesRequest(id: movieID, page: page)
+    public func similar(
+        toMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = SimilarMoviesRequest(id: movieID, page: page, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -242,13 +258,19 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Now playing movies as a pageable list.
     ///
-    public func nowPlaying(page: Int? = nil) async throws -> MoviePageableList {
-        let request = MoviesNowPlayingRequest(page: page)
+    public func nowPlaying(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = MoviesNowPlayingRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -269,13 +291,19 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular movies as a pageable list.
     ///
-    public func popular(page: Int? = nil) async throws -> MoviePageableList {
-        let request = PopularMoviesRequest(page: page)
+    public func popular(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = PopularMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -296,13 +324,19 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Top rated movies as a pageable list.
     ///
-    public func topRated(page: Int? = nil) async throws -> MoviePageableList {
-        let request = TopRatedMoviesRequest(page: page)
+    public func topRated(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = TopRatedMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -323,13 +357,19 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Upcoming movies as a pageable list.
     ///
-    public func upcoming(page: Int? = nil) async throws -> MoviePageableList {
-        let request = UpcomingMoviesRequest(page: page)
+    public func upcoming(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = UpcomingMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -346,18 +386,17 @@ public final class MovieService {
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
     ///
+    /// Data provided by [JustWatch](https://www.justwatch.com).
+    ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
     /// - Returns: Watch providers for movie in current region.
     ///
-    public func watchProviders(forMovie movieID: Movie.ID) async throws -> ShowWatchProvider? {
-        guard let regionCode = localeProvider.regionCode else {
-            return nil
-        }
-
+    public func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws -> ShowWatchProvider? {
         let request = MovieWatchProvidersRequest(id: movieID)
 
         let result: ShowWatchProviderResult
@@ -367,7 +406,7 @@ public final class MovieService {
             throw TMDbError(error: error)
         }
 
-        return result.results[regionCode]
+        return result.results[country]
     }
 
     ///

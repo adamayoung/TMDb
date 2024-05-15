@@ -21,10 +21,23 @@ import Foundation
 
 final class PersonMovieCreditsRequest: DecodableAPIRequest<PersonMovieCredits> {
 
-    init(id: Person.ID) {
+    init(id: Person.ID, language: String? = nil) {
         let path = "/person/\(id)/movie_credits"
+        let queryItems = APIRequestQueryItems(language: language)
 
-        super.init(path: path)
+        super.init(path: path, queryItems: queryItems)
+    }
+
+}
+
+private extension APIRequestQueryItems {
+
+    init(language: String?) {
+        self.init()
+
+        if let language {
+            self[.language] = language
+        }
     }
 
 }

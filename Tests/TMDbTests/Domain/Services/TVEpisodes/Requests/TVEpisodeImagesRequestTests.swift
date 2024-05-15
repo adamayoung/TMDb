@@ -35,10 +35,15 @@ final class TVEpisodeImagesRequestTests: XCTestCase {
     }
 
     func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
-        let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3, languageCode: "en")
+        let request = TVEpisodeImagesRequest(
+            episodeNumber: 1,
+            seasonNumber: 2,
+            tvSeriesID: 3,
+            languages: ["en-GB", "fr"]
+        )
 
         XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["include_image_language"], "en,null")
+        XCTAssertEqual(request.queryItems["include_image_language"], "en,fr,null")
     }
 
     func testMethodIsGet() {

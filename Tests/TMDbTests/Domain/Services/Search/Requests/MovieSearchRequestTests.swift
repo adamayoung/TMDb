@@ -34,34 +34,55 @@ final class MovieSearchRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["query": "fight club"])
     }
 
-    func testQueryItemsWhenPageIsNilQueryItemsDoNotContainPage() {
-        let request = MovieSearchRequest(query: "", page: nil)
+    func testQueryItemsWithQueryAndPrimaryReleaseYear() {
+        let request = MovieSearchRequest(query: "fight club", primaryReleaseYear: 2024)
 
-        XCTAssertEqual(request.queryItems, ["query": ""])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "primary_release_year": "2024"])
     }
 
-    func testQueryItemsWhenPageQueryItemHasPage() {
-        let request = MovieSearchRequest(query: "", page: 3)
+    func testQueryItemsWithQueryAndCountry() {
+        let request = MovieSearchRequest(query: "fight club", country: "GB")
 
-        XCTAssertEqual(request.queryItems, ["query": "", "page": "3"])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "region": "GB"])
     }
 
-    func testQueryItemsWhenYearIsNilQueryItemsDoNotContainYear() {
-        let request = MovieSearchRequest(query: "", year: nil)
+    func testQueryItemsWithQueryAndIncludeAdult() {
+        let request = MovieSearchRequest(query: "fight club", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": ""])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "include_adult": "true"])
     }
 
-    func testQueryItemsWhenYearQueryItemHasYear() {
-        let request = MovieSearchRequest(query: "", year: 2024)
+    func testQueryItemsWithQueryAndPage() {
+        let request = MovieSearchRequest(query: "fight club", page: 3)
 
-        XCTAssertEqual(request.queryItems, ["query": "", "year": "2024"])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "page": "3"])
     }
 
-    func testQueryItemsWhenPageAndYearQueryItemHasPageAndYear() {
-        let request = MovieSearchRequest(query: "", year: 2021, page: 4)
+    func testQueryItemsWithQueryAndLanguage() {
+        let request = MovieSearchRequest(query: "fight club", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["query": "", "year": "2021", "page": "4"])
+        XCTAssertEqual(request.queryItems, ["query": "fight club", "language": "en"])
+    }
+
+    func testQueryItemsWithQueryAndPrimaryReleaseYearAndCountryAndIncludeAdultAndPageAndLanugage() {
+        let request = MovieSearchRequest(
+            query: "fight club",
+            primaryReleaseYear: 2024,
+            includeAdult: false,
+            page: 2,
+            language: "en"
+        )
+
+        XCTAssertEqual(
+            request.queryItems,
+            [
+                "query": "fight club",
+                "primary_release_year": "2024",
+                "include_adult": "false",
+                "page": "2",
+                "language": "en"
+            ]
+        )
     }
 
     func testMethodIsGet() {

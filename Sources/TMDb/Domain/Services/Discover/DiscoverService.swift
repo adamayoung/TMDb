@@ -53,6 +53,7 @@ public final class DiscoverService {
     ///    - sortedBy: How results should be sorted.
     ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -61,9 +62,15 @@ public final class DiscoverService {
     public func movies(
         sortedBy: MovieSort? = nil,
         withPeople people: [Person.ID]? = nil,
-        page: Int? = nil
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = DiscoverMoviesRequest(sortedBy: sortedBy, people: people, page: page)
+        let request = DiscoverMoviesRequest(
+            sortedBy: sortedBy,
+            people: people,
+            page: page,
+            language: language
+        )
 
         let movieList: MoviePageableList
         do {
@@ -85,13 +92,18 @@ public final class DiscoverService {
     /// - Parameters:
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching TV series as a pageable list.
     ///
-    public func tvSeries(sortedBy: TVSeriesSort? = nil, page: Int? = nil) async throws -> TVSeriesPageableList {
-        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page)
+    public func tvSeries(
+        sortedBy: TVSeriesSort? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {

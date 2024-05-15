@@ -1,5 +1,5 @@
 //
-//  LocaleMockProvider.swift
+//  TVSeasonImageFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -18,17 +18,24 @@
 //
 
 import Foundation
-@testable import TMDb
 
-final class LocaleMockProvider: LocaleProviding {
+///
+/// A filter for fetching TV season images.
+///
+public struct TVSeasonImageFilter {
 
-    var languageCode: String?
+    ///
+    /// A list of ISO 639-1 language codes to filter images by.
+    ///
+    public let languages: [String]?
 
-    var regionCode: String?
-
-    init(languageCode: String? = nil, regionCode: String? = nil) {
-        self.languageCode = languageCode
-        self.regionCode = regionCode
+    ///
+    /// Creates a TV season image filter.
+    ///
+    /// - Parameter languages: A list of ISO 639-1 language codes to filter images by.
+    ///
+    public init(languages: [String]? = nil) {
+        self.languages = languages
     }
 
 }

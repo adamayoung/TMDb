@@ -1,5 +1,5 @@
 //
-//  MovieGenresRequests.swift
+//  TVSeriesVideoFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -19,12 +19,23 @@
 
 import Foundation
 
-final class MovieGenresRequests: DecodableAPIRequest<GenreList> {
+///
+/// A filter for fetching TV series videos.
+///
+public struct TVSeriesVideoFilter {
 
-    init() {
-        let path = "/genre/movie/list"
+    ///
+    /// A list of ISO 639-1 language codes to filter videos by.
+    ///
+    public let languages: [String]?
 
-        super.init(path: path)
+    ///
+    /// Creates a TV series video filter.
+    ///
+    /// - Parameter languages: A list of ISO 639-1 language codes to filter videos by.
+    ///
+    public init(languages: [String]? = nil) {
+        self.languages = languages
     }
 
 }

@@ -28,7 +28,7 @@ final class DiscoverTVSeriesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/discover/tv")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         let request = DiscoverTVSeriesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -40,16 +40,29 @@ final class DiscoverTVSeriesRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc"])
     }
 
-    func testPathWithPageReturnsURL() throws {
+    func testQueryItemsWithPage() throws {
         let request = DiscoverTVSeriesRequest(page: 1)
 
         XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
-    func testTVSeriesEndpointWithSortedByAndPageReturnsURL() throws {
-        let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false), page: 1)
+    func testQueryItemsWithLanguage() {
+        let request = DiscoverMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc", "page": "1"])
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithSortedByAndPageAndLanguage() {
+        let request = DiscoverTVSeriesRequest(
+            sortedBy: .firstAirDate(descending: false),
+            page: 2,
+            language: "en"
+        )
+
+        XCTAssertEqual(
+            request.queryItems,
+            ["sort_by": "first_air_date.asc", "page": "2", "language": "en"]
+        )
     }
 
     func testMethodIsGet() {

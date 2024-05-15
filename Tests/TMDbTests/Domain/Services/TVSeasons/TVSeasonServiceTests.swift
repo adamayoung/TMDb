@@ -24,18 +24,15 @@ final class TVSeasonServiceTests: XCTestCase {
 
     var service: TVSeasonService!
     var apiClient: MockAPIClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        service = TVSeasonService(apiClient: apiClient, localeProvider: localeProvider)
+        service = TVSeasonService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient = nil
-        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -45,9 +42,31 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeasonRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let expectedRequest = TVSeasonRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
 
         let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonRequest, expectedRequest)
+    }
+
+    func testDetailsWithLanguageReturnsTVSeason() async throws {
+        let tvSeriesID = Int.randomID
+        let expectedResult = TVSeason.mock()
+        let seasonNumber = expectedResult.seasonNumber
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeasonRequest, expectedRequest)
@@ -58,7 +77,11 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
         let seasonNumber = Int.randomID
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeasonAggregateCreditsRequest(seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let expectedRequest = TVSeasonAggregateCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
 
         let result = try await service.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
@@ -66,18 +89,42 @@ final class TVSeasonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeasonAggregateCreditsRequest, expectedRequest)
     }
 
-    func testImagesReturnsImages() async throws {
+    func testAggregateCreditsWithLanguageReturnsTVSeasonCredits() async throws {
+        let tvSeriesID = Int.randomID
+        let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
+        let seasonNumber = Int.randomID
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonAggregateCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let result = try await service.aggregateCredits(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            language: language
+        )
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonAggregateCreditsRequest, expectedRequest)
+    }
+
+    func testImagesWithFilterReturnsImages() async throws {
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
+        let languages = ["en-GB", "fr"]
         let expectedResult = TVSeasonImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeasonImagesRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: localeProvider.languageCode
+            languages: languages
         )
 
-        let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let filter = TVSeasonImageFilter(languages: languages)
+        let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeasonImagesRequest, expectedRequest)
@@ -91,10 +138,29 @@ final class TVSeasonServiceTests: XCTestCase {
         let expectedRequest = TVSeasonVideosRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: localeProvider.languageCode
+            languages: nil
         )
 
         let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeasonVideosRequest, expectedRequest)
+    }
+
+    func testVideosWithFilterReturnsVideos() async throws {
+        let seasonNumber = Int.randomID
+        let tvSeriesID = Int.randomID
+        let languages = ["en", "fr"]
+        let expectedResult = VideoCollection.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonVideosRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languages: languages
+        )
+
+        let filter = TVSeasonVideoFilter(languages: languages)
+        let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeasonVideosRequest, expectedRequest)

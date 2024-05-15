@@ -28,7 +28,7 @@ final class DiscoverMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/discover/movie")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         let request = DiscoverMoviesRequest()
 
         XCTAssertTrue(request.queryItems.isEmpty)
@@ -52,10 +52,24 @@ final class DiscoverMoviesRequestTests: XCTestCase {
         XCTAssertEqual(request.queryItems, ["page": "1"])
     }
 
-    func testQueryItemsWithSortByAndPeopleAndPage() throws {
-        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false), people: [1, 2, 3], page: 1)
+    func testQueryItemsWithLanguage() {
+        let request = DiscoverMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "1"])
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
+    func testQueryItemsWithSortedByAndPeopleAndPageAndLanguage() {
+        let request = DiscoverMoviesRequest(
+            sortedBy: .originalTitle(descending: false),
+            people: [1, 2, 3],
+            page: 2,
+            language: "en"
+        )
+
+        XCTAssertEqual(
+            request.queryItems,
+            ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "2", "language": "en"]
+        )
     }
 
     func testMethodIsGet() {

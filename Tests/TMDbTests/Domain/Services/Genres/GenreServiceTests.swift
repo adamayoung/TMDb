@@ -41,24 +41,50 @@ final class GenreServiceTests: XCTestCase {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
-        let expectedRequest = MovieGenresRequests()
+        let expectedRequest = MovieGenresRequest(language: nil)
 
         let result = try await service.movieGenres()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequests, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequest, expectedRequest)
+    }
+
+    func testMovieGenresWithLanguageReturnsGenres() async throws {
+        let genreList = GenreList.mock()
+        let language = "en"
+        let expectedResult = genreList.genres
+        apiClient.addResponse(.success(genreList))
+        let expectedRequest = MovieGenresRequest(language: language)
+
+        let result = try await service.movieGenres(language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequest, expectedRequest)
     }
 
     func testTVSeriesGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
-        let expectedRequest = TVSeriesGenresRequests()
+        let expectedRequest = TVSeriesGenresRequest(language: nil)
 
         let result = try await service.tvSeriesGenres()
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequests, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequest, expectedRequest)
+    }
+
+    func testTVSeriesGenresWithLanguageReturnsGenres() async throws {
+        let genreList = GenreList.mock()
+        let language = "en"
+        let expectedResult = genreList.genres
+        apiClient.addResponse(.success(genreList))
+        let expectedRequest = TVSeriesGenresRequest(language: language)
+
+        let result = try await service.tvSeriesGenres(language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequest, expectedRequest)
     }
 
 }

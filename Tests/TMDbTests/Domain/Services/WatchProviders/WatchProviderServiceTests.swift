@@ -24,18 +24,15 @@ final class WatchProviderServiceTests: XCTestCase {
 
     var service: WatchProviderService!
     var apiClient: MockAPIClient!
-    var localeProvider: LocaleMockProvider!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        localeProvider = LocaleMockProvider(languageCode: "en", regionCode: "GB")
-        service = WatchProviderService(apiClient: apiClient, localeProvider: localeProvider)
+        service = WatchProviderService(apiClient: apiClient)
     }
 
     override func tearDown() {
         apiClient = nil
-        localeProvider = nil
         service = nil
         super.tearDown()
     }
@@ -44,9 +41,22 @@ final class WatchProviderServiceTests: XCTestCase {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
         apiClient.addResponse(.success(regions))
-        let expectedRequest = WatchProviderRegionsRequest()
+        let expectedRequest = WatchProviderRegionsRequest(language: nil)
 
         let result = try await service.countries()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
+    }
+
+    func testCountriesWithLanguageReturnsCountries() async throws {
+        let regions = WatchProviderRegions.mock
+        let language = "en"
+        let expectedResult = regions.results
+        apiClient.addResponse(.success(regions))
+        let expectedRequest = WatchProviderRegionsRequest(language: language)
+
+        let result = try await service.countries(language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
@@ -56,9 +66,24 @@ final class WatchProviderServiceTests: XCTestCase {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = WatchProvidersForMoviesRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForMoviesRequest(country: nil, language: nil)
 
         let result = try await service.movieWatchProviders()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
+    }
+
+    func testMovieWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
+        let watchProviderResult = WatchProviderResult.mock
+        let country = "GB"
+        let language = "en"
+        let expectedResult = watchProviderResult.results
+        apiClient.addResponse(.success(watchProviderResult))
+        let expectedRequest = WatchProvidersForMoviesRequest(country: country, language: language)
+
+        let filter = WatchProviderFilter(country: country)
+        let result = try await service.movieWatchProviders(filter: filter, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
@@ -68,9 +93,24 @@ final class WatchProviderServiceTests: XCTestCase {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
-        let expectedRequest = WatchProvidersForTVSeriesRequest(regionCode: localeProvider.regionCode)
+        let expectedRequest = WatchProvidersForTVSeriesRequest(country: nil, language: nil)
 
         let result = try await service.tvSeriesWatchProviders()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)
+    }
+
+    func testTVSeriesWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
+        let watchProviderResult = WatchProviderResult.mock
+        let country = "GB"
+        let language = "en"
+        let expectedResult = watchProviderResult.results
+        apiClient.addResponse(.success(watchProviderResult))
+        let expectedRequest = WatchProvidersForTVSeriesRequest(country: country, language: language)
+
+        let filter = WatchProviderFilter(country: country)
+        let result = try await service.tvSeriesWatchProviders(filter: filter, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)

@@ -21,9 +21,24 @@ import Foundation
 
 final class MovieSearchRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(query: String, year: Int? = nil, page: Int? = nil) {
+    init(
+        query: String,
+        primaryReleaseYear: Int? = nil,
+        country: String? = nil,
+        includeAdult: Bool? = nil,
+        page: Int? = nil,
+        language: String? = nil
+
+    ) {
         let path = "/search/movie"
-        let queryItems = APIRequestQueryItems(query: query, year: year, page: page)
+        let queryItems = APIRequestQueryItems(
+            query: query,
+            primaryReleaseYear: primaryReleaseYear,
+            country: country,
+            includeAdult: includeAdult,
+            page: page,
+            language: language
+        )
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,17 +47,36 @@ final class MovieSearchRequest: DecodableAPIRequest<MoviePageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(query: String, year: Int?, page: Int?) {
+    init(
+        query: String,
+        primaryReleaseYear: Int?,
+        country: String?,
+        includeAdult: Bool?,
+        page: Int?,
+        language: String?
+    ) {
         self.init()
 
         self[.query] = query
 
-        if let year {
-            self[.year] = year
+        if let primaryReleaseYear {
+            self[.primaryReleaseYear] = primaryReleaseYear
+        }
+
+        if let country {
+            self[.region] = country
+        }
+
+        if let includeAdult {
+            self[.includeAdult] = includeAdult
         }
 
         if let page {
             self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 

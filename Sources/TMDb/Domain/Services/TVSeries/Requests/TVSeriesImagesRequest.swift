@@ -21,9 +21,9 @@ import Foundation
 
 final class TVSeriesImagesRequest: DecodableAPIRequest<ImageCollection> {
 
-    init(id: TVSeries.ID, languageCode: String? = nil) {
+    init(id: TVSeries.ID, languages: [String]? = nil) {
         let path = "/tv/\(id)/images"
-        let queryItems = APIRequestQueryItems(languageCode: languageCode)
+        let queryItems = APIRequestQueryItems(languages: languages)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,23 @@ final class TVSeriesImagesRequest: DecodableAPIRequest<ImageCollection> {
 
 private extension APIRequestQueryItems {
 
-    init(languageCode: String?) {
+    init(languages: [String]?) {
         self.init()
 
-        if let languageCode {
-            self[.includeImageLanguage] = [languageCode, "null"].joined(separator: ",")
+        if var languages {
+            languages = Self.removeRegion(from: languages)
+            languages.append("null")
+            self[.includeImageLanguage] = languages.joined(separator: ",")
+        }
+    }
+
+    private static func removeRegion(from languages: [String]) -> [String] {
+        languages.compactMap { language in
+            guard let languageCode = language.split(separator: "-").first else {
+                return nil
+            }
+
+            return String(languageCode)
         }
     }
 

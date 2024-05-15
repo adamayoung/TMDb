@@ -51,9 +51,21 @@ final class ConfigurationServiceTests: XCTestCase {
     func testCountriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = CountriesConfigurationRequest()
+        let expectedRequest = CountriesConfigurationRequest(language: nil)
 
         let result = try await service.countries()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)
+    }
+
+    func testCountriesWithLanguageReturnsCountries() async throws {
+        let expectedResult = [Country].mocks
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CountriesConfigurationRequest(language: language)
+
+        let result = try await service.countries(language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)

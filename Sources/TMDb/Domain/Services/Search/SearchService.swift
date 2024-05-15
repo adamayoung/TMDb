@@ -51,14 +51,26 @@ public final class SearchService {
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
+    ///    - filter: Search filter.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies, TV series and people matching the query.
     ///
-    public func searchAll(query: String, page: Int? = nil) async throws -> MediaPageableList {
-        let request = MultiSearchRequest(query: query, page: page)
+    public func searchAll(
+        query: String,
+        filter: AllMediaSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaPageableList {
+        let request = MultiSearchRequest(
+            query: query,
+            includeAdult: filter?.includeAdult,
+            page: page,
+            language: language
+        )
 
         let mediaList: MediaPageableList
         do {
@@ -79,15 +91,28 @@ public final class SearchService {
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
-    ///    - year: The year to filter results for.
+    ///    - filter: Search filter.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies matching the query.
     ///
-    public func searchMovies(query: String, year: Int? = nil, page: Int? = nil) async throws -> MoviePageableList {
-        let request = MovieSearchRequest(query: query, year: year, page: page)
+    public func searchMovies(
+        query: String,
+        filter: MovieSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        let request = MovieSearchRequest(
+            query: query,
+            primaryReleaseYear: filter?.primaryReleaseYear,
+            country: filter?.country,
+            includeAdult: filter?.includeAdult,
+            page: page,
+            language: language
+        )
 
         let movieList: MoviePageableList
         do {
@@ -108,8 +133,9 @@ public final class SearchService {
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
-    ///    - firstAirDateYear: The year of first air date to filter results for.
+    ///    - filter: Search filter.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -117,10 +143,18 @@ public final class SearchService {
     ///
     public func searchTVSeries(
         query: String,
-        firstAirDateYear: Int? = nil,
-        page: Int? = nil
+        filter: TVSeriesSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = TVSeriesSearchRequest(query: query, firstAirDateYear: firstAirDateYear, page: page)
+        let request = TVSeriesSearchRequest(
+            query: query,
+            firstAirDateYear: filter?.firstAirDateYear,
+            year: filter?.year,
+            includeAdult: filter?.includeAdult,
+            page: page,
+            language: language
+        )
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -141,14 +175,26 @@ public final class SearchService {
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
+    ///    - filter: Search filter.
     ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: People matching the query.
     ///
-    public func searchPeople(query: String, page: Int? = nil) async throws -> PersonPageableList {
-        let request = PersonSearchRequest(query: query, page: page)
+    public func searchPeople(
+        query: String,
+        filter: PersonSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> PersonPageableList {
+        let request = PersonSearchRequest(
+            query: query,
+            includeAdult: filter?.includeAdult,
+            page: page,
+            language: language
+        )
 
         let peopleList: PersonPageableList
         do {

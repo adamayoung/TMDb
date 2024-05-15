@@ -26,7 +26,6 @@ import Foundation
 public final class TVEpisodeService {
 
     private let apiClient: any APIClient
-    private let localeProvider: any LocaleProviding
 
     ///
     /// Creates a TV episode service object.
@@ -35,14 +34,12 @@ public final class TVEpisodeService {
     ///
     public convenience init(configuration: TMDbConfiguration) {
         self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration),
-            localeProvider: TMDbFactory.localeProvider()
+            apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
     }
 
-    init(apiClient: some APIClient, localeProvider: some LocaleProviding) {
+    init(apiClient: some APIClient) {
         self.apiClient = apiClient
-        self.localeProvider = localeProvider
     }
 
     ///
@@ -54,6 +51,7 @@ public final class TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -62,9 +60,15 @@ public final class TVEpisodeService {
     public func details(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
     ) async throws -> TVEpisode {
-        let request = TVEpisodeRequest(episodeNumber: episodeNumber, seasonNumber: seasonNumber, tvSeriesID: tvSeriesID)
+        let request = TVEpisodeRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
 
         let episode: TVEpisode
         do {
@@ -85,6 +89,7 @@ public final class TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV.
     ///    - seasonNumber: The season number of a TV.
     ///    - tvSeriesID: The identifier of the TV.
+    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -93,14 +98,14 @@ public final class TVEpisodeService {
     public func images(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVEpisodeImageFilter? = nil
     ) async throws -> TVEpisodeImageCollection {
-        let languageCode = localeProvider.languageCode
         let request = TVEpisodeImagesRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: languageCode
+            languages: filter?.languages
         )
 
         let imageCollection: TVEpisodeImageCollection
@@ -122,6 +127,7 @@ public final class TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV.
     ///    - seasonNumber: The season number of a TV.
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -130,14 +136,14 @@ public final class TVEpisodeService {
     public func videos(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVEpisodeVideoFilter? = nil
     ) async throws -> VideoCollection {
-        let languageCode = localeProvider.languageCode
         let request = TVEpisodeVideosRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            languageCode: languageCode
+            languages: filter?.languages
         )
 
         let videoCollection: VideoCollection

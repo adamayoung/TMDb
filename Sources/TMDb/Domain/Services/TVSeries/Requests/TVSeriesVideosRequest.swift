@@ -21,9 +21,9 @@ import Foundation
 
 final class TVSeriesVideosRequest: DecodableAPIRequest<VideoCollection> {
 
-    init(id: TVSeries.ID, languageCode: String? = nil) {
+    init(id: TVSeries.ID, languages: [String]? = nil) {
         let path = "/tv/\(id)/videos"
-        let queryItems = APIRequestQueryItems(languageCode: languageCode)
+        let queryItems = APIRequestQueryItems(languages: languages)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,11 +32,11 @@ final class TVSeriesVideosRequest: DecodableAPIRequest<VideoCollection> {
 
 private extension APIRequestQueryItems {
 
-    init(languageCode: String?) {
+    init(languages: [String]?) {
         self.init()
 
-        if let languageCode {
-            self[.includeVideoLanguage] = [languageCode, "null"].joined(separator: ",")
+        if let languages {
+            self[.includeVideoLanguage] = languages.joined(separator: ",")
         }
     }
 

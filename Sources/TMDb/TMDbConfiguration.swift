@@ -56,7 +56,10 @@ public final class TMDbConfiguration: Sendable {
     ///    - apiKey: The TMDb API key to use.
     ///    - httpClient: A custom HTTP client adapter for making HTTP requests.
     ///
-    public init(apiKey: String, httpClient: some HTTPClient) {
+    public init(
+        apiKey: String,
+        httpClient: some HTTPClient
+    ) {
         self.apiKey = apiKey
         self.httpClient = httpClient
     }

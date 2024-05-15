@@ -22,35 +22,38 @@ import XCTest
 
 final class TVSeasonRequestTests: XCTestCase {
 
-    var request: TVSeasonRequest!
-
-    override func setUp() {
-        super.setUp()
-        request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
-    }
-
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
     func testPath() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
         XCTAssertEqual(request.path, "/tv/3/season/2")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
+
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
+    func testQueryItemsWithLanguage() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3, language: "en")
+
+        XCTAssertEqual(request.queryItems, ["language": "en"])
+    }
+
     func testMethodIsGet() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
+
         XCTAssertEqual(request.method, .get)
     }
 
     func testHeadersIsEmpty() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
+
         XCTAssertTrue(request.headers.isEmpty)
     }
 
     func testBodyIsNil() {
+        let request = TVSeasonRequest(seasonNumber: 2, tvSeriesID: 3)
+
         XCTAssertNil(request.body)
     }
 
