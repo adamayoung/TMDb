@@ -70,6 +70,22 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
     }
 
+    func testSearchAllWhenErrorsThrowsError() async throws {
+        let query = String.randomString
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.searchAll(query: query)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testSearchMoviesReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock()
@@ -117,6 +133,22 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
     }
 
+    func testSearchMoviesWhenErrorsThrowsError() async throws {
+        let query = String.randomString
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.searchMovies(query: query)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testSearchTVSeriesReturnsTVSeries() async throws {
         let query = String.randomString
         let expectedResult = TVSeriesPageableList.mock()
@@ -161,6 +193,22 @@ final class SearchServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
     }
 
+    func testSearchTVSeriesWhenErrorsThrowsError() async throws {
+        let query = String.randomString
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.searchTVSeries(query: query)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testSearchPeopleReturnsPeople() async throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock()
@@ -192,6 +240,22 @@ final class SearchServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PersonSearchRequest, expectedRequest)
+    }
+
+    func testSearchPeopleWhenErrorsThrowsError() async throws {
+        let query = String.randomString
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.searchPeople(query: query)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
