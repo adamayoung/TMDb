@@ -36,7 +36,7 @@ public final class AuthenticationService {
     ///
     /// - Parameter configuration: A TMDb configuration object.
     ///
-    public convenience init(configuration: TMDbConfiguration) {
+    public convenience init(configuration: some ConfigurationProviding) {
         self.init(
             apiClient: TMDbFactory.authAPIClient(configuration: configuration),
             authenticateURLBuilder: TMDbFactory.authenticateURLBuilder()

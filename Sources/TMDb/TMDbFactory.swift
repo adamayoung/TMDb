@@ -35,7 +35,7 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static func apiClient(configuration: TMDbConfiguration) -> some APIClient {
+    static func apiClient(configuration: some ConfigurationProviding) -> some APIClient {
         TMDbAPIClient(
             apiKey: configuration.apiKey,
             baseURL: tmdbAPIBaseURL,
@@ -44,7 +44,7 @@ extension TMDbFactory {
         )
     }
 
-    static func authAPIClient(configuration: TMDbConfiguration) -> some APIClient {
+    static func authAPIClient(configuration: some ConfigurationProviding) -> some APIClient {
         TMDbAPIClient(
             apiKey: configuration.apiKey,
             baseURL: .tmdbAPIBaseURL,
