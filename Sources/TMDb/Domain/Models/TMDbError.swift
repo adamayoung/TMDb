@@ -55,7 +55,9 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
 
 public extension TMDbError {
 
+    ///
     /// A localized message describing what error occurred.
+    ///
     var errorDescription: String? {
         switch self {
         case .notFound:

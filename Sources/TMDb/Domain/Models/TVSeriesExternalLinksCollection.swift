@@ -81,24 +81,6 @@ public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable,
         self.twitter = twitter
     }
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-        hasher.combine(imdb?.id)
-        hasher.combine(wikiData?.id)
-        hasher.combine(facebook?.id)
-        hasher.combine(instagram?.id)
-        hasher.combine(twitter?.id)
-    }
-
-    public static func == (lhs: TVSeriesExternalLinksCollection, rhs: TVSeriesExternalLinksCollection) -> Bool {
-        lhs.id == rhs.id
-            && lhs.imdb == rhs.imdb
-            && lhs.wikiData == rhs.wikiData
-            && lhs.facebook == rhs.facebook
-            && lhs.instagram == rhs.instagram
-            && lhs.twitter == rhs.twitter
-    }
-
 }
 
 public extension TVSeriesExternalLinksCollection {
