@@ -50,6 +50,21 @@ final class CertificationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieCertificationsRequest, expectedRequest)
     }
 
+    func testMovieCertificationsWhenErrosThrowError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.movieCertifications()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testTVSeriesCertificationsReturnsTVSeriesCertifications() async throws {
         let certifications = Certifications.gbAndUS
         let expectedResult = certifications.certifications
@@ -61,6 +76,21 @@ final class CertificationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesCertificationsRequest, expectedRequest)
+    }
+
+    func testTVSeriesCertificationsWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.tvSeriesCertifications()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
