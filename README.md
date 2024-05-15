@@ -28,7 +28,7 @@ Add the TMDb package as a dependency to your `Package.swift` file, and add it
 as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.10
+// swift-tools-version:5.9
 
 import PackageDescription
 

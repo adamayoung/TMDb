@@ -31,6 +31,36 @@ final class PersonCombinedCreditsTests: XCTestCase {
         XCTAssertEqual(result.crew, personCombinedCredits.crew)
     }
 
+    func testAllShows() {
+        let credits = PersonCombinedCredits(
+            id: 1,
+            cast: [
+                .movie(Movie(id: 1, title: "Movie 1")),
+                .movie(Movie(id: 2, title: "Movie 2")),
+                .tvSeries(TVSeries(id: 11, name: "TV 1")),
+                .tvSeries(TVSeries(id: 12, name: "TV 2"))
+            ],
+            crew: [
+                .movie(Movie(id: 1, title: "Movie 1")),
+                .movie(Movie(id: 3, title: "Movie 3")),
+                .tvSeries(TVSeries(id: 11, name: "TV 1")),
+                .tvSeries(TVSeries(id: 13, name: "TV 3"))
+            ]
+        )
+        let expectedResult: [Show] = [
+            .movie(Movie(id: 1, title: "Movie 1")),
+            .movie(Movie(id: 2, title: "Movie 2")),
+            .movie(Movie(id: 3, title: "Movie 3")),
+            .tvSeries(TVSeries(id: 11, name: "TV 1")),
+            .tvSeries(TVSeries(id: 12, name: "TV 2")),
+            .tvSeries(TVSeries(id: 13, name: "TV 3"))
+        ].sorted { $0.id < $1.id }
+
+        let result = credits.allShows.sorted { $0.id < $1.id }
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
     // swiftlint:disable line_length
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,

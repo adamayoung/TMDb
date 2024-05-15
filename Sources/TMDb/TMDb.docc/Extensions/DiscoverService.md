@@ -8,7 +8,7 @@
 
 ### Discover Movies
 
-- ``movies(sortedBy:withPeople:page:language:)``
+- ``movies(filter:sortedBy:page:language:)``
 
 ### Discover TV Series
 
