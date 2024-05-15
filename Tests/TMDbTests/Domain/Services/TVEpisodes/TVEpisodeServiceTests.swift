@@ -37,7 +37,7 @@ final class TVEpisodeServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDetailsReturnsTVSeason() async throws {
+    func testDetailsReturnsTVEpisode() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVEpisode.mock()
         let seasonNumber = expectedResult.seasonNumber
@@ -54,6 +54,31 @@ final class TVEpisodeServiceTests: XCTestCase {
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID
+        )
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeRequest, expectedRequest)
+    }
+
+    func testDetailsWithLanguageReturnsTVEpisode() async throws {
+        let tvSeriesID = Int.randomID
+        let expectedResult = TVEpisode.mock()
+        let seasonNumber = expectedResult.seasonNumber
+        let episodeNumber = expectedResult.episodeNumber
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let result = try await service.details(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            language: language
         )
 
         XCTAssertEqual(result, expectedResult)
@@ -83,6 +108,32 @@ final class TVEpisodeServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
     }
 
+    func testImagesWithFilterReturnsImages() async throws {
+        let episodeNumber = Int.randomID
+        let seasonNumber = Int.randomID
+        let tvSeriesID = Int.randomID
+        let languages = ["en-GB", "fr"]
+        let expectedResult = TVEpisodeImageCollection.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeImagesRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languages: languages
+        )
+
+        let filter = TVEpisodeImageFilter(languages: languages)
+        let result = try await service.images(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            filter: filter
+        )
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
+    }
+
     func testVideosReturnsVideos() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
@@ -100,6 +151,32 @@ final class TVEpisodeServiceTests: XCTestCase {
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID
+        )
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeVideosRequest, expectedRequest)
+    }
+
+    func testVideosWithFilterReturnsVideos() async throws {
+        let episodeNumber = Int.randomID
+        let seasonNumber = Int.randomID
+        let tvSeriesID = Int.randomID
+        let languages = ["en", "fr"]
+        let expectedResult = VideoCollection.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeVideosRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            languages: languages
+        )
+
+        let filter = TVEpisodeVideoFilter(languages: languages)
+        let result = try await service.videos(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            filter: filter
         )
 
         XCTAssertEqual(result, expectedResult)

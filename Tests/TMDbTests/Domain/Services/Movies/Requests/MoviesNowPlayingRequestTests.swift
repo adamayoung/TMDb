@@ -53,7 +53,7 @@ final class MoviesNowPlayingRequestTests: XCTestCase {
     }
 
     func testQueryItemsWithPageAndLanguageAndCountry() {
-        let request = MoviesNowPlayingRequest(page: 3, language: "en", country: "GB")
+        let request = MoviesNowPlayingRequest(page: 3, country: "GB", language: "en")
 
         XCTAssertEqual(request.queryItems, ["page": "3", "language": "en", "region": "GB"])
     }

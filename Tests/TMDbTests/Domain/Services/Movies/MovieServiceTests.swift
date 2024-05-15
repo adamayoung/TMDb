@@ -49,6 +49,19 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
     }
 
+    func testDetailsWithLanguageReturnsMovie() async throws {
+        let expectedResult = Movie.thorLoveAndThunder
+        let movieID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieRequest(id: movieID, language: language)
+
+        let result = try await service.details(forMovie: movieID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
+    }
+
     func testCreditsReturnsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
@@ -61,7 +74,20 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
     }
 
-    func testReviewsWithDefaultParametersReturnsReviews() async throws {
+    func testCreditsWithLanguageReturnsCredits() async throws {
+        let expectedResult = ShowCredits.mock()
+        let movieID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieCreditsRequest(id: movieID, language: language)
+
+        let result = try await service.credits(forMovie: movieID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
+    }
+
+    func testReviewsReturnsReviews() async throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -73,26 +99,15 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
     }
 
-    func testReviewsReturnsReviews() async throws {
-        let movieID = Int.randomID
-        let expectedResult = ReviewPageableList.mock()
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieReviewsRequest(id: movieID, page: nil)
-
-        let result = try await service.reviews(forMovie: movieID, page: nil)
-
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
-    }
-
-    func testReviewsWithPageReturnsReviews() async throws {
+    func testReviewsWithPageAndLanguageReturnsReviews() async throws {
         let movieID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
         let page = expectedResult.page
+        let language = "en"
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieReviewsRequest(id: movieID, page: page)
+        let expectedRequest = MovieReviewsRequest(id: movieID, page: page, language: language)
 
-        let result = try await service.reviews(forMovie: movieID, page: page)
+        let result = try await service.reviews(forMovie: movieID, page: page, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
@@ -110,6 +125,20 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieImagesRequest, expectedRequest)
     }
 
+    func testImagesWithFilterReturnsImageCollection() async throws {
+        let expectedResult = ImageCollection.mock()
+        let movieID = expectedResult.id
+        let languages = ["en-GB", "fr"]
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieImagesRequest(id: movieID, languages: languages)
+
+        let filter = MovieImageFilter(languages: languages)
+        let result = try await service.images(forMovie: movieID, filter: filter)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieImagesRequest, expectedRequest)
+    }
+
     func testVideosReturnsVideoCollection() async throws {
         let expectedResult = VideoCollection.mock()
         let movieID = expectedResult.id
@@ -117,6 +146,20 @@ final class MovieServiceTests: XCTestCase {
         let expectedRequest = MovieVideosRequest(id: movieID, languages: nil)
 
         let result = try await service.videos(forMovie: movieID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieVideosRequest, expectedRequest)
+    }
+
+    func testVideosWithFilterReturnsVideoCollection() async throws {
+        let expectedResult = VideoCollection.mock()
+        let movieID = expectedResult.id
+        let languages = ["en", "fr"]
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieVideosRequest(id: movieID, languages: languages)
+
+        let filter = MovieVideoFilter(languages: languages)
+        let result = try await service.videos(forMovie: movieID, filter: filter)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? MovieVideosRequest, expectedRequest)
@@ -134,6 +177,20 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieRecommendationsRequest, expectedRequest)
     }
 
+    func testRecommendationsWithPageAndLanguageReturnsMovies() async throws {
+        let movieID = 1
+        let page = 2
+        let language = "en"
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieRecommendationsRequest(id: movieID, page: page, language: language)
+
+        let result = try await service.recommendations(forMovie: movieID, page: page, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? MovieRecommendationsRequest, expectedRequest)
+    }
+
     func testSimilarReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock()
@@ -146,7 +203,21 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? SimilarMoviesRequest, expectedRequest)
     }
 
-    func testNowPlayingWithDefaultParametersReturnsMovies() async throws {
+    func testSimilarWithPageAndLanguageReturnsMovies() async throws {
+        let movieID = 1
+        let page = 2
+        let language = "en"
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = SimilarMoviesRequest(id: movieID, page: page, language: language)
+
+        let result = try await service.similar(toMovie: movieID, page: page, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? SimilarMoviesRequest, expectedRequest)
+    }
+
+    func testNowPlayingReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MoviesNowPlayingRequest(page: nil)
@@ -157,12 +228,15 @@ final class MovieServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MoviesNowPlayingRequest, expectedRequest)
     }
 
-    func testNowPlayingReturnsMovies() async throws {
+    func testNowPlayingWithPageAndCountryAndLanguageReturnsMovies() async throws {
+        let page = 2
+        let country = "GB"
+        let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MoviesNowPlayingRequest(page: nil, language: nil, country: nil)
+        let expectedRequest = MoviesNowPlayingRequest(page: page, country: country, language: language)
 
-        let result = try await service.nowPlaying()
+        let result = try await service.nowPlaying(page: page, country: country, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? MoviesNowPlayingRequest, expectedRequest)
@@ -171,9 +245,23 @@ final class MovieServiceTests: XCTestCase {
     func testPopularReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = PopularMoviesRequest(page: nil, language: nil, country: nil)
+        let expectedRequest = PopularMoviesRequest(page: nil, country: nil, language: nil)
 
         let result = try await service.popular()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PopularMoviesRequest, expectedRequest)
+    }
+
+    func testPopularWithPageAndCountryAndLanguageReturnsMovies() async throws {
+        let page = 2
+        let country = "GB"
+        let language = "en"
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularMoviesRequest(page: page, country: country, language: language)
+
+        let result = try await service.popular(page: page, country: country, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PopularMoviesRequest, expectedRequest)
@@ -182,9 +270,23 @@ final class MovieServiceTests: XCTestCase {
     func testTopRatedReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TopRatedMoviesRequest(page: nil, language: nil, country: nil)
+        let expectedRequest = TopRatedMoviesRequest(page: nil, country: nil, language: nil)
 
         let result = try await service.topRated()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TopRatedMoviesRequest, expectedRequest)
+    }
+
+    func testTopRatedWithPageAndCountryAndLanguageReturnsMovies() async throws {
+        let page = 2
+        let country = "GB"
+        let language = "en"
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TopRatedMoviesRequest(page: page, country: country, language: language)
+
+        let result = try await service.topRated(page: page, country: country, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TopRatedMoviesRequest, expectedRequest)
@@ -193,9 +295,23 @@ final class MovieServiceTests: XCTestCase {
     func testUpcomingReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = UpcomingMoviesRequest(page: nil, language: nil, country: nil)
+        let expectedRequest = UpcomingMoviesRequest(page: nil, country: nil, language: nil)
 
         let result = try await service.upcoming()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? UpcomingMoviesRequest, expectedRequest)
+    }
+
+    func testUpcomingWithPageAndCountryAndLanguageReturnsMovies() async throws {
+        let page = 2
+        let country = "GB"
+        let language = "en"
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = UpcomingMoviesRequest(page: page, country: country, language: language)
+
+        let result = try await service.upcoming(page: page, country: country, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? UpcomingMoviesRequest, expectedRequest)

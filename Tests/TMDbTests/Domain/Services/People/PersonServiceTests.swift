@@ -49,6 +49,19 @@ final class PersonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? PersonRequest, expectedRequest)
     }
 
+    func testDetailsWithLanguageReturnsPerson() async throws {
+        let expectedResult = Person.johnnyDepp
+        let personID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PersonRequest(id: personID, language: language)
+
+        let result = try await service.details(forPerson: personID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PersonRequest, expectedRequest)
+    }
+
     func testCombinedCreditsReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock()
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
@@ -57,6 +70,20 @@ final class PersonServiceTests: XCTestCase {
         let expectedRequest = PersonCombinedCreditsRequest(id: personID, language: nil)
 
         let result = try await service.combinedCredits(forPerson: personID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PersonCombinedCreditsRequest, expectedRequest)
+    }
+
+    func testCombinedCreditsWithLanguageReturnsCombinedCredits() async throws {
+        let mock = PersonCombinedCredits.mock()
+        let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
+        let personID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PersonCombinedCreditsRequest(id: personID, language: language)
+
+        let result = try await service.combinedCredits(forPerson: personID, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PersonCombinedCreditsRequest, expectedRequest)
@@ -75,6 +102,20 @@ final class PersonServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? PersonMovieCreditsRequest, expectedRequest)
     }
 
+    func testMovieCreditsWithLanguageReturnsMovieCredits() async throws {
+        let mock = PersonMovieCredits.mock()
+        let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
+        let personID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PersonMovieCreditsRequest(id: personID, language: language)
+
+        let result = try await service.movieCredits(forPerson: personID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PersonMovieCreditsRequest, expectedRequest)
+    }
+
     func testTVSeriesCreditsReturnsTVSeriesCredits() async throws {
         let mock = PersonTVSeriesCredits.mock()
         let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
@@ -83,6 +124,20 @@ final class PersonServiceTests: XCTestCase {
         let expectedRequest = PersonTVSeriesCreditsRequest(id: personID, language: nil)
 
         let result = try await service.tvSeriesCredits(forPerson: personID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PersonTVSeriesCreditsRequest, expectedRequest)
+    }
+
+    func testTVSeriesCreditsWithLanguageReturnsTVSeriesCredits() async throws {
+        let mock = PersonTVSeriesCredits.mock()
+        let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
+        let personID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PersonTVSeriesCreditsRequest(id: personID, language: language)
+
+        let result = try await service.tvSeriesCredits(forPerson: personID, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PersonTVSeriesCreditsRequest, expectedRequest)
@@ -106,6 +161,19 @@ final class PersonServiceTests: XCTestCase {
         let expectedRequest = PopularPeopleRequest(page: nil, language: nil)
 
         let result = try await service.popular()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PopularPeopleRequest, expectedRequest)
+    }
+
+    func testPopularWithPageAndLanguageReturnsPeople() async throws {
+        let page = 2
+        let language = "en"
+        let expectedResult = PersonPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularPeopleRequest(page: page, language: language)
+
+        let result = try await service.popular(page: page, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PopularPeopleRequest, expectedRequest)

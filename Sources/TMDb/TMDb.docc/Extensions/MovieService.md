@@ -27,12 +27,10 @@
 
 - ``recommendations(forMovie:page:language:)``
 - ``similar(toMovie:page:language:)``
-- ``nowPlaying(page:language:country:)``
-- ``popular(page:language:country:)``
-- ``topRated(page:language:country:)``
-- ``upcoming(page:language:country:)``
-- ``watchProviders(forMovie:country:)``
-- ``externalLinks(forMovie:)``
+- ``nowPlaying(page:country:language:)``
+- ``popular(page:country:language:)``
+- ``topRated(page:country:language:)``
+- ``upcoming(page:country:language:)``
 
 ### Other
 

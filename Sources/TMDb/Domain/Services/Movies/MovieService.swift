@@ -258,8 +258,8 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -267,10 +267,10 @@ public final class MovieService {
     ///
     public func nowPlaying(
         page: Int? = nil,
-        language: String? = nil,
-        country: String? = nil
+        country: String? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = MoviesNowPlayingRequest(page: page, language: language, country: country)
+        let request = MoviesNowPlayingRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -291,8 +291,8 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -300,10 +300,10 @@ public final class MovieService {
     ///
     public func popular(
         page: Int? = nil,
-        language: String? = nil,
-        country: String? = nil
+        country: String? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = PopularMoviesRequest(page: page, language: language, country: country)
+        let request = PopularMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -324,8 +324,8 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -333,10 +333,10 @@ public final class MovieService {
     ///
     public func topRated(
         page: Int? = nil,
-        language: String? = nil,
-        country: String? = nil
+        country: String? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = TopRatedMoviesRequest(page: page, language: language, country: country)
+        let request = TopRatedMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {
@@ -357,8 +357,8 @@ public final class MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -366,10 +366,10 @@ public final class MovieService {
     ///
     public func upcoming(
         page: Int? = nil,
-        language: String? = nil,
-        country: String? = nil
+        country: String? = nil,
+        language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = UpcomingMoviesRequest(page: page, language: language, country: country)
+        let request = UpcomingMoviesRequest(page: page, country: country, language: language)
 
         let movieList: MoviePageableList
         do {

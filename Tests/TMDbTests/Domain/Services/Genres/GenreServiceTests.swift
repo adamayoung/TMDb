@@ -66,7 +66,7 @@ final class GenreServiceTests: XCTestCase {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
-        let expectedRequest = TVSeriesGenresRequest()
+        let expectedRequest = TVSeriesGenresRequest(language: nil)
 
         let result = try await service.tvSeriesGenres()
 

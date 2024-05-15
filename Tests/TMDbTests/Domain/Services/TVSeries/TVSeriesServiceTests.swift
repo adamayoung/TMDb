@@ -49,6 +49,19 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
     }
 
+    func testDetailsWithLanguageReturnsTVSeries() async throws {
+        let expectedResult = TVSeries.theSandman
+        let tvSeriesID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRequest(id: tvSeriesID, language: language)
+
+        let result = try await service.details(forTVSeries: tvSeriesID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
+    }
+
     func testCreditsReturnsShowsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let tvSeriesID = expectedResult.id
@@ -56,6 +69,19 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedRequest = TVSeriesCreditsRequest(id: tvSeriesID, language: nil)
 
         let result = try await service.credits(forTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesCreditsRequest, expectedRequest)
+    }
+
+    func testCreditsWithLanguageReturnsShowsCredits() async throws {
+        let expectedResult = ShowCredits.mock()
+        let tvSeriesID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesCreditsRequest(id: tvSeriesID, language: language)
+
+        let result = try await service.credits(forTVSeries: tvSeriesID, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesCreditsRequest, expectedRequest)
@@ -73,6 +99,19 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesAggregateCreditsRequest, expectedRequest)
     }
 
+    func testAggregateCreditsWithLanguageReturnsShowsCredits() async throws {
+        let expectedResult = TVSeriesAggregateCredits(id: 1, cast: [], crew: [])
+        let tvSeriesID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: language)
+
+        let result = try await service.aggregateCredits(forTVSeries: tvSeriesID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesAggregateCreditsRequest, expectedRequest)
+    }
+
     func testReviewsReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
@@ -80,6 +119,19 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil, language: nil)
 
         let result = try await service.reviews(forTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
+    }
+
+    func testReviewsWithLanguageReturnsReviews() async throws {
+        let tvSeriesID = Int.randomID
+        let language = "en"
+        let expectedResult = ReviewPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil, language: language)
+
+        let result = try await service.reviews(forTVSeries: tvSeriesID, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
@@ -97,6 +149,20 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesImagesRequest, expectedRequest)
     }
 
+    func testImagesWithFilterReturnsImages() async throws {
+        let tvSeriesID = Int.randomID
+        let languages = ["en-GB", "fr"]
+        let expectedResult = ImageCollection.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesImagesRequest(id: tvSeriesID, languages: languages)
+
+        let filter = TVSeriesImageFilter(languages: languages)
+        let result = try await service.images(forTVSeries: tvSeriesID, filter: filter)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesImagesRequest, expectedRequest)
+    }
+
     func testVideosReturnsVideos() async throws {
         let expectedResult = VideoCollection.mock()
         let tvSeriesID = expectedResult.id
@@ -104,6 +170,20 @@ final class TVSeriesServiceTests: XCTestCase {
         let expectedRequest = TVSeriesVideosRequest(id: tvSeriesID, languages: nil)
 
         let result = try await service.videos(forTVSeries: tvSeriesID)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesVideosRequest, expectedRequest)
+    }
+
+    func testVideosWithFilterReturnsVideos() async throws {
+        let expectedResult = VideoCollection.mock()
+        let tvSeriesID = expectedResult.id
+        let languages = ["en", "fr"]
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesVideosRequest(id: tvSeriesID, languages: languages)
+
+        let filter = TVSeriesVideoFilter(languages: languages)
+        let result = try await service.videos(forTVSeries: tvSeriesID, filter: filter)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesVideosRequest, expectedRequest)
@@ -121,6 +201,20 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
     }
 
+    func testRecommendationsWithPageAndLanguageReturnsTVSeries() async throws {
+        let tvSeriesID = Int.randomID
+        let page = 2
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page, language: language)
+
+        let result = try await service.recommendations(forTVSeries: tvSeriesID, page: page, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
+    }
+
     func testSimilarReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
@@ -133,12 +227,39 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
     }
 
+    func testSimilarWithPageAndLanguageReturnsTVSeries() async throws {
+        let tvSeriesID = Int.randomID
+        let page = 2
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: language)
+
+        let result = try await service.similar(toTVSeries: tvSeriesID, page: page, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
+    }
+
     func testPopularReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PopularTVSeriesRequest(page: nil, language: nil)
 
         let result = try await service.popular()
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)
+    }
+
+    func testPopularWithPageAndLanguageReturnsTVSeries() async throws {
+        let page = 2
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = PopularTVSeriesRequest(page: page, language: language)
+
+        let result = try await service.popular(page: page, language: language)
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)

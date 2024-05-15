@@ -53,7 +53,7 @@ final class PopularMoviesRequestTests: XCTestCase {
     }
 
     func testQueryItemsWithPageAndLanguageAndCountry() {
-        let request = PopularMoviesRequest(page: 3, language: "en", country: "GB")
+        let request = PopularMoviesRequest(page: 3, country: "GB", language: "en")
 
         XCTAssertEqual(request.queryItems, ["page": "3", "language": "en", "region": "GB"])
     }

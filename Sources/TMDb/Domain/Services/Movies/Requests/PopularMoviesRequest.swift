@@ -21,9 +21,9 @@ import Foundation
 
 final class PopularMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
-    init(page: Int? = nil, language: String? = nil, country: String? = nil) {
+    init(page: Int? = nil, country: String? = nil, language: String? = nil) {
         let path = "/movie/popular"
-        let queryItems = APIRequestQueryItems(page: page, language: language, country: country)
+        let queryItems = APIRequestQueryItems(page: page, country: country, language: language)
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,19 +32,19 @@ final class PopularMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 private extension APIRequestQueryItems {
 
-    init(page: Int?, language: String?, country: String?) {
+    init(page: Int?, country: String?, language: String?) {
         self.init()
 
         if let page {
             self[.page] = page
         }
 
-        if let language {
-            self[.language] = language
-        }
-
         if let country {
             self[.region] = country
+        }
+
+        if let language {
+            self[.language] = language
         }
     }
 
