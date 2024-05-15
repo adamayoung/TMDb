@@ -19,7 +19,6 @@
 
 import Foundation
 
-
 final class AuthenticateURLBuilder: AuthenticateURLBuilding {
 
     private let baseURL: URL
