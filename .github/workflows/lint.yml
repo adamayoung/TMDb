@@ -19,9 +19,7 @@ concurrency:
 jobs:
   swiftLint:
     name: SwiftLint
-    runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/realm/swiftlint:0.53.0
+    runs-on: macos-14
     steps:
       - name: Checkout
         uses: actions/checkout@v4
