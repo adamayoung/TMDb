@@ -7,7 +7,7 @@ WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45m
 TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.5'
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=1.2'
 
-SWIFT_CONTAINER_IMAGE = swift:5.10.0-jammy
+SWIFT_CONTAINER_IMAGE = swift:5.9.2-jammy
 
 .PHONY: clean
 clean:
@@ -47,7 +47,7 @@ build-linux-release:
 
 .PHONY: build-docs
 build-docs:
-	SWIFTCI_DOCC=1 swift package generate-documentation --product $(TARGET)
+	SWIFTCI_DOCC=1 swift package generate-documentation --product $(TARGET) --warnings-as-errors
 	swift package resolve
 
 .PHONY: preview-docs
