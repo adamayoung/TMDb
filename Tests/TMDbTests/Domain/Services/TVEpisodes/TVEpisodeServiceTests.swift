@@ -85,6 +85,28 @@ final class TVEpisodeServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVEpisodeRequest, expectedRequest)
     }
 
+    func testDetailsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        let seasonNumber = 2
+        let episodeNumber = 3
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.details(
+                forEpisode: episodeNumber,
+                inSeason: seasonNumber,
+                inTVSeries: tvSeriesID
+            )
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testImagesReturnsImages() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
@@ -134,6 +156,28 @@ final class TVEpisodeServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
     }
 
+    func testImagesWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        let seasonNumber = 2
+        let episodeNumber = 3
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.images(
+                forEpisode: episodeNumber,
+                inSeason: seasonNumber,
+                inTVSeries: tvSeriesID
+            )
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testVideosReturnsVideos() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
@@ -181,6 +225,28 @@ final class TVEpisodeServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVEpisodeVideosRequest, expectedRequest)
+    }
+
+    func testVideosWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        let seasonNumber = 2
+        let episodeNumber = 3
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.videos(
+                forEpisode: episodeNumber,
+                inSeason: seasonNumber,
+                inTVSeries: tvSeriesID
+            )
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
