@@ -50,4 +50,21 @@ final class CompanyServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? CompanyDetailsRequest, expectedRequest)
     }
 
+    func testDetailsWhenErrorsThrowsError() async throws {
+        let companyID = 1
+
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.details(forCompany: companyID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
 }
