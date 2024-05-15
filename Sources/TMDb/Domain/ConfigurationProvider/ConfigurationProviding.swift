@@ -1,5 +1,5 @@
 //
-//  WatchlistSortTests.swift
+//  ConfigurationProviding.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,21 +17,23 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class WatchlistSortTests: XCTestCase {
+///
+/// An interface to provide configuration for service.
+///
+/// Create an API key at [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
+///
+public protocol ConfigurationProviding {
 
-    func testCreatedAtWhenDefaultReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt().description, "created_at.asc")
-    }
+    ///
+    /// TMDb API key.
+    ///
+    var apiKey: String { get }
 
-    func testCreatedAtWhenAscendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: false).description, "created_at.asc")
-    }
-
-    func testCreatedAtWhenDescendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: true).description, "created_at.desc")
-    }
+    ///
+    /// The HTTP client adapter for making HTTP requests.
+    ///
+    var httpClient: any HTTPClient { get }
 
 }

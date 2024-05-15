@@ -132,11 +132,28 @@ final class AuthenticationServiceTests: XCTestCase {
     }
 
     func testCreateSessionWithTokenWhenErrorsThrowsError() async throws {
+        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
-            _ = try await service.requestToken()
+            _ = try await service.createSession(withToken: token)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testCreateSessionWithTokenWhenRequestTokenErrorsThrowsError() async throws {
+        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.createSession(withToken: token)
         } catch let err {
             error = err
         }
@@ -175,6 +192,25 @@ final class AuthenticationServiceTests: XCTestCase {
 
         let createSessionRequest = apiClient.request(atRequestIndex: 2) as? CreateSessionRequest
         XCTAssertEqual(createSessionRequest, expectedCreateSessionRequest)
+    }
+
+    func testCreateSessionWithCredentialWhenValidateTokenErrorsThrowsError() async throws {
+        let credential = Credential(username: "test", password: "pass123")
+        let token = Token.mock()
+
+        apiClient.addResponse(.success(token))
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.createSession(withCredential: credential)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
     func testDeleteSessionWhenSuccessfulReturnsTrue() async throws {

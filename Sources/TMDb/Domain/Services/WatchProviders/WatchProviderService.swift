@@ -32,7 +32,7 @@ public final class WatchProviderService {
     ///
     /// - Parameter configuration: A TMDb configuration object.
     ///
-    public convenience init(configuration: TMDbConfiguration) {
+    public convenience init(configuration: some ConfigurationProviding) {
         self.init(
             apiClient: TMDbFactory.apiClient(configuration: configuration)
         )

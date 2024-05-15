@@ -32,7 +32,7 @@ public final class DiscoverService {
     ///
     /// - Parameter configuration: A TMDb configuration object.
     ///
-    public convenience init(configuration: TMDbConfiguration) {
+    public convenience init(configuration: some ConfigurationProviding) {
         self.init(
             apiClient: TMDbFactory.apiClient(configuration: configuration)
         )
@@ -50,8 +50,8 @@ public final class DiscoverService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
+    ///    - filter: Movie filter.
     ///    - sortedBy: How results should be sorted.
-    ///    - people: A list of Person identifiers which to return only movies they have appeared in.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
@@ -60,14 +60,14 @@ public final class DiscoverService {
     /// - Returns: Matching movies as a pageable list.
     ///
     public func movies(
+        filter: DiscoverMovieFilter? = nil,
         sortedBy: MovieSort? = nil,
-        withPeople people: [Person.ID]? = nil,
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
         let request = DiscoverMoviesRequest(
+            people: filter?.people,
             sortedBy: sortedBy,
-            people: people,
             page: page,
             language: language
         )

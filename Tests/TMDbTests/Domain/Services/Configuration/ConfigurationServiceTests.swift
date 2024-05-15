@@ -48,6 +48,21 @@ final class ConfigurationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? APIConfigurationRequest, expectedRequest)
     }
 
+    func testAPIConfigurationWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.apiConfiguration()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testCountriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
@@ -71,6 +86,21 @@ final class ConfigurationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)
     }
 
+    func testCountriesWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.countries()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testJobsByDepartmentReturnsDepartments() async throws {
         let expectedResult = [Department].mocks
         apiClient.addResponse(.success(expectedResult))
@@ -82,6 +112,21 @@ final class ConfigurationServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? JobsConfigurationRequest, expectedRequest)
     }
 
+    func testJobsByDepartmentWhenErrorsThrows() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.jobsByDepartment()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testLanguagesReturnsLanguages() async throws {
         let expectedResult = [Language].mocks
         apiClient.addResponse(.success(expectedResult))
@@ -91,6 +136,21 @@ final class ConfigurationServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? LanguaguesConfigurationRequest, expectedRequest)
+    }
+
+    func testLanguagesWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.languages()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

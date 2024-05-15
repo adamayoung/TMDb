@@ -62,6 +62,21 @@ final class WatchProviderServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
     }
 
+    func testCountriesWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.countries()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testMovieWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
@@ -89,6 +104,21 @@ final class WatchProviderServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
     }
 
+    func testMovieWatchProvidersWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.movieWatchProviders()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
@@ -114,6 +144,21 @@ final class WatchProviderServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)
+    }
+
+    func testTVSeriesWatchProvidersWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.tvSeriesWatchProviders()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

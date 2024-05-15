@@ -1,5 +1,5 @@
 //
-//  CompanyServiceTests.swift
+//  TVSeriesServiceDetailsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class CompanyServiceTests: XCTestCase {
+final class TVSeriesServiceTests: XCTestCase {
 
-    var service: CompanyService!
+    var service: TVSeriesService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = CompanyService(apiClient: apiClient)
+        service = TVSeriesService(apiClient: apiClient)
     }
 
     override func tearDown() {
@@ -37,27 +37,38 @@ final class CompanyServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDetailsReturnsCompany() async throws {
-        let expectedResult = Company.lucasfilm
-        let companyID = expectedResult.id
-        let expectedRequest = CompanyDetailsRequest(id: companyID)
-
+    func testDetailsReturnsTVSeries() async throws {
+        let expectedResult = TVSeries.theSandman
+        let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRequest(id: tvSeriesID, language: nil)
 
-        let result = try await service.details(forCompany: companyID)
+        let result = try await service.details(forTVSeries: tvSeriesID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CompanyDetailsRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
+    }
+
+    func testDetailsWithLanguageReturnsTVSeries() async throws {
+        let expectedResult = TVSeries.theSandman
+        let tvSeriesID = expectedResult.id
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesRequest(id: tvSeriesID, language: language)
+
+        let result = try await service.details(forTVSeries: tvSeriesID, language: language)
+
+        XCTAssertEqual(result, expectedResult)
+        XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
     }
 
     func testDetailsWhenErrorsThrowsError() async throws {
-        let companyID = 1
-
+        let tvSeriesID = 1
         apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
-            _ = try await service.details(forCompany: companyID)
+            _ = try await service.details(forTVSeries: tvSeriesID)
         } catch let err {
             error = err
         }

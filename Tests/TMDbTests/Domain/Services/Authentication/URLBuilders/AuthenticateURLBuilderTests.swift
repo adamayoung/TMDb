@@ -51,10 +51,11 @@ final class AuthenticateURLBuilderTests: XCTestCase {
     func testAuthenticateURLWithRedirectURLReturnsURL() throws {
         let requestToken = "qwertyuiop"
         let redirectURL = try XCTUnwrap(URL(string: "https://my.domain.com/auth/callback"))
-        let expectedURL = baseURL
-            .appendingPathComponent("authenticate")
-            .appendingPathComponent(requestToken)
-            .appendingQueryItem(name: "redirect_to", value: redirectURL.absoluteString)
+        let expectedURL = try XCTUnwrap(
+            URL(
+                string: "https://some.domain.com/authenticate/\(requestToken)?redirect_to=\(redirectURL.absoluteString)"
+            )
+        )
 
         let url = builder.authenticateURL(with: requestToken, redirectURL: redirectURL)
 

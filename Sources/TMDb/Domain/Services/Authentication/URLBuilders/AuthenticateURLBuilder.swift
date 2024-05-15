@@ -32,15 +32,25 @@ final class AuthenticateURLBuilder: AuthenticateURLBuilding {
     }
 
     func authenticateURL(with requestToken: String, redirectURL: URL?) -> URL {
-        var url = baseURL
+        let url = baseURL
             .appendingPathComponent("authenticate")
             .appendingPathComponent(requestToken)
 
-        if let redirectURL {
-            url = url.appendingQueryItem(name: "redirect_to", value: redirectURL.absoluteString)
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url
         }
 
-        return url
+        var queryItems = urlComponents.queryItems ?? []
+        if let redirectURL {
+            let queryItem = URLQueryItem(name: "redirect_to", value: redirectURL.absoluteString)
+            queryItems.append(queryItem)
+        }
+
+        if !queryItems.isEmpty {
+            urlComponents.queryItems = queryItems
+        }
+
+        return urlComponents.url ?? url
     }
 
 }

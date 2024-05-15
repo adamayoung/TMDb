@@ -24,7 +24,7 @@ import Foundation
 ///
 /// Create an API key at [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 ///
-public final class TMDbConfiguration: Sendable {
+public final class TMDbConfiguration: ConfigurationProviding, Sendable {
 
     ///
     /// TMDb API key.

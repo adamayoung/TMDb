@@ -1,5 +1,5 @@
 //
-//  WatchlistSortTests.swift
+//  DiscoverMovieFilter.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,21 +17,28 @@
 //  limitations under the License.
 //
 
-@testable import TMDb
-import XCTest
+import Foundation
 
-final class WatchlistSortTests: XCTestCase {
+///
+/// A filter for discovering movies.
+///
+public struct DiscoverMovieFilter {
 
-    func testCreatedAtWhenDefaultReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt().description, "created_at.asc")
-    }
+    ///
+    /// A list of Person identifiers which to return only movies they have
+    /// appeared in.
+    ///
+    public let people: [Person.ID]?
 
-    func testCreatedAtWhenAscendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: false).description, "created_at.asc")
-    }
-
-    func testCreatedAtWhenDescendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: true).description, "created_at.desc")
+    ///
+    /// Creates a discover movies filter.
+    ///
+    /// - Parameters:
+    ///    - people: A list of Person identifiers which to return only
+    /// movies they have appeared in.
+    ///
+    public init(people: [Person.ID]? = nil) {
+        self.people = people
     }
 
 }

@@ -22,15 +22,15 @@ import Foundation
 final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
     init(
-        sortedBy: MovieSort? = nil,
         people: [Person.ID]? = nil,
+        sortedBy: MovieSort? = nil,
         page: Int? = nil,
         language: String? = nil
     ) {
         let path = "/discover/movie"
         let queryItems = APIRequestQueryItems(
-            sortedBy: sortedBy,
             people: people,
+            sortedBy: sortedBy,
             page: page,
             language: language
         )
@@ -43,19 +43,19 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 private extension APIRequestQueryItems {
 
     init(
-        sortedBy: MovieSort?,
         people: [Person.ID]?,
+        sortedBy: MovieSort?,
         page: Int?,
         language: String?
     ) {
         self.init()
 
-        if let sortedBy {
-            self[.sortBy] = sortedBy
-        }
-
         if let people {
             self[.withPeople] = Self.peopleQueryItemValue(for: people)
+        }
+
+        if let sortedBy {
+            self[.sortBy] = sortedBy
         }
 
         if let page {
