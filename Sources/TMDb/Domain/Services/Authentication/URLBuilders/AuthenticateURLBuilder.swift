@@ -37,7 +37,8 @@ final class AuthenticateURLBuilder: AuthenticateURLBuilding {
             .appendingPathComponent(requestToken)
 
         if let redirectURL {
-            url = url.appendingQueryItem(name: "redirect_to", value: redirectURL.absoluteString)
+            let queryItem = URLQueryItem(name: "redirect_to", value: redirectURL.absoluteString)
+            url.append(queryItems: [queryItem])
         }
 
         return url

@@ -34,22 +34,4 @@ final class FavouriteSortTests: XCTestCase {
         XCTAssertEqual(FavouriteSort.createdAt(descending: true).description, "created_at.desc")
     }
 
-    func testURLAppendingSortByWhenNilReturnsOriginalURL() throws {
-        let sort: FavouriteSort? = nil
-        let expectedURL = try XCTUnwrap(URL(string: "/some/path"))
-
-        let url = URL(string: "/some/path")?.appendingSortBy(sort)
-
-        XCTAssertEqual(url, expectedURL)
-    }
-
-    func testURLAppendingSortByReturnsURL() throws {
-        let sort: FavouriteSort? = .createdAt()
-        let expectedURL = try XCTUnwrap(URL(string: "/some/path?sort_by=created_at.asc"))
-
-        let url = URL(string: "/some/path")?.appendingSortBy(sort)
-
-        XCTAssertEqual(url, expectedURL)
-    }
-
 }

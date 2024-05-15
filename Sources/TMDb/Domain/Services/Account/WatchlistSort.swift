@@ -52,19 +52,3 @@ extension WatchlistSort {
     }
 
 }
-
-extension URL {
-
-    private enum QueryItemName {
-        static let sortBy = "sort_by"
-    }
-
-    func appendingSortBy(_ sortBy: WatchlistSort?) -> Self {
-        guard let sortBy else {
-            return self
-        }
-
-        return appendingQueryItem(name: QueryItemName.sortBy, value: sortBy)
-    }
-
-}
