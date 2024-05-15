@@ -62,6 +62,21 @@ final class GenreServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequest, expectedRequest)
     }
 
+    func testMovieGenresWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.movieGenres()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testTVSeriesGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
@@ -85,6 +100,21 @@ final class GenreServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequest, expectedRequest)
+    }
+
+    func testTVSeriesGenresWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.tvSeriesGenres()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

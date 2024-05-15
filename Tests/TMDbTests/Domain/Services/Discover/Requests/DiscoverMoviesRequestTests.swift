@@ -34,16 +34,16 @@ final class DiscoverMoviesRequestTests: XCTestCase {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithSortedBy() {
-        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
-
-        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
-    }
-
     func testQueryItemsWithPeople() {
         let request = DiscoverMoviesRequest(people: [1, 2, 3])
 
         XCTAssertEqual(request.queryItems, ["with_people": "1,2,3"])
+    }
+
+    func testQueryItemsWithSortedBy() {
+        let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
+
+        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
     }
 
     func testQueryItemsWithPage() {
@@ -60,8 +60,8 @@ final class DiscoverMoviesRequestTests: XCTestCase {
 
     func testQueryItemsWithSortedByAndPeopleAndPageAndLanguage() {
         let request = DiscoverMoviesRequest(
-            sortedBy: .originalTitle(descending: false),
             people: [1, 2, 3],
+            sortedBy: .originalTitle(descending: false),
             page: 2,
             language: "en"
         )
