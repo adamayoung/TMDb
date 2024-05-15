@@ -63,6 +63,22 @@ final class TrendingServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
     }
 
+    func testMoviesWhenErrorsThrowsError() async throws {
+        let timeWindow = TrendingTimeWindowFilterType.day
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.movies(inTimeWindow: timeWindow)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testTVSeriesReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVSeriesPageableList.mock()
@@ -89,6 +105,22 @@ final class TrendingServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
     }
 
+    func testTVSeriesWhenErrorsThrowsError() async throws {
+        let timeWindow = TrendingTimeWindowFilterType.day
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.tvSeries(inTimeWindow: timeWindow)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testPeopleReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock()
@@ -113,6 +145,22 @@ final class TrendingServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
+    }
+
+    func testPeopleWhenErrorsThrowsError() async throws {
+        let timeWindow = TrendingTimeWindowFilterType.day
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.people(inTimeWindow: timeWindow)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
