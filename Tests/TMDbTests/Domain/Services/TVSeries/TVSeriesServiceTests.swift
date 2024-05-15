@@ -62,6 +62,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesRequest, expectedRequest)
     }
 
+    func testDetailsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.details(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testCreditsReturnsShowsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let tvSeriesID = expectedResult.id
@@ -85,6 +101,22 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesCreditsRequest, expectedRequest)
+    }
+
+    func testCreditsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.credits(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
     func testAggregateCreditsReturnsShowsCredits() async throws {
@@ -112,6 +144,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesAggregateCreditsRequest, expectedRequest)
     }
 
+    func testAggregateCreditsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.aggregateCredits(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testReviewsReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
@@ -135,6 +183,22 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
+    }
+
+    func testReviewsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.reviews(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
     func testImagesReturnsImages() async throws {
@@ -163,6 +227,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesImagesRequest, expectedRequest)
     }
 
+    func testImagesWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.images(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testVideosReturnsVideos() async throws {
         let expectedResult = VideoCollection.mock()
         let tvSeriesID = expectedResult.id
@@ -187,6 +267,22 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesVideosRequest, expectedRequest)
+    }
+
+    func testVideosWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.videos(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
     func testRecommendationsReturnsTVSeries() async throws {
@@ -215,6 +311,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesRecommendationsRequest, expectedRequest)
     }
 
+    func testRecommendationsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.recommendations(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testSimilarReturnsTVSeries() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
@@ -241,6 +353,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? SimilarTVSeriesRequest, expectedRequest)
     }
 
+    func testSimilarWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.similar(toTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testPopularReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -265,7 +393,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? PopularTVSeriesRequest, expectedRequest)
     }
 
-    func testWatchReturnsWatchProviders() async throws {
+    func testPopularWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.popular()
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
+    func testWatchProvidersReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let tvSeriesID = 1
         let country = "GB"
@@ -278,6 +421,22 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchProvidersRequest, expectedRequest)
     }
 
+    func testWatchProvidersWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.watchProviders(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
+    }
+
     func testExternalLinksReturnsExternalLinks() async throws {
         let expectedResult = TVSeriesExternalLinksCollection.lockeAndKey
         let tvSeriesID = 86423
@@ -288,6 +447,22 @@ final class TVSeriesServiceTests: XCTestCase {
 
         XCTAssertEqual(result, expectedResult)
         XCTAssertEqual(apiClient.lastRequest as? TVSeriesExternalLinksRequest, expectedRequest)
+    }
+
+    func testExternalLinksWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        var error: Error?
+        do {
+            _ = try await service.externalLinks(forTVSeries: tvSeriesID)
+        } catch let err {
+            error = err
+        }
+
+        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
+
+        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
