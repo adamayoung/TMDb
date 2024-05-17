@@ -30,5 +30,6 @@ protocol APIRequest: Identifiable, Equatable {
     var method: APIRequestMethod { get }
     var headers: [String: String] { get }
     var body: Body? { get }
+    var ignoresCache: Bool { get }
 
 }

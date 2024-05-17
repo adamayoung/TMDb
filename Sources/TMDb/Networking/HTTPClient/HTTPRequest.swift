@@ -25,17 +25,20 @@ public struct HTTPRequest: Sendable {
     public let method: HTTPRequest.Method
     public let headers: [String: String]
     public let body: Data?
+    public let ignoresCache: Bool
 
     public init(
         url: URL,
         method: HTTPRequest.Method = .get,
         headers: [String: String] = [:],
-        body: Data? = nil
+        body: Data? = nil,
+        ignoresCache: Bool = false
     ) {
         self.url = url
         self.method = method
         self.headers = headers
         self.body = body
+        self.ignoresCache = ignoresCache
     }
 
 }

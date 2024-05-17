@@ -24,7 +24,7 @@ final class CreateGuestSessionRequest: DecodableAPIRequest<GuestSession> {
     init() {
         let path = "/authentication/guest_session/new"
 
-        super.init(path: path)
+        super.init(path: path, ignoresCache: true)
     }
 
 }

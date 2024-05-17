@@ -25,7 +25,7 @@ final class CreateSessionRequest: CodableAPIRequest<CreateSessionRequest.Body, S
         let path = "/authentication/session/new"
         let body = CreateSessionRequest.Body(requestToken: requestToken)
 
-        super.init(path: path, body: body)
+        super.init(path: path, body: body, ignoresCache: true)
     }
 
 }

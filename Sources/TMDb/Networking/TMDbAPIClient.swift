@@ -93,7 +93,13 @@ extension TMDbAPIClient {
             }
         }
 
-        return HTTPRequest(url: url, method: method, headers: headers, body: data)
+        return HTTPRequest(
+            url: url,
+            method: method,
+            headers: headers,
+            body: data,
+            ignoresCache: request.ignoresCache
+        )
     }
 
     private func urlFromPath(

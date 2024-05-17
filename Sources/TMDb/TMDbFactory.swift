@@ -68,17 +68,19 @@ extension TMDbFactory {
     private static let urlSession = URLSession(configuration: urlSessionConfiguration())
 
     private static func urlSessionConfiguration() -> URLSessionConfiguration {
-        let configuration = URLSessionConfiguration.default
+        let configuration = URLSessionConfiguration.ephemeral
         #if os(iOS)
             configuration.multipathServiceType = .handover
         #endif
 
         configuration.requestCachePolicy = .useProtocolCachePolicy
-        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 10
 
         #if !canImport(FoundationNetworking)
             configuration.waitsForConnectivity = true
-            configuration.urlCache = urlCache()
+            let urlCache = urlCache()
+            configuration.urlCache = urlCache
         #endif
 
         return configuration

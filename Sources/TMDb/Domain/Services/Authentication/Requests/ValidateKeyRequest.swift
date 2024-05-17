@@ -24,7 +24,7 @@ final class ValidateKeyRequest: DecodableAPIRequest<SuccessResult> {
     init() {
         let path = "/authentication"
 
-        super.init(path: path)
+        super.init(path: path, ignoresCache: true)
     }
 
 }

@@ -29,7 +29,7 @@ final class ValidateTokenWithLoginRequest: CodableAPIRequest<ValidateTokenWithLo
             requestToken: requestToken
         )
 
-        super.init(path: path, body: body)
+        super.init(path: path, body: body, ignoresCache: true)
     }
 
 }

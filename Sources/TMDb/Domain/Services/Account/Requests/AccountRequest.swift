@@ -25,7 +25,7 @@ final class AccountRequest: DecodableAPIRequest<AccountDetails> {
         let path = "/account"
         let queryItems = APIRequestQueryItems(sessionID: sessionID)
 
-        super.init(path: path, queryItems: queryItems)
+        super.init(path: path, queryItems: queryItems, ignoresCache: true)
     }
 
 }

@@ -27,6 +27,7 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
     let method: APIRequestMethod
     let headers: [String: String]
     let body: Body?
+    let ignoresCache: Bool
 
     var description: String {
         var description = """
@@ -36,6 +37,7 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
         \tmethod: \(method)
         \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
+        \tignoresCache: \(ignoresCache)
         """
 
         if let body {
@@ -50,8 +52,9 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         path: String,
         queryItems: APIRequestQueryItems = [:],
         method: APIRequestMethod = .post,
+        headers: [String: String] = [:],
         body: Body? = nil,
-        headers: [String: String] = [:]
+        ignoresCache: Bool = true
     ) {
         self.id = id
         self.path = path
@@ -60,16 +63,18 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         }
         self.queryItems = Dictionary(uniqueKeysWithValues: queryItems)
         self.method = method
-        self.body = body
         self.headers = headers
+        self.body = body
+        self.ignoresCache = ignoresCache
     }
 
     static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>) -> Bool {
         lhs.path == rhs.path
-            && lhs.queryItems == rhs.queryItems
-            && lhs.method == rhs.method
-            && lhs.headers == rhs.headers
-            && lhs.body == rhs.body
+        && lhs.queryItems == rhs.queryItems
+        && lhs.method == rhs.method
+        && lhs.headers == rhs.headers
+        && lhs.body == rhs.body
+        && lhs.ignoresCache == rhs.ignoresCache
     }
 
 }

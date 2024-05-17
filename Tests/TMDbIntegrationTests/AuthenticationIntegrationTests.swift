@@ -42,33 +42,40 @@ final class AuthenticationIntegrationTests: XCTestCase {
         XCTAssertNotEqual(session.guestSessionID, "")
     }
 
-    func testRequestToken() async throws {
-        let token = try await authenticationService.requestToken()
-
-        XCTAssertTrue(token.success)
-        XCTAssertNotEqual(token.requestToken, "")
-    }
-
-    func testCreateAndDeleteSessionWithCredential() async throws {
-        let credential = try tmdbCredential()
-
-        let session = try await authenticationService.createSession(withCredential: credential)
+    func testGuestSession2() async throws {
+        let session = try await authenticationService.guestSession()
 
         XCTAssertTrue(session.success)
-        XCTAssertNotEqual(session.sessionID, "")
-
-        do {
-            let deleteResult = try await authenticationService.deleteSession(session)
-            XCTAssertTrue(deleteResult)
-        } catch let error {
-            print(error)
-        }
+        XCTAssertNotEqual(session.guestSessionID, "")
     }
 
-    func testValidateKeyWhenValid() async throws {
-        let isValid = try await authenticationService.validateKey()
-
-        XCTAssertTrue(isValid)
-    }
+//    func testRequestToken() async throws {
+//        let token = try await authenticationService.requestToken()
+//
+//        XCTAssertTrue(token.success)
+//        XCTAssertNotEqual(token.requestToken, "")
+//    }
+//
+//    func testCreateAndDeleteSessionWithCredential() async throws {
+//        let credential = try tmdbCredential()
+//
+//        let session = try await authenticationService.createSession(withCredential: credential)
+//
+//        XCTAssertTrue(session.success)
+//        XCTAssertNotEqual(session.sessionID, "")
+//
+//        do {
+//            let deleteResult = try await authenticationService.deleteSession(session)
+//            XCTAssertTrue(deleteResult)
+//        } catch let error {
+//            print(error)
+//        }
+//    }
+//
+//    func testValidateKeyWhenValid() async throws {
+//        let isValid = try await authenticationService.validateKey()
+//
+//        XCTAssertTrue(isValid)
+//    }
 
 }

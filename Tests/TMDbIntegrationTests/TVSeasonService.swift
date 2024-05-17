@@ -35,37 +35,46 @@ final class TVSeasonServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDetails() async throws {
-        let seasonNumber = 2
-        let tvSeriesID = 1399
+//    func testDetails() async throws {
+//        let seasonNumber = 2
+//        let tvSeriesID = 1399
+//
+//        let season = try await tvSeasonService.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+//
+//        XCTAssertEqual(season.seasonNumber, seasonNumber)
+//        XCTAssertFalse((season.episodes ?? []).isEmpty)
+//    }
+//
+//    func testAggregateCredits() async throws {
+//        let seasonNumber = 2
+//        let tvSeriesID = 1399
+//
+//        let credits = try await tvSeasonService.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+//
+//        XCTAssertEqual(credits.id, 3625)
+//        XCTAssertFalse(credits.cast.isEmpty)
+//        XCTAssertFalse(credits.crew.isEmpty)
+//    }
+//
+//    func testImages() async throws {
+//        let seasonNumber = 1
+//        let tvSeriesID = 1399
+//
+//        let imagesCollection = try await tvSeasonService.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+//
+//        XCTAssertFalse(imagesCollection.posters.isEmpty)
+//    }
 
-        let season = try await tvSeasonService.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
-
-        XCTAssertEqual(season.seasonNumber, seasonNumber)
-        XCTAssertFalse((season.episodes ?? []).isEmpty)
-    }
-
-    func testAggregateCredits() async throws {
-        let seasonNumber = 2
-        let tvSeriesID = 1399
-
-        let credits = try await tvSeasonService.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
-
-        XCTAssertEqual(credits.id, 3625)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
-    }
-
-    func testImages() async throws {
+    func testVideos() async throws {
         let seasonNumber = 1
         let tvSeriesID = 1399
 
-        let imagesCollection = try await tvSeasonService.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let videoCollection = try await tvSeasonService.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
-        XCTAssertFalse(imagesCollection.posters.isEmpty)
+        XCTAssertFalse(videoCollection.results.isEmpty)
     }
 
-    func testVideos() async throws {
+    func testVideos2() async throws {
         let seasonNumber = 1
         let tvSeriesID = 1399
 

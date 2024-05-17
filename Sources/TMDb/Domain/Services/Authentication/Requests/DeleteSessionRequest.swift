@@ -25,7 +25,7 @@ final class DeleteSessionRequest: CodableAPIRequest<DeleteSessionRequest.Body, S
         let path = "/authentication/session"
         let body = DeleteSessionRequest.Body(sessionID: sessionID)
 
-        super.init(path: path, method: .delete, body: body)
+        super.init(path: path, method: .delete, body: body, ignoresCache: true)
     }
 
 }

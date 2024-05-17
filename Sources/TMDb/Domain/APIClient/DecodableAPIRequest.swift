@@ -26,15 +26,17 @@ class DecodableAPIRequest<Response: Decodable>: CodableAPIRequest<EmptyBody, Res
         path: String,
         queryItems: APIRequestQueryItems = [:],
         method: APIRequestMethod = .get,
-        headers: [String: String] = [:]
+        headers: [String: String] = [:],
+        ignoresCache: Bool = false
     ) {
         super.init(
             id: id,
             path: path,
             queryItems: queryItems,
             method: method,
+            headers: headers,
             body: nil,
-            headers: headers
+            ignoresCache: ignoresCache
         )
     }
 

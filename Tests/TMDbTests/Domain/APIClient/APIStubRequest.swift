@@ -29,6 +29,7 @@ APIRequest, Equatable, Sendable {
     let method: APIRequestMethod
     let headers: [String: String]
     let body: Body?
+    let ignoresCache: Bool
 
     init(
         id: UUID = UUID(),
@@ -36,7 +37,8 @@ APIRequest, Equatable, Sendable {
         queryItems: [String: String] = [:],
         method: APIRequestMethod = .get,
         headers: [String: String] = [:],
-        body: Body? = nil
+        body: Body? = nil,
+        ignoresCache: Bool = false
     ) {
         self.id = id
         self.path = path
@@ -44,6 +46,7 @@ APIRequest, Equatable, Sendable {
         self.method = method
         self.headers = headers
         self.body = body
+        self.ignoresCache = ignoresCache
     }
 
     static func == (lhs: APIStubRequest<Body, Response>, rhs: APIStubRequest<Body, Response>) -> Bool {

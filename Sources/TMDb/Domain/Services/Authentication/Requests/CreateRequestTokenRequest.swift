@@ -24,7 +24,7 @@ final class CreateRequestTokenRequest: DecodableAPIRequest<Token> {
     init() {
         let path = "/authentication/token/new"
 
-        super.init(path: path)
+        super.init(path: path, ignoresCache: true)
     }
 
 }
