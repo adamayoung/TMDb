@@ -22,7 +22,7 @@ import XCTest
 
 final class AccountIntegrationTests: XCTestCase {
 
-    var accountService: AccountService!
+    var accountService: (any AccountService)!
     var authenticationService: AuthenticationService!
     var session: Session!
 
@@ -32,7 +32,9 @@ final class AccountIntegrationTests: XCTestCase {
         authenticationService = AuthenticationService(configuration: configuration)
         let credential = try tmdbCredential()
         session = try await authenticationService.createSession(withCredential: credential)
-        accountService = AccountService(configuration: configuration)
+
+        let apiKey = try tmdbAPIKey()
+        accountService = TMDbClient(apiKey: apiKey).account
     }
 
     override func tearDown() async throws {

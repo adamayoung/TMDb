@@ -1,5 +1,5 @@
 //
-//  AccountServiceDetailsTests.swift
+//  TMDbAccountServiceDetailsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,9 +20,9 @@
 @testable import TMDb
 import XCTest
 
-final class AccountServiceDetails: XCTestCase {
+final class TMDbAccountServiceDetails: XCTestCase {
 
-    var service: AccountService!
+    var service: TMDbAccountService!
     var apiClient: MockAPIClient!
     var session: Session!
 
@@ -30,7 +30,7 @@ final class AccountServiceDetails: XCTestCase {
         super.setUp()
         session = Session(success: true, sessionID: "abc123")
         apiClient = MockAPIClient()
-        service = AccountService(apiClient: apiClient)
+        service = TMDbAccountService(apiClient: apiClient)
     }
 
     override func tearDown() {

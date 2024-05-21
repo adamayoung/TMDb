@@ -34,11 +34,11 @@ extension XCTestCase {
 
 extension XCTestCase {
 
-    private func tmdbAPIKey() throws -> String {
+    func tmdbAPIKey() throws -> String {
         try Self.tmdbAPIKey()
     }
 
-    private static func tmdbAPIKey() throws -> String {
+    static func tmdbAPIKey() throws -> String {
         guard
             let apiKey = ProcessInfo.processInfo.environment["TMDB_API_KEY"],
             !apiKey.isEmpty
