@@ -22,12 +22,12 @@ import XCTest
 
 final class TVSeriesServiceTests: XCTestCase {
 
-    var tvSeriesService: TVSeriesService!
+    var tvSeriesService: (any TVSeriesService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        tvSeriesService = TVSeriesService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        tvSeriesService = TMDbClient(apiKey: apiKey).tvSeries
     }
 
     override func tearDown() {

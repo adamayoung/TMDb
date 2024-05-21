@@ -85,6 +85,11 @@ public final class TMDbClient {
     public let tvSeasons: any TVSeasonService
 
     ///
+    /// TMDb TV series.
+    ///
+    public let tvSeries: any TVSeriesService
+
+    ///
     /// Creates a TMDb client.
     ///
     /// - Parameters:
@@ -120,6 +125,7 @@ public final class TMDbClient {
         self.trending = TMDbTrendingService(apiClient: apiClient)
         self.tvEpisodes = TMDbTVEpisodeService(apiClient: apiClient)
         self.tvSeasons = TMDbTVSeasonService(apiClient: apiClient)
+        self.tvSeries = TMDbTVSeriesService(apiClient: apiClient)
     }
 
 }
