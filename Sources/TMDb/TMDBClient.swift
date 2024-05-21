@@ -42,7 +42,7 @@ public final class TMDbClient {
     ///
     /// TMDb configuration.
     ///
-    public let configuration: any ConfigurationService
+    public let configurations: any ConfigurationService
 
     ///
     /// TMDb discover.
@@ -58,6 +58,11 @@ public final class TMDbClient {
     /// TMDb movies.
     ///
     public let movies: any MovieService
+
+    ///
+    /// TMDb people.
+    ///
+    public let people: any PersonService
 
     ///
     /// Creates a TMDb client.
@@ -86,10 +91,11 @@ public final class TMDbClient {
 
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.companies = TMDbCompanyService(apiClient: apiClient)
-        self.configuration = TMDbConfigurationService(apiClient: apiClient)
+        self.configurations = TMDbConfigurationService(apiClient: apiClient)
         self.discover = TMDbDiscoverService(apiClient: apiClient)
         self.genres = TMDbGenreService(apiClient: apiClient)
         self.movies = TMDbMovieService(apiClient: apiClient)
+        self.people = TMDbPersonService(apiClient: apiClient)
     }
 
 }

@@ -27,7 +27,7 @@ final class ConfigurationIntegrationTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         let apiKey = try tmdbAPIKey()
-        configurationService = TMDbClient(apiKey: apiKey).configuration
+        configurationService = TMDbClient(apiKey: apiKey).configurations
     }
 
     override func tearDown() {

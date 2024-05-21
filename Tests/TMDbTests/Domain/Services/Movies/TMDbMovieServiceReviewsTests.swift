@@ -1,5 +1,5 @@
 //
-//  MovieServiceCreditsTests.swift
+//  TMDbMovieServiceReviewsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class MovieServiceCreditsTests: XCTestCase {
+final class TMDbMovieServiceReviewsTests: XCTestCase {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
@@ -37,38 +37,39 @@ final class MovieServiceCreditsTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCreditsReturnsCredits() async throws {
-        let expectedResult = ShowCredits.mock()
-        let movieID = expectedResult.id
+    func testReviewsReturnsReviews() async throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieCreditsRequest(id: movieID, language: nil)
+        let expectedRequest = MovieReviewsRequest(id: movieID, page: nil, language: nil)
 
-        let result = try await service.credits(forMovie: movieID)
+        let result = try await service.reviews(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
     }
 
-    func testCreditsWithLanguageReturnsCredits() async throws {
-        let expectedResult = ShowCredits.mock()
-        let movieID = expectedResult.id
+    func testReviewsWithPageAndLanguageReturnsReviews() async throws {
+        let movieID = Int.randomID
+        let expectedResult = ReviewPageableList.mock()
+        let page = expectedResult.page
         let language = "en"
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieCreditsRequest(id: movieID, language: language)
+        let expectedRequest = MovieReviewsRequest(id: movieID, page: page, language: language)
 
-        let result = try await service.credits(forMovie: movieID, language: language)
+        let result = try await service.reviews(forMovie: movieID, page: page, language: language)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? MovieReviewsRequest, expectedRequest)
     }
 
-    func testCreditsWhenErrorsThrowsError() async throws {
+    func testReviewsWhenErrorsThrowsError() async throws {
         let movieID = 1
         apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
-            _ = try await service.credits(forMovie: movieID)
+            _ = try await service.reviews(forMovie: movieID)
         } catch let err {
             error = err
         }

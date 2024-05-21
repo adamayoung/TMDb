@@ -22,13 +22,13 @@ import XCTest
 
 final class PersonServiceTests: XCTestCase {
 
-    var service: PersonService!
+    var service: TMDbPersonService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = PersonService(apiClient: apiClient)
+        service = TMDbPersonService(apiClient: apiClient)
     }
 
     override func tearDown() {

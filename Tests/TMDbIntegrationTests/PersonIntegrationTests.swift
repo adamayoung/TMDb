@@ -22,12 +22,12 @@ import XCTest
 
 final class PersonIntegrationTests: XCTestCase {
 
-    var personService: PersonService!
+    var personService: (any PersonService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        personService = PersonService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        personService = TMDbClient(apiKey: apiKey).people
     }
 
     override func tearDown() {

@@ -1,5 +1,5 @@
 //
-//  MovieServiceDetailsTests.swift
+//  TMDbMovieServiceCreditsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class MovieServiceDetailsTests: XCTestCase {
+final class TMDbMovieServiceCreditsTests: XCTestCase {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
@@ -37,38 +37,38 @@ final class MovieServiceDetailsTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDetailsReturnsMovie() async throws {
-        let expectedResult = Movie.thorLoveAndThunder
+    func testCreditsReturnsCredits() async throws {
+        let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieRequest(id: movieID, language: nil)
+        let expectedRequest = MovieCreditsRequest(id: movieID, language: nil)
 
-        let result = try await service.details(forMovie: movieID)
+        let result = try await service.credits(forMovie: movieID)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
     }
 
-    func testDetailsWithLanguageReturnsMovie() async throws {
-        let expectedResult = Movie.thorLoveAndThunder
+    func testCreditsWithLanguageReturnsCredits() async throws {
+        let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         let language = "en"
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieRequest(id: movieID, language: language)
+        let expectedRequest = MovieCreditsRequest(id: movieID, language: language)
 
-        let result = try await service.details(forMovie: movieID, language: language)
+        let result = try await service.credits(forMovie: movieID, language: language)
 
         XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
+        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
     }
 
-    func testDetailsWhenErrorsThrowsError() async throws {
+    func testCreditsWhenErrorsThrowsError() async throws {
         let movieID = 1
         apiClient.addResponse(.failure(.unknown))
 
         var error: Error?
         do {
-            _ = try await service.details(forMovie: movieID)
+            _ = try await service.credits(forMovie: movieID)
         } catch let err {
             error = err
         }

@@ -1,5 +1,5 @@
 //
-//  MovieServiceOthersTests.swift
+//  TMDbMovieServiceOthersTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class MovieServiceOthersTests: XCTestCase {
+final class TMDbMovieServiceOthersTests: XCTestCase {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
