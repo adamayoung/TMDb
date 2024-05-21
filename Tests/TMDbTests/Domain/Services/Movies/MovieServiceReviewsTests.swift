@@ -22,13 +22,13 @@ import XCTest
 
 final class MovieServiceReviewsTests: XCTestCase {
 
-    var service: MovieService!
+    var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = MovieService(apiClient: apiClient)
+        service = TMDbMovieService(apiClient: apiClient)
     }
 
     override func tearDown() {

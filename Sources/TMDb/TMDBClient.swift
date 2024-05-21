@@ -19,15 +19,45 @@
 
 import Foundation
 
+///
+/// The TMDb client.
+///
 public final class TMDbClient {
 
+    ///
+    /// TMDb account.
+    ///
     public let account: any AccountService
 
+    ///
+    /// TMDb certifications.
+    ///
     public let certifications: any CertificationService
+
+    ///
+    /// TMDb companies.
+    ///
     public let companies: any CompanyService
+
+    ///
+    /// TMDb configuration.
+    ///
     public let configuration: any ConfigurationService
+
+    ///
+    /// TMDb discover.
+    ///
     public let discover: any DiscoverService
+
+    ///
+    /// TMDb genres.
+    ///
     public let genres: any GenreService
+
+    ///
+    /// TMDb movies.
+    ///
+    public let movies: any MovieService
 
     ///
     /// Creates a TMDb client.
@@ -59,6 +89,7 @@ public final class TMDbClient {
         self.configuration = TMDbConfigurationService(apiClient: apiClient)
         self.discover = TMDbDiscoverService(apiClient: apiClient)
         self.genres = TMDbGenreService(apiClient: apiClient)
+        self.movies = TMDbMovieService(apiClient: apiClient)
     }
 
 }

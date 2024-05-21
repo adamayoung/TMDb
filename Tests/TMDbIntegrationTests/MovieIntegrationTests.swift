@@ -22,12 +22,12 @@ import XCTest
 
 final class MovieIntegrationTests: XCTestCase {
 
-    var movieService: MovieService!
+    var movieService: (any MovieService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        movieService = MovieService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        movieService = TMDbClient(apiKey: apiKey).movies
     }
 
     override func tearDown() {

@@ -1,5 +1,5 @@
 //
-//  GenreServiceTests.swift
+//  TMDbGenreServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class GenreServiceTests: XCTestCase {
+final class TMDbGenreServiceTests: XCTestCase {
 
     var service: TMDbGenreService!
     var apiClient: MockAPIClient!
