@@ -35,15 +35,6 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static func apiClient(configuration: some ConfigurationProviding) -> some APIClient {
-        TMDbAPIClient(
-            apiKey: configuration.apiKey,
-            baseURL: tmdbAPIBaseURL,
-            serialiser: serialiser(),
-            httpClient: configuration.httpClient
-        )
-    }
-
     static func apiClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
         TMDbAPIClient(
             apiKey: apiKey,

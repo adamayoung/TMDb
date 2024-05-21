@@ -1,5 +1,5 @@
 //
-//  WatchProviderServiceTests.swift
+//  TMDbWatchProviderServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class WatchProviderServiceTests: XCTestCase {
+final class TMDbWatchProviderServiceTests: XCTestCase {
 
-    var service: WatchProviderService!
+    var service: TMDbWatchProviderService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = WatchProviderService(apiClient: apiClient)
+        service = TMDbWatchProviderService(apiClient: apiClient)
     }
 
     override func tearDown() {
