@@ -22,12 +22,12 @@ import XCTest
 
 final class CompanyIntegrationTests: XCTestCase {
 
-    var companyService: CompanyService!
+    var companyService: (any CompanyService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        companyService = CompanyService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        companyService = TMDbClient(apiKey: apiKey).companies
     }
 
     override func tearDown() {

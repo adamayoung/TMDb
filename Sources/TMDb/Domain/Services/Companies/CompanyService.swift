@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for obtaining company data from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class CompanyService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a company service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol CompanyService {
 
     ///
     /// Returns a company's details
@@ -54,17 +37,6 @@ public final class CompanyService {
     ///
     /// - Returns: Matching company.
     ///
-    public func details(forCompany id: Company.ID) async throws -> Company {
-        let request = CompanyDetailsRequest(id: id)
-
-        let company: Company
-        do {
-            company = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return company
-    }
+    func details(forCompany id: Company.ID) async throws -> Company
 
 }
