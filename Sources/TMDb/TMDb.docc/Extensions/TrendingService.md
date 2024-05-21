@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a Trending Service
-
-- ``init(configuration:)``
-
 ### Movies
 
 - ``movies(inTimeWindow:page:language:)``

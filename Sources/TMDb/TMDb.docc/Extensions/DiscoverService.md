@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a Discover Service
-
-- ``init(configuration:)``
-
 ### Discover Movies
 
 - ``movies(filter:sortedBy:page:language:)``

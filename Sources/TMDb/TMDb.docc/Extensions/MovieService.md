@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a Movie Service
-
-- ``init(configuration:)``
-
 ### Details
 
 - ``details(forMovie:language:)``

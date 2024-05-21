@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating an Account Service
-
-- ``init(configuration:)``
-
 ### Account Details
 
 - ``details(session:)``

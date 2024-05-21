@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a TV Season Service
-
-- ``init(configuration:)``
-
 ### Details
 
 - ``details(forSeason:inTVSeries:language:)``

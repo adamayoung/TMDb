@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a Watch Provider Service
-
-- ``init(configuration:)``
-
 ### Providers
 
 - ``movieWatchProviders(filter:language:)``

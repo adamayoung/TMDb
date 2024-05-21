@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating a Search Service
-
-- ``init(configuration:)``
-
 ### Media
 
 - ``searchAll(query:filter:page:language:)``

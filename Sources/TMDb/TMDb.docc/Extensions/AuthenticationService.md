@@ -2,10 +2,6 @@
 
 ## Topics
 
-### Creating an Authentication Service
-
-- ``init(configuration:)``
-
 ### Creating Sessions
 
 - ``guestSession()``
