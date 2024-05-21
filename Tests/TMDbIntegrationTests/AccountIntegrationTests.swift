@@ -23,18 +23,19 @@ import XCTest
 final class AccountIntegrationTests: XCTestCase {
 
     var accountService: (any AccountService)!
-    var authenticationService: AuthenticationService!
+    var authenticationService: (any AuthenticationService)!
     var session: Session!
 
     override func setUp() async throws {
         try await super.setUp()
-        let configuration = try tmdbConfiguration()
-        authenticationService = AuthenticationService(configuration: configuration)
-        let credential = try tmdbCredential()
-        session = try await authenticationService.createSession(withCredential: credential)
-
         let apiKey = try tmdbAPIKey()
-        accountService = TMDbClient(apiKey: apiKey).account
+        let tmdbClient = TMDbClient(apiKey: apiKey)
+        let credential = try tmdbCredential()
+
+        authenticationService = tmdbClient.authentication
+        accountService = tmdbClient.account
+
+        session = try await authenticationService.createSession(withCredential: credential)
     }
 
     override func tearDown() async throws {

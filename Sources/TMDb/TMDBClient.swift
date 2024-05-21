@@ -27,7 +27,12 @@ public final class TMDbClient {
     ///
     /// TMDb account.
     ///
-    public let account: any AccountService
+    public var account: any AccountService
+
+    ///
+    /// TMDb authentication.
+    ///
+    public let authentication: any AuthenticationService
 
     ///
     /// TMDb certifications.
@@ -116,9 +121,14 @@ public final class TMDbClient {
     ///
     public init(apiKey: String, httpClient: some HTTPClient) {
         let apiClient = TMDbFactory.apiClient(apiKey: apiKey, httpClient: httpClient)
+        let authAPIClient = TMDbFactory.authAPIClient(apiKey: apiKey, httpClient: httpClient)
+        let authenticateURLBuilder = TMDbFactory.authenticateURLBuilder()
 
         self.account = TMDbAccountService(apiClient: apiClient)
-
+        self.authentication = TMDbAuthenticationService(
+            apiClient: authAPIClient,
+            authenticateURLBuilder: authenticateURLBuilder
+        )
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.companies = TMDbCompanyService(apiClient: apiClient)
         self.configurations = TMDbConfigurationService(apiClient: apiClient)

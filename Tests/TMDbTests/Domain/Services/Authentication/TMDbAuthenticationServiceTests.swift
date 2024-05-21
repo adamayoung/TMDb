@@ -1,5 +1,5 @@
 //
-//  AuthenticationServiceTests.swift
+//  TMDbAuthenticationServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,9 +20,9 @@
 @testable import TMDb
 import XCTest
 
-final class AuthenticationServiceTests: XCTestCase {
+final class TMDbAuthenticationServiceTests: XCTestCase {
 
-    var service: AuthenticationService!
+    var service: TMDbAuthenticationService!
     var apiClient: MockAPIClient!
     var authenticateURLBuilder: AuthenticateURLMockBuilder!
 
@@ -30,7 +30,7 @@ final class AuthenticationServiceTests: XCTestCase {
         super.setUp()
         apiClient = MockAPIClient()
         authenticateURLBuilder = AuthenticateURLMockBuilder()
-        service = AuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
+        service = TMDbAuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
     }
 
     override func tearDown() {

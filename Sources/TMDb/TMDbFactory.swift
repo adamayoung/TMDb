@@ -44,12 +44,12 @@ extension TMDbFactory {
         )
     }
 
-    static func authAPIClient(configuration: some ConfigurationProviding) -> some APIClient {
+    static func authAPIClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
         TMDbAPIClient(
-            apiKey: configuration.apiKey,
+            apiKey: apiKey,
             baseURL: .tmdbAPIBaseURL,
             serialiser: authSerialiser(),
-            httpClient: configuration.httpClient
+            httpClient: httpClient
         )
     }
 

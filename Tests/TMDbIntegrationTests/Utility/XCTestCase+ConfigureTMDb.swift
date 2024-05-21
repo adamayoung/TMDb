@@ -22,10 +22,6 @@ import XCTest
 
 extension XCTestCase {
 
-    func tmdbConfiguration() throws -> TMDbConfiguration {
-        try TMDbConfiguration(apiKey: tmdbAPIKey())
-    }
-
     func tmdbCredential() throws -> Credential {
         try Self.tmdbCredential()
     }

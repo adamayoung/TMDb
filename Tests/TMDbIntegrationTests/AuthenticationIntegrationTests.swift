@@ -22,12 +22,12 @@ import XCTest
 
 final class AuthenticationIntegrationTests: XCTestCase {
 
-    var authenticationService: AuthenticationService!
+    var authenticationService: (any AuthenticationService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        authenticationService = AuthenticationService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        authenticationService = TMDbClient(apiKey: apiKey).authentication
     }
 
     override func tearDown() {
