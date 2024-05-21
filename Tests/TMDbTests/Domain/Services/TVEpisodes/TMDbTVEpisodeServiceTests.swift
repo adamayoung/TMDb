@@ -1,5 +1,5 @@
 //
-//  TVEpisodeServiceTests.swift
+//  TMDbTVEpisodeServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class TVEpisodeServiceTests: XCTestCase {
+final class TMDbTVEpisodeServiceTests: XCTestCase {
 
-    var service: TVEpisodeService!
+    var service: TMDbTVEpisodeService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = TVEpisodeService(apiClient: apiClient)
+        service = TMDbTVEpisodeService(apiClient: apiClient)
     }
 
     override func tearDown() {
