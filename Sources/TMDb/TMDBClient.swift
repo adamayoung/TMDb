@@ -70,6 +70,11 @@ public final class TMDbClient {
     public let search: any SearchService
 
     ///
+    /// TMDb trending.
+    ///
+    public let trending: any TrendingService
+
+    ///
     /// Creates a TMDb client.
     ///
     /// - Parameters:
@@ -102,6 +107,7 @@ public final class TMDbClient {
         self.movies = TMDbMovieService(apiClient: apiClient)
         self.people = TMDbPersonService(apiClient: apiClient)
         self.search = TMDbSearchService(apiClient: apiClient)
+        self.trending = TMDbTrendingService(apiClient: apiClient)
     }
 
 }

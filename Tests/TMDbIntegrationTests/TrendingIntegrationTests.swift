@@ -22,12 +22,12 @@ import XCTest
 
 final class TrendingIntegrationTests: XCTestCase {
 
-    var trendingService: TrendingService!
+    var trendingService: (any TrendingService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        trendingService = TrendingService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        trendingService = TMDbClient(apiKey: apiKey).trending
     }
 
     override func tearDown() {

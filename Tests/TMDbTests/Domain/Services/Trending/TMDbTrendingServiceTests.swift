@@ -1,5 +1,5 @@
 //
-//  TrendingServiceTests.swift
+//  TMDbTrendingServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class TrendingServiceTests: XCTestCase {
+final class TMDbTrendingServiceTests: XCTestCase {
 
-    var service: TrendingService!
+    var service: TMDbTrendingService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = TrendingService(apiClient: apiClient)
+        service = TMDbTrendingService(apiClient: apiClient)
     }
 
     override func tearDown() {
