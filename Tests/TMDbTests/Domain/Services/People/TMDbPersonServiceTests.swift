@@ -1,5 +1,5 @@
 //
-//  PersonServiceTests.swift
+//  TMDbPersonServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class PersonServiceTests: XCTestCase {
+final class TMDbPersonServiceTests: XCTestCase {
 
     var service: TMDbPersonService!
     var apiClient: MockAPIClient!

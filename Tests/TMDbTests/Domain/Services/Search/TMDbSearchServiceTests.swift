@@ -1,5 +1,5 @@
 //
-//  SearchServiceTests.swift
+//  TMDbSearchServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class SearchServiceTests: XCTestCase {
+final class TMDbSearchServiceTests: XCTestCase {
 
-    var service: SearchService!
+    var service: TMDbSearchService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = SearchService(apiClient: apiClient)
+        service = TMDbSearchService(apiClient: apiClient)
     }
 
     override func tearDown() {
