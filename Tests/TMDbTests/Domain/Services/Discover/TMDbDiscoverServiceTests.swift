@@ -1,5 +1,5 @@
 //
-//  DiscoverServiceTests.swift
+//  TMDbDiscoverServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class DiscoverServiceTests: XCTestCase {
+final class TMDbDiscoverServiceTests: XCTestCase {
 
-    var service: DiscoverService!
+    var service: TMDbDiscoverService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = DiscoverService(apiClient: apiClient)
+        service = TMDbDiscoverService(apiClient: apiClient)
     }
 
     override func tearDown() {

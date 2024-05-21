@@ -26,6 +26,7 @@ public final class TMDbClient {
     public let certifications: any CertificationService
     public let companies: any CompanyService
     public let configuration: any ConfigurationService
+    public let discover: any DiscoverService
 
     ///
     /// Creates a TMDb client.
@@ -55,6 +56,7 @@ public final class TMDbClient {
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.companies = TMDbCompanyService(apiClient: apiClient)
         self.configuration = TMDbConfigurationService(apiClient: apiClient)
+        self.discover = TMDbDiscoverService(apiClient: apiClient)
     }
 
 }
