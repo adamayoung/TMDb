@@ -22,12 +22,12 @@ import XCTest
 
 final class GenreIntegrationTests: XCTestCase {
 
-    var genreService: GenreService!
+    var genreService: (any GenreService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        genreService = GenreService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        genreService = TMDbClient(apiKey: apiKey).genres
     }
 
     override func tearDown() {

@@ -27,6 +27,7 @@ public final class TMDbClient {
     public let companies: any CompanyService
     public let configuration: any ConfigurationService
     public let discover: any DiscoverService
+    public let genres: any GenreService
 
     ///
     /// Creates a TMDb client.
@@ -57,6 +58,7 @@ public final class TMDbClient {
         self.companies = TMDbCompanyService(apiClient: apiClient)
         self.configuration = TMDbConfigurationService(apiClient: apiClient)
         self.discover = TMDbDiscoverService(apiClient: apiClient)
+        self.genres = TMDbGenreService(apiClient: apiClient)
     }
 
 }

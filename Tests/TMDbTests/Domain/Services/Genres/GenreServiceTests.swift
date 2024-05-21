@@ -22,13 +22,13 @@ import XCTest
 
 final class GenreServiceTests: XCTestCase {
 
-    var service: GenreService!
+    var service: TMDbGenreService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = GenreService(apiClient: apiClient)
+        service = TMDbGenreService(apiClient: apiClient)
     }
 
     override func tearDown() {
