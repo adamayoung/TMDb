@@ -127,7 +127,7 @@ public extension TVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVEpisodeVideoFilter?
+        filter: TVEpisodeVideoFilter? = nil
     ) async throws -> VideoCollection {
         try await videos(
             forEpisode: episodeNumber,

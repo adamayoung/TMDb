@@ -1,5 +1,5 @@
 //
-//  TVSeasonService.swift
+//  TVSeasonIntegrationTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,14 +20,14 @@
 import TMDb
 import XCTest
 
-final class TVSeasonServiceTests: XCTestCase {
+final class TVSeasonIntegrationTests: XCTestCase {
 
-    var tvSeasonService: TVSeasonService!
+    var tvSeasonService: (any TVSeasonService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        tvSeasonService = TVSeasonService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        tvSeasonService = TMDbClient(apiKey: apiKey).tvSeasons
     }
 
     override func tearDown() {
