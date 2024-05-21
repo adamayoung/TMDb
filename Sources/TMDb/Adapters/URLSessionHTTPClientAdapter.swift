@@ -18,14 +18,11 @@
 //
 
 import Foundation
-import os
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
 
 final class URLSessionHTTPClientAdapter: HTTPClient {
-
-    private static let logger = Logger(subsystem: "uk.co.adam-young.TMDb", category: "URLSessionHTTPClientAdapter")
 
     private let urlSession: URLSession
 
@@ -83,7 +80,7 @@ extension URLSessionHTTPClientAdapter {
 extension URLSessionHTTPClientAdapter {
 
     #if canImport(FoundationNetworking)
-        private func perform(_ urlRequest: URLRequest, ignoringCache: Bool) async throws -> (Data, URLResponse) {
+        private func perform(_ urlRequest: URLRequest, ignoringCache _: Bool) async throws -> (Data, URLResponse) {
             try await withCheckedThrowingContinuation { continuation in
                 urlSession.dataTask(with: urlRequest) { data, response, error in
                     if let error {
@@ -102,42 +99,41 @@ extension URLSessionHTTPClientAdapter {
             }
         }
     #else
-    private func perform(_ urlRequest: URLRequest, ignoringCache: Bool) async throws -> (Data, URLResponse) {
-        if !ignoringCache, let cachedResponse = cachedResponse(for: urlRequest) {
-            print("Cache HIT")
-            return (cachedResponse.data, cachedResponse.response)
-        }
+        private func perform(_ urlRequest: URLRequest, ignoringCache: Bool) async throws -> (Data, URLResponse) {
+            if !ignoringCache, let cachedResponse = cachedResponse(for: urlRequest) {
+                return (cachedResponse.data, cachedResponse.response)
+            }
 
-        let (data, response) = try await urlSession.data(for: urlRequest)
-        if !ignoringCache, Self.shouldCacheResponse(response) {
-            cacheResponse(response, data: data, for: urlRequest)
-        }
+            let (data, response) = try await urlSession.data(for: urlRequest)
+            if !ignoringCache, Self.shouldCacheResponse(response) {
+                cacheResponse(response, data: data, for: urlRequest)
+            }
 
-        return (data, response)
-    }
-#endif
+            return (data, response)
+        }
+    #endif
 
 }
 
 #if !canImport(FoundationNetworking)
-extension URLSessionHTTPClientAdapter {
+    extension URLSessionHTTPClientAdapter {
 
-    private static func shouldCacheResponse(_ response: URLResponse) -> Bool {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            return false
+        private static func shouldCacheResponse(_ response: URLResponse) -> Bool {
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return false
+            }
+
+            return (200 ... 399).contains(httpResponse.statusCode)
         }
 
-        return (200...399).contains(httpResponse.statusCode)
-    }
+        private func cachedResponse(for request: URLRequest) -> CachedURLResponse? {
+            urlSession.configuration.urlCache?.cachedResponse(for: request)
+        }
 
-    private func cachedResponse(for request: URLRequest) -> CachedURLResponse? {
-        urlSession.configuration.urlCache?.cachedResponse(for: request)
-    }
+        private func cacheResponse(_ response: URLResponse, data: Data, for request: URLRequest) {
+            let cachedResponse = CachedURLResponse(response: response, data: data)
+            urlSession.configuration.urlCache?.storeCachedResponse(cachedResponse, for: request)
+        }
 
-    private func cacheResponse(_ response: URLResponse, data: Data, for request: URLRequest) {
-        let cachedResponse = CachedURLResponse(response: response, data: data)
-        urlSession.configuration.urlCache?.storeCachedResponse(cachedResponse, for: request)
     }
-
-}
 #endif

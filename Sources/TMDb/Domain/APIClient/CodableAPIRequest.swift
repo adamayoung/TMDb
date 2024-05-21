@@ -70,11 +70,11 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
 
     static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>) -> Bool {
         lhs.path == rhs.path
-        && lhs.queryItems == rhs.queryItems
-        && lhs.method == rhs.method
-        && lhs.headers == rhs.headers
-        && lhs.body == rhs.body
-        && lhs.ignoresCache == rhs.ignoresCache
+            && lhs.queryItems == rhs.queryItems
+            && lhs.method == rhs.method
+            && lhs.headers == rhs.headers
+            && lhs.body == rhs.body
+            && lhs.ignoresCache == rhs.ignoresCache
     }
 
 }
