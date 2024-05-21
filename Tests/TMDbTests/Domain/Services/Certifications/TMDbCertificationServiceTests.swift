@@ -1,5 +1,5 @@
 //
-//  CertificationServiceTests.swift
+//  TMDbCertificationServiceTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -20,15 +20,15 @@
 @testable import TMDb
 import XCTest
 
-final class CertificationServiceTests: XCTestCase {
+final class TMDbCertificationServiceTests: XCTestCase {
 
-    var service: CertificationService!
+    var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
 
     override func setUp() {
         super.setUp()
         apiClient = MockAPIClient()
-        service = CertificationService(apiClient: apiClient)
+        service = TMDbCertificationService(apiClient: apiClient)
     }
 
     override func tearDown() {

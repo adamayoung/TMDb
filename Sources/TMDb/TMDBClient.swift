@@ -23,6 +23,8 @@ public final class TMDbClient {
 
     public let account: any AccountService
 
+    public let certifications: any CertificationService
+
     ///
     /// Creates a TMDb client.
     ///
@@ -47,6 +49,8 @@ public final class TMDbClient {
         let apiClient = TMDbFactory.apiClient(apiKey: apiKey, httpClient: httpClient)
 
         self.account = TMDbAccountService(apiClient: apiClient)
+
+        self.certifications = TMDbCertificationService(apiClient: apiClient)
     }
 
 }
