@@ -43,10 +43,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 ### Getting Started
 
+- <doc:/CreatingTMDbClient>
 - <doc:/CreatingTMDbAPIKey>
-- <doc:/ConfiguringTMDb>
-- ``TMDbConfiguration``
-- ``HTTPClient``
+- ``TMDbClient``
 
 ### API Configuration
 
@@ -204,3 +203,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Credential``
 - ``Token``
 - ``Session``
+
+### Custom HTTP Client
+
+- ``HTTPClient``
+- ``HTTPRequest``
+- ``HTTPResponse``

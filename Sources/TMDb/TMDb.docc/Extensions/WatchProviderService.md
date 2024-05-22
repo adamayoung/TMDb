@@ -1,4 +1,4 @@
-# ``TMDb/WatchProviderService``
+# ``WatchProviderService``
 
 ## Topics
 

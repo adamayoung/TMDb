@@ -1,4 +1,4 @@
-# ``TMDb/MovieService``
+# ``MovieService``
 
 ## Topics
 

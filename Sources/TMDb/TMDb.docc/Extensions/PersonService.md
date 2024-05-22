@@ -1,4 +1,4 @@
-# ``TMDb/PersonService``
+# ``PersonService``
 
 ## Topics
 

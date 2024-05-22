@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining TV seasons from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol TVSeasonService {
+public protocol TVSeasonService: Sendable {
 
     ///
     /// Returns the primary information about a TV season.

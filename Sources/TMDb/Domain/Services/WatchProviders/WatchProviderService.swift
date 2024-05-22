@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining watch providers from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol WatchProviderService {
+public protocol WatchProviderService: Sendable {
 
     ///
     /// Returns a list of all of the countries TMDb have watch provider (OTT/streaming) data for.

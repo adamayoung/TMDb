@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining configuration data from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol ConfigurationService {
+public protocol ConfigurationService: Sendable {
 
     ///
     /// Returns the TMDb API system wide configuration information. The result is cached, so there is no overhead in

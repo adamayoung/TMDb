@@ -19,7 +19,7 @@
 
 import Foundation
 
-final class TMDbAPIClient: APIClient, @unchecked Sendable {
+final class TMDbAPIClient: APIClient, Sendable {
 
     private let apiKey: String
     private let baseURL: URL

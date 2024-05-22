@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining company data from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol CompanyService {
+public protocol CompanyService: Sendable {
 
     ///
     /// Returns a company's details

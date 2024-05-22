@@ -20,7 +20,7 @@
 @testable import TMDb
 import XCTest
 
-final class MockAPIClient: APIClient {
+final class MockAPIClient: APIClient, @unchecked Sendable {
 
     private(set) var requests: [any APIRequest] = []
 

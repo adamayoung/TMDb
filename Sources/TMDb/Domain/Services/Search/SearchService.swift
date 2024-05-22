@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for searching content from TMDb..
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol SearchService {
+public protocol SearchService: Sendable {
 
     ///
     /// Returns search results for movies, TV series and people based on a query.

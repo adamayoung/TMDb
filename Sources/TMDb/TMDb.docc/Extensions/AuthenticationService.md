@@ -1,4 +1,4 @@
-# ``TMDb/AuthenticationService``
+# ``AuthenticationService``
 
 ## Topics
 

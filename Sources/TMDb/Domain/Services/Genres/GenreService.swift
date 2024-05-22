@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining movie and TV series genres from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol GenreService {
+public protocol GenreService: Sendable {
 
     ///
     /// Returns the list of official genres for movies.

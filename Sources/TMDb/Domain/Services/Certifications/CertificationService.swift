@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for obtaining certification data from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol CertificationService {
+public protocol CertificationService: Sendable {
 
     ///
     /// Returns an up to date list of the officially supported movie certifications on TMDB.

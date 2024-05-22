@@ -1,4 +1,4 @@
-# ``TMDb/DiscoverService``
+# ``DiscoverService``
 
 ## Topics
 

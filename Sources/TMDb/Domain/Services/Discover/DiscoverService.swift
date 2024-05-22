@@ -2,7 +2,7 @@
 /// Provides an interface for discovering movies and TV series from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol DiscoverService {
+public protocol DiscoverService: Sendable {
 
     ///
     /// Returns movies to be discovered.

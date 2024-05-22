@@ -1,4 +1,4 @@
-# ``TMDb/GenreService``
+# ``GenreService``
 
 ## Topics
 

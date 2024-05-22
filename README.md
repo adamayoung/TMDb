@@ -56,6 +56,15 @@ Add the TMDb package to your Project's Package dependencies.
 Create an API key from The Movie Database web site
 [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
+### Quick Start
+
+```swift
+let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
+
+let moviesToDiscover = try await tmdbClient.discover.movies().results
+let fightClub = try await tmdbClient.movies.details(forMovie: 550)
+```
+
 ## Documentation
 
 Documentation and examples of usage can be found at

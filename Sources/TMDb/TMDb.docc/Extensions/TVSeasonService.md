@@ -1,4 +1,4 @@
-# ``TMDb/TVSeasonService``
+# ``TVSeasonService``
 
 ## Topics
 

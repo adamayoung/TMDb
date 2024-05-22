@@ -1,4 +1,4 @@
-# ``TMDb/TrendingService``
+# ``TrendingService``
 
 ## Topics
 

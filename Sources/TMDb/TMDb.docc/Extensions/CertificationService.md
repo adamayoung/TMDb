@@ -1,4 +1,4 @@
-# ``TMDb/CertificationService``
+# ``CertificationService``
 
 ## Topics
 

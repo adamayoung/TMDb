@@ -23,7 +23,7 @@ import Foundation
 /// Provides an interface for finding trending movies, TV series and people from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol TrendingService {
+public protocol TrendingService: Sendable {
 
     ///
     /// Returns a list of the daily or weekly trending movies.

@@ -1,4 +1,4 @@
-# ``TMDb/ConfigurationService``
+# ``ConfigurationService``
 
 ## Topics
 

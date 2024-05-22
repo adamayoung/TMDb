@@ -1,4 +1,4 @@
-# ``TMDb/CompanyService``
+# ``CompanyService``
 
 ## Topics
 

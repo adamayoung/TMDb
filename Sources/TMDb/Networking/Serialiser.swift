@@ -19,7 +19,7 @@
 
 import Foundation
 
-protocol Serialiser {
+protocol Serialiser: Sendable {
 
     var mimeType: String { get }
 

@@ -1,4 +1,4 @@
-# ``TMDb/AccountService``
+# ``AccountService``
 
 ## Topics
 
