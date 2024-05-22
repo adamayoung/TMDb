@@ -20,6 +20,8 @@ jobs:
   swiftLint:
     name: SwiftLint
     runs-on: macos-14
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
     steps:
       - name: Checkout
         uses: actions/checkout@v4
