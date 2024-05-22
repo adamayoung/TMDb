@@ -49,7 +49,8 @@ let tmdbClient = TMDbClient(
 
 ## Using TMDbClient
 
-Once created, your instance of ``TMDbClient`` can be used to interact with the TMDb API.
+Once created, your instance of ``TMDbClient`` can be used to interact with the
+TMDb API.
 
 e.g. To discover movies and fetch details on a specific movie
 
