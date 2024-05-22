@@ -1,10 +1,6 @@
-# ``TMDb/CompanyService``
+# ``CompanyService``
 
 ## Topics
-
-### Creating a Company Service
-
-- ``init(configuration:)``
 
 ### Company Details
 

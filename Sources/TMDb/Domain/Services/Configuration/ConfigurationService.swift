@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for obtaining configuration data from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class ConfigurationService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a configuration service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol ConfigurationService: Sendable {
 
     ///
     /// Returns the TMDb API system wide configuration information. The result is cached, so there is no overhead in
@@ -52,18 +35,7 @@ public final class ConfigurationService {
     ///
     /// - Returns: The API configuration.
     ///
-    public func apiConfiguration() async throws -> APIConfiguration {
-        let request = APIConfigurationRequest()
-
-        let apiConfiguration: APIConfiguration
-        do {
-            apiConfiguration = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return apiConfiguration
-    }
+    func apiConfiguration() async throws -> APIConfiguration
 
     ///
     /// Returns the list of countries used throughout TMDb.
@@ -77,18 +49,7 @@ public final class ConfigurationService {
     ///
     /// - Returns: Countries used throughout TMDb,
     ///
-    public func countries(language: String? = nil) async throws -> [Country] {
-        let request = CountriesConfigurationRequest(language: language)
-
-        let countries: [Country]
-        do {
-            countries = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return countries
-    }
+    func countries(language: String?) async throws -> [Country]
 
     ///
     /// Returns a list of the jobs and departments used on TMDb.
@@ -99,19 +60,7 @@ public final class ConfigurationService {
     ///
     /// - Returns: Jobs and departments used on TMDb.
     ///
-    public func jobsByDepartment() async throws -> [Department] {
-        let request = JobsConfigurationRequest()
-
-        let departments: [Department]
-        do {
-            departments = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return departments
-    }
-
+    func jobsByDepartment() async throws -> [Department]
     ///
     /// Returns the list of languages (ISO 639-1 tags) used throughout TMDb.
     ///
@@ -121,17 +70,14 @@ public final class ConfigurationService {
     ///
     /// - Returns: Languages used throughout TMDb.
     ///
-    public func languages() async throws -> [Language] {
-        let request = LanguaguesConfigurationRequest()
+    func languages() async throws -> [Language]
 
-        let languages: [Language]
-        do {
-            languages = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+}
 
-        return languages
+public extension ConfigurationService {
+
+    func countries(language: String? = nil) async throws -> [Country] {
+        try await countries(language: language)
     }
 
 }

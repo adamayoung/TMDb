@@ -1,10 +1,6 @@
-# ``TMDb/TrendingService``
+# ``TrendingService``
 
 ## Topics
-
-### Creating a Trending Service
-
-- ``init(configuration:)``
 
 ### Movies
 

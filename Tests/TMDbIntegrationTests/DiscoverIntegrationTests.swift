@@ -22,12 +22,12 @@ import XCTest
 
 final class DiscoverIntegrationTests: XCTestCase {
 
-    var discoverService: DiscoverService!
+    var discoverService: (any DiscoverService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        discoverService = DiscoverService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        discoverService = TMDbClient(apiKey: apiKey).discover
     }
 
     override func tearDown() {

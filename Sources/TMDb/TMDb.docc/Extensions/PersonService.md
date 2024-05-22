@@ -1,10 +1,6 @@
-# ``TMDb/PersonService``
+# ``PersonService``
 
 ## Topics
-
-### Creating a Person Service
-
-- ``init(configuration:)``
 
 ### Details
 

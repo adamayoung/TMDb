@@ -29,11 +29,11 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
     @MainActor static var responseStatusCode: Int?
     @MainActor private(set) static var lastRequest: URLRequest?
 
-    override class func canInit(with _: URLRequest) -> Bool {
+    override static func canInit(with _: URLRequest) -> Bool {
         true
     }
 
-    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+    override static func canonicalRequest(for request: URLRequest) -> URLRequest {
         Task {
             await MainActor.run {
                 lastRequest = request

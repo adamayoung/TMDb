@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for obtaining TV seasons from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class TVSeasonService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a TV season service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol TVSeasonService: Sendable {
 
     ///
     /// Returns the primary information about a TV season.
@@ -56,26 +39,11 @@ public final class TVSeasonService {
     ///
     /// - Returns: A season of the matching TV series.
     ///
-    public func details(
+    func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
-    ) async throws -> TVSeason {
-        let request = TVSeasonRequest(
-            seasonNumber: seasonNumber,
-            tvSeriesID: tvSeriesID,
-            language: language
-        )
-
-        let season: TVSeason
-        do {
-            season = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return season
-    }
+        language: String?
+    ) async throws -> TVSeason
 
     ///
     /// Returns the aggregate cast and crew of a TV season.
@@ -95,26 +63,11 @@ public final class TVSeasonService {
     ///
     /// - Returns: Show credits for the matching TV season.
     ///
-    public func aggregateCredits(
+    func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
-    ) async throws -> TVSeasonAggregateCredits {
-        let request = TVSeasonAggregateCreditsRequest(
-            seasonNumber: seasonNumber,
-            tvSeriesID: tvSeriesID,
-            language: language
-        )
-
-        let credits: TVSeasonAggregateCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+        language: String?
+    ) async throws -> TVSeasonAggregateCredits
 
     ///
     /// Returns the images that belong to a TV season.
@@ -130,26 +83,11 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV's season.
     ///
-    public func images(
+    func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonImageFilter? = nil
-    ) async throws -> TVSeasonImageCollection {
-        let request = TVSeasonImagesRequest(
-            seasonNumber: seasonNumber,
-            tvSeriesID: tvSeriesID,
-            languages: filter?.languages
-        )
-
-        let imageCollection: TVSeasonImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
-    }
+        filter: TVSeasonImageFilter?
+    ) async throws -> TVSeasonImageCollection
 
     ///
     /// Returns the videos that belong to a TV season.
@@ -165,25 +103,46 @@ public final class TVSeasonService {
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
-    public func videos(
+    func videos(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeasonVideoFilter?
+    ) async throws -> VideoCollection
+
+}
+
+public extension TVSeasonService {
+
+    func details(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeason {
+        try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+    }
+
+    func aggregateCredits(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeasonAggregateCredits {
+        try await aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+    }
+
+    func images(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeasonImageFilter? = nil
+    ) async throws -> TVSeasonImageCollection {
+        try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+    }
+
+    func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonVideoFilter? = nil
     ) async throws -> VideoCollection {
-        let request = TVSeasonVideosRequest(
-            seasonNumber: seasonNumber,
-            tvSeriesID: tvSeriesID,
-            languages: filter?.languages
-        )
-
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
+        try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
     }
 
 }

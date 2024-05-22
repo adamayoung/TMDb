@@ -19,30 +19,11 @@
 
 import Foundation
 
-// swiftlint:disable file_length
-
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class MovieService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a movie service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol MovieService: Sendable {
 
     ///
     /// Returns the primary information about a movie.
@@ -57,18 +38,7 @@ public final class MovieService {
     ///
     /// - Returns: The matching movie.
     ///
-    public func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
-        let request = MovieRequest(id: id, language: language)
-
-        let movie: Movie
-        do {
-            movie = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movie
-    }
+    func details(forMovie id: Movie.ID, language: String?) async throws -> Movie
 
     ///
     /// Returns the cast and crew of a movie.
@@ -83,18 +53,7 @@ public final class MovieService {
     ///
     /// - Returns: Credits for the matching movie.
     ///
-    public func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
-        let request = MovieCreditsRequest(id: movieID, language: language)
-
-        let credits: ShowCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+    func credits(forMovie movieID: Movie.ID, language: String?) async throws -> ShowCredits
 
     ///
     /// Returns the user reviews for a movie.
@@ -112,22 +71,7 @@ public final class MovieService {
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
     ///
-    public func reviews(
-        forMovie movieID: Movie.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> ReviewPageableList {
-        let request = MovieReviewsRequest(id: movieID, page: page, language: language)
-
-        let reviewList: ReviewPageableList
-        do {
-            reviewList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return reviewList
-    }
+    func reviews(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a movie.
@@ -142,18 +86,7 @@ public final class MovieService {
     ///
     /// - Returns: Collection of images for the matching movie.
     ///
-    public func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
-        let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
-
-        let imageCollection: ImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
-    }
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter?) async throws -> ImageCollection
 
     ///
     /// Returns the videos that have been added to a movie.
@@ -168,18 +101,7 @@ public final class MovieService {
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
-    public func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
-        let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
-
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
-    }
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter?) async throws -> VideoCollection
 
     ///
     /// Returns a list of recommended movies for a movie.
@@ -197,22 +119,7 @@ public final class MovieService {
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     ///
-    public func recommendations(
-        forMovie movieID: Movie.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = MovieRecommendationsRequest(id: movieID, page: page, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func recommendations(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns a list of similar movies for a movie.
@@ -232,22 +139,7 @@ public final class MovieService {
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
     ///
-    public func similar(
-        toMovie movieID: Movie.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = SimilarMoviesRequest(id: movieID, page: page, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func similar(toMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns a list of currently playing movies.
@@ -265,22 +157,7 @@ public final class MovieService {
     ///
     /// - Returns: Now playing movies as a pageable list.
     ///
-    public func nowPlaying(
-        page: Int? = nil,
-        country: String? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = MoviesNowPlayingRequest(page: page, country: country, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func nowPlaying(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns a list of current popular movies.
@@ -298,22 +175,7 @@ public final class MovieService {
     ///
     /// - Returns: Current popular movies as a pageable list.
     ///
-    public func popular(
-        page: Int? = nil,
-        country: String? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = PopularMoviesRequest(page: page, country: country, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func popular(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns a list of top rated movies.
@@ -331,22 +193,7 @@ public final class MovieService {
     ///
     /// - Returns: Top rated movies as a pageable list.
     ///
-    public func topRated(
-        page: Int? = nil,
-        country: String? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = TopRatedMoviesRequest(page: page, country: country, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func topRated(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns a list of upcoming movies.
@@ -364,22 +211,7 @@ public final class MovieService {
     ///
     /// - Returns: Upcoming movies as a pageable list.
     ///
-    public func upcoming(
-        page: Int? = nil,
-        country: String? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = UpcomingMoviesRequest(page: page, country: country, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func upcoming(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
     /// Returns watch providers for a movie
@@ -396,18 +228,7 @@ public final class MovieService {
     ///
     /// - Returns: Watch providers for movie in current region.
     ///
-    public func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws -> ShowWatchProvider? {
-        let request = MovieWatchProvidersRequest(id: movieID)
-
-        let result: ShowWatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.results[country]
-    }
+    func watchProviders(forMovie movieID: Movie.ID, country: String) async throws -> ShowWatchProvider?
 
     ///
     /// Returns a collection of media databases and social links for a movie.
@@ -419,17 +240,86 @@ public final class MovieService {
     ///
     /// - Returns: A collection of external links for the specificed movie.
     ///
-    public func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection {
-        let request = MovieExternalLinksRequest(id: movieID)
+    func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection
 
-        let linksCollection: MovieExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+}
 
-        return linksCollection
+public extension MovieService {
+
+    func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
+        try await details(forMovie: id, language: language)
+    }
+
+    func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
+        try await credits(forMovie: movieID, language: language)
+    }
+
+    func reviews(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> ReviewPageableList {
+        try await reviews(forMovie: movieID, page: page, language: language)
+    }
+
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
+        try await images(forMovie: movieID, filter: filter)
+    }
+
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
+        try await videos(forMovie: movieID, filter: filter)
+    }
+
+    func recommendations(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await recommendations(forMovie: movieID, page: page, language: language)
+    }
+
+    func similar(
+        toMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await similar(toMovie: movieID, page: page, language: language)
+    }
+
+    func nowPlaying(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await nowPlaying(page: page, country: country, language: language)
+    }
+
+    func popular(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await popular(page: page, country: country, language: language)
+    }
+
+    func topRated(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await topRated(page: page, country: country, language: language)
+    }
+
+    func upcoming(
+        page: Int? = nil,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await upcoming(page: page, country: country, language: language)
+    }
+
+    func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws -> ShowWatchProvider? {
+        try await watchProviders(forMovie: movieID, country: country)
     }
 
 }

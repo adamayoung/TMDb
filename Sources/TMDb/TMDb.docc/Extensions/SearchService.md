@@ -1,10 +1,6 @@
-# ``TMDb/SearchService``
+# ``SearchService``
 
 ## Topics
-
-### Creating a Search Service
-
-- ``init(configuration:)``
 
 ### Media
 

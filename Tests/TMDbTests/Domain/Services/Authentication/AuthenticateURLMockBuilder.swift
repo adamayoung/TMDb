@@ -20,11 +20,13 @@
 import Foundation
 @testable import TMDb
 
-final class AuthenticateURLMockBuilder: AuthenticateURLBuilding {
+final class AuthenticateURLMockBuilder: AuthenticateURLBuilding, @unchecked Sendable {
 
     var authenticateURLResult: URL = .init(string: "https://some.domain.com/authenticate")!
     private(set) var lastRequestToken: String?
     private(set) var lastRedirectURL: URL?
+
+    init() {}
 
     func authenticateURL(with requestToken: String) -> URL {
         authenticateURL(with: requestToken, redirectURL: nil)

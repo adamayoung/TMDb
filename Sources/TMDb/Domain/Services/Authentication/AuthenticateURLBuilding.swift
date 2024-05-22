@@ -19,7 +19,7 @@
 
 import Foundation
 
-protocol AuthenticateURLBuilding {
+protocol AuthenticateURLBuilding: Sendable {
 
     func authenticateURL(with requestToken: String) -> URL
 

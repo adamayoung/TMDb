@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for searching content from TMDb..
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class SearchService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a search service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol SearchService: Sendable {
 
     ///
     /// Returns search results for movies, TV series and people based on a query.
@@ -59,28 +42,12 @@ public final class SearchService {
     ///
     /// - Returns: Movies, TV series and people matching the query.
     ///
-    public func searchAll(
+    func searchAll(
         query: String,
-        filter: AllMediaSearchFilter? = nil,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> MediaPageableList {
-        let request = MultiSearchRequest(
-            query: query,
-            includeAdult: filter?.includeAdult,
-            page: page,
-            language: language
-        )
-
-        let mediaList: MediaPageableList
-        do {
-            mediaList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return mediaList
-    }
+        filter: AllMediaSearchFilter?,
+        page: Int?,
+        language: String?
+    ) async throws -> MediaPageableList
 
     ///
     /// Returns search results for movies.
@@ -99,30 +66,12 @@ public final class SearchService {
     ///
     /// - Returns: Movies matching the query.
     ///
-    public func searchMovies(
+    func searchMovies(
         query: String,
-        filter: MovieSearchFilter? = nil,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = MovieSearchRequest(
-            query: query,
-            primaryReleaseYear: filter?.primaryReleaseYear,
-            country: filter?.country,
-            includeAdult: filter?.includeAdult,
-            page: page,
-            language: language
-        )
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+        filter: MovieSearchFilter?,
+        page: Int?,
+        language: String?
+    ) async throws -> MoviePageableList
 
     ///
     /// Returns search results for TV series.
@@ -141,30 +90,12 @@ public final class SearchService {
     ///
     /// - Returns: TV series matching the query.
     ///
-    public func searchTVSeries(
+    func searchTVSeries(
         query: String,
-        filter: TVSeriesSearchFilter? = nil,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> TVSeriesPageableList {
-        let request = TVSeriesSearchRequest(
-            query: query,
-            firstAirDateYear: filter?.firstAirDateYear,
-            year: filter?.year,
-            includeAdult: filter?.includeAdult,
-            page: page,
-            language: language
-        )
-
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
-    }
+        filter: TVSeriesSearchFilter?,
+        page: Int?,
+        language: String?
+    ) async throws -> TVSeriesPageableList
 
     ///
     /// Returns search results for people.
@@ -183,27 +114,51 @@ public final class SearchService {
     ///
     /// - Returns: People matching the query.
     ///
-    public func searchPeople(
+    func searchPeople(
+        query: String,
+        filter: PersonSearchFilter?,
+        page: Int?,
+        language: String?
+    ) async throws -> PersonPageableList
+
+}
+
+public extension SearchService {
+
+    func searchAll(
+        query: String,
+        filter: AllMediaSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaPageableList {
+        try await searchAll(query: query, filter: filter, page: page, language: language)
+    }
+
+    func searchMovies(
+        query: String,
+        filter: MovieSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await searchMovies(query: query, filter: filter, page: page, language: language)
+    }
+
+    func searchTVSeries(
+        query: String,
+        filter: TVSeriesSearchFilter? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await searchTVSeries(query: query, filter: filter, page: page, language: language)
+    }
+
+    func searchPeople(
         query: String,
         filter: PersonSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
     ) async throws -> PersonPageableList {
-        let request = PersonSearchRequest(
-            query: query,
-            includeAdult: filter?.includeAdult,
-            page: page,
-            language: language
-        )
-
-        let peopleList: PersonPageableList
-        do {
-            peopleList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return peopleList
+        try await searchPeople(query: query, filter: filter, page: page, language: language)
     }
 
 }

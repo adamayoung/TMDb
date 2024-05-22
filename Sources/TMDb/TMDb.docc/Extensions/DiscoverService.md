@@ -1,10 +1,6 @@
-# ``TMDb/DiscoverService``
+# ``DiscoverService``
 
 ## Topics
-
-### Creating a Discover Service
-
-- ``init(configuration:)``
 
 ### Discover Movies
 

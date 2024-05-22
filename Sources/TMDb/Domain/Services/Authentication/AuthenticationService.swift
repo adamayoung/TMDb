@@ -26,30 +26,7 @@ import Foundation
 /// [TMDb API - How do I generate a session ID?](https://developer.themoviedb.org/reference/authentication-how-do-i-generate-a-session-id)
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class AuthenticationService {
-
-    private let apiClient: any APIClient
-    private let authenticateURLBuilder: any AuthenticateURLBuilding
-
-    ///
-    /// Creates an authentication service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.authAPIClient(configuration: configuration),
-            authenticateURLBuilder: TMDbFactory.authenticateURLBuilder()
-        )
-    }
-
-    init(
-        apiClient: some APIClient,
-        authenticateURLBuilder: some AuthenticateURLBuilding
-    ) {
-        self.apiClient = apiClient
-        self.authenticateURLBuilder = authenticateURLBuilder
-    }
+public protocol AuthenticationService: Sendable {
 
     ///
     /// Creates a guest session with TMDb.
@@ -66,18 +43,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: A guest session.
     ///
-    public func guestSession() async throws -> GuestSession {
-        let request = CreateGuestSessionRequest()
-
-        let session: GuestSession
-        do {
-            session = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return session
-    }
+    func guestSession() async throws -> GuestSession
 
     ///
     /// Creates an intermediate request token that can be used to validate a TMDb user login.
@@ -91,18 +57,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: An intermediate request token.
     ///
-    public func requestToken() async throws -> Token {
-        let request = CreateRequestTokenRequest()
-
-        let token: Token
-        do {
-            token = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return token
-    }
+    func requestToken() async throws -> Token
 
     ///
     /// Builds the URL used for the user to authenticate with after requesting an intermediate request token.
@@ -115,11 +70,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: An authenticate URL.
     ///
-    public func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
-        let url = authenticateURLBuilder.authenticateURL(with: token.requestToken, redirectURL: redirectURL)
-
-        return url
-    }
+    func authenticateURL(for token: Token, redirectURL: URL?) -> URL
 
     ///
     /// Creates a TMDb session with a valid request token.
@@ -133,18 +84,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: A TMDb session.
     ///
-    public func createSession(withToken token: Token) async throws -> Session {
-        let request = CreateSessionRequest(requestToken: token.requestToken)
-
-        let session: Session
-        do {
-            session = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return session
-    }
+    func createSession(withToken token: Token) async throws -> Session
 
     ///
     /// Creates a TMDb session using a user's username and password.
@@ -156,26 +96,7 @@ public final class AuthenticationService {
     ///
     /// - Returns: A TMDb session.
     ///
-    public func createSession(withCredential credential: Credential) async throws -> Session {
-        let token = try await requestToken()
-
-        let request = ValidateTokenWithLoginRequest(
-            username: credential.username,
-            password: credential.password,
-            requestToken: token.requestToken
-        )
-
-        let validatedToken: Token
-        do {
-            validatedToken = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        let session = try await createSession(withToken: validatedToken)
-
-        return session
-    }
+    func createSession(withCredential credential: Credential) async throws -> Session
 
     ///
     /// Deletes a user's session on TMDb.
@@ -187,35 +108,21 @@ public final class AuthenticationService {
     /// - Returns: Whether or not the session was successfully delete.
     ///
     @discardableResult
-    public func deleteSession(_ session: Session) async throws -> Bool {
-        let request = DeleteSessionRequest(sessionID: session.sessionID)
-
-        let result: SuccessResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.success
-    }
+    func deleteSession(_ session: Session) async throws -> Bool
 
     ///
     /// Validates the configured API key.
     ///
     /// - Returns: Whether or not the API key is valid.
     ///
-    public func validateKey() async throws -> Bool {
-        let request = ValidateKeyRequest()
+    func validateKey() async throws -> Bool
 
-        let result: SuccessResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch {
-            return false
-        }
+}
 
-        return result.success
+public extension AuthenticationService {
+
+    func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
+        authenticateURL(for: token, redirectURL: redirectURL)
     }
 
 }

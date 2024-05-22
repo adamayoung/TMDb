@@ -22,12 +22,12 @@ import XCTest
 
 final class CertificationIntegrationTests: XCTestCase {
 
-    var certificationService: CertificationService!
+    var certificationService: (any CertificationService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        certificationService = CertificationService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        certificationService = TMDbClient(apiKey: apiKey).certifications
     }
 
     override func tearDown() {

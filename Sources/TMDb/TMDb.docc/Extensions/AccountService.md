@@ -1,10 +1,6 @@
-# ``TMDb/AccountService``
+# ``AccountService``
 
 ## Topics
-
-### Creating an Account Service
-
-- ``init(configuration:)``
 
 ### Account Details
 

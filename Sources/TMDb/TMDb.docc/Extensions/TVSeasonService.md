@@ -1,10 +1,6 @@
-# ``TMDb/TVSeasonService``
+# ``TVSeasonService``
 
 ## Topics
-
-### Creating a TV Season Service
-
-- ``init(configuration:)``
 
 ### Details
 

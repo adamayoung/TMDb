@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for obtaining watch providers from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class WatchProviderService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a watch provider service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol WatchProviderService: Sendable {
 
     ///
     /// Returns a list of all of the countries TMDb have watch provider (OTT/streaming) data for.
@@ -54,18 +37,7 @@ public final class WatchProviderService {
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     ///
-    public func countries(language: String? = nil) async throws -> [Country] {
-        let request = WatchProviderRegionsRequest(language: language)
-
-        let regions: WatchProviderRegions
-        do {
-            regions = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return regions.results
-    }
+    func countries(language: String?) async throws -> [Country]
 
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
@@ -80,21 +52,7 @@ public final class WatchProviderService {
     ///
     /// - Returns: Watch providers for movies.
     ///
-    public func movieWatchProviders(
-        filter: WatchProviderFilter? = nil,
-        language: String? = nil
-    ) async throws -> [WatchProvider] {
-        let request = WatchProvidersForMoviesRequest(country: filter?.country, language: language)
-
-        let result: WatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.results
-    }
+    func movieWatchProviders(filter: WatchProviderFilter?, language: String?) async throws -> [WatchProvider]
 
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV series.
@@ -109,20 +67,28 @@ public final class WatchProviderService {
     ///
     /// - Returns: Watch providers for TV series.
     ///
-    public func tvSeriesWatchProviders(
+    func tvSeriesWatchProviders(filter: WatchProviderFilter?, language: String?) async throws -> [WatchProvider]
+
+}
+
+public extension WatchProviderService {
+
+    func countries(language: String? = nil) async throws -> [Country] {
+        try await countries(language: language)
+    }
+
+    func movieWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
     ) async throws -> [WatchProvider] {
-        let request = WatchProvidersForTVSeriesRequest(country: filter?.country, language: language)
+        try await movieWatchProviders(filter: filter, language: language)
+    }
 
-        let result: WatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.results
+    func tvSeriesWatchProviders(
+        filter: WatchProviderFilter? = nil,
+        language: String? = nil
+    ) async throws -> [WatchProvider] {
+        try await tvSeriesWatchProviders(filter: filter, language: language)
     }
 
 }

@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for obtaining TV series from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class TVSeriesService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a TV series service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol TVSeriesService: Sendable {
 
     ///
     /// Returns the primary information about a TV series.
@@ -55,18 +38,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: The matching TV series.
     ///
-    public func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
-        let request = TVSeriesRequest(id: id, language: language)
-
-        let tvSeries: TVSeries
-        do {
-            tvSeries = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeries
-    }
+    func details(forTVSeries id: TVSeries.ID, language: String?) async throws -> TVSeries
 
     ///
     /// Returns the cast and crew of a TV series.
@@ -81,18 +53,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws -> ShowCredits {
-        let request = TVSeriesCreditsRequest(id: tvSeriesID, language: language)
-
-        let credits: ShowCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws -> ShowCredits
 
     ///
     /// Returns the aggregate cast and crew of a TV series.
@@ -111,21 +72,10 @@ public final class TVSeriesService {
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func aggregateCredits(
+    func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
-    ) async throws -> TVSeriesAggregateCredits {
-        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: language)
-
-        let credits: TVSeriesAggregateCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+        language: String?
+    ) async throws -> TVSeriesAggregateCredits
 
     ///
     /// Returns the user reviews for a TV series.
@@ -143,22 +93,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
-    public func reviews(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> ReviewPageableList {
-        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page, language: language)
-
-        let reviewList: ReviewPageableList
-        do {
-            reviewList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return reviewList
-    }
+    func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int?, language: String?) async throws -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a TV series.
@@ -173,21 +108,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: A collection of images for the matching TV series.
     ///
-    public func images(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeriesImageFilter? = nil
-    ) async throws -> ImageCollection {
-        let request = TVSeriesImagesRequest(id: tvSeriesID, languages: filter?.languages)
-
-        let imageCollection: ImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
-    }
+    func images(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesImageFilter?) async throws -> ImageCollection
 
     ///
     /// Returns the videos that belong to a TV series.
@@ -202,21 +123,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: A collection of videos for the matching TV series.
     ///
-    public func videos(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeriesVideoFilter? = nil
-    ) async throws -> VideoCollection {
-        let request = TVSeriesVideosRequest(id: tvSeriesID, languages: filter?.languages)
-
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
-    }
+    func videos(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesVideoFilter?) async throws -> VideoCollection
 
     ///
     /// Returns a list of recommended TV series for a TV series.
@@ -234,22 +141,11 @@ public final class TVSeriesService {
     ///
     /// - Returns: Recommended TV series for the matching TV series as a pageable list.
     ///
-    public func recommendations(
+    func recommendations(
         forTVSeries tvSeriesID: TVSeries.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> TVSeriesPageableList {
-        let request = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page, language: language)
-
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
-    }
+        page: Int?,
+        language: String?
+    ) async throws -> TVSeriesPageableList
 
     ///
     /// Returns a list of similar TV series for a TV series.
@@ -269,22 +165,11 @@ public final class TVSeriesService {
     ///
     /// - Returns: Similar TV series for the matching TV series as a pageable list.
     ///
-    public func similar(
+    func similar(
         toTVSeries tvSeriesID: TVSeries.ID,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> TVSeriesPageableList {
-        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: language)
-
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
-    }
+        page: Int?,
+        language: String?
+    ) async throws -> TVSeriesPageableList
 
     ///
     /// Returns a list current popular TV series.
@@ -301,18 +186,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: Current popular TV series as a pageable list.
     ///
-    public func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
-        let request = PopularTVSeriesRequest(page: page, language: language)
-
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
-    }
+    func popular(page: Int?, language: String?) async throws -> TVSeriesPageableList
 
     ///
     /// Returns watch providers for a TV series
@@ -329,21 +203,7 @@ public final class TVSeriesService {
     ///
     /// - Returns: Watch providers for TV series in current region.
     ///
-    public func watchProviders(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String = "US"
-    ) async throws -> ShowWatchProvider? {
-        let request = TVSeriesWatchProvidersRequest(id: tvSeriesID)
-
-        let result: ShowWatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.results[country]
-    }
+    func watchProviders(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws -> ShowWatchProvider?
 
     ///
     /// Returns a collection of media databases and social links for a TV series.
@@ -355,17 +215,74 @@ public final class TVSeriesService {
     ///
     /// - Returns: A collection of external links for the specificed TV series.
     ///
-    public func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
-        let request = TVSeriesExternalLinksRequest(id: tvSeriesID)
+    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection
 
-        let linksCollection: TVSeriesExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+}
 
-        return linksCollection
+public extension TVSeriesService {
+
+    func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
+        try await details(forTVSeries: id, language: language)
+    }
+
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws -> ShowCredits {
+        try await credits(forTVSeries: tvSeriesID, language: language)
+    }
+
+    func aggregateCredits(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeriesAggregateCredits {
+        try await aggregateCredits(forTVSeries: tvSeriesID, language: language)
+    }
+
+    func reviews(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> ReviewPageableList {
+        try await reviews(forTVSeries: tvSeriesID, page: page, language: language)
+    }
+
+    func images(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesImageFilter? = nil
+    ) async throws -> ImageCollection {
+        try await images(forTVSeries: tvSeriesID, filter: filter)
+    }
+
+    func videos(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesVideoFilter? = nil
+    ) async throws -> VideoCollection {
+        try await videos(forTVSeries: tvSeriesID, filter: filter)
+    }
+
+    func recommendations(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await recommendations(forTVSeries: tvSeriesID, page: page, language: language)
+    }
+
+    func similar(
+        toTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await similar(toTVSeries: tvSeriesID, page: page, language: language)
+    }
+
+    func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        try await popular(page: page, language: language)
+    }
+
+    func watchProviders(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String = "US"
+    ) async throws -> ShowWatchProvider? {
+        try await watchProviders(forTVSeries: tvSeriesID, country: country)
     }
 
 }

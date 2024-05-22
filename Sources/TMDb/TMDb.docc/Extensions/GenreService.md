@@ -1,10 +1,6 @@
-# ``TMDb/GenreService``
+# ``GenreService``
 
 ## Topics
-
-### Creating a Genre Service
-
-- ``init(configuration:)``
 
 ### Movie Genres
 

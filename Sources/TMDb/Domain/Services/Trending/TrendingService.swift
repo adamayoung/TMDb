@@ -23,24 +23,7 @@ import Foundation
 /// Provides an interface for finding trending movies, TV series and people from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class TrendingService {
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a trending service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol TrendingService: Sendable {
 
     ///
     /// Returns a list of the daily or weekly trending movies.
@@ -61,22 +44,11 @@ public final class TrendingService {
     ///
     /// - Returns: Trending movies in a time window as a pageable list.
     ///
-    public func movies(
-        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> MoviePageableList {
-        let request = TrendingMoviesRequest(timeWindow: timeWindow, page: page, language: language)
-
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
-    }
+    func movies(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+        page: Int?,
+        language: String?
+    ) async throws -> MoviePageableList
 
     ///
     /// Returns a list of the daily or weekly trending TV series.
@@ -97,22 +69,11 @@ public final class TrendingService {
     ///
     /// - Returns: Trending TV series in a time window as a pageable list.
     ///
-    public func tvSeries(
-        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws -> TVSeriesPageableList {
-        let request = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page, language: language)
-
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
-    }
+    func tvSeries(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+        page: Int?,
+        language: String?
+    ) async throws -> TVSeriesPageableList
 
     ///
     /// Returns a list of the daily or weekly trending people.
@@ -133,21 +94,38 @@ public final class TrendingService {
     ///
     /// - Returns: Trending people in a time window as a pageable list.
     ///
-    public func people(
+    func people(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+        page: Int?,
+        language: String?
+    ) async throws -> PersonPageableList
+
+}
+
+public extension TrendingService {
+
+    func movies(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MoviePageableList {
+        try await movies(inTimeWindow: timeWindow, page: page, language: language)
+    }
+
+    func tvSeries(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await tvSeries(inTimeWindow: timeWindow, page: page, language: language)
+    }
+
+    func people(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
     ) async throws -> PersonPageableList {
-        let request = TrendingPeopleRequest(timeWindow: timeWindow, page: page, language: language)
-
-        let peopleList: PersonPageableList
-        do {
-            peopleList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return peopleList
+        try await people(inTimeWindow: timeWindow, page: page, language: language)
     }
 
 }

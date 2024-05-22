@@ -1,10 +1,6 @@
-# ``TMDb/TVSeriesService``
+# ``TVSeriesService``
 
 ## Topics
-
-### Creating a TV Series Service
-
-- ``init(configuration:)``
 
 ### Details
 

@@ -22,10 +22,6 @@ import XCTest
 
 extension XCTestCase {
 
-    func tmdbConfiguration() throws -> TMDbConfiguration {
-        try TMDbConfiguration(apiKey: tmdbAPIKey())
-    }
-
     func tmdbCredential() throws -> Credential {
         try Self.tmdbCredential()
     }
@@ -34,11 +30,11 @@ extension XCTestCase {
 
 extension XCTestCase {
 
-    private func tmdbAPIKey() throws -> String {
+    func tmdbAPIKey() throws -> String {
         try Self.tmdbAPIKey()
     }
 
-    private static func tmdbAPIKey() throws -> String {
+    static func tmdbAPIKey() throws -> String {
         guard
             let apiKey = ProcessInfo.processInfo.environment["TMDB_API_KEY"],
             !apiKey.isEmpty

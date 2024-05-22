@@ -1,10 +1,6 @@
-# ``TMDb/MovieService``
+# ``MovieService``
 
 ## Topics
-
-### Creating a Movie Service
-
-- ``init(configuration:)``
 
 ### Details
 

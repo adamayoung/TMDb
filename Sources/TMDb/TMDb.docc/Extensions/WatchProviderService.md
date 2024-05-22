@@ -1,10 +1,6 @@
-# ``TMDb/WatchProviderService``
+# ``WatchProviderService``
 
 ## Topics
-
-### Creating a Watch Provider Service
-
-- ``init(configuration:)``
 
 ### Providers
 

@@ -22,12 +22,12 @@ import XCTest
 
 final class SearchIntegrationTests: XCTestCase {
 
-    var searchService: SearchService!
+    var searchService: (any SearchService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        searchService = SearchService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        searchService = TMDbClient(apiKey: apiKey).search
     }
 
     override func tearDown() {

@@ -1,10 +1,6 @@
-# ``TMDb/ConfigurationService``
+# ``ConfigurationService``
 
 ## Topics
-
-### Creating a Configuration Service
-
-- ``init(configuration:)``
 
 ### API Configuration
 

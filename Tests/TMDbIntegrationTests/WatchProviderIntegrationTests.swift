@@ -22,12 +22,12 @@ import XCTest
 
 final class WatchProviderIntegrationTests: XCTestCase {
 
-    var watchProviderService: WatchProviderService!
+    var watchProviderService: (any WatchProviderService)!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let configuration = try tmdbConfiguration()
-        watchProviderService = WatchProviderService(configuration: configuration)
+        let apiKey = try tmdbAPIKey()
+        watchProviderService = TMDbClient(apiKey: apiKey).watchProviders
     }
 
     override func tearDown() {

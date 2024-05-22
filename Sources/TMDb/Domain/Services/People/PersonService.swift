@@ -23,26 +23,7 @@ import Foundation
 /// Provides an interface for obtaining people from TMDb.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public final class PersonService {
-
-    private static let knownForShowsMaxCount = 10
-
-    private let apiClient: any APIClient
-
-    ///
-    /// Creates a person service object.
-    ///
-    /// - Parameter configuration: A TMDb configuration object.
-    ///
-    public convenience init(configuration: some ConfigurationProviding) {
-        self.init(
-            apiClient: TMDbFactory.apiClient(configuration: configuration)
-        )
-    }
-
-    init(apiClient: some APIClient) {
-        self.apiClient = apiClient
-    }
+public protocol PersonService: Sendable {
 
     ///
     /// Returns the primary information about a person.
@@ -57,18 +38,7 @@ public final class PersonService {
     ///
     /// - Returns: The matching person.
     ///
-    public func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
-        let request = PersonRequest(id: id, language: language)
-
-        let person: Person
-        do {
-            person = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return person
-    }
+    func details(forPerson id: Person.ID, language: String?) async throws -> Person
 
     ///
     /// Returns the combined movie and TV series credits of a person.
@@ -83,21 +53,7 @@ public final class PersonService {
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
-    public func combinedCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
-    ) async throws -> PersonCombinedCredits {
-        let request = PersonCombinedCreditsRequest(id: personID, language: language)
-
-        let credits: PersonCombinedCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+    func combinedCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonCombinedCredits
 
     ///
     /// Returns the movie credits of a person.
@@ -112,21 +68,7 @@ public final class PersonService {
     ///
     /// - Returns: The matching person's movie credits.
     ///
-    public func movieCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
-    ) async throws -> PersonMovieCredits {
-        let request = PersonMovieCreditsRequest(id: personID, language: language)
-
-        let credits: PersonMovieCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+    func movieCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonMovieCredits
 
     ///
     /// Returns the TV series credits of a person.
@@ -141,21 +83,7 @@ public final class PersonService {
     ///
     /// - Returns: The matching person's TV series credits.
     ///
-    public func tvSeriesCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
-    ) async throws -> PersonTVSeriesCredits {
-        let request = PersonTVSeriesCreditsRequest(id: personID, language: language)
-
-        let credits: PersonTVSeriesCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
-    }
+    func tvSeriesCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonTVSeriesCredits
 
     ///
     /// Returns the images for a person.
@@ -169,18 +97,7 @@ public final class PersonService {
     ///
     /// - Returns: The matching person's images.
     ///
-    public func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
-        let request = PersonImagesRequest(id: personID)
-
-        let imageCollection: PersonImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
-    }
+    func images(forPerson personID: Person.ID) async throws -> PersonImageCollection
 
     ///
     /// Returns the list of popular people.
@@ -197,18 +114,7 @@ public final class PersonService {
     ///
     /// - Returns: Current popular people as a pageable list.
     ///
-    public func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
-        let request = PopularPeopleRequest(page: page, language: language)
-
-        let personList: PersonPageableList
-        do {
-            personList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return personList
-    }
+    func popular(page: Int?, language: String?) async throws -> PersonPageableList
 
     ///
     /// Returns a collection of media databases and social links for a person.
@@ -220,17 +126,30 @@ public final class PersonService {
     ///
     /// - Returns: A collection of external links for the specificed person.
     ///
-    public func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection {
-        let request = PersonExternalLinksRequest(id: personID)
+    func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection
 
-        let linksCollection: PersonExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+}
 
-        return linksCollection
+public extension PersonService {
+
+    func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+        try await details(forPerson: id, language: language)
+    }
+
+    func combinedCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonCombinedCredits {
+        try await combinedCredits(forPerson: personID, language: language)
+    }
+
+    func movieCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonMovieCredits {
+        try await movieCredits(forPerson: personID, language: language)
+    }
+
+    func tvSeriesCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonTVSeriesCredits {
+        try await tvSeriesCredits(forPerson: personID, language: language)
+    }
+
+    func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
+        try await popular(page: page, language: language)
     }
 
 }

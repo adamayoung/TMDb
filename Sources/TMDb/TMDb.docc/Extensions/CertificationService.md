@@ -1,10 +1,6 @@
-# ``TMDb/CertificationService``
+# ``CertificationService``
 
 ## Topics
-
-### Creating a Certification Service
-
-- ``init(configuration:)``
 
 ### Certifications
 
