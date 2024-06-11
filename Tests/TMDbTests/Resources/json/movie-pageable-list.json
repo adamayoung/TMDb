@@ -3,15 +3,27 @@
     "results": [
         {
             "id": 1,
-            "title": "Movie 1"
+            "title": "Movie 1",
+            "original_title": "Movie 1 - a",
+            "original_language": "en",
+            "overview": "Overview 1",
+            "genre_ids": [1, 2, 3]
         },
         {
             "id": 2,
-            "title": "Movie 2"
+            "title": "Movie 2",
+            "original_title": "Movie 2 - a",
+            "original_language": "en",
+            "overview": "Overview 2",
+            "genre_ids": [4, 5, 6]
         },
         {
             "id": 3,
-            "title": "Movie 3"
+            "title": "Movie 3",
+            "original_title": "Movie 3 - a",
+            "original_language": "en",
+            "overview": "Overview 3",
+            "genre_ids": [7, 8, 9]
         }
     ],
     "total_pages": 1,
