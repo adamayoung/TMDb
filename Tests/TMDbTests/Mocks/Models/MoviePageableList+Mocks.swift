@@ -24,7 +24,7 @@ extension MoviePageableList {
 
     static func mock(
         page: Int = .random(in: 1 ... 5),
-        results: [Movie] = .mocks,
+        results: [MovieListItem] = .mocks,
         totalResults: Int = .random(in: 1 ... 100),
         totalPages: Int = .random(in: 1 ... 5)
     ) -> Self {
