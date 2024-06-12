@@ -112,9 +112,10 @@ extension MovieListItem {
         )
     }
 
+    // swiftlint:disable line_length
     static var theFirstOmen: MovieListItem {
         MovieListItem(
-            id: 437342,
+            id: 437_342,
             title: "The First Omen",
             originalTitle: "The First Omen",
             originalLanguage: "en",
@@ -130,6 +131,7 @@ extension MovieListItem {
             isAdultOnly: false
         )
     }
+    // swiftlint:enable line_length
 
 }
 

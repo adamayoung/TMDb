@@ -23,7 +23,7 @@ import XCTest
 final class MediaTests: XCTestCase {
 
     func testIDWhenMovieReturnsID() {
-        XCTAssertEqual(medias[0].id, 437342)
+        XCTAssertEqual(medias[0].id, 437_342)
     }
 
     func testIDWhenTVSeriesReturnsID() {
