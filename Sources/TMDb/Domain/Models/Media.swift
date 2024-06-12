@@ -43,7 +43,7 @@ public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Movie.
     ///
-    case movie(Movie)
+    case movie(MovieListItem)
 
     ///
     /// TV series.
@@ -75,7 +75,7 @@ extension Media {
 
         switch mediaType {
         case .movie:
-            self = try .movie(Movie(from: decoder))
+            self = try .movie(MovieListItem(from: decoder))
 
         case .tvSeries:
             self = try .tvSeries(TVSeriesListItem(from: decoder))

@@ -23,7 +23,7 @@ import XCTest
 final class MediaTests: XCTestCase {
 
     func testIDWhenMovieReturnsID() {
-        XCTAssertEqual(medias[0].id, 1)
+        XCTAssertEqual(medias[0].id, 437342)
     }
 
     func testIDWhenTVSeriesReturnsID() {
@@ -41,7 +41,7 @@ final class MediaTests: XCTestCase {
     }
 
     private let medias: [Media] = [
-        .movie(Movie(id: 1, title: "Fight Club")),
+        .movie(.theFirstOmen),
         .tvSeries(.bigBrother),
         .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
     ]

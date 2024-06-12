@@ -35,7 +35,7 @@ final class MediaPageableListTests: XCTestCase {
     private let list = MediaPageableList(
         page: 1,
         results: [
-            .movie(Movie(id: 1, title: "Fight Club")),
+            .movie(.theFirstOmen),
             .tvSeries(.bigBrother),
             .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
         ],
