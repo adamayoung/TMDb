@@ -34,10 +34,9 @@ extension [Media] {
         [
             .movie(.bulletTrain),
             .movie(.topGunMaverick),
-            .tvSeries(.strangerThings),
-            .tvSeries(.theSandman),
-            .movie(.jurassicWorldDominion),
-            .tvSeries(.sheHulk)
+            .tvSeries(.bigBrother),
+            .tvSeries(.csi),
+            .movie(.jurassicWorldDominion)
         ]
     }
 
