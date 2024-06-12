@@ -24,7 +24,7 @@ extension PersonPageableList {
 
     static func mock(
         page: Int = .random(in: 1 ... 5),
-        results: [Person] = .mocks,
+        results: [PersonListItem] = .mocks,
         totalResults: Int = .random(in: 1 ... 100),
         totalPages: Int = .random(in: 1 ... 5)
     ) -> Self {

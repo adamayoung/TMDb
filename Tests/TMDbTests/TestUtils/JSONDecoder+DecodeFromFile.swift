@@ -18,16 +18,24 @@
 //
 
 import Foundation
+import XCTest
 
 extension JSONDecoder {
 
     func decode<T>(
         _: T.Type,
         fromResource fileName: String,
-        withExtension fileType: String = "json"
+        withExtension fileType: String = "json",
+        file: StaticString = #filePath,
+        line: UInt = #line
     ) throws -> T where T: Decodable {
-        let data = try Data(fromResource: fileName, withExtension: fileType)
-        return try decode(T.self, from: data)
+        do {
+            let data = try Data(fromResource: fileName, withExtension: fileType)
+            return try decode(T.self, from: data)
+        } catch let error {
+            XCTFail("Decode error: \(error.localizedDescription)", file: file, line: line)
+            throw error
+        }
     }
 
 }
