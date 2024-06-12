@@ -24,7 +24,7 @@ extension TVSeriesPageableList {
 
     static func mock(
         page: Int = Int.random(in: 1 ... 5),
-        results: [TVSeries] = .mocks,
+        results: [TVSeriesListItem] = .mocks,
         totalResults: Int? = Int.random(in: 1 ... 100),
         totalPages: Int? = Int.random(in: 1 ... 5)
     ) -> Self {

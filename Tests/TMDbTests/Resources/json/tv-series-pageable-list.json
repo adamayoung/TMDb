@@ -2,18 +2,48 @@
     "page": 1,
     "results": [
         {
-            "id": 1,
-            "name": "TV Series 1"
+            "adult": false,
+            "backdrop_path": "/3SWOj8ydFrxiuZdLg63fDAt4jYR.jpg",
+            "genre_ids": [
+                10764
+            ],
+            "id": 11366,
+            "origin_country": [
+                "GB"
+            ],
+            "original_language": "en",
+            "original_name": "Big Brother",
+            "overview": "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+            "popularity": 5434.15,
+            "poster_path": "/p7lsmCU5ZqaMGKZAuZMkFc02X8o.jpg",
+            "first_air_date": "2000-07-18",
+            "name": "Big Brother",
+            "vote_average": 3.833,
+            "vote_count": 48
         },
         {
-            "id": 2,
-            "name": "TV Series 2"
-        },
-        {
-            "id": 3,
-            "name": "TV Series 3"
+            "adult": false,
+            "backdrop_path": "/vZePKXaSO3537aJTxifE3Rrwobb.jpg",
+            "genre_ids": [
+                80,
+                18,
+                9648
+            ],
+            "id": 1431,
+            "origin_country": [
+                "US"
+            ],
+            "original_language": "en",
+            "original_name": "CSI: Crime Scene Investigation",
+            "overview": "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
+            "popularity": 4140.812,
+            "poster_path": "/i5hmoRjHNWady4AtAGICTUXknKH.jpg",
+            "first_air_date": "2000-10-06",
+            "name": "CSI: Crime Scene Investigation",
+            "vote_average": 7.619,
+            "vote_count": 1178
         }
     ],
     "total_pages": 1,
-    "total_results": 3
+    "total_results": 2
 }

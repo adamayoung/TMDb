@@ -2,14 +2,44 @@
     "page": 1,
     "results": [
         {
-            "id": 1,
-            "title": "Fight Club",
+            "adult": false,
+            "backdrop_path": "/tkHQ7tnYYUEnqlrKuhufIsSVToU.jpg",
+            "genre_ids": [
+                27
+            ],
+            "id": 437342,
+            "original_language": "en",
+            "original_title": "The First Omen",
+            "overview": "When a young American woman is sent to Rome to begin a life of service to the church, she encounters a darkness that causes her to question her own faith and uncovers a terrifying conspiracy that hopes to bring about the birth of evil incarnate.",
+            "popularity": 1080.713,
+            "poster_path": "/uGyiewQnDHPuiHN9V4k2t9QBPnh.jpg",
+            "release_date": "2024-04-05",
+            "title": "The First Omen",
+            "video": false,
+            "vote_average": 6.768,
+            "vote_count": 455,
             "media_type": "movie"
         },
         {
-            "id": 2,
-            "name": "The Mrs Bradley Mysteries",
-            "media_type": "tv"
+            "adult": false,
+            "backdrop_path": "/3SWOj8ydFrxiuZdLg63fDAt4jYR.jpg",
+            "genre_ids": [
+                10764
+            ],
+            "id": 11366,
+            "origin_country": [
+                "GB"
+            ],
+            "original_language": "en",
+            "original_name": "Big Brother",
+            "overview": "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+            "popularity": 5434.15,
+            "poster_path": "/p7lsmCU5ZqaMGKZAuZMkFc02X8o.jpg",
+            "first_air_date": "2000-07-18",
+            "name": "Big Brother",
+            "vote_average": 3.833,
+            "vote_count": 48,
+            "media_type": "tv",
         },
         {
             "id": 51329,
