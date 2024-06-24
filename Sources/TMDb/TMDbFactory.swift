@@ -69,10 +69,6 @@ extension TMDbFactory {
 
     private static func urlSessionConfiguration() -> URLSessionConfiguration {
         let configuration = URLSessionConfiguration.default
-        #if os(iOS)
-            configuration.multipathServiceType = .none
-        #endif
-
         configuration.requestCachePolicy = .useProtocolCachePolicy
         configuration.timeoutIntervalForRequest = 30
 
