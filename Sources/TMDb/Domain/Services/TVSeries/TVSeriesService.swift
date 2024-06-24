@@ -217,6 +217,17 @@ public protocol TVSeriesService: Sendable {
     ///
     func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection
 
+    ///
+    /// Returns a collection of media databases and social links for a TV series.
+    ///
+    /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Returns: A collection of external links for the specificed TV series.
+    ///
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws -> ContentRating?
 }
 
 public extension TVSeriesService {
@@ -285,4 +296,10 @@ public extension TVSeriesService {
         try await watchProviders(forTVSeries: tvSeriesID, country: country)
     }
 
+    func contentRatings(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String = "US"
+    ) async throws -> ContentRating? {
+        try await contentRatings(forTVSeries: tvSeriesID, country: country)
+    }
 }

@@ -181,6 +181,24 @@ final class TMDbTVSeriesService: TVSeriesService {
 
         return result.results[country]
     }
+    
+    func contentRatings(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String = "US"
+    ) async throws -> ContentRating? {
+        let request = ContentRatingRequest(id: tvSeriesID)
+
+        let result: ContentRatingResult
+        do {
+            result = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result.results.first { rating in
+            rating.country == country
+        }
+    }
 
     func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
         let request = TVSeriesExternalLinksRequest(id: tvSeriesID)
