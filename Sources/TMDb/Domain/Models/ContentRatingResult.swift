@@ -15,4 +15,10 @@ public struct ContentRating: Codable, Equatable, Hashable, Sendable {
     public let descriptors: [String]
     public let country: String
     public let rating: String
+
+    enum CodingKeys: String, CodingKey {
+        case rating
+        case descriptors
+        case country = "iso31661"
+    }
 }
