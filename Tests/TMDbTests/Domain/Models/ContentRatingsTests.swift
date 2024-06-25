@@ -1,5 +1,5 @@
 //
-//  CertificationTests.swift
+//  ContentRatingsTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -145,7 +145,7 @@ final class ContentRatingsTests: XCTestCase {
                 descriptors: [],
                 countryCode: "RO",
                 rating: "15"
-            ),
+            )
         ],
         id: 8592
     )

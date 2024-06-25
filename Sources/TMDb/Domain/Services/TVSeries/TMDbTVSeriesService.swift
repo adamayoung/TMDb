@@ -181,7 +181,7 @@ final class TMDbTVSeriesService: TVSeriesService {
 
         return result.results[country]
     }
-    
+
     func contentRatings(
         forTVSeries tvSeriesID: TVSeries.ID,
         country: String = "US"

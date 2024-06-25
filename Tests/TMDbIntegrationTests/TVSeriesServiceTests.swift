@@ -136,6 +136,5 @@ final class TVSeriesServiceTests: XCTestCase {
             XCTAssertEqual(contentRating.rating, "TV-14")
             XCTAssertEqual(contentRating.countryCode, "US")
         }
-        
     }
 }

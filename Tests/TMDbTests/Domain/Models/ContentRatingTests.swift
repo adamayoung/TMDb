@@ -1,5 +1,5 @@
 //
-//  CertificationTests.swift
+//  ContentRatingTests.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.

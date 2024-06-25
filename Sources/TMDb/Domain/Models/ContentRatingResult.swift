@@ -1,5 +1,5 @@
 //
-//  Company.swift
+//  ContentRatingResult.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -18,7 +18,6 @@
 //
 
 import Foundation
-
 
 struct ContentRatingResult: Codable, Equatable, Hashable, Sendable {
     let results: [ContentRating]
