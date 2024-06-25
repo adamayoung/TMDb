@@ -22,4 +22,5 @@ import Foundation
 
 struct ContentRatingResult: Codable, Equatable, Hashable, Sendable {
     let results: [ContentRating]
+    let id: Int
 }

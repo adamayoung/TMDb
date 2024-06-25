@@ -25,11 +25,6 @@ import Foundation
 public struct ContentRating: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// The tv show's identifier
-    ///
-    public let id: Int
-
-    ///
     /// ?
     ///
     public let descriptors: [String]
@@ -47,13 +42,11 @@ public struct ContentRating: Codable, Equatable, Hashable, Sendable {
     /// Creates a content rating object.
     ///
     /// - Parameters:
-    ///    - id: the ID of the show.
     ///    - descriptors: Array of....
     ///    - countryCode: ISO 3166-1 country code.
     ///    - rating: The content rating of the tv show
     ///
-    public init(id: Int, descriptors: [String], countryCode: String, rating: String) {
-        self.id = id
+    public init(descriptors: [String], countryCode: String, rating: String) {
         self.descriptors = descriptors
         self.countryCode = countryCode
         self.rating = rating
@@ -62,7 +55,6 @@ public struct ContentRating: Codable, Equatable, Hashable, Sendable {
 
 extension ContentRating {
     private enum CodingKeys: String, CodingKey {
-        case id
         case rating
         case descriptors
         case countryCode = "iso31661"
