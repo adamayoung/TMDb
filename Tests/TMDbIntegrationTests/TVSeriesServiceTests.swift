@@ -125,4 +125,17 @@ final class TVSeriesServiceTests: XCTestCase {
         XCTAssertNotNil(linksCollection.twitter)
     }
 
+    func testContentRating() async throws {
+        let tvSeriesID = 8592
+
+        let contentRatings = try await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US")
+
+        XCTAssertNotNil(contentRatings)
+
+        if let contentRating = contentRatings {
+            XCTAssertEqual(contentRating.rating, "TV-14")
+            XCTAssertEqual(contentRating.countryCode, "US")
+        }
+        
+    }
 }
