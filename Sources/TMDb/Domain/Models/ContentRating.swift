@@ -19,7 +19,31 @@
 
 import Foundation
 
+///
+/// A model representing the content rating.
+///
+public struct ContentRating: Codable, Equatable, Hashable, Sendable {
 
-struct ContentRatingResult: Codable, Equatable, Hashable, Sendable {
-    let results: [ContentRating]
+    ///
+    /// ?
+    ///
+    public let descriptors: [String]
+
+    ///
+    /// The ISO 3166-1 country code.
+    ///
+    public let countryCode: String
+
+    ///
+    /// The content rating of the tv show
+    ///
+    public let rating: String
+}
+
+extension ContentRating {
+    private enum CodingKeys: String, CodingKey {
+        case rating
+        case descriptors
+        case countryCode = "iso31661"
+    }
 }

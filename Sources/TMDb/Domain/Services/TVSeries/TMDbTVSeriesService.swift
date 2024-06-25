@@ -196,7 +196,7 @@ final class TMDbTVSeriesService: TVSeriesService {
         }
 
         return result.results.first { rating in
-            rating.country == country
+            rating.countryCode == country
         }
     }
 

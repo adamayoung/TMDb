@@ -218,14 +218,14 @@ public protocol TVSeriesService: Sendable {
     func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection
 
     ///
-    /// Returns a collection of media databases and social links for a TV series.
+    /// Returns the content rating of a TV series.
     ///
-    /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
+    /// [TMDb API - TVSeries: Content ratings](https://developer.themoviedb.org/reference/tv-series-content-ratings)
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///
-    /// - Returns: A collection of external links for the specificed TV series.
+    /// - Returns: A content rating for the specificed TV series.
     ///
     func contentRatings(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws -> ContentRating?
 }
