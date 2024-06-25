@@ -20,7 +20,7 @@
 import Foundation
 
 ///
-/// A model representing a crew member..
+/// A model representing a crew member.
 ///
 public struct CrewMember: Identifiable, Codable, Equatable, Hashable, Sendable {
 

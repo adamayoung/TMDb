@@ -1,0 +1,120 @@
+{
+  "results": [
+    {
+      "descriptors": [],
+      "iso_3166_1": "US",
+      "rating": "TV-14"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "AU",
+      "rating": "M"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "RU",
+      "rating": "12+"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "GB",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "BR",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "HU",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PH",
+      "rating": "G"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "MX",
+      "rating": "A"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PT",
+      "rating": "NR"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "ES",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "FR",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CA",
+      "rating": "PG"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "NL",
+      "rating": "6"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "DE",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "DE",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "AU",
+      "rating": "PG"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "KR",
+      "rating": "15"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "AT",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CH",
+      "rating": "12"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "PL",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "HU",
+      "rating": "16"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "CZ",
+      "rating": "15+"
+    },
+    {
+      "descriptors": [],
+      "iso_3166_1": "RO",
+      "rating": "15"
+    }
+  ],
+  "id": 8592
+}
