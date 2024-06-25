@@ -28,7 +28,6 @@ final class ContentRatingsTests: XCTestCase {
         XCTAssertEqual(result, contentRatings)
     }
 
-    // swiftlint:disable line_length
     private let contentRatings = ContentRatingResult(
         results: [
             ContentRating(
@@ -149,5 +148,4 @@ final class ContentRatingsTests: XCTestCase {
         ],
         id: 8592
     )
-    // swiftlint:enable line_length
 }
