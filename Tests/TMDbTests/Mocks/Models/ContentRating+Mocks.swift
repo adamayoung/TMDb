@@ -41,3 +41,14 @@ extension ContentRating {
         .mock(descriptors: [], countryCode: "GB", rating: "TV-14")
     }
 }
+
+extension [ContentRating] {
+
+    static var mocks: [Element] {
+        [
+            .parksAndRecreationGB,
+            .parksAndRecreationUS
+        ]
+    }
+
+}
