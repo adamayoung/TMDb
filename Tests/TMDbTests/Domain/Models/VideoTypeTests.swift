@@ -17,46 +17,56 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class VideoTypeTests: XCTestCase {
+@Suite(.tags(.models))
+struct VideoTypeTests {
 
-    func testTrailerVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.trailer.rawValue, "Trailer")
+    @Test("trailer video type rawValue is Trailer")
+    func trailerVideoTypeReturnsRawValue() {
+        #expect(VideoType.trailer.rawValue == "Trailer")
     }
 
-    func testTeaserVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.teaser.rawValue, "Teaser")
+    @Test("teaser video type rawValue is Teaser")
+    func teaserVideoTypeReturnsRawValue() {
+        #expect(VideoType.teaser.rawValue == "Teaser")
     }
 
-    func testClipVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.clip.rawValue, "Clip")
+    @Test("clip video type rawValue is Clip")
+    func clipVideoTypeReturnsRawValue() {
+        #expect(VideoType.clip.rawValue == "Clip")
     }
 
-    func testOpeningCreditsVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.openingCredits.rawValue, "Opening Credits")
+    @Test("openingCredits video type rawValue is Opening Credits")
+    func openingCreditsVideoTypeReturnsRawValue() {
+        #expect(VideoType.openingCredits.rawValue == "Opening Credits")
     }
 
-    func testFeaturetteVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.featurette.rawValue, "Featurette")
+    @Test("featurette video type rawValue is Featurette")
+    func featuretteVideoTypeReturnsRawValue() {
+        #expect(VideoType.featurette.rawValue == "Featurette")
     }
 
-    func testBehindTheScenesVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.behindTheScenes.rawValue, "Behind the Scenes")
+    @Test("behindTheScenes video type rawValue is Behind the Scenes")
+    func behindTheScenesVideoTypeReturnsRawValue() {
+        #expect(VideoType.behindTheScenes.rawValue == "Behind the Scenes")
     }
 
-    func testBloopersVideoTypeReturnsRawValue() {
-        XCTAssertEqual(VideoType.bloopers.rawValue, "Bloopers")
+    @Test("bloopers video type rawValue is Bloopers")
+    func bloopersVideoTypeReturnsRawValue() {
+        #expect(VideoType.bloopers.rawValue == "Bloopers")
     }
 
-    func testDecodeWhenInvalidValueReturnsUnknown() throws {
+    @Test("JSON decoding of VideoType", .tags(.decoding))
+    func decodeWhenInvalidValueReturnsUnknown() throws {
         let data = Data("{\"videoType\": \"some-value\"}".utf8)
         let decoder = JSONDecoder()
 
         let result = try decoder.decode(MockObject.self, from: data).videoType
 
-        XCTAssertEqual(result, .unknown)
+        #expect(result == .unknown)
     }
 
 }

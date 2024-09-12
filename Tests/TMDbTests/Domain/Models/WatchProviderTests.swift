@@ -17,15 +17,18 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WatchProviderTests: XCTestCase {
+@Suite(.tags(.models))
+struct WatchProviderTests {
 
-    func testDecodeReturnsWatchProvider() throws {
+    @Test("JSON decoding of WatchProvider", .tags(.decoding))
+    func decodeReturnsWatchProvider() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(WatchProvider.self, fromResource: "watch-provider")
 
-        XCTAssertEqual(result, watchProvider)
+        #expect(result == watchProvider)
     }
 
     private let watchProvider = WatchProvider(

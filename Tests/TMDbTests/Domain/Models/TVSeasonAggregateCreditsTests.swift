@@ -17,20 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeasonAggregateCreditsTests: XCTestCase {
+@Suite(.tags(.models))
+struct TVSeasonAggregateCreditsTests {
 
-    func testDecodeReturnsTVSeasonAggregateCredits() throws {
+    @Test("JSON decoding of TVSeasonAggregateCredits", .tags(.decoding))
+    func decodeReturnsTVSeasonAggregateCredits() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             TVSeriesAggregateCredits.self,
             fromResource: "tv-season-aggregate-credits"
         )
 
-        XCTAssertEqual(result.id, 3625)
-        XCTAssertEqual(result.cast.count, 3)
-        XCTAssertEqual(result.crew.count, 2)
+        #expect(result.id == 3625)
+        #expect(result.cast.count == 3)
+        #expect(result.crew.count == 2)
     }
 
 }

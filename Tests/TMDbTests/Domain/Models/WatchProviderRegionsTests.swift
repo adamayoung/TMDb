@@ -17,18 +17,21 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WatchProviderRegionsTests: XCTestCase {
+@Suite(.tags(.models))
+struct WatchProviderRegionsTests {
 
-    func testDecodeReturnsWatchProviderRegions() throws {
+    @Test("JSON decoding of WatchProviderRegions", .tags(.decoding))
+    func decodeReturnsWatchProviderRegions() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             WatchProviderRegions.self,
             fromResource: "watch-provider-regions"
         )
 
-        XCTAssertEqual(result.results, watchProviderRegions.results)
+        #expect(result.results == watchProviderRegions.results)
     }
 
     private let watchProviderRegions = WatchProviderRegions(

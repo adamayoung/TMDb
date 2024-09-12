@@ -17,16 +17,19 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class VideoCollectionTests: XCTestCase {
+@Suite(.tags(.models))
+struct VideoCollectionTests {
 
-    func testDecodeReturnsVideoCollection() throws {
+    @Test("JSON decoding of VideoCollection", .tags(.decoding))
+    func decodeReturnsVideoCollection() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(VideoCollection.self, fromResource: "video-collection")
 
-        XCTAssertEqual(result.id, videoCollection.id)
-        XCTAssertEqual(result.results, videoCollection.results)
+        #expect(result.id == videoCollection.id)
+        #expect(result.results == videoCollection.results)
     }
 
     private let videoCollection = VideoCollection(

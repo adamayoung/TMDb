@@ -17,34 +17,41 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class VideoSizeTests: XCTestCase {
+@Suite(.tags(.models))
+struct VideoSizeTests {
 
-    func test360VideoSizeReturnsRawValue() {
-        XCTAssertEqual(VideoSize.s360.rawValue, 360)
+    @Test("s360 video size rawValue is 360")
+    func s360VideoSizeReturnsRawValue() {
+        #expect(VideoSize.s360.rawValue == 360)
     }
 
-    func test480VideoSizeReturnsRawValue() {
-        XCTAssertEqual(VideoSize.s480.rawValue, 480)
+    @Test("s480 video size rawValue is 480")
+    func s480VideoSizeReturnsRawValue() {
+        #expect(VideoSize.s480.rawValue == 480)
     }
 
-    func test720VideoSizeReturnsRawValue() {
-        XCTAssertEqual(VideoSize.s720.rawValue, 720)
+    @Test("s720 video size rawValue is 720")
+    func s720VideoSizeReturnsRawValue() {
+        #expect(VideoSize.s720.rawValue == 720)
     }
 
-    func test1080VideoSizeReturnsRawValue() {
-        XCTAssertEqual(VideoSize.s1080.rawValue, 1080)
+    @Test("s1080 video size rawValue is 1080")
+    func s1080VideoSizeReturnsRawValue() {
+        #expect(VideoSize.s1080.rawValue == 1080)
     }
 
+    @Test("JSON decoding of VideoSize", .tags(.decoding))
     func testDecodeWhenInvalidValueReturnsUnknown() throws {
         let data = Data("{\"videoSize\": 999}".utf8)
         let decoder = JSONDecoder()
 
         let result = try decoder.decode(MockObject.self, from: data).videoSize
 
-        XCTAssertEqual(result, .unknown)
+        #expect(result == .unknown)
     }
 
 }
