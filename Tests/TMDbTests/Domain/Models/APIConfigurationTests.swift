@@ -17,16 +17,19 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class APIConfigurationTests: XCTestCase {
+@Suite
+struct APIConfigurationTests {
 
+    @Test("JSON decoding of APIConfiguration", .tags(.decoding))
     func testDecodeReturnsAPIConfiguration() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(APIConfiguration.self, fromResource: "api-configuration")
 
-        XCTAssertEqual(result.images, apiConfiguration.images)
-        XCTAssertEqual(result.changeKeys, apiConfiguration.changeKeys)
+        #expect(result.images == apiConfiguration.images)
+        #expect(result.changeKeys == apiConfiguration.changeKeys)
     }
 
     private let apiConfiguration = APIConfiguration(
