@@ -17,21 +17,25 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CertificationTests: XCTestCase {
+@Suite(.tags(.models))
+struct CertificationTests {
 
-    func testIDReturnsCode() {
-        XCTAssertEqual(certification.id, certification.code)
+    @Test("ID and code matches")
+    func idReturnsCode() {
+        #expect(certification.id == certification.code)
     }
 
-    func testDecodeReturnsCertification() throws {
+    @Test("JSON decoding of Certification", .tags(.decoding))
+    func decodeCertification() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Certification.self, fromResource: "certification")
 
-        XCTAssertEqual(result.code, certification.code)
-        XCTAssertEqual(result.meaning, certification.meaning)
-        XCTAssertEqual(result.order, certification.order)
+        #expect(result.code == certification.code)
+        #expect(result.meaning == certification.meaning)
+        #expect(result.order == certification.order)
     }
 
     // swiftlint:disable line_length

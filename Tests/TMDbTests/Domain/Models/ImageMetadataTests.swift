@@ -17,25 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ImageMetadataTests: XCTestCase {
+@Suite(.tags(.models))
+struct ImageMetadataTests {
 
+    @Test("ID and filePath matches")
     func testIDReturnsFilePath() {
-        XCTAssertEqual(imageMetadata.id, imageMetadata.filePath)
+        #expect(imageMetadata.id == imageMetadata.filePath)
     }
 
+    @Test("JSON decoding of ImageMetadata", .tags(.decoding))
     func testDecodeReturnsImageMetadata() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(ImageMetadata.self, fromResource: "image-metadata")
 
-        XCTAssertEqual(result.filePath, imageMetadata.filePath)
-        XCTAssertEqual(result.width, imageMetadata.width)
-        XCTAssertEqual(result.height, imageMetadata.height)
-        XCTAssertEqual(result.aspectRatio, imageMetadata.aspectRatio)
-        XCTAssertEqual(result.voteAverage, imageMetadata.voteAverage)
-        XCTAssertEqual(result.voteCount, imageMetadata.voteCount)
-        XCTAssertEqual(result.languageCode, imageMetadata.languageCode)
+        #expect(result.filePath == imageMetadata.filePath)
+        #expect(result.width == imageMetadata.width)
+        #expect(result.height == imageMetadata.height)
+        #expect(result.aspectRatio == imageMetadata.aspectRatio)
+        #expect(result.voteAverage == imageMetadata.voteAverage)
+        #expect(result.voteCount == imageMetadata.voteCount)
+        #expect(result.languageCode == imageMetadata.languageCode)
     }
 
     private let imageMetadata = ImageMetadata(

@@ -22,5 +22,6 @@ import Testing
 extension Tag {
 
     @Tag static var decoding: Self
+    @Tag static var models: Self
 
 }

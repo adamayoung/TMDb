@@ -21,11 +21,11 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
+@Suite(.tags(.models))
 struct APIConfigurationTests {
 
     @Test("JSON decoding of APIConfiguration", .tags(.decoding))
-    func testDecodeReturnsAPIConfiguration() throws {
+    func decodeAPIConfiguration() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(APIConfiguration.self, fromResource: "api-configuration")
 
         #expect(result.images == apiConfiguration.images)

@@ -17,22 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class FacebookLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct FacebookLinkTests {
 
-    func testInitWithFacebookIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(FacebookLink(facebookID: nil))
+    @Test("Init with Facebook ID when ID is nil returns nil")
+    func initWithFacebookIDWhenIDIsNilReturnsNil() {
+        let facebookLink = FacebookLink(facebookID: nil)
+
+        #expect(facebookLink == nil)
     }
 
+    @Test("Facebook URL")
     func testURL() throws {
         let facebookID = "BarbieTheMovie"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.facebook.com/\(facebookID)"))
+        let expectedURL = try #require(URL(string: "https://www.facebook.com/\(facebookID)"))
 
-        let facebookLink = FacebookLink(facebookID: facebookID)
+        let facebookLink = try #require(FacebookLink(facebookID: facebookID))
 
-        XCTAssertEqual(facebookLink?.url, expectedURL)
+        #expect(facebookLink.url == expectedURL)
     }
 
 }

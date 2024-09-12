@@ -17,34 +17,41 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class GenderTests: XCTestCase {
+@Suite(.tags(.models))
+struct GenderTests {
 
-    func testUnknownGenderReturnsRawValue() {
-        XCTAssertEqual(Gender.unknown.rawValue, 0)
+    @Test("Unknown gender rawValue is 0")
+    func unknownGenderRawValue() {
+        #expect(Gender.unknown.rawValue == 0)
     }
 
-    func testFemaleGenderReturnsRawValue() {
-        XCTAssertEqual(Gender.female.rawValue, 1)
+    @Test("Female gender rawValue is 1")
+    func femaleGenderRawValue() {
+        #expect(Gender.female.rawValue == 1)
     }
 
-    func testMaleGenderReturnsRawValue() {
-        XCTAssertEqual(Gender.male.rawValue, 2)
+    @Test("Male gender rawValue is 2")
+    func maleGenderRawValue() {
+        #expect(Gender.male.rawValue == 2)
     }
 
-    func testOtherGenderReturnsRawValue() {
-        XCTAssertEqual(Gender.other.rawValue, 3)
+    @Test("Other gender rawValue is 3")
+    func otherGenderRawValue() {
+        #expect(Gender.other.rawValue == 3)
     }
 
-    func testDecodeWhenInvalidValueReturnsUnknown() throws {
+    @Test("JSON decoding of invalid gender raw value", .tags(.decoding))
+    func decodeInvalidValueReturnsUnknown() throws {
         let data = Data("{\"gender\": 9}".utf8)
         let decoder = JSONDecoder()
 
         let result = try decoder.decode(MockObject.self, from: data).gender
 
-        XCTAssertEqual(result, .unknown)
+        #expect(result == .unknown)
     }
 
 }

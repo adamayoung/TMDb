@@ -21,11 +21,11 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
+@Suite(.tags(.models))
 struct AggregrateCrewMemberTests {
 
     @Test("JSON decoding of AggregrateCrewMember", .tags(.decoding))
-    func testDecodeReturnsCrewMember() throws {
+    func decodeCrewMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             AggregrateCrewMember.self,
             fromResource: "aggregate-crew-member"

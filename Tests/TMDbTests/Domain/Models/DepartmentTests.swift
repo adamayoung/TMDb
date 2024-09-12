@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class DepartmentTests: XCTestCase {
+@Suite(.tags(.models))
+struct DepartmentTests {
 
-    func testDecodeReturnsDepartment() throws {
+    @Test("JSON decoding of Department", .tags(.decoding))
+    func decodeDepartment() throws {
         let expectedResult = Department(
             name: "Actors",
             jobs: [
@@ -39,9 +42,9 @@ final class DepartmentTests: XCTestCase {
             fromResource: "configuration-jobs-by-department"
         )
 
-        XCTAssertEqual(result.id, expectedResult.name)
-        XCTAssertEqual(result.name, expectedResult.name)
-        XCTAssertEqual(result.jobs, expectedResult.jobs)
+        #expect(result.id == expectedResult.name)
+        #expect(result.name == expectedResult.name)
+        #expect(result.jobs == expectedResult.jobs)
     }
 
 }

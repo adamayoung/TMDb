@@ -21,11 +21,11 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
+@Suite(.tags(.models))
 struct AccountDetailsTests {
 
     @Test("JSON decoding of AccountDetails", .tags(.decoding))
-    func testDecodeReturnsAccountDetails() throws {
+    func decodeAccountDetails() throws {
         let accountDetails = AccountDetails(
             id: 548,
             username: "travisbell",

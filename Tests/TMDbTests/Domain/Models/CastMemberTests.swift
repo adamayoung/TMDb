@@ -21,11 +21,11 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
+@Suite(.tags(.models))
 struct CastMemberTests {
 
-    @Test("JSON decoding of APIConfiguration", .tags(.decoding))
-    func testDecodeReturnsCastMember() throws {
+    @Test("JSON decoding of CastMember", .tags(.decoding))
+    func decodeCastMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(CastMember.self, fromResource: "cast-member")
 
         #expect(result.id == castMember.id)
