@@ -216,7 +216,7 @@ public protocol AccountService: Sendable {
     /// Adds a TV series to a user's watchlist.
     ///
     /// - Parameters:
-    ///   - movieID: The TV series identifier.
+    ///   - tvSeriesID: The TV series identifier.
     ///   - accountID: The user's account identifier.
     ///   - session: The user's session.
     ///
@@ -232,7 +232,7 @@ public protocol AccountService: Sendable {
     /// Removes a TV series from a user's watchlist.
     ///
     /// - Parameters:
-    ///   - movieID: The TV series identifier.
+    ///   - tvSeriesID: The TV series identifier.
     ///   - accountID: The user's account identifier.
     ///   - session: The user's session.
     ///

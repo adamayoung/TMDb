@@ -52,6 +52,7 @@ public struct ImageCollection: Codable, Equatable, Hashable, Sendable {
     /// - Parameters:
     ///    - id: Movie or TV series identifier for these images.
     ///    - posters: Poster images.
+    ///    - logos: Logo images.
     ///    - backdrops: Backdrop images.
     ///
     public init(

@@ -41,6 +41,6 @@ let package = Package(
 
 if ProcessInfo.processInfo.environment["SWIFTCI_DOCC"] == "1" {
     package.dependencies += [
-        .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.3.0")
+        .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.4.3")
     ]
 }

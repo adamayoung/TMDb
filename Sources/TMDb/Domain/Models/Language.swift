@@ -48,7 +48,7 @@ public struct Language: Identifiable, Codable, Equatable, Hashable, Sendable {
     /// Creates a language object.
     ///
     /// - Parameters:
-    ///    - languageCode: ISO 639-1 language code.
+    ///    - code: ISO 639-1 language code.
     ///    - name: Language name.
     ///    - englishName: English name.
     ///

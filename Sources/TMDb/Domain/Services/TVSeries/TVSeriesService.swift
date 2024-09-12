@@ -196,7 +196,7 @@ public protocol TVSeriesService: Sendable {
     /// Data provided by [JustWatch](https://www.justwatch.com).
     ///
     /// - Parameters:
-    ///    - id: The identifier of the TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
     ///
     /// - Throws: TMDb data error ``TMDbError``.
@@ -224,6 +224,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
     ///
     /// - Returns: A content rating for the specificed TV series.
     ///

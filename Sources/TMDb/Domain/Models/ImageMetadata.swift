@@ -73,6 +73,7 @@ public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///    - filePath: Path of the image.
     ///    - width: Image width.
     ///    - height: Image height.
+    ///    - aspectRatio: Aspect ratio.
     ///    - languageCode: ISO 639-1 language code.
     ///    - voteAverage: The average of user votes on this image.
     ///    - voteCount: The number of user votes on this image.

@@ -189,6 +189,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - networks: Networks involved in the TV series.
     ///    - productionCompanies: Production companies involved in the TV series.
     ///    - status: TV series status.
+    ///    - type: TV series type.
     ///    - popularity: TV series current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.

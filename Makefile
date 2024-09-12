@@ -2,10 +2,10 @@ TARGET = TMDb
 TEST_TARGET = TMDbTests
 INTEGRATION_TEST_TARGET = TMDbIntegrationTests
 
-IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15,OS=17.5'
-WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=10.5'
-TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=17.5'
-VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=1.2'
+IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 15,OS=18.0'
+WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=11.0'
+TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=18.0'
+VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=2.0'
 
 SWIFT_CONTAINER_IMAGE = swift:5.9.2-jammy
 
@@ -47,7 +47,7 @@ build-linux-release:
 
 .PHONY: build-docs
 build-docs:
-	SWIFTCI_DOCC=1 swift package generate-documentation --product $(TARGET) --warnings-as-errors
+	SWIFTCI_DOCC=1 swift package generate-documentation --warnings-as-errors
 	swift package resolve
 
 .PHONY: preview-docs

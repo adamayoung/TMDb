@@ -104,11 +104,10 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     /// - Parameters:
     ///    - id: Movie identifier.
     ///    - title: Movie title.
-    ///    - tagline: Movie tagline.
     ///    - originalTitle: Original movie title.
     ///    - originalLanguage: Original language of the movie.
     ///    - overview: Movie overview.
-    ///    - genreID: Movie genre identifiers.
+    ///    - genreIDs: Movie genre identifiers.
     ///    - releaseDate: Movie release date.
     ///    - posterPath: Movie poster path.
     ///    - backdropPath: Movie poster backdrop path.
