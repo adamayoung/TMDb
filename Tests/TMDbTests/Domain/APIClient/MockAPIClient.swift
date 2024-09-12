@@ -62,17 +62,11 @@ extension MockAPIClient {
 
         let result = responses[requestIndex]
 
-        do {
-            guard let value = try result.get() as? Request.Response else {
-                preconditionFailure("Can't cast response to type \(String(describing: Request.Response.self))")
-            }
-
-            return value
-        } catch let error as TMDbAPIError {
-            throw error
-        } catch {
-            throw TMDbAPIError.unknown
+        guard let value = try result.get() as? Request.Response else {
+            preconditionFailure("Can't cast response to type \(String(describing: Request.Response.self))")
         }
+
+        return value
     }
 
 }
