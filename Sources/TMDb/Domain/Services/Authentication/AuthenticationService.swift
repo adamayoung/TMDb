@@ -78,7 +78,7 @@ public protocol AuthenticationService: Sendable {
     /// - Note: Ensure this request token has been authorised in a web browser by taking the user to the URL generated
     /// by ``authenticateURL(for:redirectURL:)``.
     ///
-    /// - Parameter requestToken: An authorised request token.
+    /// - Parameter token: An authorised request token.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

@@ -47,7 +47,7 @@ build-linux-release:
 
 .PHONY: build-docs
 build-docs:
-	SWIFTCI_DOCC=1 swift package generate-documentation --product $(TARGET) --warnings-as-errors
+	SWIFTCI_DOCC=1 swift package generate-documentation --warnings-as-errors
 	swift package resolve
 
 .PHONY: preview-docs
