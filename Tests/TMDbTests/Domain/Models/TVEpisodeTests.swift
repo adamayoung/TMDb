@@ -17,26 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVTests: XCTestCase {
+@Suite(.tags(.models))
+struct TVEpisodeTests {
 
-    func testDecodeReturnsTVEpisode() throws {
+    @Test("JSON decoding of TVEpisode", .tags(.decoding))
+    func decodeReturnsTVEpisode() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(TVEpisode.self, fromResource: "tv-episode")
 
-        XCTAssertEqual(result.id, tvEpisode.id)
-        XCTAssertEqual(result.name, tvEpisode.name)
-        XCTAssertEqual(result.episodeNumber, tvEpisode.episodeNumber)
-        XCTAssertEqual(result.seasonNumber, tvEpisode.seasonNumber)
-        XCTAssertEqual(result.overview, tvEpisode.overview)
-        XCTAssertEqual(result.airDate, tvEpisode.airDate)
-        XCTAssertEqual(result.productionCode, tvEpisode.productionCode)
-        XCTAssertEqual(result.stillPath, tvEpisode.stillPath)
-        XCTAssertEqual(result.crew, tvEpisode.crew)
-        XCTAssertEqual(result.guestStars, tvEpisode.guestStars)
-        XCTAssertEqual(result.voteAverage, tvEpisode.voteAverage)
-        XCTAssertEqual(result.voteCount, tvEpisode.voteCount)
+        #expect(result.id == tvEpisode.id)
+        #expect(result.name == tvEpisode.name)
+        #expect(result.episodeNumber == tvEpisode.episodeNumber)
+        #expect(result.seasonNumber == tvEpisode.seasonNumber)
+        #expect(result.overview == tvEpisode.overview)
+        #expect(result.airDate == tvEpisode.airDate)
+        #expect(result.productionCode == tvEpisode.productionCode)
+        #expect(result.stillPath == tvEpisode.stillPath)
+        #expect(result.crew == tvEpisode.crew)
+        #expect(result.guestStars == tvEpisode.guestStars)
+        #expect(result.voteAverage == tvEpisode.voteAverage)
+        #expect(result.voteCount == tvEpisode.voteCount)
     }
 
     // swiftlint:disable line_length

@@ -17,17 +17,20 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ReviewTests: XCTestCase {
+@Suite(.tags(.models))
+struct ReviewTests {
 
-    func testDecodeReturnsReview() throws {
+    @Test("JSON decoding of Review", .tags(.decoding))
+    func decodeReturnsReview() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Review.self, fromResource: "review")
 
-        XCTAssertEqual(result.id, review.id)
-        XCTAssertEqual(result.author, review.author)
-        XCTAssertEqual(result.content, review.content)
+        #expect(result.id == review.id)
+        #expect(result.author == review.author)
+        #expect(result.content == review.content)
     }
 
     // swiftlint:disable line_length

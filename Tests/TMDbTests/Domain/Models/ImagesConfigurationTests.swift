@@ -17,22 +17,25 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ImagesConfigurationTests: XCTestCase {
+@Suite(.tags(.models))
+struct ImagesConfigurationTests {
 
-    func testDecodeReturnsImagesConfiguration() throws {
+    @Test("JSON decoding of ImageMetadata", .tags(.decoding))
+    func decodeReturnsImagesConfiguration() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(ImagesConfiguration.self, fromResource: "images-configuration")
 
-        XCTAssertEqual(result.baseURL, imagesConfiguration.baseURL)
-        XCTAssertEqual(result.secureBaseURL, imagesConfiguration.secureBaseURL)
-        XCTAssertEqual(result.backdropSizes, imagesConfiguration.backdropSizes)
-        XCTAssertEqual(result.logoSizes, imagesConfiguration.logoSizes)
-        XCTAssertEqual(result.posterSizes, imagesConfiguration.posterSizes)
-        XCTAssertEqual(result.profileSizes, imagesConfiguration.profileSizes)
-        XCTAssertEqual(result.stillSizes, imagesConfiguration.stillSizes)
+        #expect(result.baseURL == imagesConfiguration.baseURL)
+        #expect(result.secureBaseURL == imagesConfiguration.secureBaseURL)
+        #expect(result.backdropSizes == imagesConfiguration.backdropSizes)
+        #expect(result.logoSizes == imagesConfiguration.logoSizes)
+        #expect(result.posterSizes == imagesConfiguration.posterSizes)
+        #expect(result.profileSizes == imagesConfiguration.profileSizes)
+        #expect(result.stillSizes == imagesConfiguration.stillSizes)
     }
 
     private let imagesConfiguration = ImagesConfiguration(

@@ -17,11 +17,14 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class SessionTests: XCTestCase {
+@Suite(.tags(.models))
+struct SessionTests {
 
+    @Test("JSON decoding of Session", .tags(.decoding))
     func testDecodeReturnsSession() throws {
         let expectedResult = Session(
             success: true,
@@ -30,8 +33,8 @@ final class SessionTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabaseAuth.decode(Session.self, fromResource: "session")
 
-        XCTAssertEqual(result.success, expectedResult.success)
-        XCTAssertEqual(result.sessionID, expectedResult.sessionID)
+        #expect(result.success == expectedResult.success)
+        #expect(result.sessionID == expectedResult.sessionID)
     }
 
 }

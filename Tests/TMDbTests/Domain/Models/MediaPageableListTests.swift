@@ -17,19 +17,22 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MediaPageableListTests: XCTestCase {
+@Suite(.tags(.models))
+struct MediaPageableListTests {
 
-    func testDecodeReturnsMediaPageableList() throws {
+    @Test("JSON decoding of MediaPageableList", .tags(.decoding))
+    func decodeReturnsMediaPageableList() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(MediaPageableList.self, fromResource: "media-pageable-list")
 
-        XCTAssertEqual(result.page, list.page)
-        XCTAssertEqual(result.results, list.results)
-        XCTAssertEqual(result.totalResults, list.totalResults)
-        XCTAssertEqual(result.totalPages, list.totalPages)
+        #expect(result.page == list.page)
+        #expect(result.results == list.results)
+        #expect(result.totalResults == list.totalResults)
+        #expect(result.totalPages == list.totalPages)
     }
 
     private let list = MediaPageableList(

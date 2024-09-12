@@ -17,22 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class InstagramLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct InstagramLinkTests {
 
-    func testInitWithInstagramIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(InstagramLink(instagramID: nil))
+    @Test("init with instagramID when ID is nil returns nil")
+    func initWithInstagramIDWhenIDIsNilReturnsNil() {
+        let instagramLink = InstagramLink(instagramID: nil)
+
+        #expect(instagramLink == nil)
     }
 
-    func testURL() throws {
+    @Test("URL returns post URL")
+    func urlReturnsPostURL() throws {
         let instagramID = "barbiethemovie"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.instagram.com/\(instagramID)"))
+        let expectedURL = try #require(URL(string: "https://www.instagram.com/\(instagramID)"))
 
-        let instagramLink = InstagramLink(instagramID: instagramID)
+        let instagramLink = try #require(InstagramLink(instagramID: instagramID))
 
-        XCTAssertEqual(instagramLink?.url, expectedURL)
+        #expect(instagramLink.url == expectedURL)
     }
 
 }

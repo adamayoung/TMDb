@@ -17,49 +17,22 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonCombinedCreditsTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonCombinedCreditsTests {
 
-    func testDecodeReturnsPersonCombinedCredits() throws {
+    @Test("JSON decoding of PersonCombinedCredits", .tags(.decoding))
+    func decodeReturnsPersonCombinedCredits() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(PersonCombinedCredits.self, fromResource: "person-combined-credits")
 
-        XCTAssertEqual(result.id, personCombinedCredits.id)
-        XCTAssertEqual(result.cast, personCombinedCredits.cast)
-        XCTAssertEqual(result.crew, personCombinedCredits.crew)
+        #expect(result.id == personCombinedCredits.id)
+        #expect(result.cast == personCombinedCredits.cast)
+        #expect(result.crew == personCombinedCredits.crew)
     }
-
-//    func testAllShows() {
-//        let credits = PersonCombinedCredits(
-//            id: 1,
-//            cast: [
-//                .movie(Movie(id: 1, title: "Movie 1")),
-//                .movie(Movie(id: 2, title: "Movie 2")),
-//                .tvSeries(TVSeries(id: 11, name: "TV 1")),
-//                .tvSeries(TVSeries(id: 12, name: "TV 2"))
-//            ],
-//            crew: [
-//                .movie(Movie(id: 1, title: "Movie 1")),
-//                .movie(Movie(id: 3, title: "Movie 3")),
-//                .tvSeries(TVSeries(id: 11, name: "TV 1")),
-//                .tvSeries(TVSeries(id: 13, name: "TV 3"))
-//            ]
-//        )
-//        let expectedResult: [Show] = [
-//            .movie(Movie(id: 1, title: "Movie 1")),
-//            .movie(Movie(id: 2, title: "Movie 2")),
-//            .movie(Movie(id: 3, title: "Movie 3")),
-//            .tvSeries(TVSeries(id: 11, name: "TV 1")),
-//            .tvSeries(TVSeries(id: 12, name: "TV 2")),
-//            .tvSeries(TVSeries(id: 13, name: "TV 3"))
-//        ].sorted { $0.id < $1.id }
-//
-//        let result = credits.allShows.sorted { $0.id < $1.id }
-//
-//        XCTAssertEqual(result, expectedResult)
-//    }
 
     // swiftlint:disable line_length
     private let personCombinedCredits = PersonCombinedCredits(

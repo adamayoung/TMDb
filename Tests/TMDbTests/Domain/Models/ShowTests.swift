@@ -17,47 +17,59 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ShowTests: XCTestCase {
+@Suite(.tags(.models))
+struct ShowTests {
 
-    func testIDWhenMovieReturnsMovieID() {
-        XCTAssertEqual(movieShow.id, 109_091)
+    @Test("id when movie returns movieID")
+    func idWhenMovieReturnsMovieID() {
+        #expect(movieShow.id == 109_091)
     }
 
-    func testIDWhenTVSeriesReturnsTVSeriesID() {
-        XCTAssertEqual(tvSeriesShow.id, 54)
+    @Test("id when TV series returns tvSeriesID")
+    func idWhenTVSeriesReturnsTVSeriesID() {
+        #expect(tvSeriesShow.id == 54)
     }
 
-    func testPopularityWhenMovieReturnsMoviePopularity() {
-        XCTAssertEqual(movieShow.popularity, 3.597124)
+    @Test("popularity when movie returns moviePopularity")
+    func popularityWhenMovieReturnsMoviePopularity() {
+        #expect(movieShow.popularity == 3.597124)
     }
 
-    func testPopularityWhenTVSeriesReturnsTVSeriesPopularity() {
-        XCTAssertEqual(tvSeriesShow.popularity, 2.883124)
+    @Test("popularity when TV series returns tvSeriesPopularity")
+    func popularityWhenTVSeriesReturnsTVSeriesPopularity() {
+        #expect(tvSeriesShow.popularity == 2.883124)
     }
 
-    func testDateWhenMovieReturnsMovieReleaseDate() {
-        let expectedResult = DateFormatter.theMovieDatabase.date(from: "2013-10-25")
-        XCTAssertEqual(movieShow.date, expectedResult)
+    @Test("date when movie returns movieReleaseDate")
+    func dateWhenMovieReturnsMovieReleaseDate() throws {
+        let expectedResult = try #require(DateFormatter.theMovieDatabase.date(from: "2013-10-25"))
+
+        #expect(movieShow.date == expectedResult)
     }
 
-    func testDateWhenTVSeriesReturnsTVSeriesFirstAirDate() {
-        let expectedResult = DateFormatter.theMovieDatabase.date(from: "1985-09-24")
-        XCTAssertEqual(tvSeriesShow.date, expectedResult)
+    @Test("date when TV series returns tvSeriesFirstAirDate")
+    func dateWhenTVSeriesReturnsTVSeriesFirstAirDate() throws {
+        let expectedResult = try #require(DateFormatter.theMovieDatabase.date(from: "1985-09-24"))
+
+        #expect(tvSeriesShow.date == expectedResult)
     }
 
+    @Test("JSON decoding of Movie", .tags(.decoding))
     func testDecodeReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-movie")
 
-        XCTAssertEqual(result, movieShow)
+        #expect(result == movieShow)
     }
 
+    @Test("JSON decoding of TV series", .tags(.decoding))
     func testDecodeReturnsTVSeries() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-tv-series")
 
-        XCTAssertEqual(result, tvSeriesShow)
+        #expect(result == tvSeriesShow)
     }
 
 }

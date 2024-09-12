@@ -17,10 +17,12 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbStatusResponseTests: XCTestCase {
+@Suite(.tags(.models))
+struct TMDbStatusResponseTests {
 
     func testDecodeReturnsStatusResponse() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
@@ -28,9 +30,9 @@ final class TMDbStatusResponseTests: XCTestCase {
             fromResource: "error-status-response"
         )
 
-        XCTAssertEqual(result.success, statusResponse.success)
-        XCTAssertEqual(result.statusCode, statusResponse.statusCode)
-        XCTAssertEqual(result.statusMessage, statusResponse.statusMessage)
+        #expect(result.success == statusResponse.success)
+        #expect(result.statusCode == statusResponse.statusCode)
+        #expect(result.statusMessage == statusResponse.statusMessage)
     }
 
     private let statusResponse = TMDbStatusResponse(

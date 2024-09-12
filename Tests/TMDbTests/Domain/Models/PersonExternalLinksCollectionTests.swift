@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonExternalLinksCollectionTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonExternalLinksCollectionTests {
 
-    func testDecodeReturnsPersonExternalLinksCollection() throws {
+    @Test("JSON decoding of PersonExternalLinksCollection", .tags(.decoding))
+    func decodeReturnsPersonExternalLinksCollection() throws {
         let expectedResult = PersonExternalLinksCollection(
             id: 115_440,
             imdb: IMDbLink(imdbNameID: "nm2858875"),
@@ -38,10 +41,11 @@ final class PersonExternalLinksCollectionTests: XCTestCase {
             fromResource: "person-external-ids"
         )
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
-    func testEncodeAndDecodeReturnsMovieExternalLinksCollection() throws {
+    @Test("JSON encoding and decoding of PersonExternalLinksCollection", .tags(.decoding))
+    func encodeAndDecodeReturnsMovieExternalLinksCollection() throws {
         let linksCollection = PersonExternalLinksCollection(
             id: 115_440,
             imdb: IMDbLink(imdbNameID: "nm2858875"),
@@ -56,7 +60,7 @@ final class PersonExternalLinksCollectionTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabase.decode(PersonExternalLinksCollection.self, from: data)
 
-        XCTAssertEqual(result, linksCollection)
+        #expect(result == linksCollection)
     }
 
 }

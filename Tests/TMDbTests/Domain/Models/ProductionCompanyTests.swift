@@ -17,19 +17,22 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ProductionCompanyTests: XCTestCase {
+@Suite(.tags(.models))
+struct ProductionCompanyTests {
 
-    func testDecodeReturnsProductionCompany() throws {
+    @Test("JSON decoding of ProductionCompany", .tags(.decoding))
+    func decodeReturnsProductionCompany() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(ProductionCompany.self, fromResource: "production-company")
 
-        XCTAssertEqual(result.id, productionCompany.id)
-        XCTAssertEqual(result.name, productionCompany.name)
-        XCTAssertEqual(result.originCountry, productionCompany.originCountry)
-        XCTAssertEqual(result.logoPath, productionCompany.logoPath)
+        #expect(result.id == productionCompany.id)
+        #expect(result.name == productionCompany.name)
+        #expect(result.originCountry == productionCompany.originCountry)
+        #expect(result.logoPath == productionCompany.logoPath)
     }
 
     private let productionCompany = ProductionCompany(

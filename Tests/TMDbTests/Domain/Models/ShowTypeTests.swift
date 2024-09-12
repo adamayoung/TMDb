@@ -17,17 +17,21 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ShowTypeTests: XCTestCase {
+@Suite(.tags(.models))
+struct ShowTypeTests {
 
-    func testMovieRawValue() {
-        XCTAssertEqual(ShowType.movie.rawValue, "movie")
+    @Test("Movie show type rawValue is movie")
+    func movieShowTypeRawValue() {
+        #expect(ShowType.movie.rawValue == "movie")
     }
 
-    func testTVSeriesRawValue() {
-        XCTAssertEqual(ShowType.tvSeries.rawValue, "tv")
+    @Test("TV series show type rawValue is tv")
+    func tvSeriesShowTypeRawValue() {
+        #expect(ShowType.tvSeries.rawValue == "tv")
     }
 
 }

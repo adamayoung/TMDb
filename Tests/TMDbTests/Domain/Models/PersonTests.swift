@@ -17,33 +17,37 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonTests {
 
+    @Test("JSON decoding of Person", .tags(.decoding))
     func testDecodeReturnsPerson() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Person.self, fromResource: "person")
 
-        XCTAssertEqual(result.id, person.id)
-        XCTAssertEqual(result.name, person.name)
-        XCTAssertEqual(result.alsoKnownAs, person.alsoKnownAs)
-        XCTAssertEqual(result.knownForDepartment, person.knownForDepartment)
-        XCTAssertEqual(result.biography, person.biography)
-        XCTAssertEqual(result.birthday, person.birthday)
-        XCTAssertEqual(result.deathday, person.deathday)
-        XCTAssertEqual(result.gender, person.gender)
-        XCTAssertEqual(result.placeOfBirth, person.placeOfBirth)
-        XCTAssertEqual(result.profilePath, person.profilePath)
-        XCTAssertEqual(result.popularity, person.popularity)
-        XCTAssertEqual(result.imdbID, person.imdbID)
-        XCTAssertEqual(result.homepageURL, person.homepageURL)
+        #expect(result.id == person.id)
+        #expect(result.name == person.name)
+        #expect(result.alsoKnownAs == person.alsoKnownAs)
+        #expect(result.knownForDepartment == person.knownForDepartment)
+        #expect(result.biography == person.biography)
+        #expect(result.birthday == person.birthday)
+        #expect(result.deathday == person.deathday)
+        #expect(result.gender == person.gender)
+        #expect(result.placeOfBirth == person.placeOfBirth)
+        #expect(result.profilePath == person.profilePath)
+        #expect(result.popularity == person.popularity)
+        #expect(result.imdbID == person.imdbID)
+        #expect(result.homepageURL == person.homepageURL)
     }
 
-    func testDecodeWhenHomepageIsEmptyStringReturnsPerson() throws {
+    @Test("JSON decoding of Person when homepage is empty string", .tags(.decoding))
+    func decodeWhenHomepageIsEmptyStringReturnsPerson() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Person.self, fromResource: "person-blank-homepage")
 
-        XCTAssertNil(result.homepageURL)
+        #expect(result.homepageURL == nil)
     }
 
 }

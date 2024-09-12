@@ -17,30 +17,36 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MediaTests: XCTestCase {
+@Suite(.tags(.models))
+struct MediaTests {
 
-    func testIDWhenMovieReturnsID() {
-        XCTAssertEqual(medias[0].id, 437_342)
+    @Test("id when movie returns movieID")
+    func idWhenMovieReturnsMovieID() {
+        #expect(media[0].id == 437_342)
     }
 
-    func testIDWhenTVSeriesReturnsID() {
-        XCTAssertEqual(medias[1].id, 11366)
+    @Test("id when TV series returns tvSeriesID")
+    func idWhenTVSeriesReturnsTVSeriesID() {
+        #expect(media[1].id == 11366)
     }
 
-    func testIDWhenPersonReturnsID() {
-        XCTAssertEqual(medias[2].id, 51329)
+    @Test("id when person returns personID")
+    func idWhenPersonReturnsPersonID() {
+        #expect(media[2].id == 51329)
     }
 
-    func testDecodeReturnsMedias() throws {
+    @Test("JSON decoding of Media", .tags(.decoding))
+    func testDecodeReturnsMedia() throws {
         let result = try JSONDecoder.theMovieDatabase.decode([Media].self, fromResource: "media")
 
-        XCTAssertEqual(result, medias)
+        #expect(result == media)
     }
 
-    private let medias: [Media] = [
+    private let media: [Media] = [
         .movie(.theFirstOmen),
         .tvSeries(.bigBrother),
         .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
