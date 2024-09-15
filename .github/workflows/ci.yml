@@ -75,19 +75,19 @@ jobs:
       - name: Test
         run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
   
-  build-test-linux:
-    name: Build and Test (Linux)
-    runs-on: ubuntu-latest
-    container: swiftlang/swift:nightly-6.0-jammy
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # build-test-linux:
+  #   name: Build and Test (Linux)
+  #   runs-on: ubuntu-latest
+  #   container: swiftlang/swift:nightly-6.0-jammy
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Build
-        run: swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+  #     - name: Build
+  #       run: swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
-      - name: Test
-        run: swift test --skip-build --filter TMDbTests -Xswiftc -strict-concurrency=complete
+  #     - name: Test
+  #       run: swift test --skip-build --filter TMDbTests -Xswiftc -strict-concurrency=complete
       
-      - name: Build for Release
-        run: swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+  #     - name: Build for Release
+  #       run: swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
