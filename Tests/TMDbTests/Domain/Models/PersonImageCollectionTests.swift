@@ -17,17 +17,20 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonImageCollectionTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonImageCollectionTests {
 
-    func testDecodeReturnsPersonImageCollection() throws {
+    @Test("JSON decoding of PersonImageCollection", .tags(.decoding))
+    func decodeReturnsPersonImageCollection() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(PersonImageCollection.self, fromResource: "person-image-collection")
 
-        XCTAssertEqual(result.id, personImageCollection.id)
-        XCTAssertEqual(result.profiles, personImageCollection.profiles)
+        #expect(result.id == personImageCollection.id)
+        #expect(result.profiles == personImageCollection.profiles)
     }
 
     private let personImageCollection = PersonImageCollection(

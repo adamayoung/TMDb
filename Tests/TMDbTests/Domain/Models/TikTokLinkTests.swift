@@ -17,22 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TikTokLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct TikTokLinkTests {
 
-    func testInitWithTikTokIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(TikTokLink(tikTokID: nil))
+    @Test("init with TikTok ID when ID is nil returns nil")
+    func initWithTikTokIDWhenIDIsNilReturnsNil() {
+        let tikTokLink = TikTokLink(tikTokID: nil)
+
+        #expect(tikTokLink == nil)
     }
 
-    func testURL() throws {
+    @Test("url returns TikTok URL")
+    func urlReturnsTikTokURL() throws {
         let tikTokID = "jasonstatham"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.tiktok.com/@\(tikTokID)"))
+        let expectedURL = try #require(URL(string: "https://www.tiktok.com/@\(tikTokID)"))
 
-        let tikTokLink = TikTokLink(tikTokID: tikTokID)
+        let tikTokLink = try #require(TikTokLink(tikTokID: tikTokID))
 
-        XCTAssertEqual(tikTokLink?.url, expectedURL)
+        #expect(tikTokLink.url == expectedURL)
     }
 
 }

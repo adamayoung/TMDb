@@ -17,20 +17,27 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CountryTests: XCTestCase {
+@Suite(.tags(.models))
+struct CountryTests {
 
-    func testDecodeReturnsCountry() throws {
-        let expectedResult = Country(countryCode: "US", name: "United States", englishName: "United States of America")
+    @Test("JSON decoding of Country", .tags(.decoding))
+    func decodeCountry() throws {
+        let expectedResult = Country(
+            countryCode: "US",
+            name: "United States",
+            englishName: "United States of America"
+        )
 
         let result = try JSONDecoder.theMovieDatabase.decode(Country.self, fromResource: "configuration-country")
 
-        XCTAssertEqual(result.id, expectedResult.countryCode)
-        XCTAssertEqual(result.countryCode, expectedResult.countryCode)
-        XCTAssertEqual(result.name, expectedResult.name)
-        XCTAssertEqual(result.englishName, expectedResult.englishName)
+        #expect(result.id == expectedResult.countryCode)
+        #expect(result.countryCode == expectedResult.countryCode)
+        #expect(result.name == expectedResult.name)
+        #expect(result.englishName == expectedResult.englishName)
     }
 
 }

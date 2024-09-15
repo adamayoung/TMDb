@@ -1,5 +1,5 @@
 //
-//  SessionTests.swift
+//  Tags.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -17,24 +17,11 @@
 //  limitations under the License.
 //
 
-import Foundation
 import Testing
-@testable import TMDb
 
-@Suite(.tags(.models))
-struct SessionTests {
+extension Tag {
 
-    @Test("JSON decoding of Session", .tags(.decoding))
-    func testDecodeReturnsSession() throws {
-        let expectedResult = Session(
-            success: true,
-            sessionID: "5f038ae0ee88737033fb7371dfbf6e3f386e9c78"
-        )
-
-        let result = try JSONDecoder.theMovieDatabaseAuth.decode(Session.self, fromResource: "session")
-
-        #expect(result.success == expectedResult.success)
-        #expect(result.sessionID == expectedResult.sessionID)
-    }
+    @Tag static var decoding: Self
+    @Tag static var models: Self
 
 }

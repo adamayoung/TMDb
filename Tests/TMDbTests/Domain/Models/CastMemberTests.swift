@@ -17,22 +17,25 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CastMemberTests: XCTestCase {
+@Suite(.tags(.models))
+struct CastMemberTests {
 
-    func testDecodeReturnsCastMember() throws {
+    @Test("JSON decoding of CastMember", .tags(.decoding))
+    func decodeCastMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(CastMember.self, fromResource: "cast-member")
 
-        XCTAssertEqual(result.id, castMember.id)
-        XCTAssertEqual(result.castID, castMember.castID)
-        XCTAssertEqual(result.creditID, castMember.creditID)
-        XCTAssertEqual(result.name, castMember.name)
-        XCTAssertEqual(result.character, castMember.character)
-        XCTAssertEqual(result.gender, castMember.gender)
-        XCTAssertEqual(result.profilePath, castMember.profilePath)
-        XCTAssertEqual(result.order, castMember.order)
+        #expect(result.id == castMember.id)
+        #expect(result.castID == castMember.castID)
+        #expect(result.creditID == castMember.creditID)
+        #expect(result.name == castMember.name)
+        #expect(result.character == castMember.character)
+        #expect(result.gender == castMember.gender)
+        #expect(result.profilePath == castMember.profilePath)
+        #expect(result.order == castMember.order)
     }
 
     private let castMember = CastMember(

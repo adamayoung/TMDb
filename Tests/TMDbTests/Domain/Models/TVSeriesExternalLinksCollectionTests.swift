@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesExternalLinksCollectionTests: XCTestCase {
+@Suite(.tags(.models))
+struct TVSeriesExternalLinksCollectionTests {
 
-    func testDecodeReturnsMovieExternalLinksCollection() throws {
+    @Test("JSON decoding of TVSeriesExternalLinksCollection", .tags(.decoding))
+    func decodeReturnsMovieExternalLinksCollection() throws {
         let expectedResult = TVSeriesExternalLinksCollection(
             id: 86423,
             imdb: IMDbLink(imdbTitleID: "tt3007572"),
@@ -37,10 +40,11 @@ final class TVSeriesExternalLinksCollectionTests: XCTestCase {
             fromResource: "tv-series-external-ids"
         )
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
-    func testEncodeAndDecodeReturnsMovieExternalLinksCollection() throws {
+    @Test("JSON encoding and decoding of TVSeriesExternalLinksCollection", .tags(.decoding))
+    func encodeAndDecodeReturnsMovieExternalLinksCollection() throws {
         let linksCollection = TVSeriesExternalLinksCollection(
             id: 86423,
             imdb: IMDbLink(imdbTitleID: "tt3007572"),
@@ -54,7 +58,7 @@ final class TVSeriesExternalLinksCollectionTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabase.decode(TVSeriesExternalLinksCollection.self, from: data)
 
-        XCTAssertEqual(result, linksCollection)
+        #expect(result == linksCollection)
     }
 
 }

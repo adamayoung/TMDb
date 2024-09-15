@@ -7,7 +7,7 @@ WATCHOS_DESINTATION = 'platform=watchOS Simulator,name=Apple Watch Series 9 (45m
 TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=18.0'
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=2.0'
 
-SWIFT_CONTAINER_IMAGE = swift:5.9.2-jammy
+SWIFT_CONTAINER_IMAGE = swiftlang/swift:nightly-6.0-jammy
 
 .PHONY: clean
 clean:
@@ -70,8 +70,8 @@ test:
 
 .PHONY: test-ios
 test-ios:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild clean build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) | xcbeautify
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) | xcbeautify
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild clean build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION)
 
 .PHONY: test-watchos
 test-watchos:

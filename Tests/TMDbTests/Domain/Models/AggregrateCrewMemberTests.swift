@@ -17,27 +17,30 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AggregrateCrewMemberTests: XCTestCase {
+@Suite(.tags(.models))
+struct AggregrateCrewMemberTests {
 
-    func testDecodeReturnsCrewMember() throws {
+    @Test("JSON decoding of AggregrateCrewMember", .tags(.decoding))
+    func decodeCrewMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             AggregrateCrewMember.self,
             fromResource: "aggregate-crew-member"
         )
 
-        XCTAssertEqual(result.id, crewMember.id)
-        XCTAssertEqual(result.name, crewMember.name)
-        XCTAssertEqual(result.originalName, crewMember.originalName)
-        XCTAssertEqual(result.gender, crewMember.gender)
-        XCTAssertEqual(result.profilePath, crewMember.profilePath)
-        XCTAssertEqual(result.jobs, crewMember.jobs)
-        XCTAssertEqual(result.knownForDepartment, crewMember.knownForDepartment)
-        XCTAssertEqual(result.adult, crewMember.adult)
-        XCTAssertEqual(result.totalEpisodeCount, crewMember.totalEpisodeCount)
-        XCTAssertEqual(result.popularity, crewMember.popularity)
+        #expect(result.id == crewMember.id)
+        #expect(result.name == crewMember.name)
+        #expect(result.originalName == crewMember.originalName)
+        #expect(result.gender == crewMember.gender)
+        #expect(result.profilePath == crewMember.profilePath)
+        #expect(result.jobs == crewMember.jobs)
+        #expect(result.knownForDepartment == crewMember.knownForDepartment)
+        #expect(result.adult == crewMember.adult)
+        #expect(result.totalEpisodeCount == crewMember.totalEpisodeCount)
+        #expect(result.popularity == crewMember.popularity)
     }
 
     private let crewMember = AggregrateCrewMember(

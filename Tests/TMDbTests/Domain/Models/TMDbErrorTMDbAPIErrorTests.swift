@@ -17,33 +17,38 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbErrorTMDbAPIErrorTests: XCTestCase {
+@Suite(.tags(.models))
+struct TMDbErrorTMDbAPIErrorTests {
 
-    func testInitWithNonTMDbAPIErrorReturnsUnknownError() {
+    @Test("init when error is not a TMDbAPIError returns unknown error")
+    func initWithNonTMDbAPIErrorReturnsUnknownError() {
         let error = NSError(domain: "test", code: -1)
 
         let tmdbError = TMDbError(error: error)
 
-        XCTAssertEqual(tmdbError, .unknown)
+        #expect(tmdbError == .unknown)
     }
 
-    func testInitWithNotFoundTMDbAPIErrorReturnsNotFoundError() {
+    @Test("init when error is a TMDbAPIError.notFound returns notFound error")
+    func initWithNotFoundTMDbAPIErrorReturnsNotFoundError() {
         let error = TMDbAPIError.notFound(nil)
 
         let tmdbError = TMDbError(error: error)
 
-        XCTAssertEqual(tmdbError, .notFound)
+        #expect(tmdbError == .notFound)
     }
 
-    func testInitWithUnauthorisedTMDbAPIErrorReturnsNotFoundError() {
-        let error = TMDbAPIError.notFound(nil)
+    @Test("init when error is a TMDbAPIError.unauthorised returns unauthorised error")
+    func initWithUnauthorisedTMDbAPIErrorReturnsNotFoundError() {
+        let error = TMDbAPIError.unauthorised(nil)
 
         let tmdbError = TMDbError(error: error)
 
-        XCTAssertEqual(tmdbError, .notFound)
+        #expect(tmdbError == .unauthorised(nil))
     }
 
 }

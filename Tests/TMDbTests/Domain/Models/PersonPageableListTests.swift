@@ -17,19 +17,22 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonPageableListTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonPageableListTests {
 
-    func testDecodeReturnsPersonPageableList() throws {
+    @Test("JSON decoding of PersonPageableList", .tags(.decoding))
+    func decodeReturnsPersonPageableList() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(PersonPageableList.self, fromResource: "person-pageable-list")
 
-        XCTAssertEqual(result.page, list.page)
-        XCTAssertEqual(result.results, list.results)
-        XCTAssertEqual(result.totalResults, list.totalResults)
-        XCTAssertEqual(result.totalPages, list.totalPages)
+        #expect(result.page == list.page)
+        #expect(result.results == list.results)
+        #expect(result.totalResults == list.totalResults)
+        #expect(result.totalPages == list.totalPages)
     }
 
     // swiftlint:disable line_length

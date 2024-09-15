@@ -17,22 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TwitterLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct TwitterLinkTests {
 
-    func testInitWithTwitterIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(TwitterLink(twitterID: nil))
+    @Test("init with twitterID when ID is nil returns nil")
+    func initWithTwitterIDWhenIDIsNilReturnsNil() {
+        let twitterLint = TwitterLink(twitterID: nil)
+
+        #expect(twitterLint == nil)
     }
 
-    func testURL() throws {
+    @Test("url returns Twitter URL")
+    func urlReturnsTwitterURL() throws {
         let twitterID = "barbiethemovie"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.twitter.com/\(twitterID)"))
+        let expectedURL = try #require(URL(string: "https://www.twitter.com/\(twitterID)"))
 
-        let twitterLink = TwitterLink(twitterID: twitterID)
+        let twitterLink = try #require(TwitterLink(twitterID: twitterID))
 
-        XCTAssertEqual(twitterLink?.url, expectedURL)
+        #expect(twitterLink.url == expectedURL)
     }
 
 }

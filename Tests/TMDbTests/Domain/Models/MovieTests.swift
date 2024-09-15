@@ -17,25 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MovieTests: XCTestCase {
+@Suite(.tags(.models))
+struct MovieTests {
 
-    func testDecodeReturnsMovie() throws {
+    @Test("JSON decoding of Movie", .tags(.decoding))
+    func decodeReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Movie.self, fromResource: "movie")
 
-        XCTAssertEqual(result, movie)
+        #expect(result == movie)
     }
 
-    func testDecodeWhenHomepageIsEmptyStringReturnsMovie() throws {
+    @Test("JSON decoding of Movie with empty homepage and release date")
+    func decodeWhenHomepageAndReleaseDateIsEmptyStringReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             Movie.self,
             fromResource: "movie-blank-homepage-release-date"
         )
 
-        XCTAssertNil(result.homepageURL)
-        XCTAssertNil(result.releaseDate)
+        #expect(result.homepageURL == nil)
+        #expect(result.releaseDate == nil)
     }
 
 }

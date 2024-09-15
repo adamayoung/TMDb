@@ -17,20 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ProductionCountryTests: XCTestCase {
+@Suite(.tags(.models))
+struct ProductionCountryTests {
 
-    func testIDReturnsISO31661() {
-        XCTAssertEqual(productionCountry.id, productionCountry.countryCode)
+    @Test("id returns country code")
+    func idReturnsCountryCode() {
+        #expect(productionCountry.id == productionCountry.countryCode)
     }
 
-    func testDecodeReturnsProductionCountry() throws {
+    @Test("JSON decoding of ProductionCountry", .tags(.decoding))
+    func decodeReturnsProductionCountry() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(ProductionCountry.self, fromResource: "production-country")
 
-        XCTAssertEqual(result.countryCode, productionCountry.countryCode)
-        XCTAssertEqual(result.name, productionCountry.name)
+        #expect(result.countryCode == productionCountry.countryCode)
+        #expect(result.name == productionCountry.name)
     }
 
     private let productionCountry = ProductionCountry(

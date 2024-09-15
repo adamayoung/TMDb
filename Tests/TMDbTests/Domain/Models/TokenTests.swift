@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TokenTests: XCTestCase {
+@Suite(.tags(.models))
+struct TokenTests {
 
-    func testDecodeReturnsToken() throws {
+    @Test("JSON decoding of Token", .tags(.decoding))
+    func decodeReturnsToken() throws {
         let expectedResult = Token(
             success: true,
             requestToken: "10530f2246e244555d122016db7c65599c8d6f4d",
@@ -31,9 +34,9 @@ final class TokenTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabaseAuth.decode(Token.self, fromResource: "request-token")
 
-        XCTAssertEqual(result.success, expectedResult.success)
-        XCTAssertEqual(result.requestToken, expectedResult.requestToken)
-        XCTAssertEqual(result.expiresAt, expectedResult.expiresAt)
+        #expect(result.success == expectedResult.success)
+        #expect(result.requestToken == expectedResult.requestToken)
+        #expect(result.expiresAt == expectedResult.expiresAt)
     }
 
 }

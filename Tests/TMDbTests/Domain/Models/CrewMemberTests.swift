@@ -17,21 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CrewMemberTests: XCTestCase {
+@Suite(.tags(.models))
+struct CrewMemberTests {
 
-    func testDecodeReturnsCrewMember() throws {
+    @Test("JSON decoding of Country", .tags(.decoding))
+    func decodeCrewMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(CrewMember.self, fromResource: "crew-member")
 
-        XCTAssertEqual(result.id, crewMember.id)
-        XCTAssertEqual(result.creditID, crewMember.creditID)
-        XCTAssertEqual(result.name, crewMember.name)
-        XCTAssertEqual(result.job, crewMember.job)
-        XCTAssertEqual(result.department, crewMember.department)
-        XCTAssertEqual(result.gender, crewMember.gender)
-        XCTAssertEqual(result.profilePath, crewMember.profilePath)
+        #expect(result.id == crewMember.id)
+        #expect(result.creditID == crewMember.creditID)
+        #expect(result.name == crewMember.name)
+        #expect(result.job == crewMember.job)
+        #expect(result.department == crewMember.department)
+        #expect(result.gender == crewMember.gender)
+        #expect(result.profilePath == crewMember.profilePath)
     }
 
     private let crewMember = CrewMember(

@@ -17,21 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeasonTests: XCTestCase {
+@Suite(.tags(.models))
+struct TVSeasonTests {
 
-    func testDecodeReturnsTVSeason() throws {
+    @Test("JSON decoding of TVSeason", .tags(.decoding))
+    func decodeReturnsTVSeason() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(TVSeason.self, fromResource: "tv-season")
 
-        XCTAssertEqual(result.id, tvSeason.id)
-        XCTAssertEqual(result.name, tvSeason.name)
-        XCTAssertEqual(result.seasonNumber, tvSeason.seasonNumber)
-        XCTAssertEqual(result.overview, tvSeason.overview)
-        XCTAssertEqual(result.airDate, tvSeason.airDate)
-        XCTAssertEqual(result.posterPath, tvSeason.posterPath)
-        XCTAssertEqual(result.episodes, tvSeason.episodes)
+        #expect(result.id == tvSeason.id)
+        #expect(result.name == tvSeason.name)
+        #expect(result.seasonNumber == tvSeason.seasonNumber)
+        #expect(result.overview == tvSeason.overview)
+        #expect(result.airDate == tvSeason.airDate)
+        #expect(result.posterPath == tvSeason.posterPath)
+        #expect(result.episodes == tvSeason.episodes)
     }
 
     // swiftlint:disable line_length

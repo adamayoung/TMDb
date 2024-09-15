@@ -17,35 +17,45 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class IMDbLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct IMDbLinkTests {
 
-    func testInitWithIMDbTitleIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(IMDbLink(imdbTitleID: nil))
+    @Test("init with IMDB title ID when ID is nil returns nil")
+    func initWithIMDbTitleIDWhenIDIsNilReturnsNil() {
+        let imdbLink = IMDbLink(imdbTitleID: nil)
+
+        #expect(imdbLink == nil)
     }
 
-    func testInitWithIMDbNameIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(IMDbLink(imdbNameID: nil))
+    @Test("init with IMDB name ID when ID is nil returns nil")
+    func initWithIMDbNameIDWhenIDIsNilReturnsNil() {
+        let imdbLink = IMDbLink(imdbNameID: nil)
+
+        #expect(imdbLink == nil)
     }
 
-    func testShowURL() throws {
+    @Test("URL when using title ID returns show URL")
+    func urlWhenUsingTitleIDReturnsShowURL() throws {
         let imdbID = "tt1517268"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.imdb.com/title/\(imdbID)/"))
+        let expectedURL = try #require(URL(string: "https://www.imdb.com/title/\(imdbID)/"))
 
-        let imdbLink = IMDbLink(imdbTitleID: imdbID)
+        let imdbLink = try #require(IMDbLink(imdbTitleID: imdbID))
 
-        XCTAssertEqual(imdbLink?.url, expectedURL)
+        #expect(imdbLink.url == expectedURL)
     }
 
-    func testPersonURL() throws {
+    @Test("URL when using name ID returns person URL")
+    func urlWhenUsingNameIDReturnsPersonURL() throws {
         let imdbID = "nm3592338"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.imdb.com/name/\(imdbID)/"))
+        let expectedURL = try #require(URL(string: "https://www.imdb.com/name/\(imdbID)/"))
 
-        let imdbLink = IMDbLink(imdbNameID: imdbID)
+        let imdbLink = try #require(IMDbLink(imdbNameID: imdbID))
 
-        XCTAssertEqual(imdbLink?.url, expectedURL)
+        #expect(imdbLink.url == expectedURL)
     }
 
 }

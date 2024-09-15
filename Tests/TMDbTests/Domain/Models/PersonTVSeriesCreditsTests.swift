@@ -17,21 +17,25 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonTVSeriesCreditsTests: XCTestCase {
+@Suite(.tags(.models))
+struct PersonTVSeriesCreditsTests {
 
-    func testDecodeReturnsPersonTVSeriesCredits() throws {
+    @Test("JSON decoding of PersonTVSeriesCredits", .tags(.decoding))
+    func decodeReturnsPersonTVSeriesCredits() throws {
         let result = try JSONDecoder.theMovieDatabase
             .decode(PersonTVSeriesCredits.self, fromResource: "person-tv-series-credits")
 
-        XCTAssertEqual(result.id, personTVSeriesCredits.id)
-        XCTAssertEqual(result.cast, personTVSeriesCredits.cast)
-        XCTAssertEqual(result.crew, personTVSeriesCredits.crew)
+        #expect(result.id == personTVSeriesCredits.id)
+        #expect(result.cast == personTVSeriesCredits.cast)
+        #expect(result.crew == personTVSeriesCredits.crew)
     }
 
-    func testAllShows() {
+    @Test("allShows returns combined cast and crew TV series")
+    func allShowsReturnsCombinedTVSeries() {
         let tvSeries1 = TVSeries(id: 1, name: "TV Series 1")
         let tvSeries2 = TVSeries(id: 2, name: "TV Series 2")
         let credits = PersonTVSeriesCredits(id: 999, cast: [tvSeries1, tvSeries2], crew: [tvSeries1])
@@ -40,7 +44,7 @@ final class PersonTVSeriesCreditsTests: XCTestCase {
 
         let result = credits.allShows
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
     // swiftlint:disable line_length

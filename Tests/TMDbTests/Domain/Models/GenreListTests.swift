@@ -17,15 +17,18 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class GenreListTests: XCTestCase {
+@Suite(.tags(.models))
+struct GenreListTests {
 
-    func testDecodeReturnsGenreList() throws {
+    @Test("JSON decoding of GenreList", .tags(.decoding))
+    func decodeGenreList() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(GenreList.self, fromResource: "genres-list")
 
-        XCTAssertEqual(result.genres, genreList.genres)
+        #expect(result.genres == genreList.genres)
     }
 
     private let genreList = GenreList(

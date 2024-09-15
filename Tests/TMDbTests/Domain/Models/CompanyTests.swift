@@ -17,25 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CompanyTests: XCTestCase {
+@Suite(.tags(.models))
+struct CompanyTests {
 
-    func testDecodeReturnsCompany() throws {
+    @Test("JSON decoding of Company", .tags(.decoding))
+    func decodeCompany() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Company.self, fromResource: "company")
 
-        XCTAssertEqual(result.id, company.id)
-        XCTAssertEqual(result.name, company.name)
-        XCTAssertEqual(result.description, company.description)
-        XCTAssertEqual(result.headquarters, company.headquarters)
-        XCTAssertEqual(result.homepage, company.homepage)
-        XCTAssertEqual(result.logoPath, company.logoPath)
-        XCTAssertEqual(result.originCountry, company.originCountry)
-        let parentCompany = try XCTUnwrap(result.parentCompany)
-        XCTAssertEqual(parentCompany.id, company.parentCompany?.id)
-        XCTAssertEqual(parentCompany.name, company.parentCompany?.name)
-        XCTAssertEqual(parentCompany.logoPath, company.parentCompany?.logoPath)
+        #expect(result.id == company.id)
+        #expect(result.name == company.name)
+        #expect(result.description == company.description)
+        #expect(result.headquarters == company.headquarters)
+        #expect(result.homepage == company.homepage)
+        #expect(result.logoPath == company.logoPath)
+        #expect(result.originCountry == company.originCountry)
+        let parentCompany = try #require(result.parentCompany)
+        #expect(parentCompany.id == company.parentCompany?.id)
+        #expect(parentCompany.name == company.parentCompany?.name)
+        #expect(parentCompany.logoPath == company.parentCompany?.logoPath)
     }
 
     private let company = Company(

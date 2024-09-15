@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AccountDetailsTests: XCTestCase {
+@Suite(.tags(.models))
+struct AccountDetailsTests {
 
-    func testDecodeReturnsAccountDetails() throws {
+    @Test("JSON decoding of AccountDetails", .tags(.decoding))
+    func decodeAccountDetails() throws {
         let accountDetails = AccountDetails(
             id: 548,
             username: "travisbell",
@@ -42,7 +45,7 @@ final class AccountDetailsTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabase.decode(AccountDetails.self, fromResource: "account-details")
 
-        XCTAssertEqual(result.id, accountDetails.id)
+        #expect(result.id == accountDetails.id)
     }
 
 }

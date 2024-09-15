@@ -17,17 +17,20 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ContentRatingTests: XCTestCase {
+@Suite(.tags(.models))
+struct ContentRatingTests {
 
-    func testDecodeReturnsContentRating() throws {
+    @Test("JSON decoding of ContentRating", .tags(.decoding))
+    func decodeContentRating() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(ContentRating.self, fromResource: "content-rating")
 
-        XCTAssertEqual(result.descriptors, contentRating.descriptors)
-        XCTAssertEqual(result.countryCode, contentRating.countryCode)
-        XCTAssertEqual(result.rating, contentRating.rating)
+        #expect(result.descriptors == contentRating.descriptors)
+        #expect(result.countryCode == contentRating.countryCode)
+        #expect(result.rating == contentRating.rating)
     }
 
     private let contentRating = ContentRating(
@@ -35,4 +38,5 @@ final class ContentRatingTests: XCTestCase {
         countryCode: "US",
         rating: "TV-14"
     )
+
 }

@@ -17,20 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class SpokenLanguageTests: XCTestCase {
+@Suite(.tags(.models))
+struct SpokenLanguageTests {
 
-    func testIDReturnsISO6391() {
-        XCTAssertEqual(spokenLanguage.id, spokenLanguage.languageCode)
+    @Test("id returns language code")
+    func idReturnsLanguageCode() {
+        #expect(spokenLanguage.id == spokenLanguage.languageCode)
     }
 
-    func testDecodeReturnsSpokenLanguage() throws {
+    @Test("JSON decoding of SpokenLanguage", .tags(.decoding))
+    func decodeReturnsSpokenLanguage() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(SpokenLanguage.self, fromResource: "spoken-language")
 
-        XCTAssertEqual(result.languageCode, spokenLanguage.languageCode)
-        XCTAssertEqual(result.name, spokenLanguage.name)
+        #expect(result.languageCode == spokenLanguage.languageCode)
+        #expect(result.name == spokenLanguage.name)
     }
 
     private let spokenLanguage = SpokenLanguage(

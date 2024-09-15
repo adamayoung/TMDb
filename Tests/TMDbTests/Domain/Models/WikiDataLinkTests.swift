@@ -17,22 +17,28 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WikiDataLinkTests: XCTestCase {
+@Suite(.tags(.models))
+struct WikiDataLinkTests {
 
-    func testInitWithWikiDataIDWhenIDIsNilReturnsNil() {
-        XCTAssertNil(WikiDataLink(wikiDataID: nil))
+    @Test("init with wikiDataID when ID is nil returns nil")
+    func initWithWikiDataIDWhenIDIsNilReturnsNil() {
+        let wikiDataLink = WikiDataLink(wikiDataID: nil)
+
+        #expect(wikiDataLink == nil)
     }
 
-    func testURL() throws {
+    @Test("url returns WikiData URL")
+    func urlReturnsWikiDataURL() throws {
         let wikiDataID = "Q55436290"
-        let expectedURL = try XCTUnwrap(URL(string: "https://www.wikidata.org/wiki/\(wikiDataID)"))
+        let expectedURL = try #require(URL(string: "https://www.wikidata.org/wiki/\(wikiDataID)"))
 
-        let wikiDataLink = WikiDataLink(wikiDataID: wikiDataID)
+        let wikiDataLink = try #require(WikiDataLink(wikiDataID: wikiDataID))
 
-        XCTAssertEqual(wikiDataLink?.url, expectedURL)
+        #expect(wikiDataLink.url == expectedURL)
     }
 
 }

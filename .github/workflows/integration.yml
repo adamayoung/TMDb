@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16_beta_6.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_16_Release_Candidate.app/Contents/Developer
 
 jobs:
   integration-test:

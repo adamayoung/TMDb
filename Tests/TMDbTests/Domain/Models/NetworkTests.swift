@@ -17,18 +17,21 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class NetworkTests: XCTestCase {
+@Suite(.tags(.models))
+struct NetworkTests {
 
-    func testDecodeReturnsNetwork() throws {
+    @Test("JSON decoding of Network", .tags(.decoding))
+    func decodeReturnsNetwork() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Network.self, fromResource: "network")
 
-        XCTAssertEqual(result.id, network.id)
-        XCTAssertEqual(result.name, network.name)
-        XCTAssertEqual(result.logoPath, network.logoPath)
-        XCTAssertEqual(result.originCountry, network.originCountry)
+        #expect(result.id == network.id)
+        #expect(result.name == network.name)
+        #expect(result.logoPath == network.logoPath)
+        #expect(result.originCountry == network.originCountry)
     }
 
     private let network = Network(
