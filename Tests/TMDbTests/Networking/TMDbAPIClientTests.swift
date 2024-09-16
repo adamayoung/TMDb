@@ -17,13 +17,12 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
-#if canImport(FoundationNetworking)
-    import FoundationNetworking
-#endif
 
-final class TMDbAPIClientTests: XCTestCase {
+@Suite(.tags(.networking))
+struct TMDbAPIClientTests {
 
     var apiClient: TMDbAPIClient!
     var apiKey: String!
@@ -31,15 +30,14 @@ final class TMDbAPIClientTests: XCTestCase {
     var serialiser: TMDbJSONSerialiser!
     var httpClient: HTTPMockClient!
 
-    override func setUp() async throws {
-        try await super.setUp()
-        apiKey = "abc123"
-        baseURL = try XCTUnwrap(URL(string: "https://some.domain.com/path"))
-        serialiser = TMDbJSONSerialiser()
+    init() async throws {
+        self.apiKey = "abc123"
+        self.baseURL = try #require(URL(string: "https://some.domain.com/path"))
+        self.serialiser = TMDbJSONSerialiser()
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
-        httpClient = await HTTPMockClient()
-        apiClient = TMDbAPIClient(
+        self.httpClient = await HTTPMockClient()
+        self.apiClient = TMDbAPIClient(
             apiKey: apiKey,
             baseURL: baseURL,
             serialiser: serialiser,
@@ -47,18 +45,11 @@ final class TMDbAPIClientTests: XCTestCase {
         )
     }
 
-    override func tearDown() async throws {
-        apiClient = nil
-        httpClient = nil
-        serialiser = nil
-        baseURL = nil
-        apiKey = nil
-        try await super.tearDown()
-    }
-
+    @Test("perform when invalid path throws error")
     @MainActor
-    func testPerformWhenInvalidPathThrowsError() async throws {
-        let stubRequest = APIStubRequest<String, String>(path: "")
+    func performWhenInvalidPathThrowsError() async throws {
+        let path = ""
+        let stubRequest = APIStubRequest<String, String>(path: path)
         httpClient.result = .success(HTTPResponse())
 
         var error: TMDbAPIError?
@@ -68,52 +59,50 @@ final class TMDbAPIClientTests: XCTestCase {
             error = err as? TMDbAPIError
         }
 
-        switch error {
-        case let .invalidURL(path):
-            XCTAssertEqual(path, "")
-
-        default:
-            XCTFail("Unexpected error")
-        }
+        #expect(error == .invalidURL(path))
     }
 
+    @Test("perform has correct URL")
     @MainActor
-    func testPerformHasCorrectURL() async throws {
+    func performHasCorrectURL() async throws {
         let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
-        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/path/endpoint"))
+        let expectedURL = try #require(URL(string: "https://some.domain.com/path/endpoint"))
         httpClient.result = .success(HTTPResponse())
 
         _ = try? await apiClient.perform(stubRequest)
 
-        let request = try XCTUnwrap(httpClient.lastRequest)
+        let request = try #require(httpClient.lastRequest)
 
-        XCTAssertTrue(request.url.absoluteString.starts(with: expectedURL.absoluteString))
+        #expect(request.url.absoluteString.starts(with: expectedURL.absoluteString))
     }
 
+    @Test("perform when GET method")
     @MainActor
-    func testPerformWhenGetMethod() async throws {
+    func performWhenGetMethod() async throws {
         let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .get)
         httpClient.result = .success(HTTPResponse())
 
         _ = try? await apiClient.perform(stubRequest)
 
-        let request = try XCTUnwrap(httpClient.lastRequest)
+        let request = try #require(httpClient.lastRequest)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
+    @Test("perform when POST method")
     @MainActor
-    func testPerformWhenPostMethod() async throws {
+    func performWhenPostMethod() async throws {
         let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .post)
         httpClient.result = .success(HTTPResponse())
 
         _ = try? await apiClient.perform(stubRequest)
 
-        let request = try XCTUnwrap(httpClient.lastRequest)
+        let request = try #require(httpClient.lastRequest)
 
-        XCTAssertEqual(request.method, .post)
+        #expect(request.method == .post)
     }
 
+    @Test("perfom when DELETE method")
     @MainActor
     func testPerformWhenDeleteMethod() async throws {
         let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .delete)
@@ -121,9 +110,9 @@ final class TMDbAPIClientTests: XCTestCase {
 
         _ = try? await apiClient.perform(stubRequest)
 
-        let request = try XCTUnwrap(httpClient.lastRequest)
+        let request = try #require(httpClient.lastRequest)
 
-        XCTAssertEqual(request.method, .delete)
+        #expect(request.method == .delete)
     }
 
 }

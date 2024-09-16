@@ -28,10 +28,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
 
       - name: Test
-        run: swift test --filter TMDbTests --enable-code-coverage -Xswiftc -strict-concurrency=complete
+        run: swift test --filter TMDbTests --enable-code-coverage
 
       - name: Prepare Code Coverage
         run: |
@@ -48,7 +48,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       
       - name: Build for Release
-        run: swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+        run: swift build -c release -Xswiftc -warnings-as-errors
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
@@ -84,10 +84,10 @@ jobs:
   #       uses: actions/checkout@v4
 
   #     - name: Build
-  #       run: swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+  #       run: swift build --build-tests -Xswiftc -warnings-as-errors
 
   #     - name: Test
-  #       run: swift test --skip-build --filter TMDbTests -Xswiftc -strict-concurrency=complete
+  #       run: swift test --skip-build --filter TMDbTests
       
   #     - name: Build for Release
-  #       run: swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+  #       run: swift build -c release -Xswiftc -warnings-as-errors

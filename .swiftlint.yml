@@ -18,7 +18,9 @@ identifier_name:
     - id
     - job
     - key
+    - l
     - lhs
+    - r
     - rhs
     - tv
     - url

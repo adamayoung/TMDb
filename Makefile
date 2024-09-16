@@ -31,19 +31,23 @@ lint-markdown:
 
 .PHONY: build
 build:
-	swift build -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+	swift build -Xswiftc -warnings-as-errors
+
+.PHONY: build-tests
+build-tests:
+	swift build --build-tests -Xswiftc -warnings-as-errors
 
 .PHONY: build-linux
 build-linux:
-	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete"
+	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -Xswiftc -warnings-as-errors
 
 .PHONY: build-release
 build-release:
-	swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+	swift build -c release -Xswiftc -warnings-as-errors
 
 .PHONY: build-linux-release
 build-linux-release:
-	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -c release -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete"
+	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -c release -Xswiftc -warnings-as-errors"
 
 .PHONY: build-docs
 build-docs:
@@ -65,8 +69,8 @@ generate-docs:
 
 .PHONY: test
 test:
-	swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
-	swift test --skip-build --filter $(TEST_TARGET) -Xswiftc -strict-concurrency=complete
+	swift build --build-tests -Xswiftc -warnings-as-errors
+	swift test --skip-build --filter $(TEST_TARGET)
 
 .PHONY: test-ios
 test-ios:
@@ -94,8 +98,8 @@ test-linux:
 
 .PHONY: integration-test
 integration-test: .check-env-vars
-	swift build --build-tests -Xswiftc -strict-concurrency=complete
-	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) -Xswiftc -strict-concurrency=complete
+	swift build --build-tests
+	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET)
 
 .PHONY: ci
 ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos integration-test build-release build-docs

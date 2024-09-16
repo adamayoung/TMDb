@@ -17,65 +17,55 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbAuthSerialiserTests: XCTestCase {
+@Suite(.tags(.networking))
+struct TMDbAuthSerialiserTests {
 
     var serialiser: Serialiser!
 
-    override func setUp() {
-        super.setUp()
-        serialiser = TMDbAuthJSONSerialiser()
+    init() {
+        self.serialiser = TMDbAuthJSONSerialiser()
     }
 
-    override func tearDown() {
-        serialiser = nil
-        super.tearDown()
-    }
-
-    func testDecodeWhenDataCannotBeDecodedThrowsDecodeError() async throws {
+    @Test("decode when data cannot be decoded throws decode error")
+    func decodeWhenDataCannotBeDecodedThrowsDecodeError() async throws {
         let data = Data("aaa".utf8)
 
-        var error: Error?
-        do {
+        await #expect(throws: Error.self) {
             _ = try await serialiser.decode(MockObject.self, from: data)
-        } catch let decodeError {
-            error = decodeError
         }
-
-        XCTAssertNotNil(error)
     }
 
-    func testDecodeWhenDataCanBeDecodedReturnsDecodedObject() async throws {
+    @Test("decode when data can be decoded returns decoded object")
+    func decodeWhenDataCanBeDecodedReturnsDecodedObject() async throws {
         let expectedResult = MockObject()
         let data = expectedResult.data
 
         let result = try await serialiser.decode(MockObject.self, from: data)
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
-    func testEncodeWhenDataCannotBeEncodedThrowsEncodeError() async throws {
+    @Test("encode when data cannot be encoded throws encode error")
+    func encodeWhenDataCannotBeEncodedThrowsEncodeError() async throws {
         let data = Data()
 
-        var error: Error?
-        do {
+        await #expect(throws: Error.self) {
             _ = try await serialiser.decode(MockObject.self, from: data)
-        } catch let decodeError {
-            error = decodeError
         }
-
-        XCTAssertNotNil(error)
     }
 
-    func testEncodeWhenDataCanBeEncodedReturnsData() async throws {
+    @Test("encode when data can be encoded returns data")
+    func encodeWhenDataCanBeEncodedReturnsData() async throws {
         let value = MockObject()
         let expectedResult = value.data
 
         let result = try await serialiser.encode(value)
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
 }

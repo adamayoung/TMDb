@@ -17,21 +17,26 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class HTTPRequestMethodTests: XCTestCase {
+@Suite(.tags(.networking))
+struct HTTPRequestMethodTests {
 
-    func testGetMethod() {
-        XCTAssertEqual(HTTPRequest.Method.get.rawValue, "GET")
+    @Test("get method should be equal to \"GET\"")
+    func getMethod() {
+        #expect(HTTPRequest.Method.get.rawValue == "GET")
     }
 
-    func testPostMethod() {
-        XCTAssertEqual(HTTPRequest.Method.post.rawValue, "POST")
+    @Test("post method should be equal to \"POST\"")
+    func postMethod() {
+        #expect(HTTPRequest.Method.post.rawValue == "POST")
     }
 
-    func testDeleteMethod() {
-        XCTAssertEqual(HTTPRequest.Method.delete.rawValue, "DELETE")
+    @Test("delete method should be equal to \"DELETE\"")
+    func deleteMethod() {
+        #expect(HTTPRequest.Method.delete.rawValue == "DELETE")
     }
 
 }

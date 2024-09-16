@@ -17,8 +17,8 @@
 //  limitations under the License.
 //
 
+import Foundation
 @testable import TMDb
-import XCTest
 
 final class MockAPIClient: APIClient, @unchecked Sendable {
 

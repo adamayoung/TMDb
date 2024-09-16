@@ -17,218 +17,164 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbAPIErrorHTTPStatusCodeTests: XCTestCase {
+@Suite(.tags(.networking))
+struct TMDbAPIErrorHTTPStatusCodeTests {
 
-    func testBadRequest() {
+    @Test("Bad request")
+    func badRequest() {
         let statusCode = 400
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.badRequest(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .badRequest(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
+    @Test("Unauthorised")
     func testUnauthorised() {
         let statusCode = 401
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.unauthorised(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .unauthorised(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testForbidden() {
+    @Test("Forbidden")
+    func forbidden() {
         let statusCode = 403
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.forbidden(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .forbidden(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testNotFound() {
+    @Test("Not found")
+    func notFound() {
         let statusCode = 404
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.notFound(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .notFound(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testMethodNotAllowed() {
+    @Test("Method not allowed")
+    func methodNotAllowed() {
         let statusCode = 405
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.methodNotAllowed(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .methodNotAllowed(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testNotAcceptable() {
+    @Test("Not acceptable")
+    func notAcceptable() {
         let statusCode = 406
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.notAcceptable(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .notAcceptable(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testUnprocessableContent() {
+    @Test("Unprocessable content")
+    func unprocessableContent() {
         let statusCode = 422
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.unprocessableContent(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .unprocessableContent(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testTooManyRequests() {
+    @Test("Too many requests")
+    func tooManyRequests() {
         let statusCode = 429
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.tooManyRequests(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .tooManyRequests(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testInternalServerError() {
+    @Test("Internal server error")
+    func internalServerError() {
         let statusCode = 500
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.internalServerError(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .internalServerError(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testNotImplemented() {
+    @Test("Not implemented")
+    func notImplemented() {
         let statusCode = 501
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.notImplemented(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .notImplemented(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testBadGateway() {
+    @Test("Bad gateway")
+    func badGateway() {
         let statusCode = 502
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.badGateway(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .badGateway(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testServiceUnavailable() {
+    @Test("Service unavailable")
+    func serviceUnavailable() {
         let statusCode = 503
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.serviceUnavailable(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .serviceUnavailable(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testGatewayTimeout() {
+    @Test("Gateway timeout")
+    func gatewayTimeout() {
         let statusCode = 504
-        let expectedMessage = "Some error message"
+        let message = "Some error message"
+        let expectedError = TMDbAPIError.gatewayTimeout(message)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: expectedMessage)
+        let error = TMDbAPIError(statusCode: statusCode, message: message)
 
-        switch error {
-        case let .gatewayTimeout(message):
-            XCTAssertEqual(message, expectedMessage)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
-    func testUnknown() {
+    @Test("Unknown")
+    func unknown() {
         let statusCode = 999
+        let expectedError = TMDbAPIError.unknown
 
         let error = TMDbAPIError(statusCode: statusCode, message: nil)
 
-        switch error {
-        case .unknown:
-            XCTAssertTrue(true)
-
-        default:
-            XCTFail("Error does not match")
-        }
+        #expect(error == expectedError)
     }
 
 }

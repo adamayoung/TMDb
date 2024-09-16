@@ -17,69 +17,86 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class APIRequestQueryItemNameTests: XCTestCase {
+@Suite(.tags(.apiClient, .domain))
+struct APIRequestQueryItemNameTests {
 
-    func testPageName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.page, "page")
+    @Test("pageName")
+    func pageQueryItemName() {
+        #expect(APIRequestQueryItem.Name.page == "page")
     }
 
-    func testSortByName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.sortBy, "sort_by")
+    @Test("sortBy")
+    func sortByQueryItemName() {
+        #expect(APIRequestQueryItem.Name.sortBy == "sort_by")
     }
 
-    func testWithPeopleName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.withPeople, "with_people")
+    @Test("withPeople")
+    func withPeopleQueryItemName() {
+        #expect(APIRequestQueryItem.Name.withPeople == "with_people")
     }
 
-    func testWatchRegionName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.watchRegion, "watch_region")
+    @Test("watchRegion")
+    func watchRegionQueryItemName() {
+        #expect(APIRequestQueryItem.Name.watchRegion == "watch_region")
     }
 
-    func testIncludeImageLanguageName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.includeImageLanguage, "include_image_language")
+    @Test("includeImageLanguage")
+    func includeImageLanguageQueryItemName() {
+        #expect(APIRequestQueryItem.Name.includeImageLanguage == "include_image_language")
     }
 
-    func testIncludeVideoLanguageName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.includeVideoLanguage, "include_video_language")
+    @Test("includeVideoLanguage")
+    func includeVideoLanguageQueryItemName() {
+        #expect(APIRequestQueryItem.Name.includeVideoLanguage == "include_video_language")
     }
 
-    func testIncludeAdultName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.includeAdult, "include_adult")
+    @Test("includeAdult")
+    func includeAdultQueryItemName() {
+        #expect(APIRequestQueryItem.Name.includeAdult == "include_adult")
     }
 
-    func testQueryName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.query, "query")
+    @Test("query")
+    func queryQueryItemName() {
+        #expect(APIRequestQueryItem.Name.query == "query")
     }
 
-    func testYearName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.year, "year")
+    @Test("year")
+    func yearQueryItemName() {
+        #expect(APIRequestQueryItem.Name.year == "year")
     }
 
-    func testPrimaryReleaseYearName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.primaryReleaseYear, "primary_release_year")
+    @Test("primaryReleaseYear")
+    func primaryReleaseYearQueryItemName() {
+        #expect(APIRequestQueryItem.Name.primaryReleaseYear == "primary_release_year")
     }
 
-    func testFirstAirDateYearName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.firstAirDateYear, "first_air_date_year")
+    @Test("firstAirDateYear")
+    func firstAirDateYearQueryItemName() {
+        #expect(APIRequestQueryItem.Name.firstAirDateYear == "first_air_date_year")
     }
 
-    func testSessionIDName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.sessionID, "session_id")
+    @Test("sesionID")
+    func sessionIDQueryItemName() {
+        #expect(APIRequestQueryItem.Name.sessionID == "session_id")
     }
 
-    func testLanguageName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.language, "language")
+    @Test("language")
+    func languageQueryItemName() {
+        #expect(APIRequestQueryItem.Name.language == "language")
     }
 
-    func testRegionName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.region, "region")
+    @Test("region")
+    func regionQueryItemName() {
+        #expect(APIRequestQueryItem.Name.region == "region")
     }
 
-    func testAPIKeyName() {
-        XCTAssertEqual(APIRequestQueryItem.Name.apiKey, "api_key")
+    @Test("apiKey")
+    func apiKeyQueryItemName() {
+        #expect(APIRequestQueryItem.Name.apiKey == "api_key")
     }
 
 }
