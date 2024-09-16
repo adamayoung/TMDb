@@ -18,9 +18,6 @@
 //
 
 import Foundation
-#if canImport(FoundationNetworking)
-    @preconcurrency import FoundationNetworking
-#endif
 
 final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 

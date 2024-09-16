@@ -22,7 +22,7 @@ import Foundation
 ///
 /// A model representing a TMDb API error.
 ///
-enum TMDbAPIError: Error {
+enum TMDbAPIError: Error, Equatable {
 
     ///
     /// Invalid URL.
@@ -113,5 +113,66 @@ enum TMDbAPIError: Error {
     /// Unknown error.
     ///
     case unknown
+
+    static func == (lhs: TMDbAPIError, rhs: TMDbAPIError) -> Bool {
+        switch (lhs, rhs) {
+        case let (.invalidURL(l), .invalidURL(r)):
+            l == r
+
+        case (.network, .network):
+            true
+
+        case let (.badRequest(l), .badRequest(r)):
+            l == r
+
+        case let (.unauthorised(l), .unauthorised(r)):
+            l == r
+
+        case let (.forbidden(l), .forbidden(r)):
+            l == r
+
+        case let (.notFound(l), .notFound(r)):
+            l == r
+
+        case let (.methodNotAllowed(l), .methodNotAllowed(r)):
+            l == r
+
+        case let (.notAcceptable(l), .notAcceptable(r)):
+            l == r
+
+        case let (.unprocessableContent(l), .unprocessableContent(r)):
+            l == r
+
+        case let (.tooManyRequests(l), .tooManyRequests(r)):
+            l == r
+
+        case let (.internalServerError(l), .internalServerError(r)):
+            l == r
+
+        case let (.notImplemented(l), .notImplemented(r)):
+            l == r
+
+        case let (.badGateway(l), .badGateway(r)):
+            l == r
+
+        case let (.serviceUnavailable(l), .serviceUnavailable(r)):
+            l == r
+
+        case let (.gatewayTimeout(l), .gatewayTimeout(r)):
+            l == r
+
+        case (.encode, .encode):
+            true
+
+        case (.decode, .decode):
+            true
+
+        case (.unknown, .unknown):
+            true
+
+        default:
+            false
+        }
+    }
 
 }

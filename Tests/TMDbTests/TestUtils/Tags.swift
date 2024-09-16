@@ -22,6 +22,7 @@ import Testing
 extension Tag {
 
     @Tag static var domain: Self
+    @Tag static var networking: Self
 
     @Tag static var models: Self
     @Tag static var services: Self
