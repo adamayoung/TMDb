@@ -17,22 +17,26 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class SequenceUniquedTests: XCTestCase {
+@Suite
+struct SequenceUniquedTests {
 
-    func testUniquedWithAllDistinctIDsReturnsOriginal() {
+    @Test("uniqued with all distinct IDs returns original")
+    func uniquedWithAllDistinctIDsReturnsOriginal() {
         let items: [Item] = [
             .init(), .init(), .init(), .init(), .init(), .init()
         ]
 
         let result = items.uniqued()
 
-        XCTAssertEqual(result, items)
+        #expect(result == items)
     }
 
-    func testUniquedWithAllDuplicateIDsReturnsUniqueList() {
+    @Test("uniqued with all duplicate IDs returns unique list")
+    func uniquedWithAllDuplicateIDsReturnsUniqueList() {
         let duplicateID = UUID()
         let item1 = Item()
         let item2 = Item(id: duplicateID)
@@ -44,12 +48,12 @@ final class SequenceUniquedTests: XCTestCase {
 
         let result = items.uniqued()
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
 }
 
-private extension SequenceUniquedTests {
+extension SequenceUniquedTests {
 
     struct Item: Hashable, Identifiable {
 

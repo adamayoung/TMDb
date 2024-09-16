@@ -17,17 +17,20 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class DataFormatterTMDbTests: XCTestCase {
+@Suite
+struct DataFormatterTMDbTests {
 
-    func testTheMovieDatabaseFormatterHasCorrectDateFormat() {
+    @Test("formatter has correct date format")
+    func theMovieDatabaseFormatterHasCorrectDateFormat() {
         let expectedResult = "yyyy-MM-dd"
 
         let result = DateFormatter.theMovieDatabase.dateFormat
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
 }
