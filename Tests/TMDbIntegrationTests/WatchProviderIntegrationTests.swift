@@ -17,40 +17,42 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class WatchProviderIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.tvSeason),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct WatchProviderIntegrationTests {
 
     var watchProviderService: (any WatchProviderService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        watchProviderService = TMDbClient(apiKey: apiKey).watchProviders
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.watchProviderService = TMDbClient(apiKey: apiKey).watchProviders
     }
 
-    override func tearDown() {
-        watchProviderService = nil
-        super.tearDown()
-    }
-
-    func testCountries() async throws {
+    @Test("countries")
+    func countries() async throws {
         let countries = try await watchProviderService.countries()
 
-        XCTAssertFalse(countries.isEmpty)
+        #expect(!countries.isEmpty)
     }
 
-    func testMovieWatchProviders() async throws {
+    @Test("movieWatchProviders")
+    func movieWatchProviders() async throws {
         let watchProviders = try await watchProviderService.movieWatchProviders()
 
-        XCTAssertFalse(watchProviders.isEmpty)
+        #expect(!watchProviders.isEmpty)
     }
 
-    func testTVSeriesWatchProviders() async throws {
+    @Test("tvSeriesWatchProviders")
+    func tvSeriesWatchProviders() async throws {
         let watchProviders = try await watchProviderService.tvSeriesWatchProviders()
 
-        XCTAssertFalse(watchProviders.isEmpty)
+        #expect(!watchProviders.isEmpty)
     }
 
 }

@@ -17,58 +17,63 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class TrendingIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.trending),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct TrendingIntegrationTests {
 
     var trendingService: (any TrendingService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        trendingService = TMDbClient(apiKey: apiKey).trending
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.trendingService = TMDbClient(apiKey: apiKey).trending
     }
 
-    override func tearDown() {
-        trendingService = nil
-        super.tearDown()
-    }
-
-    func testMoviesTrendingByDay() async throws {
+    @Test("movies trending by day")
+    func moviesTrendingByDay() async throws {
         let movieList = try await trendingService.movies(inTimeWindow: .day)
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testMoviesTrendingByWeek() async throws {
+    @Test("movies trending by week")
+    func moviesTrendingByWeek() async throws {
         let movieList = try await trendingService.movies(inTimeWindow: .week)
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testTVSeriesTrendingByDay() async throws {
+    @Test("tvSeries trending by day")
+    func tvSeriesTrendingByDay() async throws {
         let tvSeriesList = try await trendingService.tvSeries(inTimeWindow: .day)
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testTVSeriesTrendingByWeek() async throws {
+    @Test("tvSeries trending by week")
+    func tvSeriesTrendingByWeek() async throws {
         let tvSeriesList = try await trendingService.tvSeries(inTimeWindow: .week)
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testPeopleTrendingByDay() async throws {
+    @Test("people trending by day")
+    func peopleTrendingByDay() async throws {
         let personList = try await trendingService.people(inTimeWindow: .day)
 
-        XCTAssertFalse(personList.results.isEmpty)
+        #expect(!personList.results.isEmpty)
     }
 
-    func testPeopleTrendingByWeek() async throws {
+    @Test("people trending by week")
+    func peopleTrendingByWeek() async throws {
         let personList = try await trendingService.people(inTimeWindow: .week)
 
-        XCTAssertFalse(personList.results.isEmpty)
+        #expect(!personList.results.isEmpty)
     }
 
 }

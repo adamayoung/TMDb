@@ -17,122 +17,133 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class MovieIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.movie),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct MovieIntegrationTests {
 
     var movieService: (any MovieService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        movieService = TMDbClient(apiKey: apiKey).movies
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.movieService = TMDbClient(apiKey: apiKey).movies
     }
 
-    override func tearDown() {
-        movieService = nil
-        super.tearDown()
-    }
-
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let movieID = 346_698
 
         let movie = try await movieService.details(forMovie: movieID)
 
-        XCTAssertEqual(movie.id, movieID)
-        XCTAssertEqual(movie.title, "Barbie")
+        #expect(movie.id == movieID)
+        #expect(movie.title == "Barbie")
     }
 
-    func testCredits() async throws {
+    @Test("credits")
+    func credits() async throws {
         let movieID = 346_698
 
         let credits = try await movieService.credits(forMovie: movieID)
 
-        XCTAssertEqual(credits.id, movieID)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(credits.id == movieID)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testReviews() async throws {
+    @Test("reviews")
+    func reviews() async throws {
         let movieID = 346_698
 
         let reviewList = try await movieService.reviews(forMovie: movieID)
 
-        XCTAssertFalse(reviewList.results.isEmpty)
+        #expect(!reviewList.results.isEmpty)
     }
 
-    func testImages() async throws {
+    @Test("images")
+    func images() async throws {
         let movieID = 346_698
 
         let imageCollection = try await movieService.images(forMovie: movieID)
 
-        XCTAssertEqual(imageCollection.id, movieID)
-        XCTAssertFalse(imageCollection.posters.isEmpty)
-        XCTAssertFalse(imageCollection.logos.isEmpty)
-        XCTAssertFalse(imageCollection.backdrops.isEmpty)
+        #expect(imageCollection.id == movieID)
+        #expect(!imageCollection.posters.isEmpty)
+        #expect(!imageCollection.logos.isEmpty)
+        #expect(!imageCollection.backdrops.isEmpty)
     }
 
-    func testVideos() async throws {
+    @Test("videos")
+    func videos() async throws {
         let movieID = 346_698
 
         let videoCollection = try await movieService.videos(forMovie: movieID)
 
-        XCTAssertEqual(videoCollection.id, movieID)
-        XCTAssertFalse(videoCollection.results.isEmpty)
+        #expect(videoCollection.id == movieID)
+        #expect(!videoCollection.results.isEmpty)
     }
 
-    func testRecommendations() async throws {
+    @Test("recommendations")
+    func recommendations() async throws {
         let movieID = 921_636
 
         let recommendationList = try await movieService.recommendations(forMovie: movieID)
 
-        XCTAssertFalse(recommendationList.results.isEmpty)
+        #expect(!recommendationList.results.isEmpty)
     }
 
-    func testSimilar() async throws {
+    @Test("similar")
+    func similar() async throws {
         let movieID = 921_636
 
         let movieList = try await movieService.similar(toMovie: movieID)
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testNowPlaying() async throws {
+    @Test("nowPlaying")
+    func nowPlaying() async throws {
         let movieList = try await movieService.nowPlaying()
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testPopular() async throws {
+    @Test("popular")
+    func popular() async throws {
         let movieList = try await movieService.popular()
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testTopRated() async throws {
+    @Test("topRated")
+    func topRated() async throws {
         let movieList = try await movieService.topRated()
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testUpcoming() async throws {
+    @Test("upcoming")
+    func upcoming() async throws {
         let movieList = try await movieService.upcoming()
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testExternalLinks() async throws {
+    @Test("externalLinks")
+    func externalLinks() async throws {
         let movieID = 346_698
 
         let linksCollection = try await movieService.externalLinks(forMovie: movieID)
 
-        XCTAssertEqual(linksCollection.id, movieID)
-        XCTAssertNotNil(linksCollection.imdb)
-        XCTAssertNotNil(linksCollection.wikiData)
-        XCTAssertNotNil(linksCollection.facebook)
-        XCTAssertNotNil(linksCollection.instagram)
-        XCTAssertNotNil(linksCollection.twitter)
+        #expect(linksCollection.id == movieID)
+        #expect(linksCollection.imdb != nil)
+        #expect(linksCollection.wikiData != nil)
+        #expect(linksCollection.facebook != nil)
+        #expect(linksCollection.instagram != nil)
+        #expect(linksCollection.twitter != nil)
     }
 
 }
