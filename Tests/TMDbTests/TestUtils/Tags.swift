@@ -21,6 +21,7 @@ import Testing
 
 extension Tag {
 
+    @Tag static var adapter: Self
     @Tag static var domain: Self
     @Tag static var networking: Self
 
