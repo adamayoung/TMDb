@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AuthenticateURLBuilderTests: XCTestCase {
+@Suite(.tags(.authentication))
+struct AuthenticateURLBuilderTests {
 
     var builder: AuthenticateURLBuilder!
     var baseURL: URL!
 
-    override func setUp() {
-        super.setUp()
-        baseURL = URL(string: "https://some.domain.com")
-        builder = AuthenticateURLBuilder(baseURL: baseURL)
+    init() throws {
+        self.baseURL = try #require(URL(string: "https://some.domain.com"))
+        self.builder = AuthenticateURLBuilder(baseURL: baseURL)
     }
 
-    override func tearDown() {
-        builder = nil
-        baseURL = nil
-        super.tearDown()
-    }
-
-    func testAuthenticateURLReturnsURL() {
+    @Test("authenticateURL returns URL")
+    func authenticateURLReturnsURL() {
         let requestToken = "qwertyuiop"
         let expectedURL = baseURL
             .appendingPathComponent("authenticate")
@@ -45,13 +41,14 @@ final class AuthenticateURLBuilderTests: XCTestCase {
 
         let url = builder.authenticateURL(with: requestToken)
 
-        XCTAssertEqual(url, expectedURL)
+        #expect(url == expectedURL)
     }
 
-    func testAuthenticateURLWithRedirectURLReturnsURL() throws {
+    @Test("authenticateURL with redirect URL returns URL")
+    func authenticateURLWithRedirectURLReturnsURL() throws {
         let requestToken = "qwertyuiop"
-        let redirectURL = try XCTUnwrap(URL(string: "https://my.domain.com/auth/callback"))
-        let expectedURL = try XCTUnwrap(
+        let redirectURL = try #require(URL(string: "https://my.domain.com/auth/callback"))
+        let expectedURL = try #require(
             URL(
                 string: "https://some.domain.com/authenticate/\(requestToken)?redirect_to=\(redirectURL.absoluteString)"
             )
@@ -59,7 +56,7 @@ final class AuthenticateURLBuilderTests: XCTestCase {
 
         let url = builder.authenticateURL(with: requestToken, redirectURL: redirectURL)
 
-        XCTAssertEqual(url, expectedURL)
+        #expect(url == expectedURL)
     }
 
 }

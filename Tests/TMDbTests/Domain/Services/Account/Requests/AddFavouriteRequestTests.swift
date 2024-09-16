@@ -24,7 +24,7 @@ import Testing
 @Suite(.tags(.requests, .account))
 struct AddFavouriteRequestTests {
 
-    @Test("path")
+    @Test("path is correct")
     func path() {
         let request = AddFavouriteRequest(
             showType: .movie,

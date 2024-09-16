@@ -17,49 +17,46 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class ValidateTokenWithLoginRequestTests: XCTestCase {
+@Suite(.tags(.requests, .authentication))
+struct ValidateTokenWithLoginRequestTests {
 
     var request: ValidateTokenWithLoginRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = ValidateTokenWithLoginRequest(
-            username: "user1",
-            password: "pass1",
-            requestToken: "abc123"
-        )
+    init() {
+        self.request = ValidateTokenWithLoginRequest(username: "user1", password: "pass1", requestToken: "abc123")
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path is correct")
+    func path() {
+        #expect(request.path == "/authentication/token/validate_with_login")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/authentication/token/validate_with_login")
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsIsEmpty() {
-        XCTAssertTrue(request.queryItems.isEmpty)
+    @Test("method is POST")
+    func methodIsPost() {
+        #expect(request.method == .post)
     }
 
-    func testMethodIsPost() {
-        XCTAssertEqual(request.method, .post)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
+    @Test("body contains username, password and requestToken")
+    func bodyContainsUsernamePasswordAndRequestToken() throws {
+        let body = try #require(request.body)
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
-        let body = try XCTUnwrap(request.body)
-
-        XCTAssertEqual(body.username, "user1")
-        XCTAssertEqual(body.password, "pass1")
-        XCTAssertEqual(body.requestToken, "abc123")
+        #expect(body.username == "user1")
+        #expect(body.password == "pass1")
+        #expect(body.requestToken == "abc123")
     }
 
 }

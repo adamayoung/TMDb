@@ -24,7 +24,7 @@ import Testing
 @Suite(.tags(.requests, .account))
 struct AddToWatchlistRequestTests {
 
-    @Test("path")
+    @Test("path is correct")
     func path() {
         let request = AddToWatchlistRequest(
             showType: .movie,

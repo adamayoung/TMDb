@@ -17,109 +17,96 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbAuthenticationServiceTests: XCTestCase {
+@Suite(.tags(.services, .authentication))
+struct TMDbAuthenticationServiceTests {
 
     var service: TMDbAuthenticationService!
     var apiClient: MockAPIClient!
     var authenticateURLBuilder: AuthenticateURLMockBuilder!
 
-    override func setUp() {
-        super.setUp()
+    init() {
         apiClient = MockAPIClient()
         authenticateURLBuilder = AuthenticateURLMockBuilder()
         service = TMDbAuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
     }
 
-    override func tearDown() {
-        service = nil
-        authenticateURLBuilder = nil
-        apiClient = nil
-        super.tearDown()
-    }
-
-    func testGuestSessionReturnsGuestSession() async throws {
+    @Test("guestSession returns guest session")
+    func guestSessionReturnsGuestSession() async throws {
         let expectedResult = GuestSession.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CreateGuestSessionRequest()
 
         let result = try await service.guestSession()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CreateGuestSessionRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CreateGuestSessionRequest == expectedRequest)
     }
 
-    func testGuestSessionWhenErrorsThrowsError() async throws {
+    @Test("guestSession when errors throws error")
+    func guestSessionWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.guestSession()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testRequestTokenReturnsToken() async throws {
+    @Test("requestToken returns token")
+    func requestTokenReturnsToken() async throws {
         let expectedResult = Token.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CreateRequestTokenRequest()
 
         let result = try await service.requestToken()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CreateRequestTokenRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CreateRequestTokenRequest == expectedRequest)
     }
 
-    func testRequestTokenWhenErrorsThrowsError() async throws {
+    @Test("requestToken when errors throws error")
+    func requestTokenWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.requestToken()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testAuthenticateURLReturnsURL() throws {
+    @Test("authenticateURL returns URL")
+    func authenticateURLReturnsURL() throws {
         let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
         let token = Token(success: true, requestToken: "abc123", expiresAt: expiresAt)
-        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/authenticate/abc123"))
+        let expectedURL = try #require(URL(string: "https://some.domain.com/authenticate/abc123"))
         authenticateURLBuilder.authenticateURLResult = expectedURL
 
         let url = service.authenticateURL(for: token)
 
-        XCTAssertEqual(url, expectedURL)
-        XCTAssertEqual(authenticateURLBuilder.lastRequestToken, token.requestToken)
-        XCTAssertNil(authenticateURLBuilder.lastRedirectURL)
+        #expect(url == expectedURL)
+        #expect(authenticateURLBuilder.lastRequestToken == token.requestToken)
+        #expect(authenticateURLBuilder.lastRedirectURL == nil)
     }
 
-    func testAuthenticateURLWithRedirectURLReturnsURL() throws {
+    @Test("authenticateURL with redirectURL returns URL")
+    func authenticateURLWithRedirectURLReturnsURL() throws {
         let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
         let token = Token(success: true, requestToken: "abc123", expiresAt: expiresAt)
-        let redirectURL = try XCTUnwrap(URL(string: "https://some.domain.com/auth/callback"))
-        let expectedURL = try XCTUnwrap(URL(string: "https://some.domain.com/authenticate/abc123"))
+        let redirectURL = try #require(URL(string: "https://some.domain.com/auth/callback"))
+        let expectedURL = try #require(URL(string: "https://some.domain.com/authenticate/abc123"))
         authenticateURLBuilder.authenticateURLResult = expectedURL
 
         let url = service.authenticateURL(for: token, redirectURL: redirectURL)
 
-        XCTAssertEqual(url, expectedURL)
-        XCTAssertEqual(authenticateURLBuilder.lastRequestToken, token.requestToken)
-        XCTAssertEqual(authenticateURLBuilder.lastRedirectURL, redirectURL)
+        #expect(url == expectedURL)
+        #expect(authenticateURLBuilder.lastRequestToken == token.requestToken)
+        #expect(authenticateURLBuilder.lastRedirectURL == redirectURL)
     }
 
-    func testCreateSessionWithTokenReturnsSession() async throws {
+    @Test("createSession with token returns session")
+    func createSessionWithTokenReturnsSession() async throws {
         let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
@@ -127,43 +114,32 @@ final class TMDbAuthenticationServiceTests: XCTestCase {
 
         let result = try await service.createSession(withToken: token)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CreateSessionRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CreateSessionRequest == expectedRequest)
     }
 
-    func testCreateSessionWithTokenWhenErrorsThrowsError() async throws {
+    @Test("createSession with token when errors throws error")
+    func createSessionWithTokenWhenErrorsThrowsError() async throws {
         let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.createSession(withToken: token)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testCreateSessionWithTokenWhenRequestTokenErrorsThrowsError() async throws {
+    @Test("createSession with token when errors throws error")
+    func createSessionWithTokenWhenRequestTokenErrorsThrowsError() async throws {
         let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.createSession(withToken: token)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testCreateSessionWithCredentialReturnsSession() async throws {
+    @Test("createSession with credential returns session")
+    func createSessionWithCredentialReturnsSession() async throws {
         let credential = Credential(username: "test", password: "pass123")
         let token = Token.mock()
         let expectedResult = Session(success: true, sessionID: "987yxz")
@@ -182,38 +158,33 @@ final class TMDbAuthenticationServiceTests: XCTestCase {
 
         let result = try await service.createSession(withCredential: credential)
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
 
         let createTokenRequest = apiClient.request(atRequestIndex: 0) as? CreateRequestTokenRequest
-        XCTAssertEqual(createTokenRequest, expectedCreateRequestTokenRequest)
+        #expect(createTokenRequest == expectedCreateRequestTokenRequest)
 
         let validateTokenWithLoginRequest = apiClient.request(atRequestIndex: 1) as? ValidateTokenWithLoginRequest
-        XCTAssertEqual(validateTokenWithLoginRequest, expectedValidateTokenWithLoginRequest)
+        #expect(validateTokenWithLoginRequest == expectedValidateTokenWithLoginRequest)
 
         let createSessionRequest = apiClient.request(atRequestIndex: 2) as? CreateSessionRequest
-        XCTAssertEqual(createSessionRequest, expectedCreateSessionRequest)
+        #expect(createSessionRequest == expectedCreateSessionRequest)
     }
 
-    func testCreateSessionWithCredentialWhenValidateTokenErrorsThrowsError() async throws {
+    @Test("createSession with credential when errors throws error")
+    func createSessionWithCredentialWhenValidateTokenErrorsThrowsError() async throws {
         let credential = Credential(username: "test", password: "pass123")
         let token = Token.mock()
 
         apiClient.addResponse(.success(token))
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.createSession(withCredential: credential)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testDeleteSessionWhenSuccessfulReturnsTrue() async throws {
+    @Test("delteSession when successful returns true")
+    func deleteSessionWhenSuccessfulReturnsTrue() async throws {
         let response = SuccessResult(success: true)
         let session = Session.mock()
         apiClient.addResponse(.success(response))
@@ -221,64 +192,62 @@ final class TMDbAuthenticationServiceTests: XCTestCase {
 
         let result = try await service.deleteSession(session)
 
-        XCTAssertTrue(result)
-        XCTAssertEqual(apiClient.lastRequest as? DeleteSessionRequest, expectedRequest)
+        #expect(result)
+        #expect(apiClient.lastRequest as? DeleteSessionRequest == expectedRequest)
     }
 
-    func testDeleteSessionWhenNotSuccessfulReturnsFalse() async throws {
+    @Test("deleteSession when not successful returns false")
+    func deleteSessionWhenNotSuccessfulReturnsFalse() async throws {
         let response = SuccessResult(success: false)
         apiClient.addResponse(.success(response))
         let session = Session.mock()
 
         let result = try await service.deleteSession(session)
 
-        XCTAssertFalse(result)
+        #expect(!result)
     }
 
-    func testDeleteSessionWhenErrorsThrowsError() async throws {
+    @Test("deleteSession when errors throws error")
+    func deleteSessionWhenErrorsThrowsError() async throws {
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.deleteSession(session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testValidateKeyWhenSuccessfulReturnsTrue() async throws {
+    @Test("validateKey when successful returns true")
+    func validateKeyWhenSuccessfulReturnsTrue() async throws {
         let response = SuccessResult(success: true)
         apiClient.addResponse(.success(response))
         let expectedRequest = ValidateKeyRequest()
 
         let result = try await service.validateKey()
 
-        XCTAssertTrue(result)
-        XCTAssertEqual(apiClient.lastRequest as? ValidateKeyRequest, expectedRequest)
+        #expect(result)
+        #expect(apiClient.lastRequest as? ValidateKeyRequest == expectedRequest)
     }
 
-    func testValidateKeyWhenNotSuccessfulReturnsFalse() async throws {
+    @Test("validateKey when not successful returns false")
+    func validateKeyWhenNotSuccessfulReturnsFalse() async throws {
         let response = SuccessResult(success: false)
         apiClient.addResponse(.success(response))
         let expectedRequest = ValidateKeyRequest()
 
         let result = try await service.validateKey()
 
-        XCTAssertFalse(result)
-        XCTAssertEqual(apiClient.lastRequest as? ValidateKeyRequest, expectedRequest)
+        #expect(!result)
+        #expect(apiClient.lastRequest as? ValidateKeyRequest == expectedRequest)
     }
 
-    func testValidateKeyWhenErrorsReturnsFalse() async throws {
+    @Test("validateKey when errors throws error")
+    func validateKeyWhenErrorsReturnsFalse() async throws {
         apiClient.addResponse(.failure(.unknown))
 
         let result = try await service.validateKey()
 
-        XCTAssertFalse(result)
+        #expect(!result)
     }
 
 }

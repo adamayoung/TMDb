@@ -24,7 +24,7 @@ import Testing
 @Suite(.tags(.requests, .account))
 struct FavouriteTVSeriesRequestTests {
 
-    @Test("path")
+    @Test("path is correct")
     func path() {
         let request = FavouriteTVSeriesRequest(accountID: 1, sessionID: "abc")
 
