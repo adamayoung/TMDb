@@ -30,7 +30,7 @@ struct ConfigurationIntegrationTests {
     var configurationService: (any ConfigurationService)!
 
     init() throws {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.configurationService = TMDbClient(apiKey: apiKey).configurations
     }
 

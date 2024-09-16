@@ -30,7 +30,7 @@ struct PersonIntegrationTests {
     var personService: (any PersonService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.personService = TMDbClient(apiKey: apiKey).people
     }
 

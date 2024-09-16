@@ -26,21 +26,27 @@ import Testing
     .tags(.account),
     .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential)
 )
-struct AccountIntegrationTests {
+final class AccountIntegrationTests {
 
     var accountService: (any AccountService)!
     var authenticationService: (any AuthenticationService)!
     var session: Session!
 
     init() async throws {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         let tmdbClient = TMDbClient(apiKey: apiKey)
-        let credential = CredentialHelper.shared.tmdbCredential()
 
         self.authenticationService = tmdbClient.authentication
         self.accountService = tmdbClient.account
+        self.session = try await TMDbSessionHelper.shared.createSession()
+    }
 
-        self.session = try await authenticationService.createSession(withCredential: credential)
+    deinit {
+        if let thisSession = session {
+            Task {
+                try await TMDbSessionHelper.shared.delete(session: thisSession)
+            }
+        }
     }
 
     @Test("details")

@@ -30,7 +30,7 @@ struct TrendingIntegrationTests {
     var trendingService: (any TrendingService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.trendingService = TMDbClient(apiKey: apiKey).trending
     }
 

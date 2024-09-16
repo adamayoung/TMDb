@@ -30,7 +30,7 @@ struct MovieIntegrationTests {
     var movieService: (any MovieService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.movieService = TMDbClient(apiKey: apiKey).movies
     }
 

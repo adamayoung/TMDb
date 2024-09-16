@@ -30,7 +30,7 @@ struct GenreIntegrationTests {
     var genreService: (any GenreService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.genreService = TMDbClient(apiKey: apiKey).genres
     }
 

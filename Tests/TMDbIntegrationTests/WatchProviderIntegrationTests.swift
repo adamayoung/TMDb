@@ -30,7 +30,7 @@ struct WatchProviderIntegrationTests {
     var watchProviderService: (any WatchProviderService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.watchProviderService = TMDbClient(apiKey: apiKey).watchProviders
     }
 

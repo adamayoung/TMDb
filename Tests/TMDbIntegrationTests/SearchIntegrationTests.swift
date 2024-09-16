@@ -30,7 +30,7 @@ struct SearchIntegrationTests {
     var searchService: (any SearchService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.searchService = TMDbClient(apiKey: apiKey).search
     }
 

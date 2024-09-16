@@ -30,7 +30,7 @@ struct DiscoverIntegrationTests {
     var discoverService: (any DiscoverService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.discoverService = TMDbClient(apiKey: apiKey).discover
     }
 

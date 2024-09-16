@@ -30,7 +30,7 @@ struct CertificationIntegrationTests {
     var certificationService: (any CertificationService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.certificationService = TMDbClient(apiKey: apiKey).certifications
     }
 

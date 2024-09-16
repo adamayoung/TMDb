@@ -30,7 +30,7 @@ struct CompanyIntegrationTests {
     var companyService: (any CompanyService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.companyService = TMDbClient(apiKey: apiKey).companies
     }
 

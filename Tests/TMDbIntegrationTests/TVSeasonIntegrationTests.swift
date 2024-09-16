@@ -30,7 +30,7 @@ struct TVSeasonIntegrationTests {
     var tvSeasonService: (any TVSeasonService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.tvSeasonService = TMDbClient(apiKey: apiKey).tvSeasons
     }
 

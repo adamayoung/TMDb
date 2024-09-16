@@ -20,19 +20,9 @@
 import Foundation
 import TMDb
 
-struct CredentialHelper {
+final class CredentialHelper {
 
     static let shared = CredentialHelper()
-
-    var hasCredential: Bool {
-        let credential = tmdbCredential()
-
-        return !credential.username.isEmpty && !credential.password.isEmpty
-    }
-
-    var hasAPIKey: Bool {
-        !tmdbAPIKey().isEmpty
-    }
 
     private let processInfo: ProcessInfo
 
@@ -40,16 +30,26 @@ struct CredentialHelper {
         self.processInfo = processInto
     }
 
-    func tmdbCredential() -> Credential {
+    var hasCredential: Bool {
+        let credential = self.tmdbCredential
+
+        return !credential.username.isEmpty && !credential.password.isEmpty
+    }
+
+    lazy var tmdbCredential: Credential = {
         let username = processInfo.environment["TMDB_USERNAME"] ?? ""
         let password = processInfo.environment["TMDB_PASSWORD"] ?? ""
         let credential = Credential(username: username, password: password)
 
         return credential
+    }()
+
+    var hasAPIKey: Bool {
+        !self.tmdbAPIKey.isEmpty
     }
 
-    func tmdbAPIKey() -> String {
+    lazy var tmdbAPIKey: String = {
         processInfo.environment["TMDB_API_KEY"] ?? ""
-    }
+    }()
 
 }

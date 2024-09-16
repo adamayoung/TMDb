@@ -30,7 +30,7 @@ struct AuthenticationIntegrationTests {
     var authenticationService: (any AuthenticationService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.authenticationService = TMDbClient(apiKey: apiKey).authentication
     }
 
@@ -55,7 +55,7 @@ struct AuthenticationIntegrationTests {
         .enabled(if: CredentialHelper.shared.hasCredential)
     )
     func createAndDeleteSessionWithCredential() async throws {
-        let credential = CredentialHelper.shared.tmdbCredential()
+        let credential = CredentialHelper.shared.tmdbCredential
 
         let session = try await authenticationService.createSession(withCredential: credential)
 

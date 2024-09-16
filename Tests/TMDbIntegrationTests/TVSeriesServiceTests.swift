@@ -30,7 +30,7 @@ struct TVSeriesServiceTests {
     var tvSeriesService: (any TVSeriesService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         self.tvSeriesService = TMDbClient(apiKey: apiKey).tvSeries
     }
 
