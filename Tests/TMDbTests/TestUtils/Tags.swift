@@ -33,5 +33,6 @@ extension Tag {
     @Tag static var requests: Self
 
     @Tag static var account: Self
+    @Tag static var authentication: Self
 
 }

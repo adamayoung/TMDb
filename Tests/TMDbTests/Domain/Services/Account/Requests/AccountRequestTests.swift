@@ -30,7 +30,7 @@ struct AccountRequestTests {
         self.request = AccountRequest(sessionID: "1234567890")
     }
 
-    @Test("path")
+    @Test("path is correct")
     func path() {
         #expect(request.path == "/account")
     }

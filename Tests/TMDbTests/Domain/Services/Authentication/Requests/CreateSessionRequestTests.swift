@@ -17,43 +17,44 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class CreateSessionRequestTests: XCTestCase {
+@Suite(.tags(.requests, .authentication))
+struct CreateSessionRequestTests {
 
     var request: CreateSessionRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = CreateSessionRequest(requestToken: "ABC123")
+    init() {
+        self.request = CreateSessionRequest(requestToken: "ABC123")
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path is correct")
+    func path() {
+        #expect(request.path == "/authentication/session/new")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/authentication/session/new")
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsIsEmpty() {
-        XCTAssertTrue(request.queryItems.isEmpty)
+    @Test("method is POST")
+    func methodIsPost() {
+        #expect(request.method == .post)
     }
 
-    func testMethodIsPost() {
-        XCTAssertEqual(request.method, .post)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
+    @Test("body contains requestToken")
+    func bodyContainsRequestToken() throws {
+        let body = try #require(request.body)
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
-        let body = try XCTUnwrap(request.body)
-
-        XCTAssertEqual(body.requestToken, "ABC123")
+        #expect(body.requestToken == "ABC123")
     }
 
 }

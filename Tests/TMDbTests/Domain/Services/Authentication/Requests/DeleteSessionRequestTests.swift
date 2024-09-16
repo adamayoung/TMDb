@@ -17,43 +17,44 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class DeleteSessionRequestTests: XCTestCase {
+@Suite(.tags(.requests, .authentication))
+struct DeleteSessionRequestTests {
 
     var request: DeleteSessionRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = DeleteSessionRequest(sessionID: "qwerty")
+    init() {
+        self.request = DeleteSessionRequest(sessionID: "qwerty")
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path is correct")
+    func path() {
+        #expect(request.path == "/authentication/session")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/authentication/session")
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsIsEmpty() {
-        XCTAssertTrue(request.queryItems.isEmpty)
+    @Test("method is POST")
+    func methodIsPost() {
+        #expect(request.method == .delete)
     }
 
-    func testMethodIsPost() {
-        XCTAssertEqual(request.method, .delete)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
+    @Test("body contains sessionID")
+    func bodyContainsSessionID() throws {
+        let body = try #require(request.body)
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
-        let body = try XCTUnwrap(request.body)
-
-        XCTAssertEqual(body.sessionID, "qwerty")
+        #expect(body.sessionID == "qwerty")
     }
 
 }

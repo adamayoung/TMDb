@@ -24,7 +24,7 @@ import Testing
 @Suite(.tags(.requests, .account))
 struct MovieWatchlistRequestTests {
 
-    @Test("path")
+    @Test("path is correct")
     func path() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
