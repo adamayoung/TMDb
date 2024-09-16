@@ -29,9 +29,9 @@ struct TMDbAuthenticationServiceTests {
     var authenticateURLBuilder: AuthenticateURLMockBuilder!
 
     init() {
-        apiClient = MockAPIClient()
-        authenticateURLBuilder = AuthenticateURLMockBuilder()
-        service = TMDbAuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
+        self.apiClient = MockAPIClient()
+        self.authenticateURLBuilder = AuthenticateURLMockBuilder()
+        self.service = TMDbAuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
     }
 
     @Test("guestSession returns guest session")
