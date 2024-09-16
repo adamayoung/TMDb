@@ -17,41 +17,43 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MovieWatchlistRequestTests: XCTestCase {
+@Suite(.tags(.requests, .account))
+struct MovieWatchlistRequestTests {
 
-    func testPath() {
+    @Test("path")
+    func path() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
-        XCTAssertEqual(request.path, "/account/1/watchlist/movies")
+        #expect(request.path == "/account/1/watchlist/movies")
     }
 
-    func testQueryItemsContainsSessionID() {
+    @Test("queryItems contains session_id")
+    func queryItemsContainsSessionID() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["session_id": "abc"])
     }
 
-    func testQueryItemsContainsSortedByAndSessionID() {
+    @Test("queryItems contains sort_by and session_id")
+    func queryItemsContainsSortByAndSessionID() {
         let request = MovieWatchlistRequest(sortedBy: .createdAt(descending: false), accountID: 1, sessionID: "abc")
 
-        XCTAssertEqual(request.queryItems.count, 2)
-        XCTAssertEqual(request.queryItems["sort_by"], "created_at.asc")
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["sort_by": "created_at.asc", "session_id": "abc"])
     }
 
-    func testQueryItemsContainsPageAndSessionID() {
+    @Test("queryItems contains page and session_id")
+    func queryItemsContainsPageAndSessionID() {
         let request = MovieWatchlistRequest(page: 2, accountID: 1, sessionID: "abc")
 
-        XCTAssertEqual(request.queryItems.count, 2)
-        XCTAssertEqual(request.queryItems["page"], "2")
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["page": "2", "session_id": "abc"])
     }
 
-    func testQueryItemsContainsSortedByAndPageAndSessionID() {
+    @Test("queryItems contains sort_by, page and session_id")
+    func queryItemsContainsSortByAndPageAndSessionID() {
         let request = MovieWatchlistRequest(
             sortedBy: .createdAt(descending: true),
             page: 2,
@@ -59,28 +61,28 @@ final class MovieWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.queryItems.count, 3)
-        XCTAssertEqual(request.queryItems["sort_by"], "created_at.desc")
-        XCTAssertEqual(request.queryItems["page"], "2")
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["sort_by": "created_at.desc", "page": "2", "session_id": "abc"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = MovieWatchlistRequest(accountID: 1, sessionID: "abc")
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

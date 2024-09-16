@@ -17,21 +17,26 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WatchlistSortTests: XCTestCase {
+@Suite(.tags(.account))
+struct WatchlistSortTests {
 
-    func testCreatedAtWhenDefaultReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt().description, "created_at.asc")
+    @Test("createdAt default description is created_at.asc")
+    func createdAtWhenDefaultReturnsDescription() {
+        #expect(WatchlistSort.createdAt().description == "created_at.asc")
     }
 
-    func testCreatedAtWhenAscendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: false).description, "created_at.asc")
+    @Test("createdAt ascending description is created_at.asc")
+    func createdAtWhenAscendingReturnsDescription() {
+        #expect(WatchlistSort.createdAt(descending: false).description == "created_at.asc")
     }
 
-    func testCreatedAtWhenDescendingReturnsDescription() {
-        XCTAssertEqual(WatchlistSort.createdAt(descending: true).description, "created_at.desc")
+    @Test("createdAt descending description is created_at.desc")
+    func createdAtWhenDescendingReturnsDescription() {
+        #expect(WatchlistSort.createdAt(descending: true).description == "created_at.desc")
     }
 
 }
