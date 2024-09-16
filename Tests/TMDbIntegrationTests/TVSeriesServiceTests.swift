@@ -17,124 +17,130 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class TVSeriesServiceTests: XCTestCase {
+@Suite(
+    .tags(.tvSeason),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct TVSeriesServiceTests {
 
     var tvSeriesService: (any TVSeriesService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        tvSeriesService = TMDbClient(apiKey: apiKey).tvSeries
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.tvSeriesService = TMDbClient(apiKey: apiKey).tvSeries
     }
 
-    override func tearDown() {
-        tvSeriesService = nil
-        super.tearDown()
-    }
-
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let tvSeriesID = 84958
 
         let tvSeries = try await tvSeriesService.details(forTVSeries: tvSeriesID)
 
-        XCTAssertEqual(tvSeries.id, tvSeriesID)
-        XCTAssertEqual(tvSeries.name, "Loki")
+        #expect(tvSeries.id == tvSeriesID)
+        #expect(tvSeries.name == "Loki")
     }
 
-    func testCredits() async throws {
+    @Test("credits")
+    func credits() async throws {
         let tvSeriesID = 4604
 
         let credits = try await tvSeriesService.credits(forTVSeries: tvSeriesID)
 
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testAggregateCredits() async throws {
+    @Test("aggregateCredits")
+    func aggregateCredits() async throws {
         let tvSeriesID = 4604
 
         let credits = try await tvSeriesService.aggregateCredits(forTVSeries: tvSeriesID)
 
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testReviews() async throws {
+    @Test("reviews")
+    func reviews() async throws {
         let tvSeriesID = 76479
 
         let reviewList = try await tvSeriesService.reviews(forTVSeries: tvSeriesID)
 
-        XCTAssertFalse(reviewList.results.isEmpty)
+        #expect(!reviewList.results.isEmpty)
     }
 
-    func testImages() async throws {
+    @Test("images")
+    func images() async throws {
         let tvSeriesID = 76479
 
         let imageCollection = try await tvSeriesService.images(forTVSeries: tvSeriesID)
 
-        XCTAssertEqual(imageCollection.id, tvSeriesID)
-        XCTAssertFalse(imageCollection.backdrops.isEmpty)
-        XCTAssertFalse(imageCollection.logos.isEmpty)
-        XCTAssertFalse(imageCollection.posters.isEmpty)
+        #expect(imageCollection.id == tvSeriesID)
+        #expect(!imageCollection.backdrops.isEmpty)
+        #expect(!imageCollection.logos.isEmpty)
+        #expect(!imageCollection.posters.isEmpty)
     }
 
-    func testVideos() async throws {
+    @Test("videos")
+    func videos() async throws {
         let tvSeriesID = 76479
 
         let videoCollection = try await tvSeriesService.videos(forTVSeries: tvSeriesID)
 
-        XCTAssertEqual(videoCollection.id, tvSeriesID)
-        XCTAssertFalse(videoCollection.results.isEmpty)
+        #expect(videoCollection.id == tvSeriesID)
+        #expect(!videoCollection.results.isEmpty)
     }
 
-    func testRecommendations() async throws {
+    @Test("recommendations")
+    func recommendations() async throws {
         let tvSeriesID = 549
 
         let tvSeriesList = try await tvSeriesService.recommendations(forTVSeries: tvSeriesID)
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testSimilar() async throws {
+    @Test("similar")
+    func similar() async throws {
         let tvSeriesID = 76479
 
         let tvSeriesList = try await tvSeriesService.similar(toTVSeries: tvSeriesID)
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testPopular() async throws {
+    @Test("popular")
+    func popular() async throws {
         let tvSeriesList = try await tvSeriesService.popular()
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testExternalLinks() async throws {
+    @Test("externalLinks")
+    func externalLinks() async throws {
         let tvSeriesID = 86423
 
         let linksCollection = try await tvSeriesService.externalLinks(forTVSeries: tvSeriesID)
 
-        XCTAssertEqual(linksCollection.id, tvSeriesID)
-        XCTAssertNotNil(linksCollection.imdb)
-        XCTAssertNil(linksCollection.wikiData)
-        XCTAssertNotNil(linksCollection.facebook)
-        XCTAssertNotNil(linksCollection.instagram)
-        XCTAssertNotNil(linksCollection.twitter)
+        #expect(linksCollection.id == tvSeriesID)
+        #expect(linksCollection.imdb != nil)
+        #expect(linksCollection.wikiData == nil)
+        #expect(linksCollection.facebook != nil)
+        #expect(linksCollection.instagram != nil)
+        #expect(linksCollection.twitter != nil)
     }
 
-    func testContentRatings() async throws {
+    @Test("contentRatings")
+    func contentRatings() async throws {
         let tvSeriesID = 8592
 
-        let contentRatings = try await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US")
+        let contentRatings = try #require(await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US"))
 
-        XCTAssertNotNil(contentRatings)
-
-        if let contentRating = contentRatings {
-            XCTAssertEqual(contentRating.rating, "TV-14")
-            XCTAssertEqual(contentRating.countryCode, "US")
-        }
+        #expect(contentRatings.rating == "TV-14")
+        #expect(contentRatings.countryCode == "US")
     }
 }

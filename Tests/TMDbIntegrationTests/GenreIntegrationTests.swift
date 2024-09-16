@@ -17,34 +17,35 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class GenreIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.genre),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct GenreIntegrationTests {
 
     var genreService: (any GenreService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        genreService = TMDbClient(apiKey: apiKey).genres
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.genreService = TMDbClient(apiKey: apiKey).genres
     }
 
-    override func tearDown() {
-        genreService = nil
-        super.tearDown()
-    }
-
-    func testMovieGenres() async throws {
+    @Test("movieGenres")
+    func movieGenres() async throws {
         let genres = try await genreService.movieGenres()
 
-        XCTAssertFalse(genres.isEmpty)
+        #expect(!genres.isEmpty)
     }
 
-    func testTVSeriesGenres() async throws {
+    @Test("tvSeriesGenres")
+    func tvSeriesGenres() async throws {
         let genres = try await genreService.tvSeriesGenres()
 
-        XCTAssertFalse(genres.isEmpty)
+        #expect(!genres.isEmpty)
     }
 
 }

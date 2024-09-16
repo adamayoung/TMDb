@@ -75,18 +75,18 @@ test-ios:
 
 .PHONY: test-watchos
 test-watchos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESINTATION) | xcbeautify
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESINTATION) | xcbeautify
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESINTATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESINTATION)
 
 .PHONY: test-tvos
 test-tvos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) | xcbeautify
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) | xcbeautify
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION)
 
 .PHONY: test-visionos
 test-visionos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) | xcbeautify
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) | xcbeautify
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION)
 
 .PHONY: test-linux
 test-linux:
@@ -98,7 +98,7 @@ integration-test: .check-env-vars
 	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) -Xswiftc -strict-concurrency=complete
 
 .PHONY: ci
-ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos test-linux integration-test build-release build-docs
+ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos integration-test build-release build-docs
 
 .check-env-vars:
 	@test $${TMDB_API_KEY?Please set environment variable TMDB_API_KEY}

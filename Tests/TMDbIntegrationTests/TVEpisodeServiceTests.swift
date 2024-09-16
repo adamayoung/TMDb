@@ -17,25 +17,25 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class TVEpisodeServiceTests: XCTestCase {
+@Suite(
+    .tags(.tvEpisode),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct TVEpisodeServiceTests {
 
     var tvEpisodeService: (any TVEpisodeService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        tvEpisodeService = TMDbClient(apiKey: apiKey).tvEpisodes
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.tvEpisodeService = TMDbClient(apiKey: apiKey).tvEpisodes
     }
 
-    override func tearDown() {
-        tvEpisodeService = nil
-        super.tearDown()
-    }
-
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let episodeNumber = 3
         let seasonNumber = 2
         let tvSeriesID = 1399
@@ -46,13 +46,14 @@ final class TVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(episode.id, 63068)
-        XCTAssertEqual(episode.episodeNumber, episodeNumber)
-        XCTAssertEqual(episode.seasonNumber, seasonNumber)
-        XCTAssertEqual(episode.name, "What is Dead May Never Die")
+        #expect(episode.id == 63068)
+        #expect(episode.episodeNumber == episodeNumber)
+        #expect(episode.seasonNumber == seasonNumber)
+        #expect(episode.name == "What is Dead May Never Die")
     }
 
-    func testImages() async throws {
+    @Test("images")
+    func images() async throws {
         let episodeNumber = 3
         let seasonNumber = 2
         let tvSeriesID = 1399
@@ -63,11 +64,12 @@ final class TVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(imageCollection.id, 63068)
-        XCTAssertFalse(imageCollection.stills.isEmpty)
+        #expect(imageCollection.id == 63068)
+        #expect(!imageCollection.stills.isEmpty)
     }
 
-    func testVideos() async throws {
+    @Test("videos")
+    func videos() async throws {
         let episodeNumber = 3
         let seasonNumber = 1
         let tvSeriesID = 1399
@@ -78,8 +80,8 @@ final class TVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(videoCollection.id, 63058)
-        XCTAssertFalse(videoCollection.results.isEmpty)
+        #expect(videoCollection.id == 63058)
+        #expect(!videoCollection.results.isEmpty)
     }
 
 }

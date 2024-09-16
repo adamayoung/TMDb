@@ -17,51 +17,54 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class ConfigurationIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.configuration),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct ConfigurationIntegrationTests {
 
     var configurationService: (any ConfigurationService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        configurationService = TMDbClient(apiKey: apiKey).configurations
+    init() throws {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.configurationService = TMDbClient(apiKey: apiKey).configurations
     }
 
-    override func tearDown() {
-        configurationService = nil
-        super.tearDown()
-    }
-
-    func testAPIConfiguration() async throws {
+    @Test("apiConfiguration")
+    func apiConfiguration() async throws {
         let configuration = try await configurationService.apiConfiguration()
 
-        XCTAssertFalse(configuration.images.backdropSizes.isEmpty)
-        XCTAssertFalse(configuration.images.logoSizes.isEmpty)
-        XCTAssertFalse(configuration.images.posterSizes.isEmpty)
-        XCTAssertFalse(configuration.images.profileSizes.isEmpty)
-        XCTAssertFalse(configuration.images.stillSizes.isEmpty)
-        XCTAssertFalse(configuration.changeKeys.isEmpty)
+        #expect(!configuration.images.backdropSizes.isEmpty)
+        #expect(!configuration.images.logoSizes.isEmpty)
+        #expect(!configuration.images.posterSizes.isEmpty)
+        #expect(!configuration.images.profileSizes.isEmpty)
+        #expect(!configuration.images.stillSizes.isEmpty)
+        #expect(!configuration.changeKeys.isEmpty)
     }
 
-    func testCountries() async throws {
+    @Test("countries")
+    func countries() async throws {
         let countries = try await configurationService.countries()
 
-        XCTAssertFalse(countries.isEmpty)
+        #expect(!countries.isEmpty)
     }
 
-    func testJobsByDepartment() async throws {
+    @Test("jobsByDepartments")
+    func jobsByDepartment() async throws {
         let departments = try await configurationService.jobsByDepartment()
 
-        XCTAssertFalse(departments.isEmpty)
+        #expect(!departments.isEmpty)
     }
 
-    func testLanguages() async throws {
+    @Test("languages")
+    func languages() async throws {
         let languages = try await configurationService.languages()
 
-        XCTAssertFalse(languages.isEmpty)
+        #expect(!languages.isEmpty)
     }
 
 }

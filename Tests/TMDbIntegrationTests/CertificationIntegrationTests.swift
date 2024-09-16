@@ -17,38 +17,39 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class CertificationIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.certification),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct CertificationIntegrationTests {
 
     var certificationService: (any CertificationService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        certificationService = TMDbClient(apiKey: apiKey).certifications
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.certificationService = TMDbClient(apiKey: apiKey).certifications
     }
 
-    override func tearDown() {
-        certificationService = nil
-        super.tearDown()
-    }
-
+    @Test("movieCertifications")
     func testMovieCertifications() async throws {
         let certifications = try await certificationService.movieCertifications()
 
-        let gbCertifications = try XCTUnwrap(certifications["GB"])
+        let gbCertifications = try #require(certifications["GB"])
 
-        XCTAssertEqual(gbCertifications.count, 7)
+        #expect(gbCertifications.count == 7)
     }
 
-    func testTVSeriesCertifications() async throws {
+    @Test("tvSeriesCertifications")
+    func tvSeriesCertifications() async throws {
         let certifications = try await certificationService.tvSeriesCertifications()
 
-        let gbCertifications = try XCTUnwrap(certifications["GB"])
+        let gbCertifications = try #require(certifications["GB"])
 
-        XCTAssertEqual(gbCertifications.count, 7)
+        #expect(gbCertifications.count == 7)
     }
 
 }

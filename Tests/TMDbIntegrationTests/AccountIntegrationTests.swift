@@ -17,42 +17,48 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class AccountIntegrationTests: XCTestCase {
+@Suite(
+    .serialized,
+    .tags(.account),
+    .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential),
+    .disabled()
+)
+final class AccountIntegrationTests {
 
     var accountService: (any AccountService)!
     var authenticationService: (any AuthenticationService)!
     var session: Session!
 
-    override func setUp() async throws {
-        try await super.setUp()
-        let apiKey = try tmdbAPIKey()
+    init() async throws {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
         let tmdbClient = TMDbClient(apiKey: apiKey)
-        let credential = try tmdbCredential()
 
-        authenticationService = tmdbClient.authentication
-        accountService = tmdbClient.account
-
-        session = try await authenticationService.createSession(withCredential: credential)
+        self.authenticationService = tmdbClient.authentication
+        self.accountService = tmdbClient.account
+        self.session = try await TMDbSessionHelper.shared.createSession()
     }
 
-    override func tearDown() async throws {
-//        try await authenticationService.deleteSession(session)
-        accountService = nil
-        authenticationService = nil
-        session = nil
-        try await super.tearDown()
+    deinit {
+        if let thisSession = session {
+            Task {
+                try await TMDbSessionHelper.shared.delete(session: thisSession)
+            }
+        }
     }
 
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let details = try await accountService.details(session: session)
 
-        XCTAssertGreaterThan(details.id, 0)
+        #expect(details.id > 0)
     }
 
-    func testAddingAndRemovingFavouriteMovies() async throws {
+    @Test("adding and removing favourite movies")
+    func addingAndRemovingFavouriteMovies() async throws {
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 
@@ -63,7 +69,7 @@ final class AccountIntegrationTests: XCTestCase {
             session: session
         )
         let isMovieFavourited = movieListAfterFavorited.results.contains { $0.id == movieID }
-        XCTAssertTrue(isMovieFavourited)
+        #expect(isMovieFavourited)
 
         try await accountService.removeFavourite(movie: movieID, accountID: accountDetails.id, session: session)
 
@@ -73,10 +79,11 @@ final class AccountIntegrationTests: XCTestCase {
         )
 
         let isMovieFavouritedAfterRemoved = movieListAfterFavoriteRemoved.results.contains { $0.id == movieID }
-        XCTAssertFalse(isMovieFavouritedAfterRemoved)
+        #expect(!isMovieFavouritedAfterRemoved)
     }
 
-    func testAddingAndRemovingFavouriteTVSeries() async throws {
+    @Test("add and removing favourite TV series")
+    func addingAndRemovingFavouriteTVSeries() async throws {
         let accountDetails = try await accountService.details(session: session)
         let tvSeriesID = 2261
 
@@ -87,7 +94,7 @@ final class AccountIntegrationTests: XCTestCase {
             session: session
         )
         let isTVSeriesFavourited = tvSeriesListAfterFavorited.results.contains { $0.id == tvSeriesID }
-        XCTAssertTrue(isTVSeriesFavourited)
+        #expect(isTVSeriesFavourited)
 
         try await accountService.removeFavourite(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
 
@@ -97,10 +104,11 @@ final class AccountIntegrationTests: XCTestCase {
         )
 
         let isTVSeriesFavouritedAfterRemoved = tvSeriesListAfterFavoriteRemoved.results.contains { $0.id == tvSeriesID }
-        XCTAssertFalse(isTVSeriesFavouritedAfterRemoved)
+        #expect(!isTVSeriesFavouritedAfterRemoved)
     }
 
-    func testAddingAndRemovingToMoviesWatchlist() async throws {
+    @Test("add and removing to movies watchlist")
+    func addingAndRemovingToMoviesWatchlist() async throws {
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 
@@ -111,7 +119,7 @@ final class AccountIntegrationTests: XCTestCase {
             session: session
         )
         let isMovieAddedToWatchlist = movieListAfterAddToWatchlist.results.contains { $0.id == movieID }
-        XCTAssertTrue(isMovieAddedToWatchlist)
+        #expect(isMovieAddedToWatchlist)
 
         try await accountService.removeFromWatchlist(movie: movieID, accountID: accountDetails.id, session: session)
 
@@ -121,10 +129,11 @@ final class AccountIntegrationTests: XCTestCase {
         )
 
         let isMovieInWatchlistAfterRemoved = movieListAfterRemovedFromWatchlist.results.contains { $0.id == movieID }
-        XCTAssertFalse(isMovieInWatchlistAfterRemoved)
+        #expect(!isMovieInWatchlistAfterRemoved)
     }
 
-    func testAddingAndRemovingTVSeriesToWatchlist() async throws {
+    @Test("add and removing to TV series watchlist")
+    func addingAndRemovingTVSeriesToWatchlist() async throws {
         let accountDetails = try await accountService.details(session: session)
         let tvSeriesID = 2261
 
@@ -135,7 +144,7 @@ final class AccountIntegrationTests: XCTestCase {
             session: session
         )
         let isTVSeriesAddedToWatchlist = tvSeriesListAfterAddedToWatchlist.results.contains { $0.id == tvSeriesID }
-        XCTAssertTrue(isTVSeriesAddedToWatchlist)
+        #expect(isTVSeriesAddedToWatchlist)
 
         try await accountService.removeFromWatchlist(
             tvSeries: tvSeriesID,
@@ -151,7 +160,7 @@ final class AccountIntegrationTests: XCTestCase {
         let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results.contains {
             $0.id == tvSeriesID
         }
-        XCTAssertFalse(isTVSeriesInWatchlistAfterRemoved)
+        #expect(!isTVSeriesInWatchlistAfterRemoved)
     }
 
 }

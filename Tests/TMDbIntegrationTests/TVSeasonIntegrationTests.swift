@@ -17,61 +17,64 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class TVSeasonIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.tvSeason),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct TVSeasonIntegrationTests {
 
     var tvSeasonService: (any TVSeasonService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        tvSeasonService = TMDbClient(apiKey: apiKey).tvSeasons
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey
+        self.tvSeasonService = TMDbClient(apiKey: apiKey).tvSeasons
     }
 
-    override func tearDown() {
-        tvSeasonService = nil
-        super.tearDown()
-    }
-
+    @Test("details")
     func testDetails() async throws {
         let seasonNumber = 2
         let tvSeriesID = 1399
 
         let season = try await tvSeasonService.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
-        XCTAssertEqual(season.seasonNumber, seasonNumber)
-        XCTAssertFalse((season.episodes ?? []).isEmpty)
+        #expect(season.seasonNumber == seasonNumber)
+        #expect(!(season.episodes ?? []).isEmpty)
     }
 
-    func testAggregateCredits() async throws {
+    @Test("aggregateCredits")
+    func aggregateCredits() async throws {
         let seasonNumber = 2
         let tvSeriesID = 1399
 
         let credits = try await tvSeasonService.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
-        XCTAssertEqual(credits.id, 3625)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(credits.id == 3625)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testImages() async throws {
+    @Test("images")
+    func images() async throws {
         let seasonNumber = 1
         let tvSeriesID = 1399
 
         let imagesCollection = try await tvSeasonService.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
-        XCTAssertFalse(imagesCollection.posters.isEmpty)
+        #expect(!imagesCollection.posters.isEmpty)
     }
 
-    func testVideos() async throws {
+    @Test("videos")
+    func videos() async throws {
         let seasonNumber = 1
         let tvSeriesID = 1399
 
         let videoCollection = try await tvSeasonService.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
-        XCTAssertFalse(videoCollection.results.isEmpty)
+        #expect(!videoCollection.results.isEmpty)
     }
 
 }
