@@ -17,22 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class JSONEncoderTMDbTests: XCTestCase {
+@Suite
+struct JSONEncoderTMDbTests {
 
     var jsonEncoder: JSONEncoder!
     var dateFormatter: DateFormatter!
 
-    override func setUp() {
-        super.setUp()
-        dateFormatter = DateFormatter()
+    init() {
+        self.dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-ddd"
-        jsonEncoder = JSONEncoder.theMovieDatabase
+        self.jsonEncoder = JSONEncoder.theMovieDatabase
     }
 
-    func testTheMovieDatabaseEncoderEncodesObject() throws {
+    @Test("encoder encodes object")
+    func theMovieDatabaseEncoderEncodesObject() throws {
         let value = SomeThing(
             id: "abc123",
             firstName: "Adam",
@@ -44,12 +46,16 @@ final class JSONEncoderTMDbTests: XCTestCase {
         let expectedDataOfBirthResult = "\"date_of_birth\":\"1990-01-02\""
 
         let data = try jsonEncoder.encode(value)
-        let dataAsString = try XCTUnwrap(String(data: data, encoding: .utf8))
+        let dataAsString = try #require(String(data: data, encoding: .utf8))
 
-        XCTAssertTrue(dataAsString.contains(expectedIDResult))
-        XCTAssertTrue(dataAsString.contains(expectedFirstNameResult))
-        XCTAssertTrue(dataAsString.contains(expectedDataOfBirthResult))
+        #expect(dataAsString.contains(expectedIDResult))
+        #expect(dataAsString.contains(expectedFirstNameResult))
+        #expect(dataAsString.contains(expectedDataOfBirthResult))
     }
+
+}
+
+extension JSONEncoderTMDbTests {
 
     private struct SomeThing: Encodable, Equatable {
 

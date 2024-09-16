@@ -17,10 +17,12 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class JSONDecoderTMDbTests: XCTestCase {
+@Suite
+struct JSONDecoderTMDbTests {
 
     private static var dateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
@@ -28,7 +30,8 @@ final class JSONDecoderTMDbTests: XCTestCase {
         return dateFormatter
     }
 
-    func testTheMovieDatabaseDecoderDecodesObject() throws {
+    @Test("decodes object from JSON")
+    func theMovieDatabaseDecoderDecodesObject() throws {
         let expectedResult = SomeThing(
             id: "abc123",
             firstName: "Adam",
@@ -46,8 +49,12 @@ final class JSONDecoderTMDbTests: XCTestCase {
 
         let result = try JSONDecoder.theMovieDatabase.decode(SomeThing.self, from: data)
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
+
+}
+
+extension JSONDecoderTMDbTests {
 
     private struct SomeThing: Decodable, Equatable {
 

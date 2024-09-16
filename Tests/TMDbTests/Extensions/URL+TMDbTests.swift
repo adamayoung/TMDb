@@ -17,25 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class URLTMDbTests: XCTestCase {
+@Suite
+struct URLTMDbTests {
 
-    func testTMDbAPIBaseURLReturnsCorrectURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "https://api.themoviedb.org/3"))
+    @Test("TMDb API base URL returns correct URL")
+    func tmdbAPIBaseURLReturnsCorrectURL() throws {
+        let expectedResult = try #require(URL(string: "https://api.themoviedb.org/3"))
 
         let result = URL.tmdbAPIBaseURL
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
-    func testTMDbWebSiteBaseURLReturnsCorrectURL() throws {
-        let expectedResult = try XCTUnwrap(URL(string: "https://www.themoviedb.org"))
+    @Test("TMDb website base URL returns correct URL")
+    func tmdbWebSiteBaseURLReturnsCorrectURL() throws {
+        let expectedResult = try #require(URL(string: "https://www.themoviedb.org"))
 
         let result = URL.tmdbWebSiteURL
 
-        XCTAssertEqual(result, expectedResult)
+        #expect(result == expectedResult)
     }
 
 }
