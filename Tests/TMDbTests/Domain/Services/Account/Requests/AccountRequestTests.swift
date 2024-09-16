@@ -17,42 +17,42 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AccountRequestTests: XCTestCase {
+@Suite(.tags(.requests, .account))
+struct AccountRequestTests {
 
     var request: AccountRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = AccountRequest(sessionID: "1234567890")
+    init() {
+        self.request = AccountRequest(sessionID: "1234567890")
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path")
+    func path() {
+        #expect(request.path == "/account")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/account")
+    @Test("queryItems contains session_id")
+    func queryItemsContainsSessionID() {
+        #expect(request.queryItems == ["session_id": "1234567890"])
     }
 
-    func testQueryItemsContainsSessionID() {
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["session_id"], "1234567890")
+    @Test("method is GET")
+    func methodIsGet() {
+        #expect(request.method == .get)
     }
 
-    func testMethodIsGet() {
-        XCTAssertEqual(request.method, .get)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
-
-    func testBodyIsNil() {
-        XCTAssertNil(request.body)
+    @Test("body is nil")
+    func bodyIsNil() {
+        #expect(request.body == nil)
     }
 
 }

@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AddFavouriteRequestTests: XCTestCase {
+@Suite(.tags(.requests, .account))
+struct AddFavouriteRequestTests {
 
-    func testPath() {
+    @Test("path")
+    func path() {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 1,
@@ -31,10 +34,11 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.path, "/account/1/favorite")
+        #expect(request.path == "/account/1/favorite")
     }
 
-    func testQueryItemsContainsSessionID() {
+    @Test("queryItems contains session_id")
+    func queryItemsContainsSessionID() {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 1,
@@ -43,11 +47,11 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["session_id": "abc"])
     }
 
-    func testMethodIsPost() {
+    @Test("method is POST")
+    func methodIsPost() {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 1,
@@ -56,10 +60,11 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.method, .post)
+        #expect(request.method == .post)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 1,
@@ -68,10 +73,11 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
+    @Test("body when movie and adding as favourite")
+    func bodyWhenMovieAndAddingAsFavourite() throws {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 1,
@@ -80,14 +86,15 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .movie)
-        XCTAssertEqual(body.showID, 1)
-        XCTAssertTrue(body.isFavourite)
+        #expect(body.showType == .movie)
+        #expect(body.showID == 1)
+        #expect(body.isFavourite)
     }
 
-    func testBodyWhenMovieAndRemovingAsFavourite() throws {
+    @Test("body when movie and removing as favourite")
+    func bodyWhenMovieAndRemovingAsFavourite() throws {
         let request = AddFavouriteRequest(
             showType: .movie,
             showID: 2,
@@ -96,14 +103,15 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .movie)
-        XCTAssertEqual(body.showID, 2)
-        XCTAssertFalse(body.isFavourite)
+        #expect(body.showType == .movie)
+        #expect(body.showID == 2)
+        #expect(!body.isFavourite)
     }
 
-    func testBodyWhenTVSeriesAndAddingAsFavourite() throws {
+    @Test("body when TV series and adding as favourite")
+    func bodyWhenTVSeriesAndAddingAsFavourite() throws {
         let request = AddFavouriteRequest(
             showType: .tvSeries,
             showID: 3,
@@ -112,14 +120,15 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .tvSeries)
-        XCTAssertEqual(body.showID, 3)
-        XCTAssertTrue(body.isFavourite)
+        #expect(body.showType == .tvSeries)
+        #expect(body.showID == 3)
+        #expect(body.isFavourite)
     }
 
-    func testBodyWhenTVSeriesAndRemovingAsFavourite() throws {
+    @Test("body when TV series and removing as favourite")
+    func bodyWhenTVSeriesAndRemovingAsFavourite() throws {
         let request = AddFavouriteRequest(
             showType: .tvSeries,
             showID: 4,
@@ -128,11 +137,11 @@ final class AddFavouriteRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .tvSeries)
-        XCTAssertEqual(body.showID, 4)
-        XCTAssertFalse(body.isFavourite)
+        #expect(body.showType == .tvSeries)
+        #expect(body.showID == 4)
+        #expect(!body.isFavourite)
     }
 
 }
