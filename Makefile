@@ -33,6 +33,10 @@ lint-markdown:
 build:
 	swift build -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
 
+.PHONY: build-tests
+build-tests:
+	swift build --build-tests -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete
+
 .PHONY: build-linux
 build-linux:
 	docker run --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build -Xswiftc -warnings-as-errors -Xswiftc -strict-concurrency=complete"

@@ -52,9 +52,14 @@ struct TMDbAPIClientTests {
         let stubRequest = APIStubRequest<String, String>(path: path)
         httpClient.result = .success(HTTPResponse())
 
-        await #expect(throws: TMDbAPIError.invalidURL(path)) {
+        var error: TMDbAPIError?
+        do {
             _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
         }
+
+        #expect(error == .invalidURL(path))
     }
 
     @Test("perform has correct URL")
