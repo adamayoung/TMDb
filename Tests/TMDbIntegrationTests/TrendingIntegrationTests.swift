@@ -22,7 +22,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
-    .tags(.search),
+    .tags(.trending),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
 )
 struct TrendingIntegrationTests {
