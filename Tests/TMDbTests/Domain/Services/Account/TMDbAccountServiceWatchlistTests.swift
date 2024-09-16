@@ -17,34 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbAccountServiceWatchlistTests: XCTestCase {
+@Suite(.tags(.services, .account))
+struct TMDbAccountServiceWatchlistTests {
 
     var service: TMDbAccountService!
     var apiClient: MockAPIClient!
     var session: Session!
 
-    override func setUp() {
-        super.setUp()
-        session = Session(success: true, sessionID: "abc123")
-        apiClient = MockAPIClient()
-        service = TMDbAccountService(apiClient: apiClient)
-    }
-
-    override func tearDown() {
-        service = nil
-        apiClient = nil
-        session = nil
-        super.tearDown()
+    init() {
+        self.session = Session(success: true, sessionID: "abc123")
+        self.apiClient = MockAPIClient()
+        self.service = TMDbAccountService(apiClient: apiClient)
     }
 
 }
 
 extension TMDbAccountServiceWatchlistTests {
 
-    func testMovieWatchlistReturnsMoviesList() async throws {
+    @Test("movieWatchlist returns movies list")
+    func movieWatchlistReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
@@ -58,11 +53,12 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.movieWatchlist(accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
     }
 
-    func testMoviesWatchlistWhenFetchingWithSortedByReturnsMoviesList() async throws {
+    @Test("moviesWatchlist when fetching with sortedBy returns movies list")
+    func moviesWatchlistWhenFetchingWithSortedByReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = WatchlistSort.createdAt()
@@ -77,11 +73,12 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.movieWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
     }
 
-    func testMoviesWatchlistWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
+    @Test("moviesWatchlist when fetching with sortedBy and page returns movies list")
+    func moviesWatchlistWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = WatchlistSort.createdAt()
@@ -102,11 +99,12 @@ extension TMDbAccountServiceWatchlistTests {
             session: session
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
     }
 
-    func testMoviesWatchlistWhenFetchingByPageReturnsMoviesList() async throws {
+    @Test("moviesWatchlist when fetching by page returns movies list")
+    func moviesWatchlistWhenFetchingByPageReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let page = 2
@@ -121,28 +119,23 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.movieWatchlist(page: page, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
     }
 
-    func testMoviesWatchlistWhenErrorThrowsError() async throws {
+    @Test("movingWatchlist when error throws error")
+    func moviesWatchlistWhenErrorThrowsError() async throws {
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movieWatchlist(accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testAddMovieToWatchlistReturnsSuccessfully() async throws {
+    @Test("addToWatchlist when adding movie to watchlist returns successfully")
+    func addMovieToWatchlistReturnsSuccessfully() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
@@ -158,28 +151,23 @@ extension TMDbAccountServiceWatchlistTests {
 
         try await service.addToWatchlist(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
 
-    func testAddMovieToWatchlistWhenErrorsThrowsError() async throws {
+    @Test("addToWatchlist when adding movie errors throws error")
+    func addMovieToWatchlistWhenErrorsThrowsError() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.addToWatchlist(movie: movieID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testRemoveMovieFromWatchlistReturnsSuccessfully() async throws {
+    @Test("removeFromWatchlist when removing movie from watchlist returns successfully")
+    func removeMovieFromWatchlistReturnsSuccessfully() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
@@ -195,32 +183,27 @@ extension TMDbAccountServiceWatchlistTests {
 
         try await service.removeFromWatchlist(movie: movieID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
 
-    func testRemoveFavouriteTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("removeFromWatchlist when removing movie errors throws error")
+    func removeFavouriteTVSeriesWhenErrorsThrowsError() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.removeFromWatchlist(movie: movieID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
 
 extension TMDbAccountServiceWatchlistTests {
 
-    func testTVSeriesWatchlistReturnsTVSeriesList() async throws {
+    @Test("TV series watchlist returns TV series list")
+    func tvSeriesWatchlistReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
@@ -234,11 +217,12 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.tvSeriesWatchlist(accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
     }
 
-    func testTVSeriesWatchlistWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
+    @Test("TV series watchlist when fetching with sorted by returns TV series list")
+    func tvSeriesWatchlistWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = WatchlistSort.createdAt()
@@ -253,11 +237,12 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.tvSeriesWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
     }
 
-    func testTVSeriesWatchlistWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
+    @Test("tvSeriesWatchlist when fetching with sorted by and page returns TV series list")
+    func tvSeriesWatchlistWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = WatchlistSort.createdAt()
@@ -278,11 +263,12 @@ extension TMDbAccountServiceWatchlistTests {
             session: session
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
     }
 
-    func testTVSeriesWatchlistWhenFetchingByPageReturnsTVSeriesList() async throws {
+    @Test("tvSeriesWatchlist when fetching by page returns TV series list")
+    func tvSeriesWatchlistWhenFetchingByPageReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let page = 2
@@ -297,28 +283,23 @@ extension TMDbAccountServiceWatchlistTests {
 
         let result = try await service.tvSeriesWatchlist(page: page, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesWatchlistRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
     }
 
-    func testFavouriteTVSeriesWhenErrorThrowsError() async throws {
+    @Test("tvSeriesWatchlist when error throws error")
+    func tvSeriesWatchlistWhenErrorThrowsError() async throws {
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeriesWatchlist(accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testAddTVSeriesToWatchlistReturnsSuccessfully() async throws {
+    @Test("addToWatchlist when adding TV series to watchlist returns successfully")
+    func addTVSeriesToWatchlistReturnsSuccessfully() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
@@ -334,28 +315,23 @@ extension TMDbAccountServiceWatchlistTests {
 
         try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
 
-    func testAddTVSeriesToWatchlistWhenErrorsThrowsError() async throws {
+    @Test("addToWatchlist when adding TV series to watchlist errors throws error")
+    func addTVSeriesToWatchlistWhenErrorsThrowsError() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testRemoveTVSeriesFromWatchlistReturnsSuccessfully() async throws {
+    @Test("removeFromWatchlist when removing TV series from watchlist returns successfully")
+    func removeTVSeriesFromWatchlistReturnsSuccessfully() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
@@ -371,25 +347,19 @@ extension TMDbAccountServiceWatchlistTests {
 
         try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddToWatchlistRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
 
-    func testRemoveTVSeriesFromWatchlistWhenErrorsThrowsError() async throws {
+    @Test("removeFromWatchlist when removing TV series from watchlist errors throws error")
+    func removeTVSeriesFromWatchlistWhenErrorsThrowsError() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

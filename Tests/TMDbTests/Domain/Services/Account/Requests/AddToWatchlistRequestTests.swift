@@ -17,12 +17,15 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class AddToWatchlistRequestTests: XCTestCase {
+@Suite(.tags(.requests, .account))
+struct AddToWatchlistRequestTests {
 
-    func testPath() {
+    @Test("path")
+    func path() {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 1,
@@ -31,10 +34,11 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.path, "/account/1/watchlist")
+        #expect(request.path == "/account/1/watchlist")
     }
 
-    func testQueryItemsContainsSessionID() {
+    @Test("queryItems contains session_id")
+    func queryItemsContainsSessionID() {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 1,
@@ -43,11 +47,11 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["session_id"], "abc")
+        #expect(request.queryItems == ["session_id": "abc"])
     }
 
-    func testMethodIsPost() {
+    @Test("method is POST")
+    func methodIsPost() {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 1,
@@ -56,10 +60,11 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertEqual(request.method, .post)
+        #expect(request.method == .post)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 1,
@@ -68,10 +73,11 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyWhenMovieAndAddingAsFavourite() throws {
+    @Test("body when movie and adding as favourite")
+    func bodyWhenMovieAndAddingAsFavourite() throws {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 1,
@@ -80,14 +86,15 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .movie)
-        XCTAssertEqual(body.showID, 1)
-        XCTAssertTrue(body.isInWatchlist)
+        #expect(body.showType == .movie)
+        #expect(body.showID == 1)
+        #expect(body.isInWatchlist)
     }
 
-    func testBodyWhenMovieAndRemovingAsFavourite() throws {
+    @Test("body when movie and removing as favourite")
+    func bodyWhenMovieAndRemovingAsFavourite() throws {
         let request = AddToWatchlistRequest(
             showType: .movie,
             showID: 2,
@@ -96,14 +103,15 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .movie)
-        XCTAssertEqual(body.showID, 2)
-        XCTAssertFalse(body.isInWatchlist)
+        #expect(body.showType == .movie)
+        #expect(body.showID == 2)
+        #expect(!body.isInWatchlist)
     }
 
-    func testBodyWhenTVSeriesAndAddingAsFavourite() throws {
+    @Test("body when TV series and adding as favourite")
+    func bodyWhenTVSeriesAndAddingAsFavourite() throws {
         let request = AddToWatchlistRequest(
             showType: .tvSeries,
             showID: 3,
@@ -112,14 +120,15 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .tvSeries)
-        XCTAssertEqual(body.showID, 3)
-        XCTAssertTrue(body.isInWatchlist)
+        #expect(body.showType == .tvSeries)
+        #expect(body.showID == 3)
+        #expect(body.isInWatchlist)
     }
 
-    func testBodyWhenTVSeriesAndRemovingAsFavourite() throws {
+    @Test("body when TV series and removing as favourite")
+    func bodyWhenTVSeriesAndRemovingAsFavourite() throws {
         let request = AddToWatchlistRequest(
             showType: .tvSeries,
             showID: 4,
@@ -128,11 +137,11 @@ final class AddToWatchlistRequestTests: XCTestCase {
             sessionID: "abc"
         )
 
-        let body = try XCTUnwrap(request.body)
+        let body = try #require(request.body)
 
-        XCTAssertEqual(body.showType, .tvSeries)
-        XCTAssertEqual(body.showID, 4)
-        XCTAssertFalse(body.isInWatchlist)
+        #expect(body.showType == .tvSeries)
+        #expect(body.showID == 4)
+        #expect(!body.isInWatchlist)
     }
 
 }

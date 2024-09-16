@@ -17,21 +17,26 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class FavouriteSortTests: XCTestCase {
+@Suite(.tags(.account))
+struct FavouriteSortTests {
 
-    func testCreatedAtWhenDefaultReturnsDescription() {
-        XCTAssertEqual(FavouriteSort.createdAt().description, "created_at.asc")
+    @Test("createdAt default description is created_at.asc")
+    func createdAtWhenDefaultReturnsDescription() {
+        #expect(FavouriteSort.createdAt().description == "created_at.asc")
     }
 
-    func testCreatedAtWhenAscendingReturnsDescription() {
-        XCTAssertEqual(FavouriteSort.createdAt(descending: false).description, "created_at.asc")
+    @Test("createdAt ascending description is created_at.asc")
+    func createdAtWhenAscendingReturnsDescription() {
+        #expect(FavouriteSort.createdAt(descending: false).description == "created_at.asc")
     }
 
-    func testCreatedAtWhenDescendingReturnsDescription() {
-        XCTAssertEqual(FavouriteSort.createdAt(descending: true).description, "created_at.desc")
+    @Test("createdAt descending description is created_at.desc")
+    func createdAtWhenDescendingReturnsDescription() {
+        #expect(FavouriteSort.createdAt(descending: true).description == "created_at.desc")
     }
 
 }

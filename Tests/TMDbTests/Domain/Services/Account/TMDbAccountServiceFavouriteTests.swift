@@ -17,34 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbAccountFavouriteServiceTests: XCTestCase {
+@Suite(.tags(.services, .account))
+struct TMDbAccountFavouriteServiceTests {
 
     var service: TMDbAccountService!
     var apiClient: MockAPIClient!
     var session: Session!
 
-    override func setUp() {
-        super.setUp()
-        session = Session(success: true, sessionID: "abc123")
-        apiClient = MockAPIClient()
-        service = TMDbAccountService(apiClient: apiClient)
-    }
-
-    override func tearDown() {
-        service = nil
-        apiClient = nil
-        session = nil
-        super.tearDown()
+    init() {
+        self.session = Session(success: true, sessionID: "abc123")
+        self.apiClient = MockAPIClient()
+        self.service = TMDbAccountService(apiClient: apiClient)
     }
 
 }
 
 extension TMDbAccountFavouriteServiceTests {
 
-    func testFavouriteMoviesReturnsMoviesList() async throws {
+    @Test("favouriteMovies returns movies list")
+    func favouriteMoviesReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
@@ -58,11 +53,12 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteMovies(accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
     }
 
-    func testFavouriteMoviesWhenFetchingWithSortedByReturnsMoviesList() async throws {
+    @Test("favouriteMovies when fetching with sorted by returns movies list")
+    func favouriteMoviesWhenFetchingWithSortedByReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = FavouriteSort.createdAt()
@@ -77,11 +73,12 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteMovies(sortedBy: sortedBy, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
     }
 
-    func testFavouriteMoviesWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
+    @Test("favouriteMovies when fetching with sorted by and with page returns movies list")
+    func favouriteMoviesWhenFetchingWithSortedByAndWithPageReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = FavouriteSort.createdAt()
@@ -102,11 +99,12 @@ extension TMDbAccountFavouriteServiceTests {
             session: session
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
     }
 
-    func testFavouriteMoviesWhenFetchingByPageReturnsMoviesList() async throws {
+    @Test("favouriteMovies when fetching by page returns movies list")
+    func favouriteMoviesWhenFetchingByPageReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let page = 2
@@ -121,28 +119,23 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteMovies(page: page, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
     }
 
-    func testFavouriteMoviesWhenErrorThrowsError() async throws {
+    @Test("favouriteMovies when error throws error")
+    func favouriteMoviesWhenErrorThrowsError() async throws {
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.favouriteMovies(accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testAddFavouriteMovieReturnsSuccessfully() async throws {
+    @Test("addFavourite movie returns successfully")
+    func addFavouriteMovieReturnsSuccessfully() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
@@ -156,30 +149,27 @@ extension TMDbAccountFavouriteServiceTests {
             sessionID: session.sessionID
         )
 
-        try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
+        await #expect(throws: Never.self) {
+            try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
+        }
 
-        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
     }
 
-    func testAddFavouriteMovieWhenErrorsThrowsError() async throws {
+    @Test("addFavourite movie when errors throws error")
+    func addFavouriteMovieWhenErrorsThrowsError() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
-            try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.addFavourite(movie: movieID, accountID: accountID, session: session)
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testRemoveFavouriteMovieReturnsSuccessfully() async throws {
+    @Test("remove favourite movie returns successfully")
+    func removeFavouriteMovieReturnsSuccessfully() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
@@ -193,34 +183,31 @@ extension TMDbAccountFavouriteServiceTests {
             sessionID: session.sessionID
         )
 
-        try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
+        await #expect(throws: Never.self) {
+            try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
+        }
 
-        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
     }
 
-    func testRemoveFavouriteMovieWhenErrorsThrowsError() async throws {
+    @Test("removeFavourite movie when errors throws error")
+    func removeFavouriteMovieWhenErrorsThrowsError() async throws {
         let movieID = 550
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.removeFavourite(movie: movieID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
 
 extension TMDbAccountFavouriteServiceTests {
 
-    func testFavouriteTVSeriesReturnsTVSeriesList() async throws {
+    @Test("favouriteTVSeries returns TV series list")
+    func favouriteTVSeriesReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
@@ -234,11 +221,12 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteTVSeries(accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
     }
 
-    func testFavouriteTVSeriesWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
+    @Test("favouriteTVSeries when fetching with sortedBy returns TV series list")
+    func favouriteTVSeriesWhenFetchingWithSortedByReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = FavouriteSort.createdAt()
@@ -253,11 +241,12 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteTVSeries(sortedBy: sortedBy, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
     }
 
-    func testFavouriteTVSeriesWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
+    @Test("favouriteTVSeries when fetching with sortedBy and with page returns TV series list")
+    func favouriteTVSeriesWhenFetchingWithSortedByAndWithPageReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let sortedBy = FavouriteSort.createdAt()
@@ -278,11 +267,12 @@ extension TMDbAccountFavouriteServiceTests {
             session: session
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
     }
 
-    func testFavouriteTVSeriesWhenFetchingByPageReturnsTVSeriesList() async throws {
+    @Test("favouriteTVSeries when fetching by page returns TV series list")
+    func favouriteTVSeriesWhenFetchingByPageReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let page = 2
@@ -297,28 +287,23 @@ extension TMDbAccountFavouriteServiceTests {
 
         let result = try await service.favouriteTVSeries(page: page, accountID: accountID, session: session)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? FavouriteTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
     }
 
-    func testFavouriteTVSeriesWhenErrorThrowsError() async throws {
+    @Test("favouriteTVSeries when error throws error")
+    func favouriteTVSeriesWhenErrorThrowsError() async throws {
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.favouriteTVSeries(accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testAddFavouriteTVSeriesReturnsSuccessfully() async throws {
+    @Test("addFavourite TV series returns successfully")
+    func addFavouriteTVSeriesReturnsSuccessfully() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
@@ -334,28 +319,23 @@ extension TMDbAccountFavouriteServiceTests {
 
         try await service.addFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
     }
 
-    func testAddFavouriteTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("addFavourite TV series when errors throws error")
+    func addFavouriteTVSeriesWhenErrorsThrowsError() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.addFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testRemoveFavouriteTVSeriesReturnsSuccessfully() async throws {
+    @Test("removeFavourite TV series returns successfully")
+    func removeFavouriteTVSeriesReturnsSuccessfully() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
@@ -371,25 +351,19 @@ extension TMDbAccountFavouriteServiceTests {
 
         try await service.removeFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
 
-        XCTAssertEqual(apiClient.lastRequest as? AddFavouriteRequest, expectedRequest)
+        #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
     }
 
-    func testRemoveFavouriteTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("removeFavourite TV series when errors throws error")
+    func removeFavouriteTVSeriesWhenErrorsThrowsError() async throws {
         let tvSeriesID = 101
         let accountID = 123
         let session = Session.mock()
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             try await service.removeFavourite(tvSeries: tvSeriesID, accountID: accountID, session: session)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

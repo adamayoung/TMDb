@@ -21,7 +21,12 @@ import Testing
 
 extension Tag {
 
-    @Tag static var decoding: Self
     @Tag static var models: Self
+    @Tag static var services: Self
+
+    @Tag static var decoding: Self
+    @Tag static var requests: Self
+
+    @Tag static var account: Self
 
 }
