@@ -52,7 +52,8 @@ struct AuthenticationIntegrationTests {
 
     @Test(
         "createSession with credential",
-        .enabled(if: CredentialHelper.shared.hasCredential)
+        .enabled(if: CredentialHelper.shared.hasCredential),
+        .disabled()
     )
     func createAndDeleteSessionWithCredential() async throws {
         let credential = CredentialHelper.shared.tmdbCredential

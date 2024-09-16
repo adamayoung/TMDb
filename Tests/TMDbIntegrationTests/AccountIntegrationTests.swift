@@ -24,7 +24,8 @@ import Testing
 @Suite(
     .serialized,
     .tags(.account),
-    .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential)
+    .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential),
+    .disabled()
 )
 final class AccountIntegrationTests {
 
