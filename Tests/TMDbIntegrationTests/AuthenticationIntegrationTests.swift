@@ -17,58 +17,64 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class AuthenticationIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.authentication),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct AuthenticationIntegrationTests {
 
     var authenticationService: (any AuthenticationService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        authenticationService = TMDbClient(apiKey: apiKey).authentication
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        self.authenticationService = TMDbClient(apiKey: apiKey).authentication
     }
 
-    override func tearDown() {
-        authenticationService = nil
-        super.tearDown()
-    }
-
-    func testGuestSession() async throws {
+    @Test("guestSession")
+    func guestSession() async throws {
         let session = try await authenticationService.guestSession()
 
-        XCTAssertTrue(session.success)
-        XCTAssertNotEqual(session.guestSessionID, "")
+        #expect(session.success)
+        #expect(session.guestSessionID != "")
     }
 
-    func testRequestToken() async throws {
+    @Test("requestToken")
+    func requestToken() async throws {
         let token = try await authenticationService.requestToken()
 
-        XCTAssertTrue(token.success)
-        XCTAssertNotEqual(token.requestToken, "")
+        #expect(token.success)
+        #expect(token.requestToken != "")
     }
 
-    func testCreateAndDeleteSessionWithCredential() async throws {
-        let credential = try tmdbCredential()
+    @Test(
+        "createSession with credential",
+        .enabled(if: CredentialHelper.shared.hasCredential)
+    )
+    func createAndDeleteSessionWithCredential() async throws {
+        let credential = CredentialHelper.shared.tmdbCredential()
 
         let session = try await authenticationService.createSession(withCredential: credential)
 
-        XCTAssertTrue(session.success)
-        XCTAssertNotEqual(session.sessionID, "")
+        #expect(session.success)
+        #expect(session.sessionID != "")
 
         do {
             let deleteResult = try await authenticationService.deleteSession(session)
-            XCTAssertTrue(deleteResult)
+            #expect(deleteResult)
         } catch let error {
             print(error)
         }
     }
 
-    func testValidateKeyWhenValid() async throws {
+    @Test("validateKey")
+    func validateKeyWhenValid() async throws {
         let isValid = try await authenticationService.validateKey()
 
-        XCTAssertTrue(isValid)
+        #expect(isValid)
     }
 
 }

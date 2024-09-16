@@ -17,34 +17,35 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class DiscoverIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.discover),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct DiscoverIntegrationTests {
 
     var discoverService: (any DiscoverService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        discoverService = TMDbClient(apiKey: apiKey).discover
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        self.discoverService = TMDbClient(apiKey: apiKey).discover
     }
 
-    override func tearDown() {
-        discoverService = nil
-        super.tearDown()
-    }
-
-    func testMovies() async throws {
+    @Test("movies")
+    func movies() async throws {
         let movieList = try await discoverService.movies()
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testTVSeries() async throws {
+    @Test("TV series")
+    func tvSeries() async throws {
         let tvSeriesList = try await discoverService.tvSeries()
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
 }

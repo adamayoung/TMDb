@@ -17,31 +17,31 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class CompanyIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.company),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct CompanyIntegrationTests {
 
     var companyService: (any CompanyService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        companyService = TMDbClient(apiKey: apiKey).companies
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        self.companyService = TMDbClient(apiKey: apiKey).companies
     }
 
-    override func tearDown() {
-        companyService = nil
-        super.tearDown()
-    }
-
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let companyID = 82968
 
         let company = try await companyService.details(forCompany: companyID)
 
-        XCTAssertEqual(company.id, companyID)
-        XCTAssertEqual(company.name, "LuckyChap Entertainment")
+        #expect(company.id == companyID)
+        #expect(company.name == "LuckyChap Entertainment")
     }
 
 }

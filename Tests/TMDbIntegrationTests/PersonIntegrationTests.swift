@@ -17,90 +17,96 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class PersonIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.person),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct PersonIntegrationTests {
 
     var personService: (any PersonService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        personService = TMDbClient(apiKey: apiKey).people
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        self.personService = TMDbClient(apiKey: apiKey).people
     }
 
-    override func tearDown() {
-        personService = nil
-        super.tearDown()
-    }
-
-    func testDetails() async throws {
+    @Test("details")
+    func details() async throws {
         let personID = 500
 
         let person = try await personService.details(forPerson: personID)
 
-        XCTAssertEqual(person.id, personID)
-        XCTAssertEqual(person.name, "Tom Cruise")
+        #expect(person.id == personID)
+        #expect(person.name == "Tom Cruise")
     }
 
-    func testCombinedCredits() async throws {
+    @Test("combinedCredits")
+    func combinedCredits() async throws {
         let personID = 500
 
         let credits = try await personService.combinedCredits(forPerson: personID)
 
-        XCTAssertEqual(credits.id, personID)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(credits.id == personID)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testMovieCredits() async throws {
+    @Test("movieCredits")
+    func movieCredits() async throws {
         let personID = 500
 
         let credits = try await personService.movieCredits(forPerson: personID)
 
-        XCTAssertEqual(credits.id, personID)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(credits.id == personID)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testTVSeriesCredits() async throws {
+    @Test("tvSeriesCredits")
+    func tvSeriesCredits() async throws {
         let personID = 500
 
         let credits = try await personService.tvSeriesCredits(forPerson: personID)
 
-        XCTAssertEqual(credits.id, personID)
-        XCTAssertFalse(credits.cast.isEmpty)
-        XCTAssertFalse(credits.crew.isEmpty)
+        #expect(credits.id == personID)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
     }
 
-    func testImages() async throws {
+    @Test("images")
+    func images() async throws {
         let personID = 500
 
         let imageCollection = try await personService.images(forPerson: personID)
 
-        XCTAssertEqual(imageCollection.id, personID)
-        XCTAssertFalse(imageCollection.profiles.isEmpty)
+        #expect(imageCollection.id == personID)
+        #expect(!imageCollection.profiles.isEmpty)
     }
 
-    func testPopular() async throws {
+    @Test("popular")
+    func popular() async throws {
         let personList = try await personService.popular()
 
-        XCTAssertFalse(personList.results.isEmpty)
+        #expect(!personList.results.isEmpty)
     }
 
-    func testExternalLinks() async throws {
+    @Test("externalLinks")
+    func externalLinks() async throws {
         let personID = 115_440
 
         let linksCollection = try await personService.externalLinks(forPerson: personID)
 
-        XCTAssertEqual(linksCollection.id, personID)
-        XCTAssertNotNil(linksCollection.imdb)
-        XCTAssertNotNil(linksCollection.wikiData)
-        XCTAssertNil(linksCollection.facebook)
-        XCTAssertNotNil(linksCollection.instagram)
-        XCTAssertNotNil(linksCollection.twitter)
-        XCTAssertNotNil(linksCollection.tikTok)
+        #expect(linksCollection.id == personID)
+        #expect(linksCollection.imdb != nil)
+        #expect(linksCollection.wikiData != nil)
+        #expect(linksCollection.facebook == nil)
+        #expect(linksCollection.instagram != nil)
+        #expect(linksCollection.twitter != nil)
+        #expect(linksCollection.tikTok != nil)
     }
 
 }

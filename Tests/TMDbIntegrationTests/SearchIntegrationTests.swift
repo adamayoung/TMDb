@@ -17,54 +17,57 @@
 //  limitations under the License.
 //
 
-import TMDb
-import XCTest
+import Foundation
+import Testing
+@testable import TMDb
 
-final class SearchIntegrationTests: XCTestCase {
+@Suite(
+    .tags(.search),
+    .enabled(if: CredentialHelper.shared.hasAPIKey)
+)
+struct SearchIntegrationTests {
 
     var searchService: (any SearchService)!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        let apiKey = try tmdbAPIKey()
-        searchService = TMDbClient(apiKey: apiKey).search
+    init() {
+        let apiKey = CredentialHelper.shared.tmdbAPIKey()
+        self.searchService = TMDbClient(apiKey: apiKey).search
     }
 
-    override func tearDown() {
-        searchService = nil
-        super.tearDown()
-    }
-
-    func testSearchAll() async throws {
+    @Test("searchAll")
+    func searchAll() async throws {
         let query = "barbie"
 
         let mediaList = try await searchService.searchAll(query: query)
 
-        XCTAssertFalse(mediaList.results.isEmpty)
+        #expect(!mediaList.results.isEmpty)
     }
 
-    func testSearchMovies() async throws {
+    @Test("searchMovies")
+    func searchMovies() async throws {
         let query = "avengers"
 
         let movieList = try await searchService.searchMovies(query: query)
 
-        XCTAssertFalse(movieList.results.isEmpty)
+        #expect(!movieList.results.isEmpty)
     }
 
-    func testSearchTVSeries() async throws {
+    @Test("searchTVSeries")
+    func searchTVSeries() async throws {
         let query = "game of thrones"
 
         let tvSeriesList = try await searchService.searchTVSeries(query: query)
 
-        XCTAssertFalse(tvSeriesList.results.isEmpty)
+        #expect(!tvSeriesList.results.isEmpty)
     }
 
-    func testSearchPeople() async throws {
+    @Test("searchPeople")
+    func searchPeople() async throws {
         let query = "tom hardy"
 
         let personList = try await searchService.searchPeople(query: query)
 
-        XCTAssertFalse(personList.results.isEmpty)
+        #expect(!personList.results.isEmpty)
     }
 
 }
