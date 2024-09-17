@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbSearchServiceTests: XCTestCase {
+@Suite(.tags(.requests, .search))
+struct TMDbSearchServiceTests {
 
     var service: TMDbSearchService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbSearchService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbSearchService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testSearchAllReturnsMedia() async throws {
+    @Test("searchAll returns media")
+    func searchAllReturnsMedia() async throws {
         let query = String.randomString
         let expectedResult = MediaPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbSearchServiceTests: XCTestCase {
 
         let result = try await service.searchAll(query: query)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MultiSearchRequest == expectedRequest)
     }
 
-    func testSearchAllWithFilterAndPageAndLanguageReturnsMedia() async throws {
+    @Test("searchAll with filter, page and language returns media")
+    func searchAllWithFilterAndPageAndLanguageReturnsMedia() async throws {
         let query = String.randomString
         let includeAdult = true
         let page = 2
@@ -66,27 +63,22 @@ final class TMDbSearchServiceTests: XCTestCase {
         let filter = AllMediaSearchFilter(includeAdult: includeAdult)
         let result = try await service.searchAll(query: query, filter: filter, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MultiSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MultiSearchRequest == expectedRequest)
     }
 
-    func testSearchAllWhenErrorsThrowsError() async throws {
+    @Test("searchAll when errors throws error")
+    func searchAllWhenErrorsThrowsError() async throws {
         let query = String.randomString
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.searchAll(query: query)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testSearchMoviesReturnsMovies() async throws {
+    @Test("searchMovies returns movies")
+    func searchMoviesReturnsMovies() async throws {
         let query = String.randomString
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -100,11 +92,12 @@ final class TMDbSearchServiceTests: XCTestCase {
 
         let result = try await service.searchMovies(query: query)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieSearchRequest == expectedRequest)
     }
 
-    func testSearchMoviesWithFilterAndPageAndLanguageReturnsMovies() async throws {
+    @Test("searchMovies with filter, page and language returns movies")
+    func searchMoviesWithFilterAndPageAndLanguageReturnsMovies() async throws {
         let query = String.randomString
         let primaryReleaseYear = 2024
         let country = "GB"
@@ -129,27 +122,22 @@ final class TMDbSearchServiceTests: XCTestCase {
         )
         let result = try await service.searchMovies(query: query, filter: filter, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieSearchRequest == expectedRequest)
     }
 
-    func testSearchMoviesWhenErrorsThrowsError() async throws {
+    @Test("searchMovies when errors throws error")
+    func searchMoviesWhenErrorsThrowsError() async throws {
         let query = String.randomString
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.searchMovies(query: query)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testSearchTVSeriesReturnsTVSeries() async throws {
+    @Test("searchTVSeries returns TV series")
+    func searchTVSeriesReturnsTVSeries() async throws {
         let query = String.randomString
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -164,11 +152,12 @@ final class TMDbSearchServiceTests: XCTestCase {
 
         let result = try await service.searchTVSeries(query: query)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesSearchRequest == expectedRequest)
     }
 
-    func testSearchTVSeriesWithFilterAndPageAndLanguageReturnsTVSeries() async throws {
+    @Test("searchTVSeries with filter, page and language returns TV series")
+    func searchTVSeriesWithFilterAndPageAndLanguageReturnsTVSeries() async throws {
         let query = String.randomString
         let firstAirDateYear = 2023
         let year = 2024
@@ -189,27 +178,22 @@ final class TMDbSearchServiceTests: XCTestCase {
         let filter = TVSeriesSearchFilter(firstAirDateYear: firstAirDateYear, year: year, includeAdult: includeAdult)
         let result = try await service.searchTVSeries(query: query, filter: filter, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesSearchRequest == expectedRequest)
     }
 
-    func testSearchTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("searchTVSeries when errors throws error")
+    func searchTVSeriesWhenErrorsThrowsError() async throws {
         let query = String.randomString
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.searchTVSeries(query: query)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testSearchPeopleReturnsPeople() async throws {
+    @Test("searchPeople returns people")
+    func searchPeopleReturnsPeople() async throws {
         let query = String.randomString
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -217,11 +201,12 @@ final class TMDbSearchServiceTests: XCTestCase {
 
         let result = try await service.searchPeople(query: query)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonSearchRequest == expectedRequest)
     }
 
-    func testSearchPeopleWithFilterAndPageAndLanguageReturnsPeople() async throws {
+    @Test("searchPeople with filter, page and language returns people")
+    func searchPeopleWithFilterAndPageAndLanguageReturnsPeople() async throws {
         let query = String.randomString
         let includeAdult = true
         let page = 2
@@ -238,24 +223,18 @@ final class TMDbSearchServiceTests: XCTestCase {
         let filter = PersonSearchFilter(includeAdult: includeAdult)
         let result = try await service.searchPeople(query: query, filter: filter, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonSearchRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonSearchRequest == expectedRequest)
     }
 
-    func testSearchPeopleWhenErrorsThrowsError() async throws {
+    @Test("searchPeople when errors throws error")
+    func searchPeopleWhenErrorsThrowsError() async throws {
         let query = String.randomString
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.searchPeople(query: query)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

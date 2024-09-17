@@ -17,54 +17,64 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MovieSearchRequestTests: XCTestCase {
+@Suite(.tags(.requests, .search))
+struct MovieSearchRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = MovieSearchRequest(query: "")
 
-        XCTAssertEqual(request.path, "/search/movie")
+        #expect(request.path == "/search/movie")
     }
 
-    func testQueryItemsWithQuery() {
+    @Test("queryItems with query")
+    func queryItemsWithQuery() {
         let request = MovieSearchRequest(query: "fight club")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club"])
+        #expect(request.queryItems == ["query": "fight club"])
     }
 
-    func testQueryItemsWithQueryAndPrimaryReleaseYear() {
+    @Test("queryItems with query and primaryReleaseYear")
+    func queryItemsWithQueryAndPrimaryReleaseYear() {
         let request = MovieSearchRequest(query: "fight club", primaryReleaseYear: 2024)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "primary_release_year": "2024"])
+        #expect(request.queryItems == ["query": "fight club", "primary_release_year": "2024"])
     }
 
-    func testQueryItemsWithQueryAndCountry() {
+    @Test("queryItems with query and country")
+    func queryItemsWithQueryAndCountry() {
         let request = MovieSearchRequest(query: "fight club", country: "GB")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "region": "GB"])
+        #expect(request.queryItems == ["query": "fight club", "region": "GB"])
     }
 
-    func testQueryItemsWithQueryAndIncludeAdult() {
+    @Test("queryItems with query and includeAdult")
+    func queryItemsWithQueryAndIncludeAdult() {
         let request = MovieSearchRequest(query: "fight club", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "include_adult": "true"])
+        #expect(request.queryItems == ["query": "fight club", "include_adult": "true"])
     }
 
-    func testQueryItemsWithQueryAndPage() {
+    @Test("queryItems with query and page")
+    func queryItemsWithQueryAndPage() {
         let request = MovieSearchRequest(query: "fight club", page: 3)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "page": "3"])
+        #expect(request.queryItems == ["query": "fight club", "page": "3"])
     }
 
-    func testQueryItemsWithQueryAndLanguage() {
+    @Test("queryItems with query and language")
+    func queryItemsWithQueryAndLanguage() {
         let request = MovieSearchRequest(query: "fight club", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "language": "en"])
+        #expect(request.queryItems == ["query": "fight club", "language": "en"])
     }
 
-    func testQueryItemsWithQueryAndPrimaryReleaseYearAndCountryAndIncludeAdultAndPageAndLanugage() {
+    @Test("queryItems with query, primaryReleaseYear, country, includeAdult, page and language")
+    func queryItemsWithQueryAndPrimaryReleaseYearAndCountryAndIncludeAdultAndPageAndLanugage() {
         let request = MovieSearchRequest(
             query: "fight club",
             primaryReleaseYear: 2024,
@@ -73,34 +83,34 @@ final class MovieSearchRequestTests: XCTestCase {
             language: "en"
         )
 
-        XCTAssertEqual(
-            request.queryItems,
-            [
-                "query": "fight club",
-                "primary_release_year": "2024",
-                "include_adult": "false",
-                "page": "2",
-                "language": "en"
-            ]
-        )
+        #expect(request.queryItems == [
+            "query": "fight club",
+            "primary_release_year": "2024",
+            "include_adult": "false",
+            "page": "2",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = MovieSearchRequest(query: "")
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = MovieSearchRequest(query: "")
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = MovieSearchRequest(query: "")
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
