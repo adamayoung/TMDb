@@ -26,17 +26,23 @@ struct WatchlistSortTests {
 
     @Test("createdAt default description is created_at.asc")
     func createdAtWhenDefaultReturnsDescription() {
-        #expect(WatchlistSort.createdAt().description == "created_at.asc")
+        let sort = WatchlistSort.createdAt()
+
+        #expect(sort.description == "created_at.asc")
     }
 
     @Test("createdAt ascending description is created_at.asc")
     func createdAtWhenAscendingReturnsDescription() {
-        #expect(WatchlistSort.createdAt(descending: false).description == "created_at.asc")
+        let sort = WatchlistSort.createdAt(descending: false)
+
+        #expect(sort.description == "created_at.asc")
     }
 
     @Test("createdAt descending description is created_at.desc")
     func createdAtWhenDescendingReturnsDescription() {
-        #expect(WatchlistSort.createdAt(descending: true).description == "created_at.desc")
+        let sort = WatchlistSort.createdAt(descending: true)
+
+        #expect(sort.description == "created_at.desc")
     }
 
 }

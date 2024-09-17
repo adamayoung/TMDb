@@ -37,5 +37,6 @@ extension Tag {
     @Tag static var certification: Self
     @Tag static var company: Self
     @Tag static var configuration: Self
+    @Tag static var discover: Self
 
 }

@@ -17,48 +17,57 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class DiscoverMoviesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .discover))
+struct DiscoverMoviesRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertEqual(request.path, "/discover/movie")
+        #expect(request.path == "/discover/movie")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPeople() {
+    @Test("queryItems with people")
+    func queryItemsWithPeople() {
         let request = DiscoverMoviesRequest(people: [1, 2, 3])
 
-        XCTAssertEqual(request.queryItems, ["with_people": "1,2,3"])
+        #expect(request.queryItems == ["with_people": "1,2,3"])
     }
 
-    func testQueryItemsWithSortedBy() {
+    @Test("queryItems with sortedBy")
+    func queryItemsWithSortedBy() {
         let request = DiscoverMoviesRequest(sortedBy: .originalTitle(descending: false))
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "original_title.asc"])
+        #expect(request.queryItems == ["sort_by": "original_title.asc"])
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = DiscoverMoviesRequest(page: 1)
 
-        XCTAssertEqual(request.queryItems, ["page": "1"])
+        #expect(request.queryItems == ["page": "1"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = DiscoverMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithSortedByAndPeopleAndPageAndLanguage() {
+    @Test("queryItems with sortedBy, people, page and language")
+    func queryItemsWithSortedByAndPeopleAndPageAndLanguage() {
         let request = DiscoverMoviesRequest(
             people: [1, 2, 3],
             sortedBy: .originalTitle(descending: false),
@@ -66,28 +75,33 @@ final class DiscoverMoviesRequestTests: XCTestCase {
             language: "en"
         )
 
-        XCTAssertEqual(
-            request.queryItems,
-            ["sort_by": "original_title.asc", "with_people": "1,2,3", "page": "2", "language": "en"]
-        )
+        #expect(request.queryItems == [
+            "sort_by": "original_title.asc",
+            "with_people": "1,2,3",
+            "page": "2",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = DiscoverMoviesRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
