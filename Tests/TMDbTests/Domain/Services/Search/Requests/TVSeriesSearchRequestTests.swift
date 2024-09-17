@@ -17,54 +17,64 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesSearchRequestTests: XCTestCase {
+@Suite(.tags(.requests, .search))
+struct TVSeriesSearchRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVSeriesSearchRequest(query: "")
 
-        XCTAssertEqual(request.path, "/search/tv")
+        #expect(request.path == "/search/tv")
     }
 
-    func testQueryItemsWithQuery() {
+    @Test("queryItems with query")
+    func queryItemsWithQuery() {
         let request = TVSeriesSearchRequest(query: "fight club")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club"])
+        #expect(request.queryItems == ["query": "fight club"])
     }
 
-    func testQueryItemsWithQueryAndFirstAirDateYear() {
+    @Test("queryItems with query and firstAirDateYear")
+    func queryItemsWithQueryAndFirstAirDateYear() {
         let request = TVSeriesSearchRequest(query: "fight club", firstAirDateYear: 2024)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "first_air_date_year": "2024"])
+        #expect(request.queryItems == ["query": "fight club", "first_air_date_year": "2024"])
     }
 
-    func testQueryItemsWithQueryAndYear() {
+    @Test("queryItems with query and year")
+    func queryItemsWithQueryAndYear() {
         let request = TVSeriesSearchRequest(query: "fight club", year: 2024)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "year": "2024"])
+        #expect(request.queryItems == ["query": "fight club", "year": "2024"])
     }
 
-    func testQueryItemsWithQueryAndIncludeAdult() {
+    @Test("queryItems with query and includeAdult")
+    func queryItemsWithQueryAndIncludeAdult() {
         let request = TVSeriesSearchRequest(query: "fight club", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "include_adult": "true"])
+        #expect(request.queryItems == ["query": "fight club", "include_adult": "true"])
     }
 
-    func testQueryItemsWithQueryAndPage() {
+    @Test("queryItems with query and page")
+    func queryItemsWithQueryAndPage() {
         let request = TVSeriesSearchRequest(query: "fight club", page: 2)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "page": "2"])
+        #expect(request.queryItems == ["query": "fight club", "page": "2"])
     }
 
-    func testQueryItemsWithQueryAndLanguage() {
+    @Test("queryItems with query and language")
+    func queryItemsWithQueryAndLanguage() {
         let request = TVSeriesSearchRequest(query: "fight club", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "language": "en"])
+        #expect(request.queryItems == ["query": "fight club", "language": "en"])
     }
 
-    func testQueryItemsWithQueryAndFirstAirDateYearAndYearAndIncludeAdultAndPageAndLanguage() {
+    @Test("queryItems with query, firstAirDateYear, year, includeAdult, page and language")
+    func queryItemsWithQueryAndFirstAirDateYearAndYearAndIncludeAdultAndPageAndLanguage() {
         let request = TVSeriesSearchRequest(
             query: "fight club",
             firstAirDateYear: 2024,
@@ -74,35 +84,35 @@ final class TVSeriesSearchRequestTests: XCTestCase {
             language: "en"
         )
 
-        XCTAssertEqual(
-            request.queryItems,
-            [
-                "query": "fight club",
-                "first_air_date_year": "2024",
-                "year": "2022",
-                "include_adult": "false",
-                "page": "3",
-                "language": "en"
-            ]
-        )
+        #expect(request.queryItems == [
+            "query": "fight club",
+            "first_air_date_year": "2024",
+            "year": "2022",
+            "include_adult": "false",
+            "page": "3",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVSeriesSearchRequest(query: "")
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVSeriesSearchRequest(query: "")
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVSeriesSearchRequest(query: "")
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

@@ -17,42 +17,50 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MultiSearchRequestTests: XCTestCase {
+@Suite(.tags(.requests, .search))
+struct MultiSearchRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = MultiSearchRequest(query: "")
 
-        XCTAssertEqual(request.path, "/search/multi")
+        #expect(request.path == "/search/multi")
     }
 
-    func testQueryItemsWithQuery() {
+    @Test("queryItems with query")
+    func queryItemsWithQuery() {
         let request = MultiSearchRequest(query: "fight club")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club"])
+        #expect(request.queryItems == ["query": "fight club"])
     }
 
-    func testQueryItemsWithQueryAndIncludeAdult() {
+    @Test("queryItems with query and includeAdult")
+    func queryItemsWithQueryAndIncludeAdult() {
         let request = MultiSearchRequest(query: "fight club", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "include_adult": "true"])
+        #expect(request.queryItems == ["query": "fight club", "include_adult": "true"])
     }
 
-    func testQueryItemsWithQueryAndPage() {
+    @Test("queryItems with query and page")
+    func queryItemsWithQueryAndPage() {
         let request = MultiSearchRequest(query: "fight club", page: 2)
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "page": "2"])
+        #expect(request.queryItems == ["query": "fight club", "page": "2"])
     }
 
-    func testQueryItemsWithQueryAndLanguage() {
+    @Test("queryItems with query and language")
+    func queryItemsWithQueryAndLanguage() {
         let request = MultiSearchRequest(query: "fight club", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["query": "fight club", "language": "en"])
+        #expect(request.queryItems == ["query": "fight club", "language": "en"])
     }
 
-    func testQueryItemsWithQueryAndPageAndIncludeAdultAndLanguage() {
+    @Test("queryItems with query, page, includeAdult and language")
+    func queryItemsWithQueryAndPageAndIncludeAdultAndLanguage() {
         let request = MultiSearchRequest(
             query: "fight club",
             includeAdult: false,
@@ -60,28 +68,33 @@ final class MultiSearchRequestTests: XCTestCase {
             language: "en"
         )
 
-        XCTAssertEqual(
-            request.queryItems,
-            ["query": "fight club", "page": "2", "include_adult": "false", "language": "en"]
-        )
+        #expect(request.queryItems == [
+            "query": "fight club",
+            "page": "2",
+            "include_adult": "false",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = MultiSearchRequest(query: "")
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = MultiSearchRequest(query: "")
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = MultiSearchRequest(query: "")
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

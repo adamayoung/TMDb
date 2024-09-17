@@ -17,66 +17,79 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonSearchRequestTests: XCTestCase {
+@Suite(.tags(.requests, .search))
+struct PersonSearchRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = PersonSearchRequest(query: "")
 
-        XCTAssertEqual(request.path, "/search/person")
+        #expect(request.path == "/search/person")
     }
 
-    func testQueryItemsWithQuery() {
+    @Test("queryItems with query")
+    func queryItemsWithQuery() {
         let request = PersonSearchRequest(query: "edward norton")
 
-        XCTAssertEqual(request.queryItems, ["query": "edward norton"])
+        #expect(request.queryItems == ["query": "edward norton"])
     }
 
-    func testQueryItemsWithQueryAndIncludeAdult() {
+    @Test("queryItems with query and includeAdult")
+    func queryItemsWithQueryAndIncludeAdult() {
         let request = PersonSearchRequest(query: "edward norton", includeAdult: true)
 
-        XCTAssertEqual(request.queryItems, ["query": "edward norton", "include_adult": "true"])
+        #expect(request.queryItems == ["query": "edward norton", "include_adult": "true"])
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = PersonSearchRequest(query: "edward norton", page: 3)
 
-        XCTAssertEqual(request.queryItems, ["query": "edward norton", "page": "3"])
+        #expect(request.queryItems == ["query": "edward norton", "page": "3"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = PersonSearchRequest(query: "edward norton", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["query": "edward norton", "language": "en"])
+        #expect(request.queryItems == ["query": "edward norton", "language": "en"])
     }
 
-    func testQueryItemsWithQueryAndIncludeAdultAndPageAndLanguage() {
+    @Test("queryItems with query, includeAdult, page and language")
+    func queryItemsWithQueryAndIncludeAdultAndPageAndLanguage() {
         let request = PersonSearchRequest(query: "edward norton", includeAdult: false, page: 2, language: "en")
 
-        XCTAssertEqual(
-            request.queryItems,
-            ["query": "edward norton", "include_adult": "false", "page": "2", "language": "en"]
-        )
+        #expect(request.queryItems == [
+            "query": "edward norton",
+            "include_adult": "false",
+            "page": "2",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = PersonSearchRequest(query: "")
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = PersonSearchRequest(query: "")
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = PersonSearchRequest(query: "")
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
