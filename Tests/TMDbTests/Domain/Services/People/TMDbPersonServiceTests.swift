@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbPersonServiceTests: XCTestCase {
+@Suite(.tags(.requests, .people))
+struct TMDbPersonServiceTests {
 
     var service: TMDbPersonService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbPersonService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbPersonService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testDetailsReturnsPerson() async throws {
+    @Test("details returns person")
+    func detailsReturnsPerson() async throws {
         let expectedResult = Person.johnnyDepp
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.details(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonRequest == expectedRequest)
     }
 
-    func testDetailsWithLanguageReturnsPerson() async throws {
+    @Test("details with language returns person")
+    func detailsWithLanguageReturnsPerson() async throws {
         let expectedResult = Person.johnnyDepp
         let personID = expectedResult.id
         let language = "en"
@@ -58,27 +55,22 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.details(forPerson: personID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonRequest == expectedRequest)
     }
 
-    func testDetailsWhenErrorsThrowsError() async throws {
+    @Test("details when errors throws error")
+    func detailsWhenErrorsThrowsError() async throws {
         let personID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.details(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testCombinedCreditsReturnsCombinedCredits() async throws {
+    @Test("combinedCredits returns combinedCredits")
+    func combinedCreditsReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock()
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -87,11 +79,12 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.combinedCredits(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonCombinedCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonCombinedCreditsRequest == expectedRequest)
     }
 
-    func testCombinedCreditsWithLanguageReturnsCombinedCredits() async throws {
+    @Test("combinedCredits with language returns combinedCredits")
+    func combinedCreditsWithLanguageReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock()
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -101,27 +94,22 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.combinedCredits(forPerson: personID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonCombinedCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonCombinedCreditsRequest == expectedRequest)
     }
 
-    func testCombinedCreditsWhenErrorsThrowsError() async throws {
+    @Test("combinedCredits when errors throws error")
+    func combinedCreditsWhenErrorsThrowsError() async throws {
         let personID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.combinedCredits(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testMovieCreditsReturnsMovieCredits() async throws {
+    @Test("movieCredits returns movie credits")
+    func movieCreditsReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock()
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -130,11 +118,12 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.movieCredits(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonMovieCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonMovieCreditsRequest == expectedRequest)
     }
 
-    func testMovieCreditsWithLanguageReturnsMovieCredits() async throws {
+    @Test("movieCredits with language returns movie credits")
+    func movieCreditsWithLanguageReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock()
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -144,27 +133,22 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.movieCredits(forPerson: personID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonMovieCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonMovieCreditsRequest == expectedRequest)
     }
 
-    func testMovieCreditsWhenErrorsThrowsError() async throws {
+    @Test("movieCredits when errors throws error")
+    func movieCreditsWhenErrorsThrowsError() async throws {
         let personID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movieCredits(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesCreditsReturnsTVSeriesCredits() async throws {
+    @Test("tvSeriesCredits returns tv series credits")
+    func tvSeriesCreditsReturnsTVSeriesCredits() async throws {
         let mock = PersonTVSeriesCredits.mock()
         let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -173,11 +157,12 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesCredits(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonTVSeriesCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonTVSeriesCreditsRequest == expectedRequest)
     }
 
-    func testTVSeriesCreditsWithLanguageReturnsTVSeriesCredits() async throws {
+    @Test("tvSeriesCredits with language returns tv series credits")
+    func tvSeriesCreditsWithLanguageReturnsTVSeriesCredits() async throws {
         let mock = PersonTVSeriesCredits.mock()
         let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
@@ -187,27 +172,22 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesCredits(forPerson: personID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonTVSeriesCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonTVSeriesCreditsRequest == expectedRequest)
     }
 
-    func testTVSeriesCreditsWhenErrorsThrowsError() async throws {
+    @Test("tvSeriesCredits when errors throws error")
+    func tvSeriesCreditsWhenErrorsThrowsError() async throws {
         let personID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeriesCredits(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testImagesReturnsImageCollection() async throws {
+    @Test("images returns image collection")
+    func imagesReturnsImageCollection() async throws {
         let expectedResult = PersonImageCollection.mock()
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
@@ -215,38 +195,34 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.images(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonImagesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonImagesRequest == expectedRequest)
     }
 
-    func testImagesWhenErrorsThrowsError() async throws {
+    @Test("images when errors throws error")
+    func imagesWhenErrorsThrowsError() async throws {
         let personID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.images(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testPopularReturnsPeople() async throws {
+    @Test("popular returns people")
+    func popularReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PopularPeopleRequest(page: nil, language: nil)
 
         let result = try await service.popular()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PopularPeopleRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PopularPeopleRequest == expectedRequest)
     }
 
-    func testPopularWithPageAndLanguageReturnsPeople() async throws {
+    @Test("popular with page and language returns people")
+    func popularWithPageAndLanguageReturnsPeople() async throws {
         let page = 2
         let language = "en"
         let expectedResult = PersonPageableList.mock()
@@ -255,26 +231,21 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.popular(page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PopularPeopleRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PopularPeopleRequest == expectedRequest)
     }
 
-    func testPopularWhenErrorsThrowsError() async throws {
+    @Test("popular when errors throws error")
+    func popularWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.popular()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testExternalLinksReturnsExternalLinks() async throws {
+    @Test("externalLinks returns external links")
+    func externalLinksReturnsExternalLinks() async throws {
         let expectedResult = PersonExternalLinksCollection.sydneySweeney
         let personID = 115_440
         apiClient.addResponse(.success(expectedResult))
@@ -282,24 +253,18 @@ final class TMDbPersonServiceTests: XCTestCase {
 
         let result = try await service.externalLinks(forPerson: personID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? PersonExternalLinksRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? PersonExternalLinksRequest == expectedRequest)
     }
 
-    func testExternalLinksWhenErrorsThrowsError() async throws {
+    @Test("externalLinks when errors throws error")
+    func externalLinksWhenErrorsThrowsError() async throws {
         let personID = 115_440
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.externalLinks(forPerson: personID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
