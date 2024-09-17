@@ -17,8 +17,8 @@
 //  limitations under the License.
 //
 
+import Foundation
 @testable import TMDb
-import XCTest
 
 @MainActor
 final class HTTPMockClient: HTTPClient {
