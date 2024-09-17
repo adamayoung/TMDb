@@ -35,5 +35,6 @@ extension Tag {
     @Tag static var account: Self
     @Tag static var authentication: Self
     @Tag static var certification: Self
+    @Tag static var company: Self
 
 }
