@@ -17,41 +17,42 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class LanguaguesConfigurationRequestTests: XCTestCase {
+@Suite(.tags(.requests, .configuration))
+struct LanguaguesConfigurationRequestTests {
 
     var request: LanguaguesConfigurationRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = LanguaguesConfigurationRequest()
+    init() {
+        self.request = LanguaguesConfigurationRequest()
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path is correct")
+    func path() {
+        #expect(request.path == "/configuration/languages")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/configuration/languages")
+    @Test("queryItems is empty")
+    func queryItemsAreEmpty() {
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsAreEmpty() {
-        XCTAssertTrue(request.queryItems.isEmpty)
+    @Test("method is GET")
+    func methodIsGet() {
+        #expect(request.method == .get)
     }
 
-    func testMethodIsGet() {
-        XCTAssertEqual(request.method, .get)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
-
-    func testBodyIsNil() {
-        XCTAssertNil(request.body)
+    @Test("body is nil")
+    func bodyIsNil() {
+        #expect(request.body == nil)
     }
 
 }

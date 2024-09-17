@@ -17,64 +17,56 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbConfigurationServiceTests: XCTestCase {
+@Suite(.tags(.services, .configuration))
+struct TMDbConfigurationServiceTests {
 
     var service: TMDbConfigurationService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbConfigurationService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbConfigurationService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testAPIConfigurationReturnsAPIConfiguration() async throws {
+    @Test("apiConfiguration returns api configuration")
+    func apiConfigurationReturnsAPIConfiguration() async throws {
         let expectedResult = APIConfiguration.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = APIConfigurationRequest()
 
         let result = try await service.apiConfiguration()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? APIConfigurationRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? APIConfigurationRequest == expectedRequest)
     }
 
-    func testAPIConfigurationWhenErrorsThrowsError() async throws {
+    @Test("apiConfiguration when errors throws error")
+    func apiConfigurationWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.apiConfiguration()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testCountriesReturnsCountries() async throws {
+    @Test("countries returns countries")
+    func countriesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CountriesConfigurationRequest(language: nil)
 
         let result = try await service.countries()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CountriesConfigurationRequest == expectedRequest)
     }
 
-    func testCountriesWithLanguageReturnsCountries() async throws {
+    @Test("countries with language returns countries")
+    func countriesWithLanguageReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         let language = "en"
         apiClient.addResponse(.success(expectedResult))
@@ -82,75 +74,59 @@ final class TMDbConfigurationServiceTests: XCTestCase {
 
         let result = try await service.countries(language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CountriesConfigurationRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CountriesConfigurationRequest == expectedRequest)
     }
 
-    func testCountriesWhenErrorsThrowsError() async throws {
+    @Test("countries when errors throws error")
+    func countriesWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.countries()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testJobsByDepartmentReturnsDepartments() async throws {
+    @Test("jobsByDepartment returns departments")
+    func jobsByDepartmentReturnsDepartments() async throws {
         let expectedResult = [Department].mocks
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = JobsConfigurationRequest()
 
         let result = try await service.jobsByDepartment()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? JobsConfigurationRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? JobsConfigurationRequest == expectedRequest)
     }
 
-    func testJobsByDepartmentWhenErrorsThrows() async throws {
+    @Test("jobByDepartment when errors throws error")
+    func jobsByDepartmentWhenErrorsThrows() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.jobsByDepartment()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testLanguagesReturnsLanguages() async throws {
+    @Test("language returns languages")
+    func languagesReturnsLanguages() async throws {
         let expectedResult = [Language].mocks
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = LanguaguesConfigurationRequest()
 
         let result = try await service.languages()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? LanguaguesConfigurationRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? LanguaguesConfigurationRequest == expectedRequest)
     }
 
-    func testLanguagesWhenErrorsThrowsError() async throws {
+    @Test("language when errors throws error")
+    func languagesWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.languages()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
