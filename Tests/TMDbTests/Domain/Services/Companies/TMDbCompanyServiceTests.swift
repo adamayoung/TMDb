@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbCompanyServiceTests: XCTestCase {
+@Suite(.tags(.services, .company))
+struct TMDbCompanyServiceTests {
 
     var service: TMDbCompanyService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbCompanyService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbCompanyService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testDetailsReturnsCompany() async throws {
+    @Test("details returns company")
+    func detailsReturnsCompany() async throws {
         let expectedResult = Company.lucasfilm
         let companyID = expectedResult.id
         let expectedRequest = CompanyDetailsRequest(id: companyID)
@@ -46,25 +42,18 @@ final class TMDbCompanyServiceTests: XCTestCase {
 
         let result = try await service.details(forCompany: companyID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? CompanyDetailsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? CompanyDetailsRequest == expectedRequest)
     }
 
-    func testDetailsWhenErrorsThrowsError() async throws {
+    @Test("details when errors throws error")
+    func detailsWhenErrorsThrowsError() async throws {
         let companyID = 1
-
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.details(forCompany: companyID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
