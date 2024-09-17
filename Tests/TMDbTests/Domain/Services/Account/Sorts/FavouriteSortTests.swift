@@ -26,17 +26,23 @@ struct FavouriteSortTests {
 
     @Test("createdAt default description is created_at.asc")
     func createdAtWhenDefaultReturnsDescription() {
-        #expect(FavouriteSort.createdAt().description == "created_at.asc")
+        let sort = FavouriteSort.createdAt()
+
+        #expect(sort.description == "created_at.asc")
     }
 
     @Test("createdAt ascending description is created_at.asc")
     func createdAtWhenAscendingReturnsDescription() {
-        #expect(FavouriteSort.createdAt(descending: false).description == "created_at.asc")
+        let sort = FavouriteSort.createdAt(descending: false)
+
+        #expect(sort.description == "created_at.asc")
     }
 
     @Test("createdAt descending description is created_at.desc")
     func createdAtWhenDescendingReturnsDescription() {
-        #expect(FavouriteSort.createdAt(descending: true).description == "created_at.desc")
+        let sort = FavouriteSort.createdAt(descending: true)
+
+        #expect(sort.description == "created_at.desc")
     }
 
 }

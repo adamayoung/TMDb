@@ -17,57 +17,53 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesSortTests: XCTestCase {
+@Suite(.tags(.discover))
+struct TVSeriesSortTests {
 
-    func testPopularityAscendingReturnsRawValue() {
-        let expectedResult = "popularity.asc"
+    @Test("popularity ascending description is popularity.asc")
+    func popularityAscendingReturnsRawValue() {
+        let sort = TVSeriesSort.popularity(descending: false)
 
-        let result = TVSeriesSort.popularity(descending: false).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "popularity.asc")
     }
 
-    func testPopularityDescendingReturnsRawValue() {
-        let expectedResult = "popularity.desc"
+    @Test("popularity descending description is popularity.desc")
+    func popularityDescendingReturnsRawValue() {
+        let sort = TVSeriesSort.popularity(descending: true)
 
-        let result = TVSeriesSort.popularity(descending: true).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "popularity.desc")
     }
 
-    func testFirstAirDateAscendingReturnsRawValue() {
-        let expectedResult = "first_air_date.asc"
+    @Test("firstAirDate ascending description is first_air_date.asc")
+    func firstAirDateAscendingReturnsRawValue() {
+        let sort = TVSeriesSort.firstAirDate(descending: false)
 
-        let result = TVSeriesSort.firstAirDate(descending: false).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "first_air_date.asc")
     }
 
-    func testFirstAirDateDescendingReturnsRawValue() {
-        let expectedResult = "first_air_date.desc"
+    @Test("firstAirDate descending description is first_air_date.desc")
+    func firstAirDateDescendingReturnsRawValue() {
+        let sort = TVSeriesSort.firstAirDate(descending: true)
 
-        let result = TVSeriesSort.firstAirDate(descending: true).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "first_air_date.desc")
     }
 
-    func testVoteAverageAscendingReturnsRawValue() {
-        let expectedResult = "vote_average.asc"
+    @Test("voteAverage ascending description is vote_average.asc")
+    func voteAverageAscendingReturnsRawValue() {
+        let sort = TVSeriesSort.voteAverage(descending: false)
 
-        let result = TVSeriesSort.voteAverage(descending: false).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "vote_average.asc")
     }
 
-    func testVoteAverageDescendingReturnsRawValue() {
-        let expectedResult = "vote_average.desc"
+    @Test("voteAverage descending description is vote_average.desc")
+    func voteAverageDescendingReturnsRawValue() {
+        let sort = TVSeriesSort.voteAverage(descending: true)
 
-        let result = TVSeriesSort.voteAverage(descending: true).description
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(sort.description == "vote_average.desc")
     }
 
 }

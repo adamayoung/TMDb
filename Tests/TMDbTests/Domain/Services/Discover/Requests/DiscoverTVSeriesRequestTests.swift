@@ -17,70 +17,82 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class DiscoverTVSeriesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .discover))
+struct DiscoverTVSeriesRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertEqual(request.path, "/discover/tv")
+        #expect(request.path == "/discover/tv")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithSortedBy() {
+    @Test("queryItems with sortedBy")
+    func queryItemsWithSortedBy() {
         let request = DiscoverTVSeriesRequest(sortedBy: .firstAirDate(descending: false))
 
-        XCTAssertEqual(request.queryItems, ["sort_by": "first_air_date.asc"])
+        #expect(request.queryItems == ["sort_by": "first_air_date.asc"])
     }
 
-    func testQueryItemsWithPage() throws {
+    @Test("queryItems with page")
+    func queryItemsWithPage() throws {
         let request = DiscoverTVSeriesRequest(page: 1)
 
-        XCTAssertEqual(request.queryItems, ["page": "1"])
+        #expect(request.queryItems == ["page": "1"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = DiscoverMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithSortedByAndPageAndLanguage() {
+    @Test("queryItems with sortedBy, page and language")
+    func queryItemsWithSortedByAndPageAndLanguage() {
         let request = DiscoverTVSeriesRequest(
             sortedBy: .firstAirDate(descending: false),
             page: 2,
             language: "en"
         )
 
-        XCTAssertEqual(
-            request.queryItems,
-            ["sort_by": "first_air_date.asc", "page": "2", "language": "en"]
-        )
+        #expect(request.queryItems == [
+            "sort_by": "first_air_date.asc",
+            "page": "2",
+            "language": "en"
+        ])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = DiscoverTVSeriesRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

@@ -17,38 +17,35 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbDiscoverServiceTests: XCTestCase {
+@Suite(.tags(.services, .configuration))
+struct TMDbDiscoverServiceTests {
 
     var service: TMDbDiscoverService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbDiscoverService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbDiscoverService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        service = nil
-        apiClient = nil
-        super.tearDown()
-    }
-
-    func testMoviesReturnsMovies() async throws {
+    @Test("movies returns movies")
+    func moviesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverMoviesRequest(people: nil, sortedBy: nil, page: nil, language: nil)
 
         let result = try await service.movies()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
     }
 
-    func testMoviesWithFilterAndSortByAndPageAndLanguageReturnsMovies() async throws {
+    @Test("movies with filter, sort by, page and language returns movies")
+    func moviesWithFilterAndSortByAndPageAndLanguageReturnsMovies() async throws {
         let people = [4, 5, 6, 7, 8]
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock()
@@ -60,37 +57,33 @@ final class TMDbDiscoverServiceTests: XCTestCase {
         let filter = DiscoverMovieFilter(people: people)
         let result = try await service.movies(filter: filter, sortedBy: sortBy, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? DiscoverMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
     }
 
-    func testMoviesWhenErrorsThrowsError() async throws {
+    @Test("movies when errors throws error")
+    func moviesWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movies()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesReturnsTVSeries() async throws {
+    @Test("tvSeries returns TV series")
+    func tvSeriesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: nil, language: nil)
 
         let result = try await service.tvSeries()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWithSortByAndPageAndLanguageReturnsTVSeries() async throws {
+    @Test("tvSeries with sort by, page and language returns TV series")
+    func tvSeriesWithSortByAndPageAndLanguageReturnsTVSeries() async throws {
         let sortBy = TVSeriesSort.firstAirDate(descending: false)
         let expectedResult = TVSeriesPageableList.mock()
         let page = expectedResult.page
@@ -100,23 +93,17 @@ final class TMDbDiscoverServiceTests: XCTestCase {
 
         let result = try await service.tvSeries(sortedBy: sortBy, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? DiscoverTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("tvSeries when errors throws error")
+    func tvSeriesWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeries()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
