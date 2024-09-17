@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbMovieServiceOthersTests: XCTestCase {
+@Suite(.tags(.services, .movie))
+struct TMDbMovieServiceOthersTests {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbMovieService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testWatchProvidersReturnsWatchProviders() async throws {
+    @Test("watchProviders returns watch providers")
+    func watchProvidersReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let movieID = 1
         let country = "GB"
@@ -46,28 +42,23 @@ final class TMDbMovieServiceOthersTests: XCTestCase {
 
         let result = try await service.watchProviders(forMovie: movieID, country: country)
 
-        XCTAssertEqual(result, expectedResult.results[country])
-        XCTAssertEqual(apiClient.lastRequest as? MovieWatchProvidersRequest, expectedRequest)
+        #expect(result == expectedResult.results[country])
+        #expect(apiClient.lastRequest as? MovieWatchProvidersRequest == expectedRequest)
     }
 
-    func testWatchProvidersWhenErrorsThrowsError() async throws {
+    @Test("watchProviders when errors throws error")
+    func watchProvidersWhenErrorsThrowsError() async throws {
         let movieID = 1
         let country = "GB"
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.watchProviders(forMovie: movieID, country: country)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testExternalLinksReturnsExternalLinks() async throws {
+    @Test("extraLinks returns external links")
+    func externalLinksReturnsExternalLinks() async throws {
         let expectedResult = MovieExternalLinksCollection.barbie
         let movieID = 346_698
         apiClient.addResponse(.success(expectedResult))
@@ -75,24 +66,18 @@ final class TMDbMovieServiceOthersTests: XCTestCase {
 
         let result = try await service.externalLinks(forMovie: movieID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieExternalLinksRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieExternalLinksRequest == expectedRequest)
     }
 
-    func testExternalLinksWhenErrorsThrowsError() async throws {
+    @Test("extraLinks when errors throws error")
+    func externalLinksWhenErrorsThrowsError() async throws {
         let movieID = 346_698
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.externalLinks(forMovie: movieID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
