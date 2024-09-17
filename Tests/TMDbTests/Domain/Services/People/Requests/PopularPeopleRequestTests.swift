@@ -17,57 +17,67 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PopularPeopleRequestTests: XCTestCase {
+@Suite(.tags(.requests, .people))
+struct PopularPeopleRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = PopularPeopleRequest()
 
-        XCTAssertEqual(request.path, "/person/popular")
+        #expect(request.path == "/person/popular")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = PopularPeopleRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = PopularPeopleRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        #expect(request.queryItems == ["page": "3"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = PopularPeopleRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithPageAndLanguage() {
+    @Test("queryItems with page and language")
+    func queryItemsWithPageAndLanguage() {
         let request = PopularPeopleRequest(page: 3, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
+        #expect(request.queryItems == ["page": "3", "language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = PopularPeopleRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = PopularPeopleRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = PopularPeopleRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

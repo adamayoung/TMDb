@@ -17,41 +17,42 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class PersonImagesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .people))
+struct PersonImagesRequestTests {
 
     var request: PersonImagesRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = PersonImagesRequest(id: 1)
+    init() {
+        self.request = PersonImagesRequest(id: 1)
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
+    @Test("path is correct")
+    func path() {
+        #expect(request.path == "/person/1/images")
     }
 
-    func testPath() {
-        XCTAssertEqual(request.path, "/person/1/images")
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsIsEmpty() {
-        XCTAssertTrue(request.queryItems.isEmpty)
+    @Test("method is GET")
+    func methodIsGet() {
+        #expect(request.method == .get)
     }
 
-    func testMethodIsGet() {
-        XCTAssertEqual(request.method, .get)
+    @Test("headers is empty")
+    func headersIsEmpty() {
+        #expect(request.headers.isEmpty)
     }
 
-    func testHeadersIsEmpty() {
-        XCTAssertTrue(request.headers.isEmpty)
-    }
-
-    func testBodyIsNil() {
-        XCTAssertNil(request.body)
+    @Test("body is nil")
+    func bodyIsNil() {
+        #expect(request.body == nil)
     }
 
 }
