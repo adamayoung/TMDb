@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbGenreServiceTests: XCTestCase {
+@Suite(.tags(.services, .genre))
+struct TMDbGenreServiceTests {
 
     var service: TMDbGenreService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbGenreService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbGenreService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        service = nil
-        apiClient = nil
-        super.tearDown()
-    }
-
-    func testMovieGenresReturnsGenres() async throws {
+    @Test("movieGenres returns genres")
+    func movieGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
@@ -45,11 +41,12 @@ final class TMDbGenreServiceTests: XCTestCase {
 
         let result = try await service.movieGenres()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieGenresRequest == expectedRequest)
     }
 
-    func testMovieGenresWithLanguageReturnsGenres() async throws {
+    @Test("movieGenres with language returns genres")
+    func movieGenresWithLanguageReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let language = "en"
         let expectedResult = genreList.genres
@@ -58,26 +55,21 @@ final class TMDbGenreServiceTests: XCTestCase {
 
         let result = try await service.movieGenres(language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieGenresRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieGenresRequest == expectedRequest)
     }
 
-    func testMovieGenresWhenErrorsThrowsError() async throws {
+    @Test("movingGenres when errors throws error")
+    func movieGenresWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movieGenres()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesGenresReturnsGenres() async throws {
+    @Test("tvSeriesGenres returns genres")
+    func tvSeriesGenresReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
@@ -85,11 +77,12 @@ final class TMDbGenreServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesGenres()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesGenresRequest == expectedRequest)
     }
 
-    func testTVSeriesGenresWithLanguageReturnsGenres() async throws {
+    @Test("tvSeriesGenres with language returns genres")
+    func tvSeriesGenresWithLanguageReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let language = "en"
         let expectedResult = genreList.genres
@@ -98,23 +91,17 @@ final class TMDbGenreServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesGenres(language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesGenresRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesGenresRequest == expectedRequest)
     }
 
-    func testTVSeriesGenresWhenErrorsThrowsError() async throws {
+    @Test("tvSeriesGenres when errors throws error")
+    func tvSeriesGenresWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeriesGenres()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
