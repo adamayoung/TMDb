@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbCertificationServiceTests: XCTestCase {
+@Suite(.tags(.services, .certification))
+struct TMDbCertificationServiceTests {
 
     var service: TMDbCertificationService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbCertificationService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbCertificationService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        service = nil
-        apiClient = nil
-        super.tearDown()
-    }
-
-    func testMovieCertificationsReturnsMovieCertifications() async throws {
+    @Test("movieCertifications returns movie certifications")
+    func movieCertificationsReturnsMovieCertifications() async throws {
         let certifications = Certifications.gbAndUS
         let expectedResult = certifications.certifications
         let expectedRequest = MovieCertificationsRequest()
@@ -46,26 +42,21 @@ final class TMDbCertificationServiceTests: XCTestCase {
 
         let result = try await service.movieCertifications()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieCertificationsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieCertificationsRequest == expectedRequest)
     }
 
-    func testMovieCertificationsWhenErrosThrowError() async throws {
+    @Test("movieCertifications when errors throw error")
+    func movieCertificationsWhenErrosThrowError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movieCertifications()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesCertificationsReturnsTVSeriesCertifications() async throws {
+    @Test("tvSeriesCertifications returns TV series certifications")
+    func tvSeriesCertificationsReturnsTVSeriesCertifications() async throws {
         let certifications = Certifications.gbAndUS
         let expectedResult = certifications.certifications
         let expectedRequest = TVSeriesCertificationsRequest()
@@ -74,23 +65,16 @@ final class TMDbCertificationServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesCertifications()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesCertificationsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesCertificationsRequest == expectedRequest)
     }
 
-    func testTVSeriesCertificationsWhenErrorsThrowsError() async throws {
+    func tvSeriesCertificationsWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeriesCertifications()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
