@@ -38,7 +38,7 @@ final class TVSeriesExternalLinksRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/tv/1/external_ids")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 

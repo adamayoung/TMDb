@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbMovieServiceDetailsTests: XCTestCase {
+@Suite(.tags(.services, .movie))
+struct TMDbMovieServiceDetailsTests {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbMovieService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testDetailsReturnsMovie() async throws {
+    @Test("details returns movie")
+    func detailsReturnsMovie() async throws {
         let expectedResult = Movie.thorLoveAndThunder
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbMovieServiceDetailsTests: XCTestCase {
 
         let result = try await service.details(forMovie: movieID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieRequest == expectedRequest)
     }
 
-    func testDetailsWithLanguageReturnsMovie() async throws {
+    @Test("details with language returns movie")
+    func detailsWithLanguageReturnsMovie() async throws {
         let expectedResult = Movie.thorLoveAndThunder
         let movieID = expectedResult.id
         let language = "en"
@@ -58,24 +55,18 @@ final class TMDbMovieServiceDetailsTests: XCTestCase {
 
         let result = try await service.details(forMovie: movieID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieRequest == expectedRequest)
     }
 
-    func testDetailsWhenErrorsThrowsError() async throws {
+    @Test("details when errors throws error")
+    func detailsWhenErrorsThrowsError() async throws {
         let movieID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.details(forMovie: movieID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

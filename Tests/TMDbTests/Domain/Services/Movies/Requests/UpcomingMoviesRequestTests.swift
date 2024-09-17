@@ -17,63 +17,74 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class UpcomingMoviesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .movie))
+struct UpcomingMoviesRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = UpcomingMoviesRequest()
 
-        XCTAssertEqual(request.path, "/movie/upcoming")
+        #expect(request.path == "/movie/upcoming")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = UpcomingMoviesRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = UpcomingMoviesRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        #expect(request.queryItems == ["page": "3"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = UpcomingMoviesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithCountry() {
+    @Test("queryItems with country")
+    func queryItemsWithCountry() {
         let request = UpcomingMoviesRequest(country: "GB")
 
-        XCTAssertEqual(request.queryItems, ["region": "GB"])
+        #expect(request.queryItems == ["region": "GB"])
     }
 
-    func testQueryItemsWithPageAndLanguageAndCountry() {
+    @Test("queryItems with page, language and country")
+    func queryItemsWithPageAndLanguageAndCountry() {
         let request = UpcomingMoviesRequest(page: 3, country: "GB", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en", "region": "GB"])
+        #expect(request.queryItems == ["page": "3", "language": "en", "region": "GB"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = UpcomingMoviesRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = UpcomingMoviesRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = UpcomingMoviesRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbMovieServiceCreditsTests: XCTestCase {
+@Suite(.tags(.services, .movie))
+struct TMDbMovieServiceCreditsTests {
 
     var service: TMDbMovieService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbMovieService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testCreditsReturnsCredits() async throws {
+    @Test("credits returns credits")
+    func creditsReturnsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbMovieServiceCreditsTests: XCTestCase {
 
         let result = try await service.credits(forMovie: movieID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieCreditsRequest == expectedRequest)
     }
 
-    func testCreditsWithLanguageReturnsCredits() async throws {
+    @Test("credit with language returns credits")
+    func creditsWithLanguageReturnsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         let language = "en"
@@ -58,24 +55,18 @@ final class TMDbMovieServiceCreditsTests: XCTestCase {
 
         let result = try await service.credits(forMovie: movieID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? MovieCreditsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieCreditsRequest == expectedRequest)
     }
 
-    func testCreditsWhenErrorsThrowsError() async throws {
+    @Test("credits when errors returns error")
+    func creditsWhenErrorsThrowsError() async throws {
         let movieID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.credits(forMovie: movieID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

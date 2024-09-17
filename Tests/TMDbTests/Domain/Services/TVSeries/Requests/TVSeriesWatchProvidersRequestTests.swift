@@ -38,7 +38,7 @@ final class TVSeriesWatchProvidersRequestTests: XCTestCase {
         XCTAssertEqual(request.path, "/tv/1/watch/providers")
     }
 
-    func testQueryItemsAreEmpty() {
+    func testQueryItemsIsEmpty() {
         XCTAssertTrue(request.queryItems.isEmpty)
     }
 

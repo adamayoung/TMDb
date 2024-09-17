@@ -17,45 +17,53 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MovieVideosRequestTests: XCTestCase {
+@Suite(.tags(.requests, .movie))
+struct MovieVideosRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = MovieVideosRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/movie/1/videos")
+        #expect(request.path == "/movie/1/videos")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = MovieVideosRequest(id: 1)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = MovieVideosRequest(id: 1, languages: ["en-GB", "fr"])
 
-        XCTAssertEqual(request.queryItems, ["include_video_language": "en-GB,fr"])
+        #expect(request.queryItems == ["include_video_language": "en-GB,fr"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = MovieVideosRequest(id: 1)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = MovieVideosRequest(id: 1)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = MovieVideosRequest(id: 1)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

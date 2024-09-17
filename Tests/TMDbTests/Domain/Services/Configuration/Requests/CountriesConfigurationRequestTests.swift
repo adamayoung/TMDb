@@ -32,7 +32,7 @@ struct CountriesConfigurationRequestTests {
     }
 
     @Test("queryItems is empty")
-    func queryItemsAreEmpty() {
+    func queryItemsIsEmpty() {
         let request = CountriesConfigurationRequest()
 
         #expect(request.queryItems.isEmpty)

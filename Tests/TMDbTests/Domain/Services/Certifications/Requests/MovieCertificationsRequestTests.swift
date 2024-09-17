@@ -36,7 +36,7 @@ struct MovieCertificationsRequestTests {
     }
 
     @Test("queryItems is empty")
-    func queryItemsAreEmpty() {
+    func queryItemsIsEmpty() {
         #expect(request.queryItems.isEmpty)
     }
 

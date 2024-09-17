@@ -17,63 +17,74 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class MoviesNowPlayingRequestTests: XCTestCase {
+@Suite(.tags(.requests, .movie))
+struct MoviesNowPlayingRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = MoviesNowPlayingRequest()
 
-        XCTAssertEqual(request.path, "/movie/now_playing")
+        #expect(request.path == "/movie/now_playing")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = MoviesNowPlayingRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = MoviesNowPlayingRequest(page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        #expect(request.queryItems == ["page": "3"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = MoviesNowPlayingRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithCountry() {
+    @Test("queryItems with country")
+    func queryItemsWithCountry() {
         let request = MoviesNowPlayingRequest(country: "GB")
 
-        XCTAssertEqual(request.queryItems, ["region": "GB"])
+        #expect(request.queryItems == ["region": "GB"])
     }
 
-    func testQueryItemsWithPageAndLanguageAndCountry() {
+    @Test("queryItems with page, language and country")
+    func queryItemsWithPageAndLanguageAndCountry() {
         let request = MoviesNowPlayingRequest(page: 3, country: "GB", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en", "region": "GB"])
+        #expect(request.queryItems == ["page": "3", "language": "en", "region": "GB"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = MoviesNowPlayingRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = MoviesNowPlayingRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = MoviesNowPlayingRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
