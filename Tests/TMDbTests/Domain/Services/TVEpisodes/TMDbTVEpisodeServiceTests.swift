@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbTVEpisodeServiceTests: XCTestCase {
+@Suite(.tags(.services, .tvEpisode))
+struct TMDbTVEpisodeServiceTests {
 
     var service: TMDbTVEpisodeService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbTVEpisodeService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbTVEpisodeService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testDetailsReturnsTVEpisode() async throws {
+    @Test("details returns TV episode")
+    func detailsReturnsTVEpisode() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVEpisode.mock()
         let seasonNumber = expectedResult.seasonNumber
@@ -56,11 +52,12 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeRequest == expectedRequest)
     }
 
-    func testDetailsWithLanguageReturnsTVEpisode() async throws {
+    @Test("details with language returns TV episode")
+    func detailsWithLanguageReturnsTVEpisode() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = TVEpisode.mock()
         let seasonNumber = expectedResult.seasonNumber
@@ -81,33 +78,28 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             language: language
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeRequest == expectedRequest)
     }
 
-    func testDetailsWhenErrorsThrowsError() async throws {
+    @Test("details when errors throws error")
+    func detailsWhenErrorsThrowsError() async throws {
         let tvSeriesID = 1
         let seasonNumber = 2
         let episodeNumber = 3
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.details(
                 forEpisode: episodeNumber,
                 inSeason: seasonNumber,
                 inTVSeries: tvSeriesID
             )
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testImagesReturnsImages() async throws {
+    @Test("images returns images")
+    func imagesReturnsImages() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
@@ -126,11 +118,12 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeImagesRequest == expectedRequest)
     }
 
-    func testImagesWithFilterReturnsImages() async throws {
+    @Test("images with filter returns images")
+    func imagesWithFilterReturnsImages() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
@@ -152,33 +145,28 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             filter: filter
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeImagesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeImagesRequest == expectedRequest)
     }
 
-    func testImagesWhenErrorsThrowsError() async throws {
+    @Test("images when errors throws error")
+    func imagesWhenErrorsThrowsError() async throws {
         let tvSeriesID = 1
         let seasonNumber = 2
         let episodeNumber = 3
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.images(
                 forEpisode: episodeNumber,
                 inSeason: seasonNumber,
                 inTVSeries: tvSeriesID
             )
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testVideosReturnsVideos() async throws {
+    @Test("video returns videos")
+    func videosReturnsVideos() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
@@ -197,11 +185,12 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             inTVSeries: tvSeriesID
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeVideosRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeVideosRequest == expectedRequest)
     }
 
-    func testVideosWithFilterReturnsVideos() async throws {
+    @Test("video with filter returns videos")
+    func videosWithFilterReturnsVideos() async throws {
         let episodeNumber = Int.randomID
         let seasonNumber = Int.randomID
         let tvSeriesID = Int.randomID
@@ -223,30 +212,24 @@ final class TMDbTVEpisodeServiceTests: XCTestCase {
             filter: filter
         )
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVEpisodeVideosRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeVideosRequest == expectedRequest)
     }
 
-    func testVideosWhenErrorsThrowsError() async throws {
+    @Test("video when errors throws error")
+    func videosWhenErrorsThrowsError() async throws {
         let tvSeriesID = 1
         let seasonNumber = 2
         let episodeNumber = 3
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.videos(
                 forEpisode: episodeNumber,
                 inSeason: seasonNumber,
                 inTVSeries: tvSeriesID
             )
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

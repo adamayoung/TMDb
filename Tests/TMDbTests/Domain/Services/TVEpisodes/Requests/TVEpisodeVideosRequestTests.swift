@@ -17,24 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVEpisodeVideosRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvEpisode))
+struct TVEpisodeVideosRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVEpisodeVideosRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.path, "/tv/3/season/2/episode/1/videos")
+        #expect(request.path == "/tv/3/season/2/episode/1/videos")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TVEpisodeVideosRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguages() {
+    @Test("queryItems with languages")
+    func queryItemsWithLanguages() {
         let request = TVEpisodeVideosRequest(
             episodeNumber: 1,
             seasonNumber: 2,
@@ -42,25 +47,28 @@ final class TVEpisodeVideosRequestTests: XCTestCase {
             languages: ["en-GB", "fr"]
         )
 
-        XCTAssertEqual(request.queryItems["include_video_language"], "en-GB,fr")
+        #expect(request.queryItems["include_video_language"] == "en-GB,fr")
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVEpisodeVideosRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVEpisodeVideosRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVEpisodeVideosRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

@@ -17,45 +17,53 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVEpisodeRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvEpisode))
+struct TVEpisodeRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.path, "/tv/3/season/2/episode/1")
+        #expect(request.path == "/tv/3/season/2/episode/1")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

@@ -17,24 +17,29 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVEpisodeImagesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvEpisode))
+struct TVEpisodeImagesRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.path, "/tv/3/season/2/episode/1/images")
+        #expect(request.path == "/tv/3/season/2/episode/1/images")
     }
 
-    func testQueryItemsWhenLanguageCodeIsNilQueryItemsAreEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWhenLanguageCodeQueryItemsHasLanguageCode() {
+    @Test("queryItems with languages")
+    func queryItemsWithLanguages() {
         let request = TVEpisodeImagesRequest(
             episodeNumber: 1,
             seasonNumber: 2,
@@ -42,26 +47,28 @@ final class TVEpisodeImagesRequestTests: XCTestCase {
             languages: ["en-GB", "fr"]
         )
 
-        XCTAssertEqual(request.queryItems.count, 1)
-        XCTAssertEqual(request.queryItems["include_image_language"], "en,fr,null")
+        #expect(request.queryItems == ["include_image_language": "en,fr,null"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVEpisodeImagesRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
