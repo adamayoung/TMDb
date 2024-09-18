@@ -17,45 +17,53 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeasonAggregateCreditsRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvSeason))
+struct TVSeasonAggregateCreditsRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
 
-        XCTAssertEqual(request.path, "/tv/1/season/2/aggregate_credits")
+        #expect(request.path == "/tv/1/season/2/aggregate_credits")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVSeasonAggregateCreditsRequest(seasonNumber: 2, tvSeriesID: 1)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
