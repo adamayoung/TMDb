@@ -74,20 +74,28 @@ Documentation and examples of usage can be found at
 
 ### Prerequisites
 
-Install [homebrew](https://brew.sh) and the follow formulae
+Xcode 16.0+
+Swift 6.0+
+Homebrew
+
+#### Homebrew
+
+Install [homebrew](https://brew.sh) and the following formulae
 
 * [swiftlint](https://github.com/realm/SwiftLint)
 * [swiftformat](https://github.com/nicklockwood/SwiftFormat)
 * [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
-* [xcbeautify](https://github.com/cpisciotta/xcbeautify)
 
 ```bash
-brew install swiftlint swiftformat markdownlint xcbeautify
+brew install swiftlint swiftformat markdownlint
 ```
 
 ### Before submitting a PR
 
 #### Unit and Integration Tests
+
+[Swift Testing](https://github.com/swiftlang/swift-testing) is used as the
+testing framework. XCTest is no longer used.
 
 Ensure all new code is covered by unit tests. If any new methods are added to
 services that make calls to TMDb API endpoints, ensure there are integration tests
