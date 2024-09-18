@@ -17,45 +17,53 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesAggregateCreditsRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvSeries))
+struct TVSeriesAggregateCreditsRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVSeriesAggregateCreditsRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/tv/1/aggregate_credits")
+        #expect(request.path == "/tv/1/aggregate_credits")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TVSeriesAggregateCreditsRequest(id: 1)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = TVSeriesAggregateCreditsRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVSeriesAggregateCreditsRequest(id: 1)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVSeriesAggregateCreditsRequest(id: 1)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVSeriesAggregateCreditsRequest(id: 1)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

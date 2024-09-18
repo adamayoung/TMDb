@@ -17,39 +17,46 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesContentRatingsRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvSeries))
+struct TVSeriesContentRatingsRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = ContentRatingRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/tv/1/content_ratings")
+        #expect(request.path == "/tv/1/content_ratings")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItem is empty")
+    func queryItemsIsEmpty() {
         let request = ContentRatingRequest(id: 1)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = ContentRatingRequest(id: 1)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = ContentRatingRequest(id: 1)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = ContentRatingRequest(id: 1)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

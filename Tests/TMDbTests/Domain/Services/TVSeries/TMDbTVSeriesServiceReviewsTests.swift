@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbTVSeriesServiceReviewsTests: XCTestCase {
+@Suite(.tags(.services, .tvSeries))
+struct TMDbTVSeriesServiceReviewsTests {
 
     var service: TMDbTVSeriesService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbTVSeriesService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testReviewsReturnsReviews() async throws {
+    @Test("reviews returns reviews")
+    func reviewsReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbTVSeriesServiceReviewsTests: XCTestCase {
 
         let result = try await service.reviews(forTVSeries: tvSeriesID)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesReviewsRequest == expectedRequest)
     }
 
-    func testReviewsWithLanguageReturnsReviews() async throws {
+    @Test("reviews with language returns reviews")
+    func reviewsWithLanguageReturnsReviews() async throws {
         let tvSeriesID = Int.randomID
         let language = "en"
         let expectedResult = ReviewPageableList.mock()
@@ -58,24 +55,18 @@ final class TMDbTVSeriesServiceReviewsTests: XCTestCase {
 
         let result = try await service.reviews(forTVSeries: tvSeriesID, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TVSeriesReviewsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesReviewsRequest == expectedRequest)
     }
 
-    func testReviewsWhenErrorsThrowsError() async throws {
+    @Test("reviews when errors returns error")
+    func reviewsWhenErrorsThrowsError() async throws {
         let tvSeriesID = 1
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.reviews(forTVSeries: tvSeriesID)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
