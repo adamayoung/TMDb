@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbWatchProviderServiceTests: XCTestCase {
+@Suite(.tags(.services, .watchProvider))
+struct TMDbWatchProviderServiceTests {
 
     var service: TMDbWatchProviderService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbWatchProviderService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbWatchProviderService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testCountriesReturnsCountries() async throws {
+    @Test("countries returns countries")
+    func countriesReturnsCountries() async throws {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
         apiClient.addResponse(.success(regions))
@@ -45,11 +41,12 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
 
         let result = try await service.countries()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProviderRegionsRequest == expectedRequest)
     }
 
-    func testCountriesWithLanguageReturnsCountries() async throws {
+    @Test("countries with language returns countries")
+    func countriesWithLanguageReturnsCountries() async throws {
         let regions = WatchProviderRegions.mock
         let language = "en"
         let expectedResult = regions.results
@@ -58,26 +55,21 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
 
         let result = try await service.countries(language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProviderRegionsRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProviderRegionsRequest == expectedRequest)
     }
 
-    func testCountriesWhenErrorsThrowsError() async throws {
+    @Test("countries when errors throws error")
+    func countriesWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.countries()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testMovieWatchProvidersReturnsWatchProviders() async throws {
+    @Test("movingWatchProviders returns watch providers")
+    func movieWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
@@ -85,11 +77,12 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
 
         let result = try await service.movieWatchProviders()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProvidersForMoviesRequest == expectedRequest)
     }
 
-    func testMovieWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
+    @Test("movieWatchProviders with filter and language returns watch providers")
+    func movieWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let country = "GB"
         let language = "en"
@@ -100,26 +93,21 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
         let filter = WatchProviderFilter(country: country)
         let result = try await service.movieWatchProviders(filter: filter, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProvidersForMoviesRequest == expectedRequest)
     }
 
-    func testMovieWatchProvidersWhenErrorsThrowsError() async throws {
+    @Test("movieWatchProviders when errors throws error")
+    func movieWatchProvidersWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movieWatchProviders()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesWatchProvidersReturnsWatchProviders() async throws {
+    @Test("tvSeriesWatchProviders returns watch providers")
+    func tvSeriesWatchProvidersReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
@@ -127,11 +115,12 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
 
         let result = try await service.tvSeriesWatchProviders()
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
+    @Test("tvSeriesWatchProviders with filter and language returns watch providers")
+    func tvSeriesWatchProvidersWithFilterAndLanguageReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let country = "GB"
         let language = "en"
@@ -142,23 +131,17 @@ final class TMDbWatchProviderServiceTests: XCTestCase {
         let filter = WatchProviderFilter(country: country)
         let result = try await service.tvSeriesWatchProviders(filter: filter, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWatchProvidersWhenErrorsThrowsError() async throws {
+    @Test("tvSeriesWatchProviders when errors throws error")
+    func tvSeriesWatchProvidersWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeriesWatchProviders()
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }
