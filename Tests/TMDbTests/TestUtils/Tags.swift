@@ -44,5 +44,8 @@ extension Tag {
     @Tag static var search: Self
     @Tag static var trending: Self
     @Tag static var tvEpisode: Self
+    @Tag static var tvSeason: Self
+    @Tag static var tvSeries: Self
+    @Tag static var watchProvider: Self
 
 }

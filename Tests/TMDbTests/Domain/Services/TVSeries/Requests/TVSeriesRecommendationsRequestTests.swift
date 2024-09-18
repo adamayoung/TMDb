@@ -17,57 +17,67 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TVSeriesRecommendationsRequestTests: XCTestCase {
+@Suite(.tags(.requests, .tvSeries))
+struct TVSeriesRecommendationsRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertEqual(request.path, "/tv/1/recommendations")
+        #expect(request.path == "/tv/1/recommendations")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItem is empty")
+    func queryItemsIsEmpty() {
         let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = TVSeriesRecommendationsRequest(id: 1, page: 3)
 
-        XCTAssertEqual(request.queryItems, ["page": "3"])
+        #expect(request.queryItems == ["page": "3"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = TVSeriesRecommendationsRequest(id: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithPageAndLanguage() {
+    @Test("queryItems with page and language")
+    func queryItemsWithPageAndLanguage() {
         let request = TVSeriesRecommendationsRequest(id: 1, page: 3, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["page": "3", "language": "en"])
+        #expect(request.queryItems == ["page": "3", "language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TVSeriesRecommendationsRequest(id: 1)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
