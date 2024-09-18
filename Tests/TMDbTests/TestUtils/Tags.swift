@@ -43,5 +43,6 @@ extension Tag {
     @Tag static var people: Self
     @Tag static var search: Self
     @Tag static var trending: Self
+    @Tag static var tvEpisode: Self
 
 }
