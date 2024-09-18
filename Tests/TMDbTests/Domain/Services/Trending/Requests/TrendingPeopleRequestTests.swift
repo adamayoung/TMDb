@@ -17,63 +17,74 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TrendingPeopleRequestTests: XCTestCase {
+@Suite(.tags(.requests, .trending))
+struct TrendingPeopleRequestTests {
 
-    func testPathWithDayTimeWindow() {
+    @Test("path with day time window")
+    func pathWithDayTimeWindow() {
         let request = TrendingPeopleRequest(timeWindow: .day)
 
-        XCTAssertEqual(request.path, "/trending/person/day")
+        #expect(request.path == "/trending/person/day")
     }
 
-    func testPathWithWeekTimeWindow() {
+    @Test("path with week time window")
+    func pathWithWeekTimeWindow() {
         let request = TrendingPeopleRequest(timeWindow: .week)
 
-        XCTAssertEqual(request.path, "/trending/person/week")
+        #expect(request.path == "/trending/person/week")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = TrendingPeopleRequest(timeWindow: .day)
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithPage() {
+    @Test("queryItems with page")
+    func queryItemsWithPage() {
         let request = TrendingPeopleRequest(timeWindow: .day, page: 1)
 
-        XCTAssertEqual(request.queryItems, ["page": "1"])
+        #expect(request.queryItems == ["page": "1"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = TrendingPeopleRequest(timeWindow: .day, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithPageAndLanguage() {
+    @Test("queryItems with page and language")
+    func queryItemsWithPageAndLanguage() {
         let request = TrendingPeopleRequest(timeWindow: .day, page: 1, language: "en")
 
-        XCTAssertEqual(request.queryItems, ["page": "1", "language": "en"])
+        #expect(request.queryItems == ["page": "1", "language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = TrendingPeopleRequest(timeWindow: .day)
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = TrendingPeopleRequest(timeWindow: .day)
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = TrendingPeopleRequest(timeWindow: .day)
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
