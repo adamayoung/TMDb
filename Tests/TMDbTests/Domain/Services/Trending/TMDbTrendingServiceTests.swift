@@ -17,27 +17,23 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TMDbTrendingServiceTests: XCTestCase {
+@Suite(.tags(.services, .trending))
+struct TMDbTrendingServiceTests {
 
     var service: TMDbTrendingService!
     var apiClient: MockAPIClient!
 
-    override func setUp() {
-        super.setUp()
-        apiClient = MockAPIClient()
-        service = TMDbTrendingService(apiClient: apiClient)
+    init() {
+        self.apiClient = MockAPIClient()
+        self.service = TMDbTrendingService(apiClient: apiClient)
     }
 
-    override func tearDown() {
-        apiClient = nil
-        service = nil
-        super.tearDown()
-    }
-
-    func testMoviesReturnsMovies() async throws {
+    @Test("movies returns movies")
+    func moviesReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -45,11 +41,12 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.movies(inTimeWindow: timeWindow)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingMoviesRequest == expectedRequest)
     }
 
-    func testMoviesWithPageAndLanguageReturnsMovies() async throws {
+    @Test("movies with page and language returns movies")
+    func moviesWithPageAndLanguageReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
         let language = "en"
@@ -59,27 +56,22 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.movies(inTimeWindow: timeWindow, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingMoviesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingMoviesRequest == expectedRequest)
     }
 
-    func testMoviesWhenErrorsThrowsError() async throws {
+    @Test("movies when errors throws error")
+    func moviesWhenErrorsThrowsError() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.movies(inTimeWindow: timeWindow)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testTVSeriesReturnsTVSeries() async throws {
+    @Test("tvSeries returns tv series")
+    func tvSeriesReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -87,11 +79,12 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.tvSeries(inTimeWindow: timeWindow)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWithPageAndLanguageReturnsTVSeries() async throws {
+    @Test("tvSeries with page and language returns TV series")
+    func tvSeriesWithPageAndLanguageReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
         let language = "en"
@@ -101,27 +94,22 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingTVSeriesRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingTVSeriesRequest == expectedRequest)
     }
 
-    func testTVSeriesWhenErrorsThrowsError() async throws {
+    @Test("tvSeries when errors throws error")
+    func tvSeriesWhenErrorsThrowsError() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeries(inTimeWindow: timeWindow)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
-    func testPeopleReturnsPeople() async throws {
+    @Test("people returns people")
+    func peopleReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -129,11 +117,12 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.people(inTimeWindow: timeWindow)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingPeopleRequest == expectedRequest)
     }
 
-    func testPeopleWithPageAndLanguageReturnsPeople() async throws {
+    @Test("people with page and language returns people")
+    func peopleWithPageAndLanguageReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.week
         let page = 2
         let language = "en"
@@ -143,24 +132,18 @@ final class TMDbTrendingServiceTests: XCTestCase {
 
         let result = try await service.people(inTimeWindow: timeWindow, page: page, language: language)
 
-        XCTAssertEqual(result, expectedResult)
-        XCTAssertEqual(apiClient.lastRequest as? TrendingPeopleRequest, expectedRequest)
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TrendingPeopleRequest == expectedRequest)
     }
 
-    func testPeopleWhenErrorsThrowsError() async throws {
+    @Test("people when errors throws error")
+    func peopleWhenErrorsThrowsError() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         apiClient.addResponse(.failure(.unknown))
 
-        var error: Error?
-        do {
+        await #expect(throws: TMDbError.unknown) {
             _ = try await service.people(inTimeWindow: timeWindow)
-        } catch let err {
-            error = err
         }
-
-        let tmdbAPIError = try XCTUnwrap(error as? TMDbError)
-
-        XCTAssertEqual(tmdbAPIError, .unknown)
     }
 
 }

@@ -17,25 +17,24 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class TrendingTimeWindowFilterTypeTests: XCTestCase {
+@Suite(.tags(.trending))
+struct TrendingTimeWindowFilterTypeTests {
 
-    func testDayReturnsRawValue() {
-        let expectedResult = "day"
+    @Test("day raw value is \"day\"")
+    func dayRawValue() {
+        let filterType = TrendingTimeWindowFilterType.day
 
-        let result = TrendingTimeWindowFilterType.day.rawValue
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(filterType.rawValue == "day")
     }
 
-    func testWeekReturnsRawValue() {
-        let expectedResult = "week"
+    func weekRawValue() {
+        let filterType = TrendingTimeWindowFilterType.week
 
-        let result = TrendingTimeWindowFilterType.week.rawValue
-
-        XCTAssertEqual(result, expectedResult)
+        #expect(filterType.rawValue == "week")
     }
 
 }
