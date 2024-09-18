@@ -17,57 +17,67 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WatchProvidersForTVSeriesRequestTests: XCTestCase {
+@Suite(.tags(.requests, .watchProvider))
+struct WatchProvidersForTVSeriesRequestTests {
 
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = WatchProvidersForTVSeriesRequest()
 
-        XCTAssertEqual(request.path, "/watch/providers/tv")
+        #expect(request.path == "/watch/providers/tv")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = WatchProvidersForTVSeriesRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithWatchRegion() {
+    @Test("queryItems with country")
+    func queryItemsWithCountry() {
         let request = WatchProvidersForTVSeriesRequest(country: "GB")
 
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB"])
+        #expect(request.queryItems == ["watch_region": "GB"])
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = WatchProvidersForTVSeriesRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testQueryItemsWithWatchRegionAndLanguage() {
+    @Test("queryItems with country and language")
+    func queryItemsWithCountryAndLanguage() {
         let request = WatchProvidersForTVSeriesRequest(country: "GB", language: "en")
 
-        XCTAssertEqual(request.queryItems, ["watch_region": "GB", "language": "en"])
+        #expect(request.queryItems == ["watch_region": "GB", "language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = WatchProvidersForTVSeriesRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = WatchProvidersForTVSeriesRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = WatchProvidersForTVSeriesRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }

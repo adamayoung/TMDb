@@ -17,57 +17,59 @@
 //  limitations under the License.
 //
 
+import Foundation
+import Testing
 @testable import TMDb
-import XCTest
 
-final class WatchProviderRegionsRequestTests: XCTestCase {
+@Suite(.tags(.requests, .watchProvider))
+struct WatchProviderRegionsRequestTests {
 
     var request: WatchProviderRegionsRequest!
 
-    override func setUp() {
-        super.setUp()
-        request = WatchProviderRegionsRequest()
+    init() {
+        self.request = WatchProviderRegionsRequest()
     }
 
-    override func tearDown() {
-        request = nil
-        super.tearDown()
-    }
-
-    func testPath() {
+    @Test("path is correct")
+    func path() {
         let request = WatchProviderRegionsRequest()
 
-        XCTAssertEqual(request.path, "/watch/providers/regions")
+        #expect(request.path == "/watch/providers/regions")
     }
 
-    func testQueryItemsIsEmpty() {
+    @Test("queryItems is empty")
+    func queryItemsIsEmpty() {
         let request = WatchProviderRegionsRequest()
 
-        XCTAssertTrue(request.queryItems.isEmpty)
+        #expect(request.queryItems.isEmpty)
     }
 
-    func testQueryItemsWithLanguage() {
+    @Test("queryItems with language")
+    func queryItemsWithLanguage() {
         let request = WatchProviderRegionsRequest(language: "en")
 
-        XCTAssertEqual(request.queryItems, ["language": "en"])
+        #expect(request.queryItems == ["language": "en"])
     }
 
-    func testMethodIsGet() {
+    @Test("method is GET")
+    func methodIsGet() {
         let request = WatchProviderRegionsRequest()
 
-        XCTAssertEqual(request.method, .get)
+        #expect(request.method == .get)
     }
 
-    func testHeadersIsEmpty() {
+    @Test("headers is empty")
+    func headersIsEmpty() {
         let request = WatchProviderRegionsRequest()
 
-        XCTAssertTrue(request.headers.isEmpty)
+        #expect(request.headers.isEmpty)
     }
 
-    func testBodyIsNil() {
+    @Test("body is nil")
+    func bodyIsNil() {
         let request = WatchProviderRegionsRequest()
 
-        XCTAssertNil(request.body)
+        #expect(request.body == nil)
     }
 
 }
