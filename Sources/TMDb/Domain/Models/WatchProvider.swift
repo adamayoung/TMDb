@@ -39,7 +39,7 @@ public struct WatchProvider: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
-    public let logoPath: URL
+    public let logoPath: URL?
 
     ///
     /// Creates a watch provider object.
@@ -49,7 +49,11 @@ public struct WatchProvider: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///    - name: Watch Provider name.
     ///    - logoPath: Watch Provider logo path.
     ///
-    public init(id: Int, name: String, logoPath: URL) {
+    public init(
+        id: Int,
+        name: String,
+        logoPath: URL? = nil
+    ) {
         self.id = id
         self.name = name
         self.logoPath = logoPath
