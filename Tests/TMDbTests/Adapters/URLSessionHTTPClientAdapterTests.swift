@@ -21,9 +21,22 @@ import Foundation
 import Testing
 @testable import TMDb
 
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
+private let isLinux = {
+    #if os(Linux)
+        return true
+    #else
+        return false
+    #endif
+}()
+
 @Suite(
     .serialized,
-    .tags(.adapter)
+    .tags(.adapter),
+    .disabled(if: isLinux)
 )
 final class URLSessionHTTPClientAdapterTests {
 

@@ -64,7 +64,7 @@ extension MovieTests {
             backdropPath: URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg"),
             budget: 63_000_000,
             revenue: 100_853_753,
-            homepageURL: URL(string: ""),
+            homepageURL: nil,
             imdbID: "tt0137523",
             status: .released,
             productionCompanies: [

@@ -21,6 +21,10 @@ import Foundation
 import Testing
 @testable import TMDb
 
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
 @Suite(.tags(.networking))
 struct TMDbAPIClientTests {
 
@@ -59,7 +63,11 @@ struct TMDbAPIClientTests {
             error = err as? TMDbAPIError
         }
 
-        #expect(error == .invalidURL(path))
+        #if canImport(FoundationNetworking)
+            #expect(error == .unknown)
+        #else
+            #expect(error == .invalidURL(path))
+        #endif
     }
 
     @Test("perform has correct URL")

@@ -17,12 +17,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
 
 jobs:
   build-test:
     name: Build and Test
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
-    runs-on: macos-14
+    runs-on: macos-15
     continue-on-error: true
     strategy:
       matrix:
@@ -63,8 +63,8 @@ jobs:
             destination: platform=watchOS Simulator,name=Apple Watch Series 10 (46mm),OS=11.0
           - name: tvOS
             destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=18.0
-          # - name: visionOS
-          #   destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=2.0
+          - name: visionOS
+            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=2.0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,19 +75,19 @@ jobs:
       - name: Test
         run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
   
-  # build-test-linux:
-  #   name: Build and Test (Linux)
-  #   runs-on: ubuntu-latest
-  #   container: swiftlang/swift:nightly-6.0-jammy
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  build-test-linux:
+    name: Build and Test (Linux)
+    runs-on: ubuntu-latest
+    container: swift:6.0.2-jammy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Build
-  #       run: swift build --build-tests -Xswiftc -warnings-as-errors
+      - name: Build
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
 
-  #     - name: Test
-  #       run: swift test --skip-build --filter TMDbTests
+      - name: Test
+        run: swift test --skip-build --filter TMDbTests
       
-  #     - name: Build for Release
-  #       run: swift build -c release -Xswiftc -warnings-as-errors
+      - name: Build for Release
+        run: swift build -c release -Xswiftc -warnings-as-errors

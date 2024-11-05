@@ -17,12 +17,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 120
     permissions:
       actions: read

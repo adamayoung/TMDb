@@ -58,7 +58,7 @@ struct ShowTests {
         #expect(tvSeriesShow.date == expectedResult)
     }
 
-    @Test("JSON decoding of Movie", .tags(.decoding))
+    @Test("JSON decoding of Show", .tags(.decoding))
     func testDecodeReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-movie")
 
