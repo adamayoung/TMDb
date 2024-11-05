@@ -19,6 +19,10 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
 final class TMDbAPIClient: APIClient, Sendable {
 
     private let apiKey: String

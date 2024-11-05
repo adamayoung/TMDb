@@ -17,6 +17,8 @@
 //  limitations under the License.
 //
 
+#if !os(Linux)
+
 import Foundation
 import Testing
 @testable import TMDb
@@ -142,3 +144,5 @@ final class URLSessionHTTPClientAdapterTests {
     }
 
 }
+
+#endif
