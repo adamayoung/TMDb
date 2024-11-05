@@ -64,7 +64,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
     ///
     /// Person's movies and TV series they're known for.
     ///
-    public let knownFor: [Show]
+    public let knownFor: [Show]?
 
     ///
     /// Is the Person only suitable for adults.
@@ -93,7 +93,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
         gender: Gender,
         profilePath: URL? = nil,
         popularity: Double? = nil,
-        knownFor: [Show] = [],
+        knownFor: [Show]? = nil,
         isAdultOnly: Bool = false
     ) {
         self.id = id
