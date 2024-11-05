@@ -32,7 +32,7 @@ struct CompanyTests {
         #expect(result.name == company.name)
         #expect(result.description == company.description)
         #expect(result.headquarters == company.headquarters)
-        #expect(result.homepage == company.homepage)
+        #expect(result.homepageURL == company.homepageURL)
         #expect(result.logoPath == company.logoPath)
         #expect(result.originCountry == company.originCountry)
         let parentCompany = try #require(result.parentCompany)
@@ -46,7 +46,7 @@ struct CompanyTests {
         name: "Pixar",
         description: "",
         headquarters: "Emeryville, California",
-        homepage: URL(string: "http://www.pixar.com")!,
+        homepageURL: URL(string: "http://www.pixar.com")!,
         logoPath: URL(string: "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png")!,
         originCountry: "US",
         parentCompany: Company.Parent(

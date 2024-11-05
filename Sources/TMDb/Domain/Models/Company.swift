@@ -47,7 +47,7 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Company's homepage.
     ///
-    public let homepage: URL
+    public let homepageURL: URL?
 
     ///
     /// Company's logo path.
@@ -74,7 +74,7 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///   - name: Company name.
     ///   - description: Description of company.
     ///   - headquarters: Location of the company's headquarters.
-    ///   - homepage: Company's homepage.
+    ///   - homepageURL: Company's homepage.
     ///   - logoPath: Company's logo path.
     ///   - originCountry: Origin country.
     ///   - parentCompany: Parent company.
@@ -84,7 +84,7 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
         name: String,
         description: String,
         headquarters: String,
-        homepage: URL,
+        homepageURL: URL? = nil,
         logoPath: URL,
         originCountry: String,
         parentCompany: Parent? = nil
@@ -93,10 +93,47 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.name = name
         self.description = description
         self.headquarters = headquarters
-        self.homepage = homepage
+        self.homepageURL = homepageURL
         self.logoPath = logoPath
         self.originCountry = originCountry
         self.parentCompany = parentCompany
+    }
+
+}
+
+extension Company {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case description
+        case headquarters
+        case homepageURL = "homepage"
+        case logoPath
+        case originCountry
+        case parentCompany
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container2 = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.headquarters = try container.decode(String.self, forKey: .headquarters)
+        // Need to deal with empty strings - URL decoding will fail with an empty string
+        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
+        self.homepageURL = try {
+            guard let homepageURLString, !homepageURLString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
+        }()
+        self.logoPath = try container.decode(URL.self, forKey: .logoPath)
+        self.originCountry = try container.decode(String.self, forKey: .originCountry)
+        self.parentCompany = try container.decodeIfPresent(Parent.self, forKey: .parentCompany)
     }
 
 }
