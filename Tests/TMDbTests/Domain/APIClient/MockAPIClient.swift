@@ -18,6 +18,7 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 final class MockAPIClient: APIClient, @unchecked Sendable {
@@ -63,7 +64,8 @@ extension MockAPIClient {
         let result = responses[requestIndex]
 
         guard let value = try result.get() as? Request.Response else {
-            preconditionFailure("Can't cast response to type \(String(describing: Request.Response.self))")
+            preconditionFailure(
+                "Can't cast response to type \(String(describing: Request.Response.self))")
         }
 
         return value

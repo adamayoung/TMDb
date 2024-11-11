@@ -40,9 +40,9 @@ final class PersonSearchRequest: DecodableAPIRequest<PersonPageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(
+    fileprivate init(
         query: String,
         includeAdult: Bool?,
         page: Int?,

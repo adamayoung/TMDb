@@ -65,7 +65,9 @@ public enum VideoType: String, Codable, Equatable, Hashable, Sendable {
     case unknown
 
     public init(from decoder: Decoder) throws {
-        self = try VideoType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        self =
+            try VideoType(rawValue: decoder.singleValueContainer().decode(RawValue.self))
+            ?? .unknown
     }
 
 }

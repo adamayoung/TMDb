@@ -93,7 +93,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
-    func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int?, language: String?) async throws -> ReviewPageableList
+    func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int?, language: String?) async throws
+        -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a TV series.
@@ -108,7 +109,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of images for the matching TV series.
     ///
-    func images(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesImageFilter?) async throws -> ImageCollection
+    func images(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesImageFilter?) async throws
+        -> ImageCollection
 
     ///
     /// Returns the videos that belong to a TV series.
@@ -123,7 +125,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of videos for the matching TV series.
     ///
-    func videos(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesVideoFilter?) async throws -> VideoCollection
+    func videos(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesVideoFilter?) async throws
+        -> VideoCollection
 
     ///
     /// Returns a list of recommended TV series for a TV series.
@@ -203,7 +206,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Watch providers for TV series in current region.
     ///
-    func watchProviders(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws -> ShowWatchProvider?
+    func watchProviders(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws
+        -> ShowWatchProvider?
 
     ///
     /// Returns a collection of media databases and social links for a TV series.
@@ -215,7 +219,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of external links for the specificed TV series.
     ///
-    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection
+    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws
+        -> TVSeriesExternalLinksCollection
 
     ///
     /// Returns the content rating of a TV series.
@@ -228,27 +233,32 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A content rating for the specificed TV series.
     ///
-    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws -> ContentRating?
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws
+        -> ContentRating?
 }
 
-public extension TVSeriesService {
+extension TVSeriesService {
 
-    func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
+    public func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws
+        -> TVSeries
+    {
         try await details(forTVSeries: id, language: language)
     }
 
-    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws -> ShowCredits {
+    public func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws
+        -> ShowCredits
+    {
         try await credits(forTVSeries: tvSeriesID, language: language)
     }
 
-    func aggregateCredits(
+    public func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeriesAggregateCredits {
         try await aggregateCredits(forTVSeries: tvSeriesID, language: language)
     }
 
-    func reviews(
+    public func reviews(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -256,21 +266,21 @@ public extension TVSeriesService {
         try await reviews(forTVSeries: tvSeriesID, page: page, language: language)
     }
 
-    func images(
+    public func images(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesImageFilter? = nil
     ) async throws -> ImageCollection {
         try await images(forTVSeries: tvSeriesID, filter: filter)
     }
 
-    func videos(
+    public func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesVideoFilter? = nil
     ) async throws -> VideoCollection {
         try await videos(forTVSeries: tvSeriesID, filter: filter)
     }
 
-    func recommendations(
+    public func recommendations(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -278,7 +288,7 @@ public extension TVSeriesService {
         try await recommendations(forTVSeries: tvSeriesID, page: page, language: language)
     }
 
-    func similar(
+    public func similar(
         toTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -286,18 +296,20 @@ public extension TVSeriesService {
         try await similar(toTVSeries: tvSeriesID, page: page, language: language)
     }
 
-    func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+    public func popular(page: Int? = nil, language: String? = nil) async throws
+        -> TVSeriesPageableList
+    {
         try await popular(page: page, language: language)
     }
 
-    func watchProviders(
+    public func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID,
         country: String = "US"
     ) async throws -> ShowWatchProvider? {
         try await watchProviders(forTVSeries: tvSeriesID, country: country)
     }
 
-    func contentRatings(
+    public func contentRatings(
         forTVSeries tvSeriesID: TVSeries.ID,
         country: String = "US"
     ) async throws -> ContentRating? {

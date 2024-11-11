@@ -50,7 +50,9 @@ public enum VideoSize: Int, Codable, Equatable, Hashable, Sendable {
     case unknown
 
     public init(from decoder: Decoder) throws {
-        self = try VideoSize(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        self =
+            try VideoSize(rawValue: decoder.singleValueContainer().decode(RawValue.self))
+            ?? .unknown
     }
 
 }

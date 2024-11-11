@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct VideoCollectionTests {
 
     @Test("JSON decoding of VideoCollection", .tags(.decoding))
     func decodeReturnsVideoCollection() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(VideoCollection.self, fromResource: "video-collection")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            VideoCollection.self, fromResource: "video-collection")
 
         #expect(result.id == videoCollection.id)
         #expect(result.results == videoCollection.results)

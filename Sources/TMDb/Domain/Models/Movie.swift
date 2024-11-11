@@ -268,7 +268,8 @@ extension Movie {
         self.title = try container.decode(String.self, forKey: .title)
         self.tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
         self.originalTitle = try container.decodeIfPresent(String.self, forKey: .originalTitle)
-        self.originalLanguage = try container.decodeIfPresent(String.self, forKey: .originalLanguage)
+        self.originalLanguage = try container.decodeIfPresent(
+            String.self, forKey: .originalLanguage)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
@@ -300,9 +301,12 @@ extension Movie {
 
         self.imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
         self.status = try container.decodeIfPresent(Status.self, forKey: .status)
-        self.productionCompanies = try container.decodeIfPresent([ProductionCompany].self, forKey: .productionCompanies)
-        self.productionCountries = try container.decodeIfPresent([ProductionCountry].self, forKey: .productionCountries)
-        self.spokenLanguages = try container.decodeIfPresent([SpokenLanguage].self, forKey: .spokenLanguages)
+        self.productionCompanies = try container.decodeIfPresent(
+            [ProductionCompany].self, forKey: .productionCompanies)
+        self.productionCountries = try container.decodeIfPresent(
+            [ProductionCountry].self, forKey: .productionCountries)
+        self.spokenLanguages = try container.decodeIfPresent(
+            [SpokenLanguage].self, forKey: .spokenLanguages)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
         self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)

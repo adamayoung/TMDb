@@ -93,9 +93,9 @@ public protocol TVEpisodeService: Sendable {
 
 }
 
-public extension TVEpisodeService {
+extension TVEpisodeService {
 
-    func details(
+    public func details(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
@@ -109,7 +109,7 @@ public extension TVEpisodeService {
         )
     }
 
-    func images(
+    public func images(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
@@ -123,7 +123,7 @@ public extension TVEpisodeService {
         )
     }
 
-    func videos(
+    public func videos(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,

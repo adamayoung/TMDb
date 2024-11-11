@@ -24,7 +24,7 @@ extension WatchProvider {
 
     static func mock(
         id: Int = .randomID,
-        name: String = .randomString,
+        name: String = .random,
         logoPath: URL = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
     ) -> Self {
         .init(

@@ -21,11 +21,11 @@ import Foundation
 
 extension URL {
 
-    static var tmdbAPIBaseURL: URL {
+    static var tmdbAPIBase: URL {
         URL(string: "https://api.themoviedb.org/3")!
     }
 
-    static var tmdbWebSiteURL: URL {
+    static var tmdbWebSite: URL {
         URL(string: "https://www.themoviedb.org")!
     }
 

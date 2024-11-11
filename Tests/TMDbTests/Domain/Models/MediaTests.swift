@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -49,7 +50,7 @@ struct MediaTests {
     private let media: [Media] = [
         .movie(.theFirstOmen),
         .tvSeries(.bigBrother),
-        .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
+        .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown)),
     ]
 
 }

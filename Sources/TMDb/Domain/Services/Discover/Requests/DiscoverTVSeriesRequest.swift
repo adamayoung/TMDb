@@ -30,9 +30,9 @@ final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(sortedBy: TVSeriesSort?, page: Int?, language: String?) {
+    fileprivate init(sortedBy: TVSeriesSort?, page: Int?, language: String?) {
         self.init()
 
         if let sortedBy {

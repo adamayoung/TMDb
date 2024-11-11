@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -43,7 +44,8 @@ struct AccountDetailsTests {
             includeAdult: false
         )
 
-        let result = try JSONDecoder.theMovieDatabase.decode(AccountDetails.self, fromResource: "account-details")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            AccountDetails.self, fromResource: "account-details")
 
         #expect(result.id == accountDetails.id)
     }

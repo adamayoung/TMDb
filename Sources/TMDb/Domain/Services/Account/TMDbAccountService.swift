@@ -107,7 +107,9 @@ final class TMDbAccountService: AccountService {
         )
     }
 
-    func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+    func addFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session)
+        async throws
+    {
         try await addFavourite(
             showType: .tvSeries,
             showID: tvSeriesID,
@@ -117,7 +119,9 @@ final class TMDbAccountService: AccountService {
         )
     }
 
-    func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+    func removeFavourite(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session)
+        async throws
+    {
         try await addFavourite(
             showType: .tvSeries,
             showID: tvSeriesID,
@@ -183,7 +187,8 @@ final class TMDbAccountService: AccountService {
         )
     }
 
-    func removeFromWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws {
+    func removeFromWatchlist(movie movieID: Movie.ID, accountID: Int, session: Session) async throws
+    {
         try await addToWatchlist(
             showType: .movie,
             showID: movieID,
@@ -193,7 +198,9 @@ final class TMDbAccountService: AccountService {
         )
     }
 
-    func addToWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+    func addToWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session)
+        async throws
+    {
         try await addToWatchlist(
             showType: .tvSeries,
             showID: tvSeriesID,
@@ -203,7 +210,9 @@ final class TMDbAccountService: AccountService {
         )
     }
 
-    func removeFromWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session) async throws {
+    func removeFromWatchlist(tvSeries tvSeriesID: TVSeries.ID, accountID: Int, session: Session)
+        async throws
+    {
         try await addToWatchlist(
             showType: .tvSeries,
             showID: tvSeriesID,

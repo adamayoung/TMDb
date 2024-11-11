@@ -29,10 +29,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     public var id: Int {
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             movie.id
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             tvSeries.id
         }
     }
@@ -42,10 +42,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     var popularity: Double? {
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             movie.popularity
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             tvSeries.popularity
         }
     }
@@ -55,10 +55,10 @@ public enum Show: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     var date: Date? {
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             movie.releaseDate
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             tvSeries.firstAirDate
         }
     }
@@ -103,10 +103,10 @@ extension Show {
         var singleContainer = encoder.singleValueContainer()
 
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             try singleContainer.encode(movie)
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             try singleContainer.encode(tvSeries)
         }
     }

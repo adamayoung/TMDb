@@ -19,7 +19,10 @@
 
 import Foundation
 
-final class ValidateTokenWithLoginRequest: CodableAPIRequest<ValidateTokenWithLoginRequest.Body, Token> {
+final class ValidateTokenWithLoginRequest: CodableAPIRequest<
+    ValidateTokenWithLoginRequest.Body, Token
+>
+{
 
     init(username: String, password: String, requestToken: String) {
         let path = "/authentication/token/validate_with_login"

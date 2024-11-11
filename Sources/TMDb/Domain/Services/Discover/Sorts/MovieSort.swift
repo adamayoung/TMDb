@@ -94,25 +94,25 @@ extension MovieSort {
 
     private var isDescending: Bool {
         switch self {
-        case let .popularity(descending):
+        case .popularity(let descending):
             descending
 
-        case let .releaseDate(descending):
+        case .releaseDate(let descending):
             descending
 
-        case let .revenue(descending):
+        case .revenue(let descending):
             descending
 
-        case let .primaryReleaseDate(descending):
+        case .primaryReleaseDate(let descending):
             descending
 
-        case let .originalTitle(descending):
+        case .originalTitle(let descending):
             descending
 
-        case let .voteAverage(descending):
+        case .voteAverage(let descending):
             descending
 
-        case let .voteCount(descending):
+        case .voteCount(let descending):
             descending
         }
     }

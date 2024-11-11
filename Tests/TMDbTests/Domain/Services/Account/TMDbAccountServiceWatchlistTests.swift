@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .account))
@@ -71,7 +72,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.movieWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
+        let result = try await service.movieWatchlist(
+            sortedBy: sortedBy, accountID: accountID, session: session)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
@@ -117,7 +119,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.movieWatchlist(page: page, accountID: accountID, session: session)
+        let result = try await service.movieWatchlist(
+            page: page, accountID: accountID, session: session)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
@@ -181,7 +184,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        try await service.removeFromWatchlist(movie: movieID, accountID: accountID, session: session)
+        try await service.removeFromWatchlist(
+            movie: movieID, accountID: accountID, session: session)
 
         #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
@@ -194,7 +198,8 @@ extension TMDbAccountServiceWatchlistTests {
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            try await service.removeFromWatchlist(movie: movieID, accountID: accountID, session: session)
+            try await service.removeFromWatchlist(
+                movie: movieID, accountID: accountID, session: session)
         }
     }
 
@@ -235,7 +240,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.tvSeriesWatchlist(sortedBy: sortedBy, accountID: accountID, session: session)
+        let result = try await service.tvSeriesWatchlist(
+            sortedBy: sortedBy, accountID: accountID, session: session)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
@@ -281,7 +287,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.tvSeriesWatchlist(page: page, accountID: accountID, session: session)
+        let result = try await service.tvSeriesWatchlist(
+            page: page, accountID: accountID, session: session)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
@@ -313,7 +320,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        try await service.addToWatchlist(
+            tvSeries: tvSeriesID, accountID: accountID, session: session)
 
         #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
@@ -326,7 +334,8 @@ extension TMDbAccountServiceWatchlistTests {
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            try await service.addToWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+            try await service.addToWatchlist(
+                tvSeries: tvSeriesID, accountID: accountID, session: session)
         }
     }
 
@@ -345,7 +354,8 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+        try await service.removeFromWatchlist(
+            tvSeries: tvSeriesID, accountID: accountID, session: session)
 
         #expect(apiClient.lastRequest as? AddToWatchlistRequest == expectedRequest)
     }
@@ -358,7 +368,8 @@ extension TMDbAccountServiceWatchlistTests {
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            try await service.removeFromWatchlist(tvSeries: tvSeriesID, accountID: accountID, session: session)
+            try await service.removeFromWatchlist(
+                tvSeries: tvSeriesID, accountID: accountID, session: session)
         }
     }
 

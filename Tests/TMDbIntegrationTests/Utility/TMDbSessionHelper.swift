@@ -32,36 +32,36 @@ actor TMDbSessionHelper {
         self.credentialHelper = credentialHelper
     }
 
-//    func session() async throws -> Session {
-//        if let sessionCache {
-//            switch sessionCache {
-//            case .ready(let session):
-//                return session
-//
-//            case .inProgress(let task):
-//                return try await task.value
-//            }
-//        }
-//
-//        let apiKey = CredentialHelper.shared.tmdbAPIKey
-//        let tmdbClient = TMDbClient(apiKey: apiKey)
-//        let credential = credentialHelper.tmdbCredential
-//
-//        let task = Task {
-//            try await tmdbClient.authentication.createSession(withCredential: credential)
-//        }
-//
-//        sessionCache = .inProgress(task)
-//
-//        do {
-//            let session = try await task.value
-//            sessionCache = .ready(session)
-//            return session
-//        } catch {
-//            sessionCache = nil
-//            throw error
-//        }
-//    }
+    //    func session() async throws -> Session {
+    //        if let sessionCache {
+    //            switch sessionCache {
+    //            case .ready(let session):
+    //                return session
+    //
+    //            case .inProgress(let task):
+    //                return try await task.value
+    //            }
+    //        }
+    //
+    //        let apiKey = CredentialHelper.shared.tmdbAPIKey
+    //        let tmdbClient = TMDbClient(apiKey: apiKey)
+    //        let credential = credentialHelper.tmdbCredential
+    //
+    //        let task = Task {
+    //            try await tmdbClient.authentication.createSession(withCredential: credential)
+    //        }
+    //
+    //        sessionCache = .inProgress(task)
+    //
+    //        do {
+    //            let session = try await task.value
+    //            sessionCache = .ready(session)
+    //            return session
+    //        } catch {
+    //            sessionCache = nil
+    //            throw error
+    //        }
+    //    }
 
     func createSession() async throws -> Session {
         let apiKey = CredentialHelper.shared.tmdbAPIKey

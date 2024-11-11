@@ -24,7 +24,7 @@ extension VideoMetadata {
 
     static func mock(
         id: String = .randomID,
-        name: String = .randomString,
+        name: String = .random,
         site: String = "YouTube",
         key: String = "abc123",
         type: VideoType = .trailer,

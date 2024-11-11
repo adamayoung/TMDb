@@ -44,9 +44,9 @@ final class TVSeriesSearchRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(
+    fileprivate init(
         query: String,
         firstAirDateYear: Int?,
         year: Int?,

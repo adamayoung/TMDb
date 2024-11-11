@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -32,7 +33,8 @@ struct TokenTests {
             expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
         )
 
-        let result = try JSONDecoder.theMovieDatabaseAuth.decode(Token.self, fromResource: "request-token")
+        let result = try JSONDecoder.theMovieDatabaseAuth.decode(
+            Token.self, fromResource: "request-token")
 
         #expect(result.success == expectedResult.success)
         #expect(result.requestToken == expectedResult.requestToken)

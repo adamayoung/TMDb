@@ -30,9 +30,9 @@ final class AccountRequest: DecodableAPIRequest<AccountDetails> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(sessionID: String) {
+    fileprivate init(sessionID: String) {
         self.init()
 
         self[.sessionID] = sessionID

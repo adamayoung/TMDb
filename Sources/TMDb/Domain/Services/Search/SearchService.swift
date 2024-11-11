@@ -123,9 +123,9 @@ public protocol SearchService: Sendable {
 
 }
 
-public extension SearchService {
+extension SearchService {
 
-    func searchAll(
+    public func searchAll(
         query: String,
         filter: AllMediaSearchFilter? = nil,
         page: Int? = nil,
@@ -134,7 +134,7 @@ public extension SearchService {
         try await searchAll(query: query, filter: filter, page: page, language: language)
     }
 
-    func searchMovies(
+    public func searchMovies(
         query: String,
         filter: MovieSearchFilter? = nil,
         page: Int? = nil,
@@ -143,7 +143,7 @@ public extension SearchService {
         try await searchMovies(query: query, filter: filter, page: page, language: language)
     }
 
-    func searchTVSeries(
+    public func searchTVSeries(
         query: String,
         filter: TVSeriesSearchFilter? = nil,
         page: Int? = nil,
@@ -152,7 +152,7 @@ public extension SearchService {
         try await searchTVSeries(query: query, filter: filter, page: page, language: language)
     }
 
-    func searchPeople(
+    public func searchPeople(
         query: String,
         filter: PersonSearchFilter? = nil,
         page: Int? = nil,

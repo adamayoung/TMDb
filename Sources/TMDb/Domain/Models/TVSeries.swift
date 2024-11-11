@@ -295,7 +295,8 @@ extension TVSeries {
         self.name = try container.decode(String.self, forKey: .name)
         self.tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
         self.originalName = try container.decodeIfPresent(String.self, forKey: .originalName)
-        self.originalLanguage = try container.decodeIfPresent(String.self, forKey: .originalLanguage)
+        self.originalLanguage = try container.decodeIfPresent(
+            String.self, forKey: .originalLanguage)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.episodeRunTime = try container.decodeIfPresent([Int].self, forKey: .episodeRunTime)
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
@@ -331,7 +332,8 @@ extension TVSeries {
         self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
         self.lastAirDate = try container.decodeIfPresent(Date.self, forKey: .lastAirDate)
         self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
-        self.productionCompanies = try container.decodeIfPresent([ProductionCompany].self, forKey: .productionCompanies)
+        self.productionCompanies = try container.decodeIfPresent(
+            [ProductionCompany].self, forKey: .productionCompanies)
         self.status = try container.decodeIfPresent(String.self, forKey: .status)
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)

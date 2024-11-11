@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct WatchProviderTests {
 
     @Test("JSON decoding of WatchProvider", .tags(.decoding))
     func decodeReturnsWatchProvider() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(WatchProvider.self, fromResource: "watch-provider")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            WatchProvider.self, fromResource: "watch-provider")
 
         #expect(result == watchProvider)
     }

@@ -21,8 +21,11 @@ import Foundation
 
 final class AddToWatchlistRequest: CodableAPIRequest<AddToWatchlistRequest.Body, SuccessResult> {
 
-    convenience init(showType: ShowType, showID: Show.ID, isInWatchlist: Bool, accountID: Int, sessionID: String) {
-        let body = AddToWatchlistRequest.Body(showType: showType, showID: showID, isInWatchlist: isInWatchlist)
+    convenience init(
+        showType: ShowType, showID: Show.ID, isInWatchlist: Bool, accountID: Int, sessionID: String
+    ) {
+        let body = AddToWatchlistRequest.Body(
+            showType: showType, showID: showID, isInWatchlist: isInWatchlist)
 
         self.init(body: body, accountID: accountID, sessionID: sessionID)
     }
@@ -58,9 +61,9 @@ extension AddToWatchlistRequest.Body {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(sessionID: String) {
+    fileprivate init(sessionID: String) {
         self.init()
 
         self[.sessionID] = sessionID

@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .account))
@@ -40,7 +41,8 @@ struct FavouriteTVSeriesRequestTests {
 
     @Test("queryItems contains sort_by and session_id")
     func queryItemsContainsSortByAndSessionID() {
-        let request = FavouriteTVSeriesRequest(sortedBy: .createdAt(descending: false), accountID: 1, sessionID: "abc")
+        let request = FavouriteTVSeriesRequest(
+            sortedBy: .createdAt(descending: false), accountID: 1, sessionID: "abc")
 
         #expect(request.queryItems == ["sort_by": "created_at.asc", "session_id": "abc"])
     }
@@ -61,7 +63,8 @@ struct FavouriteTVSeriesRequestTests {
             sessionID: "abc"
         )
 
-        #expect(request.queryItems == ["sort_by": "created_at.desc", "page": "2", "session_id": "abc"])
+        #expect(
+            request.queryItems == ["sort_by": "created_at.desc", "page": "2", "session_id": "abc"])
     }
 
     @Test("method is GET")

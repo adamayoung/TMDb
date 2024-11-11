@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .search))
@@ -84,14 +85,15 @@ struct TVSeriesSearchRequestTests {
             language: "en"
         )
 
-        #expect(request.queryItems == [
-            "query": "fight club",
-            "first_air_date_year": "2024",
-            "year": "2022",
-            "include_adult": "false",
-            "page": "3",
-            "language": "en"
-        ])
+        #expect(
+            request.queryItems == [
+                "query": "fight club",
+                "first_air_date_year": "2024",
+                "year": "2022",
+                "include_adult": "false",
+                "page": "3",
+                "language": "en",
+            ])
     }
 
     @Test("method is GET")

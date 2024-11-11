@@ -25,7 +25,7 @@ extension Review {
     static func mock(
         id: String = .randomID,
         author: String? = nil,
-        content: String = .randomString
+        content: String = .random
     ) -> Self {
         .init(
             id: id,

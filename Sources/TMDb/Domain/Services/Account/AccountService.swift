@@ -246,9 +246,9 @@ public protocol AccountService: Sendable {
 
 }
 
-public extension AccountService {
+extension AccountService {
 
-    func favouriteMovies(
+    public func favouriteMovies(
         sortedBy: FavouriteSort? = nil,
         page: Int? = nil,
         accountID: Int,
@@ -262,7 +262,7 @@ public extension AccountService {
         )
     }
 
-    func favouriteTVSeries(
+    public func favouriteTVSeries(
         sortedBy: FavouriteSort? = nil,
         page: Int? = nil,
         accountID: Int,
@@ -276,7 +276,7 @@ public extension AccountService {
         )
     }
 
-    func movieWatchlist(
+    public func movieWatchlist(
         sortedBy: WatchlistSort? = nil,
         page: Int? = nil,
         accountID: Int,
@@ -290,7 +290,7 @@ public extension AccountService {
         )
     }
 
-    func tvSeriesWatchlist(
+    public func tvSeriesWatchlist(
         sortedBy: WatchlistSort? = nil,
         page: Int? = nil,
         accountID: Int,

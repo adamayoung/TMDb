@@ -50,7 +50,8 @@ final class TMDbTrendingService: TrendingService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page, language: language)
+        let request = TrendingTVSeriesRequest(
+            timeWindow: timeWindow, page: page, language: language)
 
         let tvSeriesList: TVSeriesPageableList
         do {

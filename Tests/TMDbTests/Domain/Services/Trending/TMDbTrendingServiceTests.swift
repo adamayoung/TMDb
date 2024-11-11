@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .trending))
@@ -37,7 +38,8 @@ struct TMDbTrendingServiceTests {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: nil, language: nil)
+        let expectedRequest = TrendingMoviesRequest(
+            timeWindow: timeWindow, page: nil, language: nil)
 
         let result = try await service.movies(inTimeWindow: timeWindow)
 
@@ -52,9 +54,11 @@ struct TMDbTrendingServiceTests {
         let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingMoviesRequest(timeWindow: timeWindow, page: page, language: language)
+        let expectedRequest = TrendingMoviesRequest(
+            timeWindow: timeWindow, page: page, language: language)
 
-        let result = try await service.movies(inTimeWindow: timeWindow, page: page, language: language)
+        let result = try await service.movies(
+            inTimeWindow: timeWindow, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingMoviesRequest == expectedRequest)
@@ -75,7 +79,8 @@ struct TMDbTrendingServiceTests {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: nil, language: nil)
+        let expectedRequest = TrendingTVSeriesRequest(
+            timeWindow: timeWindow, page: nil, language: nil)
 
         let result = try await service.tvSeries(inTimeWindow: timeWindow)
 
@@ -90,9 +95,11 @@ struct TMDbTrendingServiceTests {
         let language = "en"
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingTVSeriesRequest(timeWindow: timeWindow, page: page, language: language)
+        let expectedRequest = TrendingTVSeriesRequest(
+            timeWindow: timeWindow, page: page, language: language)
 
-        let result = try await service.tvSeries(inTimeWindow: timeWindow, page: page, language: language)
+        let result = try await service.tvSeries(
+            inTimeWindow: timeWindow, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingTVSeriesRequest == expectedRequest)
@@ -113,7 +120,8 @@ struct TMDbTrendingServiceTests {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: nil, language: nil)
+        let expectedRequest = TrendingPeopleRequest(
+            timeWindow: timeWindow, page: nil, language: nil)
 
         let result = try await service.people(inTimeWindow: timeWindow)
 
@@ -128,9 +136,11 @@ struct TMDbTrendingServiceTests {
         let language = "en"
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TrendingPeopleRequest(timeWindow: timeWindow, page: page, language: language)
+        let expectedRequest = TrendingPeopleRequest(
+            timeWindow: timeWindow, page: page, language: language)
 
-        let result = try await service.people(inTimeWindow: timeWindow, page: page, language: language)
+        let result = try await service.people(
+            inTimeWindow: timeWindow, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingPeopleRequest == expectedRequest)

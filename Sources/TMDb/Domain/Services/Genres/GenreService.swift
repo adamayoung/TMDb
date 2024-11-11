@@ -55,13 +55,13 @@ public protocol GenreService: Sendable {
 
 }
 
-public extension GenreService {
+extension GenreService {
 
-    func movieGenres(language: String? = nil) async throws -> [Genre] {
+    public func movieGenres(language: String? = nil) async throws -> [Genre] {
         try await movieGenres(language: language)
     }
 
-    func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
+    public func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
         try await tvSeriesGenres(language: language)
     }
 

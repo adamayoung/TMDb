@@ -28,12 +28,12 @@ extension PersonCombinedCredits {
             .movie(.jurassicWorldDominion),
             .tvSeries(.bigBrother),
             .movie(.topGunMaverick),
-            .tvSeries(.csi)
+            .tvSeries(.csi),
         ],
         crew: [Show] = [
             .movie(.bulletTrain),
             .tvSeries(.bigBrother),
-            .movie(.thorLoveAndThunder)
+            .movie(.thorLoveAndThunder),
         ]
     ) -> Self {
         .init(

@@ -31,10 +31,10 @@ extension TMDbError {
         case .notFound:
             self = .notFound
 
-        case let .unauthorised(message):
+        case .unauthorised(let message):
             self = .unauthorised(message)
 
-        case let .network(error):
+        case .network(let error):
             self = .network(error)
 
         default:

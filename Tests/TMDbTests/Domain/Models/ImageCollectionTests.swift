@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct ImageCollectionTests {
 
     @Test("JSON decoding of ImageCollection", .tags(.decoding))
     func decodeImageCollection() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(ImageCollection.self, fromResource: "image-collection")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ImageCollection.self, fromResource: "image-collection")
 
         #expect(result.id == imageCollection.id)
         #expect(result.backdrops == imageCollection.backdrops)

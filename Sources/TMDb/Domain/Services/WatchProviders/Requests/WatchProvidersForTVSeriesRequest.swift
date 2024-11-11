@@ -30,9 +30,9 @@ final class WatchProvidersForTVSeriesRequest: DecodableAPIRequest<WatchProviderR
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(country: String?, language: String?) {
+    fileprivate init(country: String?, language: String?) {
         self.init()
 
         if let country {

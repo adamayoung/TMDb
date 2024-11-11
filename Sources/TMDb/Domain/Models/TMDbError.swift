@@ -37,7 +37,7 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
         case (.notFound, .notFound):
             true
 
-        case let (.unauthorised(lhsMessage), .unauthorised(rhsMessage)):
+        case (.unauthorised(let lhsMessage), .unauthorised(let rhsMessage)):
             lhsMessage == rhsMessage
 
         case (.network, .network):
@@ -53,12 +53,12 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
 
 }
 
-public extension TMDbError {
+extension TMDbError {
 
     ///
     /// A localized message describing what error occurred.
     ///
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .notFound:
             "Not found"

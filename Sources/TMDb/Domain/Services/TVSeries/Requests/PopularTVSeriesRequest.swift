@@ -30,9 +30,9 @@ final class PopularTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(page: Int?, language: String? = nil) {
+    fileprivate init(page: Int?, language: String? = nil) {
         self.init()
 
         if let page {

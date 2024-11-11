@@ -23,8 +23,8 @@ import TMDb
 extension Department {
 
     static func mock(
-        name: String = .randomString,
-        jobs: [String] = [.randomString, .randomString]
+        name: String = .random,
+        jobs: [String] = [.random, .random]
     ) -> Self {
         .init(
             name: name,
@@ -37,7 +37,7 @@ extension Department {
             name: "Costume & Make-Up",
             jobs: [
                 "Set Costumer",
-                "Co-Costume Designer"
+                "Co-Costume Designer",
             ]
         )
     }
@@ -48,7 +48,7 @@ extension Department {
             jobs: [
                 "Casting",
                 "ADR Voice Casting",
-                "Production Accountant"
+                "Production Accountant",
             ]
         )
     }

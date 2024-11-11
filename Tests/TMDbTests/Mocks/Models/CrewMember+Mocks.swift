@@ -26,8 +26,8 @@ extension CrewMember {
         id: Int = .randomID,
         creditID: String = .randomID,
         name: String? = nil,
-        job: String = "Job \(String.randomString)",
-        department: String = "Department \(String.randomString))",
+        job: String = "Job \(String.random)",
+        department: String = "Department \(String.random))",
         gender: Gender? = Gender.male,
         profilePath: URL? = .randomImagePath
     ) -> Self {

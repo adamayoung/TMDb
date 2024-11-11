@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .tvEpisode))
@@ -40,7 +41,8 @@ struct TVEpisodeRequestTests {
 
     @Test("queryItems with language")
     func queryItemsWithLanguage() {
-        let request = TVEpisodeRequest(episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3, language: "en")
+        let request = TVEpisodeRequest(
+            episodeNumber: 1, seasonNumber: 2, tvSeriesID: 3, language: "en")
 
         #expect(request.queryItems == ["language": "en"])
     }

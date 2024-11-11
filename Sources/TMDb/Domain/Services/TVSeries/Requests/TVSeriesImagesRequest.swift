@@ -30,9 +30,9 @@ final class TVSeriesImagesRequest: DecodableAPIRequest<ImageCollection> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(languages: [String]?) {
+    fileprivate init(languages: [String]?) {
         self.init()
 
         if var languages {

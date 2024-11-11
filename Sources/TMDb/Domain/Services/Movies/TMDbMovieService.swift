@@ -71,7 +71,9 @@ final class TMDbMovieService: MovieService {
         return reviewList
     }
 
-    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws
+        -> ImageCollection
+    {
         let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
         let imageCollection: ImageCollection
@@ -84,7 +86,9 @@ final class TMDbMovieService: MovieService {
         return imageCollection
     }
 
-    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws
+        -> VideoCollection
+    {
         let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 
         let videoCollection: VideoCollection
@@ -199,7 +203,9 @@ final class TMDbMovieService: MovieService {
         return movieList
     }
 
-    func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws -> ShowWatchProvider? {
+    func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws
+        -> ShowWatchProvider?
+    {
         let request = MovieWatchProvidersRequest(id: movieID)
 
         let result: ShowWatchProviderResult

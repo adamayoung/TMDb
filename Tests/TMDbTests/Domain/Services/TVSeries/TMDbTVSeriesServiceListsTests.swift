@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .tvSeries))
@@ -37,7 +38,8 @@ struct TMDbTVSeriesServiceListsTests {
         let tvSeriesID = Int.randomID
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: nil, language: nil)
+        let expectedRequest = TVSeriesRecommendationsRequest(
+            id: tvSeriesID, page: nil, language: nil)
 
         let result = try await service.recommendations(forTVSeries: tvSeriesID)
 
@@ -52,9 +54,11 @@ struct TMDbTVSeriesServiceListsTests {
         let language = "en"
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page, language: language)
+        let expectedRequest = TVSeriesRecommendationsRequest(
+            id: tvSeriesID, page: page, language: language)
 
-        let result = try await service.recommendations(forTVSeries: tvSeriesID, page: page, language: language)
+        let result = try await service.recommendations(
+            forTVSeries: tvSeriesID, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesRecommendationsRequest == expectedRequest)
@@ -92,7 +96,8 @@ struct TMDbTVSeriesServiceListsTests {
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: language)
 
-        let result = try await service.similar(toTVSeries: tvSeriesID, page: page, language: language)
+        let result = try await service.similar(
+            toTVSeries: tvSeriesID, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? SimilarTVSeriesRequest == expectedRequest)

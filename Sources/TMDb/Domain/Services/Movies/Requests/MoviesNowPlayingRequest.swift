@@ -30,9 +30,9 @@ final class MoviesNowPlayingRequest: DecodableAPIRequest<MoviePageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(page: Int?, country: String?, language: String?) {
+    fileprivate init(page: Int?, country: String?, language: String?) {
         self.init()
 
         if let page {

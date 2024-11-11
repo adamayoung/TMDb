@@ -32,7 +32,8 @@ final class AuthenticateURLBuilder: AuthenticateURLBuilding {
     }
 
     func authenticateURL(with requestToken: String, redirectURL: URL?) -> URL {
-        let url = baseURL
+        let url =
+            baseURL
             .appendingPathComponent("authenticate")
             .appendingPathComponent(requestToken)
 

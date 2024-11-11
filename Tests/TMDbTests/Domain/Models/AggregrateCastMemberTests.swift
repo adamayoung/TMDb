@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -50,7 +51,8 @@ struct AggregrateCastMemberTests {
         gender: .male,
         profilePath: URL(string: "/iLyXgCimAWNHSjkTXb7e5KgcMWh.jpg"),
         roles: [
-            CastRole(creditID: "5257751c760ee36aaa50e171", character: "Clark Kent", episodeCount: 216)
+            CastRole(
+                creditID: "5257751c760ee36aaa50e171", character: "Clark Kent", episodeCount: 216)
         ],
         knownForDepartment: "Acting",
         adult: false,

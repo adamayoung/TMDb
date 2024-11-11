@@ -111,9 +111,9 @@ public protocol TVSeasonService: Sendable {
 
 }
 
-public extension TVSeasonService {
+extension TVSeasonService {
 
-    func details(
+    public func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
@@ -121,15 +121,16 @@ public extension TVSeasonService {
         try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
-    func aggregateCredits(
+    public func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeasonAggregateCredits {
-        try await aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+        try await aggregateCredits(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
-    func images(
+    public func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonImageFilter? = nil
@@ -137,7 +138,7 @@ public extension TVSeasonService {
         try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
     }
 
-    func videos(
+    public func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonVideoFilter? = nil

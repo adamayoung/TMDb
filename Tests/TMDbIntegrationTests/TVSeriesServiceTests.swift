@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(
@@ -138,7 +139,8 @@ struct TVSeriesServiceTests {
     func contentRatings() async throws {
         let tvSeriesID = 8592
 
-        let contentRatings = try #require(await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US"))
+        let contentRatings = try #require(
+            await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US"))
 
         #expect(contentRatings.rating == "TV-14")
         #expect(contentRatings.countryCode == "US")

@@ -83,7 +83,7 @@ public struct MovieExternalLinksCollection: Identifiable, Codable, Equatable, Ha
 
 }
 
-public extension MovieExternalLinksCollection {
+extension MovieExternalLinksCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -94,7 +94,7 @@ public extension MovieExternalLinksCollection {
         case twitterID = "twitterId"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(Movie.ID.self, forKey: .id)
@@ -121,7 +121,7 @@ public extension MovieExternalLinksCollection {
         )
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)

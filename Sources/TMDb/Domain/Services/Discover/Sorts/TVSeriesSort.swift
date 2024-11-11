@@ -68,13 +68,13 @@ extension TVSeriesSort {
 
     private var isDescending: Bool {
         switch self {
-        case let .popularity(descending):
+        case .popularity(let descending):
             descending
 
-        case let .firstAirDate(descending):
+        case .firstAirDate(let descending):
             descending
 
-        case let .voteAverage(descending):
+        case .voteAverage(let descending):
             descending
         }
     }

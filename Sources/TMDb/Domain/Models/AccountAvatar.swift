@@ -51,12 +51,12 @@ public struct AccountAvatar: Codable, Equatable, Hashable, Sendable {
 
 }
 
-public extension AccountAvatar {
+extension AccountAvatar {
 
     ///
     /// A model representing a TMDb user's Gravatar avatar.
     ///
-    struct Gravatar: Codable, Equatable, Hashable, Sendable {
+    public struct Gravatar: Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Gravatar hash.
@@ -75,12 +75,12 @@ public extension AccountAvatar {
 
 }
 
-public extension AccountAvatar {
+extension AccountAvatar {
 
     ///
     /// A model representing a TMDb user's TMDb avatar.
     ///
-    struct TMDb: Codable, Equatable, Hashable, Sendable {
+    public struct TMDb: Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Path of the avatar image.

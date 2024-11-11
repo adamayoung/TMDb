@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .discover))
@@ -67,11 +68,12 @@ struct DiscoverTVSeriesRequestTests {
             language: "en"
         )
 
-        #expect(request.queryItems == [
-            "sort_by": "first_air_date.asc",
-            "page": "2",
-            "language": "en"
-        ])
+        #expect(
+            request.queryItems == [
+                "sort_by": "first_air_date.asc",
+                "page": "2",
+                "language": "en",
+            ])
     }
 
     @Test("method is GET")

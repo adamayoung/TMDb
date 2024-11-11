@@ -24,9 +24,9 @@ extension Company {
 
     static func mock(
         id: Int = .randomID,
-        name: String = .randomString,
-        description: String = .randomString,
-        headquarters: String = .randomString,
+        name: String = .random,
+        description: String = .random,
+        headquarters: String = .random,
         homepageURL: URL = .randomWebSite,
         logoPath: URL = .randomImagePath,
         originCountry: String = "US",

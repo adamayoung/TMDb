@@ -25,7 +25,7 @@ extension ProductionCompany {
     static func mock(
         id: Int = .randomID,
         name: String? = nil,
-        originCountry: String = .randomString,
+        originCountry: String = .random,
         logoPath: URL? = .randomImagePath
     ) -> Self {
         .init(

@@ -22,7 +22,7 @@ import Foundation
 extension Int {
 
     static var randomID: Self {
-        .random(in: 1 ... 10_000_000)
+        .random(in: 1...10_000_000)
     }
 
 }

@@ -1,8 +1,9 @@
 // swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import class Foundation.ProcessInfo
 import PackageDescription
+
+import class Foundation.ProcessInfo
 
 let package = Package(
     name: "TMDb",
@@ -14,7 +15,7 @@ let package = Package(
         .iOS(.v16),
         .watchOS(.v9),
         .tvOS(.v16),
-        .visionOS(.v1)
+        .visionOS(.v1),
     ],
 
     products: [
@@ -35,7 +36,7 @@ let package = Package(
         .testTarget(
             name: "TMDbIntegrationTests",
             dependencies: ["TMDb"]
-        )
+        ),
     ]
 )
 

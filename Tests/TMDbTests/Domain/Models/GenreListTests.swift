@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct GenreListTests {
 
     @Test("JSON decoding of GenreList", .tags(.decoding))
     func decodeGenreList() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(GenreList.self, fromResource: "genres-list")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            GenreList.self, fromResource: "genres-list")
 
         #expect(result.genres == genreList.genres)
     }

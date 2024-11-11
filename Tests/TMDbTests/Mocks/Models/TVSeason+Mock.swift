@@ -25,8 +25,8 @@ extension TVSeason {
     static func mock(
         id: Int = .randomID,
         name: String? = nil,
-        seasonNumber: Int = Int.random(in: 1 ... 10),
-        overview: String? = .randomString,
+        seasonNumber: Int = Int.random(in: 1...10),
+        overview: String? = .random,
         airDate: Date? = .random,
         posterPath: URL? = nil,
         episodes: [TVEpisode]? = .mocks

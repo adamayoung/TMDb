@@ -30,9 +30,9 @@ final class FavouriteMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(sortedBy: FavouriteSort?, page: Int?, sessionID: String) {
+    fileprivate init(sortedBy: FavouriteSort?, page: Int?, sessionID: String) {
         self.init()
 
         if let sortedBy {

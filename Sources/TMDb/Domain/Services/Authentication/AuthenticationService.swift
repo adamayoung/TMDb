@@ -119,9 +119,9 @@ public protocol AuthenticationService: Sendable {
 
 }
 
-public extension AuthenticationService {
+extension AuthenticationService {
 
-    func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
+    public func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
         authenticateURL(for: token, redirectURL: redirectURL)
     }
 

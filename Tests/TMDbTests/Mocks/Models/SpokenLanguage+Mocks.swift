@@ -23,8 +23,8 @@ import TMDb
 extension SpokenLanguage {
 
     static func mocks(
-        languageCode: String = .randomString,
-        name: String = .randomString
+        languageCode: String = .random,
+        name: String = .random
     ) -> Self {
         .init(
             languageCode: languageCode,

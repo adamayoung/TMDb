@@ -29,13 +29,13 @@ public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     public var id: Int {
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             movie.id
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             tvSeries.id
 
-        case let .person(person):
+        case .person(let person):
             person.id
         }
     }
@@ -89,13 +89,13 @@ extension Media {
         var singleContainer = encoder.singleValueContainer()
 
         switch self {
-        case let .movie(movie):
+        case .movie(let movie):
             try singleContainer.encode(movie)
 
-        case let .tvSeries(tvSeries):
+        case .tvSeries(let tvSeries):
             try singleContainer.encode(tvSeries)
 
-        case let .person(person):
+        case .person(let person):
             try singleContainer.encode(person)
         }
     }
