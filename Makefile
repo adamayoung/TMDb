@@ -16,13 +16,11 @@ clean:
 
 .PHONY: format
 format:
-	swiftlint --fix
-	swiftformat .
+	swift format -r -p -i .
 
 .PHONY: lint
 lint:
-	swiftlint --strict
-	swiftformat --lint .
+	swift format lint -r -p .
 
 .PHONY: lint-markdown
 lint-markdown:
