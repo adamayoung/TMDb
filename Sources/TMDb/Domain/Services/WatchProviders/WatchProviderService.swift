@@ -52,7 +52,8 @@ public protocol WatchProviderService: Sendable {
     ///
     /// - Returns: Watch providers for movies.
     ///
-    func movieWatchProviders(filter: WatchProviderFilter?, language: String?) async throws -> [WatchProvider]
+    func movieWatchProviders(filter: WatchProviderFilter?, language: String?) async throws
+        -> [WatchProvider]
 
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV series.
@@ -67,24 +68,25 @@ public protocol WatchProviderService: Sendable {
     ///
     /// - Returns: Watch providers for TV series.
     ///
-    func tvSeriesWatchProviders(filter: WatchProviderFilter?, language: String?) async throws -> [WatchProvider]
+    func tvSeriesWatchProviders(filter: WatchProviderFilter?, language: String?) async throws
+        -> [WatchProvider]
 
 }
 
-public extension WatchProviderService {
+extension WatchProviderService {
 
-    func countries(language: String? = nil) async throws -> [Country] {
+    public func countries(language: String? = nil) async throws -> [Country] {
         try await countries(language: language)
     }
 
-    func movieWatchProviders(
+    public func movieWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
     ) async throws -> [WatchProvider] {
         try await movieWatchProviders(filter: filter, language: language)
     }
 
-    func tvSeriesWatchProviders(
+    public func tvSeriesWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
     ) async throws -> [WatchProvider] {

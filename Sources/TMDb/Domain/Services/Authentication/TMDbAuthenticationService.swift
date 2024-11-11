@@ -60,7 +60,8 @@ final class TMDbAuthenticationService: AuthenticationService {
     }
 
     func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
-        let url = authenticateURLBuilder.authenticateURL(with: token.requestToken, redirectURL: redirectURL)
+        let url = authenticateURLBuilder.authenticateURL(
+            with: token.requestToken, redirectURL: redirectURL)
 
         return url
     }

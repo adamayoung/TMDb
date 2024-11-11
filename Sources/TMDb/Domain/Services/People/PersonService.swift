@@ -53,7 +53,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
-    func combinedCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonCombinedCredits
+    func combinedCredits(forPerson personID: Person.ID, language: String?) async throws
+        -> PersonCombinedCredits
 
     ///
     /// Returns the movie credits of a person.
@@ -68,7 +69,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person's movie credits.
     ///
-    func movieCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonMovieCredits
+    func movieCredits(forPerson personID: Person.ID, language: String?) async throws
+        -> PersonMovieCredits
 
     ///
     /// Returns the TV series credits of a person.
@@ -83,7 +85,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person's TV series credits.
     ///
-    func tvSeriesCredits(forPerson personID: Person.ID, language: String?) async throws -> PersonTVSeriesCredits
+    func tvSeriesCredits(forPerson personID: Person.ID, language: String?) async throws
+        -> PersonTVSeriesCredits
 
     ///
     /// Returns the images for a person.
@@ -130,25 +133,33 @@ public protocol PersonService: Sendable {
 
 }
 
-public extension PersonService {
+extension PersonService {
 
-    func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+    public func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
         try await details(forPerson: id, language: language)
     }
 
-    func combinedCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonCombinedCredits {
+    public func combinedCredits(forPerson personID: Person.ID, language: String? = nil) async throws
+        -> PersonCombinedCredits
+    {
         try await combinedCredits(forPerson: personID, language: language)
     }
 
-    func movieCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonMovieCredits {
+    public func movieCredits(forPerson personID: Person.ID, language: String? = nil) async throws
+        -> PersonMovieCredits
+    {
         try await movieCredits(forPerson: personID, language: language)
     }
 
-    func tvSeriesCredits(forPerson personID: Person.ID, language: String? = nil) async throws -> PersonTVSeriesCredits {
+    public func tvSeriesCredits(forPerson personID: Person.ID, language: String? = nil) async throws
+        -> PersonTVSeriesCredits
+    {
         try await tvSeriesCredits(forPerson: personID, language: language)
     }
 
-    func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
+    public func popular(page: Int? = nil, language: String? = nil) async throws
+        -> PersonPageableList
+    {
         try await popular(page: page, language: language)
     }
 

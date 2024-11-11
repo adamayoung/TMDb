@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -54,7 +55,8 @@ struct PersonPageableListTests {
                             name: "Euphoria",
                             originalName: "Euphoria",
                             originalLanguage: "en",
-                            overview: "A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.",
+                            overview:
+                                "A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.",
                             genreIDs: [18],
                             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2019-06-16"),
                             originCountries: ["US"],
@@ -72,7 +74,8 @@ struct PersonPageableListTests {
                             title: "Anyone But You",
                             originalTitle: "Anyone But You",
                             originalLanguage: "en",
-                            overview: "After an amazing first date, Bea and Ben’s fiery attraction turns ice cold — until they find themselves unexpectedly reunited at a destination wedding in Australia. So they do what any two mature adults would do: pretend to be a couple.",
+                            overview:
+                                "After an amazing first date, Bea and Ben’s fiery attraction turns ice cold — until they find themselves unexpectedly reunited at a destination wedding in Australia. So they do what any two mature adults would do: pretend to be a couple.",
                             genreIDs: [10749, 35],
                             releaseDate: DateFormatter.theMovieDatabase.date(from: "2023-12-21"),
                             posterPath: URL(string: "/yRt7MGBElkLQOYRvLTT1b3B1rcp.jpg"),
@@ -83,7 +86,7 @@ struct PersonPageableListTests {
                             hasVideo: false,
                             isAdultOnly: false
                         )
-                    )
+                    ),
                 ],
                 isAdultOnly: false
             )

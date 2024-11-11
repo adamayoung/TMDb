@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite
@@ -39,12 +40,12 @@ struct JSONDecoderTMDbTests {
         )
 
         let jsonString = """
-        {
-            "id": "abc123",
-            "first_name": "Adam",
-            "date_of_birth": "1990-01-02"
-        }
-        """
+            {
+                "id": "abc123",
+                "first_name": "Adam",
+                "date_of_birth": "1990-01-02"
+            }
+            """
         let data = Data(jsonString.utf8)
 
         let result = try JSONDecoder.theMovieDatabase.decode(SomeThing.self, from: data)

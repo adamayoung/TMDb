@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - ".github/workflows/lint.yml"
+      - ".swift-format"
       - "**/*.swift"
   workflow_dispatch:
 
@@ -16,30 +17,16 @@ concurrency:
   group: "lint-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
+env:
+  DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
+
 jobs:
-  swiftLint:
-    name: SwiftLint
-    runs-on: macos-15
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_16.1.app/Contents/Developer
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Install swiftlint
-        run: brew install swiftlint
-
-      - name: Swiftlint
-        run: swiftlint --strict --reporter github-actions-logging
-
   swiftFormat:
-    name: SwiftFormat
-    runs-on: ubuntu-latest
-    container:
-      image: docker://ghcr.io/nicklockwood/swiftformat:latest
+    name: swift-format
+    runs-on: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       
       - name: SwiftFormat
-        run: swiftformat --lint --reporter github-actions-log .
+        run: swift format lint -r -p --strict .

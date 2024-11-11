@@ -26,11 +26,11 @@ extension CastMember {
         id: Int = .randomID,
         castID: Int? = .randomID,
         creditID: String = .randomID,
-        name: String? = .randomString,
-        character _: String? = .randomString,
+        name: String? = .random,
+        character _: String? = .random,
         gender: Gender? = .male,
         profilePath: URL? = .randomImagePath,
-        order: Int = Int.random(in: 1 ... 10)
+        order: Int = Int.random(in: 1...10)
     ) -> Self {
         .init(
             id: id,
@@ -77,7 +77,7 @@ extension [CastMember] {
     static var mocks: [Element] {
         [
             .chrisHemsworth,
-            .christianBale
+            .christianBale,
         ]
     }
 

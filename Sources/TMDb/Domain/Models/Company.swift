@@ -138,12 +138,12 @@ extension Company {
 
 }
 
-public extension Company {
+extension Company {
 
     ///
     /// A model representing a parent company.
     ///
-    struct Parent: Identifiable, Codable, Equatable, Hashable, Sendable {
+    public struct Parent: Identifiable, Codable, Equatable, Hashable, Sendable {
 
         ///
         /// Company identifier.

@@ -91,7 +91,7 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
 
 }
 
-public extension PersonExternalLinksCollection {
+extension PersonExternalLinksCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -103,7 +103,7 @@ public extension PersonExternalLinksCollection {
         case tikTokID = "tiktokId"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(Person.ID.self, forKey: .id)
@@ -133,7 +133,7 @@ public extension PersonExternalLinksCollection {
         )
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)

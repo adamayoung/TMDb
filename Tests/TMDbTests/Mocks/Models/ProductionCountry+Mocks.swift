@@ -23,8 +23,8 @@ import TMDb
 extension ProductionCountry {
 
     static func mock(
-        countryCode: String = .randomString,
-        name: String = .randomString
+        countryCode: String = .random,
+        name: String = .random
     ) -> Self {
         .init(
             countryCode: countryCode,

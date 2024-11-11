@@ -22,15 +22,18 @@ import Foundation
 extension URL {
 
     static var randomImagePath: URL {
-        URL(string: "/\(String.randomString).jpg")!
+        URL(string: "/\(String.random).jpg")!
     }
 
     static var randomWebSite: URL {
-        URL(string: "https://www.\(String.randomString).com")!
+        URL(string: "https://www.\(String.random).com")!
     }
 
     static func randomBaseURL(secure: Bool = true) -> URL {
-        URL(string: "\(secure ? "https" : "http")://api.\(String.randomString).com/\(String.randomString)/")!
+        URL(
+            string:
+                "\(secure ? "https" : "http")://api.\(String.random).com/\(String.random)/"
+        )!
     }
 
 }

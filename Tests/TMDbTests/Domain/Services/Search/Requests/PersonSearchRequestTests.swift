@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .search))
@@ -61,14 +62,16 @@ struct PersonSearchRequestTests {
 
     @Test("queryItems with query, includeAdult, page and language")
     func queryItemsWithQueryAndIncludeAdultAndPageAndLanguage() {
-        let request = PersonSearchRequest(query: "edward norton", includeAdult: false, page: 2, language: "en")
+        let request = PersonSearchRequest(
+            query: "edward norton", includeAdult: false, page: 2, language: "en")
 
-        #expect(request.queryItems == [
-            "query": "edward norton",
-            "include_adult": "false",
-            "page": "2",
-            "language": "en"
-        ])
+        #expect(
+            request.queryItems == [
+                "query": "edward norton",
+                "include_adult": "false",
+                "page": "2",
+                "language": "en",
+            ])
     }
 
     @Test("method is GET")

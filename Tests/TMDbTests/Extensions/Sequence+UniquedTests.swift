@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite
@@ -27,7 +28,7 @@ struct SequenceUniquedTests {
     @Test("uniqued with all distinct IDs returns original")
     func uniquedWithAllDistinctIDsReturnsOriginal() {
         let items: [Item] = [
-            .init(), .init(), .init(), .init(), .init(), .init()
+            .init(), .init(), .init(), .init(), .init(), .init(),
         ]
 
         let result = items.uniqued()

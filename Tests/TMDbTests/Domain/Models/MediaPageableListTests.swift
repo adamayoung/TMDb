@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -40,7 +41,7 @@ struct MediaPageableListTests {
         results: [
             .movie(.theFirstOmen),
             .tvSeries(.bigBrother),
-            .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
+            .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown)),
         ],
         totalResults: 3,
         totalPages: 1

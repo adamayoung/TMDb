@@ -113,7 +113,8 @@ extension TMDbAPIClient {
         urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
         var queryItems = urlComponents.queryItems ?? []
         for requestQueryItem in requestQueryItems {
-            queryItems.append(URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value))
+            queryItems.append(
+                URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value))
         }
 
         urlComponents.queryItems = queryItems
@@ -136,7 +137,7 @@ extension TMDbAPIClient {
 
     private func validate(response: HTTPResponse, with serialiser: some Serialiser) async throws {
         let statusCode = response.statusCode
-        if (200 ... 299).contains(statusCode) {
+        if (200...299).contains(statusCode) {
             return
         }
 

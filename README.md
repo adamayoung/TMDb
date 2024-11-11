@@ -10,7 +10,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Requirements
 
-* Swift 5.9+
+* Swift 6.0+
 * OS
   * macOS 13+
   * iOS 16+
@@ -103,7 +103,7 @@ covering these.
 
 #### Coding Style
 
-Coding style is enforced by `swiftlint` and `swiftformat`.
+Coding style is enforced by `swift-format`.
 
 Use the following command to lint the codebase:
 

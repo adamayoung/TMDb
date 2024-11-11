@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct CrewMemberTests {
 
     @Test("JSON decoding of Country", .tags(.decoding))
     func decodeCrewMember() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(CrewMember.self, fromResource: "crew-member")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            CrewMember.self, fromResource: "crew-member")
 
         #expect(result.id == crewMember.id)
         #expect(result.creditID == crewMember.creditID)

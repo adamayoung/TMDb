@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -61,7 +62,7 @@ struct MoviePageableListTests {
                 originalLanguage: "en",
                 overview: "Overview 3",
                 genreIDs: [7, 8, 9]
-            )
+            ),
         ],
         totalResults: 3,
         totalPages: 1

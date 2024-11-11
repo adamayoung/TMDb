@@ -18,13 +18,14 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 extension Genre {
 
     static func mock(
         id: Int = .randomID,
-        name: String = .randomString
+        name: String = .random
     ) -> Self {
         .init(
             id: id,

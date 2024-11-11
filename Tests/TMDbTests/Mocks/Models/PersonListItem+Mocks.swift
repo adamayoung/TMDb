@@ -24,12 +24,12 @@ extension PersonListItem {
 
     static func mock(
         id: Int = .randomID,
-        name: String = .randomString,
+        name: String = .random,
         originalName: String,
-        knownForDepartment: String? = .randomString,
+        knownForDepartment: String? = .random,
         gender: Gender = .unknown,
         profilePath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1 ... 10)
+        popularity: Double? = Double.random(in: 1...10)
     ) -> Self {
         .init(
             id: id,
@@ -67,7 +67,7 @@ extension [PersonListItem] {
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino
+            .quentinTarantino,
         ]
     }
 

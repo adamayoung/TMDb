@@ -41,7 +41,9 @@ final class TMDbTVSeriesService: TVSeriesService {
         return tvSeries
     }
 
-    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws -> ShowCredits {
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws
+        -> ShowCredits
+    {
         let request = TVSeriesCreditsRequest(id: tvSeriesID, language: language)
 
         let credits: ShowCredits
@@ -200,7 +202,9 @@ final class TMDbTVSeriesService: TVSeriesService {
         }
     }
 
-    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws -> TVSeriesExternalLinksCollection {
+    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws
+        -> TVSeriesExternalLinksCollection
+    {
         let request = TVSeriesExternalLinksRequest(id: tvSeriesID)
 
         let linksCollection: TVSeriesExternalLinksCollection

@@ -18,6 +18,7 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 extension TVSeries {
@@ -27,7 +28,7 @@ extension TVSeries {
         name: String? = nil,
         originalName: String? = nil,
         originalLanguage: String? = nil,
-        overview: String? = .randomString,
+        overview: String? = .random,
         episodeRunTime: [Int]? = nil,
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,

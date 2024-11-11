@@ -66,12 +66,12 @@ public struct HTTPRequest: Sendable {
 
 }
 
-public extension HTTPRequest {
+extension HTTPRequest {
 
     ///
     /// An enumeration representing HTTP methods.
     ///
-    enum Method: String, Sendable {
+    public enum Method: String, Sendable {
 
         ///
         /// HTTP GET method.

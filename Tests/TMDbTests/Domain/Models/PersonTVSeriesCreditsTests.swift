@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -38,7 +39,8 @@ struct PersonTVSeriesCreditsTests {
     func allShowsReturnsCombinedTVSeries() {
         let tvSeries1 = TVSeries(id: 1, name: "TV Series 1")
         let tvSeries2 = TVSeries(id: 2, name: "TV Series 2")
-        let credits = PersonTVSeriesCredits(id: 999, cast: [tvSeries1, tvSeries2], crew: [tvSeries1])
+        let credits = PersonTVSeriesCredits(
+            id: 999, cast: [tvSeries1, tvSeries2], crew: [tvSeries1])
 
         let expectedResult = [tvSeries1, tvSeries2]
 
@@ -56,7 +58,8 @@ struct PersonTVSeriesCreditsTests {
                 name: "Growing Pains",
                 originalName: "Growing Pains",
                 originalLanguage: "en",
-                overview: "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
+                overview:
+                    "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "1985-09-24"),
                 originCountry: ["US"],
                 posterPath: URL(string: "/eKyeUFwjc0LhPSp129IHpXniJVR.jpg"),
@@ -72,7 +75,9 @@ struct PersonTVSeriesCreditsTests {
                 name: "The OA",
                 originalName: "The OA",
                 originalLanguage: "en",
-                overview: "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won’t talk with the FBI or her parents about the seven years she went missing.", firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-12-16"),
+                overview:
+                    "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won’t talk with the FBI or her parents about the seven years she went missing.",
+                firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-12-16"),
                 originCountry: [],
                 posterPath: URL(string: "/ppSiYu2D0nw6KNF0kf5lKDxOGRR.jpg"),
                 backdropPath: URL(string: "/k9kPIikcQBzl93nSyXUfqc74J9S.jpg"),

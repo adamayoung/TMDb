@@ -19,7 +19,9 @@
 
 import Foundation
 
-class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest, CustomStringConvertible {
+class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest,
+    CustomStringConvertible
+{
 
     let id: UUID
     let path: String
@@ -30,13 +32,13 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
 
     var description: String {
         var description = """
-        APIRequest:
-        \tid: \(id.uuidString)
-        \tpath: \(path)
-        \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
-        \tmethod: \(method)
-        \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
-        """
+            APIRequest:
+            \tid: \(id.uuidString)
+            \tpath: \(path)
+            \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
+            \tmethod: \(method)
+            \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
+            """
 
         if let body {
             description += "\nBody:\n\(body)"
@@ -55,7 +57,8 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
     ) {
         self.id = id
         self.path = path
-        let queryItems = queryItems.map { (key: APIRequestQueryItem.Name, value: any CustomStringConvertible) in
+        let queryItems = queryItems.map {
+            (key: APIRequestQueryItem.Name, value: any CustomStringConvertible) in
             (key.description, value.description)
         }
         self.queryItems = Dictionary(uniqueKeysWithValues: queryItems)
@@ -64,7 +67,9 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         self.headers = headers
     }
 
-    static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>) -> Bool {
+    static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>)
+        -> Bool
+    {
         lhs.path == rhs.path
             && lhs.queryItems == rhs.queryItems
             && lhs.method == rhs.method

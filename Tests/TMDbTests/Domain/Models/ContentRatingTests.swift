@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct ContentRatingTests {
 
     @Test("JSON decoding of ContentRating", .tags(.decoding))
     func decodeContentRating() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(ContentRating.self, fromResource: "content-rating")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ContentRating.self, fromResource: "content-rating")
 
         #expect(result.descriptors == contentRating.descriptors)
         #expect(result.countryCode == contentRating.countryCode)

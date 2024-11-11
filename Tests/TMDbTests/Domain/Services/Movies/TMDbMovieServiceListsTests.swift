@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .movie))
@@ -52,9 +53,11 @@ struct TMDbMovieServiceListsTests {
         let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieRecommendationsRequest(id: movieID, page: page, language: language)
+        let expectedRequest = MovieRecommendationsRequest(
+            id: movieID, page: page, language: language)
 
-        let result = try await service.recommendations(forMovie: movieID, page: page, language: language)
+        let result = try await service.recommendations(
+            forMovie: movieID, page: page, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieRecommendationsRequest == expectedRequest)
@@ -127,7 +130,8 @@ struct TMDbMovieServiceListsTests {
         let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MoviesNowPlayingRequest(page: page, country: country, language: language)
+        let expectedRequest = MoviesNowPlayingRequest(
+            page: page, country: country, language: language)
 
         let result = try await service.nowPlaying(page: page, country: country, language: language)
 
@@ -199,7 +203,8 @@ struct TMDbMovieServiceListsTests {
         let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TopRatedMoviesRequest(page: page, country: country, language: language)
+        let expectedRequest = TopRatedMoviesRequest(
+            page: page, country: country, language: language)
 
         let result = try await service.topRated(page: page, country: country, language: language)
 
@@ -235,7 +240,8 @@ struct TMDbMovieServiceListsTests {
         let language = "en"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = UpcomingMoviesRequest(page: page, country: country, language: language)
+        let expectedRequest = UpcomingMoviesRequest(
+            page: page, country: country, language: language)
 
         let result = try await service.upcoming(page: page, country: country, language: language)
 

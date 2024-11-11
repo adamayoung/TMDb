@@ -45,9 +45,9 @@ final class MovieSearchRequest: DecodableAPIRequest<MoviePageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(
+    fileprivate init(
         query: String,
         primaryReleaseYear: Int?,
         country: String?,

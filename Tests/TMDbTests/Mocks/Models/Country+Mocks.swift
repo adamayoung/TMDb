@@ -24,8 +24,8 @@ extension Country {
 
     static func mock(
         countryCode: String = "US",
-        name: String = .randomString,
-        englishName: String = .randomString
+        name: String = .random,
+        englishName: String = .random
     ) -> Self {
         .init(
             countryCode: countryCode,

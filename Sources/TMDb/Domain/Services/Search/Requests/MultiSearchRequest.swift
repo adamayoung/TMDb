@@ -40,9 +40,9 @@ final class MultiSearchRequest: DecodableAPIRequest<MediaPageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(
+    fileprivate init(
         query: String,
         includeAdult: Bool?,
         page: Int?,

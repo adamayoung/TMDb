@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(
@@ -62,7 +63,8 @@ final class AccountIntegrationTests {
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 
-        try await accountService.addFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+        try await accountService.addFavourite(
+            movie: movieID, accountID: accountDetails.id, session: session)
 
         let movieListAfterFavorited = try await accountService.favouriteMovies(
             accountID: accountDetails.id,
@@ -71,14 +73,17 @@ final class AccountIntegrationTests {
         let isMovieFavourited = movieListAfterFavorited.results.contains { $0.id == movieID }
         #expect(isMovieFavourited)
 
-        try await accountService.removeFavourite(movie: movieID, accountID: accountDetails.id, session: session)
+        try await accountService.removeFavourite(
+            movie: movieID, accountID: accountDetails.id, session: session)
 
         let movieListAfterFavoriteRemoved = try await accountService.favouriteMovies(
             accountID: accountDetails.id,
             session: session
         )
 
-        let isMovieFavouritedAfterRemoved = movieListAfterFavoriteRemoved.results.contains { $0.id == movieID }
+        let isMovieFavouritedAfterRemoved = movieListAfterFavoriteRemoved.results.contains {
+            $0.id == movieID
+        }
         #expect(!isMovieFavouritedAfterRemoved)
     }
 
@@ -87,23 +92,29 @@ final class AccountIntegrationTests {
         let accountDetails = try await accountService.details(session: session)
         let tvSeriesID = 2261
 
-        try await accountService.addFavourite(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+        try await accountService.addFavourite(
+            tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
 
         let tvSeriesListAfterFavorited = try await accountService.favouriteTVSeries(
             accountID: accountDetails.id,
             session: session
         )
-        let isTVSeriesFavourited = tvSeriesListAfterFavorited.results.contains { $0.id == tvSeriesID }
+        let isTVSeriesFavourited = tvSeriesListAfterFavorited.results.contains {
+            $0.id == tvSeriesID
+        }
         #expect(isTVSeriesFavourited)
 
-        try await accountService.removeFavourite(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+        try await accountService.removeFavourite(
+            tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
 
         let tvSeriesListAfterFavoriteRemoved = try await accountService.favouriteTVSeries(
             accountID: accountDetails.id,
             session: session
         )
 
-        let isTVSeriesFavouritedAfterRemoved = tvSeriesListAfterFavoriteRemoved.results.contains { $0.id == tvSeriesID }
+        let isTVSeriesFavouritedAfterRemoved = tvSeriesListAfterFavoriteRemoved.results.contains {
+            $0.id == tvSeriesID
+        }
         #expect(!isTVSeriesFavouritedAfterRemoved)
     }
 
@@ -112,23 +123,29 @@ final class AccountIntegrationTests {
         let accountDetails = try await accountService.details(session: session)
         let movieID = 550
 
-        try await accountService.addToWatchlist(movie: movieID, accountID: accountDetails.id, session: session)
+        try await accountService.addToWatchlist(
+            movie: movieID, accountID: accountDetails.id, session: session)
 
         let movieListAfterAddToWatchlist = try await accountService.movieWatchlist(
             accountID: accountDetails.id,
             session: session
         )
-        let isMovieAddedToWatchlist = movieListAfterAddToWatchlist.results.contains { $0.id == movieID }
+        let isMovieAddedToWatchlist = movieListAfterAddToWatchlist.results.contains {
+            $0.id == movieID
+        }
         #expect(isMovieAddedToWatchlist)
 
-        try await accountService.removeFromWatchlist(movie: movieID, accountID: accountDetails.id, session: session)
+        try await accountService.removeFromWatchlist(
+            movie: movieID, accountID: accountDetails.id, session: session)
 
         let movieListAfterRemovedFromWatchlist = try await accountService.movieWatchlist(
             accountID: accountDetails.id,
             session: session
         )
 
-        let isMovieInWatchlistAfterRemoved = movieListAfterRemovedFromWatchlist.results.contains { $0.id == movieID }
+        let isMovieInWatchlistAfterRemoved = movieListAfterRemovedFromWatchlist.results.contains {
+            $0.id == movieID
+        }
         #expect(!isMovieInWatchlistAfterRemoved)
     }
 
@@ -137,13 +154,16 @@ final class AccountIntegrationTests {
         let accountDetails = try await accountService.details(session: session)
         let tvSeriesID = 2261
 
-        try await accountService.addToWatchlist(tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
+        try await accountService.addToWatchlist(
+            tvSeries: tvSeriesID, accountID: accountDetails.id, session: session)
 
         let tvSeriesListAfterAddedToWatchlist = try await accountService.tvSeriesWatchlist(
             accountID: accountDetails.id,
             session: session
         )
-        let isTVSeriesAddedToWatchlist = tvSeriesListAfterAddedToWatchlist.results.contains { $0.id == tvSeriesID }
+        let isTVSeriesAddedToWatchlist = tvSeriesListAfterAddedToWatchlist.results.contains {
+            $0.id == tvSeriesID
+        }
         #expect(isTVSeriesAddedToWatchlist)
 
         try await accountService.removeFromWatchlist(
@@ -157,9 +177,10 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results.contains {
-            $0.id == tvSeriesID
-        }
+        let isTVSeriesInWatchlistAfterRemoved = tvSeriesListAfterRemovedFromWatchlist.results
+            .contains {
+                $0.id == tvSeriesID
+            }
         #expect(!isTVSeriesInWatchlistAfterRemoved)
     }
 

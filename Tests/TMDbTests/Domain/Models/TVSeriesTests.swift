@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct TVSeriesTests {
 
     @Test("JSON decoding of TVSeries", .tags(.decoding))
     func decodeReturnsTVSeries() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(TVSeries.self, fromResource: "tv-series")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series")
 
         #expect(result == tvSeries)
     }
@@ -53,7 +55,8 @@ extension TVSeriesTests {
             name: "Game of Thrones",
             originalName: "Game of Thrones",
             originalLanguage: "en",
-            overview: "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
+            overview:
+                "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
             episodeRunTime: [60],
             numberOfSeasons: 7,
             numberOfEpisodes: 67,
@@ -62,7 +65,8 @@ extension TVSeriesTests {
                     id: 3624,
                     name: "Season 1",
                     seasonNumber: 1,
-                    overview: "Trouble is brewing in the Seven Kingdoms of Westeros. For the driven inhabitants of this visionary world, control of Westeros' Iron Throne holds the lure of great power. But in a land where the seasons can last a lifetime, winter is coming...and beyond the Great Wall that protects them, an ancient evil has returned. In Season One, the story centers on three primary areas: the Stark and the Lannister families, whose designs on controlling the throne threaten a tenuous peace; the dragon princess Daenerys, heir to the former dynasty, who waits just over the Narrow Sea with her malevolent brother Viserys; and the Great Wall--a massive barrier of ice where a forgotten danger is stirring.",
+                    overview:
+                        "Trouble is brewing in the Seven Kingdoms of Westeros. For the driven inhabitants of this visionary world, control of Westeros' Iron Throne holds the lure of great power. But in a land where the seasons can last a lifetime, winter is coming...and beyond the Great Wall that protects them, an ancient evil has returned. In Season One, the story centers on three primary areas: the Stark and the Lannister families, whose designs on controlling the throne threaten a tenuous peace; the dragon princess Daenerys, heir to the former dynasty, who waits just over the Narrow Sea with her malevolent brother Viserys; and the Great Wall--a massive barrier of ice where a forgotten danger is stirring.",
                     airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
                     posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
                     episodes: nil
@@ -71,7 +75,7 @@ extension TVSeriesTests {
             genres: [
                 Genre(id: 10765, name: "Sci-Fi & Fantasy"),
                 Genre(id: 18, name: "Drama"),
-                Genre(id: 10759, name: "Action & Adventure")
+                Genre(id: 10759, name: "Action & Adventure"),
             ],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
             originCountry: ["US"],

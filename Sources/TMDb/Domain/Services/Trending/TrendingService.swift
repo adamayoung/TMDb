@@ -102,9 +102,9 @@ public protocol TrendingService: Sendable {
 
 }
 
-public extension TrendingService {
+extension TrendingService {
 
-    func movies(
+    public func movies(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
@@ -112,7 +112,7 @@ public extension TrendingService {
         try await movies(inTimeWindow: timeWindow, page: page, language: language)
     }
 
-    func tvSeries(
+    public func tvSeries(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
@@ -120,7 +120,7 @@ public extension TrendingService {
         try await tvSeries(inTimeWindow: timeWindow, page: page, language: language)
     }
 
-    func people(
+    public func people(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil

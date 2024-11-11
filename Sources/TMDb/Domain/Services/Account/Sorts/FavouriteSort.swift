@@ -46,7 +46,7 @@ extension FavouriteSort {
 
     private var isDescending: Bool {
         switch self {
-        case let .createdAt(descending):
+        case .createdAt(let descending):
             descending
         }
     }

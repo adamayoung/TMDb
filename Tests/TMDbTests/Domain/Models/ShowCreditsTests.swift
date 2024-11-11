@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct ShowCreditsTests {
 
     @Test("JSON decoding of ShowCredits", .tags(.decoding))
     func decodeReturnsShowCredits() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(ShowCredits.self, fromResource: "show-credits")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ShowCredits.self, fromResource: "show-credits")
 
         #expect(result.id == showCredits.id)
         #expect(result.cast == showCredits.cast)
@@ -65,7 +67,7 @@ struct ShowCreditsTests {
                 gender: .male,
                 profilePath: URL(string: "/43nyfW3TxD3PxDqYB8tyqaKpDBH.jpg"),
                 order: 2
-            )
+            ),
         ],
         crew: [
             CrewMember(
@@ -85,7 +87,7 @@ struct ShowCreditsTests {
                 department: "Production",
                 gender: .unknown,
                 profilePath: nil
-            )
+            ),
         ]
     )
 

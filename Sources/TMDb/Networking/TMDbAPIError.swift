@@ -116,49 +116,49 @@ enum TMDbAPIError: Error, Equatable {
 
     static func == (lhs: TMDbAPIError, rhs: TMDbAPIError) -> Bool {
         switch (lhs, rhs) {
-        case let (.invalidURL(l), .invalidURL(r)):
+        case (.invalidURL(let l), .invalidURL(let r)):
             l == r
 
         case (.network, .network):
             true
 
-        case let (.badRequest(l), .badRequest(r)):
+        case (.badRequest(let l), .badRequest(let r)):
             l == r
 
-        case let (.unauthorised(l), .unauthorised(r)):
+        case (.unauthorised(let l), .unauthorised(let r)):
             l == r
 
-        case let (.forbidden(l), .forbidden(r)):
+        case (.forbidden(let l), .forbidden(let r)):
             l == r
 
-        case let (.notFound(l), .notFound(r)):
+        case (.notFound(let l), .notFound(let r)):
             l == r
 
-        case let (.methodNotAllowed(l), .methodNotAllowed(r)):
+        case (.methodNotAllowed(let l), .methodNotAllowed(let r)):
             l == r
 
-        case let (.notAcceptable(l), .notAcceptable(r)):
+        case (.notAcceptable(let l), .notAcceptable(let r)):
             l == r
 
-        case let (.unprocessableContent(l), .unprocessableContent(r)):
+        case (.unprocessableContent(let l), .unprocessableContent(let r)):
             l == r
 
-        case let (.tooManyRequests(l), .tooManyRequests(r)):
+        case (.tooManyRequests(let l), .tooManyRequests(let r)):
             l == r
 
-        case let (.internalServerError(l), .internalServerError(r)):
+        case (.internalServerError(let l), .internalServerError(let r)):
             l == r
 
-        case let (.notImplemented(l), .notImplemented(r)):
+        case (.notImplemented(let l), .notImplemented(let r)):
             l == r
 
-        case let (.badGateway(l), .badGateway(r)):
+        case (.badGateway(let l), .badGateway(let r)):
             l == r
 
-        case let (.serviceUnavailable(l), .serviceUnavailable(r)):
+        case (.serviceUnavailable(let l), .serviceUnavailable(let r)):
             l == r
 
-        case let (.gatewayTimeout(l), .gatewayTimeout(r)):
+        case (.gatewayTimeout(let l), .gatewayTimeout(let r)):
             l == r
 
         case (.encode, .encode):

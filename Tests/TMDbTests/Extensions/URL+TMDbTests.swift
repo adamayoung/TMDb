@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite
@@ -28,7 +29,7 @@ struct URLTMDbTests {
     func tmdbAPIBaseURLReturnsCorrectURL() throws {
         let expectedResult = try #require(URL(string: "https://api.themoviedb.org/3"))
 
-        let result = URL.tmdbAPIBaseURL
+        let result = URL.tmdbAPIBase
 
         #expect(result == expectedResult)
     }
@@ -37,7 +38,7 @@ struct URLTMDbTests {
     func tmdbWebSiteBaseURLReturnsCorrectURL() throws {
         let expectedResult = try #require(URL(string: "https://www.themoviedb.org"))
 
-        let result = URL.tmdbWebSiteURL
+        let result = URL.tmdbWebSite
 
         #expect(result == expectedResult)
     }

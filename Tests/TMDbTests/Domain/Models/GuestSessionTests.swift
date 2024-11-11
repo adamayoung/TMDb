@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -32,7 +33,8 @@ struct GuestSessionTests {
             expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
         )
 
-        let result = try JSONDecoder.theMovieDatabaseAuth.decode(GuestSession.self, fromResource: "guest-session")
+        let result = try JSONDecoder.theMovieDatabaseAuth.decode(
+            GuestSession.self, fromResource: "guest-session")
 
         #expect(result.success == expectedResult.success)
         #expect(result.guestSessionID == expectedResult.guestSessionID)

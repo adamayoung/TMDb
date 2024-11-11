@@ -52,9 +52,9 @@ public protocol DiscoverService: Sendable {
 
 }
 
-public extension DiscoverService {
+extension DiscoverService {
 
-    func movies(
+    public func movies(
         filter: DiscoverMovieFilter? = nil,
         sortedBy: MovieSort? = nil,
         page: Int? = nil,
@@ -63,7 +63,7 @@ public extension DiscoverService {
         try await movies(filter: filter, sortedBy: sortedBy, page: page, language: language)
     }
 
-    func tvSeries(
+    public func tvSeries(
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
         language: String? = nil

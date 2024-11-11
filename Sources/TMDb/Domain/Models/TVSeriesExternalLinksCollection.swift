@@ -22,7 +22,8 @@ import Foundation
 ///
 /// A model representing a collection of media databases and social IDs and links for a TV series.
 ///
-public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable, Hashable, Sendable
+{
 
     ///
     /// The TMDb TV series identifier.
@@ -83,7 +84,7 @@ public struct TVSeriesExternalLinksCollection: Identifiable, Codable, Equatable,
 
 }
 
-public extension TVSeriesExternalLinksCollection {
+extension TVSeriesExternalLinksCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -94,7 +95,7 @@ public extension TVSeriesExternalLinksCollection {
         case twitterID = "twitterId"
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(TVSeries.ID.self, forKey: .id)
@@ -121,7 +122,7 @@ public extension TVSeriesExternalLinksCollection {
         )
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)

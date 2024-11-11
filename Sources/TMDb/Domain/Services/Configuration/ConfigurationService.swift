@@ -74,9 +74,9 @@ public protocol ConfigurationService: Sendable {
 
 }
 
-public extension ConfigurationService {
+extension ConfigurationService {
 
-    func countries(language: String? = nil) async throws -> [Country] {
+    public func countries(language: String? = nil) async throws -> [Country] {
         try await countries(language: language)
     }
 

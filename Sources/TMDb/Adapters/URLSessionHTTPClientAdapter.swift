@@ -18,6 +18,7 @@
 //
 
 import Foundation
+
 #if canImport(FoundationNetworking)
     import FoundationNetworking
 #endif
@@ -83,7 +84,8 @@ extension URLSessionHTTPClientAdapter {
                     }
 
                     guard let data, let response else {
-                        continuation.resume(throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1))
+                        continuation.resume(
+                            throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1))
                         return
                     }
 

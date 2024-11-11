@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.authentication))
@@ -35,7 +36,8 @@ struct AuthenticateURLBuilderTests {
     @Test("authenticateURL returns URL")
     func authenticateURLReturnsURL() {
         let requestToken = "qwertyuiop"
-        let expectedURL = baseURL
+        let expectedURL =
+            baseURL
             .appendingPathComponent("authenticate")
             .appendingPathComponent(requestToken)
 
@@ -50,7 +52,8 @@ struct AuthenticateURLBuilderTests {
         let redirectURL = try #require(URL(string: "https://my.domain.com/auth/callback"))
         let expectedURL = try #require(
             URL(
-                string: "https://some.domain.com/authenticate/\(requestToken)?redirect_to=\(redirectURL.absoluteString)"
+                string:
+                    "https://some.domain.com/authenticate/\(requestToken)?redirect_to=\(redirectURL.absoluteString)"
             )
         )
 

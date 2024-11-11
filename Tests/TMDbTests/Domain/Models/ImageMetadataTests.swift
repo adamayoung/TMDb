@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -31,7 +32,8 @@ struct ImageMetadataTests {
 
     @Test("JSON decoding of ImageMetadata", .tags(.decoding))
     func testDecodeReturnsImageMetadata() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(ImageMetadata.self, fromResource: "image-metadata")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ImageMetadata.self, fromResource: "image-metadata")
 
         #expect(result.filePath == imageMetadata.filePath)
         #expect(result.width == imageMetadata.width)

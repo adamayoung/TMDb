@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(
@@ -39,7 +40,8 @@ struct TVSeasonIntegrationTests {
         let seasonNumber = 2
         let tvSeriesID = 1399
 
-        let season = try await tvSeasonService.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let season = try await tvSeasonService.details(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         #expect(season.seasonNumber == seasonNumber)
         #expect(!(season.episodes ?? []).isEmpty)
@@ -50,7 +52,8 @@ struct TVSeasonIntegrationTests {
         let seasonNumber = 2
         let tvSeriesID = 1399
 
-        let credits = try await tvSeasonService.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let credits = try await tvSeasonService.aggregateCredits(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         #expect(credits.id == 3625)
         #expect(!credits.cast.isEmpty)
@@ -62,7 +65,8 @@ struct TVSeasonIntegrationTests {
         let seasonNumber = 1
         let tvSeriesID = 1399
 
-        let imagesCollection = try await tvSeasonService.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let imagesCollection = try await tvSeasonService.images(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         #expect(!imagesCollection.posters.isEmpty)
     }
@@ -72,7 +76,8 @@ struct TVSeasonIntegrationTests {
         let seasonNumber = 1
         let tvSeriesID = 1399
 
-        let videoCollection = try await tvSeasonService.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let videoCollection = try await tvSeasonService.videos(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         #expect(!videoCollection.results.isEmpty)
     }

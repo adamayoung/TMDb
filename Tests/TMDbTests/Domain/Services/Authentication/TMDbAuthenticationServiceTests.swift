@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .authentication))
@@ -31,7 +32,8 @@ struct TMDbAuthenticationServiceTests {
     init() {
         self.apiClient = MockAPIClient()
         self.authenticateURLBuilder = AuthenticateURLMockBuilder()
-        self.service = TMDbAuthenticationService(apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
+        self.service = TMDbAuthenticationService(
+            apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
     }
 
     @Test("guestSession returns guest session")
@@ -107,7 +109,9 @@ struct TMDbAuthenticationServiceTests {
 
     @Test("createSession with token returns session")
     func createSessionWithTokenReturnsSession() async throws {
-        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+        let token = Token(
+            success: true, requestToken: "abc123",
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CreateSessionRequest(requestToken: token.requestToken)
@@ -120,7 +124,9 @@ struct TMDbAuthenticationServiceTests {
 
     @Test("createSession with token when errors throws error")
     func createSessionWithTokenWhenErrorsThrowsError() async throws {
-        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+        let token = Token(
+            success: true, requestToken: "abc123",
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -130,7 +136,9 @@ struct TMDbAuthenticationServiceTests {
 
     @Test("createSession with token when errors throws error")
     func createSessionWithTokenWhenRequestTokenErrorsThrowsError() async throws {
-        let token = Token(success: true, requestToken: "abc123", expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+        let token = Token(
+            success: true, requestToken: "abc123",
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -163,7 +171,8 @@ struct TMDbAuthenticationServiceTests {
         let createTokenRequest = apiClient.request(atRequestIndex: 0) as? CreateRequestTokenRequest
         #expect(createTokenRequest == expectedCreateRequestTokenRequest)
 
-        let validateTokenWithLoginRequest = apiClient.request(atRequestIndex: 1) as? ValidateTokenWithLoginRequest
+        let validateTokenWithLoginRequest =
+            apiClient.request(atRequestIndex: 1) as? ValidateTokenWithLoginRequest
         #expect(validateTokenWithLoginRequest == expectedValidateTokenWithLoginRequest)
 
         let createSessionRequest = apiClient.request(atRequestIndex: 2) as? CreateSessionRequest

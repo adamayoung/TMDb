@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.services, .tvSeason))
@@ -63,7 +64,8 @@ struct TMDbTVSeasonServiceTests {
             language: language
         )
 
-        let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+        let result = try await service.details(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonRequest == expectedRequest)
@@ -92,7 +94,8 @@ struct TMDbTVSeasonServiceTests {
             language: nil
         )
 
-        let result = try await service.aggregateCredits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let result = try await service.aggregateCredits(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonAggregateCreditsRequest == expectedRequest)
@@ -164,7 +167,8 @@ struct TMDbTVSeasonServiceTests {
         )
 
         let filter = TVSeasonImageFilter(languages: languages)
-        let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+        let result = try await service.images(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonImagesRequest == expectedRequest)
@@ -213,7 +217,8 @@ struct TMDbTVSeasonServiceTests {
         )
 
         let filter = TVSeasonVideoFilter(languages: languages)
-        let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+        let result = try await service.videos(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonVideosRequest == expectedRequest)

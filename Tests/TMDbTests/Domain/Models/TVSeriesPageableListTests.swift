@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -44,7 +45,8 @@ struct TVSeriesPageableListTests {
                 name: "Big Brother",
                 originalName: "Big Brother",
                 originalLanguage: "en",
-                overview: "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+                overview:
+                    "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
                 genreIDs: [10764],
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-07-18"),
                 originCountries: ["GB"],
@@ -60,7 +62,8 @@ struct TVSeriesPageableListTests {
                 name: "CSI: Crime Scene Investigation",
                 originalName: "CSI: Crime Scene Investigation",
                 originalLanguage: "en",
-                overview: "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
+                overview:
+                    "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
                 genreIDs: [80, 18, 9648],
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-10-06"),
                 originCountries: ["US"],
@@ -70,7 +73,7 @@ struct TVSeriesPageableListTests {
                 voteAverage: 7.619,
                 voteCount: 1178,
                 isAdultOnly: false
-            )
+            ),
         ],
         totalResults: 2,
         totalPages: 1

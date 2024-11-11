@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -31,7 +32,8 @@ struct SpokenLanguageTests {
 
     @Test("JSON decoding of SpokenLanguage", .tags(.decoding))
     func decodeReturnsSpokenLanguage() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(SpokenLanguage.self, fromResource: "spoken-language")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            SpokenLanguage.self, fromResource: "spoken-language")
 
         #expect(result.languageCode == spokenLanguage.languageCode)
         #expect(result.name == spokenLanguage.name)

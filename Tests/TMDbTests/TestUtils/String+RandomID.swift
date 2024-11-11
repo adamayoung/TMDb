@@ -25,7 +25,7 @@ extension String {
         String(Int.randomID)
     }
 
-    static var randomString: Self {
+    static var random: Self {
         UUID().uuidString
     }
 

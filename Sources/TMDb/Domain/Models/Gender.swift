@@ -45,7 +45,8 @@ public enum Gender: Int, Codable, Equatable, Hashable, Sendable {
     case other = 3
 
     public init(from decoder: Decoder) throws {
-        self = try Gender(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+        self =
+            try Gender(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
     }
 
 }

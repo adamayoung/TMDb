@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -45,7 +46,7 @@ struct ImagesConfigurationTests {
             "w300",
             "w780",
             "w1280",
-            "original"
+            "original",
         ],
         logoSizes: [
             "w45",
@@ -54,7 +55,7 @@ struct ImagesConfigurationTests {
             "w185",
             "w300",
             "w500",
-            "original"
+            "original",
         ],
         posterSizes: [
             "w92",
@@ -63,19 +64,19 @@ struct ImagesConfigurationTests {
             "w342",
             "w500",
             "w780",
-            "original"
+            "original",
         ],
         profileSizes: [
             "w45",
             "w185",
             "h632",
-            "original"
+            "original",
         ],
         stillSizes: [
             "w92",
             "w185",
             "w300",
-            "original"
+            "original",
         ]
     )
 

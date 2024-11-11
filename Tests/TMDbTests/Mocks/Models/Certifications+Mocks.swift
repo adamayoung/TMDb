@@ -18,6 +18,7 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 extension Certifications {
@@ -34,7 +35,7 @@ extension Certifications {
         .mock(
             certifications: [
                 "GB": [.gbU, .gbPG, .gb12A],
-                "US": [.usG, .usPG13]
+                "US": [.usG, .usPG13],
             ]
         )
     }

@@ -18,10 +18,12 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 final class APIStubRequest<Body: Encodable & Equatable & Sendable, Response: Decodable>:
-APIRequest, Equatable, Sendable {
+    APIRequest, Equatable, Sendable
+{
 
     let id: UUID
     let path: String
@@ -46,7 +48,9 @@ APIRequest, Equatable, Sendable {
         self.body = body
     }
 
-    static func == (lhs: APIStubRequest<Body, Response>, rhs: APIStubRequest<Body, Response>) -> Bool {
+    static func == (lhs: APIStubRequest<Body, Response>, rhs: APIStubRequest<Body, Response>)
+        -> Bool
+    {
         lhs.id == rhs.id
             && lhs.path == rhs.path
             && lhs.queryItems == rhs.queryItems

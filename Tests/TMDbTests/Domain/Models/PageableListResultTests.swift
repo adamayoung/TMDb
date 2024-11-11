@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -41,7 +42,7 @@ struct PageableListResultTests {
             SomeListItem(id: 1),
             SomeListItem(id: 2),
             SomeListItem(id: 3),
-            SomeListItem(id: 4)
+            SomeListItem(id: 4),
         ],
         totalResults: 4,
         totalPages: 1

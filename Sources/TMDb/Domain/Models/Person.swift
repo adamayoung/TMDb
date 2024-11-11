@@ -166,7 +166,8 @@ extension Person {
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.alsoKnownAs = try container.decodeIfPresent([String].self, forKey: .alsoKnownAs)
-        self.knownForDepartment = try container.decodeIfPresent(String.self, forKey: .knownForDepartment)
+        self.knownForDepartment = try container.decodeIfPresent(
+            String.self, forKey: .knownForDepartment)
         self.biography = try container.decodeIfPresent(String.self, forKey: .biography)
         self.birthday = try container.decodeIfPresent(Date.self, forKey: .birthday)
         self.deathday = try container.decodeIfPresent(Date.self, forKey: .deathday)

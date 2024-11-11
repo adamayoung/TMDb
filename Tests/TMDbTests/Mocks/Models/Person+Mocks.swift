@@ -24,17 +24,17 @@ extension Person {
 
     static func mock(
         id: Int = .randomID,
-        name: String = .randomString,
+        name: String = .random,
         alsoKnownAs: [String]? = nil,
-        knownForDepartment: String? = .randomString,
-        biography: String? = .randomString,
+        knownForDepartment: String? = .random,
+        biography: String? = .random,
         birthday: Date? = .random,
         deathday: Date? = nil,
         gender: Gender = .unknown,
-        placeOfBirth: String? = .randomString,
+        placeOfBirth: String? = .random,
         profilePath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1 ... 10),
-        imdbID: String? = .randomString,
+        popularity: Double? = Double.random(in: 1...10),
+        imdbID: String? = .random,
         homepageURL: URL? = .randomWebSite
     ) -> Self {
         .init(
@@ -79,7 +79,7 @@ extension [Person] {
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino
+            .quentinTarantino,
         ]
     }
 

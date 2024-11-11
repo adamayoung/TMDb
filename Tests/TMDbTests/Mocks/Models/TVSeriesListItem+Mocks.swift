@@ -18,6 +18,7 @@
 //
 
 import Foundation
+
 @testable import TMDb
 
 extension TVSeriesListItem {
@@ -27,15 +28,15 @@ extension TVSeriesListItem {
         name: String = "TV Series",
         originalName: String = "TV Series a",
         originalLanguage: String = "en",
-        overview: String = .randomString,
+        overview: String = .random,
         genreIDs: [Genre.ID] = [1],
         firstAirDate: Date? = nil,
         originCountries: [String] = ["GB"],
         posterPath: URL? = .randomImagePath,
         backdropPath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1 ... 10),
-        voteAverage: Double? = Double.random(in: 1 ... 10),
-        voteCount: Int? = Int.random(in: 1 ... 1000),
+        popularity: Double? = Double.random(in: 1...10),
+        voteAverage: Double? = Double.random(in: 1...10),
+        voteCount: Int? = Int.random(in: 1...1000),
         isAdultOnly: Bool? = false
     ) -> TVSeriesListItem {
         TVSeriesListItem(
@@ -63,7 +64,8 @@ extension TVSeriesListItem {
             name: "Big Brother",
             originalName: "Big Brother",
             originalLanguage: "en",
-            overview: "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+            overview:
+                "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
             genreIDs: [10764],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-07-18"),
             originCountries: ["GB"],
@@ -85,7 +87,8 @@ extension TVSeriesListItem {
             name: "CSI: Crime Scene Investigation",
             originalName: "CSI: Crime Scene Investigation",
             originalLanguage: "en",
-            overview: "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
+            overview:
+                "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
             genreIDs: [80, 18, 9648],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-10-06"),
             originCountries: ["US"],
@@ -106,7 +109,7 @@ extension [TVSeriesListItem] {
     static var mocks: [Element] {
         [
             .bigBrother,
-            .csi
+            .csi,
         ]
     }
 

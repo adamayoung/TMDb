@@ -30,9 +30,9 @@ final class TVSeriesCreditsRequest: DecodableAPIRequest<ShowCredits> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(language: String?) {
+    fileprivate init(language: String?) {
         self.init()
 
         if let language {

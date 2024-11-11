@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .authentication))
@@ -27,7 +28,8 @@ struct ValidateTokenWithLoginRequestTests {
     var request: ValidateTokenWithLoginRequest!
 
     init() {
-        self.request = ValidateTokenWithLoginRequest(username: "user1", password: "pass1", requestToken: "abc123")
+        self.request = ValidateTokenWithLoginRequest(
+            username: "user1", password: "pass1", requestToken: "abc123")
     }
 
     @Test("path is correct")

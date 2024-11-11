@@ -47,7 +47,7 @@ extension [ContentRating] {
     static var mocks: [Element] {
         [
             .parksAndRecreationGB,
-            .parksAndRecreationUS
+            .parksAndRecreationUS,
         ]
     }
 

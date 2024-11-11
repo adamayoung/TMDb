@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.requests, .tvSeason))
@@ -40,7 +41,8 @@ struct TVSeasonImagesRequestTests {
 
     @Test("queryItems with languages")
     func queryItemsWithLanguages() {
-        let request = TVSeasonImagesRequest(seasonNumber: 2, tvSeriesID: 3, languages: ["en-GB", "fr"])
+        let request = TVSeasonImagesRequest(
+            seasonNumber: 2, tvSeriesID: 3, languages: ["en-GB", "fr"])
 
         #expect(request.queryItems == ["include_image_language": "en,fr,null"])
     }

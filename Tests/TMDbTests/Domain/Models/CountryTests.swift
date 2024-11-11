@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -32,7 +33,8 @@ struct CountryTests {
             englishName: "United States of America"
         )
 
-        let result = try JSONDecoder.theMovieDatabase.decode(Country.self, fromResource: "configuration-country")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Country.self, fromResource: "configuration-country")
 
         #expect(result.id == expectedResult.countryCode)
         #expect(result.countryCode == expectedResult.countryCode)

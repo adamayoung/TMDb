@@ -71,7 +71,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Reviews for the matching movie as a pageable list.
     ///
-    func reviews(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> ReviewPageableList
+    func reviews(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws
+        -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a movie.
@@ -86,7 +87,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Collection of images for the matching movie.
     ///
-    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter?) async throws -> ImageCollection
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter?) async throws
+        -> ImageCollection
 
     ///
     /// Returns the videos that have been added to a movie.
@@ -101,7 +103,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
-    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter?) async throws -> VideoCollection
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter?) async throws
+        -> VideoCollection
 
     ///
     /// Returns a list of recommended movies for a movie.
@@ -119,7 +122,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Recommended movies for the matching movie as a pageable list.
     ///
-    func recommendations(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> MoviePageableList
+    func recommendations(forMovie movieID: Movie.ID, page: Int?, language: String?) async throws
+        -> MoviePageableList
 
     ///
     /// Returns a list of similar movies for a movie.
@@ -139,7 +143,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Similar movies for the matching movie as a pageable list.
     ///
-    func similar(toMovie movieID: Movie.ID, page: Int?, language: String?) async throws -> MoviePageableList
+    func similar(toMovie movieID: Movie.ID, page: Int?, language: String?) async throws
+        -> MoviePageableList
 
     ///
     /// Returns a list of currently playing movies.
@@ -157,7 +162,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Now playing movies as a pageable list.
     ///
-    func nowPlaying(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
+    func nowPlaying(page: Int?, country: String?, language: String?) async throws
+        -> MoviePageableList
 
     ///
     /// Returns a list of current popular movies.
@@ -228,7 +234,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Watch providers for movie in current region.
     ///
-    func watchProviders(forMovie movieID: Movie.ID, country: String) async throws -> ShowWatchProvider?
+    func watchProviders(forMovie movieID: Movie.ID, country: String) async throws
+        -> ShowWatchProvider?
 
     ///
     /// Returns a collection of media databases and social links for a movie.
@@ -244,17 +251,19 @@ public protocol MovieService: Sendable {
 
 }
 
-public extension MovieService {
+extension MovieService {
 
-    func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
+    public func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
         try await details(forMovie: id, language: language)
     }
 
-    func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
+    public func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws
+        -> ShowCredits
+    {
         try await credits(forMovie: movieID, language: language)
     }
 
-    func reviews(
+    public func reviews(
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
@@ -262,15 +271,19 @@ public extension MovieService {
         try await reviews(forMovie: movieID, page: page, language: language)
     }
 
-    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws -> ImageCollection {
+    public func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws
+        -> ImageCollection
+    {
         try await images(forMovie: movieID, filter: filter)
     }
 
-    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws -> VideoCollection {
+    public func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws
+        -> VideoCollection
+    {
         try await videos(forMovie: movieID, filter: filter)
     }
 
-    func recommendations(
+    public func recommendations(
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
@@ -278,7 +291,7 @@ public extension MovieService {
         try await recommendations(forMovie: movieID, page: page, language: language)
     }
 
-    func similar(
+    public func similar(
         toMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
@@ -286,7 +299,7 @@ public extension MovieService {
         try await similar(toMovie: movieID, page: page, language: language)
     }
 
-    func nowPlaying(
+    public func nowPlaying(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
@@ -294,7 +307,7 @@ public extension MovieService {
         try await nowPlaying(page: page, country: country, language: language)
     }
 
-    func popular(
+    public func popular(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
@@ -302,7 +315,7 @@ public extension MovieService {
         try await popular(page: page, country: country, language: language)
     }
 
-    func topRated(
+    public func topRated(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
@@ -310,7 +323,7 @@ public extension MovieService {
         try await topRated(page: page, country: country, language: language)
     }
 
-    func upcoming(
+    public func upcoming(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
@@ -318,7 +331,9 @@ public extension MovieService {
         try await upcoming(page: page, country: country, language: language)
     }
 
-    func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws -> ShowWatchProvider? {
+    public func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws
+        -> ShowWatchProvider?
+    {
         try await watchProviders(forMovie: movieID, country: country)
     }
 

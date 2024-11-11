@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -56,7 +57,8 @@ struct TVSeriesExternalLinksCollectionTests {
 
         let data = try JSONEncoder.theMovieDatabase.encode(linksCollection)
 
-        let result = try JSONDecoder.theMovieDatabase.decode(TVSeriesExternalLinksCollection.self, from: data)
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesExternalLinksCollection.self, from: data)
 
         #expect(result == linksCollection)
     }

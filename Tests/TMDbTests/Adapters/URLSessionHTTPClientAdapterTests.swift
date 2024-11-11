@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 #if canImport(FoundationNetworking)
@@ -86,9 +87,13 @@ final class URLSessionHTTPClientAdapterTests {
         #expect(response.statusCode == 404)
     }
 
-    @Test("perform when response status code is 404 and has status message error throws not found error with message")
+    @Test(
+        "perform when response status code is 404 and has status message error throws not found error with message"
+    )
     @MainActor
-    func performWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage() async throws {
+    func performWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage()
+        async throws
+    {
         MockURLProtocol.responseStatusCode = 404
         let expectedData = try Data(fromResource: "error-status-response", withExtension: "json")
         MockURLProtocol.data = expectedData
@@ -140,7 +145,7 @@ final class URLSessionHTTPClientAdapterTests {
         let header2Value = "text/html"
         let headers = [
             header1Name: header1Value,
-            header2Name: header2Value
+            header2Name: header2Value,
         ]
         let request = HTTPRequest(url: url, headers: headers)
 

@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -38,7 +39,8 @@ struct WatchProviderRegionsTests {
         results: [
             Country(countryCode: "AR", name: "Argentina", englishName: "Argentina"),
             Country(countryCode: "AT", name: "Austria", englishName: "Austria"),
-            Country(countryCode: "US", name: "United States", englishName: "United States of America")
+            Country(
+                countryCode: "US", name: "United States", englishName: "United States of America"),
         ]
     )
 

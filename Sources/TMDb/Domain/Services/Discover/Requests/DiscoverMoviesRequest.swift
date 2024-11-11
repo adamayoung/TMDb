@@ -40,9 +40,9 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 }
 
-private extension APIRequestQueryItems {
+extension APIRequestQueryItems {
 
-    init(
+    fileprivate init(
         people: [Person.ID]?,
         sortedBy: MovieSort?,
         page: Int?,

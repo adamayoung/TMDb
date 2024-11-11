@@ -47,7 +47,7 @@ extension TMDbFactory {
     static func authAPIClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
         TMDbAPIClient(
             apiKey: apiKey,
-            baseURL: .tmdbAPIBaseURL,
+            baseURL: .tmdbAPIBase,
             serialiser: authSerialiser(),
             httpClient: httpClient
         )
@@ -99,11 +99,11 @@ extension TMDbFactory {
 extension TMDbFactory {
 
     private static var tmdbAPIBaseURL: URL {
-        URL.tmdbAPIBaseURL
+        URL.tmdbAPIBase
     }
 
     private static var tmdbWebSiteURL: URL {
-        URL.tmdbWebSiteURL
+        URL.tmdbWebSite
     }
 
 }

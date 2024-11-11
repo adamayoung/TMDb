@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -31,7 +32,8 @@ struct SessionTests {
             sessionID: "5f038ae0ee88737033fb7371dfbf6e3f386e9c78"
         )
 
-        let result = try JSONDecoder.theMovieDatabaseAuth.decode(Session.self, fromResource: "session")
+        let result = try JSONDecoder.theMovieDatabaseAuth.decode(
+            Session.self, fromResource: "session")
 
         #expect(result.success == expectedResult.success)
         #expect(result.sessionID == expectedResult.sessionID)

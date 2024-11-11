@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -33,7 +34,7 @@ struct DepartmentTests {
                 "Actor",
                 "Voice",
                 "Special Guest",
-                "Stunt Double"
+                "Stunt Double",
             ]
         )
 

@@ -19,6 +19,7 @@
 
 import Foundation
 import Testing
+
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -26,7 +27,8 @@ struct TVSeriesListItemTests {
 
     @Test("JSON decoding of TVSeriesListItem", .tags(.decoding))
     func decodeReturnsTVSeriesListItem() throws {
-        let result = try JSONDecoder.theMovieDatabase.decode(TVSeriesListItem.self, fromResource: "tv-series-list-item")
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesListItem.self, fromResource: "tv-series-list-item")
 
         #expect(result == tvSeries)
     }
@@ -42,7 +44,8 @@ extension TVSeriesListItemTests {
             name: "Big Brother",
             originalName: "Big Brother",
             originalLanguage: "en",
-            overview: "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+            overview:
+                "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
             genreIDs: [10764],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-07-18"),
             originCountries: ["GB"],
