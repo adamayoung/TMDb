@@ -29,7 +29,7 @@ public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     public var id: Int {
         switch self {
-        case .movie(let movie):
+        case let .movie(movie):
             movie.id
 
         case .tvSeries(let tvSeries):
