@@ -24,7 +24,7 @@ import Foundation
 extension ShowWatchProviderResult {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         regionCode: String = "GB"
     ) -> Self {
         .init(

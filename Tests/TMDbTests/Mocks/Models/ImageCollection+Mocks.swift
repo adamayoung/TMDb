@@ -23,7 +23,7 @@ import TMDb
 extension ImageCollection {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         posters: [ImageMetadata] = .mocks,
         logos: [ImageMetadata] = .mocks,
         backdrops: [ImageMetadata] = .mocks

@@ -24,20 +24,20 @@ import Foundation
 extension MovieListItem {
 
     static func mock(
-        id: Int = Int.randomID,
+        id: Int = 1,
         title: String = "Movie",
         originalTitle: String = "Movie a",
         originalLanguage: String = "en",
-        overview: String = .random,
+        overview: String = "Movie Overview",
         genreIDs: [Genre.ID] = [Genre].mocks.map(\.id),
-        releaseDate: Date? = .random,
-        posterPath: URL? = .randomImagePath,
-        backdropPath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1...10),
-        voteAverage: Double? = Double.random(in: 1...10),
-        voteCount: Int? = Int.random(in: 1...1000),
-        hasVideo: Bool? = .random(),
-        isAdultOnly: Bool? = .random()
+        releaseDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
+        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        popularity: Double? = 5.6,
+        voteAverage: Double? = 7.3,
+        voteCount: Int? = 321,
+        hasVideo: Bool? = false,
+        isAdultOnly: Bool? = false
     ) -> Self {
         .init(
             id: id,

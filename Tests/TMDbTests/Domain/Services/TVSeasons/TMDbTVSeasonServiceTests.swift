@@ -35,7 +35,7 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("details returns TV season")
     func detailsReturnsTVSeason() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         apiClient.addResponse(.success(expectedResult))
@@ -53,7 +53,7 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("details with language returns TV season")
     func detailsWithLanguageReturnsTVSeason() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
         let language = "en"
@@ -84,9 +84,9 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("aggregateCredits returns TV season credits")
     func aggregateCreditsReturnsTVSeasonCredits() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
-        let seasonNumber = Int.randomID
+        let seasonNumber = 11
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeasonAggregateCreditsRequest(
             seasonNumber: seasonNumber,
@@ -103,9 +103,9 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("aggregateCredits with language returns TV season credits")
     func aggregateCreditsWithLanguageReturnsTVSeasonCredits() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
-        let seasonNumber = Int.randomID
+        let seasonNumber = 11
         let language = "en"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeasonAggregateCreditsRequest(
@@ -137,8 +137,8 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("imagess returns images")
     func imagesReturnsImages() async throws {
-        let seasonNumber = Int.randomID
-        let tvSeriesID = Int.randomID
+        let seasonNumber = 11
+        let tvSeriesID = 1
         let expectedResult = TVSeasonImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeasonImagesRequest(
@@ -155,8 +155,8 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("images with filter returns images")
     func imagesWithFilterReturnsImages() async throws {
-        let seasonNumber = Int.randomID
-        let tvSeriesID = Int.randomID
+        let seasonNumber = 11
+        let tvSeriesID = 1
         let languages = ["en-GB", "fr"]
         let expectedResult = TVSeasonImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -187,8 +187,8 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("videos returns videos")
     func videosReturnsVideos() async throws {
-        let seasonNumber = Int.randomID
-        let tvSeriesID = Int.randomID
+        let seasonNumber = 11
+        let tvSeriesID = 1
         let expectedResult = VideoCollection.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeasonVideosRequest(
@@ -205,8 +205,8 @@ struct TMDbTVSeasonServiceTests {
 
     @Test("videos with filter returns videos")
     func videosWithFilterReturnsVideos() async throws {
-        let seasonNumber = Int.randomID
-        let tvSeriesID = Int.randomID
+        let seasonNumber = 11
+        let tvSeriesID = 1
         let languages = ["en", "fr"]
         let expectedResult = VideoCollection.mock()
         apiClient.addResponse(.success(expectedResult))

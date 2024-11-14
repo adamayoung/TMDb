@@ -23,8 +23,8 @@ import TMDb
 extension WatchProvider {
 
     static func mock(
-        id: Int = .randomID,
-        name: String = .random,
+        id: Int = 1,
+        name: String = "Netflix",
         logoPath: URL = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
     ) -> Self {
         .init(

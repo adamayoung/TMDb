@@ -35,7 +35,7 @@ struct TMDbTVSeriesServiceMediaTests {
 
     @Test("images returns images")
     func imagesReturnsImages() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = ImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesImagesRequest(id: tvSeriesID, languages: nil)
@@ -48,7 +48,7 @@ struct TMDbTVSeriesServiceMediaTests {
 
     @Test("images with filter returns images")
     func imagesWithFilterReturnsImages() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let languages = ["en-GB", "fr"]
         let expectedResult = ImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))

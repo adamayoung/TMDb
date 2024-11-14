@@ -23,24 +23,24 @@ import TMDb
 extension Person {
 
     static func mock(
-        id: Int = .randomID,
-        name: String = .random,
-        alsoKnownAs: [String]? = nil,
-        knownForDepartment: String? = .random,
-        biography: String? = .random,
-        birthday: Date? = .random,
+        id: Int = 1,
+        name: String = "Person Name",
+        alsoKnownAs: [String] = ["Person Name"],
+        knownForDepartment: String? = nil,
+        biography: String? = nil,
+        birthday: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         deathday: Date? = nil,
         gender: Gender = .unknown,
-        placeOfBirth: String? = .random,
-        profilePath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1...10),
-        imdbID: String? = .random,
-        homepageURL: URL? = .randomWebSite
+        placeOfBirth: String? = nil,
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        popularity: Double? = 6.8,
+        imdbID: String? = nil,
+        homepageURL: URL? = URL(string: "https://www.person.com")!
     ) -> Self {
         .init(
             id: id,
             name: name,
-            alsoKnownAs: alsoKnownAs ?? [name],
+            alsoKnownAs: alsoKnownAs,
             knownForDepartment: knownForDepartment,
             biography: biography,
             birthday: birthday,

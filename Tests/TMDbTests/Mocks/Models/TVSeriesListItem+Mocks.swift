@@ -24,19 +24,19 @@ import Foundation
 extension TVSeriesListItem {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         name: String = "TV Series",
         originalName: String = "TV Series a",
         originalLanguage: String = "en",
-        overview: String = .random,
+        overview: String = "TV Series Overview",
         genreIDs: [Genre.ID] = [1],
         firstAirDate: Date? = nil,
         originCountries: [String] = ["GB"],
-        posterPath: URL? = .randomImagePath,
-        backdropPath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1...10),
-        voteAverage: Double? = Double.random(in: 1...10),
-        voteCount: Int? = Int.random(in: 1...1000),
+        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        popularity: Double? = 5,
+        voteAverage: Double? = 5,
+        voteCount: Int? = 100,
         isAdultOnly: Bool? = false
     ) -> TVSeriesListItem {
         TVSeriesListItem(

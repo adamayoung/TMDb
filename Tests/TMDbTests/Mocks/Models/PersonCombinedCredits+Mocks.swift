@@ -23,7 +23,7 @@ import TMDb
 extension PersonCombinedCredits {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         cast: [Show] = [
             .movie(.jurassicWorldDominion),
             .tvSeries(.bigBrother),

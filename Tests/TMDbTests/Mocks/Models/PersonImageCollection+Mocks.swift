@@ -23,7 +23,7 @@ import TMDb
 extension PersonImageCollection {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         profiles: [ImageMetadata] = [.mock(), .mock()]
     ) -> Self {
         .init(

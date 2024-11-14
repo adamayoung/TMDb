@@ -35,11 +35,14 @@ struct TMDbTVSeriesServiceListsTests {
 
     @Test("recommenendations returns TV series")
     func recommendationsReturnsTVSeries() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesRecommendationsRequest(
-            id: tvSeriesID, page: nil, language: nil)
+            id: tvSeriesID,
+            page: nil,
+            language: nil
+        )
 
         let result = try await service.recommendations(forTVSeries: tvSeriesID)
 
@@ -49,7 +52,7 @@ struct TMDbTVSeriesServiceListsTests {
 
     @Test("recommendations with page and language returns TV series")
     func recommendationsWithPageAndLanguageReturnsTVSeries() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let page = 2
         let language = "en"
         let expectedResult = TVSeriesPageableList.mock()
@@ -76,7 +79,7 @@ struct TMDbTVSeriesServiceListsTests {
 
     @Test("similar returns TV series")
     func similarReturnsTVSeries() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: nil, language: nil)
@@ -89,7 +92,7 @@ struct TMDbTVSeriesServiceListsTests {
 
     @Test("similar with page and language returns TV series")
     func similarWithPageAndLanguageReturnsTVSeries() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let page = 2
         let language = "en"
         let expectedResult = TVSeriesPageableList.mock()

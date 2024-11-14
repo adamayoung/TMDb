@@ -23,7 +23,7 @@ import TMDb
 extension ShowCredits {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         cast: [CastMember] = .mocks,
         crew: [CrewMember] = .mocks
     ) -> Self {

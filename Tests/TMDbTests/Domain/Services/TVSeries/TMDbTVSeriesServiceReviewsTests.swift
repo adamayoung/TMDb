@@ -35,7 +35,7 @@ struct TMDbTVSeriesServiceReviewsTests {
 
     @Test("reviews returns reviews")
     func reviewsReturnsReviews() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil, language: nil)
@@ -48,7 +48,7 @@ struct TMDbTVSeriesServiceReviewsTests {
 
     @Test("reviews with language returns reviews")
     func reviewsWithLanguageReturnsReviews() async throws {
-        let tvSeriesID = Int.randomID
+        let tvSeriesID = 1
         let language = "en"
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))

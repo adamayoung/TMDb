@@ -1,5 +1,5 @@
 //
-//  Date+RandomDate.swift
+//  Date+ISO8601.swift
 //  TMDb
 //
 //  Copyright © 2024 Adam Young.
@@ -21,10 +21,13 @@ import Foundation
 
 extension Date {
 
-    static var random: Self {
-        let date = Date().timeIntervalSince1970
-        let timeInterval = Double.random(in: 1_118_839_159...date)
-        return Date(timeIntervalSince1970: timeInterval)
+    init(iso8601 dateString: String) {
+        let formatter = ISO8601DateFormatter()
+        guard let date = formatter.date(from: dateString) else {
+            fatalError("Invalid ISO8601 date string: \(dateString)")
+        }
+
+        self = date
     }
 
 }

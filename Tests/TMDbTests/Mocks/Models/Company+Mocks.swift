@@ -23,12 +23,12 @@ import TMDb
 extension Company {
 
     static func mock(
-        id: Int = .randomID,
-        name: String = .random,
-        description: String = .random,
-        headquarters: String = .random,
-        homepageURL: URL = .randomWebSite,
-        logoPath: URL = .randomImagePath,
+        id: Int = 1,
+        name: String = "Lucasfilm Ltd.",
+        description: String = "Some description",
+        headquarters: String = "San Francisco, California",
+        homepageURL: URL = URL(string: "https://www.lucasfilm.com")!,
+        logoPath: URL = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!,
         originCountry: String = "US",
         parentCompany: Company.Parent? = nil
     ) -> Self {

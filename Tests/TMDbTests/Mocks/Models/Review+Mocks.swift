@@ -23,13 +23,13 @@ import TMDb
 extension Review {
 
     static func mock(
-        id: String = .randomID,
-        author: String? = nil,
-        content: String = .random
+        id: String = "1",
+        author: String = "Author Name",
+        content: String = "Some review content"
     ) -> Self {
         .init(
             id: id,
-            author: author ?? "Author \(String.randomID)",
+            author: author,
             content: content
         )
     }

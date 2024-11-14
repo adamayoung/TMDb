@@ -23,21 +23,21 @@ import TMDb
 extension CastMember {
 
     static func mock(
-        id: Int = .randomID,
-        castID: Int? = .randomID,
-        creditID: String = .randomID,
-        name: String? = .random,
-        character _: String? = .random,
+        id: Int = 1,
+        castID: Int? = 2,
+        creditID: String = "3",
+        name: String = "Actor Name",
+        character: String = "Character Name",
         gender: Gender? = .male,
-        profilePath: URL? = .randomImagePath,
-        order: Int = Int.random(in: 1...10)
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        order: Int = 1
     ) -> Self {
         .init(
             id: id,
             castID: castID,
             creditID: creditID,
-            name: name ?? "Cast \(id)",
-            character: name ?? "Character \(id)",
+            name: name,
+            character: character,
             gender: gender,
             profilePath: profilePath,
             order: order

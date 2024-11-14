@@ -23,12 +23,12 @@ import TMDb
 extension TVEpisode {
 
     static func mock(
-        id: Int = .randomID,
-        name: String? = nil,
-        episodeNumber: Int = .random(in: 0...23),
-        seasonNumber: Int = .random(in: 0...10),
-        overview: String? = .random,
-        airDate: Date? = .random,
+        id: Int = 1,
+        name: String = "TV Episode Name",
+        episodeNumber: Int = 3,
+        seasonNumber: Int = 2,
+        overview: String? = "Overview for TV Episode",
+        airDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         productionCode: String? = nil,
         stillPath: URL? = nil,
         crew: [CrewMember]? = nil,
@@ -38,7 +38,7 @@ extension TVEpisode {
     ) -> Self {
         .init(
             id: id,
-            name: name ?? "TV Episode \(id)",
+            name: name,
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
             overview: overview,
