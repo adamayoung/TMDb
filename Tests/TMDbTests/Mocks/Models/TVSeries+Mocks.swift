@@ -24,17 +24,17 @@ import Foundation
 extension TVSeries {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         name: String? = nil,
         originalName: String? = nil,
         originalLanguage: String? = nil,
-        overview: String? = .random,
+        overview: String? = "TV Series Overview",
         episodeRunTime: [Int]? = nil,
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
         seasons: [TVSeason]? = nil,
         genres: [Genre]? = nil,
-        firstAirDate: Date? = .random,
+        firstAirDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         originCountry: [String]? = nil,
         posterPath: URL? = nil,
         backdropPath: URL? = nil,

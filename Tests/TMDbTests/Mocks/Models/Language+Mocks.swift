@@ -24,8 +24,8 @@ extension Language {
 
     static func mock(
         code: String = "en",
-        name: String = .random,
-        englishName: String = .random
+        name: String = "English",
+        englishName: String = "English"
     ) -> Self {
         .init(
             code: code,

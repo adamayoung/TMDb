@@ -24,8 +24,8 @@ import Foundation
 extension Genre {
 
     static func mock(
-        id: Int = .randomID,
-        name: String = .random
+        id: Int = 1,
+        name: String = "Action"
     ) -> Self {
         .init(
             id: id,

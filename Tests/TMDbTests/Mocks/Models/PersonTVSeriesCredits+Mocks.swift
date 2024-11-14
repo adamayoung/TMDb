@@ -23,7 +23,7 @@ import TMDb
 extension PersonTVSeriesCredits {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         cast: [TVSeries] = .mocks,
         crew: [TVSeries] = .mocks
     ) -> Self {

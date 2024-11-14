@@ -23,8 +23,8 @@ import TMDb
 extension VideoMetadata {
 
     static func mock(
-        id: String = .randomID,
-        name: String = .random,
+        id: String = "1",
+        name: String = "Video name",
         site: String = "YouTube",
         key: String = "abc123",
         type: VideoType = .trailer,

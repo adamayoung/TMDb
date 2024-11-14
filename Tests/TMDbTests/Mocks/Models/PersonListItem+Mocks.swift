@@ -23,13 +23,13 @@ import TMDb
 extension PersonListItem {
 
     static func mock(
-        id: Int = .randomID,
-        name: String = .random,
+        id: Int = 1,
+        name: String = "Person Name",
         originalName: String,
-        knownForDepartment: String? = .random,
+        knownForDepartment: String? = nil,
         gender: Gender = .unknown,
-        profilePath: URL? = .randomImagePath,
-        popularity: Double? = Double.random(in: 1...10)
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        popularity: Double? = 5
     ) -> Self {
         .init(
             id: id,

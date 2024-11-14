@@ -23,14 +23,14 @@ import TMDb
 extension ProductionCompany {
 
     static func mock(
-        id: Int = .randomID,
-        name: String? = nil,
-        originCountry: String = .random,
-        logoPath: URL? = .randomImagePath
+        id: Int = 1,
+        name: String = "Production Company Name",
+        originCountry: String = "Production Origin Country",
+        logoPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
     ) -> Self {
         .init(
             id: id,
-            name: name ?? "Production Company \(id)",
+            name: name,
             originCountry: originCountry,
             logoPath: logoPath
         )

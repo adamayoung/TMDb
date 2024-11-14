@@ -23,7 +23,7 @@ import TMDb
 extension TVEpisodeImageCollection {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         stills: [ImageMetadata] = .mocks
     ) -> Self {
         .init(

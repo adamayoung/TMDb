@@ -35,7 +35,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchAll returns media")
     func searchAllReturnsMedia() async throws {
-        let query = String.random
+        let query = "media search"
         let expectedResult = MediaPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MultiSearchRequest(
@@ -49,7 +49,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchAll with filter, page and language returns media")
     func searchAllWithFilterAndPageAndLanguageReturnsMedia() async throws {
-        let query = String.random
+        let query = "media search"
         let includeAdult = true
         let page = 2
         let language = "en"
@@ -72,7 +72,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchAll when errors throws error")
     func searchAllWhenErrorsThrowsError() async throws {
-        let query = String.random
+        let query = "media search"
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -82,7 +82,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchMovies returns movies")
     func searchMoviesReturnsMovies() async throws {
-        let query = String.random
+        let query = "search movies"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieSearchRequest(
@@ -101,7 +101,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchMovies with filter, page and language returns movies")
     func searchMoviesWithFilterAndPageAndLanguageReturnsMovies() async throws {
-        let query = String.random
+        let query = "search movies"
         let primaryReleaseYear = 2024
         let country = "GB"
         let includeAdult = true
@@ -132,7 +132,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchMovies when errors throws error")
     func searchMoviesWhenErrorsThrowsError() async throws {
-        let query = String.random
+        let query = "search movies"
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -142,7 +142,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchTVSeries returns TV series")
     func searchTVSeriesReturnsTVSeries() async throws {
-        let query = String.random
+        let query = "search tv series"
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesSearchRequest(
@@ -162,7 +162,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchTVSeries with filter, page and language returns TV series")
     func searchTVSeriesWithFilterAndPageAndLanguageReturnsTVSeries() async throws {
-        let query = String.random
+        let query = "search tv series"
         let firstAirDateYear = 2023
         let year = 2024
         let includeAdult = true
@@ -190,7 +190,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchTVSeries when errors throws error")
     func searchTVSeriesWhenErrorsThrowsError() async throws {
-        let query = String.random
+        let query = "search tv series"
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -200,7 +200,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchPeople returns people")
     func searchPeopleReturnsPeople() async throws {
-        let query = String.random
+        let query = "search people"
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonSearchRequest(
@@ -214,7 +214,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchPeople with filter, page and language returns people")
     func searchPeopleWithFilterAndPageAndLanguageReturnsPeople() async throws {
-        let query = String.random
+        let query = "search people"
         let includeAdult = true
         let page = 2
         let language = "en"
@@ -237,7 +237,7 @@ struct TMDbSearchServiceTests {
 
     @Test("searchPeople when errors throws error")
     func searchPeopleWhenErrorsThrowsError() async throws {
-        let query = String.random
+        let query = "search people"
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {

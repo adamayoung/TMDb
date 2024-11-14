@@ -23,13 +23,13 @@ import TMDb
 extension Certification {
 
     static func mock(
-        code: String = .random,
-        meaning: String? = nil,
+        code: String = "U",
+        meaning: String = "All ages admitted, there is nothing unsuitable for children.",
         order: Int = 1
     ) -> Self {
         .init(
             code: code,
-            meaning: meaning ?? "Meaning \(code)",
+            meaning: meaning,
             order: order
         )
     }

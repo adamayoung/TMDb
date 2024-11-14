@@ -23,11 +23,11 @@ import TMDb
 extension TVSeason {
 
     static func mock(
-        id: Int = .randomID,
+        id: Int = 1,
         name: String? = nil,
-        seasonNumber: Int = Int.random(in: 1...10),
-        overview: String? = .random,
-        airDate: Date? = .random,
+        seasonNumber: Int = 2,
+        overview: String? = "TV Season Overview",
+        airDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         posterPath: URL? = nil,
         episodes: [TVEpisode]? = .mocks
     ) -> Self {

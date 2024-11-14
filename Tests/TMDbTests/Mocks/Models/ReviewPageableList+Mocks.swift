@@ -23,10 +23,10 @@ import TMDb
 extension ReviewPageableList {
 
     static func mock(
-        page: Int = .random(in: 1...5),
+        page: Int = 1,
         results: [Review] = .mocks,
-        totalResults: Int = .random(in: 1...100),
-        totalPages: Int = .random(in: 1...5)
+        totalResults: Int = 10,
+        totalPages: Int = 2
     ) -> Self {
         .init(
             page: page,

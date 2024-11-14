@@ -23,18 +23,18 @@ import TMDb
 extension CrewMember {
 
     static func mock(
-        id: Int = .randomID,
-        creditID: String = .randomID,
-        name: String? = nil,
-        job: String = "Job \(String.random)",
-        department: String = "Department \(String.random))",
+        id: Int = 1,
+        creditID: String = "2",
+        name: String = "Crew Name",
+        job: String = "Job Name",
+        department: String = "Department Name",
         gender: Gender? = Gender.male,
-        profilePath: URL? = .randomImagePath
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
     ) -> Self {
         .init(
             id: id,
             creditID: creditID,
-            name: name ?? "Crew Member \(id)",
+            name: name,
             job: job,
             department: department,
             gender: gender,

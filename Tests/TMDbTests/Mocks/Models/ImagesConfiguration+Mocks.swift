@@ -23,8 +23,8 @@ import TMDb
 extension ImagesConfiguration {
 
     static func mock(
-        baseURL: URL = .randomBaseURL(secure: false),
-        secureBaseURL: URL = .randomBaseURL(),
+        baseURL: URL = URL(string: "http://api.domain.com/v1/")!,
+        secureBaseURL: URL = URL(string: "https://api.domain.com/v1/")!,
         backdropSizes: [String] = ["w300"],
         logoSizes: [String] = ["w45"],
         posterSizes: [String] = ["w92"],
