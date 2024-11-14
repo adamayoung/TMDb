@@ -67,7 +67,7 @@ extension [PersonListItem] {
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino,
+            .quentinTarantino
         ]
     }
 

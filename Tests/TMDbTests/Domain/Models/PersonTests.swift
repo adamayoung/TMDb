@@ -65,7 +65,7 @@ extension PersonTests {
                 "Бред Питт",
                 "Бред Пітт",
                 "Buratto Pitto",
-                "Брэд Питт",
+                "Брэд Питт"
             ],
             knownForDepartment: "Acting",
             biography:

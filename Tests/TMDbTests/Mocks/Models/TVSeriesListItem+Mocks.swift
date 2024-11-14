@@ -109,7 +109,7 @@ extension [TVSeriesListItem] {
     static var mocks: [Element] {
         [
             .bigBrother,
-            .csi,
+            .csi
         ]
     }
 

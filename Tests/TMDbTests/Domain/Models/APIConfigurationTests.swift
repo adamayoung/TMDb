@@ -97,7 +97,7 @@ struct APIConfigurationTests {
             "tvrage_id",
             "type",
             "video",
-            "videos",
+            "videos"
         ]
     )
 

@@ -144,7 +144,7 @@ extension [MovieListItem] {
             .bulletTrain,
             .thorLoveAndThunder,
             .jurassicWorldDominion,
-            .topGunMaverick,
+            .topGunMaverick
         ]
     }
 

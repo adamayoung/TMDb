@@ -142,7 +142,7 @@ extension [Movie] {
             .bulletTrain,
             .thorLoveAndThunder,
             .jurassicWorldDominion,
-            .topGunMaverick,
+            .topGunMaverick
         ]
     }
 

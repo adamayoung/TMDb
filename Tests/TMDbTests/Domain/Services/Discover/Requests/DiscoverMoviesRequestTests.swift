@@ -81,7 +81,7 @@ struct DiscoverMoviesRequestTests {
                 "sort_by": "original_title.asc",
                 "with_people": "1,2,3",
                 "page": "2",
-                "language": "en",
+                "language": "en"
             ])
     }
 

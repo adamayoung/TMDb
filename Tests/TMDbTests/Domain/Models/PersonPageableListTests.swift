@@ -86,7 +86,7 @@ struct PersonPageableListTests {
                             hasVideo: false,
                             isAdultOnly: false
                         )
-                    ),
+                    )
                 ],
                 isAdultOnly: false
             )

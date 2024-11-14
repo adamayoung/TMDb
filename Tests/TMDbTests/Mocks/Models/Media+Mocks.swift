@@ -36,7 +36,7 @@ extension [Media] {
             .movie(.topGunMaverick),
             .tvSeries(.bigBrother),
             .tvSeries(.csi),
-            .movie(.jurassicWorldDominion),
+            .movie(.jurassicWorldDominion)
         ]
     }
 

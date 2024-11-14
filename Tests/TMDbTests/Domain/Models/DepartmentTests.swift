@@ -34,7 +34,7 @@ struct DepartmentTests {
                 "Actor",
                 "Voice",
                 "Special Guest",
-                "Stunt Double",
+                "Stunt Double"
             ]
         )
 

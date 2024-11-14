@@ -37,7 +37,7 @@ extension Department {
             name: "Costume & Make-Up",
             jobs: [
                 "Set Costumer",
-                "Co-Costume Designer",
+                "Co-Costume Designer"
             ]
         )
     }
@@ -48,7 +48,7 @@ extension Department {
             jobs: [
                 "Casting",
                 "ADR Voice Casting",
-                "Production Accountant",
+                "Production Accountant"
             ]
         )
     }

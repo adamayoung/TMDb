@@ -31,7 +31,7 @@ extension WatchProviderResult {
                     logoPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!),
                 .init(
                     id: 9, name: "Amazon Prime Video",
-                    logoPath: URL(string: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg")!),
+                    logoPath: URL(string: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg")!)
             ]
         )
     }

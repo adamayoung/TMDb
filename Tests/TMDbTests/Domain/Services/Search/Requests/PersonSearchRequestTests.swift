@@ -70,7 +70,7 @@ struct PersonSearchRequestTests {
                 "query": "edward norton",
                 "include_adult": "false",
                 "page": "2",
-                "language": "en",
+                "language": "en"
             ])
     }
 

@@ -145,7 +145,7 @@ final class URLSessionHTTPClientAdapterTests {
         let header2Value = "text/html"
         let headers = [
             header1Name: header1Value,
-            header2Name: header2Value,
+            header2Name: header2Value
         ]
         let request = HTTPRequest(url: url, headers: headers)
 

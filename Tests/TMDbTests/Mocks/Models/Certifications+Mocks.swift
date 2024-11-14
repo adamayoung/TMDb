@@ -35,7 +35,7 @@ extension Certifications {
         .mock(
             certifications: [
                 "GB": [.gbU, .gbPG, .gb12A],
-                "US": [.usG, .usPG13],
+                "US": [.usG, .usPG13]
             ]
         )
     }

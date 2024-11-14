@@ -73,7 +73,7 @@ struct TVSeriesPageableListTests {
                 voteAverage: 7.619,
                 voteCount: 1178,
                 isAdultOnly: false
-            ),
+            )
         ],
         totalResults: 2,
         totalPages: 1

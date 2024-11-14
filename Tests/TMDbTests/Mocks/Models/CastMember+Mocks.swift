@@ -77,7 +77,7 @@ extension [CastMember] {
     static var mocks: [Element] {
         [
             .chrisHemsworth,
-            .christianBale,
+            .christianBale
         ]
     }
 

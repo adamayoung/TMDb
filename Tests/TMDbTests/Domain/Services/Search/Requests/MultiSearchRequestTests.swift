@@ -74,7 +74,7 @@ struct MultiSearchRequestTests {
                 "query": "fight club",
                 "page": "2",
                 "include_adult": "false",
-                "language": "en",
+                "language": "en"
             ])
     }
 

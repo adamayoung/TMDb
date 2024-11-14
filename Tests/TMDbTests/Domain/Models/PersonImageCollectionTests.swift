@@ -52,7 +52,7 @@ struct PersonImageCollectionTests {
                 aspectRatio: 0.666666666666667,
                 voteAverage: 4.21,
                 voteCount: 3
-            ),
+            )
         ]
     )
 

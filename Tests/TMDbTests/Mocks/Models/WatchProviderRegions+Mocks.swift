@@ -30,7 +30,7 @@ extension WatchProviderRegions {
                 .init(countryCode: "AT", name: "Austria", englishName: "Austria"),
                 .init(
                     countryCode: "US", name: "United States",
-                    englishName: "United States of America"),
+                    englishName: "United States of America")
             ]
         )
     }

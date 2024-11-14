@@ -149,7 +149,7 @@ struct ContentRatingsTests {
                 descriptors: [],
                 countryCode: "RO",
                 rating: "15"
-            ),
+            )
         ],
         id: 8592
     )

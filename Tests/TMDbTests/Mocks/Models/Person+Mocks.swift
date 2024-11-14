@@ -79,7 +79,7 @@ extension [Person] {
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino,
+            .quentinTarantino
         ]
     }
 
