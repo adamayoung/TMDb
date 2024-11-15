@@ -54,6 +54,23 @@ public protocol DiscoverService: Sendable {
 
 extension DiscoverService {
 
+    ///
+    /// Returns movies to be discovered.
+    ///
+    /// [TMDb API - Discover: Movie](https://developer.themoviedb.org/reference/discover-movie)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - filter: Movie filter.
+    ///    - sortedBy: How results should be sorted.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Matching movies as a pageable list.
+    ///
     public func movies(
         filter: DiscoverMovieFilter? = nil,
         sortedBy: MovieSort? = nil,
@@ -63,6 +80,22 @@ extension DiscoverService {
         try await movies(filter: filter, sortedBy: sortedBy, page: page, language: language)
     }
 
+    ///
+    /// Returns TV series to be discovered.
+    ///
+    /// [TMDb API - Discover: TV Series](https://developer.themoviedb.org/reference/discover-tv)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - sortedBy: How results should be sorted.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Matching TV series as a pageable list.
+    ///
     public func tvSeries(
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,

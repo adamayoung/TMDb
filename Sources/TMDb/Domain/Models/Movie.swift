@@ -260,6 +260,14 @@ extension Movie {
         case isAdultOnly = "adult"
     }
 
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let container2 = try decoder.container(keyedBy: CodingKeys.self)

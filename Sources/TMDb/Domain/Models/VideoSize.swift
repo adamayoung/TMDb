@@ -49,6 +49,14 @@ public enum VideoSize: Int, Codable, Equatable, Hashable, Sendable {
     ///
     case unknown
 
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
     public init(from decoder: Decoder) throws {
         self =
             try VideoSize(rawValue: decoder.singleValueContainer().decode(RawValue.self))

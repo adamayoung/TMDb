@@ -248,6 +248,19 @@ public protocol AccountService: Sendable {
 
 extension AccountService {
 
+    ///
+    /// Returns a list of the user's favourited movies.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited movies.
+    ///
     public func favouriteMovies(
         sortedBy: FavouriteSort? = nil,
         page: Int? = nil,
@@ -262,6 +275,19 @@ extension AccountService {
         )
     }
 
+    ///
+    /// Returns a list of the user's favourited TV series.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's favourited TV series.
+    ///
     public func favouriteTVSeries(
         sortedBy: FavouriteSort? = nil,
         page: Int? = nil,
@@ -276,6 +302,19 @@ extension AccountService {
         )
     }
 
+    ///
+    /// Returns a list of movies in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of movies in the user's watchlist.
+    ///
     public func movieWatchlist(
         sortedBy: WatchlistSort? = nil,
         page: Int? = nil,
@@ -290,6 +329,19 @@ extension AccountService {
         )
     }
 
+    ///
+    /// Returns a list of TV series in the user's watchlist.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV series in the user's watchlist.
+    ///
     public func tvSeriesWatchlist(
         sortedBy: WatchlistSort? = nil,
         page: Int? = nil,

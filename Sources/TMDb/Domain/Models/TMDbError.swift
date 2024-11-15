@@ -32,6 +32,16 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An unknown error.
     case unknown
 
+    ///
+    /// Returns a Boolean value indicating whether two `TMDBError`s are equal.
+    ///
+    /// Equality is the inverse of inequality. For any values `a` and `b`,
+    /// `a == b` implies that `a != b` is `false`.
+    ///
+    /// - Parameters:
+    ///   - lhs: A value to compare.
+    ///   - rhs: Another value to compare.
+    ///
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
         case (.notFound, .notFound):

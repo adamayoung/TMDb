@@ -57,10 +57,34 @@ public protocol GenreService: Sendable {
 
 extension GenreService {
 
+    ///
+    /// Returns the list of official genres for movies.
+    ///
+    /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
+    ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of genres.
+    ///
     public func movieGenres(language: String? = nil) async throws -> [Genre] {
         try await movieGenres(language: language)
     }
 
+    ///
+    /// Returns the list of official genres for TV series.
+    ///
+    /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
+    ///
+    /// - Parameters:
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of genres.
+    ///
     public func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
         try await tvSeriesGenres(language: language)
     }
