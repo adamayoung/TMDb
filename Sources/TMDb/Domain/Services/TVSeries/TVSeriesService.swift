@@ -439,7 +439,7 @@ extension TVSeriesService {
     }
 
     ///
-    /// Returns watch providers for a TV series
+    /// Returns watch providers for a TV series.
     ///
     /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
     ///

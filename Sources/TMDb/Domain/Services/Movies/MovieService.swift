@@ -236,7 +236,7 @@ public protocol MovieService: Sendable {
     func upcoming(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
-    /// Returns watch providers for a movie
+    /// Returns watch providers for a movie.
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
     ///
@@ -519,7 +519,7 @@ extension MovieService {
     }
 
     ///
-    /// Returns watch providers for a movie
+    /// Returns watch providers for a movie.
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
     ///

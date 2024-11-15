@@ -23,10 +23,10 @@
     "respectsExistingLineBreaks": true,
     "rules": {
         "AllPublicDeclarationsHaveDocumentation": true,
-        "AlwaysUseLiteralForEmptyCollectionInit": false,
+        "AlwaysUseLiteralForEmptyCollectionInit": true,
         "AlwaysUseLowerCamelCase": true,
         "AmbiguousTrailingClosureOverload": true,
-        "BeginDocumentationCommentWithOneLineSummary": false,
+        "BeginDocumentationCommentWithOneLineSummary": true,
         "DoNotUseSemicolons": true,
         "DontRepeatTypeInStaticProperties": true,
         "FileScopedDeclarationPrivacy": true,
