@@ -95,6 +95,21 @@ public protocol TVEpisodeService: Sendable {
 
 extension TVEpisodeService {
 
+    ///
+    /// Returns the primary information about a TV episode.
+    ///
+    /// [TMDb API - TV Episodes: Details](https://developer.themoviedb.org/reference/tv-episode-details)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A episode of the matching TV series.
+    ///
     public func details(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
@@ -109,6 +124,21 @@ extension TVEpisodeService {
         )
     }
 
+    ///
+    /// Returns the images that belong to a TV episode.
+    ///
+    /// [TMDb API - TV Episode: Images](https://developer.themoviedb.org/reference/tv-episode-images)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number of a TV.
+    ///    - seasonNumber: The season number of a TV.
+    ///    - tvSeriesID: The identifier of the TV.
+    ///    - filter: Image filter.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of images for the matching TV's episode.
+    ///
     public func images(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
@@ -123,6 +153,21 @@ extension TVEpisodeService {
         )
     }
 
+    ///
+    /// Returns the videos that belong to a TV series episode.
+    ///
+    /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number of a TV.
+    ///    - seasonNumber: The season number of a TV.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Video filter.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of videos for the matching TV's episode.
+    ///
     public func videos(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,

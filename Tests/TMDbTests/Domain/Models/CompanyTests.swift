@@ -27,6 +27,21 @@ struct CompanyTests {
 
     @Test("JSON decoding of Company", .tags(.decoding))
     func decodeCompany() throws {
+        let company = try Company(
+            id: 3,
+            name: "Pixar",
+            description: "",
+            headquarters: "Emeryville, California",
+            homepageURL: #require(URL(string: "http://www.pixar.com")),
+            logoPath: #require(URL(string: "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png")),
+            originCountry: "US",
+            parentCompany: Company.Parent(
+                id: 2,
+                name: "Walt Disney Pictures",
+                logoPath: #require(URL(string: "/wdrCwmRnLFJhEoH8GSfymY85KHT.png"))
+            )
+        )
+
         let result = try JSONDecoder.theMovieDatabase.decode(Company.self, fromResource: "company")
 
         #expect(result.id == company.id)
@@ -41,20 +56,5 @@ struct CompanyTests {
         #expect(parentCompany.name == company.parentCompany?.name)
         #expect(parentCompany.logoPath == company.parentCompany?.logoPath)
     }
-
-    private let company = Company(
-        id: 3,
-        name: "Pixar",
-        description: "",
-        headquarters: "Emeryville, California",
-        homepageURL: URL(string: "http://www.pixar.com")!,
-        logoPath: URL(string: "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png")!,
-        originCountry: "US",
-        parentCompany: Company.Parent(
-            id: 2,
-            name: "Walt Disney Pictures",
-            logoPath: URL(string: "/wdrCwmRnLFJhEoH8GSfymY85KHT.png")!
-        )
-    )
 
 }

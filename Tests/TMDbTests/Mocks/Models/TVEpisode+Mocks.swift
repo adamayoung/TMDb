@@ -35,8 +35,8 @@ extension TVEpisode {
         guestStars: [CastMember]? = nil,
         voteAverage: Double? = nil,
         voteCount: Int? = nil
-    ) -> Self {
-        .init(
+    ) -> TVEpisode {
+        TVEpisode(
             id: id,
             name: name,
             episodeNumber: episodeNumber,
@@ -56,7 +56,7 @@ extension TVEpisode {
 
 extension [TVEpisode] {
 
-    static var mocks: [Element] {
+    static var mocks: [TVEpisode] {
         [.mock(), .mock(), .mock(), .mock()]
     }
 

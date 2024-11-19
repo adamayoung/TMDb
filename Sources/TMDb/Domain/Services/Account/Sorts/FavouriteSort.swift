@@ -29,6 +29,9 @@ public enum FavouriteSort: CustomStringConvertible {
     ///
     case createdAt(descending: Bool = false)
 
+    ///
+    /// A textual representation of this sort.
+    ///
     public var description: String {
         "\(fieldName).\(isDescending ? "desc" : "asc")"
     }

@@ -43,7 +43,7 @@ struct TMDbJSONSerialiserTests {
     @Test("decode when data can be decoded returns decoded object")
     func decodeWhenDataCanBeDecodedReturnsDecodedObject() async throws {
         let expectedResult = MockObject()
-        let data = expectedResult.data
+        let data = try expectedResult.data()
 
         let result = try await serialiser.decode(MockObject.self, from: data)
 
@@ -62,7 +62,7 @@ struct TMDbJSONSerialiserTests {
     @Test("encode when data can be encoded returns data")
     func encodeWhenDataCanBeEncodedReturnsData() async throws {
         let value = MockObject()
-        let expectedResult = value.data
+        let expectedResult = try value.data()
 
         let result = try await serialiser.encode(value)
 
@@ -77,14 +77,12 @@ extension TMDbJSONSerialiserTests {
 
         let id: UUID
 
-        var data: Data {
-            // swiftlint:disable force_try
-            try! JSONEncoder().encode(self)
-            // swiftlint:enable force_try
-        }
-
         init(id: UUID = .init()) {
             self.id = id
+        }
+
+        func data() throws -> Data {
+            try JSONEncoder().encode(self)
         }
     }
 

@@ -22,11 +22,11 @@ import TMDb
 
 extension SpokenLanguage {
 
-    static func mocks(
+    static func mock(
         languageCode: String = "en",
         name: String = "English"
-    ) -> Self {
-        .init(
+    ) -> SpokenLanguage {
+        SpokenLanguage(
             languageCode: languageCode,
             name: name
         )
@@ -36,8 +36,8 @@ extension SpokenLanguage {
 
 extension [SpokenLanguage] {
 
-    static var mocks: [Element] {
-        [.mocks(), .mocks(), .mocks()]
+    static var mocks: [SpokenLanguage] {
+        [.mock(), .mock(), .mock()]
     }
 
 }

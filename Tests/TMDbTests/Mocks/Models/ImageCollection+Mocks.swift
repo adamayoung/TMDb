@@ -27,8 +27,8 @@ extension ImageCollection {
         posters: [ImageMetadata] = .mocks,
         logos: [ImageMetadata] = .mocks,
         backdrops: [ImageMetadata] = .mocks
-    ) -> Self {
-        .init(
+    ) -> ImageCollection {
+        ImageCollection(
             id: id,
             posters: posters,
             logos: logos,

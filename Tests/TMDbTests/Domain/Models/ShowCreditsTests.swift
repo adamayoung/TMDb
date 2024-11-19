@@ -67,7 +67,7 @@ struct ShowCreditsTests {
                 gender: .male,
                 profilePath: URL(string: "/43nyfW3TxD3PxDqYB8tyqaKpDBH.jpg"),
                 order: 2
-            ),
+            )
         ],
         crew: [
             CrewMember(
@@ -87,7 +87,7 @@ struct ShowCreditsTests {
                 department: "Production",
                 gender: .unknown,
                 profilePath: nil
-            ),
+            )
         ]
     )
 

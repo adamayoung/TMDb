@@ -92,7 +92,7 @@ struct TVSeriesSearchRequestTests {
                 "year": "2022",
                 "include_adult": "false",
                 "page": "3",
-                "language": "en",
+                "language": "en"
             ])
     }
 

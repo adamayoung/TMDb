@@ -102,8 +102,7 @@ public final class TMDbClient: Sendable {
     ///
     /// Creates a TMDb client using `URLSession` as the `HTTPClient`.
     ///
-    /// - Parameters:
-    ///    - apiKey: The TMDb API key to use.
+    /// - Parameter apiKey: The TMDb API key to use.
     ///
     public convenience init(apiKey: String) {
         self.init(

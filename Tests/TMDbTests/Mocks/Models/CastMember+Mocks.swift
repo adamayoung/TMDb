@@ -29,10 +29,10 @@ extension CastMember {
         name: String = "Actor Name",
         character: String = "Character Name",
         gender: Gender? = .male,
-        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         order: Int = 1
-    ) -> Self {
-        .init(
+    ) -> CastMember {
+        CastMember(
             id: id,
             castID: castID,
             creditID: creditID,
@@ -44,28 +44,28 @@ extension CastMember {
         )
     }
 
-    static var chrisHemsworth: Self {
-        .mock(
+    static var chrisHemsworth: CastMember {
+        CastMember.mock(
             id: 74568,
             castID: 85,
             creditID: "62c8c25290b87e00f53973fb",
             name: "Chris Hemsworth",
             character: "Thor Odinson",
             gender: Gender.male,
-            profilePath: URL(string: "/jpurJ9jAcLCYjgHHfYF32m3zJYm.jpg")!,
+            profilePath: URL(string: "/jpurJ9jAcLCYjgHHfYF32m3zJYm.jpg"),
             order: 0
         )
     }
 
-    static var christianBale: Self {
-        .mock(
+    static var christianBale: CastMember {
+        CastMember.mock(
             id: 3894,
             castID: 87,
             creditID: "62c8c27f3d4d96004c9f1996",
             name: "Christian Bale",
             character: "Gorr",
             gender: Gender.male,
-            profilePath: URL(string: "/qCpZn2e3dimwbryLnqxZuI88PTi.jpg")!,
+            profilePath: URL(string: "/qCpZn2e3dimwbryLnqxZuI88PTi.jpg"),
             order: 1
         )
     }
@@ -77,7 +77,7 @@ extension [CastMember] {
     static var mocks: [Element] {
         [
             .chrisHemsworth,
-            .christianBale,
+            .christianBale
         ]
     }
 

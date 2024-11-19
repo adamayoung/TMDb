@@ -47,9 +47,8 @@ struct MovieTests {
 
 extension MovieTests {
 
-    // swiftlint:disable line_length
     private var movie: Movie {
-        .init(
+        Movie(
             id: 550,
             title: "Fight Club",
             tagline: "How much can you know about yourself if you've never been in a fight?",
@@ -96,6 +95,5 @@ extension MovieTests {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }

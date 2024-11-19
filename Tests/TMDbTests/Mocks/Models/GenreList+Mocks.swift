@@ -23,12 +23,8 @@ import Foundation
 
 extension GenreList {
 
-    static func mock(
-        genres: [Genre] = .mocks
-    ) -> Self {
-        .init(
-            genres: genres
-        )
+    static func mock(genres: [Genre] = .mocks) -> GenreList {
+        GenreList(genres: genres)
     }
 
 }

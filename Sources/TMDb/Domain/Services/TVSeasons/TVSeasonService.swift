@@ -113,6 +113,20 @@ public protocol TVSeasonService: Sendable {
 
 extension TVSeasonService {
 
+    ///
+    /// Returns the primary information about a TV season.
+    ///
+    /// [TMDb API - TV Seasons: Details](https://developer.themoviedb.org/reference/tv-season-details)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A season of the matching TV series.
+    ///
     public func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
@@ -121,6 +135,24 @@ extension TVSeasonService {
         try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
+    ///
+    /// Returns the aggregate cast and crew of a TV season.
+    ///
+    /// This call differs from the main credits call in that it does not return
+    /// the newest season. Instead, it is a view of all the entire cast & crew
+    /// for all episodes belonging to a TV season.
+    ///
+    /// [TMDb API - TV Season: Aggregate Credits](https://developer.themoviedb.org/reference/tv-season-aggregate-credits)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Show credits for the matching TV season.
+    ///
     public func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
@@ -130,6 +162,20 @@ extension TVSeasonService {
             forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
+    ///
+    /// Returns the images that belong to a TV season.
+    ///
+    /// [TMDb API - TV Seasons: Images](https://developer.themoviedb.org/reference/tv-season-images)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Image filter.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of images for the matching TV's season.
+    ///
     public func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
@@ -138,6 +184,20 @@ extension TVSeasonService {
         try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
     }
 
+    ///
+    /// Returns the videos that belong to a TV season.
+    ///
+    /// [TMDb API - TV Seasons: Videos](https://developer.themoviedb.org/reference/tv-season-videos)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - filter: Video filter.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of videos for the matching TV series season.
+    ///
     public func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,

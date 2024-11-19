@@ -59,6 +59,9 @@ public enum MovieSort: CustomStringConvertible, Equatable, Sendable {
     ///
     case voteCount(descending: Bool = true)
 
+    ///
+    /// A textual representation of this sort.
+    ///
     public var description: String {
         "\(fieldName).\(isDescending ? "desc" : "asc")"
     }

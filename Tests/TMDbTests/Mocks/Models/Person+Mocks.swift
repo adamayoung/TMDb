@@ -32,12 +32,12 @@ extension Person {
         deathday: Date? = nil,
         gender: Gender = .unknown,
         placeOfBirth: String? = nil,
-        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = 6.8,
         imdbID: String? = nil,
-        homepageURL: URL? = URL(string: "https://www.person.com")!
-    ) -> Self {
-        .init(
+        homepageURL: URL? = URL(string: "https://www.person.com")
+    ) -> Person {
+        Person(
             id: id,
             name: name,
             alsoKnownAs: alsoKnownAs,
@@ -54,20 +54,20 @@ extension Person {
         )
     }
 
-    static var tomCruise: Self {
-        .mock(id: 500, name: "Tom Cruise")
+    static var tomCruise: Person {
+        Person.mock(id: 500, name: "Tom Cruise")
     }
 
-    static var bradPitt: Self {
-        .mock(id: 287, name: "Brad Pitt")
+    static var bradPitt: Person {
+        Person.mock(id: 287, name: "Brad Pitt")
     }
 
-    static var johnnyDepp: Self {
-        .mock(id: 85, name: "Johnny Depp")
+    static var johnnyDepp: Person {
+        Person.mock(id: 85, name: "Johnny Depp")
     }
 
-    static var quentinTarantino: Self {
-        .mock(id: 138, name: "Quentin Tarantino")
+    static var quentinTarantino: Person {
+        Person.mock(id: 138, name: "Quentin Tarantino")
     }
 
 }
@@ -79,7 +79,7 @@ extension [Person] {
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino,
+            .quentinTarantino
         ]
     }
 

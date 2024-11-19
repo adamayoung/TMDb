@@ -26,9 +26,9 @@ extension ProductionCompany {
         id: Int = 1,
         name: String = "Production Company Name",
         originCountry: String = "Production Origin Country",
-        logoPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
-    ) -> Self {
-        .init(
+        logoPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+    ) -> ProductionCompany {
+        ProductionCompany(
             id: id,
             name: name,
             originCountry: originCountry,
@@ -40,7 +40,7 @@ extension ProductionCompany {
 
 extension [ProductionCompany] {
 
-    static var mocks: [Element] {
+    static var mocks: [ProductionCompany] {
         [.mock(), .mock(), .mock()]
     }
 

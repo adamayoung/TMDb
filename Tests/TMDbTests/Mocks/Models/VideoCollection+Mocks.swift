@@ -25,8 +25,8 @@ extension VideoCollection {
     static func mock(
         id: Int = 1,
         results: [VideoMetadata] = .mocks
-    ) -> Self {
-        .init(
+    ) -> VideoCollection {
+        VideoCollection(
             id: id,
             results: results
         )

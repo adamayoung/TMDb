@@ -26,8 +26,8 @@ extension ShowCredits {
         id: Int = 1,
         cast: [CastMember] = .mocks,
         crew: [CrewMember] = .mocks
-    ) -> Self {
-        .init(
+    ) -> ShowCredits {
+        ShowCredits(
             id: id,
             cast: cast,
             crew: crew

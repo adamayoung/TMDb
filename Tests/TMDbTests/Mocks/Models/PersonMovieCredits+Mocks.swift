@@ -26,8 +26,8 @@ extension PersonMovieCredits {
         id: Int = 1,
         cast: [Movie] = .mocks,
         crew: [Movie] = .mocks
-    ) -> Self {
-        .init(
+    ) -> PersonMovieCredits {
+        PersonMovieCredits(
             id: id,
             cast: cast,
             crew: crew

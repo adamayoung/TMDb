@@ -15,7 +15,7 @@ let package = Package(
         .iOS(.v16),
         .watchOS(.v9),
         .tvOS(.v16),
-        .visionOS(.v1),
+        .visionOS(.v1)
     ],
 
     products: [
@@ -36,7 +36,7 @@ let package = Package(
         .testTarget(
             name: "TMDbIntegrationTests",
             dependencies: ["TMDb"]
-        ),
+        )
     ]
 )
 

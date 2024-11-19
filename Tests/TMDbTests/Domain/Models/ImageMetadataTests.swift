@@ -25,6 +25,20 @@ import Testing
 @Suite(.tags(.models))
 struct ImageMetadataTests {
 
+    var imageMetadata: ImageMetadata!
+
+    init() throws {
+        self.imageMetadata = try ImageMetadata(
+            filePath: #require(URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg")),
+            width: 1280,
+            height: 720,
+            aspectRatio: 1.77777777777778,
+            voteAverage: 5.7,
+            voteCount: 957,
+            languageCode: "en"
+        )
+    }
+
     @Test("ID and filePath matches")
     func testIDReturnsFilePath() {
         #expect(imageMetadata.id == imageMetadata.filePath)
@@ -43,15 +57,5 @@ struct ImageMetadataTests {
         #expect(result.voteCount == imageMetadata.voteCount)
         #expect(result.languageCode == imageMetadata.languageCode)
     }
-
-    private let imageMetadata = ImageMetadata(
-        filePath: URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg")!,
-        width: 1280,
-        height: 720,
-        aspectRatio: 1.77777777777778,
-        voteAverage: 5.7,
-        voteCount: 957,
-        languageCode: "en"
-    )
 
 }

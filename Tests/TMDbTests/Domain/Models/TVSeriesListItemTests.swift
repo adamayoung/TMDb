@@ -37,7 +37,6 @@ struct TVSeriesListItemTests {
 
 extension TVSeriesListItemTests {
 
-    // swiftlint:disable line_length
     private var tvSeries: TVSeriesListItem {
         TVSeriesListItem(
             id: 11366,
@@ -57,6 +56,5 @@ extension TVSeriesListItemTests {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }

@@ -22,8 +22,8 @@ import TMDb
 
 extension Media {
 
-    static func mock() -> Self {
-        .movie(.topGunMaverick)
+    static func mock() -> Media {
+        Media.movie(.topGunMaverick)
     }
 
 }
@@ -36,7 +36,7 @@ extension [Media] {
             .movie(.topGunMaverick),
             .tvSeries(.bigBrother),
             .tvSeries(.csi),
-            .movie(.jurassicWorldDominion),
+            .movie(.jurassicWorldDominion)
         ]
     }
 

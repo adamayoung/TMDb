@@ -26,10 +26,11 @@ extension ShowWatchProviderResult {
     static func mock(
         id: Int = 1,
         regionCode: String = "GB"
-    ) -> Self {
-        .init(
+    ) -> ShowWatchProviderResult {
+        ShowWatchProviderResult(
             id: id,
             results: [regionCode: .mock()]
         )
     }
+
 }

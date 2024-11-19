@@ -30,16 +30,16 @@ struct JSONEncoderTMDbTests {
 
     init() {
         self.dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-ddd"
+        self.dateFormatter.dateFormat = "yyyy-MM-ddd"
         self.jsonEncoder = JSONEncoder.theMovieDatabase
     }
 
     @Test("encoder encodes object")
     func theMovieDatabaseEncoderEncodesObject() throws {
-        let value = SomeThing(
+        let value = try SomeThing(
             id: "abc123",
             firstName: "Adam",
-            dateOfBirth: dateFormatter.date(from: "1990-01-02")!
+            dateOfBirth: #require(dateFormatter.date(from: "1990-01-02"))
         )
 
         let expectedIDResult = "\"id\":\"abc123\""

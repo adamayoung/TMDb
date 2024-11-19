@@ -90,7 +90,7 @@ struct MovieSearchRequestTests {
                 "primary_release_year": "2024",
                 "include_adult": "false",
                 "page": "2",
-                "language": "en",
+                "language": "en"
             ])
     }
 

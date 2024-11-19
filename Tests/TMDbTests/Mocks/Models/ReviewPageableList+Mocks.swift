@@ -27,8 +27,8 @@ extension ReviewPageableList {
         results: [Review] = .mocks,
         totalResults: Int = 10,
         totalPages: Int = 2
-    ) -> Self {
-        .init(
+    ) -> ReviewPageableList {
+        ReviewPageableList(
             page: page,
             results: results,
             totalResults: totalResults,

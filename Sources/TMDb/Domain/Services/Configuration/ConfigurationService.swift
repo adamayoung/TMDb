@@ -42,8 +42,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
-    /// - Parameters:
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -76,6 +75,17 @@ public protocol ConfigurationService: Sendable {
 
 extension ConfigurationService {
 
+    ///
+    /// Returns the list of countries used throughout TMDb.
+    ///
+    /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
+    ///
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Countries used throughout TMDb,
+    ///
     public func countries(language: String? = nil) async throws -> [Country] {
         try await countries(language: language)
     }

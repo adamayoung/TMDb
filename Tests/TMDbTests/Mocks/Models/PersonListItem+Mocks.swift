@@ -28,10 +28,10 @@ extension PersonListItem {
         originalName: String,
         knownForDepartment: String? = nil,
         gender: Gender = .unknown,
-        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = 5
-    ) -> Self {
-        .init(
+    ) -> PersonListItem {
+        PersonListItem(
             id: id,
             name: name,
             originalName: originalName,
@@ -42,32 +42,32 @@ extension PersonListItem {
         )
     }
 
-    static var tomCruise: Self {
-        .mock(id: 500, name: "Tom Cruise", originalName: "Tom Cruise")
+    static var tomCruise: PersonListItem {
+        PersonListItem.mock(id: 500, name: "Tom Cruise", originalName: "Tom Cruise")
     }
 
-    static var bradPitt: Self {
-        .mock(id: 287, name: "Brad Pitt", originalName: "Brad Pitt")
+    static var bradPitt: PersonListItem {
+        PersonListItem.mock(id: 287, name: "Brad Pitt", originalName: "Brad Pitt")
     }
 
-    static var johnnyDepp: Self {
-        .mock(id: 85, name: "Johnny Depp", originalName: "Johnny Depp")
+    static var johnnyDepp: PersonListItem {
+        PersonListItem.mock(id: 85, name: "Johnny Depp", originalName: "Johnny Depp")
     }
 
-    static var quentinTarantino: Self {
-        .mock(id: 138, name: "Quentin Tarantino", originalName: "Quentin Tarantino")
+    static var quentinTarantino: PersonListItem {
+        PersonListItem.mock(id: 138, name: "Quentin Tarantino", originalName: "Quentin Tarantino")
     }
 
 }
 
 extension [PersonListItem] {
 
-    static var mocks: [Element] {
+    static var mocks: [PersonListItem] {
         [
             .tomCruise,
             .bradPitt,
             .johnnyDepp,
-            .quentinTarantino,
+            .quentinTarantino
         ]
     }
 

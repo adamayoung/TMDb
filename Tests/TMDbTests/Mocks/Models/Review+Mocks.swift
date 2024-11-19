@@ -26,8 +26,8 @@ extension Review {
         id: String = "1",
         author: String = "Author Name",
         content: String = "Some review content"
-    ) -> Self {
-        .init(
+    ) -> Review {
+        Review(
             id: id,
             author: author,
             content: content
@@ -38,7 +38,7 @@ extension Review {
 
 extension [Review] {
 
-    static var mocks: [Element] {
+    static var mocks: [Review] {
         [.mock(), .mock(), .mock()]
     }
 
