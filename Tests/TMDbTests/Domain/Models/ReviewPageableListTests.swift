@@ -36,7 +36,6 @@ struct ReviewPageableListTests {
         #expect(result.totalPages == list.totalPages)
     }
 
-    // swiftlint:disable line_length
     private let list = ReviewPageableList(
         page: 1,
         results: [
@@ -50,6 +49,5 @@ struct ReviewPageableListTests {
         totalResults: 1,
         totalPages: 1
     )
-    // swiftlint:enable line_length
 
 }

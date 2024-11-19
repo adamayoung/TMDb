@@ -113,7 +113,6 @@ extension MovieListItem {
         )
     }
 
-    // swiftlint:disable line_length
     static var theFirstOmen: MovieListItem {
         MovieListItem(
             id: 437_342,
@@ -133,7 +132,6 @@ extension MovieListItem {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }
 

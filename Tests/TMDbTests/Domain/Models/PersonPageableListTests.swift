@@ -36,7 +36,6 @@ struct PersonPageableListTests {
         #expect(result.totalPages == list.totalPages)
     }
 
-    // swiftlint:disable line_length
     private let list = PersonPageableList(
         page: 1,
         results: [
@@ -94,6 +93,5 @@ struct PersonPageableListTests {
         totalResults: 1,
         totalPages: 1
     )
-    // swiftlint:enable line_length
 
 }

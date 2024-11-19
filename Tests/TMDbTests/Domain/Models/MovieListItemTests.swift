@@ -37,7 +37,6 @@ struct MovieListItemTests {
 
 extension MovieListItemTests {
 
-    // swiftlint:disable line_length
     private var movie: MovieListItem {
         .init(
             id: 437_342,
@@ -57,6 +56,5 @@ extension MovieListItemTests {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }

@@ -39,7 +39,6 @@ struct TVSeasonTests {
         #expect(result.episodes == tvSeason.episodes)
     }
 
-    // swiftlint:disable line_length
     private let tvSeason = TVSeason(
         id: 3624,
         name: "Season 1",
@@ -50,6 +49,5 @@ struct TVSeasonTests {
         posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
         episodes: nil
     )
-    // swiftlint:enable line_length
 
 }

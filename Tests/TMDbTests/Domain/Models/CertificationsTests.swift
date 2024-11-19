@@ -33,7 +33,6 @@ struct CertificationsTests {
         #expect(result == certifications)
     }
 
-    // swiftlint:disable line_length
     private let certifications = Certifications(
         certifications: [
             "US": [
@@ -118,6 +117,5 @@ struct CertificationsTests {
             ]
         ]
     )
-    // swiftlint:enable line_length
 
 }

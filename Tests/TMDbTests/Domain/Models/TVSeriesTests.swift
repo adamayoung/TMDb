@@ -48,7 +48,6 @@ struct TVSeriesTests {
 
 extension TVSeriesTests {
 
-    // swiftlint:disable line_length
     private var tvSeries: TVSeries {
         .init(
             id: 1399,
@@ -109,6 +108,5 @@ extension TVSeriesTests {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }

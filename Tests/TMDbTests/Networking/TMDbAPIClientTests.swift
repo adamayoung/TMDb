@@ -125,22 +125,3 @@ struct TMDbAPIClientTests {
     }
 
 }
-
-extension TMDbAPIClientTests {
-
-    private struct MockObject: Codable, Equatable {
-
-        let id: UUID
-
-        var data: Data {
-            // swiftlint:disable force_try
-            try! JSONEncoder().encode(self)
-            // swiftlint:enable force_try
-        }
-
-        init(id: UUID = .init()) {
-            self.id = id
-        }
-    }
-
-}

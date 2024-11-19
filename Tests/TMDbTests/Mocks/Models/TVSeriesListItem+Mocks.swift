@@ -78,9 +78,6 @@ extension TVSeriesListItem {
         )
     }
 
-    // swiftlint:enable line_length
-
-    // swiftlint:disable line_length
     static var csi: TVSeriesListItem {
         TVSeriesListItem(
             id: 1431,
@@ -100,13 +97,12 @@ extension TVSeriesListItem {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }
 
 extension [TVSeriesListItem] {
 
-    static var mocks: [Element] {
+    static var mocks: [TVSeriesListItem] {
         [
             .bigBrother,
             .csi

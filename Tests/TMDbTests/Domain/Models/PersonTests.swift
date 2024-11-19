@@ -56,7 +56,6 @@ struct PersonTests {
 
 extension PersonTests {
 
-    // swiftlint:disable line_length
     private var person: Person {
         .init(
             id: 287,
@@ -80,6 +79,5 @@ extension PersonTests {
             homepageURL: nil
         )
     }
-    // swiftlint:enable line_length
 
 }
