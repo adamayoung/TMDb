@@ -21,13 +21,7 @@ import Foundation
 
 typealias APIRequestQueryItems = [APIRequestQueryItem.Name: CustomStringConvertible]
 
-struct APIRequestQueryItem {
-
-    private init() {}
-
-}
-
-extension APIRequestQueryItem {
+enum APIRequestQueryItem {
 
     struct Name: ExpressibleByStringLiteral, CustomStringConvertible, Equatable, Hashable {
 

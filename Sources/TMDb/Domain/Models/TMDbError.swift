@@ -24,7 +24,7 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An error indicating the resource could not be found.
     case notFound
 
-    case unauthorised(String?)
+    case unauthorised(String? = nil)
 
     /// An error indicating there was a network problem.
     case network(Error)

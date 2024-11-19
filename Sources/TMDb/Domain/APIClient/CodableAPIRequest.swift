@@ -19,9 +19,7 @@
 
 import Foundation
 
-class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest,
-    CustomStringConvertible
-{
+class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRequest {
 
     let id: UUID
     let path: String
@@ -29,23 +27,6 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
     let method: APIRequestMethod
     let headers: [String: String]
     let body: Body?
-
-    var description: String {
-        var description = """
-            APIRequest:
-            \tid: \(id.uuidString)
-            \tpath: \(path)
-            \tqueryItems: \(queryItems.map { "\($0)=\($1)" }.joined(separator: "&"))
-            \tmethod: \(method)
-            \theaders: \(headers.map { "\($0): \(1)" }.joined(separator: " "))
-            """
-
-        if let body {
-            description += "\nBody:\n\(body)"
-        }
-
-        return description
-    }
 
     init(
         id: UUID = UUID(),
@@ -67,9 +48,10 @@ class CodableAPIRequest<Body: Encodable & Equatable, Response: Decodable>: APIRe
         self.headers = headers
     }
 
-    static func == (lhs: CodableAPIRequest<Body, Response>, rhs: CodableAPIRequest<Body, Response>)
-        -> Bool
-    {
+    static func == (
+        lhs: CodableAPIRequest<Body, Response>,
+        rhs: CodableAPIRequest<Body, Response>
+    ) -> Bool {
         lhs.path == rhs.path
             && lhs.queryItems == rhs.queryItems
             && lhs.method == rhs.method
