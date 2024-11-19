@@ -35,7 +35,7 @@
         "IdentifiersMustBeASCII": true,
         "NeverForceUnwrap": true,
         "NeverUseForceTry": true,
-        "NeverUseImplicitlyUnwrappedOptionals": false,
+        "NeverUseImplicitlyUnwrappedOptionals": true,
         "NoAccessLevelOnExtensionDeclaration": true,
         "NoAssignmentInExpressions": true,
         "NoBlockComments": true,
