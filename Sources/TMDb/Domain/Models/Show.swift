@@ -94,6 +94,10 @@ extension Show {
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
+    /// - Throws: ``DecodingError.typeMismatch`` if the encountered encoded value is not convertible to the requested type.
+    /// - Throws: ``DecodingError.keyNotFound`` if self does not have an entry for the given key.
+    /// - Throws: ``DecodingError.valueNotFound`` if self has a null entry for the given key.
+    ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let mediaType = try container.decode(MediaType.self, forKey: .mediaType)
@@ -117,6 +121,9 @@ extension Show {
     /// encoder's format.
     ///
     /// - Parameter encoder: The encoder to write data to.
+    ///
+    /// - throws: `EncodingError.invalidValue` if the given value is invalid in
+    ///   the current context for this format.
     ///
     public func encode(to encoder: Encoder) throws {
         var singleContainer = encoder.singleValueContainer()

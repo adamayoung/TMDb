@@ -27,8 +27,9 @@ public protocol HTTPClient: Sendable {
     ///
     /// Performs an HTTP request.
     ///
-    /// - Parameters:
-    ///   - request: The HTTP request.
+    /// - Parameter request: The HTTP request.
+    ///
+    /// - Throws: ``Error``.
     ///
     /// - Returns: An HTTP response object.
     ///

@@ -30,8 +30,7 @@ public protocol GenreService: Sendable {
     ///
     /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
-    /// - Parameters:
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -44,8 +43,7 @@ public protocol GenreService: Sendable {
     ///
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
-    /// - Parameters:
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -62,8 +60,7 @@ extension GenreService {
     ///
     /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
-    /// - Parameters:
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -78,8 +75,7 @@ extension GenreService {
     ///
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
-    /// - Parameters:
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

@@ -42,6 +42,8 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     ///   - lhs: A value to compare.
     ///   - rhs: Another value to compare.
     ///
+    /// - Returns: `true` if equal, or `false` if not.
+    ///
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
         case (.notFound, .notFound):

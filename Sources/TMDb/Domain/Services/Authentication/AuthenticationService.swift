@@ -89,8 +89,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// Creates a TMDb session using a user's username and password.
     ///
-    /// - Parameters:
-    ///   - credential: The user's TMDb credential.
+    /// - Parameter credential: The user's TMDb credential.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

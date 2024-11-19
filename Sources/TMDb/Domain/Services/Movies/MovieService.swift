@@ -260,8 +260,9 @@ public protocol MovieService: Sendable {
     ///
     /// [TMDb API - Movie: External IDs](https://developer.themoviedb.org/reference/movie-external-ids)
     ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
+    /// - Parameter movieID: The identifier of the movie.
+    ///
+    /// - Throws: TMDb data error ``TMDbError``.
     ///
     /// - Returns: A collection of external links for the specificed movie.
     ///

@@ -52,6 +52,10 @@ public enum Gender: Int, Codable, Equatable, Hashable, Sendable {
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
+    /// - Throws: ``DecodingError.typeMismatch`` if the encountered encoded value is not convertible to the requested type.
+    /// - Throws: ``DecodingError.keyNotFound`` if self does not have an entry for the given key.
+    /// - Throws: ``DecodingError.valueNotFound`` if self has a null entry for the given key.
+    ///
     public init(from decoder: Decoder) throws {
         self =
             try Gender(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown

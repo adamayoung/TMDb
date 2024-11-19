@@ -99,8 +99,7 @@ public protocol PersonService: Sendable {
     ///
     /// [TMDb API - People: Images](https://developer.themoviedb.org/reference/person-images)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -130,8 +129,9 @@ public protocol PersonService: Sendable {
     ///
     /// [TMDb API - People: External IDs](https://developer.themoviedb.org/reference/person-external-ids)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
+    /// - Parameter personID: The identifier of the person.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of external links for the specificed person.
     ///

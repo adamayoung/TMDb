@@ -206,7 +206,10 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Watch providers for TV series in current region.
     ///
-    func watchProviders(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws
+    func watchProviders(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String
+    ) async throws
         -> ShowWatchProvider?
 
     ///
@@ -214,12 +217,15 @@ public protocol TVSeriesService: Sendable {
     ///
     /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
     ///
-    /// - Parameters:
-    ///    - tvSeriesID: The identifier of the TV series.
+    /// - Parameters tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of external links for the specificed TV series.
     ///
-    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    func externalLinks(
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws
         -> TVSeriesExternalLinksCollection
 
     ///
@@ -230,6 +236,8 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A content rating for the specificed TV series.
     ///
@@ -469,6 +477,8 @@ extension TVSeriesService {
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
     ///
+    /// - Throws: TMDb data error ``TMDbError``.
+    ///
     /// - Returns: A content rating for the specificed TV series.
     ///
     public func contentRatings(
@@ -477,4 +487,5 @@ extension TVSeriesService {
     ) async throws -> ContentRating? {
         try await contentRatings(forTVSeries: tvSeriesID, country: country)
     }
+
 }
