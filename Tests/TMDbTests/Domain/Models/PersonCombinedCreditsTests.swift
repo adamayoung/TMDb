@@ -35,6 +35,40 @@ struct PersonCombinedCreditsTests {
         #expect(result.crew == personCombinedCredits.crew)
     }
 
+    @Test("allShows contains a unique list of cast and crew TV series")
+    func allShowsContainsUniqueListOfCastAndCrewTVSeries() throws {
+        let credits = PersonCombinedCredits(
+            id: 1,
+            cast: [
+                .movie(.mock(id: 10)),
+                .movie(.mock(id: 11)),
+                .tvSeries(.mock(id: 20)),
+                .tvSeries(.mock(id: 21))
+            ],
+            crew: [
+                .movie(.mock(id: 10)),
+                .movie(.mock(id: 12)),
+                .movie(.mock(id: 13)),
+                .tvSeries(.mock(id: 20)),
+                .tvSeries(.mock(id: 22)),
+                .tvSeries(.mock(id: 23))
+            ]
+        )
+
+        let expectedAllShows: [Show] = [
+            .movie(.mock(id: 10)),
+            .movie(.mock(id: 11)),
+            .tvSeries(.mock(id: 20)),
+            .tvSeries(.mock(id: 21)),
+            .movie(.mock(id: 12)),
+            .movie(.mock(id: 13)),
+            .tvSeries(.mock(id: 22)),
+            .tvSeries(.mock(id: 23))
+        ]
+
+        #expect(credits.allShows == expectedAllShows)
+    }
+
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,
         cast: [
