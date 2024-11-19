@@ -30,8 +30,7 @@ public protocol CompanyService: Sendable {
     ///
     /// [TMDb API - Companies: Details](https://developer.themoviedb.org/reference/company-details)
     ///
-    /// - Parameters:
-    ///    - id: The identifier of the company.
+    /// - Parameter id: The identifier of the company.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

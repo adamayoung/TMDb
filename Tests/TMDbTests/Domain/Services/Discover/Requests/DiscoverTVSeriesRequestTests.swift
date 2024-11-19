@@ -72,7 +72,7 @@ struct DiscoverTVSeriesRequestTests {
             request.queryItems == [
                 "sort_by": "first_air_date.asc",
                 "page": "2",
-                "language": "en",
+                "language": "en"
             ])
     }
 

@@ -25,8 +25,8 @@ extension ProductionCountry {
     static func mock(
         countryCode: String = "US",
         name: String = "United States of America"
-    ) -> Self {
-        .init(
+    ) -> ProductionCountry {
+        ProductionCountry(
             countryCode: countryCode,
             name: name
         )
@@ -36,7 +36,7 @@ extension ProductionCountry {
 
 extension [ProductionCountry] {
 
-    static var mocks: [Element] {
+    static var mocks: [ProductionCountry] {
         [.mock(), .mock(), .mock()]
     }
 

@@ -22,6 +22,7 @@ import TMDb
 
 extension ImageMetadata {
 
+    // swift-format-ignore: NeverForceUnwrap
     static func mock(
         filePath: URL = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
         width: Int = 100,
@@ -30,8 +31,8 @@ extension ImageMetadata {
         voteAverage: Float = 5,
         voteCount: Int = 100,
         languageCode: String = "en"
-    ) -> Self {
-        .init(
+    ) -> ImageMetadata {
+        ImageMetadata(
             filePath: filePath,
             width: width,
             height: height,

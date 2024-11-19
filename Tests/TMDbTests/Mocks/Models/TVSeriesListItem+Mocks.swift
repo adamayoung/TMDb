@@ -32,8 +32,8 @@ extension TVSeriesListItem {
         genreIDs: [Genre.ID] = [1],
         firstAirDate: Date? = nil,
         originCountries: [String] = ["GB"],
-        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
-        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = 5,
         voteAverage: Double? = 5,
         voteCount: Int? = 100,
@@ -57,7 +57,7 @@ extension TVSeriesListItem {
         )
     }
 
-    // swiftlint:disable line_length
+    // swift-format-ignore: NeverForceUnwrap
     static var bigBrother: TVSeriesListItem {
         TVSeriesListItem(
             id: 11366,
@@ -78,9 +78,6 @@ extension TVSeriesListItem {
         )
     }
 
-    // swiftlint:enable line_length
-
-    // swiftlint:disable line_length
     static var csi: TVSeriesListItem {
         TVSeriesListItem(
             id: 1431,
@@ -100,16 +97,15 @@ extension TVSeriesListItem {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }
 
 extension [TVSeriesListItem] {
 
-    static var mocks: [Element] {
+    static var mocks: [TVSeriesListItem] {
         [
             .bigBrother,
-            .csi,
+            .csi
         ]
     }
 

@@ -27,8 +27,8 @@ extension TVSeriesPageableList {
         results: [TVSeriesListItem] = .mocks,
         totalResults: Int? = 10,
         totalPages: Int? = 2
-    ) -> Self {
-        .init(
+    ) -> TVSeriesPageableList {
+        TVSeriesPageableList(
             page: page,
             results: results,
             totalResults: totalResults,

@@ -35,7 +35,6 @@ struct PersonCombinedCreditsTests {
         #expect(result.crew == personCombinedCredits.crew)
     }
 
-    // swiftlint:disable line_length
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,
         cast: [
@@ -73,7 +72,7 @@ struct PersonCombinedCreditsTests {
                     voteCount: 661,
                     hasVideo: false,
                     isAdultOnly: false
-                )),
+                ))
         ],
         crew: [
             .tvSeries(
@@ -110,9 +109,8 @@ struct PersonCombinedCreditsTests {
                     voteCount: 7,
                     hasVideo: false,
                     isAdultOnly: false
-                )),
+                ))
         ]
     )
-    // swiftlint:enable line_length
 
 }

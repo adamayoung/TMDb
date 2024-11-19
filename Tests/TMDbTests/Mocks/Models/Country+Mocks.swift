@@ -26,20 +26,28 @@ extension Country {
         countryCode: String = "US",
         name: String = "United States",
         englishName: String = "United States of America"
-    ) -> Self {
-        .init(
+    ) -> Country {
+        Country(
             countryCode: countryCode,
             name: name,
             englishName: englishName
         )
     }
 
-    static var unitedKingdom: Self {
-        .mock(countryCode: "GB", name: "United Kingdom", englishName: "United Kingdom")
+    static var unitedKingdom: Country {
+        Country.mock(
+            countryCode: "GB",
+            name: "United Kingdom",
+            englishName: "United Kingdom"
+        )
     }
 
-    static var unitedStates: Self {
-        .mock(countryCode: "US", name: "United States", englishName: "United States of America")
+    static var unitedStates: Country {
+        Country.mock(
+            countryCode: "US",
+            name: "United States",
+            englishName: "United States of America"
+        )
     }
 
 }

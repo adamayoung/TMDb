@@ -33,9 +33,8 @@ public struct DiscoverMovieFilter {
     ///
     /// Creates a discover movies filter.
     ///
-    /// - Parameters:
-    ///    - people: A list of Person identifiers which to return only
-    /// movies they have appeared in.
+    /// - Parameter people: A list of Person identifiers which to return
+    /// only movies they have appeared in.
     ///
     public init(people: [Person.ID]? = nil) {
         self.people = people

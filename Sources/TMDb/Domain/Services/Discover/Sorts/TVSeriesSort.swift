@@ -39,6 +39,9 @@ public enum TVSeriesSort: CustomStringConvertible, Equatable, Sendable {
     ///
     case voteAverage(descending: Bool = true)
 
+    ///
+    /// A textual representation of this sort.
+    ///
     public var description: String {
         "\(fieldName).\(isDescending ? "desc" : "asc")"
     }

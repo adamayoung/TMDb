@@ -25,18 +25,21 @@ import Testing
 @Suite
 struct JSONDecoderTMDbTests {
 
-    private static var dateFormatter: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-ddd"
-        return dateFormatter
+    var jsonDecoder: JSONDecoder!
+    var dateFormatter: DateFormatter!
+
+    init() {
+        self.dateFormatter = DateFormatter()
+        self.dateFormatter.dateFormat = "yyyy-MM-ddd"
+        self.jsonDecoder = JSONDecoder.theMovieDatabase
     }
 
     @Test("decodes object from JSON")
     func theMovieDatabaseDecoderDecodesObject() throws {
-        let expectedResult = SomeThing(
+        let expectedResult = try SomeThing(
             id: "abc123",
             firstName: "Adam",
-            dateOfBirth: Self.dateFormatter.date(from: "1990-01-02")!
+            dateOfBirth: #require(dateFormatter.date(from: "1990-01-02"))
         )
 
         let jsonString = """
@@ -48,7 +51,7 @@ struct JSONDecoderTMDbTests {
             """
         let data = Data(jsonString.utf8)
 
-        let result = try JSONDecoder.theMovieDatabase.decode(SomeThing.self, from: data)
+        let result = try jsonDecoder.decode(SomeThing.self, from: data)
 
         #expect(result == expectedResult)
     }

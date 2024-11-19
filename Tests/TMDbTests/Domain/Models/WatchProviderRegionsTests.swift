@@ -40,7 +40,7 @@ struct WatchProviderRegionsTests {
             Country(countryCode: "AR", name: "Argentina", englishName: "Argentina"),
             Country(countryCode: "AT", name: "Austria", englishName: "Austria"),
             Country(
-                countryCode: "US", name: "United States", englishName: "United States of America"),
+                countryCode: "US", name: "United States", englishName: "United States of America")
         ]
     )
 

@@ -78,7 +78,6 @@ struct ShowTests {
 
 extension ShowTests {
 
-    // swiftlint:disable line_length
     private var movieShow: Show {
         .movie(
             .init(
@@ -121,6 +120,5 @@ extension ShowTests {
             )
         )
     }
-    // swiftlint:enable line_length
 
 }

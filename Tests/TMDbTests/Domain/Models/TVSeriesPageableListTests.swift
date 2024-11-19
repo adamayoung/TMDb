@@ -36,7 +36,6 @@ struct TVSeriesPageableListTests {
         #expect(result.totalPages == list.totalPages)
     }
 
-    // swiftlint:disable line_length
     private let list = TVSeriesPageableList(
         page: 1,
         results: [
@@ -73,11 +72,10 @@ struct TVSeriesPageableListTests {
                 voteAverage: 7.619,
                 voteCount: 1178,
                 isAdultOnly: false
-            ),
+            )
         ],
         totalResults: 2,
         totalPages: 1
     )
-    // swiftlint:enable line_length
 
 }

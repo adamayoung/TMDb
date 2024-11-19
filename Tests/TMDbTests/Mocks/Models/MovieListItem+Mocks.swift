@@ -31,15 +31,15 @@ extension MovieListItem {
         overview: String = "Movie Overview",
         genreIDs: [Genre.ID] = [Genre].mocks.map(\.id),
         releaseDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
-        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
-        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = 5.6,
         voteAverage: Double? = 7.3,
         voteCount: Int? = 321,
         hasVideo: Bool? = false,
         isAdultOnly: Bool? = false
-    ) -> Self {
-        .init(
+    ) -> MovieListItem {
+        MovieListItem(
             id: id,
             title: title,
             originalTitle: originalTitle,
@@ -57,8 +57,8 @@ extension MovieListItem {
         )
     }
 
-    static var bulletTrain: Self {
-        .mock(
+    static var bulletTrain: MovieListItem {
+        MovieListItem.mock(
             id: 718_930,
             title: "Bullet Train",
             overview: """
@@ -71,8 +71,8 @@ extension MovieListItem {
         )
     }
 
-    static var thorLoveAndThunder: Self {
-        .mock(
+    static var thorLoveAndThunder: MovieListItem {
+        MovieListItem.mock(
             id: 616_037,
             title: "Thor: Love and Thunder",
             overview: """
@@ -86,8 +86,8 @@ extension MovieListItem {
         )
     }
 
-    static var jurassicWorldDominion: Self {
-        .mock(
+    static var jurassicWorldDominion: MovieListItem {
+        MovieListItem.mock(
             id: 507_086,
             title: "Jurassic World Dominion",
             overview: """
@@ -100,8 +100,8 @@ extension MovieListItem {
         )
     }
 
-    static var topGunMaverick: Self {
-        .mock(
+    static var topGunMaverick: MovieListItem {
+        MovieListItem.mock(
             id: 361_743,
             title: "Top Gun: Maverick",
             overview: """
@@ -113,7 +113,6 @@ extension MovieListItem {
         )
     }
 
-    // swiftlint:disable line_length
     static var theFirstOmen: MovieListItem {
         MovieListItem(
             id: 437_342,
@@ -133,18 +132,17 @@ extension MovieListItem {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }
 
 extension [MovieListItem] {
 
-    static var mocks: [Element] {
+    static var mocks: [MovieListItem] {
         [
             .bulletTrain,
             .thorLoveAndThunder,
             .jurassicWorldDominion,
-            .topGunMaverick,
+            .topGunMaverick
         ]
     }
 

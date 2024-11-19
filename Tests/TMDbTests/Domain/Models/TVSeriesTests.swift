@@ -48,7 +48,6 @@ struct TVSeriesTests {
 
 extension TVSeriesTests {
 
-    // swiftlint:disable line_length
     private var tvSeries: TVSeries {
         .init(
             id: 1399,
@@ -75,7 +74,7 @@ extension TVSeriesTests {
             genres: [
                 Genre(id: 10765, name: "Sci-Fi & Fantasy"),
                 Genre(id: 18, name: "Drama"),
-                Genre(id: 10759, name: "Action & Adventure"),
+                Genre(id: 10759, name: "Action & Adventure")
             ],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
             originCountry: ["US"],
@@ -109,6 +108,5 @@ extension TVSeriesTests {
             isAdultOnly: false
         )
     }
-    // swiftlint:enable line_length
 
 }

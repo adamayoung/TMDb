@@ -23,11 +23,19 @@ import Foundation
 
 final class AuthenticateURLMockBuilder: AuthenticateURLBuilding, @unchecked Sendable {
 
-    var authenticateURLResult: URL = .init(string: "https://some.domain.com/authenticate")!
+    var authenticateURLResult: URL
     private(set) var lastRequestToken: String?
     private(set) var lastRedirectURL: URL?
 
-    init() {}
+    init() {
+        self.authenticateURLResult = {
+            guard let url = URL(string: "https://some.domain.com/authenticate") else {
+                fatalError()
+            }
+
+            return url
+        }()
+    }
 
     func authenticateURL(with requestToken: String) -> URL {
         authenticateURL(with: requestToken, redirectURL: nil)

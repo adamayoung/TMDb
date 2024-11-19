@@ -49,7 +49,6 @@ struct PersonTVSeriesCreditsTests {
         #expect(result == expectedResult)
     }
 
-    // swiftlint:disable line_length
     private let personTVSeriesCredits = PersonTVSeriesCredits(
         id: 287,
         cast: [
@@ -87,6 +86,5 @@ struct PersonTVSeriesCreditsTests {
             )
         ]
     )
-    // swiftlint:enable line_length
 
 }

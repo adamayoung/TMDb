@@ -44,7 +44,6 @@ struct TVEpisodeTests {
         #expect(result.voteCount == tvEpisode.voteCount)
     }
 
-    // swiftlint:disable line_length
     private let tvEpisode = TVEpisode(
         id: 63056,
         name: "Winter Is Coming",
@@ -78,6 +77,5 @@ struct TVEpisodeTests {
         voteAverage: 7.11904761904762,
         voteCount: 21
     )
-    // swiftlint:enable line_length
 
 }

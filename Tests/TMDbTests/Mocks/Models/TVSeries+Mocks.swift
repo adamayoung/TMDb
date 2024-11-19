@@ -49,8 +49,8 @@ extension TVSeries {
         popularity: Double? = nil,
         voteAverage: Double? = nil,
         voteCount: Int? = nil
-    ) -> Self {
-        .init(
+    ) -> TVSeries {
+        TVSeries(
             id: id,
             name: name ?? "TV Series \(id)",
             originalName: originalName,
@@ -79,30 +79,30 @@ extension TVSeries {
         )
     }
 
-    static var sheHulk: Self {
-        .mock(
+    static var sheHulk: TVSeries {
+        TVSeries.mock(
             id: 92783,
             name: "She-Hulk: Attorney at Law",
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2022-08-18"),
-            posterPath: URL(string: "/hJfI6AGrmr4uSHRccfJuSsapvOb.jpg")!
+            posterPath: URL(string: "/hJfI6AGrmr4uSHRccfJuSsapvOb.jpg")
         )
     }
 
-    static var theSandman: Self {
-        .mock(
+    static var theSandman: TVSeries {
+        TVSeries.mock(
             id: 90802,
             name: "The Sandman",
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2022-08-05"),
-            posterPath: URL(string: "/q54qEgagGOYCq5D1903eBVMNkbo.jpg")!
+            posterPath: URL(string: "/q54qEgagGOYCq5D1903eBVMNkbo.jpg")
         )
     }
 
-    static var strangerThings: Self {
-        .mock(
+    static var strangerThings: TVSeries {
+        TVSeries.mock(
             id: 66732,
             name: "Stranger Things",
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-07-15"),
-            posterPath: URL(string: "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")!
+            posterPath: URL(string: "/49WJfeN0moxb9IPfGn8AIqMGskD.jpg")
         )
     }
 
@@ -110,7 +110,7 @@ extension TVSeries {
 
 extension [TVSeries] {
 
-    static var mocks: [Element] {
+    static var mocks: [TVSeries] {
         [.sheHulk, .theSandman, .strangerThings]
     }
 

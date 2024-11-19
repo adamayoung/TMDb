@@ -33,7 +33,6 @@ struct CertificationsTests {
         #expect(result == certifications)
     }
 
-    // swiftlint:disable line_length
     private let certifications = Certifications(
         certifications: [
             "US": [
@@ -71,7 +70,7 @@ struct CertificationsTests {
                     meaning:
                         "Some material may not be suitable for children under 10. These films may contain some mild language, crude/suggestive humor, scary moments and/or violence. No drug content is present. There are a few exceptions to this rule. A few racial insults may also be heard.",
                     order: 2
-                ),
+                )
             ],
             "GB": [
                 Certification(
@@ -114,10 +113,9 @@ struct CertificationsTests {
                     meaning:
                         "Only adults are admitted. Nobody younger than 18 can rent or buy an 18-rated VHS, DVD, Blu-ray Disc, UMD or game, or watch a film in the cinema with this rating. Films under this category do not have limitation on the bad language that is used. Hard drugs are generally allowed, and explicit sex references along with detailed sexual activity are also allowed. Scenes of strong real sex may be permitted if justified by the context. Very strong, gory, and/or sadistic violence is usually permitted. Strong sexual violence is permitted unless it is eroticised or excessively graphic.",
                     order: 6
-                ),
-            ],
+                )
+            ]
         ]
     )
-    // swiftlint:enable line_length
 
 }

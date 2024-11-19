@@ -25,30 +25,30 @@ extension Department {
     static func mock(
         name: String = "Costume & Make-Up",
         jobs: [String] = ["Set Costumer", "Co-Costume Designer"]
-    ) -> Self {
-        .init(
+    ) -> Department {
+        Department(
             name: name,
             jobs: jobs
         )
     }
 
-    static var costumeAndMakeUp: Self {
-        .mock(
+    static var costumeAndMakeUp: Department {
+        Department.mock(
             name: "Costume & Make-Up",
             jobs: [
                 "Set Costumer",
-                "Co-Costume Designer",
+                "Co-Costume Designer"
             ]
         )
     }
 
-    static var production: Self {
-        .mock(
+    static var production: Department {
+        Department.mock(
             name: "Production",
             jobs: [
                 "Casting",
                 "ADR Voice Casting",
-                "Production Accountant",
+                "Production Accountant"
             ]
         )
     }
