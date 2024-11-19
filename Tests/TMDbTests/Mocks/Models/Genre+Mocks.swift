@@ -26,23 +26,23 @@ extension Genre {
     static func mock(
         id: Int = 1,
         name: String = "Action"
-    ) -> Self {
-        .init(
+    ) -> Genre {
+        Genre(
             id: id,
             name: name
         )
     }
 
-    static var action: Self {
-        .mock(id: 1, name: "Action")
+    static var action: Genre {
+        Genre.mock(id: 1, name: "Action")
     }
 
-    static var drama: Self {
-        .mock(id: 1, name: "Drama")
+    static var drama: Genre {
+        Genre.mock(id: 1, name: "Drama")
     }
 
-    static var sciFi: Self {
-        .mock(id: 3, name: "Sci-Fi")
+    static var sciFi: Genre {
+        Genre.mock(id: 3, name: "Sci-Fi")
     }
 
 }

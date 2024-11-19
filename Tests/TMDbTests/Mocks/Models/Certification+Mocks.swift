@@ -26,24 +26,24 @@ extension Certification {
         code: String = "U",
         meaning: String = "All ages admitted, there is nothing unsuitable for children.",
         order: Int = 1
-    ) -> Self {
-        .init(
+    ) -> Certification {
+        Certification(
             code: code,
             meaning: meaning,
             order: order
         )
     }
 
-    static var gbU: Self {
-        .mock(
+    static var gbU: Certification {
+        Certification.mock(
             code: "U",
             meaning: "All ages admitted, there is nothing unsuitable for children.",
             order: 1
         )
     }
 
-    static var gbPG: Self {
-        .mock(
+    static var gbPG: Certification {
+        Certification.mock(
             code: "PG",
             meaning: """
                 All ages admitted, but certain scenes may be unsuitable for young children. May contain mild \
@@ -54,8 +54,8 @@ extension Certification {
         )
     }
 
-    static var gb12A: Self {
-        .mock(
+    static var gb12A: Certification {
+        Certification.mock(
             code: "12A",
             meaning: """
                 Films under this category are considered to be unsuitable for very young people. Those aged \
@@ -70,8 +70,8 @@ extension Certification {
         )
     }
 
-    static var usG: Self {
-        .mock(
+    static var usG: Certification {
+        Certification.mock(
             code: "G",
             meaning: """
                 All ages admitted. There is no content that would be objectionable to most parents. This is one \
@@ -81,8 +81,8 @@ extension Certification {
         )
     }
 
-    static var usPG13: Self {
-        .mock(
+    static var usPG13: Certification {
+        Certification.mock(
             code: "PG-13",
             meaning: """
                 Some material may be inappropriate for children under 13. Films given this rating may contain \

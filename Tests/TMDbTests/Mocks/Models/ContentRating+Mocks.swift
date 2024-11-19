@@ -21,24 +21,33 @@ import Foundation
 import TMDb
 
 extension ContentRating {
+
     static func mock(
         descriptors: [String],
         countryCode: String,
         rating: String
-    ) -> Self {
-        .init(
+    ) -> ContentRating {
+        ContentRating(
             descriptors: descriptors,
             countryCode: countryCode,
             rating: rating
         )
     }
 
-    static var parksAndRecreationGB: Self {
-        .mock(descriptors: [], countryCode: "GB", rating: "15")
+    static var parksAndRecreationGB: ContentRating {
+        ContentRating.mock(
+            descriptors: [],
+            countryCode: "GB",
+            rating: "15"
+        )
     }
 
-    static var parksAndRecreationUS: Self {
-        .mock(descriptors: [], countryCode: "GB", rating: "TV-14")
+    static var parksAndRecreationUS: ContentRating {
+        ContentRating.mock(
+            descriptors: [],
+            countryCode: "GB",
+            rating: "TV-14"
+        )
     }
 }
 

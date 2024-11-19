@@ -29,8 +29,8 @@ extension VideoMetadata {
         key: String = "abc123",
         type: VideoType = .trailer,
         size: VideoSize = .s1080
-    ) -> Self {
-        .init(
+    ) -> VideoMetadata {
+        VideoMetadata(
             id: id,
             name: name,
             site: site,

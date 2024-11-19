@@ -33,7 +33,7 @@
         "FullyIndirectEnum": true,
         "GroupNumericLiterals": true,
         "IdentifiersMustBeASCII": true,
-        "NeverForceUnwrap": false,
+        "NeverForceUnwrap": true,
         "NeverUseForceTry": false,
         "NeverUseImplicitlyUnwrappedOptionals": false,
         "NoAccessLevelOnExtensionDeclaration": true,

@@ -27,8 +27,8 @@ extension MediaPageableList {
         results: [Media] = .mocks,
         totalResults: Int? = 10,
         totalPages: Int? = 2
-    ) -> Self {
-        .init(
+    ) -> MediaPageableList {
+        MediaPageableList(
             page: page,
             results: results,
             totalResults: totalResults,

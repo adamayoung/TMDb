@@ -28,19 +28,19 @@ struct ImagesConfigurationURLsTests {
     var configuration: ImagesConfiguration!
     var emptyConfiguration: ImagesConfiguration!
 
-    init() {
-        self.configuration = ImagesConfiguration(
-            baseURL: URL(string: "http://image.tmdb.org/t/p/")!,
-            secureBaseURL: URL(string: "https://image.tmdb.org/t/p/")!,
+    init() throws {
+        self.configuration = try ImagesConfiguration(
+            baseURL: #require(URL(string: "http://image.tmdb.org/t/p/")),
+            secureBaseURL: #require(URL(string: "https://image.tmdb.org/t/p/")),
             backdropSizes: ["w300", "w780", "w1280", "original"],
             logoSizes: ["w45", "w92", "w154", "w185", "w300", "w500", "original"],
             posterSizes: ["w92", "w154", "w185", "w342", "w500", "w780", "original"],
             profileSizes: ["w45", "w185", "h632", "original"],
             stillSizes: ["w92", "w185", "w300", "original"]
         )
-        self.emptyConfiguration = ImagesConfiguration(
-            baseURL: URL(string: "http://image.tmdb.org/t/p/")!,
-            secureBaseURL: URL(string: "https://image.tmdb.org/t/p/")!,
+        self.emptyConfiguration = try ImagesConfiguration(
+            baseURL: #require(URL(string: "http://image.tmdb.org/t/p/")),
+            secureBaseURL: #require(URL(string: "https://image.tmdb.org/t/p/")),
             backdropSizes: [],
             logoSizes: [],
             posterSizes: [],

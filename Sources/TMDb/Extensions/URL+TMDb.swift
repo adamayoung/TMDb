@@ -22,10 +22,12 @@ import Foundation
 extension URL {
 
     static var tmdbAPIBase: URL {
+        // swift-format-ignore: NeverForceUnwrap
         URL(string: "https://api.themoviedb.org/3")!
     }
 
     static var tmdbWebSite: URL {
+        // swift-format-ignore: NeverForceUnwrap
         URL(string: "https://www.themoviedb.org")!
     }
 

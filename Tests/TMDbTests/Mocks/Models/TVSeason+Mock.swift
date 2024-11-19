@@ -24,16 +24,16 @@ extension TVSeason {
 
     static func mock(
         id: Int = 1,
-        name: String? = nil,
+        name: String = "TV Season",
         seasonNumber: Int = 2,
         overview: String? = "TV Season Overview",
         airDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         posterPath: URL? = nil,
         episodes: [TVEpisode]? = .mocks
-    ) -> Self {
-        .init(
+    ) -> TVSeason {
+        TVSeason(
             id: id,
-            name: name ?? "TV Season \(id)",
+            name: name,
             seasonNumber: seasonNumber,
             overview: overview,
             airDate: airDate,

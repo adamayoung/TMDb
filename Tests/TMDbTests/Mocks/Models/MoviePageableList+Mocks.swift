@@ -27,8 +27,8 @@ extension MoviePageableList {
         results: [MovieListItem] = .mocks,
         totalResults: Int = 10,
         totalPages: Int = 2
-    ) -> Self {
-        .init(
+    ) -> MoviePageableList {
+        MoviePageableList(
             page: page,
             results: results,
             totalResults: totalResults,

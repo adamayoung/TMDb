@@ -35,8 +35,8 @@ extension PersonCombinedCredits {
             .tvSeries(.bigBrother),
             .movie(.thorLoveAndThunder)
         ]
-    ) -> Self {
-        .init(
+    ) -> PersonCombinedCredits {
+        PersonCombinedCredits(
             id: id,
             cast: cast,
             crew: crew

@@ -26,28 +26,28 @@ extension Language {
         code: String = "en",
         name: String = "English",
         englishName: String = "English"
-    ) -> Self {
-        .init(
+    ) -> Language {
+        Language(
             code: code,
             name: name,
             englishName: englishName
         )
     }
 
-    static var african: Self {
-        .mock(code: "af", name: "Afrikaans", englishName: "Afrikaans")
+    static var african: Language {
+        Language.mock(code: "af", name: "Afrikaans", englishName: "Afrikaans")
     }
 
-    static var hungarian: Self {
-        .mock(code: "hu", name: "Magyar", englishName: "Hungarian")
+    static var hungarian: Language {
+        Language.mock(code: "hu", name: "Magyar", englishName: "Hungarian")
     }
 
-    static var irish: Self {
-        .mock(code: "ga", name: "Gaeilge", englishName: "Irish")
+    static var irish: Language {
+        Language.mock(code: "ga", name: "Gaeilge", englishName: "Irish")
     }
 
-    static var english: Self {
-        .mock(code: "en", name: "English", englishName: "English")
+    static var english: Language {
+        Language.mock(code: "en", name: "English", englishName: "English")
     }
 
 }

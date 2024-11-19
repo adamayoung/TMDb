@@ -119,7 +119,7 @@ extension TMDbAPIClient {
 
         urlComponents.queryItems = queryItems
 
-        return urlComponents.url!
+        return urlComponents.url ?? path
     }
 
     private static func method(from apiMethod: APIRequestMethod) -> HTTPRequest.Method {

@@ -27,8 +27,8 @@ extension PersonPageableList {
         results: [PersonListItem] = .mocks,
         totalResults: Int = 10,
         totalPages: Int = 2
-    ) -> Self {
-        .init(
+    ) -> PersonPageableList {
+        PersonPageableList(
             page: page,
             results: results,
             totalResults: totalResults,

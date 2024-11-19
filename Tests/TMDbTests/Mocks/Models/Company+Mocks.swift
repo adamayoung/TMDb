@@ -22,17 +22,18 @@ import TMDb
 
 extension Company {
 
+    // swift-format-ignore: NeverForceUnwrap
     static func mock(
         id: Int = 1,
         name: String = "Lucasfilm Ltd.",
         description: String = "Some description",
         headquarters: String = "San Francisco, California",
-        homepageURL: URL = URL(string: "https://www.lucasfilm.com")!,
+        homepageURL: URL? = URL(string: "https://www.lucasfilm.com"),
         logoPath: URL = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!,
         originCountry: String = "US",
         parentCompany: Company.Parent? = nil
-    ) -> Self {
-        .init(
+    ) -> Company {
+        Company(
             id: id,
             name: name,
             description: description,
@@ -44,13 +45,14 @@ extension Company {
         )
     }
 
-    static var lucasfilm: Self {
-        .mock(
+    // swift-format-ignore: NeverForceUnwrap
+    static var lucasfilm: Company {
+        Company.mock(
             id: 1,
             name: "Lucasfilm Ltd.",
             description: "Some description",
             headquarters: "San Francisco, California",
-            homepageURL: URL(string: "https://www.lucasfilm.com")!,
+            homepageURL: URL(string: "https://www.lucasfilm.com"),
             logoPath: URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!,
             originCountry: "US"
         )

@@ -59,12 +59,18 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
                 client?.urlProtocol(self, didLoad: data)
             }
 
-            let response = await HTTPURLResponse(
-                url: url,
-                statusCode: Self.responseStatusCode ?? 200,
-                httpVersion: "2.0",
-                headerFields: nil
-            )!
+            guard
+                let response = await HTTPURLResponse(
+                    url: url,
+                    statusCode: Self.responseStatusCode ?? 200,
+                    httpVersion: "2.0",
+                    headerFields: nil
+                )
+            else {
+                client?.urlProtocolDidFinishLoading(self)
+                return
+            }
+
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             client?.urlProtocolDidFinishLoading(self)
         }

@@ -25,8 +25,8 @@ extension TVSeasonImageCollection {
     static func mock(
         id: Int = 1,
         posters: [ImageMetadata] = .mocks
-    ) -> Self {
-        .init(
+    ) -> TVSeasonImageCollection {
+        TVSeasonImageCollection(
             id: id,
             posters: posters
         )

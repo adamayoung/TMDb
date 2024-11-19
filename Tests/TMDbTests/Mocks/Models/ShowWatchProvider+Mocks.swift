@@ -29,8 +29,8 @@ extension ShowWatchProvider {
         flatRate: [WatchProvider]? = [.netflix],
         buy: [WatchProvider]? = [.netflix],
         rent: [WatchProvider]? = [.netflix]
-    ) -> Self {
-        .init(
+    ) -> ShowWatchProvider {
+        ShowWatchProvider(
             link: link,
             free: free,
             flatRate: flatRate,

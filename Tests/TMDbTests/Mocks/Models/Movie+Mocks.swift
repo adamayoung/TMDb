@@ -33,11 +33,11 @@ extension Movie {
         runtime: Int? = 120,
         genres: [Genre]? = [.action, .drama],
         releaseDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
-        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
-        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
+        posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+        backdropPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         budget: Double? = 1_000_000,
         revenue: Double? = 5_000_000,
-        homepageURL: URL? = URL(string: "https://www.movie.com")!,
+        homepageURL: URL? = URL(string: "https://www.movie.com"),
         imdbID: String? = "12345",
         status: Status? = .released,
         productionCompanies: [ProductionCompany]? = .mocks,
@@ -48,8 +48,8 @@ extension Movie {
         voteCount: Int? = 120,
         hasVideo: Bool? = false,
         isAdultOnly: Bool? = false
-    ) -> Self {
-        .init(
+    ) -> Movie {
+        Movie(
             id: id,
             title: title,
             tagline: tagline,
@@ -77,8 +77,8 @@ extension Movie {
         )
     }
 
-    static var bulletTrain: Self {
-        .mock(
+    static var bulletTrain: Movie {
+        Movie.mock(
             id: 718_930,
             title: "Bullet Train",
             overview: """
@@ -91,8 +91,8 @@ extension Movie {
         )
     }
 
-    static var thorLoveAndThunder: Self {
-        .mock(
+    static var thorLoveAndThunder: Movie {
+        Movie.mock(
             id: 616_037,
             title: "Thor: Love and Thunder",
             overview: """
@@ -106,8 +106,8 @@ extension Movie {
         )
     }
 
-    static var jurassicWorldDominion: Self {
-        .mock(
+    static var jurassicWorldDominion: Movie {
+        Movie.mock(
             id: 507_086,
             title: "Jurassic World Dominion",
             overview: """
@@ -120,8 +120,8 @@ extension Movie {
         )
     }
 
-    static var topGunMaverick: Self {
-        .mock(
+    static var topGunMaverick: Movie {
+        Movie.mock(
             id: 361_743,
             title: "Top Gun: Maverick",
             overview: """
@@ -137,7 +137,7 @@ extension Movie {
 
 extension [Movie] {
 
-    static var mocks: [Element] {
+    static var mocks: [Movie] {
         [
             .bulletTrain,
             .thorLoveAndThunder,

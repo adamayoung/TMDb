@@ -22,6 +22,7 @@ import TMDb
 
 extension ImagesConfiguration {
 
+    // swift-format-ignore: NeverForceUnwrap
     static func mock(
         baseURL: URL = URL(string: "http://api.domain.com/v1/")!,
         secureBaseURL: URL = URL(string: "https://api.domain.com/v1/")!,
@@ -30,8 +31,8 @@ extension ImagesConfiguration {
         posterSizes: [String] = ["w92"],
         profileSizes: [String] = ["w45"],
         stillSizes: [String] = ["w92"]
-    ) -> Self {
-        .init(
+    ) -> ImagesConfiguration {
+        ImagesConfiguration(
             baseURL: baseURL,
             secureBaseURL: secureBaseURL,
             backdropSizes: backdropSizes,

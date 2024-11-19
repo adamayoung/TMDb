@@ -29,9 +29,9 @@ extension CrewMember {
         job: String = "Job Name",
         department: String = "Department Name",
         gender: Gender? = Gender.male,
-        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!
-    ) -> Self {
-        .init(
+        profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+    ) -> CrewMember {
+        CrewMember(
             id: id,
             creditID: creditID,
             name: name,

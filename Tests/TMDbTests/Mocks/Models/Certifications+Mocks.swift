@@ -25,14 +25,14 @@ extension Certifications {
 
     static func mock(
         certifications: [String: [Certification]] = ["GB": [.gbU, .gbPG]]
-    ) -> Self {
-        .init(
+    ) -> Certifications {
+        Certifications(
             certifications: certifications
         )
     }
 
-    static var gbAndUS: Self {
-        .mock(
+    static var gbAndUS: Certifications {
+        Certifications.mock(
             certifications: [
                 "GB": [.gbU, .gbPG, .gb12A],
                 "US": [.usG, .usPG13]

@@ -25,8 +25,8 @@ extension PersonImageCollection {
     static func mock(
         id: Int = 1,
         profiles: [ImageMetadata] = [.mock(), .mock()]
-    ) -> Self {
-        .init(
+    ) -> PersonImageCollection {
+        PersonImageCollection(
             id: id,
             profiles: profiles
         )
