@@ -33,14 +33,14 @@ struct TMDbWatchProviderServiceTests {
         self.service = TMDbWatchProviderService(apiClient: apiClient)
     }
 
-    @Test("countries returns countries")
-    func countriesReturnsCountries() async throws {
+    @Test("countries with default parameter values returns countries")
+    func countriesWithDefaultParameterValuesReturnsCountries() async throws {
         let regions = WatchProviderRegions.mock
         let expectedResult = regions.results
         apiClient.addResponse(.success(regions))
         let expectedRequest = WatchProviderRegionsRequest(language: nil)
 
-        let result = try await service.countries()
+        let result = try await (service as WatchProviderService).countries()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? WatchProviderRegionsRequest == expectedRequest)
@@ -69,14 +69,14 @@ struct TMDbWatchProviderServiceTests {
         }
     }
 
-    @Test("movingWatchProviders returns watch providers")
-    func movieWatchProvidersReturnsWatchProviders() async throws {
+    @Test("movingWatchProviders with default parameter values returns watch providers")
+    func movieWatchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
         let expectedRequest = WatchProvidersForMoviesRequest(country: nil, language: nil)
 
-        let result = try await service.movieWatchProviders()
+        let result = try await (service as WatchProviderService).movieWatchProviders()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? WatchProvidersForMoviesRequest == expectedRequest)
@@ -107,14 +107,14 @@ struct TMDbWatchProviderServiceTests {
         }
     }
 
-    @Test("tvSeriesWatchProviders returns watch providers")
-    func tvSeriesWatchProvidersReturnsWatchProviders() async throws {
+    @Test("tvSeriesWatchProviders with default parameter values returns watch providers")
+    func tvSeriesWatchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
         let watchProviderResult = WatchProviderResult.mock
         let expectedResult = watchProviderResult.results
         apiClient.addResponse(.success(watchProviderResult))
         let expectedRequest = WatchProvidersForTVSeriesRequest(country: nil, language: nil)
 
-        let result = try await service.tvSeriesWatchProviders()
+        let result = try await (service as WatchProviderService).tvSeriesWatchProviders()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? WatchProvidersForTVSeriesRequest == expectedRequest)

@@ -33,14 +33,14 @@ struct TMDbPersonServiceTests {
         self.service = TMDbPersonService(apiClient: apiClient)
     }
 
-    @Test("details returns person")
-    func detailsReturnsPerson() async throws {
+    @Test("details with parameter values returns person")
+    func detailsWithParameterValuesReturnsPerson() async throws {
         let expectedResult = Person.johnnyDepp
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonRequest(id: personID, language: nil)
 
-        let result = try await service.details(forPerson: personID)
+        let result = try await (service as PersonService).details(forPerson: personID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PersonRequest == expectedRequest)
@@ -70,15 +70,15 @@ struct TMDbPersonServiceTests {
         }
     }
 
-    @Test("combinedCredits returns combinedCredits")
-    func combinedCreditsReturnsCombinedCredits() async throws {
+    @Test("combinedCredits with default parameter values returns combinedCredits")
+    func combinedCreditsWithDefaultParameterValuesReturnsCombinedCredits() async throws {
         let mock = PersonCombinedCredits.mock()
         let expectedResult = PersonCombinedCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonCombinedCreditsRequest(id: personID, language: nil)
 
-        let result = try await service.combinedCredits(forPerson: personID)
+        let result = try await (service as PersonService).combinedCredits(forPerson: personID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PersonCombinedCreditsRequest == expectedRequest)
@@ -109,15 +109,15 @@ struct TMDbPersonServiceTests {
         }
     }
 
-    @Test("movieCredits returns movie credits")
-    func movieCreditsReturnsMovieCredits() async throws {
+    @Test("movieCredits with default parameter values returns movie credits")
+    func movieCreditsWithDefaultParameterValuesReturnsMovieCredits() async throws {
         let mock = PersonMovieCredits.mock()
         let expectedResult = PersonMovieCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonMovieCreditsRequest(id: personID, language: nil)
 
-        let result = try await service.movieCredits(forPerson: personID)
+        let result = try await (service as PersonService).movieCredits(forPerson: personID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PersonMovieCreditsRequest == expectedRequest)
@@ -148,15 +148,15 @@ struct TMDbPersonServiceTests {
         }
     }
 
-    @Test("tvSeriesCredits returns tv series credits")
-    func tvSeriesCreditsReturnsTVSeriesCredits() async throws {
+    @Test("tvSeriesCredits with default parameter values returns tv series credits")
+    func tvSeriesCreditsWithDefaultParameterValuesReturnsTVSeriesCredits() async throws {
         let mock = PersonTVSeriesCredits.mock()
         let expectedResult = PersonTVSeriesCredits(id: mock.id, cast: mock.cast, crew: mock.crew)
         let personID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonTVSeriesCreditsRequest(id: personID, language: nil)
 
-        let result = try await service.tvSeriesCredits(forPerson: personID)
+        let result = try await (service as PersonService).tvSeriesCredits(forPerson: personID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PersonTVSeriesCreditsRequest == expectedRequest)
@@ -210,13 +210,13 @@ struct TMDbPersonServiceTests {
         }
     }
 
-    @Test("popular returns people")
-    func popularReturnsPeople() async throws {
+    @Test("popular with default parameter values returns people")
+    func popularWithDefaultParameterValuesReturnsPeople() async throws {
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PopularPeopleRequest(page: nil, language: nil)
 
-        let result = try await service.popular()
+        let result = try await (service as PersonService).popular()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PopularPeopleRequest == expectedRequest)

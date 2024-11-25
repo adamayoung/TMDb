@@ -42,8 +42,12 @@
             "media_type": "tv",
         },
         {
-            "id": 51329,
-            "name": "Bradley Cooper",
+            "id": 287,
+            "name": "Brad Pitt",
+            "originalName": "Brad Pitt",
+            "gender": 2,
+            "profile_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+            "adult": false,
             "media_type": "person"
         }
     ],

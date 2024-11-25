@@ -33,15 +33,15 @@ struct TMDbTrendingServiceTests {
         self.service = TMDbTrendingService(apiClient: apiClient)
     }
 
-    @Test("movies returns movies")
-    func moviesReturnsMovies() async throws {
+    @Test("movies with default parameter values returns movies")
+    func moviesWithDefaultParameterValuesReturnsMovies() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingMoviesRequest(
             timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.movies(inTimeWindow: timeWindow)
+        let result = try await (service as TrendingService).movies(inTimeWindow: timeWindow)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingMoviesRequest == expectedRequest)
@@ -74,15 +74,15 @@ struct TMDbTrendingServiceTests {
         }
     }
 
-    @Test("tvSeries returns tv series")
-    func tvSeriesReturnsTVSeries() async throws {
+    @Test("tvSeries with default parameter values returns tv series")
+    func tvSeriesWithDefaultParameterValuesReturnsTVSeries() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingTVSeriesRequest(
             timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.tvSeries(inTimeWindow: timeWindow)
+        let result = try await (service as TrendingService).tvSeries(inTimeWindow: timeWindow)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingTVSeriesRequest == expectedRequest)
@@ -115,15 +115,15 @@ struct TMDbTrendingServiceTests {
         }
     }
 
-    @Test("people returns people")
-    func peopleReturnsPeople() async throws {
+    @Test("people with default parameter values returns people")
+    func peopleWithDefaultParameterValuesReturnsPeople() async throws {
         let timeWindow = TrendingTimeWindowFilterType.day
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingPeopleRequest(
             timeWindow: timeWindow, page: nil, language: nil)
 
-        let result = try await service.people(inTimeWindow: timeWindow)
+        let result = try await (service as TrendingService).people(inTimeWindow: timeWindow)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingPeopleRequest == expectedRequest)

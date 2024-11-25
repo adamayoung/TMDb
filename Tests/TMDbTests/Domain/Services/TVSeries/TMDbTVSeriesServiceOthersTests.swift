@@ -33,8 +33,22 @@ struct TMDbTVSeriesServiceOthersTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("watchProviders returns watch providers")
-    func watchProvidersReturnsWatchProviders() async throws {
+    @Test("watchProviders with default parameter values returns watch providers")
+    func watchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
+        let expectedResult = ShowWatchProviderResult.mock()
+        let tvSeriesID = 1
+        let country = "US"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchProvidersRequest(id: tvSeriesID)
+
+        let result = try await (service as TVSeriesService).watchProviders(forTVSeries: tvSeriesID)
+
+        #expect(result == expectedResult.results[country])
+        #expect(apiClient.lastRequest as? TVSeriesWatchProvidersRequest == expectedRequest)
+    }
+
+    @Test("watchProviders with country returns watch providers")
+    func watchProvidersWithCountryReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let tvSeriesID = 1
         let country = "GB"

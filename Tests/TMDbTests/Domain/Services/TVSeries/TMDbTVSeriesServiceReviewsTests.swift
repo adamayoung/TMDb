@@ -33,14 +33,14 @@ struct TMDbTVSeriesServiceReviewsTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("reviews returns reviews")
-    func reviewsReturnsReviews() async throws {
+    @Test("reviews with default parameter values returns reviews")
+    func reviewsWithDefaultParameterValuesReturnsReviews() async throws {
         let tvSeriesID = 1
         let expectedResult = ReviewPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesReviewsRequest(id: tvSeriesID, page: nil, language: nil)
 
-        let result = try await service.reviews(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).reviews(forTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesReviewsRequest == expectedRequest)

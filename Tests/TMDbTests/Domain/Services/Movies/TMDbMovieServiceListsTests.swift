@@ -33,14 +33,14 @@ struct TMDbMovieServiceListsTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("recommendations returns movies")
-    func recommendationsReturnsMovies() async throws {
+    @Test("recommendations with default parameter values returns movies")
+    func recommendationsWIthDefaultParametersReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieRecommendationsRequest(id: movieID, page: nil, language: nil)
 
-        let result = try await service.recommendations(forMovie: movieID)
+        let result = try await (service as MovieService).recommendations(forMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieRecommendationsRequest == expectedRequest)
@@ -73,14 +73,14 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("similar returns movies")
-    func similarReturnsMovies() async throws {
+    @Test("similar with default parameter values returns movies")
+    func similarWithDefaultParameterValuesReturnsMovies() async throws {
         let movieID = 1
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = SimilarMoviesRequest(id: movieID, page: nil, language: nil)
 
-        let result = try await service.similar(toMovie: movieID)
+        let result = try await (service as MovieService).similar(toMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? SimilarMoviesRequest == expectedRequest)
@@ -111,13 +111,13 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("nowPlaying returns movies")
-    func nowPlayingReturnsMovies() async throws {
+    @Test("nowPlaying with default parameter values returns movies")
+    func nowPlayingWithDefaultParameterValuesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MoviesNowPlayingRequest(page: nil)
 
-        let result = try await service.nowPlaying()
+        let result = try await (service as MovieService).nowPlaying()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MoviesNowPlayingRequest == expectedRequest)
@@ -148,13 +148,13 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("popular returns movies")
-    func popularReturnsMovies() async throws {
+    @Test("popular with default parameter values returns movies")
+    func popularWithDefaultParameterValuesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PopularMoviesRequest(page: nil, country: nil, language: nil)
 
-        let result = try await service.popular()
+        let result = try await (service as MovieService).popular()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PopularMoviesRequest == expectedRequest)
@@ -184,13 +184,13 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("topRated returns movies")
-    func topRatedReturnsMovies() async throws {
+    @Test("topRated with default parameter values returns movies")
+    func topRatedWithDefaultParameterValuesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TopRatedMoviesRequest(page: nil, country: nil, language: nil)
 
-        let result = try await service.topRated()
+        let result = try await (service as MovieService).topRated()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TopRatedMoviesRequest == expectedRequest)
@@ -221,13 +221,13 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("upcoming returns movies")
-    func upcomingReturnsMovies() async throws {
+    @Test("upcoming with default parameter values returns movies")
+    func upcomingWithDefaultParameterValuesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = UpcomingMoviesRequest(page: nil, country: nil, language: nil)
 
-        let result = try await service.upcoming()
+        let result = try await (service as MovieService).upcoming()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? UpcomingMoviesRequest == expectedRequest)

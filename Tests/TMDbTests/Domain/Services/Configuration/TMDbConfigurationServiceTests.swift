@@ -54,13 +54,13 @@ struct TMDbConfigurationServiceTests {
         }
     }
 
-    @Test("countries returns countries")
-    func countriesReturnsCountries() async throws {
+    @Test("countries with default parameter values returns countries")
+    func countriesWithDefaultParameterValuesReturnsCountries() async throws {
         let expectedResult = [Country].mocks
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CountriesConfigurationRequest(language: nil)
 
-        let result = try await service.countries()
+        let result = try await (service as ConfigurationService).countries()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? CountriesConfigurationRequest == expectedRequest)

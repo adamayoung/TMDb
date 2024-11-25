@@ -33,15 +33,32 @@ struct TMDbMovieServiceOthersTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("watchProviders returns watch providers")
-    func watchProvidersReturnsWatchProviders() async throws {
+    @Test("watchProviders with default parameter values returns watch providers")
+    func watchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
+        let expectedResult = ShowWatchProviderResult.mock()
+        let movieID = 1
+        let country = "US"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchProvidersRequest(id: movieID)
+
+        let result = try await (service as MovieService).watchProviders(forMovie: movieID)
+
+        #expect(result == expectedResult.results[country])
+        #expect(apiClient.lastRequest as? MovieWatchProvidersRequest == expectedRequest)
+    }
+
+    @Test("watchProviders with country returns watch providers")
+    func watchProvidersWithCountryReturnsWatchProviders() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let movieID = 1
         let country = "GB"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieWatchProvidersRequest(id: movieID)
 
-        let result = try await service.watchProviders(forMovie: movieID, country: country)
+        let result = try await (service as MovieService).watchProviders(
+            forMovie: movieID,
+            country: country
+        )
 
         #expect(result == expectedResult.results[country])
         #expect(apiClient.lastRequest as? MovieWatchProvidersRequest == expectedRequest)

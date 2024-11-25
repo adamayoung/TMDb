@@ -33,14 +33,14 @@ struct TMDbDiscoverServiceTests {
         self.service = TMDbDiscoverService(apiClient: apiClient)
     }
 
-    @Test("movies returns movies")
-    func moviesReturnsMovies() async throws {
+    @Test("movies with default parameter values returns movies")
+    func moviesWithDefaultParameterValuesReturnsMovies() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverMoviesRequest(
             people: nil, sortedBy: nil, page: nil, language: nil)
 
-        let result = try await service.movies()
+        let result = try await (service as DiscoverService).movies()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
@@ -74,13 +74,13 @@ struct TMDbDiscoverServiceTests {
         }
     }
 
-    @Test("tvSeries returns TV series")
-    func tvSeriesReturnsTVSeries() async throws {
+    @Test("tvSeries with default parameter values returns TV series")
+    func tvSeriesWithDefaultParameterValuesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverTVSeriesRequest(sortedBy: nil, page: nil, language: nil)
 
-        let result = try await service.tvSeries()
+        let result = try await (service as DiscoverService).tvSeries()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? DiscoverTVSeriesRequest == expectedRequest)

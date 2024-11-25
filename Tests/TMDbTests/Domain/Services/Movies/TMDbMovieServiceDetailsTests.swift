@@ -33,14 +33,14 @@ struct TMDbMovieServiceDetailsTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("details returns movie")
-    func detailsReturnsMovie() async throws {
+    @Test("details with default parameter values returns movie")
+    func detailsWithDefaultParameterValuesReturnsMovie() async throws {
         let expectedResult = Movie.thorLoveAndThunder
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieRequest(id: movieID, language: nil)
 
-        let result = try await service.details(forMovie: movieID)
+        let result = try await (service as MovieService).details(forMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieRequest == expectedRequest)

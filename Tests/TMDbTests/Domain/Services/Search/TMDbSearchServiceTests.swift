@@ -33,15 +33,15 @@ struct TMDbSearchServiceTests {
         self.service = TMDbSearchService(apiClient: apiClient)
     }
 
-    @Test("searchAll returns media")
-    func searchAllReturnsMedia() async throws {
+    @Test("searchAll with default parameter values returns media")
+    func searchAllWithDefaultParameterValuesReturnsMedia() async throws {
         let query = "media search"
         let expectedResult = MediaPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MultiSearchRequest(
             query: query, includeAdult: nil, page: nil, language: nil)
 
-        let result = try await service.searchAll(query: query)
+        let result = try await (service as SearchService).searchAll(query: query)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MultiSearchRequest == expectedRequest)
@@ -80,8 +80,8 @@ struct TMDbSearchServiceTests {
         }
     }
 
-    @Test("searchMovies returns movies")
-    func searchMoviesReturnsMovies() async throws {
+    @Test("searchMovies with default parameter values returns movies")
+    func searchMoviesWithDefaultParameterValuesReturnsMovies() async throws {
         let query = "search movies"
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -93,7 +93,7 @@ struct TMDbSearchServiceTests {
             language: nil
         )
 
-        let result = try await service.searchMovies(query: query)
+        let result = try await (service as SearchService).searchMovies(query: query)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieSearchRequest == expectedRequest)
@@ -140,8 +140,8 @@ struct TMDbSearchServiceTests {
         }
     }
 
-    @Test("searchTVSeries returns TV series")
-    func searchTVSeriesReturnsTVSeries() async throws {
+    @Test("searchTVSeries with default parameter values returns TV series")
+    func searchTVSeriesWithDefaultParameterValuesReturnsTVSeries() async throws {
         let query = "search tv series"
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -154,7 +154,7 @@ struct TMDbSearchServiceTests {
             language: nil
         )
 
-        let result = try await service.searchTVSeries(query: query)
+        let result = try await (service as SearchService).searchTVSeries(query: query)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesSearchRequest == expectedRequest)
@@ -198,15 +198,15 @@ struct TMDbSearchServiceTests {
         }
     }
 
-    @Test("searchPeople returns people")
-    func searchPeopleReturnsPeople() async throws {
+    @Test("searchPeople with default parameter values returns people")
+    func searchPeopleWithDefaultParameterValuesReturnsPeople() async throws {
         let query = "search people"
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PersonSearchRequest(
             query: query, includeAdult: nil, page: nil, language: nil)
 
-        let result = try await service.searchPeople(query: query)
+        let result = try await (service as SearchService).searchPeople(query: query)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PersonSearchRequest == expectedRequest)
