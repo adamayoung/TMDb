@@ -78,14 +78,14 @@ struct TMDbAuthenticationServiceTests {
         }
     }
 
-    @Test("authenticateURL returns URL")
-    func authenticateURLReturnsURL() throws {
+    @Test("authenticateURL with default parameter values returns URL")
+    func authenticateURLWithDefaultParameterValuesReturnsURL() throws {
         let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
         let token = Token(success: true, requestToken: "abc123", expiresAt: expiresAt)
         let expectedURL = try #require(URL(string: "https://some.domain.com/authenticate/abc123"))
         authenticateURLBuilder.authenticateURLResult = expectedURL
 
-        let url = service.authenticateURL(for: token)
+        let url = (service as AuthenticationService).authenticateURL(for: token)
 
         #expect(url == expectedURL)
         #expect(authenticateURLBuilder.lastRequestToken == token.requestToken)

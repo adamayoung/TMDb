@@ -33,8 +33,8 @@ struct TMDbTVSeasonServiceTests {
         self.service = TMDbTVSeasonService(apiClient: apiClient)
     }
 
-    @Test("details returns TV season")
-    func detailsReturnsTVSeason() async throws {
+    @Test("details with default parameter values returns TV season")
+    func detailsWithDefaultParameterValuesReturnsTVSeason() async throws {
         let tvSeriesID = 1
         let expectedResult = TVSeason.mock()
         let seasonNumber = expectedResult.seasonNumber
@@ -45,7 +45,10 @@ struct TMDbTVSeasonServiceTests {
             language: nil
         )
 
-        let result = try await service.details(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let result = try await (service as TVSeasonService).details(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonRequest == expectedRequest)
@@ -82,8 +85,8 @@ struct TMDbTVSeasonServiceTests {
         }
     }
 
-    @Test("aggregateCredits returns TV season credits")
-    func aggregateCreditsReturnsTVSeasonCredits() async throws {
+    @Test("aggregateCredits with default parameter values returns TV season credits")
+    func aggregateCreditsWithDefaultParameterValuesReturnsTVSeasonCredits() async throws {
         let tvSeriesID = 1
         let expectedResult = TVSeasonAggregateCredits(id: 1, cast: [], crew: [])
         let seasonNumber = 11
@@ -94,8 +97,10 @@ struct TMDbTVSeasonServiceTests {
             language: nil
         )
 
-        let result = try await service.aggregateCredits(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let result = try await (service as TVSeasonService).aggregateCredits(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonAggregateCreditsRequest == expectedRequest)
@@ -135,8 +140,8 @@ struct TMDbTVSeasonServiceTests {
         }
     }
 
-    @Test("imagess returns images")
-    func imagesReturnsImages() async throws {
+    @Test("imagess with default parameter values returns images")
+    func imagesWithDefaultParameterValuesReturnsImages() async throws {
         let seasonNumber = 11
         let tvSeriesID = 1
         let expectedResult = TVSeasonImageCollection.mock()
@@ -147,7 +152,10 @@ struct TMDbTVSeasonServiceTests {
             languages: nil
         )
 
-        let result = try await service.images(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let result = try await (service as TVSeasonService).images(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonImagesRequest == expectedRequest)
@@ -185,8 +193,8 @@ struct TMDbTVSeasonServiceTests {
         }
     }
 
-    @Test("videos returns videos")
-    func videosReturnsVideos() async throws {
+    @Test("videos with default parameter values returns videos")
+    func videosWithDefaultParameterValuesReturnsVideos() async throws {
         let seasonNumber = 11
         let tvSeriesID = 1
         let expectedResult = VideoCollection.mock()
@@ -197,7 +205,10 @@ struct TMDbTVSeasonServiceTests {
             languages: nil
         )
 
-        let result = try await service.videos(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        let result = try await (service as TVSeasonService).videos(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeasonVideosRequest == expectedRequest)

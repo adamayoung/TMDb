@@ -33,14 +33,14 @@ struct TMDbTVSeriesServiceMediaTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("images returns images")
-    func imagesReturnsImages() async throws {
+    @Test("images with default parameter values returns images")
+    func imagesWithDefaultParameterValuesReturnsImages() async throws {
         let tvSeriesID = 1
         let expectedResult = ImageCollection.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesImagesRequest(id: tvSeriesID, languages: nil)
 
-        let result = try await service.images(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).images(forTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesImagesRequest == expectedRequest)
@@ -71,14 +71,14 @@ struct TMDbTVSeriesServiceMediaTests {
         }
     }
 
-    @Test("video returns videos")
-    func videosReturnsVideos() async throws {
+    @Test("video with default parameter values returns videos")
+    func videosWithDefaultParameterValuesReturnsVideos() async throws {
         let expectedResult = VideoCollection.mock()
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesVideosRequest(id: tvSeriesID, languages: nil)
 
-        let result = try await service.videos(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).videos(forTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesVideosRequest == expectedRequest)

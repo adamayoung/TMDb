@@ -33,14 +33,14 @@ struct TMDbGenreServiceTests {
         self.service = TMDbGenreService(apiClient: apiClient)
     }
 
-    @Test("movieGenres returns genres")
-    func movieGenresReturnsGenres() async throws {
+    @Test("movieGenres with default parameter values returns genres")
+    func movieGenresWithDefaultParameterValuesReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
         let expectedRequest = MovieGenresRequest(language: nil)
 
-        let result = try await service.movieGenres()
+        let result = try await (service as GenreService).movieGenres()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieGenresRequest == expectedRequest)
@@ -69,14 +69,14 @@ struct TMDbGenreServiceTests {
         }
     }
 
-    @Test("tvSeriesGenres returns genres")
-    func tvSeriesGenresReturnsGenres() async throws {
+    @Test("tvSeriesGenres with default parameter values returns genres")
+    func tvSeriesGenresWithDefaultParameterValuesReturnsGenres() async throws {
         let genreList = GenreList.mock()
         let expectedResult = genreList.genres
         apiClient.addResponse(.success(genreList))
         let expectedRequest = TVSeriesGenresRequest(language: nil)
 
-        let result = try await service.tvSeriesGenres()
+        let result = try await (service as GenreService).tvSeriesGenres()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesGenresRequest == expectedRequest)

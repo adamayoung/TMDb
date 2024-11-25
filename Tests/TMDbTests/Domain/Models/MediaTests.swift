@@ -27,30 +27,72 @@ struct MediaTests {
 
     @Test("id when movie returns movieID")
     func idWhenMovieReturnsMovieID() {
-        #expect(media[0].id == 437_342)
+        let media = Media.movie(.theFirstOmen)
+
+        #expect(media.id == 437_342)
     }
 
     @Test("id when TV series returns tvSeriesID")
     func idWhenTVSeriesReturnsTVSeriesID() {
-        #expect(media[1].id == 11366)
+        let media = Media.tvSeries(.bigBrother)
+
+        #expect(media.id == 11366)
     }
 
     @Test("id when person returns personID")
     func idWhenPersonReturnsPersonID() {
-        #expect(media[2].id == 51329)
+        let media = Media.person(.bradPitt)
+
+        #expect(media.id == 287)
     }
 
     @Test("JSON decoding of Media", .tags(.decoding))
-    func testDecodeReturnsMedia() throws {
+    func decodeReturnsMedia() throws {
+        let media: [Media] = [
+            .movie(.theFirstOmen),
+            .tvSeries(.bigBrother),
+            .person(.bradPitt)
+        ]
+
         let result = try JSONDecoder.theMovieDatabase.decode([Media].self, fromResource: "media")
 
         #expect(result == media)
     }
 
-    private let media: [Media] = [
-        .movie(.theFirstOmen),
-        .tvSeries(.bigBrother),
-        .person(Person(id: 51329, name: "Bradley Cooper", gender: .unknown))
-    ]
+    @Test("JSON encoding of movie media", .tags(.encoding))
+    func encodeMovieMedia() throws {
+        let movie = MovieListItem.theFirstOmen
+        let media = Media.movie(movie)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let decodedMedia = try JSONDecoder.theMovieDatabase.decode(MovieListItem.self, from: data)
+
+        #expect(decodedMedia == movie)
+    }
+
+    @Test("JSON encoding of TV series media", .tags(.encoding))
+    func encodeTVSeriesMedia() throws {
+        let tvSeries = TVSeriesListItem.bigBrother
+        let media = Media.tvSeries(tvSeries)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let decodedMedia = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesListItem.self,
+            from: data
+        )
+
+        #expect(decodedMedia == tvSeries)
+    }
+
+    @Test("JSON encoding of person media", .tags(.encoding))
+    func encodePersonMedia() throws {
+        let person = PersonListItem.bradPitt
+        let media = Media.person(person)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let decodedMedia = try JSONDecoder.theMovieDatabase.decode(PersonListItem.self, from: data)
+
+        #expect(decodedMedia == person)
+    }
 
 }

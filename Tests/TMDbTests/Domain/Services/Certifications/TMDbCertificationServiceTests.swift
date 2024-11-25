@@ -70,6 +70,7 @@ struct TMDbCertificationServiceTests {
         #expect(apiClient.lastRequest as? TVSeriesCertificationsRequest == expectedRequest)
     }
 
+    @Test("tvSeriesCertifications when errors throw error")
     func tvSeriesCertificationsWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 

@@ -29,7 +29,9 @@ extension PersonListItem {
         knownForDepartment: String? = nil,
         gender: Gender = .unknown,
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-        popularity: Double? = 5
+        popularity: Double? = nil,
+        knownFor: [Show]? = nil,
+        isAdultOnly: Bool = false
     ) -> PersonListItem {
         PersonListItem(
             id: id,
@@ -38,7 +40,9 @@ extension PersonListItem {
             knownForDepartment: knownForDepartment,
             gender: gender,
             profilePath: profilePath,
-            popularity: popularity
+            popularity: popularity,
+            knownFor: knownFor,
+            isAdultOnly: isAdultOnly
         )
     }
 
@@ -47,7 +51,12 @@ extension PersonListItem {
     }
 
     static var bradPitt: PersonListItem {
-        PersonListItem.mock(id: 287, name: "Brad Pitt", originalName: "Brad Pitt")
+        PersonListItem.mock(
+            id: 287,
+            name: "Brad Pitt",
+            originalName: "Brad Pitt",
+            gender: .male
+        )
     }
 
     static var johnnyDepp: PersonListItem {

@@ -39,8 +39,8 @@ struct TMDbAccountServiceWatchlistTests {
 
 extension TMDbAccountServiceWatchlistTests {
 
-    @Test("movieWatchlist returns movies list")
-    func movieWatchlistReturnsMoviesList() async throws {
+    @Test("movieWatchlist with default parameter values returns movies list")
+    func movieWatchlistWithDefaultParameterValuesReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
@@ -52,7 +52,10 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.movieWatchlist(accountID: accountID, session: session)
+        let result = try await (service as AccountService).movieWatchlist(
+            accountID: accountID,
+            session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
@@ -207,8 +210,8 @@ extension TMDbAccountServiceWatchlistTests {
 
 extension TMDbAccountServiceWatchlistTests {
 
-    @Test("TV series watchlist returns TV series list")
-    func tvSeriesWatchlistReturnsTVSeriesList() async throws {
+    @Test("TV series watchlist with default parameter values returns TV series list")
+    func tvSeriesWatchlistWithDefaultParameterValuesReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
@@ -220,7 +223,10 @@ extension TMDbAccountServiceWatchlistTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.tvSeriesWatchlist(accountID: accountID, session: session)
+        let result = try await (service as AccountService).tvSeriesWatchlist(
+            accountID: accountID,
+            session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)

@@ -33,14 +33,14 @@ struct TMDbMovieServiceMediaTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("images returns image collection")
+    @Test("images with default parameter values returns image collection")
     func imagesReturnsImageCollection() async throws {
         let expectedResult = ImageCollection.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieImagesRequest(id: movieID, languages: nil)
 
-        let result = try await service.images(forMovie: movieID)
+        let result = try await (service as MovieService).images(forMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieImagesRequest == expectedRequest)
@@ -71,14 +71,14 @@ struct TMDbMovieServiceMediaTests {
         }
     }
 
-    @Test("videos returns video collection")
+    @Test("videos with default parameter values returns video collection")
     func videosReturnsVideoCollection() async throws {
         let expectedResult = VideoCollection.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieVideosRequest(id: movieID, languages: nil)
 
-        let result = try await service.videos(forMovie: movieID)
+        let result = try await (service as MovieService).videos(forMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieVideosRequest == expectedRequest)

@@ -30,6 +30,7 @@ extension Tag {
     @Tag static var apiClient: Self
 
     @Tag static var decoding: Self
+    @Tag static var encoding: Self
     @Tag static var requests: Self
 
     @Tag static var account: Self

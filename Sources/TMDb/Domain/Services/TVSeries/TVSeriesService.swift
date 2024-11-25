@@ -93,8 +93,11 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
-    func reviews(forTVSeries tvSeriesID: TVSeries.ID, page: Int?, language: String?) async throws
-        -> ReviewPageableList
+    func reviews(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int?,
+        language: String?
+    ) async throws -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a TV series.
@@ -109,8 +112,10 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of images for the matching TV series.
     ///
-    func images(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesImageFilter?) async throws
-        -> ImageCollection
+    func images(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesImageFilter?
+    ) async throws -> ImageCollection
 
     ///
     /// Returns the videos that belong to a TV series.
@@ -125,8 +130,10 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of videos for the matching TV series.
     ///
-    func videos(forTVSeries tvSeriesID: TVSeries.ID, filter: TVSeriesVideoFilter?) async throws
-        -> VideoCollection
+    func videos(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        filter: TVSeriesVideoFilter?
+    ) async throws -> VideoCollection
 
     ///
     /// Returns a list of recommended TV series for a TV series.
@@ -209,8 +216,7 @@ public protocol TVSeriesService: Sendable {
     func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID,
         country: String
-    ) async throws
-        -> ShowWatchProvider?
+    ) async throws -> ShowWatchProvider?
 
     ///
     /// Returns a collection of media databases and social links for a TV series.
@@ -225,8 +231,7 @@ public protocol TVSeriesService: Sendable {
     ///
     func externalLinks(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws
-        -> TVSeriesExternalLinksCollection
+    ) async throws -> TVSeriesExternalLinksCollection
 
     ///
     /// Returns the content rating of a TV series.
@@ -241,8 +246,10 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A content rating for the specificed TV series.
     ///
-    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID, country: String) async throws
-        -> ContentRating?
+    func contentRatings(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        country: String
+    ) async throws -> ContentRating?
 }
 
 extension TVSeriesService {
@@ -260,9 +267,10 @@ extension TVSeriesService {
     ///
     /// - Returns: The matching TV series.
     ///
-    public func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws
-        -> TVSeries
-    {
+    public func details(
+        forTVSeries id: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> TVSeries {
         try await details(forTVSeries: id, language: language)
     }
 

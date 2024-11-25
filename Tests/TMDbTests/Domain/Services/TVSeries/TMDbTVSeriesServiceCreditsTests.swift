@@ -33,14 +33,14 @@ struct TMDbTVSeriesServiceCreditsTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("credits returns TV series credits")
-    func creditsReturnsTVSeriesCredits() async throws {
+    @Test("credits with default parameter values returns TV series credits")
+    func creditsWithDefaultParameterValuesReturnsTVSeriesCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesCreditsRequest(id: tvSeriesID, language: nil)
 
-        let result = try await service.credits(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).credits(forTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesCreditsRequest == expectedRequest)
@@ -70,14 +70,16 @@ struct TMDbTVSeriesServiceCreditsTests {
         }
     }
 
-    @Test("aggregateCredits returns TV series credits")
-    func aggregateCreditsReturnsTVSeriesCredits() async throws {
+    @Test("aggregateCredits with default parameter values returns TV series credits")
+    func aggregateCreditsWithDefaultParameterValuesReturnsTVSeriesCredits() async throws {
         let expectedResult = TVSeriesAggregateCredits(id: 1, cast: [], crew: [])
         let tvSeriesID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: nil)
 
-        let result = try await service.aggregateCredits(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).aggregateCredits(
+            forTVSeries: tvSeriesID
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesAggregateCreditsRequest == expectedRequest)

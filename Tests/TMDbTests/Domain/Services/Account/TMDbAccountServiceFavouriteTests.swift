@@ -39,8 +39,8 @@ struct TMDbAccountFavouriteServiceTests {
 
 extension TMDbAccountFavouriteServiceTests {
 
-    @Test("favouriteMovies returns movies list")
-    func favouriteMoviesReturnsMoviesList() async throws {
+    @Test("favouriteMovies with default parameter values returns movies list")
+    func favouriteMoviesWithDefaultParameterValuesReturnsMoviesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = MoviePageableList.mock()
@@ -52,7 +52,10 @@ extension TMDbAccountFavouriteServiceTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.favouriteMovies(accountID: accountID, session: session)
+        let result = try await (service as AccountService).favouriteMovies(
+            accountID: accountID,
+            session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
@@ -212,8 +215,8 @@ extension TMDbAccountFavouriteServiceTests {
 
 extension TMDbAccountFavouriteServiceTests {
 
-    @Test("favouriteTVSeries returns TV series list")
-    func favouriteTVSeriesReturnsTVSeriesList() async throws {
+    @Test("favouriteTVSeries with default parameter values returns TV series list")
+    func favouriteTVSeriesWithDefaultParameterValuesReturnsTVSeriesList() async throws {
         let accountID = 123
         let session = Session.mock()
         let expectedResult = TVSeriesPageableList.mock()
@@ -225,7 +228,10 @@ extension TMDbAccountFavouriteServiceTests {
             sessionID: session.sessionID
         )
 
-        let result = try await service.favouriteTVSeries(accountID: accountID, session: session)
+        let result = try await (service as AccountService).favouriteTVSeries(
+            accountID: accountID,
+            session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)

@@ -33,8 +33,8 @@ struct TMDbTVSeriesServiceListsTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("recommenendations returns TV series")
-    func recommendationsReturnsTVSeries() async throws {
+    @Test("recommenendations with default parameter values returns TV series")
+    func recommendationsWithDefaultParameterValuesReturnsTVSeries() async throws {
         let tvSeriesID = 1
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
@@ -44,7 +44,7 @@ struct TMDbTVSeriesServiceListsTests {
             language: nil
         )
 
-        let result = try await service.recommendations(forTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).recommendations(forTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TVSeriesRecommendationsRequest == expectedRequest)
@@ -77,14 +77,14 @@ struct TMDbTVSeriesServiceListsTests {
         }
     }
 
-    @Test("similar returns TV series")
-    func similarReturnsTVSeries() async throws {
+    @Test("similar with default parameter values returns TV series")
+    func similarWithDefaultParameterValuesReturnsTVSeries() async throws {
         let tvSeriesID = 1
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = SimilarTVSeriesRequest(id: tvSeriesID, page: nil, language: nil)
 
-        let result = try await service.similar(toTVSeries: tvSeriesID)
+        let result = try await (service as TVSeriesService).similar(toTVSeries: tvSeriesID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? SimilarTVSeriesRequest == expectedRequest)
@@ -116,13 +116,13 @@ struct TMDbTVSeriesServiceListsTests {
         }
     }
 
-    @Test("popular returns TV series")
-    func popularReturnsTVSeries() async throws {
+    @Test("popular with default parameter values returns TV series")
+    func popularWithDefaultParameterValuesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = PopularTVSeriesRequest(page: nil, language: nil)
 
-        let result = try await service.popular()
+        let result = try await (service as TVSeriesService).popular()
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? PopularTVSeriesRequest == expectedRequest)

@@ -33,14 +33,14 @@ struct TMDbMovieServiceCreditsTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("credits returns credits")
-    func creditsReturnsCredits() async throws {
+    @Test("credits with default parameter values returns credits")
+    func creditsWithDefaultParameterValuesReturnsCredits() async throws {
         let expectedResult = ShowCredits.mock()
         let movieID = expectedResult.id
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieCreditsRequest(id: movieID, language: nil)
 
-        let result = try await service.credits(forMovie: movieID)
+        let result = try await (service as MovieService).credits(forMovie: movieID)
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? MovieCreditsRequest == expectedRequest)

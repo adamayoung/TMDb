@@ -33,8 +33,8 @@ struct TMDbTVEpisodeServiceTests {
         self.service = TMDbTVEpisodeService(apiClient: apiClient)
     }
 
-    @Test("details returns TV episode")
-    func detailsReturnsTVEpisode() async throws {
+    @Test("details with default parameter values returns TV episode")
+    func detailsWithDefaultParameterValuesReturnsTVEpisode() async throws {
         let tvSeriesID = 1
         let expectedResult = TVEpisode.mock()
         let seasonNumber = expectedResult.seasonNumber
@@ -47,7 +47,7 @@ struct TMDbTVEpisodeServiceTests {
             language: nil
         )
 
-        let result = try await service.details(
+        let result = try await (service as TVEpisodeService).details(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID
@@ -99,8 +99,8 @@ struct TMDbTVEpisodeServiceTests {
         }
     }
 
-    @Test("images returns images")
-    func imagesReturnsImages() async throws {
+    @Test("images with default parameter values returns images")
+    func imagesWithDefaultParameterValuesReturnsImages() async throws {
         let episodeNumber = 111
         let seasonNumber = 11
         let tvSeriesID = 1
@@ -113,7 +113,7 @@ struct TMDbTVEpisodeServiceTests {
             languages: nil
         )
 
-        let result = try await service.images(
+        let result = try await (service as TVEpisodeService).images(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID
@@ -166,8 +166,8 @@ struct TMDbTVEpisodeServiceTests {
         }
     }
 
-    @Test("video returns videos")
-    func videosReturnsVideos() async throws {
+    @Test("video with default parameter values returns videos")
+    func videosWithDefaultParameterValuesReturnsVideos() async throws {
         let episodeNumber = 111
         let seasonNumber = 11
         let tvSeriesID = 1
@@ -180,7 +180,7 @@ struct TMDbTVEpisodeServiceTests {
             languages: nil
         )
 
-        let result = try await service.videos(
+        let result = try await (service as TVEpisodeService).videos(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID
