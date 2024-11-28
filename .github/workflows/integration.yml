@@ -34,8 +34,18 @@ jobs:
         run: swift build --build-tests
 
       - name: Test
-        run: swift test --skip-build --filter TMDbIntegrationTests
+        run: swift test --skip-build --filter TMDbIntegrationTests --xunit-output junit.xml
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          file: ./junit-swift-testing.xml
+          flags: integration-tests
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
