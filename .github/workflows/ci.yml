@@ -31,7 +31,7 @@ jobs:
         run: swift build --build-tests -Xswiftc -warnings-as-errors
 
       - name: Test
-        run: swift test --filter TMDbTests --enable-code-coverage
+        run: swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml
 
       - name: Prepare Code Coverage
         run: |
@@ -39,6 +39,14 @@ jobs:
           export -format="lcov" \
           .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
           -instr-profile .build/debug/codecov/default.profdata > info.lcov
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          files: ./junit-swift-testing.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
