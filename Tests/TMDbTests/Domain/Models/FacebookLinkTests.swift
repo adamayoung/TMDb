@@ -32,6 +32,13 @@ struct FacebookLinkTests {
         #expect(facebookLink == nil)
     }
 
+    @Test("Init with Facebook ID when ID is empty string returns nil")
+    func initWithFacebookIDWhenIDIsEmptyStringReturnsNil() {
+        let facebookLink = FacebookLink(facebookID: "")
+
+        #expect(facebookLink == nil)
+    }
+
     @Test("Facebook URL")
     func testURL() throws {
         let facebookID = "BarbieTheMovie"

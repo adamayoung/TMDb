@@ -115,8 +115,9 @@ final class TMDbPersonService: PersonService {
         return personList
     }
 
-    func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection
-    {
+    func externalLinks(
+        forPerson personID: Person.ID
+    ) async throws -> PersonExternalLinksCollection {
         let request = PersonExternalLinksRequest(id: personID)
 
         let linksCollection: PersonExternalLinksCollection

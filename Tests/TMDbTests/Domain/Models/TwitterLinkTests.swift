@@ -32,6 +32,13 @@ struct TwitterLinkTests {
         #expect(twitterLint == nil)
     }
 
+    @Test("init with twitterID when ID is empty string returns nil")
+    func initWithTwitterIDWhenIDIsEmptyStringReturnsNil() {
+        let twitterLint = TwitterLink(twitterID: "")
+
+        #expect(twitterLint == nil)
+    }
+
     @Test("url returns Twitter URL")
     func urlReturnsTwitterURL() throws {
         let twitterID = "barbiethemovie"

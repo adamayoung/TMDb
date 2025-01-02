@@ -32,6 +32,13 @@ struct InstagramLinkTests {
         #expect(instagramLink == nil)
     }
 
+    @Test("init with instagramID when ID is empty string returns nil")
+    func initWithInstagramIDWhenIDIsEmptyStringReturnsNil() {
+        let instagramLink = InstagramLink(instagramID: "")
+
+        #expect(instagramLink == nil)
+    }
+
     @Test("URL returns post URL")
     func urlReturnsPostURL() throws {
         let instagramID = "barbiethemovie"

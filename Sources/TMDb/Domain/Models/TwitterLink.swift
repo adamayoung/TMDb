@@ -44,6 +44,7 @@ public struct TwitterLink: ExternalLink {
     public init?(twitterID: String?) {
         guard
             let twitterID,
+            !twitterID.isEmpty,
             let url = Self.twitterURL(for: twitterID)
         else {
             return nil
