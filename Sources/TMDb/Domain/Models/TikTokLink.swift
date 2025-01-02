@@ -44,6 +44,7 @@ public struct TikTokLink: ExternalLink {
     public init?(tikTokID: String?) {
         guard
             let tikTokID,
+            !tikTokID.isEmpty,
             let url = Self.tikTokURL(for: tikTokID)
         else {
             return nil

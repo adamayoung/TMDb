@@ -44,6 +44,7 @@ public struct InstagramLink: ExternalLink {
     public init?(instagramID: String?) {
         guard
             let instagramID,
+            !instagramID.isEmpty,
             let url = Self.instagramURL(for: instagramID)
         else {
             return nil

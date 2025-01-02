@@ -32,6 +32,13 @@ struct WikiDataLinkTests {
         #expect(wikiDataLink == nil)
     }
 
+    @Test("init with wikiDataID when ID is empty string returns nil")
+    func initWithWikiDataIDWhenIDIsEmptyStringReturnsNil() {
+        let wikiDataLink = WikiDataLink(wikiDataID: "")
+
+        #expect(wikiDataLink == nil)
+    }
+
     @Test("url returns WikiData URL")
     func urlReturnsWikiDataURL() throws {
         let wikiDataID = "Q55436290"

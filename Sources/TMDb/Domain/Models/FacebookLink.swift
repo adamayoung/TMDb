@@ -44,6 +44,7 @@ public struct FacebookLink: ExternalLink {
     public init?(facebookID: String?) {
         guard
             let facebookID,
+            !facebookID.isEmpty,
             let url = Self.facebookURL(for: facebookID)
         else {
             return nil

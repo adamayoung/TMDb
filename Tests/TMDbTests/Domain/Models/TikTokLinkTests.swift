@@ -32,6 +32,13 @@ struct TikTokLinkTests {
         #expect(tikTokLink == nil)
     }
 
+    @Test("init with TikTok ID when ID is empty string returns nil")
+    func initWithTikTokIDWhenIDIsEmptyStringReturnsNil() {
+        let tikTokLink = TikTokLink(tikTokID: "")
+
+        #expect(tikTokLink == nil)
+    }
+
     @Test("url returns TikTok URL")
     func urlReturnsTikTokURL() throws {
         let tikTokID = "jasonstatham"

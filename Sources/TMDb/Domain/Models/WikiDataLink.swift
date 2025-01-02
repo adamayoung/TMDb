@@ -44,6 +44,7 @@ public struct WikiDataLink: ExternalLink {
     public init?(wikiDataID: String?) {
         guard
             let wikiDataID,
+            !wikiDataID.isEmpty,
             let url = Self.wikiDataURL(for: wikiDataID)
         else {
             return nil
