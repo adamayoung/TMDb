@@ -10,3 +10,19 @@ final class AiringTodayTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList
     }
 
 }
+
+extension APIRequestQueryItems {
+
+    fileprivate init(page: Int?, language: String? = nil) {
+        self.init()
+
+        if let page {
+            self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
+        }
+    }
+
+}
