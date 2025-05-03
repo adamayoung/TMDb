@@ -10,3 +10,19 @@ final class TopRatedTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
         super.init(path: path, queryItems: queryItems)
     }
 }
+
+extension APIRequestQueryItems {
+
+    fileprivate init(page: Int?, language: String? = nil) {
+        self.init()
+
+        if let page {
+            self[.page] = page
+        }
+
+        if let language {
+            self[.language] = language
+        }
+    }
+
+}
