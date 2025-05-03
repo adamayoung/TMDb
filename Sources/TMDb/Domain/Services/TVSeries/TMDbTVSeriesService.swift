@@ -167,6 +167,45 @@ final class TMDbTVSeriesService: TVSeriesService {
 
         return tvSeriesList
     }
+    
+    func topRated(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        let request = TopRatedTVSeriesRequest(page: page, language: language)
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    func onTheAir(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        let request = OnTheAirTVSeriesRequest(page: page, language: language)
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    func airingToday(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        let request = AiringTodayTVSeriesRequest(page: page, language: language)
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
 
     func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID,
