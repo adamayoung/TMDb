@@ -60,6 +60,7 @@ final class TMDbAPIClient: APIClient, Sendable {
 
         let response: Request.Response
         do {
+            debugPrint("Data \(String(describing: String(data: data, encoding: .utf8)))")
             response = try await serialiser.decode(Request.Response.self, from: data)
         } catch let error {
             throw TMDbAPIError.decode(error)
