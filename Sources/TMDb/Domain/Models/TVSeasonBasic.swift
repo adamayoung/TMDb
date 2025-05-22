@@ -14,4 +14,18 @@ public struct TVSeasonBasic: Identifiable, Codable, Equatable, Hashable, Sendabl
         case seasonNumber = "season_number"
         case voteAverage = "vote_average"
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.seasonNumber = try container.decodeIfPresent(Int.self, forKey: .seasonNumber) ?? 0
+        self.airDate = try container.decodeIfPresent(String.self, forKey: .airDate)
+        self.episodeCount = try container.decodeIfPresent(Int.self, forKey: .episodeCount)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
+        self.posterPath = try container.decodeIfPresent(String.self, forKey: .posterPath)
+        self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
+    }
+
 }
