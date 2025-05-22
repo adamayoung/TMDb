@@ -205,7 +205,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         episodeRunTime: [Int]? = nil,
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
-        seasons: [TVSeason]? = nil,
+        seasons: [TVSeasonBasic]? = nil,
         genres: [Genre]? = nil,
         firstAirDate: Date? = nil,
         originCountry: [String]? = nil,
@@ -313,7 +313,7 @@ extension TVSeries {
         self.episodeRunTime = try container.decodeIfPresent([Int].self, forKey: .episodeRunTime)
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
         self.numberOfEpisodes = try container.decodeIfPresent(Int.self, forKey: .numberOfEpisodes)
-        self.seasons = try container.decodeIfPresent([TVSeason].self, forKey: .seasons)
+        self.seasons = try container.decodeIfPresent([TVSeasonBasic].self, forKey: .seasons)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
 
         // Need to deal with empty strings - date decoding will fail with an empty string
