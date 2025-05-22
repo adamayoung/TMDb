@@ -1,10 +1,10 @@
-struct TVSeasonBasic: Codable {
-    let id: Int
-    let airDate: String?
-    let episodeCount: Int?
-    let name, overview, posterPath: String?
-    let seasonNumber: Int?
-    let voteAverage: Double?
+public struct TVSeasonBasic: Codable {
+    public let id: Int
+    public let airDate: String?
+    public let episodeCount: Int?
+    public let name, overview, posterPath: String?
+    public let seasonNumber: Int?
+    public let voteAverage: Double?
 
     enum CodingKeys: String, CodingKey {
         case airDate = "air_date"
