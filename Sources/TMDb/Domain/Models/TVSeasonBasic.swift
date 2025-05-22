@@ -3,7 +3,7 @@ public struct TVSeasonBasic: Identifiable, Codable, Equatable, Hashable, Sendabl
     public let airDate: String?
     public let episodeCount: Int?
     public let name, overview, posterPath: String?
-    public let seasonNumber: Int?
+    public let seasonNumber: Int
     public let voteAverage: Double?
 
     enum CodingKeys: String, CodingKey {
