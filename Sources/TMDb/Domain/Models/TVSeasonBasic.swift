@@ -1,4 +1,4 @@
-public struct TVSeasonBasic: Codable {
+public struct TVSeasonBasic: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: Int
     public let airDate: String?
     public let episodeCount: Int?
