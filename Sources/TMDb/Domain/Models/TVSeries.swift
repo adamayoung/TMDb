@@ -72,7 +72,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Seasons in the TV series.
     ///
-    public let seasons: [TVSeason]?
+    public let seasons: [TVSeasonBasic]?
 
     ///
     /// TV series genres.
