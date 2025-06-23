@@ -43,6 +43,7 @@ extension Tag {
     @Tag static var movie: Self
     @Tag static var people: Self
     @Tag static var search: Self
+    @Tag static var find: Self
     @Tag static var trending: Self
     @Tag static var tvEpisode: Self
     @Tag static var tvSeason: Self

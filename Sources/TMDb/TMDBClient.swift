@@ -73,6 +73,11 @@ public final class TMDbClient: Sendable {
     /// TMDb search.
     ///
     public let search: any SearchService
+    
+    ///
+    /// TMDb find.
+    ///
+    public let find: any FindService
 
     ///
     /// TMDb trending.
@@ -141,7 +146,8 @@ public final class TMDbClient: Sendable {
             tvEpisodeService: TMDbTVEpisodeService(apiClient: apiClient),
             tvSeaonService: TMDbTVSeasonService(apiClient: apiClient),
             tvSeriesService: TMDbTVSeriesService(apiClient: apiClient),
-            watchProviderService: TMDbWatchProviderService(apiClient: apiClient)
+            watchProviderService: TMDbWatchProviderService(apiClient: apiClient),
+            find: TMDbFindService(apiClient: apiClient)
         )
     }
 
@@ -160,7 +166,8 @@ public final class TMDbClient: Sendable {
         tvEpisodeService: some TVEpisodeService,
         tvSeaonService: some TVSeasonService,
         tvSeriesService: some TVSeriesService,
-        watchProviderService: some WatchProviderService
+        watchProviderService: some WatchProviderService,
+        find: some FindService
     ) {
         self.account = accountService
         self.authentication = authenticationService
@@ -177,6 +184,7 @@ public final class TMDbClient: Sendable {
         self.tvSeasons = tvSeaonService
         self.tvSeries = tvSeriesService
         self.watchProviders = watchProviderService
+        self.find = find
     }
 
 }
