@@ -36,7 +36,7 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     case unknown
 
     ///
-    /// Returns a Boolean value indicating whether two `TMDBError`s are equal.
+    /// Returns a Boolean value indicating whether two instances are equal.
     ///
     /// Equality is the inverse of inequality. For any values `a` and `b`,
     /// `a == b` implies that `a != b` is `false`.
