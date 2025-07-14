@@ -2,7 +2,7 @@
 //  ContentRating.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public struct ContentRating: Codable, Equatable, Hashable, Sendable {
     public let countryCode: String
 
     ///
-    /// The content rating of the tv show
+    /// The content rating of the tv show.
     ///
     public let rating: String
 

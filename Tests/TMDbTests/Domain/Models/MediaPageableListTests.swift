@@ -2,7 +2,7 @@
 //  MediaPageableListTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -41,9 +41,10 @@ struct MediaPageableListTests {
         results: [
             .movie(.theFirstOmen),
             .tvSeries(.bigBrother),
-            .person(.bradPitt)
+            .person(.bradPitt),
+            .collection(.vinylAndTheVelvetUndergroundAndNico)
         ],
-        totalResults: 3,
+        totalResults: 4,
         totalPages: 1
     )
 

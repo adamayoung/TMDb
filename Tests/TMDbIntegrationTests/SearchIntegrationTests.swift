@@ -2,7 +2,7 @@
 //  SearchIntegrationTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -38,6 +38,21 @@ struct SearchIntegrationTests {
     @Test("searchAll")
     func searchAll() async throws {
         let query = "barbie"
+
+        let mediaList = try await searchService.searchAll(query: query)
+
+        #expect(!mediaList.results.isEmpty)
+    }
+
+    @Test(
+        "searchAll with 'Velvet Underground'",
+        .bug(
+            "https://github.com/adamayoung/TMDb/issues/227",
+            "Searching for 'Velvet Underground' throws an unknown error"
+        )
+    )
+    func searchAllWithVelvetUnderground() async throws {
+        let query = "Velvet Underground"
 
         let mediaList = try await searchService.searchAll(query: query)
 

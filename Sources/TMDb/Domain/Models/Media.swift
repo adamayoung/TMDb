@@ -2,7 +2,7 @@
 //  Media.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -37,6 +37,9 @@ public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
 
         case .person(let person):
             person.id
+
+        case .collection(let collection):
+            collection.id
         }
     }
 
@@ -55,6 +58,11 @@ public enum Media: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     case person(PersonListItem)
 
+    ///
+    /// Collection.
+    ///
+    case collection(CollectionListItem)
+
 }
 
 extension Media {
@@ -67,6 +75,7 @@ extension Media {
         case movie
         case tvSeries = "tv"
         case person
+        case collection
     }
 
     ///
@@ -94,6 +103,9 @@ extension Media {
 
         case .person:
             self = try .person(PersonListItem(from: decoder))
+
+        case .collection:
+            self = try .collection(CollectionListItem(from: decoder))
         }
     }
 
@@ -123,6 +135,9 @@ extension Media {
 
         case .person(let person):
             try singleContainer.encode(person)
+
+        case .collection(let collection):
+            try singleContainer.encode(collection)
         }
     }
 
