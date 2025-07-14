@@ -2,7 +2,7 @@
 //  TVSeriesServiceTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -129,7 +129,7 @@ struct TVSeriesServiceTests {
 
         #expect(linksCollection.id == tvSeriesID)
         #expect(linksCollection.imdb != nil)
-        #expect(linksCollection.wikiData == nil)
+        #expect(linksCollection.wikiData != nil)
         #expect(linksCollection.facebook != nil)
         #expect(linksCollection.instagram != nil)
         #expect(linksCollection.twitter != nil)

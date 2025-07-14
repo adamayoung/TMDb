@@ -2,7 +2,7 @@
 //  TMDbError.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@
 
 import Foundation
 
+///
+/// An TMDb error.
+///
 public enum TMDbError: Equatable, LocalizedError, Sendable {
 
     /// An error indicating the resource could not be found.
@@ -33,7 +36,7 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     case unknown
 
     ///
-    /// Returns a Boolean value indicating whether two `TMDBError`s are equal.
+    /// Returns a Boolean value indicating whether two instances are equal.
     ///
     /// Equality is the inverse of inequality. For any values `a` and `b`,
     /// `a == b` implies that `a != b` is `false`.

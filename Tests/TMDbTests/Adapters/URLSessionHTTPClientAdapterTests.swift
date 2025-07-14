@@ -2,7 +2,7 @@
 //  URLSessionHTTPClientAdapterTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ final class URLSessionHTTPClientAdapterTests {
     var baseURL: URL!
     var urlSession: URLSession!
 
-    init() throws {
-        self.baseURL = try #require(URL(string: "https://some.domain.com/path"))
+    init() {
+        self.baseURL = URL(string: "https://some.domain.com/path")
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
