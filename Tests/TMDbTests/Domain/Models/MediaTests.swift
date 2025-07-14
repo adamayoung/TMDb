@@ -46,6 +46,13 @@ struct MediaTests {
         #expect(media.id == 287)
     }
 
+    @Test("id when collection returns collectionID")
+    func idWhenCollectionReturnsCollectionID() {
+        let media = Media.collection(.vinylAndTheVelvetUndergroundAndNico)
+
+        #expect(media.id == 1_243_563)
+    }
+
     @Test("JSON decoding of Media", .tags(.decoding))
     func decodeReturnsMedia() throws {
         let media: [Media] = [
@@ -93,6 +100,20 @@ struct MediaTests {
         let decodedMedia = try JSONDecoder.theMovieDatabase.decode(PersonListItem.self, from: data)
 
         #expect(decodedMedia == person)
+    }
+
+    @Test("JSON encoding of collection media", .tags(.encoding))
+    func encodeCollectionMedia() throws {
+        let collection = CollectionListItem.vinylAndTheVelvetUndergroundAndNico
+        let media = Media.collection(collection)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let decodedMedia = try JSONDecoder.theMovieDatabase.decode(
+            CollectionListItem.self,
+            from: data
+        )
+
+        #expect(decodedMedia == collection)
     }
 
 }
