@@ -27,10 +27,10 @@ struct WatchProviderTests {
 
     @Test("JSON decoding of WatchProvider", .tags(.decoding))
     func decodeReturnsWatchProvider() throws {
-        let watchProvider = try WatchProvider(
+        let watchProvider = WatchProvider(
             id: 8,
             name: "Netflix",
-            logoPath: #require(URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"))
+            logoPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
         )
 
         let result = try JSONDecoder.theMovieDatabase.decode(

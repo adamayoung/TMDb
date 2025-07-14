@@ -32,7 +32,7 @@ struct CompanyTests {
             name: "Pixar",
             description: "",
             headquarters: "Emeryville, California",
-            homepageURL: #require(URL(string: "http://www.pixar.com")),
+            homepageURL: URL(string: "http://www.pixar.com"),
             logoPath: #require(URL(string: "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png")),
             originCountry: "US",
             parentCompany: Company.Parent(

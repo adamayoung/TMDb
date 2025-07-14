@@ -45,8 +45,8 @@ final class URLSessionHTTPClientAdapterTests {
     var baseURL: URL!
     var urlSession: URLSession!
 
-    init() throws {
-        self.baseURL = try #require(URL(string: "https://some.domain.com/path"))
+    init() {
+        self.baseURL = URL(string: "https://some.domain.com/path")
 
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]

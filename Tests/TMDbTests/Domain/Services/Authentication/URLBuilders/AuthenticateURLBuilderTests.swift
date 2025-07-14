@@ -28,8 +28,8 @@ struct AuthenticateURLBuilderTests {
     var builder: AuthenticateURLBuilder!
     var baseURL: URL!
 
-    init() throws {
-        self.baseURL = try #require(URL(string: "https://some.domain.com"))
+    init() {
+        self.baseURL = URL(string: "https://some.domain.com")
         self.builder = AuthenticateURLBuilder(baseURL: baseURL)
     }
 
