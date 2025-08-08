@@ -199,6 +199,58 @@ public protocol TVSeriesService: Sendable {
     func popular(page: Int?, language: String?) async throws -> TVSeriesPageableList
 
     ///
+    /// Returns a list current Top Rated TV series.
+    ///
+    /// [TMDb API - TV Series Lists: Top Rated](https://developer.themoviedb.org/reference/tv-series-top-rated-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Current Top Rated TV series as a pageable list.
+    ///
+    func topRated(page: Int?, language: String?) async throws -> TVSeriesPageableList
+
+    ///
+    /// Returns a list current On The Air TV series.
+    ///
+    /// [TMDb API - TV Series Lists: On The Air](https://developer.themoviedb.org/reference/tv-series-on-the-air-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Current On The Air TV series as a pageable list.
+    ///
+    func onTheAir(page: Int?, language: String?) async throws -> TVSeriesPageableList
+
+    ///
+    /// Returns a list current Airing Today TV series.
+    ///
+    /// [TMDb API - TV Series Lists: Airing Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Current On Airing Today TV series as a pageable list.
+    ///
+    func airingToday(page: Int?, language: String?) async throws -> TVSeriesPageableList
+
+
+    ///
     /// Returns watch providers for a TV series
     ///
     /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
