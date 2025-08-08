@@ -2,7 +2,7 @@
 //  CompanyTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ struct CompanyTests {
             name: "Pixar",
             description: "",
             headquarters: "Emeryville, California",
-            homepageURL: #require(URL(string: "http://www.pixar.com")),
+            homepageURL: URL(string: "http://www.pixar.com"),
             logoPath: #require(URL(string: "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png")),
             originCountry: "US",
             parentCompany: Company.Parent(

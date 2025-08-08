@@ -2,7 +2,7 @@
 //  WatchProviderResultTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -27,17 +27,17 @@ struct WatchProviderResultTests {
 
     @Test("JSON decoding of WatchProviderRegions", .tags(.decoding))
     func decodeReturnsWatchProviderResult() throws {
-        let watchProviderResult = try WatchProviderResult(
+        let watchProviderResult = WatchProviderResult(
             results: [
                 .init(
                     id: 8,
                     name: "Netflix",
-                    logoPath: #require(URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"))
+                    logoPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
                 ),
                 .init(
                     id: 9,
                     name: "Amazon Prime Video",
-                    logoPath: #require(URL(string: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg"))
+                    logoPath: URL(string: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg")
                 )
             ]
         )

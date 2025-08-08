@@ -49,8 +49,19 @@
             "profile_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
             "adult": false,
             "media_type": "person"
+        },
+        {
+            "adult": false,
+            "backdrop_path": null,
+            "id": 1243563,
+            "title": "Vinyl + The Velvet Underground & Nico",
+            "original_title": "Vinyl + The Velvet Underground & Nico",
+            "overview": "Vinyl (1965) 1h 10m\r The Velvet Underground and Nico: A Symphony of Sound (1966) 1h 10m",
+            "poster_path": "/8sYdZSdgquS1iO4XzsGy9dN3DJ3.jpg",
+            "media_type": "collection",
+            "original_language": "en"
         }
     ],
-    "total_results": 3,
+    "total_results": 4,
     "total_pages": 1
 }

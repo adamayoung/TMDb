@@ -2,7 +2,7 @@
 //  TMDbAPIClientTests.swift
 //  TMDb
 //
-//  Copyright © 2024 Adam Young.
+//  Copyright © 2025 Adam Young.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ struct TMDbAPIClientTests {
     var serialiser: TMDbJSONSerialiser!
     var httpClient: HTTPMockClient!
 
-    init() async throws {
+    init() async {
         self.apiKey = "abc123"
-        self.baseURL = try #require(URL(string: "https://some.domain.com/path"))
+        self.baseURL = URL(string: "https://some.domain.com/path")
         self.serialiser = TMDbJSONSerialiser()
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
