@@ -69,10 +69,29 @@ public struct DiscoverMovieFilter {
 
 extension DiscoverMovieFilter {
 
+    ///
+    /// A release year filter.
+    ///
     public enum PrimaryReleaseYearFilter: Equatable, Sendable {
+
+        ///
+        /// On a specific year.
+        ///
         case on(Int)
+
+        ///
+        /// From a specific year.
+        ///
         case from(Int)
+
+        ///
+        /// Up to a specific year.
+        ///
         case upTo(Int)
+
+        ///
+        /// Between specific years.
+        ///
         case between(start: Int, end: Int)
 
         func dateBounds() -> (gte: String?, lte: String?) {
