@@ -47,7 +47,6 @@ extension APIRequestQueryItem.Name {
 
     static let page = APIRequestQueryItem.Name("page")
     static let sortBy = APIRequestQueryItem.Name("sort_by")
-    static let withPeople = APIRequestQueryItem.Name("with_people")
     static let watchRegion = APIRequestQueryItem.Name("watch_region")
     static let includeImageLanguage = APIRequestQueryItem.Name("include_image_language")
     static let includeVideoLanguage = APIRequestQueryItem.Name("include_video_language")
@@ -59,6 +58,13 @@ extension APIRequestQueryItem.Name {
     static let sessionID = APIRequestQueryItem.Name("session_id")
     static let language = APIRequestQueryItem.Name("language")
     static let region = APIRequestQueryItem.Name("region")
+
+    static let withPeople = APIRequestQueryItem.Name("with_people")
+    static let withOriginalLanguage = APIRequestQueryItem.Name("with_original_language")
+    static let withGenres = APIRequestQueryItem.Name("with_genres")
+    static let primaryReleaseDateGreaterThan = APIRequestQueryItem.Name("primary_release_date.gte")
+    static let primaryReleaseDateLessThan = APIRequestQueryItem.Name("primary_release_date.lte")
+
     static let apiKey = APIRequestQueryItem.Name("api_key")
 
 }
