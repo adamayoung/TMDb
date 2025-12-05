@@ -25,7 +25,7 @@ import Foundation
 public struct DiscoverTVSeriesFilter {
 
     ///
-    /// The original language of the movie.
+    /// The original language of the TV series.
     ///
     public let originalLanguage: String?
 
@@ -38,7 +38,7 @@ public struct DiscoverTVSeriesFilter {
     /// Creates a discover TV series filter.
     ///
     /// - Parameters:
-    ///   - originalLanguage: The original language of the movie.
+    ///   - originalLanguage: The original language of the TV series.
     ///   - genres: A list of genre identifiers associated with the TV series.
     ///
     public init(
