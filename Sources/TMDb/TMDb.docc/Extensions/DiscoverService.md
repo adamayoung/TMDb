@@ -8,4 +8,4 @@
 
 ### Discover TV Series
 
-- ``tvSeries(sortedBy:page:language:)``
+- ``tvSeries(filter:sortedBy:page:language:)``
