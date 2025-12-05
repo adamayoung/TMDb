@@ -36,6 +36,7 @@ public protocol DiscoverService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
+    ///    - filter: TV series filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
@@ -45,6 +46,7 @@ public protocol DiscoverService: Sendable {
     /// - Returns: Matching TV series as a pageable list.
     ///
     func tvSeries(
+        filter: DiscoverTVSeriesFilter?,
         sortedBy: TVSeriesSort?,
         page: Int?,
         language: String?
@@ -88,6 +90,7 @@ extension DiscoverService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
+    ///    - filter: TV series filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
@@ -97,11 +100,12 @@ extension DiscoverService {
     /// - Returns: Matching TV series as a pageable list.
     ///
     public func tvSeries(
+        filter: DiscoverTVSeriesFilter? = nil,
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        try await tvSeries(sortedBy: sortedBy, page: page, language: language)
+        try await tvSeries(filter: filter, sortedBy: sortedBy, page: page, language: language)
     }
 
 }
