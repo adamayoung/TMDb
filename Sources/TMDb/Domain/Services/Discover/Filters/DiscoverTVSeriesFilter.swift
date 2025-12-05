@@ -35,7 +35,7 @@ public struct DiscoverTVSeriesFilter {
     public let genres: [Genre.ID]?
 
     ///
-    /// Creates a discover movies filter.
+    /// Creates a discover TV series filter.
     ///
     /// - Parameters:
     ///   - originalLanguage: The original language of the movie.
