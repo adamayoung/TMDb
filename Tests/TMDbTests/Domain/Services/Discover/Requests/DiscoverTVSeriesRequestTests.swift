@@ -55,9 +55,25 @@ struct DiscoverTVSeriesRequestTests {
 
     @Test("queryItems with language")
     func queryItemsWithLanguage() {
-        let request = DiscoverMoviesRequest(language: "en")
+        let request = DiscoverTVSeriesRequest(language: "en")
 
         #expect(request.queryItems == ["language": "en"])
+    }
+
+    @Test("queryItems with original language")
+    func queryItemsWithOriginalLanguage() {
+        let filter = DiscoverTVSeriesFilter(originalLanguage: "en")
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_original_language": "en"])
+    }
+
+    @Test("queryItems with genres")
+    func queryItemsWithGenres() {
+        let filter = DiscoverTVSeriesFilter(genres: [1, 2, 3])
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_genres": "1,2,3"])
     }
 
     @Test("queryItems with sortedBy, page and language")

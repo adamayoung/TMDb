@@ -20,7 +20,7 @@ format:
 
 .PHONY: lint
 lint:
-	swift format lint -r -p .
+	swift format lint -r -p --strict .
 
 .PHONY: lint-markdown
 lint-markdown:

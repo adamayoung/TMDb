@@ -21,9 +21,19 @@ import Foundation
 
 final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
-    init(sortedBy: TVSeriesSort? = nil, page: Int? = nil, language: String? = nil) {
+    init(
+        filter: DiscoverTVSeriesFilter? = nil,
+        sortedBy: TVSeriesSort? = nil,
+        page: Int? = nil,
+        language: String? = nil
+    ) {
         let path = "/discover/tv"
-        let queryItems = APIRequestQueryItems(sortedBy: sortedBy, page: page, language: language)
+        let queryItems = APIRequestQueryItems(
+            filter: filter,
+            sortedBy: sortedBy,
+            page: page,
+            language: language
+        )
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -32,8 +42,23 @@ final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 
 extension APIRequestQueryItems {
 
-    fileprivate init(sortedBy: TVSeriesSort?, page: Int?, language: String?) {
+    fileprivate init(
+        filter: DiscoverTVSeriesFilter?,
+        sortedBy: TVSeriesSort?,
+        page: Int?,
+        language: String?
+    ) {
         self.init()
+
+        if let filter {
+            if let originalLanguage = filter.originalLanguage {
+                self[.withOriginalLanguage] = originalLanguage
+            }
+
+            if let genres = filter.genres {
+                self[.withGenres] = genres.map(String.init).joined(separator: ",")
+            }
+        }
 
         if let sortedBy {
             self[.sortBy] = sortedBy

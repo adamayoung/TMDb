@@ -35,7 +35,7 @@ final class TMDbDiscoverService: DiscoverService {
         language: String? = nil
     ) async throws -> MoviePageableList {
         let request = DiscoverMoviesRequest(
-            people: filter?.people,
+            filter: filter,
             sortedBy: sortedBy,
             page: page,
             language: language
@@ -52,11 +52,17 @@ final class TMDbDiscoverService: DiscoverService {
     }
 
     func tvSeries(
+        filter: DiscoverTVSeriesFilter? = nil,
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = DiscoverTVSeriesRequest(sortedBy: sortedBy, page: page, language: language)
+        let request = DiscoverTVSeriesRequest(
+            filter: filter,
+            sortedBy: sortedBy,
+            page: page,
+            language: language
+        )
 
         let tvSeriesList: TVSeriesPageableList
         do {

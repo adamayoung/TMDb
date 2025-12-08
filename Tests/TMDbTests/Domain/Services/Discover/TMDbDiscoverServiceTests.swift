@@ -38,7 +38,7 @@ struct TMDbDiscoverServiceTests {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverMoviesRequest(
-            people: nil, sortedBy: nil, page: nil, language: nil)
+            filter: nil, sortedBy: nil, page: nil, language: nil)
 
         let result = try await (service as DiscoverService).movies()
 
@@ -48,16 +48,15 @@ struct TMDbDiscoverServiceTests {
 
     @Test("movies with filter, sort by, page and language returns movies")
     func moviesWithFilterAndSortByAndPageAndLanguageReturnsMovies() async throws {
-        let people = [4, 5, 6, 7, 8]
+        let filter = DiscoverMovieFilter(people: [4, 5, 6, 7, 8])
         let sortBy = MovieSort.originalTitle(descending: false)
         let expectedResult = MoviePageableList.mock()
         let page = expectedResult.page
         let language = "en"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = DiscoverMoviesRequest(
-            people: people, sortedBy: sortBy, page: page, language: language)
+            filter: filter, sortedBy: sortBy, page: page, language: language)
 
-        let filter = DiscoverMovieFilter(people: people)
         let result = try await service.movies(
             filter: filter, sortedBy: sortBy, page: page, language: language)
 
