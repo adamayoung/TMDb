@@ -655,7 +655,7 @@ Users can search for keywords to find related movies (e.g., search for "time tra
 - Medium Priority: 7 issues
 - Low Priority: 11 issues
 
-**Missing Services: 7 new services needed**
+**Missing Services: 8 new services needed**
 1. CollectionsService
 2. FindService
 3. KeywordsService

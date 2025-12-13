@@ -2,10 +2,22 @@
 
 # Script to create GitHub issues for missing TMDb API features
 # This script requires GitHub CLI (gh) to be installed and authenticated
+#
+# Usage:
+#   ./create_github_issues.sh [repository]
+#
+# Arguments:
+#   repository - GitHub repository in format owner/repo (default: adamayoung/TMDb)
+#                Can also be set via GITHUB_REPOSITORY environment variable
+#
+# Examples:
+#   ./create_github_issues.sh
+#   ./create_github_issues.sh myusername/TMDb
+#   GITHUB_REPOSITORY=myusername/TMDb ./create_github_issues.sh
 
-set -e
+set -euo pipefail
 
-REPO="adamayoung/TMDb"
+REPO="${1:-${GITHUB_REPOSITORY:-adamayoung/TMDb}}"
 
 echo "Creating GitHub issues for missing TMDb API features..."
 echo "Repository: $REPO"
