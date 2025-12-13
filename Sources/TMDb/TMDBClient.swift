@@ -40,6 +40,11 @@ public final class TMDbClient: Sendable {
     public let certifications: any CertificationService
 
     ///
+    /// TMDb collections.
+    ///
+    public let collections: any CollectionService
+
+    ///
     /// TMDb companies.
     ///
     public let companies: any CompanyService
@@ -53,6 +58,11 @@ public final class TMDbClient: Sendable {
     /// TMDb discover.
     ///
     public let discover: any DiscoverService
+
+    ///
+    /// TMDb find.
+    ///
+    public let find: any FindService
 
     ///
     /// TMDb genres.
@@ -130,9 +140,11 @@ public final class TMDbClient: Sendable {
                 authenticateURLBuilder: authenticateURLBuilder
             ),
             certificationService: TMDbCertificationService(apiClient: apiClient),
+            collectionService: TMDbCollectionService(apiClient: apiClient),
             companyService: TMDbCompanyService(apiClient: apiClient),
             configurationService: TMDbConfigurationService(apiClient: apiClient),
             discoverService: TMDbDiscoverService(apiClient: apiClient),
+            findService: TMDbFindService(apiClient: apiClient),
             genreService: TMDbGenreService(apiClient: apiClient),
             movieService: TMDbMovieService(apiClient: apiClient),
             personService: TMDbPersonService(apiClient: apiClient),
@@ -149,9 +161,11 @@ public final class TMDbClient: Sendable {
         accountService: some AccountService,
         authenticationService: some AuthenticationService,
         certificationService: some CertificationService,
+        collectionService: some CollectionService,
         companyService: some CompanyService,
         configurationService: some ConfigurationService,
         discoverService: some DiscoverService,
+        findService: some FindService,
         genreService: some GenreService,
         movieService: some MovieService,
         personService: some PersonService,
@@ -165,9 +179,11 @@ public final class TMDbClient: Sendable {
         self.account = accountService
         self.authentication = authenticationService
         self.certifications = certificationService
+        self.collections = collectionService
         self.companies = companyService
         self.configurations = configurationService
         self.discover = discoverService
+        self.find = findService
         self.genres = genreService
         self.movies = movieService
         self.people = personService
