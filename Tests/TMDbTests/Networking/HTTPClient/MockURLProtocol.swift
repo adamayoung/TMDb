@@ -26,29 +26,29 @@ import Foundation
 final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     private static let lock = NSLock()
-    private nonisolated(unsafe) static var _data: Data?
-    private nonisolated(unsafe) static var _failError: Error?
-    private nonisolated(unsafe) static var _responseStatusCode: Int?
-    private nonisolated(unsafe) static var _lastRequest: URLRequest?
+    private nonisolated(unsafe) static var unsafeData: Data?
+    private nonisolated(unsafe) static var unsafeFailError: Error?
+    private nonisolated(unsafe) static var unsafeResponseStatusCode: Int?
+    private nonisolated(unsafe) static var unsafeLastRequest: URLRequest?
 
     static var data: Data? {
-        get { lock.withLock { _data } }
-        set { lock.withLock { _data = newValue } }
+        get { lock.withLock { unsafeData } }
+        set { lock.withLock { unsafeData = newValue } }
     }
 
     static var failError: Error? {
-        get { lock.withLock { _failError } }
-        set { lock.withLock { _failError = newValue } }
+        get { lock.withLock { unsafeFailError } }
+        set { lock.withLock { unsafeFailError = newValue } }
     }
 
     static var responseStatusCode: Int? {
-        get { lock.withLock { _responseStatusCode } }
-        set { lock.withLock { _responseStatusCode = newValue } }
+        get { lock.withLock { unsafeResponseStatusCode } }
+        set { lock.withLock { unsafeResponseStatusCode = newValue } }
     }
 
     private(set) static var lastRequest: URLRequest? {
-        get { lock.withLock { _lastRequest } }
-        set { lock.withLock { _lastRequest = newValue } }
+        get { lock.withLock { unsafeLastRequest } }
+        set { lock.withLock { unsafeLastRequest = newValue } }
     }
 
     override static func canInit(with _: URLRequest) -> Bool {
@@ -98,10 +98,10 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
     static func reset() {
         lock.withLock {
-            _data = nil
-            _failError = nil
-            _responseStatusCode = 200
-            _lastRequest = nil
+            unsafeData = nil
+            unsafeFailError = nil
+            unsafeResponseStatusCode = 200
+            unsafeLastRequest = nil
         }
     }
 
