@@ -17,12 +17,12 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+  DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
 
 jobs:
   build-test:
     name: Build and Test
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,19 +62,19 @@ jobs:
   
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
-    runs-on: macos-15
+    runs-on: macos-26
     continue-on-error: true
     strategy:
       matrix:
         include:
           - name: iOS
-            destination: platform=iOS Simulator,name=iPhone 16,OS=18.5
+            destination: platform=iOS Simulator,name=iPhone 17,OS=26.2
           - name: watchOS
-            destination: platform=watchOS Simulator,name=Apple Watch Series 10 (46mm),OS=11.5
+            destination: platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2
           - name: tvOS
-            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=18.5
+            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.2
           - name: visionOS
-            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=2.5
+            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
