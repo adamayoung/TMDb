@@ -24,8 +24,8 @@ extension PersonMovieCredits {
 
     static func mock(
         id: Int = 1,
-        cast: [Movie] = .mocks,
-        crew: [Movie] = .mocks
+        cast: [MovieCastCredit] = .mocks,
+        crew: [MovieCrewCredit] = .mocks
     ) -> PersonMovieCredits {
         PersonMovieCredits(
             id: id,

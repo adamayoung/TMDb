@@ -31,8 +31,52 @@ struct PersonCombinedCreditsTests {
             .decode(PersonCombinedCredits.self, fromResource: "person-combined-credits")
 
         #expect(result.id == personCombinedCredits.id)
-        #expect(result.cast == personCombinedCredits.cast)
-        #expect(result.crew == personCombinedCredits.crew)
+        #expect(result.cast.count == personCombinedCredits.cast.count)
+        #expect(result.crew.count == personCombinedCredits.crew.count)
+
+        // Verify cast credits
+        for (index, castCredit) in result.cast.enumerated() {
+            let expected = personCombinedCredits.cast[index]
+            #expect(castCredit.id == expected.id)
+
+            switch (castCredit, expected) {
+            case (.movie(let resultMovie), .movie(let expectedMovie)):
+                #expect(resultMovie.id == expectedMovie.id)
+                #expect(resultMovie.character == expectedMovie.character)
+                #expect(resultMovie.creditID == expectedMovie.creditID)
+
+            case (.tvSeries(let resultTV), .tvSeries(let expectedTV)):
+                #expect(resultTV.id == expectedTV.id)
+                #expect(resultTV.character == expectedTV.character)
+                #expect(resultTV.creditID == expectedTV.creditID)
+
+            default:
+                Issue.record("Mismatched media types in cast credits at index \(index)")
+            }
+        }
+
+        // Verify crew credits
+        for (index, crewCredit) in result.crew.enumerated() {
+            let expected = personCombinedCredits.crew[index]
+            #expect(crewCredit.id == expected.id)
+
+            switch (crewCredit, expected) {
+            case (.movie(let resultMovie), .movie(let expectedMovie)):
+                #expect(resultMovie.id == expectedMovie.id)
+                #expect(resultMovie.job == expectedMovie.job)
+                #expect(resultMovie.department == expectedMovie.department)
+                #expect(resultMovie.creditID == expectedMovie.creditID)
+
+            case (.tvSeries(let resultTV), .tvSeries(let expectedTV)):
+                #expect(resultTV.id == expectedTV.id)
+                #expect(resultTV.job == expectedTV.job)
+                #expect(resultTV.department == expectedTV.department)
+                #expect(resultTV.creditID == expectedTV.creditID)
+
+            default:
+                Issue.record("Mismatched media types in crew credits at index \(index)")
+            }
+        }
     }
 
     @Test("allShows contains a unique list of cast and crew TV series")
@@ -40,18 +84,18 @@ struct PersonCombinedCreditsTests {
         let credits = PersonCombinedCredits(
             id: 1,
             cast: [
-                .movie(.mock(id: 10)),
-                .movie(.mock(id: 11)),
-                .tvSeries(.mock(id: 20)),
-                .tvSeries(.mock(id: 21))
+                ShowCastCredit.movie(.mock(id: 10)),
+                ShowCastCredit.movie(.mock(id: 11)),
+                ShowCastCredit.tvSeries(.mock(id: 20)),
+                ShowCastCredit.tvSeries(.mock(id: 21))
             ],
             crew: [
-                .movie(.mock(id: 10)),
-                .movie(.mock(id: 12)),
-                .movie(.mock(id: 13)),
-                .tvSeries(.mock(id: 20)),
-                .tvSeries(.mock(id: 22)),
-                .tvSeries(.mock(id: 23))
+                ShowCrewCredit.movie(.mock(id: 10)),
+                ShowCrewCredit.movie(.mock(id: 12)),
+                ShowCrewCredit.movie(.mock(id: 13)),
+                ShowCrewCredit.tvSeries(.mock(id: 20)),
+                ShowCrewCredit.tvSeries(.mock(id: 22)),
+                ShowCrewCredit.tvSeries(.mock(id: 23))
             ]
         )
 
@@ -66,14 +110,20 @@ struct PersonCombinedCreditsTests {
             .tvSeries(.mock(id: 23))
         ]
 
-        #expect(credits.allShows == expectedAllShows)
+        #expect(credits.allShows.count == expectedAllShows.count)
+
+        // Verify each show
+        for (index, show) in credits.allShows.enumerated() {
+            let expected = expectedAllShows[index]
+            #expect(show.id == expected.id)
+        }
     }
 
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,
         cast: [
-            .tvSeries(
-                TVSeriesListItem(
+            ShowCastCredit.tvSeries(
+                TVSeriesCastCredit(
                     id: 54,
                     name: "Growing Pains",
                     originalName: "Growing Pains",
@@ -87,10 +137,14 @@ struct PersonCombinedCreditsTests {
                     backdropPath: URL(string: "/xYpXcp7S8pStWihcksTQQue3jlV.jpg"),
                     popularity: 2.883124,
                     voteAverage: 6.2,
-                    voteCount: 25
+                    voteCount: 25,
+                    isAdultOnly: nil,
+                    episodeCount: 2,
+                    character: "",
+                    creditID: "525333fb19c295794002c720"
                 )),
-            .movie(
-                MovieListItem(
+            ShowCastCredit.movie(
+                MovieCastCredit(
                     id: 109_091,
                     title: "The Counselor",
                     originalTitle: "The Counselor",
@@ -105,18 +159,21 @@ struct PersonCombinedCreditsTests {
                     voteAverage: 5,
                     voteCount: 661,
                     hasVideo: false,
-                    isAdultOnly: false
+                    isAdultOnly: false,
+                    character: "Westray",
+                    creditID: "52fe4aaac3a36847f81db47d",
+                    order: 2
                 ))
         ],
         crew: [
-            .tvSeries(
-                TVSeriesListItem(
+            ShowCrewCredit.tvSeries(
+                TVSeriesCrewCredit(
                     id: 69061,
                     name: "The OA",
                     originalName: "The OA",
                     originalLanguage: "en",
                     overview:
-                        "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won’t talk with the FBI or her parents about the seven years she went missing.",
+                        "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won't talk with the FBI or her parents about the seven years she went missing.",
                     genreIDs: [18, 9648, 10765],
                     firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-12-16"),
                     originCountries: [],
@@ -124,16 +181,21 @@ struct PersonCombinedCreditsTests {
                     backdropPath: URL(string: "/k9kPIikcQBzl93nSyXUfqc74J9S.jpg"),
                     popularity: 6.990147,
                     voteAverage: 7.3,
-                    voteCount: 121
+                    voteCount: 121,
+                    isAdultOnly: nil,
+                    episodeCount: 8,
+                    job: "Executive Producer",
+                    department: "Production",
+                    creditID: "58cf92ae9251415a7d0339c3"
                 )),
-            .movie(
-                MovieListItem(
+            ShowCrewCredit.movie(
+                MovieCrewCredit(
                     id: 174_349,
                     title: "Big Men",
                     originalTitle: "Big Men",
                     originalLanguage: "en",
                     overview:
-                        "For her latest industrial exposé, Rachel Boynton (Our Brand Is Crisis) gained unprecedented access to Africa's oil companies. The result is a gripping account of the costly personal tolls levied when American corporate interests pursue oil in places like Ghana and the Niger River Delta. Executive produced by Steven Shainberg and Brad Pitt, Big Men investigates the caustic blend of ambition, corruption and greed that threatens to exacerbate Africa’s resource curse.",
+                        "For her latest industrial exposé, Rachel Boynton (Our Brand Is Crisis) gained unprecedented access to Africa's oil companies. The result is a gripping account of the costly personal tolls levied when American corporate interests pursue oil in places like Ghana and the Niger River Delta. Executive produced by Steven Shainberg and Brad Pitt, Big Men investigates the caustic blend of ambition, corruption and greed that threatens to exacerbate Africa's resource curse.",
                     genreIDs: [99],
                     releaseDate: DateFormatter.theMovieDatabase.date(from: "2014-03-14"),
                     posterPath: URL(string: "/q5uKDMl1PXIeMoD10CTbXST7XoN.jpg"),
@@ -142,7 +204,10 @@ struct PersonCombinedCreditsTests {
                     voteAverage: 6.4,
                     voteCount: 7,
                     hasVideo: false,
-                    isAdultOnly: false
+                    isAdultOnly: false,
+                    job: "Executive Producer",
+                    department: "Production",
+                    creditID: "52fe4d49c3a36847f8258cf3"
                 ))
         ]
     )

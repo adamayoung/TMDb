@@ -24,17 +24,8 @@ extension PersonCombinedCredits {
 
     static func mock(
         id: Int = 1,
-        cast: [Show] = [
-            .movie(.jurassicWorldDominion),
-            .tvSeries(.bigBrother),
-            .movie(.topGunMaverick),
-            .tvSeries(.csi)
-        ],
-        crew: [Show] = [
-            .movie(.bulletTrain),
-            .tvSeries(.bigBrother),
-            .movie(.thorLoveAndThunder)
-        ]
+        cast: [ShowCastCredit] = .mocks,
+        crew: [ShowCrewCredit] = .mocks
     ) -> PersonCombinedCredits {
         PersonCombinedCredits(
             id: id,
