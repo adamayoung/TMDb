@@ -29,7 +29,7 @@ jobs:
     container: swift:6.0.2-jammy
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload documentation
         if: github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'docs'
   

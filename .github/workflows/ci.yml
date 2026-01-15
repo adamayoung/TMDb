@@ -25,7 +25,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build
         run: swift build --build-tests -Xswiftc -warnings-as-errors
@@ -77,7 +77,7 @@ jobs:
             destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build
         run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
@@ -91,7 +91,7 @@ jobs:
     container: swift:6.0.2-jammy
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build
         run: swift build --build-tests -Xswiftc -warnings-as-errors
