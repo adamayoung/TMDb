@@ -145,4 +145,56 @@ struct TVSeriesServiceTests {
         #expect(contentRatings.rating == "TV-14")
         #expect(contentRatings.countryCode == "US")
     }
+
+    @Test("details includes lastEpisodeToAir and nextEpisodeToAir for airing series")
+    func detailsIncludesEpisodeAirDatesForAiringSeries() async throws {
+        // The Pitt - currently airing series
+        let tvSeriesID = 250307
+
+        let tvSeries = try await tvSeriesService.details(forTVSeries: tvSeriesID)
+
+        #expect(tvSeries.id == tvSeriesID)
+
+        // lastEpisodeToAir should exist for currently airing shows
+        if let lastEpisode = tvSeries.lastEpisodeToAir {
+            #expect(lastEpisode.id > 0)
+            #expect(!lastEpisode.name.isEmpty)
+            #expect(lastEpisode.episodeNumber > 0)
+            #expect(lastEpisode.seasonNumber > 0)
+            #expect(lastEpisode.showID == tvSeriesID)
+        }
+
+        // nextEpisodeToAir may exist for currently airing shows
+        if let nextEpisode = tvSeries.nextEpisodeToAir {
+            #expect(nextEpisode.id > 0)
+            #expect(!nextEpisode.name.isEmpty)
+            #expect(nextEpisode.episodeNumber > 0)
+            #expect(nextEpisode.seasonNumber > 0)
+            #expect(nextEpisode.showID == tvSeriesID)
+        }
+    }
+
+    @Test("details for ended series has lastEpisodeToAir but no nextEpisodeToAir")
+    func detailsForEndedSeries() async throws {
+        // Breaking Bad - ended series
+        let tvSeriesID = 1396
+
+        let tvSeries = try await tvSeriesService.details(forTVSeries: tvSeriesID)
+
+        #expect(tvSeries.id == tvSeriesID)
+        #expect(tvSeries.lastEpisodeToAir != nil)
+
+        // Verify lastEpisodeToAir details
+        if let lastEpisode = tvSeries.lastEpisodeToAir {
+            #expect(lastEpisode.id > 0)
+            #expect(lastEpisode.name == "Felina")
+            #expect(lastEpisode.episodeNumber == 16)
+            #expect(lastEpisode.seasonNumber == 5)
+            #expect(lastEpisode.showID == tvSeriesID)
+            #expect(lastEpisode.episodeType == "finale")
+        }
+
+        // nextEpisodeToAir should be nil for ended series
+        #expect(tvSeries.nextEpisodeToAir == nil)
+    }
 }
