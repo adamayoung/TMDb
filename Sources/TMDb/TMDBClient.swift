@@ -40,6 +40,11 @@ public final class TMDbClient: Sendable {
     public let certifications: any CertificationService
 
     ///
+    /// TMDb collections.
+    ///
+    public let collections: any CollectionService
+
+    ///
     /// TMDb companies.
     ///
     public let companies: any CompanyService
@@ -135,6 +140,7 @@ public final class TMDbClient: Sendable {
                 authenticateURLBuilder: authenticateURLBuilder
             ),
             certificationService: TMDbCertificationService(apiClient: apiClient),
+            collectionService: TMDbCollectionService(apiClient: apiClient),
             companyService: TMDbCompanyService(apiClient: apiClient),
             configurationService: TMDbConfigurationService(apiClient: apiClient),
             discoverService: TMDbDiscoverService(apiClient: apiClient),
@@ -155,6 +161,7 @@ public final class TMDbClient: Sendable {
         accountService: some AccountService,
         authenticationService: some AuthenticationService,
         certificationService: some CertificationService,
+        collectionService: some CollectionService,
         companyService: some CompanyService,
         configurationService: some ConfigurationService,
         discoverService: some DiscoverService,
@@ -172,6 +179,7 @@ public final class TMDbClient: Sendable {
         self.account = accountService
         self.authentication = authenticationService
         self.certifications = certificationService
+        self.collections = collectionService
         self.companies = companyService
         self.configurations = configurationService
         self.discover = discoverService
