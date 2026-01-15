@@ -25,65 +25,84 @@ import Foundation
 
 final class MockURLProtocol: URLProtocol, @unchecked Sendable {
 
-    @MainActor static var data: Data?
-    @MainActor static var failError: Error?
-    @MainActor static var responseStatusCode: Int?
-    @MainActor private(set) static var lastRequest: URLRequest?
+    private static let lock = NSLock()
+    private nonisolated(unsafe) static var _data: Data?
+    private nonisolated(unsafe) static var _failError: Error?
+    private nonisolated(unsafe) static var _responseStatusCode: Int?
+    private nonisolated(unsafe) static var _lastRequest: URLRequest?
+
+    static var data: Data? {
+        get { lock.withLock { _data } }
+        set { lock.withLock { _data = newValue } }
+    }
+
+    static var failError: Error? {
+        get { lock.withLock { _failError } }
+        set { lock.withLock { _failError = newValue } }
+    }
+
+    static var responseStatusCode: Int? {
+        get { lock.withLock { _responseStatusCode } }
+        set { lock.withLock { _responseStatusCode = newValue } }
+    }
+
+    private(set) static var lastRequest: URLRequest? {
+        get { lock.withLock { _lastRequest } }
+        set { lock.withLock { _lastRequest = newValue } }
+    }
 
     override static func canInit(with _: URLRequest) -> Bool {
         true
     }
 
     override static func canonicalRequest(for request: URLRequest) -> URLRequest {
-        Task {
-            await MainActor.run {
-                lastRequest = request
-            }
-        }
-
+        lastRequest = request
         return request
     }
 
     override func startLoading() {
-        Task {
-            if let failError = await Self.failError {
-                client?.urlProtocol(self, didFailWithError: failError)
-                return
-            }
+        let failError = Self.failError
+        let data = Self.data
+        let statusCode = Self.responseStatusCode ?? 200
 
-            guard let url = request.url else {
-                return
-            }
-
-            if let data = await Self.data {
-                client?.urlProtocol(self, didLoad: data)
-            }
-
-            guard
-                let response = await HTTPURLResponse(
-                    url: url,
-                    statusCode: Self.responseStatusCode ?? 200,
-                    httpVersion: "2.0",
-                    headerFields: nil
-                )
-            else {
-                client?.urlProtocolDidFinishLoading(self)
-                return
-            }
-
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocolDidFinishLoading(self)
+        if let failError {
+            client?.urlProtocol(self, didFailWithError: failError)
+            return
         }
+
+        guard let url = request.url else {
+            return
+        }
+
+        if let data {
+            client?.urlProtocol(self, didLoad: data)
+        }
+
+        guard
+            let response = HTTPURLResponse(
+                url: url,
+                statusCode: statusCode,
+                httpVersion: "2.0",
+                headerFields: nil
+            )
+        else {
+            client?.urlProtocolDidFinishLoading(self)
+            return
+        }
+
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocolDidFinishLoading(self)
     }
 
     override func stopLoading() {}
 
-    @MainActor
     static func reset() {
-        data = nil
-        failError = nil
-        responseStatusCode = 200
-        lastRequest = nil
+        lock.withLock {
+            _data = nil
+            _failError = nil
+            _responseStatusCode = 200
+            _lastRequest = nil
+        }
     }
 
 }
