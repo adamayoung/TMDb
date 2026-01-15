@@ -165,3 +165,120 @@ When implementing new features or exploring TMDb API responses:
 - **Real-world data** - Handles edge cases (null values, optional fields)
 - **Up-to-date** - Always matches current TMDb API behavior
 - **Faster development** - No need to manually test with curl or Postman
+
+## Creating Pull Requests
+
+When asked to create a PR, follow these steps:
+
+### 1. Push the Branch
+
+```bash
+git push -u origin <branch-name>
+```
+
+### 2. Create PR with gh CLI
+
+```bash
+gh pr create --base main --head <branch-name> --title "<title>" --body "<body>"
+```
+
+### 3. PR Title Format
+
+- Use appropriate **gitmoji** from [gitmoji.dev](https://gitmoji.dev) that best suits the changes
+- Common gitmojis for this project:
+  - ✨ `:sparkles:` - New features
+  - 🐛 `:bug:` - Bug fixes
+  - 📝 `:memo:` - Documentation updates
+  - ♻️ `:recycle:` - Refactoring
+  - ✅ `:white_check_mark:` - Adding/updating tests
+  - 🔧 `:wrench:` - Configuration changes
+  - ⚡️ `:zap:` - Performance improvements
+  - 🎨 `:art:` - Code style/formatting
+
+**Example:** `✨ Add createdBy property to TVSeries`
+
+### 4. PR Body Structure
+
+Use the following structure with appropriate sections:
+
+```markdown
+## Summary
+
+[Brief description of what this PR does and why]
+
+## Changes
+
+[Detailed list of changes with gitmojis and bullet points]
+
+**New Model/Feature/Component:**
+- ✨ [Description]
+
+**Existing Files:**
+- 📝 [Description]
+- 🔧 [Description]
+
+**Tests:**
+- ✅ [Description of test coverage]
+- ✅ [Test results summary]
+
+**Documentation:**
+- 📚 [Description]
+
+## Benefits
+
+[List the benefits and improvements this PR provides]
+
+- **[Benefit Category]**: [Description]
+- **[Benefit Category]**: [Description]
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+### 5. Determine Changes
+
+Compare the branch against main to understand what changed:
+
+```bash
+# See which files changed
+git diff --stat main...HEAD
+
+# See commit history
+git log --oneline main..HEAD
+```
+
+### 6. Example PR Creation
+
+```bash
+gh pr create --base main --head feature/my-feature \
+  --title "✨ Add new feature" \
+  --body "$(cat <<'EOF'
+## Summary
+
+Brief description of the feature.
+
+## Changes
+
+**New Model:**
+- ✨ Created `MyModel` with properties X, Y, Z
+
+**Tests:**
+- ✅ Added comprehensive unit tests
+- ✅ All tests passing
+
+## Benefits
+
+- **Complete Coverage**: Users can now access feature X
+- **Type Safety**: Strongly-typed models provide better IDE support
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+```
+
+### Important Notes
+
+- Always reference [gitmoji.dev](https://gitmoji.dev) for the correct emoji
+- Use comprehensive bullet points in all sections
+- Include test results and validation in the Changes section
+- Only include sections (Summary, Changes, Benefits) that are relevant
+- Always end with the Claude Code attribution
