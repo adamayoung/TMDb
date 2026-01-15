@@ -1,5 +1,5 @@
 //
-//  PersonTVSeriesCredits+Mocks.swift
+//  ShowCrewCredit+Mocks.swift
 //  TMDb
 //
 //  Copyright © 2025 Adam Young.
@@ -18,20 +18,29 @@
 //
 
 import Foundation
-import TMDb
 
-extension PersonTVSeriesCredits {
+@testable import TMDb
 
-    static func mock(
-        id: Int = 1,
-        cast: [TVSeriesCastCredit] = .mocks,
-        crew: [TVSeriesCrewCredit] = .mocks
-    ) -> PersonTVSeriesCredits {
-        PersonTVSeriesCredits(
-            id: id,
-            cast: cast,
-            crew: crew
-        )
+extension ShowCrewCredit {
+
+    static var movieMock: ShowCrewCredit {
+        .movie(.mock())
+    }
+
+    static var tvSeriesMock: ShowCrewCredit {
+        .tvSeries(.mock())
+    }
+
+}
+
+extension [ShowCrewCredit] {
+
+    static var mocks: [ShowCrewCredit] {
+        [
+            .movie(.mock(id: 1)),
+            .tvSeries(.mock(id: 2)),
+            .movie(.mock(id: 3))
+        ]
     }
 
 }

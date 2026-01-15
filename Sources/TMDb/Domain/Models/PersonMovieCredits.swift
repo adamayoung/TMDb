@@ -34,18 +34,54 @@ public struct PersonMovieCredits: Identifiable, Codable, Equatable, Hashable, Se
     ///
     /// Movies where the person is in the cast.
     ///
-    public let cast: [Movie]
+    public let cast: [MovieCastCredit]
 
     ///
     /// Movies where the person is in the crew.
     ///
-    public let crew: [Movie]
+    public let crew: [MovieCrewCredit]
 
     ///
     /// All movies the person is in.
     ///
     public var allShows: [Movie] {
-        (cast + crew).uniqued()
+        let castMovies = cast.map { credit in
+            Movie(
+                id: credit.id,
+                title: credit.title,
+                originalTitle: credit.originalTitle,
+                originalLanguage: credit.originalLanguage,
+                overview: credit.overview,
+                releaseDate: credit.releaseDate,
+                posterPath: credit.posterPath,
+                backdropPath: credit.backdropPath,
+                popularity: credit.popularity,
+                voteAverage: credit.voteAverage,
+                voteCount: credit.voteCount,
+                hasVideo: credit.hasVideo,
+                isAdultOnly: credit.isAdultOnly
+            )
+        }
+
+        let crewMovies = crew.map { credit in
+            Movie(
+                id: credit.id,
+                title: credit.title,
+                originalTitle: credit.originalTitle,
+                originalLanguage: credit.originalLanguage,
+                overview: credit.overview,
+                releaseDate: credit.releaseDate,
+                posterPath: credit.posterPath,
+                backdropPath: credit.backdropPath,
+                popularity: credit.popularity,
+                voteAverage: credit.voteAverage,
+                voteCount: credit.voteCount,
+                hasVideo: credit.hasVideo,
+                isAdultOnly: credit.isAdultOnly
+            )
+        }
+
+        return (castMovies + crewMovies).uniqued()
     }
 
     /// Creates a person movie credits object.
@@ -55,7 +91,7 @@ public struct PersonMovieCredits: Identifiable, Codable, Equatable, Hashable, Se
     ///   - cast: Movies where the person is in the cast.
     ///   - crew: Movies where the person is in the crew.
     ///
-    public init(id: Int, cast: [Movie], crew: [Movie]) {
+    public init(id: Int, cast: [MovieCastCredit], crew: [MovieCrewCredit]) {
         self.id = id
         self.cast = cast
         self.crew = crew

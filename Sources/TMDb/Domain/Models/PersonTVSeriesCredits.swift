@@ -34,18 +34,54 @@ public struct PersonTVSeriesCredits: Identifiable, Codable, Equatable, Hashable,
     ///
     /// TV series where the person is in the cast.
     ///
-    public let cast: [TVSeries]
+    public let cast: [TVSeriesCastCredit]
 
     ///
     /// TV series where the person is in the crew.
     ///
-    public let crew: [TVSeries]
+    public let crew: [TVSeriesCrewCredit]
 
     ///
     /// All TV series the person is in.
     ///
     public var allShows: [TVSeries] {
-        (cast + crew).uniqued()
+        let castSeries = cast.map { credit in
+            TVSeries(
+                id: credit.id,
+                name: credit.name,
+                originalName: credit.originalName,
+                originalLanguage: credit.originalLanguage,
+                overview: credit.overview,
+                firstAirDate: credit.firstAirDate,
+                originCountry: credit.originCountries,
+                posterPath: credit.posterPath,
+                backdropPath: credit.backdropPath,
+                popularity: credit.popularity,
+                voteAverage: credit.voteAverage,
+                voteCount: credit.voteCount,
+                isAdultOnly: credit.isAdultOnly
+            )
+        }
+
+        let crewSeries = crew.map { credit in
+            TVSeries(
+                id: credit.id,
+                name: credit.name,
+                originalName: credit.originalName,
+                originalLanguage: credit.originalLanguage,
+                overview: credit.overview,
+                firstAirDate: credit.firstAirDate,
+                originCountry: credit.originCountries,
+                posterPath: credit.posterPath,
+                backdropPath: credit.backdropPath,
+                popularity: credit.popularity,
+                voteAverage: credit.voteAverage,
+                voteCount: credit.voteCount,
+                isAdultOnly: credit.isAdultOnly
+            )
+        }
+
+        return (castSeries + crewSeries).uniqued()
     }
 
     ///
@@ -56,7 +92,7 @@ public struct PersonTVSeriesCredits: Identifiable, Codable, Equatable, Hashable,
     ///    - cast: TV series where the person is in the cast.
     ///    - crew: TV series where the person is in the crew.
     ///
-    public init(id: Int, cast: [TVSeries], crew: [TVSeries]) {
+    public init(id: Int, cast: [TVSeriesCastCredit], crew: [TVSeriesCrewCredit]) {
         self.id = id
         self.cast = cast
         self.crew = crew
