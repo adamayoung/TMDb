@@ -44,6 +44,27 @@ struct TVSeriesTests {
         #expect(result.firstAirDate == nil)
     }
 
+    @Test("createdBy decodes correctly", .tags(.decoding))
+    func testCreatedByDecodesCorrectly() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series")
+
+        #expect(result.createdBy?.count == 2)
+        #expect(result.createdBy?[0].id == 9813)
+        #expect(result.createdBy?[0].creditID == "5256c8c219c2956ff604858a")
+        #expect(result.createdBy?[0].name == "David Benioff")
+        #expect(result.createdBy?[0].originalName == "David Benioff")
+        #expect(result.createdBy?[0].gender == .male)
+        #expect(result.createdBy?[0].profilePath == URL(string: "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg"))
+
+        #expect(result.createdBy?[1].id == 228068)
+        #expect(result.createdBy?[1].creditID == "552e611e9251413fea000901")
+        #expect(result.createdBy?[1].name == "D. B. Weiss")
+        #expect(result.createdBy?[1].originalName == "D. B. Weiss")
+        #expect(result.createdBy?[1].gender == .male)
+        #expect(result.createdBy?[1].profilePath == URL(string: "/6Wt006TIQoDSSnl0YaKihfn3w7K.jpg"))
+    }
+
 }
 
 extension TVSeriesTests {
@@ -69,6 +90,24 @@ extension TVSeriesTests {
                     airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
                     posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
                     episodes: nil
+                )
+            ],
+            createdBy: [
+                Creator(
+                    id: 9813,
+                    creditID: "5256c8c219c2956ff604858a",
+                    name: "David Benioff",
+                    originalName: "David Benioff",
+                    gender: .male,
+                    profilePath: URL(string: "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg")
+                ),
+                Creator(
+                    id: 228068,
+                    creditID: "552e611e9251413fea000901",
+                    name: "D. B. Weiss",
+                    originalName: "D. B. Weiss",
+                    gender: .male,
+                    profilePath: URL(string: "/6Wt006TIQoDSSnl0YaKihfn3w7K.jpg")
                 )
             ],
             genres: [

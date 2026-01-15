@@ -75,6 +75,11 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let seasons: [TVSeason]?
 
     ///
+    /// Creators of the TV series.
+    ///
+    public let createdBy: [Creator]?
+
+    ///
     /// TV series genres.
     ///
     public let genres: [Genre]?
@@ -177,6 +182,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - numberOfSeasons: Number of seasons in the TV series.
     ///    - numberOfEpisodes: Total number of episodes in the TV series.
     ///    - seasons: Seasons in the TV series.
+    ///    - createdBy: Creators of the TV series.
     ///    - genres: TV series genres.
     ///    - firstAirDate: TV series's first air date.
     ///    - originCountry: TV series country of origin.
@@ -206,6 +212,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
         seasons: [TVSeason]? = nil,
+        createdBy: [Creator]? = nil,
         genres: [Genre]? = nil,
         firstAirDate: Date? = nil,
         originCountry: [String]? = nil,
@@ -234,6 +241,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.numberOfSeasons = numberOfSeasons
         self.numberOfEpisodes = numberOfEpisodes
         self.seasons = seasons
+        self.createdBy = createdBy
         self.genres = genres
         self.firstAirDate = firstAirDate
         self.originCountry = originCountry
@@ -268,6 +276,7 @@ extension TVSeries {
         case numberOfSeasons
         case numberOfEpisodes
         case seasons
+        case createdBy
         case genres
         case originCountry
         case posterPath
@@ -314,6 +323,7 @@ extension TVSeries {
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
         self.numberOfEpisodes = try container.decodeIfPresent(Int.self, forKey: .numberOfEpisodes)
         self.seasons = try container.decodeIfPresent([TVSeason].self, forKey: .seasons)
+        self.createdBy = try container.decodeIfPresent([Creator].self, forKey: .createdBy)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
 
         // Need to deal with empty strings - date decoding will fail with an empty string
