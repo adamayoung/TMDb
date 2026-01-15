@@ -84,6 +84,37 @@ Enforced via `.swift-format`:
 - **Use guard for early exits**
 - **No leading underscores** - use file-private instead
 
+## Testing Requirements
+
+**CRITICAL: Always run both unit tests AND integration tests after making code changes.**
+
+### Why Both Test Types Matter
+
+- **Unit tests** verify code logic with mocked data and fast execution
+- **Integration tests** validate against the live TMDb API and catch real-world issues like:
+  - Missing fields in API responses
+  - Incorrect date/time formats
+  - Type mismatches between mocks and actual API data
+  - API changes or deprecations
+
+### Testing Workflow
+
+After implementing or modifying features:
+
+1. **Run unit tests**: `make test` - Fast feedback on logic and mocked scenarios
+2. **Run integration tests**: `make integration-test` - Validates against real API
+3. **Both must pass** before considering the work complete
+
+### Common Pitfalls
+
+Unit tests alone may pass even when:
+- JSON fixtures don't match actual API responses
+- Mock data uses simplified date formats
+- Required fields are missing from models
+- API response structure has changed
+
+**Integration tests catch these issues by using real API data.**
+
 ## Adding New Features
 
 1. Define protocol in `Domain/Services/<ServiceName>/`
@@ -92,3 +123,45 @@ Enforced via `.swift-format`:
 4. Register in `TMDbFactory.swift`
 5. Expose via `TMDbClient.swift`
 6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
+
+## Understanding the TMDb API
+
+### TMDb OpenAPI Specification
+
+The complete TMDb API specification is available at:
+**https://developer.themoviedb.org/openapi/tmdb-api.json**
+
+Use this OpenAPI spec to:
+- Understand available endpoints and their parameters
+- See request/response schemas
+- Discover query parameters, headers, and authentication requirements
+- Find endpoint documentation and examples
+
+### Using TMDb MCP Server
+
+When implementing new features or exploring TMDb API responses:
+
+**ALWAYS use the TMDb MCP server** (`mcp__tmdb__*` tools) to query the live TMDb API instead of making assumptions about response structures.
+
+### When to Use TMDb MCP
+
+- **Exploring API responses** - Fetch real data to understand response structure
+- **Creating JSON fixtures** - Get actual API responses to create test fixtures
+- **Verifying endpoint behavior** - Check what fields are returned, nullable fields, etc.
+- **Discovering new endpoints** - Explore available TMDb API endpoints
+
+### Example Workflow
+
+1. Check the OpenAPI spec to understand the endpoint structure and parameters
+2. Use MCP to fetch real data: `mcp__tmdb__movie_details` with a movie ID
+3. Examine the actual JSON response structure
+4. Create models based on real data, not assumptions
+5. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
+6. Implement the feature with confidence in the data structure
+
+### Benefits
+
+- **Accurate models** - No guessing about field names or types
+- **Real-world data** - Handles edge cases (null values, optional fields)
+- **Up-to-date** - Always matches current TMDb API behavior
+- **Faster development** - No need to manually test with curl or Postman

@@ -231,4 +231,17 @@ final class TMDbMovieService: MovieService {
         return linksCollection
     }
 
+    func releaseDates(forMovie movieID: Movie.ID) async throws -> [MovieReleaseDatesByCountry] {
+        let request = MovieReleaseDatesRequest(id: movieID)
+
+        let result: MovieReleaseDatesResult
+        do {
+            result = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result.results
+    }
+
 }

@@ -64,6 +64,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MoviePageableList``
 - ``MovieImageFilter``
 - ``MovieVideoFilter``
+- ``MovieReleaseDatesByCountry``
+- ``ReleaseDate``
+- ``ReleaseType``
 
 ### TV Series
 
