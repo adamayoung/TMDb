@@ -84,6 +84,37 @@ Enforced via `.swift-format`:
 - **Use guard for early exits**
 - **No leading underscores** - use file-private instead
 
+## Testing Requirements
+
+**CRITICAL: Always run both unit tests AND integration tests after making code changes.**
+
+### Why Both Test Types Matter
+
+- **Unit tests** verify code logic with mocked data and fast execution
+- **Integration tests** validate against the live TMDb API and catch real-world issues like:
+  - Missing fields in API responses
+  - Incorrect date/time formats
+  - Type mismatches between mocks and actual API data
+  - API changes or deprecations
+
+### Testing Workflow
+
+After implementing or modifying features:
+
+1. **Run unit tests**: `make test` - Fast feedback on logic and mocked scenarios
+2. **Run integration tests**: `make integration-test` - Validates against real API
+3. **Both must pass** before considering the work complete
+
+### Common Pitfalls
+
+Unit tests alone may pass even when:
+- JSON fixtures don't match actual API responses
+- Mock data uses simplified date formats
+- Required fields are missing from models
+- API response structure has changed
+
+**Integration tests catch these issues by using real API data.**
+
 ## Adding New Features
 
 1. Define protocol in `Domain/Services/<ServiceName>/`

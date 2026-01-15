@@ -6,16 +6,18 @@
       "release_dates": [
         {
           "certification": "R",
+          "descriptors": [],
           "iso_639_1": "",
           "note": "Los Angeles, California",
-          "release_date": "1999-10-15",
+          "release_date": "1999-10-15T00:00:00.000Z",
           "type": 1
         },
         {
           "certification": "R",
+          "descriptors": [],
           "iso_639_1": "",
           "note": "",
-          "release_date": "1999-10-15",
+          "release_date": "1999-10-15T00:00:00.000Z",
           "type": 3
         }
       ]
@@ -25,9 +27,10 @@
       "release_dates": [
         {
           "certification": "18",
+          "descriptors": [],
           "iso_639_1": "",
           "note": "",
-          "release_date": "1999-11-12",
+          "release_date": "1999-11-12T00:00:00.000Z",
           "type": 3
         }
       ]

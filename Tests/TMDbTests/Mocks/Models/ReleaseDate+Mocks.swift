@@ -25,6 +25,7 @@ extension ReleaseDate {
 
     static func mock(
         certification: String = "R",
+        descriptors: [String] = [],
         languageCode: String? = nil,
         note: String? = nil,
         releaseDate: Date = Date(timeIntervalSince1970: 939_945_600),
@@ -32,6 +33,7 @@ extension ReleaseDate {
     ) -> ReleaseDate {
         ReleaseDate(
             certification: certification,
+            descriptors: descriptors,
             languageCode: languageCode,
             note: note,
             releaseDate: releaseDate,

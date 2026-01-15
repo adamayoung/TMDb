@@ -27,11 +27,14 @@ struct ReleaseDateTests {
 
     @Test("decodes from JSON", .tags(.decoding))
     func decodesFromJSON() throws {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
         let expectedResult = ReleaseDate(
             certification: "R",
             languageCode: "",
             note: "Los Angeles, California",
-            releaseDate: DateFormatter.theMovieDatabase.date(from: "1999-10-15")!,
+            releaseDate: formatter.date(from: "1999-10-15T00:00:00.000Z")!,
             type: .premiere
         )
 
