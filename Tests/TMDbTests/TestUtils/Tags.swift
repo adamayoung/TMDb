@@ -40,6 +40,7 @@ extension Tag {
     @Tag static var configuration: Self
     @Tag static var discover: Self
     @Tag static var genre: Self
+    @Tag static var list: Self
     @Tag static var movie: Self
     @Tag static var people: Self
     @Tag static var search: Self
