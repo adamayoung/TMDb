@@ -1,0 +1,36 @@
+{
+  "id": 550,
+  "results": [
+    {
+      "iso_3166_1": "US",
+      "release_dates": [
+        {
+          "certification": "R",
+          "iso_639_1": "",
+          "note": "Los Angeles, California",
+          "release_date": "1999-10-15",
+          "type": 1
+        },
+        {
+          "certification": "R",
+          "iso_639_1": "",
+          "note": "",
+          "release_date": "1999-10-15",
+          "type": 3
+        }
+      ]
+    },
+    {
+      "iso_3166_1": "GB",
+      "release_dates": [
+        {
+          "certification": "18",
+          "iso_639_1": "",
+          "note": "",
+          "release_date": "1999-11-12",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

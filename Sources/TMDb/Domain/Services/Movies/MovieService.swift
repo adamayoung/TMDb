@@ -268,6 +268,19 @@ public protocol MovieService: Sendable {
     ///
     func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection
 
+    ///
+    /// Returns the release dates and certifications for a movie by country.
+    ///
+    /// [TMDb API - Movies: Release Dates](https://developer.themoviedb.org/reference/movie-release-dates)
+    ///
+    /// - Parameter movieID: The identifier of the movie.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Release dates for the movie grouped by country.
+    ///
+    func releaseDates(forMovie movieID: Movie.ID) async throws -> [MovieReleaseDatesByCountry]
+
 }
 
 extension MovieService {
@@ -539,6 +552,23 @@ extension MovieService {
         country: String = "US"
     ) async throws -> ShowWatchProvider? {
         try await watchProviders(forMovie: movieID, country: country)
+    }
+
+    ///
+    /// Returns the release dates and certifications for a movie by country.
+    ///
+    /// [TMDb API - Movies: Release Dates](https://developer.themoviedb.org/reference/movie-release-dates)
+    ///
+    /// - Parameter movieID: The identifier of the movie.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Release dates for the movie grouped by country.
+    ///
+    public func releaseDates(
+        forMovie movieID: Movie.ID
+    ) async throws -> [MovieReleaseDatesByCountry] {
+        try await releaseDates(forMovie: movieID)
     }
 
 }

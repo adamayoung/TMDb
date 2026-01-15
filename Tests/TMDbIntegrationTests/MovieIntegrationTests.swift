@@ -147,4 +147,16 @@ struct MovieIntegrationTests {
         #expect(linksCollection.twitter != nil)
     }
 
+    @Test("releaseDates")
+    func releaseDates() async throws {
+        let movieID = 346_698
+
+        let releaseDatesByCountry = try await movieService.releaseDates(forMovie: movieID)
+
+        #expect(!releaseDatesByCountry.isEmpty)
+        let usReleaseDates = releaseDatesByCountry.first { $0.countryCode == "US" }
+        #expect(usReleaseDates != nil)
+        #expect(!usReleaseDates!.releaseDates.isEmpty)
+    }
+
 }
