@@ -10,3 +10,6 @@ docs/
 info.lcov
 default.profraw
 junit-swift-testing.xml
+
+# Claude
+.claude/settings.local.json
