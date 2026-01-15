@@ -65,6 +65,35 @@ struct TVSeriesTests {
         #expect(result.createdBy?[1].profilePath == URL(string: "/6Wt006TIQoDSSnl0YaKihfn3w7K.jpg"))
     }
 
+    @Test("lastEpisodeToAir decodes correctly", .tags(.decoding))
+    func testLastEpisodeToAirDecodesCorrectly() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series")
+
+        #expect(result.lastEpisodeToAir != nil)
+        let episode = try #require(result.lastEpisodeToAir)
+        #expect(episode.id == 1_340_528)
+        #expect(episode.name == "The Dragon and the Wolf")
+        #expect(episode.episodeNumber == 7)
+        #expect(episode.seasonNumber == 7)
+        #expect(
+            episode.overview == "A meeting is held in King's Landing. Problems arise in the North.")
+        #expect(episode.airDate == DateFormatter.theMovieDatabase.date(from: "2017-08-27"))
+        #expect(episode.productionCode == "707")
+        #expect(episode.showID == 1399)
+        #expect(episode.stillPath == URL(string: "/jLe9VcbGRDUJeuM8IwB7VX4GDRg.jpg"))
+        #expect(episode.voteAverage == 9.145)
+        #expect(episode.voteCount == 31)
+    }
+
+    @Test("nextEpisodeToAir decodes correctly when null")
+    func testNextEpisodeToAirDecodesNull() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series")
+
+        #expect(result.nextEpisodeToAir == nil)
+    }
+
 }
 
 extension TVSeriesTests {
@@ -123,6 +152,22 @@ extension TVSeriesTests {
             isInProduction: true,
             languages: ["es", "en", "de"],
             lastAirDate: DateFormatter.theMovieDatabase.date(from: "2017-08-27"),
+            lastEpisodeToAir: TVEpisodeAirDate(
+                id: 1_340_528,
+                name: "The Dragon and the Wolf",
+                episodeNumber: 7,
+                seasonNumber: 7,
+                overview: "A meeting is held in King's Landing. Problems arise in the North.",
+                airDate: DateFormatter.theMovieDatabase.date(from: "2017-08-27"),
+                episodeType: nil,
+                runtime: nil,
+                showID: 1399,
+                productionCode: "707",
+                stillPath: URL(string: "/jLe9VcbGRDUJeuM8IwB7VX4GDRg.jpg"),
+                voteAverage: 9.145,
+                voteCount: 31
+            ),
+            nextEpisodeToAir: nil,
             networks: [
                 Network(
                     id: 49,

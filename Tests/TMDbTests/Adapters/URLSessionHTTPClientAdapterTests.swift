@@ -58,13 +58,10 @@ final class URLSessionHTTPClientAdapterTests {
         httpClient = nil
         urlSession = nil
         baseURL = nil
-        Task {
-            await MockURLProtocol.reset()
-        }
+        MockURLProtocol.reset()
     }
 
     @Test("perform when response status code is 401 returns unauthorised error")
-    @MainActor
     func performWhenResponseStatusCodeIs401ReturnsUnauthorisedError() async throws {
         MockURLProtocol.responseStatusCode = 401
         let url = try #require(URL(string: "/error"))
@@ -76,7 +73,6 @@ final class URLSessionHTTPClientAdapterTests {
     }
 
     @Test("perform when response status code is 404 returns not found error")
-    @MainActor
     func performWhenResponseStatusCodeIs404ReturnsNotFoundError() async throws {
         MockURLProtocol.responseStatusCode = 404
         let url = try #require(URL(string: "/error"))
@@ -90,7 +86,6 @@ final class URLSessionHTTPClientAdapterTests {
     @Test(
         "perform when response status code is 404 and has status message error throws not found error with message"
     )
-    @MainActor
     func performWhenResponseStatusCodeIs404AndHasStatusMessageErrorThrowsNotFoundErrorWithMessage()
         async throws
     {
@@ -107,7 +102,6 @@ final class URLSessionHTTPClientAdapterTests {
     }
 
     @Test("perform when response has valid data returns decoded object")
-    @MainActor
     func performWhenResponseHasValidDataReturnsDecodedObject() async throws {
         let expectedStatusCode = 200
         let expectedData = Data("abc".utf8)
@@ -122,7 +116,6 @@ final class URLSessionHTTPClientAdapterTests {
     }
 
     @Test("perform URL request has correct URL")
-    @MainActor
     func performURLRequestHasCorrectURL() async throws {
         let path = "/object?key1=value1&key2=value2"
         let expectedURL = try #require(URL(string: path))
@@ -136,7 +129,6 @@ final class URLSessionHTTPClientAdapterTests {
     }
 
     @Test("perform when header set should be present in URL request")
-    @MainActor
     func performWhenHeaderSetShouldBePresentInURLRequest() async throws {
         let url = try #require(URL(string: "/object"))
         let header1Name = "Accept"

@@ -129,6 +129,20 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let lastAirDate: Date?
 
     ///
+    /// Last episode to air for this TV series.
+    ///
+    /// Contains information about the most recently aired episode.
+    ///
+    public let lastEpisodeToAir: TVEpisodeAirDate?
+
+    ///
+    /// Next episode to air for this TV series.
+    ///
+    /// Contains information about the upcoming episode, or nil if no future episodes are scheduled.
+    ///
+    public let nextEpisodeToAir: TVEpisodeAirDate?
+
+    ///
     /// Networks involved in the TV series.
     ///
     public let networks: [Network]?
@@ -192,6 +206,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - isInProduction: Is TV series currently in production.
     ///    - languages: Languages the TV series is available in.
     ///    - lastAirDate: Last air date of the TV series.
+    ///    - lastEpisodeToAir: Last episode to air for this TV series.
+    ///    - nextEpisodeToAir: Next episode to air for this TV series.
     ///    - networks: Networks involved in the TV series.
     ///    - productionCompanies: Production companies involved in the TV series.
     ///    - status: TV series status.
@@ -222,6 +238,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         isInProduction: Bool? = nil,
         languages: [String]? = nil,
         lastAirDate: Date? = nil,
+        lastEpisodeToAir: TVEpisodeAirDate? = nil,
+        nextEpisodeToAir: TVEpisodeAirDate? = nil,
         networks: [Network]? = nil,
         productionCompanies: [ProductionCompany]? = nil,
         status: String? = nil,
@@ -251,6 +269,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.isInProduction = isInProduction
         self.languages = languages
         self.lastAirDate = lastAirDate
+        self.lastEpisodeToAir = lastEpisodeToAir
+        self.nextEpisodeToAir = nextEpisodeToAir
         self.networks = networks
         self.productionCompanies = productionCompanies
         self.status = status
@@ -284,6 +304,8 @@ extension TVSeries {
         case isInProduction = "inProduction"
         case languages
         case lastAirDate
+        case lastEpisodeToAir
+        case nextEpisodeToAir
         case networks
         case productionCompanies
         case status
@@ -353,6 +375,10 @@ extension TVSeries {
         self.isInProduction = try container.decodeIfPresent(Bool.self, forKey: .isInProduction)
         self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
         self.lastAirDate = try container.decodeIfPresent(Date.self, forKey: .lastAirDate)
+        self.lastEpisodeToAir = try container.decodeIfPresent(
+            TVEpisodeAirDate.self, forKey: .lastEpisodeToAir)
+        self.nextEpisodeToAir = try container.decodeIfPresent(
+            TVEpisodeAirDate.self, forKey: .nextEpisodeToAir)
         self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
         self.productionCompanies = try container.decodeIfPresent(
             [ProductionCompany].self, forKey: .productionCompanies)
