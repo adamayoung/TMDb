@@ -1,0 +1,53 @@
+{
+  "created_by": "Travis Bell",
+  "description": "The idea behind this list is to collect the live action comic book movies from within the Marvel franchise.",
+  "favorite_count": 0,
+  "id": 1,
+  "iso_639_1": "en",
+  "item_count": 69,
+  "items": [
+    {
+      "adult": false,
+      "backdrop_path": "/jYCyTdPfgT01IOJWDnnetr9RDX6.jpg",
+      "id": 986056,
+      "title": "Thunderbolts*",
+      "original_title": "Thunderbolts*",
+      "overview": "After finding themselves ensnared in a death trap, seven disillusioned castoffs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.",
+      "poster_path": "/hqcexYHbiTBfDIdDWxrxPtVndBX.jpg",
+      "media_type": "movie",
+      "original_language": "en",
+      "genre_ids": [
+        28,
+        878,
+        12
+      ],
+      "popularity": 20.2419,
+      "release_date": "2025-04-30",
+      "video": false,
+      "vote_average": 7.3,
+      "vote_count": 3092
+    },
+    {
+      "adult": false,
+      "backdrop_path": null,
+      "id": 123456,
+      "title": "Test Movie",
+      "original_title": "Test Movie Original",
+      "overview": "A test movie with empty release date.",
+      "poster_path": null,
+      "media_type": "movie",
+      "original_language": "en",
+      "genre_ids": [],
+      "popularity": 10.5,
+      "release_date": "",
+      "video": false,
+      "vote_average": 5.5,
+      "vote_count": 100
+    }
+  ],
+  "name": "The Marvel Universe",
+  "page": 1,
+  "poster_path": "/coJVIUEOToAEGViuhclM7pXC75R.jpg",
+  "total_pages": 4,
+  "total_results": 69
+}
