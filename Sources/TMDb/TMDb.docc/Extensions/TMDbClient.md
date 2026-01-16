@@ -18,8 +18,10 @@
 - ``trending``
 - ``search``
 - ``certifications``
+- ``collections``
 - ``companies``
 - ``genres``
+- ``lists``
 - ``watchProviders``
 - ``configurations``
 - ``account``
