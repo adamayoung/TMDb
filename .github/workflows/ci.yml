@@ -93,8 +93,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift', '**/*.swift') }}
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift') }}-${{ hashFiles('.github/workflows/*.yml') }}
           restore-keys: |
+            ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift') }}-
             ${{ runner.os }}-xcode-${{ matrix.name }}-
             ${{ runner.os }}-xcode-
 
