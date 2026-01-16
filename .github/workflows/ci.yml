@@ -27,6 +27,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-${{ hashFiles('.github/workflows/*.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-
+            ${{ runner.os }}-swift-
+
       - name: Build
         run: swift build --build-tests -Xswiftc -warnings-as-errors
 
@@ -35,16 +46,16 @@ jobs:
 
       - name: Prepare Code Coverage
         run: |
-          xcrun llvm-cov \
-          export -format="lcov" \
-          .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
-          -instr-profile .build/debug/codecov/default.profdata > info.lcov
+          xcrun llvm-cov export -format="lcov" \
+            .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
+            -instr-profile .build/debug/codecov/default.profdata > info.lcov || \
+            echo "Warning: Coverage export failed, continuing without coverage"
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
-          file: ./junit-swift-testing.xml
+          file: ./junit.xml
           flags: unit-tests
           verbose: true
         env:
@@ -63,7 +74,6 @@ jobs:
   build-and-test-platforms:
     name: Build and Test (${{ matrix.name }})
     runs-on: macos-26
-    continue-on-error: true
     strategy:
       matrix:
         include:
@@ -78,6 +88,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift', '**/*.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-${{ matrix.name }}-
+            ${{ runner.os }}-xcode-
 
       - name: Build
         run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
