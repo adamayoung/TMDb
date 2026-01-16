@@ -119,9 +119,9 @@ public final class TMDbClient: Sendable {
     ///
     /// - Parameters:
     ///   - apiKey: The TMDb API key to use.
-    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/default``.
+    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
     ///
-    public convenience init(apiKey: String, configuration: TMDbConfiguration = .default) {
+    public convenience init(apiKey: String, configuration: TMDbConfiguration = .system) {
         self.init(
             apiKey: apiKey,
             httpClient: TMDbFactory.defaultHTTPClientAdapter(),
@@ -135,12 +135,12 @@ public final class TMDbClient: Sendable {
     /// - Parameters:
     ///   - apiKey: The TMDb API key to use.
     ///   - httpClient: A custom HTTP client adapter for making HTTP requests.
-    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/default``.
+    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
     ///
     public convenience init(
         apiKey: String,
         httpClient: some HTTPClient,
-        configuration: TMDbConfiguration = .default
+        configuration: TMDbConfiguration = .system
     ) {
         let apiClient = TMDbFactory.apiClient(apiKey: apiKey, httpClient: httpClient)
         let authAPIClient = TMDbFactory.authAPIClient(apiKey: apiKey, httpClient: httpClient)
@@ -179,7 +179,7 @@ public final class TMDbClient: Sendable {
     }
 
     init(
-        configuration: TMDbConfiguration = .default,
+        configuration: TMDbConfiguration = .system,
         accountService: some AccountService,
         authenticationService: some AuthenticationService,
         certificationService: some CertificationService,

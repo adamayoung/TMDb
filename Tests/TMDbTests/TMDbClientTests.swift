@@ -136,11 +136,11 @@ struct TMDbClientTests {
         #expect(client.watchProviders is TMDbWatchProviderService)
     }
 
-    @Test("init with API key has default configuration")
-    func initWithAPIKeyHasDefaultConfiguration() {
+    @Test("init with API key has system configuration")
+    func initWithAPIKeyHasSystemConfiguration() {
         let client = TMDbClient(apiKey: apiKey)
 
-        #expect(client.configuration == .default)
+        #expect(client.configuration == .system)
     }
 
     @Test("init with configuration stores configuration")

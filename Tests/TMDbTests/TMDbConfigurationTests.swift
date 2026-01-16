@@ -65,6 +65,28 @@ struct TMDbConfigurationTests {
         #expect(configuration.defaultCountry == nil)
     }
 
+    @Test("system returns configuration with current locale language")
+    func systemLanguage() {
+        let configuration = TMDbConfiguration.system
+
+        #expect(configuration.defaultLanguage == Locale.current.language.minimalIdentifier)
+    }
+
+    @Test("system returns configuration with current locale country")
+    func systemCountry() {
+        let configuration = TMDbConfiguration.system
+
+        #expect(configuration.defaultCountry == Locale.current.region?.identifier)
+    }
+
+    @Test("system returns nil country when locale has no region")
+    func systemCountryNilWhenNoRegion() {
+        let localeWithoutRegion = Locale(identifier: "en")
+
+        #expect(localeWithoutRegion.region == nil)
+        #expect(localeWithoutRegion.region?.identifier == nil)
+    }
+
     @Test("equatable returns true for equal configurations")
     func equatableEqual() {
         let configuration1 = TMDbConfiguration(defaultLanguage: "en", defaultCountry: "US")

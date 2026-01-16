@@ -74,4 +74,21 @@ public struct TMDbConfiguration: Sendable, Equatable {
     ///
     public static let `default` = TMDbConfiguration()
 
+    ///
+    /// A configuration using the system's current language and country settings.
+    ///
+    /// Uses `Locale.current` to detect:
+    /// - Language: `Locale.current.language.minimalIdentifier` - returns the minimal BCP-47
+    ///   identifier (e.g., "en", "es", "zh-Hans", "zh-Hant"). May include script subtag for
+    ///   languages that require disambiguation.
+    /// - Country: `Locale.current.region?.identifier` (e.g., "US", "GB"). Returns `nil` if
+    ///   the system locale has no region configured.
+    ///
+    public static var system: TMDbConfiguration {
+        TMDbConfiguration(
+            defaultLanguage: Locale.current.language.minimalIdentifier,
+            defaultCountry: Locale.current.region?.identifier
+        )
+    }
+
 }
