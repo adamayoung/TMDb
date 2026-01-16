@@ -5,8 +5,61 @@
 [![CodeQL](https://github.com/adamayoung/TMDb/actions/workflows/codeql.yml/badge.svg)](https://github.com/adamayoung/TMDb/actions/workflows/codeql.yml)
 [![Documentation](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml/badge.svg)](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml)
 [![codecov](https://codecov.io/gh/adamayoung/TMDb/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
+[![Swift 6.0+](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS%20|%20Linux%20|%20Windows-blue.svg)](https://github.com/adamayoung/TMDb)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
+
+## Features
+
+* **Comprehensive API Coverage**: Full support for TMDb API v3 with 17
+  specialized services
+* **Movie & TV Data**: Details, credits, images, videos, reviews,
+  recommendations, similar content
+* **Discovery & Search**: Advanced filtering, multi-type search,
+  trending content
+* **User Features**: Account management, favorites, watchlists, ratings
+  (requires authentication)
+* **Metadata**: Genres, certifications, companies, collections, watch
+  providers
+* **Image Generation**: Built-in URL generation for all image types with
+  size optimization
+* **Swift 6 Ready**: Full strict concurrency support with Sendable types
+* **Cross-Platform**: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+,
+  visionOS 1+, Linux, Windows
+* **Modern Swift**: Async/await throughout, strongly-typed models,
+  protocol-based architecture
+
+## Available Services
+
+| Service | Description |
+| ------- | ----------- |
+| **movies** | Movie details, credits, images, videos, reviews, |
+| | recommendations, similar, releases, watch providers |
+| **tvSeries** | TV show details, credits, images, videos, reviews, |
+| | recommendations, similar, watch providers |
+| **tvSeasons** | Season-specific details, credits, images, videos |
+| **tvEpisodes** | Episode-specific details, credits, images, videos |
+| **people** | Person details, movie/TV credits, images |
+| **search** | Multi-search across movies, TV shows, people, |
+| | collections, companies, keywords |
+| **discover** | Advanced filtering for movies and TV shows with 30+ |
+| | filter options |
+| **trending** | Trending movies, TV shows, and people (daily/weekly) |
+| **account** | User favorites, watchlist, rated items |
+| | (requires authentication) |
+| **authentication** | Session management, guest sessions, request tokens |
+| **genres** | Genre lists for movies and TV shows |
+| **watchProviders** | Streaming availability by region |
+| **certifications** | Content ratings (G, PG, R, etc.) |
+| **collections** | Movie collection details and metadata |
+| **companies** | Production company information |
+| **lists** | Custom list management (requires authentication) |
+| **configurations** | API configuration and image URL generation |
+
+See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
+for detailed usage.
 
 ## Requirements
 
@@ -59,16 +112,92 @@ Create an API key from The Movie Database web site
 ### Quick Start
 
 ```swift
+import TMDb
+
+// Initialize client
 let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 
-let moviesToDiscover = try await tmdbClient.discover.movies().results
+// Discover movies with filters
+let popularMovies = try await tmdbClient.discover.movies(
+    sortedBy: .popularity(descending: true)
+).results
+
+// Get movie details
 let fightClub = try await tmdbClient.movies.details(forMovie: 550)
+print("Title: \(fightClub.title)")
+print("Release Date: \(fightClub.releaseDate)")
+print("Rating: \(fightClub.voteAverage)/10")
+
+// Search across movies, TV shows, and people
+let searchResults = try await tmdbClient.search.multi(query: "Breaking Bad")
+
+// Get trending movies today
+let trendingMovies = try await tmdbClient.trending.movies(inTimeWindow: .day)
+
+// Get streaming providers for a movie
+let watchProviders = try await tmdbClient.movies.watchProviders(forMovie: 550)
+
+// Generate poster image URL
+let config = try await tmdbClient.configurations.apiConfiguration()
+if let posterPath = fightClub.posterPath {
+    let posterURL = config.images.posterURL(for: posterPath, idealWidth: 500)
+}
+```
+
+## Common Use Cases
+
+### Displaying Movie Details
+
+```swift
+let movie = try await tmdbClient.movies.details(forMovie: movieId)
+let credits = try await tmdbClient.movies.credits(forMovie: movieId)
+let images = try await tmdbClient.movies.images(forMovie: movieId)
+```
+
+### Building a Discover/Browse Interface
+
+```swift
+let movies = try await tmdbClient.discover.movies(
+    sortedBy: .popularity(descending: true),
+    withGenres: [28, 12], // Action & Adventure
+    releaseDateGTE: Date().addingTimeInterval(-365*24*60*60) // Last year
+)
+```
+
+### Getting Watch Providers (Streaming Availability)
+
+```swift
+let providers = try await tmdbClient.movies.watchProviders(forMovie: movieId)
+if let usProviders = providers.results["US"] {
+    print("Available on: \(usProviders.flatrate?.map(\.providerName) ?? [])")
+}
+```
+
+### User Account Features (Authentication Required)
+
+```swift
+// Add to favorites
+try await tmdbClient.account.addToFavourites(movie: movieId, accountId: accountId)
+
+// Rate a movie
+try await tmdbClient.movies.addRating(8.5, toMovie: movieId)
+
+// Get watchlist
+let watchlist = try await tmdbClient.account.movieWatchlist(accountId: accountId)
 ```
 
 ## Documentation
 
 Documentation and examples of usage can be found at
 [https://adamayoung.github.io/TMDb/documentation/tmdb/](https://adamayoung.github.io/TMDb/documentation/tmdb/)
+
+## Related Resources
+
+* [TMDb API Documentation](https://developer.themoviedb.org/docs)
+* [Swift Package Index](https://swiftpackageindex.com/adamayoung/TMDb)
+* [Full API Reference](https://adamayoung.github.io/TMDb/documentation/tmdb/)
+* [Getting Started Guide](https://adamayoung.github.io/TMDb/documentation/tmdb/creatingtmdbclient)
+* [Image URL Generation Guide](https://adamayoung.github.io/TMDb/documentation/tmdb/generatingimageurls)
 
 ## Development
 
@@ -90,87 +219,42 @@ Install [homebrew](https://brew.sh) and the following formulae
 brew install swiftlint swiftformat markdownlint
 ```
 
-### Before submitting a PR
+### Before Submitting a PR
 
-#### Unit and Integration Tests
+See [CLAUDE.md](CLAUDE.md) for comprehensive development guidelines including:
 
-[Swift Testing](https://github.com/swiftlang/swift-testing) is used as the
-testing framework. XCTest is no longer used.
+* Testing requirements (unit and integration tests)
+* Code style enforcement with swift-format
+* DocC documentation requirements
+* Complete CI check commands
 
-Ensure all new code is covered by unit tests. If any new methods are added to
-services that make calls to TMDb API endpoints, ensure there are integration tests
-covering these.
-
-#### Coding Style
-
-Coding style is enforced by `swift-format`.
-
-Use the following command to lint the codebase:
+Quick reference:
 
 ```bash
-make lint
+make format        # Auto-format code
+make lint          # Check code style
+make test          # Run unit tests
+make ci            # Full CI validation
 ```
 
-To format the codebase use:
-
-```bash
-make format
-```
-
-#### DocC Documentation
-
-Ensure all `public` classes, structs, properties and methods are commented
-
-The DocC documentation can be built and hosted locally by
-
-```bash
-make preview-docs
-```
-
-See [DocC | Apple Developer Documentation](https://developer.apple.com/documentation/docc)
-for more details.
-
-#### CI Checks
-
-Before submitting a PR, ensure all CI checks will pass:
-
-```bash
-make ci
-```
-
-CI checks are made up of the follow tasks:
-
-```bash
-make lint
-make lint-markddown
-make test
-make test-ios
-make test-watchos
-make test-tvos
-make test-visionos
-make test-linux
-make integration-test
-make build-release
-make build-docs
-```
-
-In order to run integration tests the following environment variables need to
-be set.
+**Important**: Both unit tests AND integration tests must pass.
+Integration tests require these environment variables:
 
 * `TMDB_API_KEY` - Your TMDb API key
 * `TMDB_USERNAME` - Your TMDb username
 * `TMDB_PASSWORD` - Your TMDB password
 
-If these environment variables aren't set then integration tests are skipped
-when not using `make`.
+Running unit tests on Linux requires [Docker](https://www.docker.com) to be running.
 
-Running unit tests on Linux requires [Docker](https://www.docker.com) to be
-running.
+## Acknowledgments
 
-## References
+* [The Movie Database (TMDb)](https://www.themoviedb.org) for providing
+  the comprehensive movie and TV data API
+* [JustWatch](https://www.justwatch.com) for watch provider data
+* All contributors who have helped improve this library
 
-* [https://www.themoviedb.org](https://www.themoviedb.org)
-* [https://developer.themoviedb.org](https://developer.themoviedb.org)
+**Disclaimer**: This product uses the TMDb API but is not endorsed or
+certified by TMDb.
 
 ## License
 

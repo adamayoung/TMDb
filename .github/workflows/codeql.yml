@@ -32,6 +32,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-${{ hashFiles('.github/workflows/*.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-
+            ${{ runner.os }}-swift-
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
