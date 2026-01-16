@@ -31,5 +31,5 @@
 ### Other
 
 - ``releaseDates(forMovie:)``
-- ``watchProviders(forMovie:country:)``
+- ``watchProviders(forMovie:)``
 - ``externalLinks(forMovie:)``

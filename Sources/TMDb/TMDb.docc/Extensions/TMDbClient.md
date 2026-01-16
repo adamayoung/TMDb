@@ -4,8 +4,8 @@
 
 ### Creating a TMDBClient
 
-- ``init(apiKey:)``
-- ``init(apiKey:httpClient:)``
+- ``init(apiKey:configuration:)``
+- ``init(apiKey:httpClient:configuration:)``
 
 ### TMDb Areas
 
