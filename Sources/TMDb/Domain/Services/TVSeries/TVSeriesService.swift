@@ -32,7 +32,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -47,7 +47,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -66,7 +66,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -87,7 +87,7 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -145,7 +145,7 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -169,7 +169,7 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series for get similar TV series for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -190,7 +190,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -199,24 +199,21 @@ public protocol TVSeriesService: Sendable {
     func popular(page: Int?, language: String?) async throws -> TVSeriesPageableList
 
     ///
-    /// Returns watch providers for a TV series
+    /// Returns watch providers for a TV series in all available countries.
     ///
     /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
     ///
     /// Data provided by [JustWatch](https://www.justwatch.com).
     ///
-    /// - Parameters:
-    ///    - tvSeriesID: The identifier of the TV series.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    /// - Parameter tvSeriesID: The identifier of the TV series.
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
-    /// - Returns: Watch providers for TV series in current region.
+    /// - Returns: Watch providers for the TV series grouped by country.
     ///
     func watchProviders(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String
-    ) async throws -> ShowWatchProvider?
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> [ShowWatchProvidersByCountry]
 
     ///
     /// Returns a collection of media databases and social links for a TV series.
@@ -234,22 +231,17 @@ public protocol TVSeriesService: Sendable {
     ) async throws -> TVSeriesExternalLinksCollection
 
     ///
-    /// Returns the content rating of a TV series.
+    /// Returns the content ratings of a TV series for all available countries.
     ///
     /// [TMDb API - TVSeries: Content ratings](https://developer.themoviedb.org/reference/tv-series-content-ratings)
     ///
-    /// - Parameters:
-    ///    - tvSeriesID: The identifier of the TV series.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    /// - Parameter tvSeriesID: The identifier of the TV series.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A content rating for the specificed TV series.
+    /// - Returns: Content ratings for the TV series grouped by country.
     ///
-    func contentRatings(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String
-    ) async throws -> ContentRating?
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating]
 }
 
 extension TVSeriesService {
@@ -261,7 +253,7 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -281,7 +273,7 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -305,7 +297,7 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -328,7 +320,7 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -392,7 +384,7 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -418,7 +410,7 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series for get similar TV series for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -441,7 +433,7 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -452,48 +444,6 @@ extension TVSeriesService {
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
         try await popular(page: page, language: language)
-    }
-
-    ///
-    /// Returns watch providers for a TV series.
-    ///
-    /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
-    ///
-    /// Data provided by [JustWatch](https://www.justwatch.com).
-    ///
-    /// - Parameters:
-    ///    - tvSeriesID: The identifier of the TV series.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///
-    /// - Throws: TMDb data error ``TMDbError``.
-    ///
-    /// - Returns: Watch providers for TV series in current region.
-    ///
-    public func watchProviders(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String = "US"
-    ) async throws -> ShowWatchProvider? {
-        try await watchProviders(forTVSeries: tvSeriesID, country: country)
-    }
-
-    ///
-    /// Returns the content rating of a TV series.
-    ///
-    /// [TMDb API - TVSeries: Content ratings](https://developer.themoviedb.org/reference/tv-series-content-ratings)
-    ///
-    /// - Parameters:
-    ///    - tvSeriesID: The identifier of the TV series.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///
-    /// - Throws: TMDb data error ``TMDbError``.
-    ///
-    /// - Returns: A content rating for the specificed TV series.
-    ///
-    public func contentRatings(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String = "US"
-    ) async throws -> ContentRating? {
-        try await contentRatings(forTVSeries: tvSeriesID, country: country)
     }
 
 }

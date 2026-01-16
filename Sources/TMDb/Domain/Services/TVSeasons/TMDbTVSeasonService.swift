@@ -23,9 +23,11 @@ import Foundation
 final class TMDbTVSeasonService: TVSeasonService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func details(
@@ -33,10 +35,11 @@ final class TMDbTVSeasonService: TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeason {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            language: language
+            language: languageCode
         )
 
         let season: TVSeason
@@ -54,10 +57,11 @@ final class TMDbTVSeasonService: TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeasonAggregateCredits {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonAggregateCreditsRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            language: language
+            language: languageCode
         )
 
         let credits: TVSeasonAggregateCredits
@@ -75,10 +79,11 @@ final class TMDbTVSeasonService: TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> ShowCredits {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonCreditsRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
-            language: language
+            language: languageCode
         )
 
         let credits: ShowCredits

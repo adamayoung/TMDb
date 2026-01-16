@@ -26,13 +26,16 @@ import Foundation
 final class TMDbGenreService: GenreService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func movieGenres(language: String? = nil) async throws -> [Genre] {
-        let request = MovieGenresRequest(language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieGenresRequest(language: languageCode)
 
         let genreList: GenreList
         do {
@@ -45,7 +48,8 @@ final class TMDbGenreService: GenreService {
     }
 
     func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
-        let request = TVSeriesGenresRequest(language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesGenresRequest(language: languageCode)
 
         let genreList: GenreList
         do {

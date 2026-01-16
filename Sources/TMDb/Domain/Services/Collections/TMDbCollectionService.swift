@@ -23,16 +23,19 @@ import Foundation
 final class TMDbCollectionService: CollectionService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func details(
         forCollection id: Collection.ID,
         language: String? = nil
     ) async throws -> Collection {
-        let request = CollectionRequest(id: id, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = CollectionRequest(id: id, language: languageCode)
 
         let collection: Collection
         do {

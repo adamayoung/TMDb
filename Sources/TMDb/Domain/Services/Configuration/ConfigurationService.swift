@@ -42,7 +42,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -80,7 +80,7 @@ extension ConfigurationService {
     ///
     /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

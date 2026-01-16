@@ -32,7 +32,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -47,7 +47,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -65,7 +65,7 @@ public protocol MovieService: Sendable {
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -123,7 +123,7 @@ public protocol MovieService: Sendable {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get recommendations for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -147,7 +147,7 @@ public protocol MovieService: Sendable {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get similar movies for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -168,8 +168,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -190,8 +190,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -208,8 +208,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -226,8 +226,8 @@ public protocol MovieService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -236,24 +236,19 @@ public protocol MovieService: Sendable {
     func upcoming(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
 
     ///
-    /// Returns watch providers for a movie.
+    /// Returns watch providers for a movie in all available countries.
     ///
     /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
     ///
     /// Data provided by [JustWatch](https://www.justwatch.com).
     ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
+    /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
-    /// - Returns: Watch providers for movie in current region.
+    /// - Returns: Watch providers for the movie grouped by country.
     ///
-    func watchProviders(
-        forMovie movieID: Movie.ID,
-        country: String
-    ) async throws -> ShowWatchProvider?
+    func watchProviders(forMovie movieID: Movie.ID) async throws -> [ShowWatchProvidersByCountry]
 
     ///
     /// Returns a collection of media databases and social links for a movie.
@@ -292,7 +287,7 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -309,7 +304,7 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -332,7 +327,7 @@ extension MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -396,7 +391,7 @@ extension MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get recommendations for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -422,7 +417,7 @@ extension MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie for get similar movies for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -445,8 +440,8 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -469,8 +464,8 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -493,8 +488,8 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -517,8 +512,8 @@ extension MovieService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to the client's configured default country.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -530,28 +525,6 @@ extension MovieService {
         language: String? = nil
     ) async throws -> MoviePageableList {
         try await upcoming(page: page, country: country, language: language)
-    }
-
-    ///
-    /// Returns watch providers for a movie.
-    ///
-    /// [TMDb API - Movie: Watch providers](https://developer.themoviedb.org/reference/movie-watch-providers)
-    ///
-    /// Data provided by [JustWatch](https://www.justwatch.com).
-    ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - country: ISO-3166-1 country code to fetch results for. Defaults to `US`.
-    ///
-    /// - Throws: TMDb data error ``TMDbError``.
-    ///
-    /// - Returns: Watch providers for movie in current region.
-    ///
-    public func watchProviders(
-        forMovie movieID: Movie.ID,
-        country: String = "US"
-    ) async throws -> ShowWatchProvider? {
-        try await watchProviders(forMovie: movieID, country: country)
     }
 
     ///

@@ -33,7 +33,7 @@ public protocol TVSeasonService: Sendable {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -57,7 +57,7 @@ public protocol TVSeasonService: Sendable {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -77,7 +77,7 @@ public protocol TVSeasonService: Sendable {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -141,7 +141,7 @@ extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -167,7 +167,7 @@ extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -190,7 +190,7 @@ extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

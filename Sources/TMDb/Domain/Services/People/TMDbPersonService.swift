@@ -23,13 +23,16 @@ import Foundation
 final class TMDbPersonService: PersonService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
-        let request = PersonRequest(id: id, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PersonRequest(id: id, language: languageCode)
 
         let person: Person
         do {
@@ -45,7 +48,8 @@ final class TMDbPersonService: PersonService {
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonCombinedCredits {
-        let request = PersonCombinedCreditsRequest(id: personID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PersonCombinedCreditsRequest(id: personID, language: languageCode)
 
         let credits: PersonCombinedCredits
         do {
@@ -61,7 +65,8 @@ final class TMDbPersonService: PersonService {
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonMovieCredits {
-        let request = PersonMovieCreditsRequest(id: personID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PersonMovieCreditsRequest(id: personID, language: languageCode)
 
         let credits: PersonMovieCredits
         do {
@@ -77,7 +82,8 @@ final class TMDbPersonService: PersonService {
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonTVSeriesCredits {
-        let request = PersonTVSeriesCreditsRequest(id: personID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PersonTVSeriesCreditsRequest(id: personID, language: languageCode)
 
         let credits: PersonTVSeriesCredits
         do {
@@ -103,7 +109,8 @@ final class TMDbPersonService: PersonService {
     }
 
     func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
-        let request = PopularPeopleRequest(page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PopularPeopleRequest(page: page, language: languageCode)
 
         let personList: PersonPageableList
         do {

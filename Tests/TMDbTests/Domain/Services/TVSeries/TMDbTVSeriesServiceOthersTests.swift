@@ -33,31 +33,19 @@ struct TMDbTVSeriesServiceOthersTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("watchProviders with default parameter values returns watch providers")
-    func watchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
+    @Test("watchProviders returns watch providers for all countries")
+    func watchProvidersReturnsWatchProvidersForAllCountries() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let tvSeriesID = 1
-        let country = "US"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
-        let result = try await (service as TVSeriesService).watchProviders(forTVSeries: tvSeriesID)
+        let result = try await service.watchProviders(forTVSeries: tvSeriesID)
 
-        #expect(result == expectedResult.results[country])
-        #expect(apiClient.lastRequest as? TVSeriesWatchProvidersRequest == expectedRequest)
-    }
-
-    @Test("watchProviders with country returns watch providers")
-    func watchProvidersWithCountryReturnsWatchProviders() async throws {
-        let expectedResult = ShowWatchProviderResult.mock()
-        let tvSeriesID = 1
-        let country = "GB"
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = TVSeriesWatchProvidersRequest(id: tvSeriesID)
-
-        let result = try await service.watchProviders(forTVSeries: tvSeriesID, country: country)
-
-        #expect(result == expectedResult.results[country])
+        #expect(result.count == expectedResult.results.count)
+        for item in result {
+            #expect(expectedResult.results[item.countryCode] == item.watchProviders)
+        }
         #expect(apiClient.lastRequest as? TVSeriesWatchProvidersRequest == expectedRequest)
     }
 

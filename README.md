@@ -89,7 +89,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "13.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "14.0.0")
   ],
 
   targets: [
@@ -136,12 +136,39 @@ let trendingMovies = try await tmdbClient.trending.movies(inTimeWindow: .day)
 
 // Get streaming providers for a movie
 let watchProviders = try await tmdbClient.movies.watchProviders(forMovie: 550)
+if let usProvider = watchProviders.first(where: { $0.countryCode == "US" }) {
+    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.providerName) ?? [])")
+}
 
 // Generate poster image URL
 let config = try await tmdbClient.configurations.apiConfiguration()
 if let posterPath = fightClub.posterPath {
     let posterURL = config.images.posterURL(for: posterPath, idealWidth: 500)
 }
+```
+
+### Configuration
+
+You can configure the TMDb client with default language and country settings
+that will be applied to all API requests:
+
+```swift
+import TMDb
+
+// Create configuration with defaults
+let configuration = TMDbConfiguration(
+    defaultLanguage: "es-ES",  // ISO 639-1 language code
+    defaultCountry: "ES"       // ISO 3166-1 country code
+)
+
+// Initialize client with configuration
+let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: configuration)
+
+// All requests will now use Spanish language by default
+let movie = try await tmdbClient.movies.details(forMovie: 550)
+
+// You can still override defaults on a per-request basis
+let movieInFrench = try await tmdbClient.movies.details(forMovie: 550, language: "fr")
 ```
 
 ## Common Use Cases
@@ -168,8 +195,8 @@ let movies = try await tmdbClient.discover.movies(
 
 ```swift
 let providers = try await tmdbClient.movies.watchProviders(forMovie: movieId)
-if let usProviders = providers.results["US"] {
-    print("Available on: \(usProviders.flatrate?.map(\.providerName) ?? [])")
+if let usProvider = providers.first(where: { $0.countryCode == "US" }) {
+    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.providerName) ?? [])")
 }
 ```
 

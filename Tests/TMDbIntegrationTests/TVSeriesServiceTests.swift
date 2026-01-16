@@ -139,11 +139,15 @@ struct TVSeriesServiceTests {
     func contentRatings() async throws {
         let tvSeriesID = 8592
 
-        let contentRatings = try #require(
-            await tvSeriesService.contentRatings(forTVSeries: tvSeriesID, country: "US"))
+        let allContentRatings = try await tvSeriesService.contentRatings(forTVSeries: tvSeriesID)
 
-        #expect(contentRatings.rating == "TV-14")
-        #expect(contentRatings.countryCode == "US")
+        #expect(!allContentRatings.isEmpty)
+
+        let usRating = allContentRatings.first { $0.countryCode == "US" }
+        let unwrappedUSRating = try #require(usRating)
+
+        #expect(unwrappedUSRating.rating == "TV-14")
+        #expect(unwrappedUSRating.countryCode == "US")
     }
 
     @Test("details includes lastEpisodeToAir and nextEpisodeToAir for airing series")

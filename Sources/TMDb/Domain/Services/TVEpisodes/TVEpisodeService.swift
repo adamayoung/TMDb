@@ -34,7 +34,7 @@ public protocol TVEpisodeService: Sendable {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -56,7 +56,7 @@ public protocol TVEpisodeService: Sendable {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -126,7 +126,7 @@ extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -155,7 +155,7 @@ extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

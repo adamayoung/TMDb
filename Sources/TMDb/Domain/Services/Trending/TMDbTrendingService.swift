@@ -23,9 +23,11 @@ import Foundation
 final class TMDbTrendingService: TrendingService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func movies(
@@ -33,7 +35,9 @@ final class TMDbTrendingService: TrendingService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = TrendingMoviesRequest(timeWindow: timeWindow, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TrendingMoviesRequest(
+            timeWindow: timeWindow, page: page, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -50,8 +54,9 @@ final class TMDbTrendingService: TrendingService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = TrendingTVSeriesRequest(
-            timeWindow: timeWindow, page: page, language: language)
+            timeWindow: timeWindow, page: page, language: languageCode)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -68,7 +73,9 @@ final class TMDbTrendingService: TrendingService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> PersonPageableList {
-        let request = TrendingPeopleRequest(timeWindow: timeWindow, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TrendingPeopleRequest(
+            timeWindow: timeWindow, page: page, language: languageCode)
 
         let peopleList: PersonPageableList
         do {

@@ -23,13 +23,16 @@ import Foundation
 final class TMDbTVSeriesService: TVSeriesService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
-        let request = TVSeriesRequest(id: id, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesRequest(id: id, language: languageCode)
 
         let tvSeries: TVSeries
         do {
@@ -44,7 +47,8 @@ final class TMDbTVSeriesService: TVSeriesService {
     func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws
         -> ShowCredits
     {
-        let request = TVSeriesCreditsRequest(id: tvSeriesID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesCreditsRequest(id: tvSeriesID, language: languageCode)
 
         let credits: ShowCredits
         do {
@@ -60,7 +64,8 @@ final class TMDbTVSeriesService: TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeriesAggregateCredits {
-        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: languageCode)
 
         let credits: TVSeriesAggregateCredits
         do {
@@ -77,7 +82,8 @@ final class TMDbTVSeriesService: TVSeriesService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> ReviewPageableList {
-        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page, language: languageCode)
 
         let reviewList: ReviewPageableList
         do {
@@ -126,7 +132,9 @@ final class TMDbTVSeriesService: TVSeriesService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = TVSeriesRecommendationsRequest(id: tvSeriesID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesRecommendationsRequest(
+            id: tvSeriesID, page: page, language: languageCode)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -143,7 +151,8 @@ final class TMDbTVSeriesService: TVSeriesService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
-        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: languageCode)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -156,7 +165,8 @@ final class TMDbTVSeriesService: TVSeriesService {
     }
 
     func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
-        let request = PopularTVSeriesRequest(page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PopularTVSeriesRequest(page: page, language: languageCode)
 
         let tvSeriesList: TVSeriesPageableList
         do {
@@ -169,9 +179,8 @@ final class TMDbTVSeriesService: TVSeriesService {
     }
 
     func watchProviders(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String = "US"
-    ) async throws -> ShowWatchProvider? {
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> [ShowWatchProvidersByCountry] {
         let request = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
         let result: ShowWatchProviderResult
@@ -181,13 +190,12 @@ final class TMDbTVSeriesService: TVSeriesService {
             throw TMDbError(error: error)
         }
 
-        return result.results[country]
+        return result.results
+            .map { ShowWatchProvidersByCountry(countryCode: $0.key, watchProviders: $0.value) }
+            .sorted { $0.countryCode < $1.countryCode }
     }
 
-    func contentRatings(
-        forTVSeries tvSeriesID: TVSeries.ID,
-        country: String = "US"
-    ) async throws -> ContentRating? {
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating] {
         let request = ContentRatingRequest(id: tvSeriesID)
 
         let result: ContentRatingResult
@@ -197,9 +205,7 @@ final class TMDbTVSeriesService: TVSeriesService {
             throw TMDbError(error: error)
         }
 
-        return result.results.first { rating in
-            rating.countryCode == country
-        }
+        return result.results
     }
 
     func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws

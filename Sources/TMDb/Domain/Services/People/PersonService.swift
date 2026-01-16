@@ -32,7 +32,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -47,7 +47,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -65,7 +65,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -83,7 +83,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -116,7 +116,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -148,7 +148,7 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -165,7 +165,7 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -185,7 +185,7 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -205,7 +205,7 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -227,7 +227,7 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
