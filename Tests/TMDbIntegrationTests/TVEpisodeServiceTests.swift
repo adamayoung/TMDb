@@ -53,6 +53,23 @@ struct TVEpisodeServiceTests {
         #expect(episode.name == "What is Dead May Never Die")
     }
 
+    @Test("credits")
+    func credits() async throws {
+        let episodeNumber = 3
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let credits = try await tvEpisodeService.credits(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(credits.id == 63068)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
+    }
+
     @Test("images")
     func images() async throws {
         let episodeNumber = 3

@@ -48,6 +48,28 @@ public protocol TVEpisodeService: Sendable {
     ) async throws -> TVEpisode
 
     ///
+    /// Returns the cast and crew of a TV episode.
+    ///
+    /// [TMDb API - TV Episode: Credits](https://developer.themoviedb.org/reference/tv-episode-credits)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Credits for the matching TV episode.
+    ///
+    func credits(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String?
+    ) async throws -> ShowCredits
+
+    ///
     /// Returns the images that belong to a TV episode.
     ///
     /// [TMDb API - TV Episode: Images](https://developer.themoviedb.org/reference/tv-episode-images)
@@ -117,6 +139,35 @@ extension TVEpisodeService {
         language: String? = nil
     ) async throws -> TVEpisode {
         try await details(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            language: language
+        )
+    }
+
+    ///
+    /// Returns the cast and crew of a TV episode.
+    ///
+    /// [TMDb API - TV Episode: Credits](https://developer.themoviedb.org/reference/tv-episode-credits)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Credits for the matching TV episode.
+    ///
+    public func credits(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> ShowCredits {
+        try await credits(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,

@@ -60,6 +60,19 @@ struct TVSeasonIntegrationTests {
         #expect(!credits.crew.isEmpty)
     }
 
+    @Test("credits")
+    func credits() async throws {
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let credits = try await tvSeasonService.credits(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+
+        #expect(credits.id == 3625)
+        #expect(!credits.cast.isEmpty)
+        #expect(!credits.crew.isEmpty)
+    }
+
     @Test("images")
     func images() async throws {
         let seasonNumber = 1

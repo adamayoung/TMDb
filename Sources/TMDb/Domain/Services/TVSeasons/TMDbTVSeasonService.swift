@@ -70,6 +70,27 @@ final class TMDbTVSeasonService: TVSeasonService {
         return credits
     }
 
+    func credits(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> ShowCredits {
+        let request = TVSeasonCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let credits: ShowCredits
+        do {
+            credits = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return credits
+    }
+
     func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
