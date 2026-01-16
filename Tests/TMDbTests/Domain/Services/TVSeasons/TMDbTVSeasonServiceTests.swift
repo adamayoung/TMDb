@@ -140,6 +140,61 @@ struct TMDbTVSeasonServiceTests {
         }
     }
 
+    @Test("credits with default parameter values returns TV season credits")
+    func creditsWithDefaultParameterValuesReturnsTVSeasonCredits() async throws {
+        let tvSeriesID = 1
+        let expectedResult = ShowCredits(id: 3625, cast: [], crew: [])
+        let seasonNumber = 2
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
+
+        let result = try await (service as TVSeasonService).credits(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeasonCreditsRequest == expectedRequest)
+    }
+
+    @Test("credits with language returns TV season credits")
+    func creditsWithLanguageReturnsTVSeasonCredits() async throws {
+        let tvSeriesID = 1
+        let expectedResult = ShowCredits(id: 3625, cast: [], crew: [])
+        let seasonNumber = 2
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonCreditsRequest(
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let result = try await service.credits(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            language: language
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeasonCreditsRequest == expectedRequest)
+    }
+
+    @Test("credits when errors throws error")
+    func creditsWhenErrorsThrowsError() async throws {
+        let tvSeriesID = 1
+        let seasonNumber = 2
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.credits(forSeason: seasonNumber, inTVSeries: tvSeriesID)
+        }
+    }
+
     @Test("imagess with default parameter values returns images")
     func imagesWithDefaultParameterValuesReturnsImages() async throws {
         let seasonNumber = 11

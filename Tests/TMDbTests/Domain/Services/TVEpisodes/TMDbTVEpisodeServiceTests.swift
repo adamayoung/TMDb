@@ -99,6 +99,72 @@ struct TMDbTVEpisodeServiceTests {
         }
     }
 
+    @Test("credits with default parameter values returns TV episode credits")
+    func creditsWithDefaultParameterValuesReturnsTVEpisodeCredits() async throws {
+        let episodeNumber = 3
+        let seasonNumber = 2
+        let tvSeriesID = 1
+        let expectedResult = ShowCredits(id: 63068, cast: [], crew: [])
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeCreditsRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: nil
+        )
+
+        let result = try await (service as TVEpisodeService).credits(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeCreditsRequest == expectedRequest)
+    }
+
+    @Test("credits with language returns TV episode credits")
+    func creditsWithLanguageReturnsTVEpisodeCredits() async throws {
+        let episodeNumber = 3
+        let seasonNumber = 2
+        let tvSeriesID = 1
+        let language = "en"
+        let expectedResult = ShowCredits(id: 63068, cast: [], crew: [])
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVEpisodeCreditsRequest(
+            episodeNumber: episodeNumber,
+            seasonNumber: seasonNumber,
+            tvSeriesID: tvSeriesID,
+            language: language
+        )
+
+        let result = try await service.credits(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            language: language
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVEpisodeCreditsRequest == expectedRequest)
+    }
+
+    @Test("credits when errors throws error")
+    func creditsWhenErrorsThrowsError() async throws {
+        let episodeNumber = 3
+        let seasonNumber = 2
+        let tvSeriesID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.credits(
+                forEpisode: episodeNumber,
+                inSeason: seasonNumber,
+                inTVSeries: tvSeriesID
+            )
+        }
+    }
+
     @Test("images with default parameter values returns images")
     func imagesWithDefaultParameterValuesReturnsImages() async throws {
         let episodeNumber = 111

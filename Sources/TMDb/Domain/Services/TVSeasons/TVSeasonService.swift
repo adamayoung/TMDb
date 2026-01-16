@@ -70,6 +70,26 @@ public protocol TVSeasonService: Sendable {
     ) async throws -> TVSeasonAggregateCredits
 
     ///
+    /// Returns the cast and crew of a TV season.
+    ///
+    /// [TMDb API - TV Season: Credits](https://developer.themoviedb.org/reference/tv-season-credits)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Credits for the matching TV season.
+    ///
+    func credits(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String?
+    ) async throws -> ShowCredits
+
+    ///
     /// Returns the images that belong to a TV season.
     ///
     /// [TMDb API - TV Seasons: Images](https://developer.themoviedb.org/reference/tv-season-images)
@@ -160,6 +180,28 @@ extension TVSeasonService {
     ) async throws -> TVSeasonAggregateCredits {
         try await aggregateCredits(
             forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+    }
+
+    ///
+    /// Returns the cast and crew of a TV season.
+    ///
+    /// [TMDb API - TV Season: Credits](https://developer.themoviedb.org/reference/tv-season-credits)
+    ///
+    /// - Parameters:
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Credits for the matching TV season.
+    ///
+    public func credits(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        language: String? = nil
+    ) async throws -> ShowCredits {
+        try await credits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
     ///
