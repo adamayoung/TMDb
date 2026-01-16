@@ -89,6 +89,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Install xcpretty
+        run: gem install xcpretty
+
       - name: Cache Xcode DerivedData
         uses: actions/cache@v4
         with:
@@ -100,10 +103,10 @@ jobs:
             ${{ runner.os }}-xcode-
 
       - name: Build
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
-      
+        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
+
       - name: Test
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}'
+        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
   
   build-test-linux:
     name: Build and Test (Linux)
