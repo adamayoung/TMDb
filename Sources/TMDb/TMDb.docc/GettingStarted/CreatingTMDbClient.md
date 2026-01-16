@@ -20,6 +20,33 @@ To use `URLSession` to perform network tasks, create the ``TMDbClient``
 let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 ```
 
+### Configuration with default language and country
+
+Use ``TMDbConfiguration`` to set default language and country values that will
+be applied to API requests when explicit values are not provided.
+
+```swift
+let configuration = TMDbConfiguration(
+    defaultLanguage: "es-ES",
+    defaultCountry: "ES"
+)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
+Alternatively, use ``TMDbConfiguration/system`` to automatically use the
+system's current locale settings.
+
+```swift
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: .system
+)
+```
+
 ### Configuration with custom HTTP Client
 
 TMDb can be configured with your own adapter to perform network tasks. It allows
