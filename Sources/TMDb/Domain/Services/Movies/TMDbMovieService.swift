@@ -23,13 +23,16 @@ import Foundation
 final class TMDbMovieService: MovieService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
-        let request = MovieRequest(id: id, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieRequest(id: id, language: languageCode)
 
         let movie: Movie
         do {
@@ -42,7 +45,8 @@ final class TMDbMovieService: MovieService {
     }
 
     func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
-        let request = MovieCreditsRequest(id: movieID, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieCreditsRequest(id: movieID, language: languageCode)
 
         let credits: ShowCredits
         do {
@@ -59,7 +63,8 @@ final class TMDbMovieService: MovieService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> ReviewPageableList {
-        let request = MovieReviewsRequest(id: movieID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieReviewsRequest(id: movieID, page: page, language: languageCode)
 
         let reviewList: ReviewPageableList
         do {
@@ -106,7 +111,8 @@ final class TMDbMovieService: MovieService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = MovieRecommendationsRequest(id: movieID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieRecommendationsRequest(id: movieID, page: page, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -123,7 +129,8 @@ final class TMDbMovieService: MovieService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = SimilarMoviesRequest(id: movieID, page: page, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = SimilarMoviesRequest(id: movieID, page: page, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -140,7 +147,10 @@ final class TMDbMovieService: MovieService {
         country: String? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = MoviesNowPlayingRequest(page: page, country: country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let countryCode = country ?? configuration.defaultCountry
+        let request = MoviesNowPlayingRequest(
+            page: page, country: countryCode, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -157,7 +167,9 @@ final class TMDbMovieService: MovieService {
         country: String? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = PopularMoviesRequest(page: page, country: country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let countryCode = country ?? configuration.defaultCountry
+        let request = PopularMoviesRequest(page: page, country: countryCode, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -174,7 +186,10 @@ final class TMDbMovieService: MovieService {
         country: String? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = TopRatedMoviesRequest(page: page, country: country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let countryCode = country ?? configuration.defaultCountry
+        let request = TopRatedMoviesRequest(
+            page: page, country: countryCode, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -191,7 +206,10 @@ final class TMDbMovieService: MovieService {
         country: String? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
-        let request = UpcomingMoviesRequest(page: page, country: country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let countryCode = country ?? configuration.defaultCountry
+        let request = UpcomingMoviesRequest(
+            page: page, country: countryCode, language: languageCode)
 
         let movieList: MoviePageableList
         do {
@@ -203,9 +221,7 @@ final class TMDbMovieService: MovieService {
         return movieList
     }
 
-    func watchProviders(forMovie movieID: Movie.ID, country: String = "US") async throws
-        -> ShowWatchProvider?
-    {
+    func watchProviders(forMovie movieID: Movie.ID) async throws -> [ShowWatchProvidersByCountry] {
         let request = MovieWatchProvidersRequest(id: movieID)
 
         let result: ShowWatchProviderResult
@@ -215,7 +231,9 @@ final class TMDbMovieService: MovieService {
             throw TMDbError(error: error)
         }
 
-        return result.results[country]
+        return result.results
+            .map { ShowWatchProvidersByCountry(countryCode: $0.key, watchProviders: $0.value) }
+            .sorted { $0.countryCode < $1.countryCode }
     }
 
     func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection {

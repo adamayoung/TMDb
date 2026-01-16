@@ -33,41 +33,17 @@ struct TMDbTVSeriesServiceContentRatingTests {
         self.service = TMDbTVSeriesService(apiClient: apiClient)
     }
 
-    @Test("contentRatings with default parameter values returns TV series ratings")
-    func contentRatingsWithDefaultParameterValuesReturnsTVSeriesRatings() async throws {
+    @Test("contentRatings returns all TV series ratings")
+    func contentRatingsReturnsAllTVSeriesRatings() async throws {
         let expectedResult = ContentRatingResult.mock
         let tvSeriesID = expectedResult.id
-        let country = "US"
-
-        let expectedRating = expectedResult.results.first { rating in
-            rating.countryCode == country
-        }
 
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = ContentRatingRequest(id: tvSeriesID)
 
-        let result = try await (service as TVSeriesService).contentRatings(forTVSeries: tvSeriesID)
+        let result = try await service.contentRatings(forTVSeries: tvSeriesID)
 
-        #expect(result == expectedRating)
-        #expect(apiClient.lastRequest as? ContentRatingRequest == expectedRequest)
-    }
-
-    @Test("contentRatings with country returns TV series ratings")
-    func contentRatingsWithCountryReturnsTVSeriesRatings() async throws {
-        let expectedResult = ContentRatingResult.mock
-        let tvSeriesID = expectedResult.id
-        let country = "GB"
-
-        let expectedRating = expectedResult.results.first { rating in
-            rating.countryCode == country
-        }
-
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = ContentRatingRequest(id: tvSeriesID)
-
-        let result = try await service.contentRatings(forTVSeries: tvSeriesID, country: country)
-
-        #expect(result == expectedRating)
+        #expect(result == expectedResult.results)
         #expect(apiClient.lastRequest as? ContentRatingRequest == expectedRequest)
     }
 

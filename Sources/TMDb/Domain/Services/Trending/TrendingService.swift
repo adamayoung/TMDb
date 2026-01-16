@@ -38,7 +38,7 @@ public protocol TrendingService: Sendable {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -63,7 +63,7 @@ public protocol TrendingService: Sendable {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -88,7 +88,7 @@ public protocol TrendingService: Sendable {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -117,7 +117,7 @@ extension TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -144,7 +144,7 @@ extension TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -171,7 +171,7 @@ extension TrendingService {
     /// - Parameters:
     ///    - timeWindow: Daily or weekly time window. Defaults to daily.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

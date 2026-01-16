@@ -23,13 +23,16 @@ import Foundation
 final class TMDbWatchProviderService: WatchProviderService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func countries(language: String? = nil) async throws -> [Country] {
-        let request = WatchProviderRegionsRequest(language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = WatchProviderRegionsRequest(language: languageCode)
 
         let regions: WatchProviderRegions
         do {
@@ -45,7 +48,9 @@ final class TMDbWatchProviderService: WatchProviderService {
         filter: WatchProviderFilter? = nil,
         language: String? = nil
     ) async throws -> [WatchProvider] {
-        let request = WatchProvidersForMoviesRequest(country: filter?.country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = WatchProvidersForMoviesRequest(
+            country: filter?.country, language: languageCode)
 
         let result: WatchProviderResult
         do {
@@ -61,7 +66,9 @@ final class TMDbWatchProviderService: WatchProviderService {
         filter: WatchProviderFilter? = nil,
         language: String? = nil
     ) async throws -> [WatchProvider] {
-        let request = WatchProvidersForTVSeriesRequest(country: filter?.country, language: language)
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = WatchProvidersForTVSeriesRequest(
+            country: filter?.country, language: languageCode)
 
         let result: WatchProviderResult
         do {

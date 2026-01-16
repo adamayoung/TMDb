@@ -33,45 +33,29 @@ struct TMDbMovieServiceOthersTests {
         self.service = TMDbMovieService(apiClient: apiClient)
     }
 
-    @Test("watchProviders with default parameter values returns watch providers")
-    func watchProvidersWithDefaultParameterValuesReturnsWatchProviders() async throws {
+    @Test("watchProviders returns watch providers for all countries")
+    func watchProvidersReturnsWatchProvidersForAllCountries() async throws {
         let expectedResult = ShowWatchProviderResult.mock()
         let movieID = 1
-        let country = "US"
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieWatchProvidersRequest(id: movieID)
 
-        let result = try await (service as MovieService).watchProviders(forMovie: movieID)
+        let result = try await service.watchProviders(forMovie: movieID)
 
-        #expect(result == expectedResult.results[country])
-        #expect(apiClient.lastRequest as? MovieWatchProvidersRequest == expectedRequest)
-    }
-
-    @Test("watchProviders with country returns watch providers")
-    func watchProvidersWithCountryReturnsWatchProviders() async throws {
-        let expectedResult = ShowWatchProviderResult.mock()
-        let movieID = 1
-        let country = "GB"
-        apiClient.addResponse(.success(expectedResult))
-        let expectedRequest = MovieWatchProvidersRequest(id: movieID)
-
-        let result = try await (service as MovieService).watchProviders(
-            forMovie: movieID,
-            country: country
-        )
-
-        #expect(result == expectedResult.results[country])
+        #expect(result.count == expectedResult.results.count)
+        for item in result {
+            #expect(expectedResult.results[item.countryCode] == item.watchProviders)
+        }
         #expect(apiClient.lastRequest as? MovieWatchProvidersRequest == expectedRequest)
     }
 
     @Test("watchProviders when errors throws error")
     func watchProvidersWhenErrorsThrowsError() async throws {
         let movieID = 1
-        let country = "GB"
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            _ = try await service.watchProviders(forMovie: movieID, country: country)
+            _ = try await service.watchProviders(forMovie: movieID)
         }
     }
 

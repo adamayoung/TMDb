@@ -81,7 +81,7 @@ public protocol ListService: Sendable {
     /// - Parameters:
     ///    - name: The name of the list.
     ///    - description: The description of the list.
-    ///    - language: ISO 639-1 language code. Defaults to `en`.
+    ///    - language: ISO 639-1 language code. Defaults to the client's configured default language.
     ///    - isPublic: Whether the list is public. Defaults to `true`.
     ///    - session: The user's session.
     ///

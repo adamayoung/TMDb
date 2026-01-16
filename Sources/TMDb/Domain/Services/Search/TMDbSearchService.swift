@@ -23,9 +23,11 @@ import Foundation
 final class TMDbSearchService: SearchService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func searchAll(
@@ -34,11 +36,12 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MediaPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = MultiSearchRequest(
             query: query,
             includeAdult: filter?.includeAdult,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let mediaList: MediaPageableList
@@ -57,13 +60,14 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = MovieSearchRequest(
             query: query,
             primaryReleaseYear: filter?.primaryReleaseYear,
             country: filter?.country,
             includeAdult: filter?.includeAdult,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let movieList: MoviePageableList
@@ -82,13 +86,14 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesSearchRequest(
             query: query,
             firstAirDateYear: filter?.firstAirDateYear,
             year: filter?.year,
             includeAdult: filter?.includeAdult,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let tvSeriesList: TVSeriesPageableList
@@ -107,11 +112,12 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> PersonPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = PersonSearchRequest(
             query: query,
             includeAdult: filter?.includeAdult,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let peopleList: PersonPageableList

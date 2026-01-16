@@ -23,9 +23,11 @@ import Foundation
 final class TMDbDiscoverService: DiscoverService {
 
     private let apiClient: any APIClient
+    private let configuration: TMDbConfiguration
 
-    init(apiClient: some APIClient) {
+    init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient
+        self.configuration = configuration
     }
 
     func movies(
@@ -34,11 +36,12 @@ final class TMDbDiscoverService: DiscoverService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> MoviePageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = DiscoverMoviesRequest(
             filter: filter,
             sortedBy: sortedBy,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let movieList: MoviePageableList
@@ -57,11 +60,12 @@ final class TMDbDiscoverService: DiscoverService {
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
         let request = DiscoverTVSeriesRequest(
             filter: filter,
             sortedBy: sortedBy,
             page: page,
-            language: language
+            language: languageCode
         )
 
         let tvSeriesList: TVSeriesPageableList

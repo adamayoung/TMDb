@@ -30,7 +30,7 @@ public protocol WatchProviderService: Sendable {
     ///
     /// [TMDb API - Watch Providers: Available Regions](https://developer.themoviedb.org/reference/watch-providers-available-regions)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -45,7 +45,7 @@ public protocol WatchProviderService: Sendable {
     ///
     /// - Parameters:
     ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -63,7 +63,7 @@ public protocol WatchProviderService: Sendable {
     ///
     /// - Parameters:
     ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -83,7 +83,7 @@ extension WatchProviderService {
     ///
     /// [TMDb API - Watch Providers: Available Regions](https://developer.themoviedb.org/reference/watch-providers-available-regions)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to `en`.
+    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -100,7 +100,7 @@ extension WatchProviderService {
     ///
     /// - Parameters:
     ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -120,7 +120,7 @@ extension WatchProviderService {
     ///
     /// - Parameters:
     ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

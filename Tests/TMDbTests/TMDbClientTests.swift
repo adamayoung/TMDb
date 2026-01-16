@@ -136,4 +136,21 @@ struct TMDbClientTests {
         #expect(client.watchProviders is TMDbWatchProviderService)
     }
 
+    @Test("init with API key has system configuration")
+    func initWithAPIKeyHasSystemConfiguration() {
+        let client = TMDbClient(apiKey: apiKey)
+
+        #expect(client.configuration == .system)
+    }
+
+    @Test("init with configuration stores configuration")
+    func initWithConfigurationStoresConfiguration() {
+        let configuration = TMDbConfiguration(defaultLanguage: "es-ES", defaultCountry: "ES")
+        let client = TMDbClient(apiKey: apiKey, configuration: configuration)
+
+        #expect(client.configuration == configuration)
+        #expect(client.configuration.defaultLanguage == "es-ES")
+        #expect(client.configuration.defaultCountry == "ES")
+    }
+
 }

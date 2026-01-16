@@ -4,8 +4,8 @@
 
 ### Creating a TMDBClient
 
-- ``init(apiKey:)``
-- ``init(apiKey:httpClient:)``
+- ``init(apiKey:configuration:)``
+- ``init(apiKey:httpClient:configuration:)``
 
 ### TMDb Areas
 
@@ -18,8 +18,10 @@
 - ``trending``
 - ``search``
 - ``certifications``
+- ``collections``
 - ``companies``
 - ``genres``
+- ``lists``
 - ``watchProviders``
 - ``configurations``
 - ``account``

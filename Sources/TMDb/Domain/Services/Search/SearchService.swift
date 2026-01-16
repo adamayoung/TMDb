@@ -36,7 +36,7 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -60,7 +60,7 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -84,7 +84,7 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -108,7 +108,7 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -136,7 +136,7 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -162,7 +162,7 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -188,7 +188,7 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -214,7 +214,7 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

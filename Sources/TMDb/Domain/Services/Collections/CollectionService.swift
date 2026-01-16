@@ -32,7 +32,7 @@ public protocol CollectionService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the collection.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to `en`.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
