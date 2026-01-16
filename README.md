@@ -149,25 +149,34 @@ if let posterPath = fightClub.posterPath {
 
 ### Configuration
 
-You can configure the TMDb client with default language and country settings
-that will be applied to all API requests:
+By default, the TMDb client automatically uses your system's language and
+country settings from `Locale.current`:
 
 ```swift
 import TMDb
 
-// Create configuration with defaults
+// Uses system locale automatically (recommended)
+let tmdbClient = TMDbClient(apiKey: "<your-api-key>")
+```
+
+You can also configure the client with custom language and country settings:
+
+```swift
+// Custom configuration
 let configuration = TMDbConfiguration(
     defaultLanguage: "es-ES",  // ISO 639-1 language code
     defaultCountry: "ES"       // ISO 3166-1 country code
 )
-
-// Initialize client with configuration
 let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: configuration)
 
-// All requests will now use Spanish language by default
-let movie = try await tmdbClient.movies.details(forMovie: 550)
+// Disable locale defaults (API determines language)
+let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: .default)
+```
 
-// You can still override defaults on a per-request basis
+Per-request overrides are always available:
+
+```swift
+// Override language for a specific request
 let movieInFrench = try await tmdbClient.movies.details(forMovie: 550, language: "fr")
 ```
 
