@@ -66,5 +66,7 @@ extension APIRequestQueryItem.Name {
     static let primaryReleaseDateLessThan = APIRequestQueryItem.Name("primary_release_date.lte")
 
     static let apiKey = APIRequestQueryItem.Name("api_key")
+    static let externalSource = APIRequestQueryItem.Name("external_source")
+    static let timezone = APIRequestQueryItem.Name("timezone")
 
 }
