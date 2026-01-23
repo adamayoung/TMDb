@@ -1,0 +1,52 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "adult": false,
+            "backdrop_path": "/gmECX1DvFgdUPjtio2zaL8BPYPu.jpg",
+            "genre_ids": [
+                16,
+                10759,
+                10765
+            ],
+            "id": 95479,
+            "origin_country": [
+                "JP"
+            ],
+            "original_language": "ja",
+            "original_name": "呪術廻戦",
+            "overview": "Yuji Itadori is a boy with tremendous physical strength, though he lives a completely ordinary high school life. One day, to save a classmate who has been attacked by curses, he eats the finger of Ryomen Sukuna, taking the curse into his own soul. From then on, he shares one body with Ryomen Sukuna. Guided by the most powerful of sorcerers, Satoru Gojo, Itadori is admitted to Tokyo Jujutsu High School, an organization that fights the curses... and thus begins the heroic tale of a boy who became a curse to exorcise a curse, a life from which he could never turn back.",
+            "popularity": 178.3607,
+            "poster_path": "/fHpKWq9ayzSk8nSwqRuaAUemRKh.jpg",
+            "first_air_date": "2020-10-03",
+            "name": "JUJUTSU KAISEN",
+            "vote_average": 8.565,
+            "vote_count": 4119
+        },
+        {
+            "adult": false,
+            "backdrop_path": "/rBOnrVlck7BIlGeWVlzYiZeg4l2.jpg",
+            "genre_ids": [
+                16,
+                10759,
+                18,
+                10765
+            ],
+            "id": 209867,
+            "origin_country": [
+                "JP"
+            ],
+            "original_language": "ja",
+            "original_name": "葬送のフリーレン",
+            "overview": "Decades after her party defeated the Demon King, an old friend's funeral launches the elf wizard Frieren on a journey of self-discovery.",
+            "popularity": 112.1469,
+            "poster_path": "/dqZENchTd7lp5zht7BdlqM7RBhD.jpg",
+            "first_air_date": "2023-09-29",
+            "name": "Frieren: Beyond Journey's End",
+            "vote_average": 8.7,
+            "vote_count": 646
+        }
+    ],
+    "total_pages": 17,
+    "total_results": 336
+}

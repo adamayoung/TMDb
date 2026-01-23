@@ -121,6 +121,27 @@ struct TVSeriesServiceTests {
         #expect(!tvSeriesList.results.isEmpty)
     }
 
+    @Test("airingToday")
+    func airingToday() async throws {
+        let tvSeriesList = try await tvSeriesService.airingToday()
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
+    @Test("onTheAir")
+    func onTheAir() async throws {
+        let tvSeriesList = try await tvSeriesService.onTheAir()
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
+    @Test("topRated")
+    func topRated() async throws {
+        let tvSeriesList = try await tvSeriesService.topRated()
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
     @Test("externalLinks")
     func externalLinks() async throws {
         let tvSeriesID = 86423
