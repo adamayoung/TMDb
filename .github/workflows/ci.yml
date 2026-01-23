@@ -29,6 +29,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Install SwiftLint and SwiftFormat
+        run: brew install swiftlint swiftformat
+
       - name: SwiftLint
         run: swiftlint --strict .
 
