@@ -20,20 +20,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  swiftlint:
-    name: SwiftLint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: SwiftLint
-        uses: norio-nomura/action-swiftlint@3.2.1
-        with:
-          args: --strict
-
-  swiftformat:
-    name: SwiftFormat
+  lint:
+    name: Lint
     runs-on: macos-26
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
@@ -41,8 +29,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: SwiftLint
+        run: swiftlint --strict .
+
       - name: SwiftFormat
-        run: swift format lint -r -p --strict .
+        run: swiftformat --lint .
 
   lint-markdown:
     name: Lint Markdown
