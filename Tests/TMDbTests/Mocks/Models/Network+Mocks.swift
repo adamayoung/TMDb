@@ -10,7 +10,6 @@ import TMDb
 
 extension Network {
 
-    // swift-format-ignore: NeverForceUnwrap
     static func mock(
         id: Int = 49,
         name: String = "HBO",
@@ -29,7 +28,6 @@ extension Network {
         )
     }
 
-    // swift-format-ignore: NeverForceUnwrap
     static var hbo: Network {
         Network.mock(
             id: 49,

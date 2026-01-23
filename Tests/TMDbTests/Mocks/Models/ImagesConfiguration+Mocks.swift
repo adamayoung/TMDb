@@ -10,7 +10,6 @@ import TMDb
 
 extension ImagesConfiguration {
 
-    // swift-format-ignore: NeverForceUnwrap
     // swiftlint:disable force_unwrapping
     static func mock(
         baseURL: URL = URL(string: "http://api.domain.com/v1/")!,

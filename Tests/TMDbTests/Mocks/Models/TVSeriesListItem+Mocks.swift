@@ -45,7 +45,6 @@ extension TVSeriesListItem {
         )
     }
 
-    // swift-format-ignore: NeverForceUnwrap
     static var bigBrother: TVSeriesListItem {
         TVSeriesListItem(
             id: 11366,

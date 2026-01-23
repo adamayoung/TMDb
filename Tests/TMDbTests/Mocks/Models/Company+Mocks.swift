@@ -10,7 +10,6 @@ import TMDb
 
 extension Company {
 
-    // swift-format-ignore: NeverForceUnwrap
     // swiftlint:disable:next function_default_parameter_at_end
     static func mock(
         id: Int = 1,
@@ -35,7 +34,6 @@ extension Company {
         )
     }
 
-    // swift-format-ignore: NeverForceUnwrap
     static var lucasfilm: Company {
         // swiftlint:disable:next force_unwrapping
         let logoPath = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!

@@ -10,7 +10,7 @@ import TMDb
 
 extension NetworkLogo {
 
-    // swift-format-ignore: NeverForceUnwrap
+    // swiftlint:disable force_unwrapping
     static func mock(
         filePath: URL = URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png")!,
         aspectRatio: Double = 2.425287356321839
@@ -20,5 +20,6 @@ extension NetworkLogo {
             aspectRatio: aspectRatio
         )
     }
+    // swiftlint:enable force_unwrapping
 
 }

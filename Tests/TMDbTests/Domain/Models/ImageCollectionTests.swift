@@ -27,7 +27,6 @@ struct ImageCollectionTests {
         #expect(result.posters == imageCollection.posters)
     }
 
-    // swift-format-ignore: NeverForceUnwrap
     private func imageCollection() throws -> ImageCollection {
         try ImageCollection(
             id: 550,
