@@ -117,4 +117,73 @@ struct MediaListItemTests {
         #expect(result.title == "Test TV Show")
     }
 
+    @Test("JSON decoding of MediaListItem with missing release_date", .tags(.decoding))
+    func decodeReturnsMediaListItemWithMissingDateAsNil() throws {
+        let json = """
+        {
+          "adult": false,
+          "backdrop_path": null,
+          "id": 789012,
+          "title": "No Date Movie",
+          "original_title": "No Date Movie Original",
+          "overview": "A movie without a release date field.",
+          "poster_path": null,
+          "media_type": "movie",
+          "original_language": "en",
+          "genre_ids": [28],
+          "popularity": 5.0,
+          "video": false,
+          "vote_average": 6.0,
+          "vote_count": 50
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        #expect(result.id == 789_012)
+        #expect(result.releaseDate == nil)
+    }
+
+    @Test("init sets all properties correctly")
+    func initSetsAllProperties() throws {
+        let releaseDate = Date(iso8601: "2024-06-15T00:00:00Z")
+        let posterPath = try #require(URL(string: "/poster.jpg"))
+        let backdropPath = try #require(URL(string: "/backdrop.jpg"))
+
+        let item = MediaListItem(
+            id: 12345,
+            mediaType: .movie,
+            title: "Test Movie",
+            originalTitle: "Test Movie Original",
+            originalLanguage: "en",
+            overview: "A test overview",
+            genreIDs: [28, 12],
+            releaseDate: releaseDate,
+            posterPath: posterPath,
+            backdropPath: backdropPath,
+            popularity: 100.5,
+            voteAverage: 8.0,
+            voteCount: 1000,
+            hasVideo: true,
+            isAdultOnly: false
+        )
+
+        #expect(item.id == 12345)
+        #expect(item.mediaType == .movie)
+        #expect(item.title == "Test Movie")
+        #expect(item.originalTitle == "Test Movie Original")
+        #expect(item.originalLanguage == "en")
+        #expect(item.overview == "A test overview")
+        #expect(item.genreIDs == [28, 12])
+        #expect(item.releaseDate == releaseDate)
+        #expect(item.posterPath == posterPath)
+        #expect(item.backdropPath == backdropPath)
+        #expect(item.popularity == 100.5)
+        #expect(item.voteAverage == 8.0)
+        #expect(item.voteCount == 1000)
+        #expect(item.hasVideo == true)
+        #expect(item.isAdultOnly == false)
+    }
+
 }

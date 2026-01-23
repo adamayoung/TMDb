@@ -109,8 +109,8 @@ final class TMDbAuthenticationService: AuthenticationService {
         let result: SuccessResult
         do {
             result = try await apiClient.perform(request)
-        } catch {
-            return false
+        } catch let error {
+            throw TMDbError(error: error)
         }
 
         return result.success

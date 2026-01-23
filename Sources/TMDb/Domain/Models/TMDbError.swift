@@ -8,17 +8,33 @@
 import Foundation
 
 ///
-/// An TMDb error.
+/// A TMDb error.
 ///
 public enum TMDbError: Equatable, LocalizedError, Sendable {
 
-    /// An error indicating the resource could not be found.
-    case notFound
+    /// An error indicating an invalid request was made.
+    case badRequest(String? = nil)
 
+    /// An error indicating the request was not authorised.
     case unauthorised(String? = nil)
+
+    /// An error indicating access to the resource is forbidden.
+    case forbidden(String? = nil)
+
+    /// An error indicating the resource could not be found.
+    case notFound(String? = nil)
+
+    /// An error indicating too many requests have been made.
+    case tooManyRequests(String? = nil)
+
+    /// An error indicating there was a server error.
+    case serverError(String? = nil)
 
     /// An error indicating there was a network problem.
     case network(Error)
+
+    /// An error indicating there was a problem decoding data.
+    case decode(Error)
 
     /// An unknown error.
     case unknown
@@ -37,13 +53,28 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     ///
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
-        case (.notFound, .notFound):
-            true
+        case (.badRequest(let lhsMessage), .badRequest(let rhsMessage)):
+            lhsMessage == rhsMessage
 
         case (.unauthorised(let lhsMessage), .unauthorised(let rhsMessage)):
             lhsMessage == rhsMessage
 
+        case (.forbidden(let lhsMessage), .forbidden(let rhsMessage)):
+            lhsMessage == rhsMessage
+
+        case (.notFound(let lhsMessage), .notFound(let rhsMessage)):
+            lhsMessage == rhsMessage
+
+        case (.tooManyRequests(let lhsMessage), .tooManyRequests(let rhsMessage)):
+            lhsMessage == rhsMessage
+
+        case (.serverError(let lhsMessage), .serverError(let rhsMessage)):
+            lhsMessage == rhsMessage
+
         case (.network, .network):
+            true
+
+        case (.decode, .decode):
             true
 
         case (.unknown, .unknown):
@@ -63,14 +94,29 @@ public extension TMDbError {
     ///
     var errorDescription: String? {
         switch self {
-        case .notFound:
-            "Not found"
+        case .badRequest:
+            "Bad request"
 
         case .unauthorised:
             "Unauthorised"
 
+        case .forbidden:
+            "Forbidden"
+
+        case .notFound:
+            "Not found"
+
+        case .tooManyRequests:
+            "Too many requests"
+
+        case .serverError:
+            "Server error"
+
         case .network:
             "Network error"
+
+        case .decode:
+            "Decode error"
 
         case .unknown:
             "Unknown"

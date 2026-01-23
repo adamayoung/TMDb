@@ -40,7 +40,7 @@ public struct CrewMember: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Crew member's gender.
     ///
-    public let gender: Gender?
+    public let gender: Gender
 
     ///
     /// Crew member's profile image.
@@ -67,7 +67,7 @@ public struct CrewMember: Identifiable, Codable, Equatable, Hashable, Sendable {
         name: String,
         job: String,
         department: String,
-        gender: Gender? = nil,
+        gender: Gender = .unknown,
         profilePath: URL? = nil
     ) {
         self.id = id
@@ -91,6 +91,18 @@ extension CrewMember {
         case department
         case gender
         case profilePath
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.creditID = try container.decode(String.self, forKey: .creditID)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.job = try container.decode(String.self, forKey: .job)
+        self.department = try container.decode(String.self, forKey: .department)
+        self.gender = (try? container.decodeIfPresent(Gender.self, forKey: .gender)) ?? .unknown
+        self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
     }
 
 }

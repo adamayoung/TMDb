@@ -40,7 +40,7 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Cast member's gender.
     ///
-    public let gender: Gender?
+    public let gender: Gender
 
     ///
     /// Cast member's profile image.
@@ -73,7 +73,7 @@ public struct CastMember: Identifiable, Codable, Equatable, Hashable, Sendable {
         creditID: String,
         name: String,
         character: String,
-        gender: Gender? = nil,
+        gender: Gender = .unknown,
         profilePath: URL? = nil,
         order: Int
     ) {
@@ -100,6 +100,19 @@ extension CastMember {
         case gender
         case profilePath
         case order
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.castID = try container.decodeIfPresent(Int.self, forKey: .castID)
+        self.creditID = try container.decode(String.self, forKey: .creditID)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.character = try container.decode(String.self, forKey: .character)
+        self.gender = (try? container.decodeIfPresent(Gender.self, forKey: .gender)) ?? .unknown
+        self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
+        self.order = try container.decode(Int.self, forKey: .order)
     }
 
 }

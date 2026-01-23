@@ -22,22 +22,22 @@ public struct TVSeasonAggregateCredits: Identifiable, Codable, Equatable, Hashab
     ///
     /// Cast members of the TV series.
     ///
-    public let cast: [AggregrateCastMember]
+    public let cast: [AggregateCastMember]
 
     ///
     /// Crew members of the TV series.
     ///
-    public let crew: [AggregrateCrewMember]
+    public let crew: [AggregateCrewMember]
 
     ///
-    /// Creates a TV season aggregrate credits object.
+    /// Creates a TV season aggregate credits object.
     ///
     /// - Parameters:
     ///    - id: TV season identifier.
     ///    - cast: Cast members of the TV series.
     ///    - crew: Crew members of the TV series.
     ///
-    public init(id: TVSeason.ID, cast: [AggregrateCastMember], crew: [AggregrateCrewMember]) {
+    public init(id: TVSeason.ID, cast: [AggregateCastMember], crew: [AggregateCrewMember]) {
         self.id = id
         self.cast = cast
         self.crew = crew
