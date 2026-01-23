@@ -45,6 +45,7 @@ extension Tag {
     @Tag static var keyword: Self
     @Tag static var list: Self
     @Tag static var movie: Self
+    @Tag static var network: Self
     @Tag static var people: Self
     @Tag static var search: Self
     @Tag static var trending: Self
