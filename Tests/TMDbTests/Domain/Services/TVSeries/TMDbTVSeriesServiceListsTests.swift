@@ -151,4 +151,127 @@ struct TMDbTVSeriesServiceListsTests {
         }
     }
 
+    @Test("airingToday with default parameter values returns TV series")
+    func airingTodayWithDefaultParameterValuesReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesAiringTodayRequest(page: nil, timezone: nil, language: nil)
+
+        let result = try await (service as TVSeriesService).airingToday()
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesAiringTodayRequest == expectedRequest)
+    }
+
+    @Test("airingToday with page, timezone and language returns TV series")
+    func airingTodayWithPageTimezoneAndLanguageReturnsTVSeries() async throws {
+        let page = 2
+        let timezone = "America/New_York"
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesAiringTodayRequest(
+            page: page,
+            timezone: timezone,
+            language: language
+        )
+
+        let result = try await service.airingToday(
+            page: page,
+            timezone: timezone,
+            language: language
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesAiringTodayRequest == expectedRequest)
+    }
+
+    @Test("airingToday when errors throws error")
+    func airingTodayWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.airingToday()
+        }
+    }
+
+    @Test("onTheAir with default parameter values returns TV series")
+    func onTheAirWithDefaultParameterValuesReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesOnTheAirRequest(page: nil, timezone: nil, language: nil)
+
+        let result = try await (service as TVSeriesService).onTheAir()
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesOnTheAirRequest == expectedRequest)
+    }
+
+    @Test("onTheAir with page, timezone and language returns TV series")
+    func onTheAirWithPageTimezoneAndLanguageReturnsTVSeries() async throws {
+        let page = 2
+        let timezone = "Europe/London"
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesOnTheAirRequest(
+            page: page,
+            timezone: timezone,
+            language: language
+        )
+
+        let result = try await service.onTheAir(
+            page: page,
+            timezone: timezone,
+            language: language
+        )
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TVSeriesOnTheAirRequest == expectedRequest)
+    }
+
+    @Test("onTheAir when errors throws error")
+    func onTheAirWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.onTheAir()
+        }
+    }
+
+    @Test("topRated with default parameter values returns TV series")
+    func topRatedWithDefaultParameterValuesReturnsTVSeries() async throws {
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TopRatedTVSeriesRequest(page: nil, language: nil)
+
+        let result = try await (service as TVSeriesService).topRated()
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TopRatedTVSeriesRequest == expectedRequest)
+    }
+
+    @Test("topRated with page and language returns TV series")
+    func topRatedWithPageAndLanguageReturnsTVSeries() async throws {
+        let page = 2
+        let language = "en"
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TopRatedTVSeriesRequest(page: page, language: language)
+
+        let result = try await service.topRated(page: page, language: language)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? TopRatedTVSeriesRequest == expectedRequest)
+    }
+
+    @Test("topRated when errors throws error")
+    func topRatedWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.topRated()
+        }
+    }
+
 }
