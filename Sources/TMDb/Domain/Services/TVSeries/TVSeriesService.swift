@@ -199,6 +199,63 @@ public protocol TVSeriesService: Sendable {
     func popular(page: Int?, language: String?) async throws -> TVSeriesPageableList
 
     ///
+    /// Returns a list of TV series that are airing today.
+    ///
+    /// [TMDb API - TV Series Lists: Airing Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: TV series airing today as a pageable list.
+    ///
+    func airingToday(page: Int?, timezone: String?, language: String?) async throws
+        -> TVSeriesPageableList
+
+    ///
+    /// Returns a list of TV series that are currently on the air.
+    ///
+    /// This returns TV series that have episodes airing within the next 7 days.
+    ///
+    /// [TMDb API - TV Series Lists: On The Air](https://developer.themoviedb.org/reference/tv-series-on-the-air-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: TV series on the air as a pageable list.
+    ///
+    func onTheAir(page: Int?, timezone: String?, language: String?) async throws
+        -> TVSeriesPageableList
+
+    ///
+    /// Returns a list of top rated TV series.
+    ///
+    /// [TMDb API - TV Series Lists: Top Rated](https://developer.themoviedb.org/reference/tv-series-top-rated-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Top rated TV series as a pageable list.
+    ///
+    func topRated(page: Int?, language: String?) async throws -> TVSeriesPageableList
+
+    ///
     /// Returns watch providers for a TV series in all available countries.
     ///
     /// [TMDb API - TVSeries: Watch providers](https://developer.themoviedb.org/reference/tv-series-watch-providers)
@@ -444,6 +501,78 @@ extension TVSeriesService {
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
         try await popular(page: page, language: language)
+    }
+
+    ///
+    /// Returns a list of TV series that are airing today.
+    ///
+    /// [TMDb API - TV Series Lists: Airing Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: TV series airing today as a pageable list.
+    ///
+    public func airingToday(
+        page: Int? = nil,
+        timezone: String? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await airingToday(page: page, timezone: timezone, language: language)
+    }
+
+    ///
+    /// Returns a list of TV series that are currently on the air.
+    ///
+    /// This returns TV series that have episodes airing within the next 7 days.
+    ///
+    /// [TMDb API - TV Series Lists: On The Air](https://developer.themoviedb.org/reference/tv-series-on-the-air-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: TV series on the air as a pageable list.
+    ///
+    public func onTheAir(
+        page: Int? = nil,
+        timezone: String? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await onTheAir(page: page, timezone: timezone, language: language)
+    }
+
+    ///
+    /// Returns a list of top rated TV series.
+    ///
+    /// [TMDb API - TV Series Lists: Top Rated](https://developer.themoviedb.org/reference/tv-series-top-rated-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Top rated TV series as a pageable list.
+    ///
+    public func topRated(
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        try await topRated(page: page, language: language)
     }
 
 }

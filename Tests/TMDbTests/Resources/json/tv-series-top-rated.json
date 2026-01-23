@@ -1,0 +1,49 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "adult": false,
+            "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+            "genre_ids": [
+                18,
+                80
+            ],
+            "id": 1396,
+            "origin_country": [
+                "US"
+            ],
+            "original_language": "en",
+            "original_name": "Breaking Bad",
+            "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
+            "popularity": 120.676,
+            "poster_path": "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+            "first_air_date": "2008-01-20",
+            "name": "Breaking Bad",
+            "vote_average": 8.936,
+            "vote_count": 16928
+        },
+        {
+            "adult": false,
+            "backdrop_path": "/q8eejQcg1bAqImEV8jh8RtBD4uH.jpg",
+            "genre_ids": [
+                16,
+                10759
+            ],
+            "id": 94605,
+            "origin_country": [
+                "US"
+            ],
+            "original_language": "en",
+            "original_name": "Arcane",
+            "overview": "Amid the stark discord of twin cities Piltover and Zaun, two sisters fight on rival sides of a war between magic technologies and clashing convictions.",
+            "popularity": 31.2672,
+            "poster_path": "/wwbHr8MPErMbmiYNaxDgTWyewOX.jpg",
+            "first_air_date": "2021-11-06",
+            "name": "Arcane",
+            "vote_average": 8.752,
+            "vote_count": 5618
+        }
+    ],
+    "total_pages": 118,
+    "total_results": 2350
+}

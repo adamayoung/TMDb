@@ -1,0 +1,51 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "adult": false,
+            "backdrop_path": "/7mkUu1F2hVUNgz24xO8HPx0D6mK.jpg",
+            "genre_ids": [
+                18,
+                10765,
+                10759
+            ],
+            "id": 224372,
+            "origin_country": [
+                "US"
+            ],
+            "original_language": "en",
+            "original_name": "A Knight of the Seven Kingdoms",
+            "overview": "A century before the events of Game of Thrones, two unlikely heroes wandered Westeros: a young, naive but courageous knight, Ser Duncan the Tall, and his diminutive squire, Egg. Set in an age when the Targaryen line still holds the Iron Throne and the last dragon has not yet passed from living memory, great destinies, powerful foes, and dangerous exploits await these improbable and incomparable friends.",
+            "popularity": 319.9827,
+            "poster_path": "/6igvNs5VJB4ryBLgjjXksDVs0Fm.jpg",
+            "first_air_date": "2026-01-18",
+            "name": "A Knight of the Seven Kingdoms",
+            "vote_average": 8.1,
+            "vote_count": 93
+        },
+        {
+            "adult": false,
+            "backdrop_path": "/6iNWfGVCEfASDdlNb05TP5nG0ll.jpg",
+            "genre_ids": [
+                80,
+                18,
+                35
+            ],
+            "id": 79744,
+            "origin_country": [
+                "US"
+            ],
+            "original_language": "en",
+            "original_name": "The Rookie",
+            "overview": "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
+            "popularity": 258.899,
+            "poster_path": "/70kTz0OmjjZe7zHvIDrq2iKW7PJ.jpg",
+            "first_air_date": "2018-10-16",
+            "name": "The Rookie",
+            "vote_average": 8.536,
+            "vote_count": 2907
+        }
+    ],
+    "total_pages": 64,
+    "total_results": 1280
+}
