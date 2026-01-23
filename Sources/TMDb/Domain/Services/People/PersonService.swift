@@ -2,19 +2,7 @@
 //  PersonService.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -32,7 +20,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -47,7 +36,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -65,7 +55,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -83,7 +74,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -116,7 +108,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -139,7 +132,7 @@ public protocol PersonService: Sendable {
 
 }
 
-extension PersonService {
+public extension PersonService {
 
     ///
     /// Returns the primary information about a person.
@@ -148,13 +141,14 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person.
     ///
-    public func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+    func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
         try await details(forPerson: id, language: language)
     }
 
@@ -165,13 +159,14 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
-    public func combinedCredits(
+    func combinedCredits(
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonCombinedCredits {
@@ -185,13 +180,14 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's movie credits.
     ///
-    public func movieCredits(
+    func movieCredits(
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonMovieCredits {
@@ -205,13 +201,14 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's TV series credits.
     ///
-    public func tvSeriesCredits(
+    func tvSeriesCredits(
         forPerson personID: Person.ID,
         language: String? = nil
     ) async throws -> PersonTVSeriesCredits {
@@ -227,13 +224,14 @@ extension PersonService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular people as a pageable list.
     ///
-    public func popular(
+    func popular(
         page: Int? = nil,
         language: String? = nil
     ) async throws -> PersonPageableList {

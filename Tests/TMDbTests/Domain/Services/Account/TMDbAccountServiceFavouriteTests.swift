@@ -2,19 +2,7 @@
 //  TMDbAccountServiceFavouriteTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -76,7 +64,8 @@ extension TMDbAccountFavouriteServiceTests {
         )
 
         let result = try await service.favouriteMovies(
-            sortedBy: sortedBy, accountID: accountID, session: session)
+            sortedBy: sortedBy, accountID: accountID, session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
@@ -123,7 +112,8 @@ extension TMDbAccountFavouriteServiceTests {
         )
 
         let result = try await service.favouriteMovies(
-            page: page, accountID: accountID, session: session)
+            page: page, accountID: accountID, session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteMoviesRequest == expectedRequest)
@@ -171,7 +161,8 @@ extension TMDbAccountFavouriteServiceTests {
 
         await #expect(throws: TMDbError.unknown) {
             _ = try await service.addFavourite(
-                movie: movieID, accountID: accountID, session: session)
+                movie: movieID, accountID: accountID, session: session
+            )
         }
     }
 
@@ -192,7 +183,8 @@ extension TMDbAccountFavouriteServiceTests {
 
         await #expect(throws: Never.self) {
             try await service.removeFavourite(
-                movie: movieID, accountID: accountID, session: session)
+                movie: movieID, accountID: accountID, session: session
+            )
         }
 
         #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
@@ -207,7 +199,8 @@ extension TMDbAccountFavouriteServiceTests {
 
         await #expect(throws: TMDbError.unknown) {
             try await service.removeFavourite(
-                movie: movieID, accountID: accountID, session: session)
+                movie: movieID, accountID: accountID, session: session
+            )
         }
     }
 
@@ -252,7 +245,8 @@ extension TMDbAccountFavouriteServiceTests {
         )
 
         let result = try await service.favouriteTVSeries(
-            sortedBy: sortedBy, accountID: accountID, session: session)
+            sortedBy: sortedBy, accountID: accountID, session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
@@ -299,7 +293,8 @@ extension TMDbAccountFavouriteServiceTests {
         )
 
         let result = try await service.favouriteTVSeries(
-            page: page, accountID: accountID, session: session)
+            page: page, accountID: accountID, session: session
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
@@ -345,7 +340,8 @@ extension TMDbAccountFavouriteServiceTests {
 
         await #expect(throws: TMDbError.unknown) {
             try await service.addFavourite(
-                tvSeries: tvSeriesID, accountID: accountID, session: session)
+                tvSeries: tvSeriesID, accountID: accountID, session: session
+            )
         }
     }
 
@@ -365,7 +361,8 @@ extension TMDbAccountFavouriteServiceTests {
         )
 
         try await service.removeFavourite(
-            tvSeries: tvSeriesID, accountID: accountID, session: session)
+            tvSeries: tvSeriesID, accountID: accountID, session: session
+        )
 
         #expect(apiClient.lastRequest as? AddFavouriteRequest == expectedRequest)
     }
@@ -379,7 +376,8 @@ extension TMDbAccountFavouriteServiceTests {
 
         await #expect(throws: TMDbError.unknown) {
             try await service.removeFavourite(
-                tvSeries: tvSeriesID, accountID: accountID, session: session)
+                tvSeries: tvSeriesID, accountID: accountID, session: session
+            )
         }
     }
 

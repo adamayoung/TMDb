@@ -2,19 +2,7 @@
 //  AddFavouriteRequest.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -25,7 +13,8 @@ final class AddFavouriteRequest: CodableAPIRequest<AddFavouriteRequest.Body, Suc
         showType: ShowType, showID: Show.ID, isFavourite: Bool, accountID: Int, sessionID: String
     ) {
         let body = AddFavouriteRequest.Body(
-            showType: showType, showID: showID, isFavourite: isFavourite)
+            showType: showType, showID: showID, isFavourite: isFavourite
+        )
 
         self.init(body: body, accountID: accountID, sessionID: sessionID)
     }
@@ -61,9 +50,9 @@ extension AddFavouriteRequest.Body {
 
 }
 
-extension APIRequestQueryItems {
+private extension APIRequestQueryItems {
 
-    fileprivate init(sessionID: String) {
+    init(sessionID: String) {
         self.init()
 
         self[.sessionID] = sessionID

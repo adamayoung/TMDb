@@ -2,19 +2,7 @@
 //  TMDbAuthenticationServiceTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -33,7 +21,8 @@ struct TMDbAuthenticationServiceTests {
         self.apiClient = MockAPIClient()
         self.authenticateURLBuilder = AuthenticateURLMockBuilder()
         self.service = TMDbAuthenticationService(
-            apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder)
+            apiClient: apiClient, authenticateURLBuilder: authenticateURLBuilder
+        )
     }
 
     @Test("guestSession returns guest session")
@@ -111,7 +100,8 @@ struct TMDbAuthenticationServiceTests {
     func createSessionWithTokenReturnsSession() async throws {
         let token = Token(
             success: true, requestToken: "abc123",
-            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
+        )
         let expectedResult = Session(success: true, sessionID: "987yxz")
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = CreateSessionRequest(requestToken: token.requestToken)
@@ -126,7 +116,8 @@ struct TMDbAuthenticationServiceTests {
     func createSessionWithTokenWhenErrorsThrowsError() async throws {
         let token = Token(
             success: true, requestToken: "abc123",
-            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
+        )
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
@@ -138,7 +129,8 @@ struct TMDbAuthenticationServiceTests {
     func createSessionWithTokenWhenRequestTokenErrorsThrowsError() async throws {
         let token = Token(
             success: true, requestToken: "abc123",
-            expiresAt: Date(timeIntervalSince1970: 1_705_956_596))
+            expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
+        )
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {

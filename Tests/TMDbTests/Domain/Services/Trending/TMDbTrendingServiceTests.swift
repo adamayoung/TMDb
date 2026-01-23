@@ -2,19 +2,7 @@
 //  TMDbTrendingServiceTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -39,7 +27,8 @@ struct TMDbTrendingServiceTests {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingMoviesRequest(
-            timeWindow: timeWindow, page: nil, language: nil)
+            timeWindow: timeWindow, page: nil, language: nil
+        )
 
         let result = try await (service as TrendingService).movies(inTimeWindow: timeWindow)
 
@@ -55,10 +44,12 @@ struct TMDbTrendingServiceTests {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingMoviesRequest(
-            timeWindow: timeWindow, page: page, language: language)
+            timeWindow: timeWindow, page: page, language: language
+        )
 
         let result = try await service.movies(
-            inTimeWindow: timeWindow, page: page, language: language)
+            inTimeWindow: timeWindow, page: page, language: language
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingMoviesRequest == expectedRequest)
@@ -80,7 +71,8 @@ struct TMDbTrendingServiceTests {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingTVSeriesRequest(
-            timeWindow: timeWindow, page: nil, language: nil)
+            timeWindow: timeWindow, page: nil, language: nil
+        )
 
         let result = try await (service as TrendingService).tvSeries(inTimeWindow: timeWindow)
 
@@ -96,10 +88,12 @@ struct TMDbTrendingServiceTests {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingTVSeriesRequest(
-            timeWindow: timeWindow, page: page, language: language)
+            timeWindow: timeWindow, page: page, language: language
+        )
 
         let result = try await service.tvSeries(
-            inTimeWindow: timeWindow, page: page, language: language)
+            inTimeWindow: timeWindow, page: page, language: language
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingTVSeriesRequest == expectedRequest)
@@ -121,7 +115,8 @@ struct TMDbTrendingServiceTests {
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingPeopleRequest(
-            timeWindow: timeWindow, page: nil, language: nil)
+            timeWindow: timeWindow, page: nil, language: nil
+        )
 
         let result = try await (service as TrendingService).people(inTimeWindow: timeWindow)
 
@@ -137,10 +132,12 @@ struct TMDbTrendingServiceTests {
         let expectedResult = PersonPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TrendingPeopleRequest(
-            timeWindow: timeWindow, page: page, language: language)
+            timeWindow: timeWindow, page: page, language: language
+        )
 
         let result = try await service.people(
-            inTimeWindow: timeWindow, page: page, language: language)
+            inTimeWindow: timeWindow, page: page, language: language
+        )
 
         #expect(result == expectedResult)
         #expect(apiClient.lastRequest as? TrendingPeopleRequest == expectedRequest)

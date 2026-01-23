@@ -2,19 +2,7 @@
 //  APIStubRequest.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -22,8 +10,7 @@ import Foundation
 @testable import TMDb
 
 final class APIStubRequest<Body: Encodable & Equatable & Sendable, Response: Decodable>:
-    APIRequest, Equatable, Sendable
-{
+APIRequest, Equatable, Sendable {
 
     let id: UUID
     let path: String
@@ -49,8 +36,7 @@ final class APIStubRequest<Body: Encodable & Equatable & Sendable, Response: Dec
     }
 
     static func == (lhs: APIStubRequest<Body, Response>, rhs: APIStubRequest<Body, Response>)
-        -> Bool
-    {
+    -> Bool {
         lhs.id == rhs.id
             && lhs.path == rhs.path
             && lhs.queryItems == rhs.queryItems

@@ -2,19 +2,7 @@
 //  TVSeriesTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -28,7 +16,8 @@ struct TVSeriesTests {
     @Test("JSON decoding of TVSeries", .tags(.decoding))
     func decodeReturnsTVSeries() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            TVSeries.self, fromResource: "tv-series")
+            TVSeries.self, fromResource: "tv-series"
+        )
 
         #expect(result == tvSeries)
     }
@@ -45,9 +34,10 @@ struct TVSeriesTests {
     }
 
     @Test("createdBy decodes correctly", .tags(.decoding))
-    func testCreatedByDecodesCorrectly() throws {
+    func createdByDecodesCorrectly() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            TVSeries.self, fromResource: "tv-series")
+            TVSeries.self, fromResource: "tv-series"
+        )
 
         #expect(result.createdBy?.count == 2)
         #expect(result.createdBy?[0].id == 9813)
@@ -57,7 +47,7 @@ struct TVSeriesTests {
         #expect(result.createdBy?[0].gender == .male)
         #expect(result.createdBy?[0].profilePath == URL(string: "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg"))
 
-        #expect(result.createdBy?[1].id == 228068)
+        #expect(result.createdBy?[1].id == 228_068)
         #expect(result.createdBy?[1].creditID == "552e611e9251413fea000901")
         #expect(result.createdBy?[1].name == "D. B. Weiss")
         #expect(result.createdBy?[1].originalName == "D. B. Weiss")
@@ -66,9 +56,10 @@ struct TVSeriesTests {
     }
 
     @Test("lastEpisodeToAir decodes correctly", .tags(.decoding))
-    func testLastEpisodeToAirDecodesCorrectly() throws {
+    func lastEpisodeToAirDecodesCorrectly() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            TVSeries.self, fromResource: "tv-series")
+            TVSeries.self, fromResource: "tv-series"
+        )
 
         #expect(result.lastEpisodeToAir != nil)
         let episode = try #require(result.lastEpisodeToAir)
@@ -87,9 +78,10 @@ struct TVSeriesTests {
     }
 
     @Test("nextEpisodeToAir decodes correctly when null")
-    func testNextEpisodeToAirDecodesNull() throws {
+    func nextEpisodeToAirDecodesNull() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            TVSeries.self, fromResource: "tv-series")
+            TVSeries.self, fromResource: "tv-series"
+        )
 
         #expect(result.nextEpisodeToAir == nil)
     }
@@ -104,8 +96,8 @@ extension TVSeriesTests {
             name: "Game of Thrones",
             originalName: "Game of Thrones",
             originalLanguage: "en",
-            overview:
-                "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
+            // swiftlint:disable:next line_length
+            overview: "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
             episodeRunTime: [60],
             numberOfSeasons: 7,
             numberOfEpisodes: 67,
@@ -114,8 +106,8 @@ extension TVSeriesTests {
                     id: 3624,
                     name: "Season 1",
                     seasonNumber: 1,
-                    overview:
-                        "Trouble is brewing in the Seven Kingdoms of Westeros. For the driven inhabitants of this visionary world, control of Westeros' Iron Throne holds the lure of great power. But in a land where the seasons can last a lifetime, winter is coming...and beyond the Great Wall that protects them, an ancient evil has returned. In Season One, the story centers on three primary areas: the Stark and the Lannister families, whose designs on controlling the throne threaten a tenuous peace; the dragon princess Daenerys, heir to the former dynasty, who waits just over the Narrow Sea with her malevolent brother Viserys; and the Great Wall--a massive barrier of ice where a forgotten danger is stirring.",
+                    // swiftlint:disable:next line_length
+                    overview: "Trouble is brewing in the Seven Kingdoms of Westeros. For the driven inhabitants of this visionary world, control of Westeros' Iron Throne holds the lure of great power. But in a land where the seasons can last a lifetime, winter is coming...and beyond the Great Wall that protects them, an ancient evil has returned. In Season One, the story centers on three primary areas: the Stark and the Lannister families, whose designs on controlling the throne threaten a tenuous peace; the dragon princess Daenerys, heir to the former dynasty, who waits just over the Narrow Sea with her malevolent brother Viserys; and the Great Wall--a massive barrier of ice where a forgotten danger is stirring.",
                     airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
                     posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
                     episodes: nil
@@ -131,7 +123,7 @@ extension TVSeriesTests {
                     profilePath: URL(string: "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg")
                 ),
                 Creator(
-                    id: 228068,
+                    id: 228_068,
                     creditID: "552e611e9251413fea000901",
                     name: "D. B. Weiss",
                     originalName: "D. B. Weiss",

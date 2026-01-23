@@ -2,19 +2,7 @@
 //  Movie.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -268,7 +256,8 @@ extension Movie {
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
-    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
     ///
@@ -281,7 +270,8 @@ extension Movie {
         self.tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
         self.originalTitle = try container.decodeIfPresent(String.self, forKey: .originalTitle)
         self.originalLanguage = try container.decodeIfPresent(
-            String.self, forKey: .originalLanguage)
+            String.self, forKey: .originalLanguage
+        )
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
@@ -314,11 +304,14 @@ extension Movie {
         self.imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
         self.status = try container.decodeIfPresent(Status.self, forKey: .status)
         self.productionCompanies = try container.decodeIfPresent(
-            [ProductionCompany].self, forKey: .productionCompanies)
+            [ProductionCompany].self, forKey: .productionCompanies
+        )
         self.productionCountries = try container.decodeIfPresent(
-            [ProductionCountry].self, forKey: .productionCountries)
+            [ProductionCountry].self, forKey: .productionCountries
+        )
         self.spokenLanguages = try container.decodeIfPresent(
-            [SpokenLanguage].self, forKey: .spokenLanguages)
+            [SpokenLanguage].self, forKey: .spokenLanguages
+        )
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
         self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)

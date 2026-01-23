@@ -2,19 +2,7 @@
 //  DiscoverMovieFilter.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -67,12 +55,12 @@ public struct DiscoverMovieFilter {
 
 }
 
-extension DiscoverMovieFilter {
+public extension DiscoverMovieFilter {
 
     ///
     /// A release year filter.
     ///
-    public enum PrimaryReleaseYearFilter: Equatable, Sendable {
+    enum PrimaryReleaseYearFilter: Equatable, Sendable {
 
         ///
         /// On a specific year.
@@ -97,16 +85,16 @@ extension DiscoverMovieFilter {
         func dateBounds() -> (gte: String?, lte: String?) {
             switch self {
             case .on(let year):
-                return ("\(year)-01-01", "\(year)-12-31")
+                ("\(year)-01-01", "\(year)-12-31")
 
             case .from(let year):
-                return ("\(year)-01-01", nil)
+                ("\(year)-01-01", nil)
 
             case .upTo(let year):
-                return (nil, "\(year)-12-31")
+                (nil, "\(year)-12-31")
 
             case .between(let start, let end):
-                return ("\(start)-01-01", "\(end)-12-31")
+                ("\(start)-01-01", "\(end)-12-31")
             }
         }
     }

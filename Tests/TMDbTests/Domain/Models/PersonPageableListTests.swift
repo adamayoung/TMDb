@@ -2,19 +2,7 @@
 //  PersonPageableListTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -54,8 +42,8 @@ struct PersonPageableListTests {
                             name: "Euphoria",
                             originalName: "Euphoria",
                             originalLanguage: "en",
-                            overview:
-                                "A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.",
+                            // swiftlint:disable:next line_length
+                            overview: "A group of high school students navigate love and friendships in a world of drugs, sex, trauma, and social media.",
                             genreIDs: [18],
                             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2019-06-16"),
                             originCountries: ["US"],
@@ -73,8 +61,8 @@ struct PersonPageableListTests {
                             title: "Anyone But You",
                             originalTitle: "Anyone But You",
                             originalLanguage: "en",
-                            overview:
-                                "After an amazing first date, Bea and Ben’s fiery attraction turns ice cold — until they find themselves unexpectedly reunited at a destination wedding in Australia. So they do what any two mature adults would do: pretend to be a couple.",
+                            // swiftlint:disable:next line_length
+                            overview: "After an amazing first date, Bea and Ben’s fiery attraction turns ice cold — until they find themselves unexpectedly reunited at a destination wedding in Australia. So they do what any two mature adults would do: pretend to be a couple.",
                             genreIDs: [10749, 35],
                             releaseDate: DateFormatter.theMovieDatabase.date(from: "2023-12-21"),
                             posterPath: URL(string: "/yRt7MGBElkLQOYRvLTT1b3B1rcp.jpg"),

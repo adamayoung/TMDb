@@ -2,19 +2,7 @@
 //  PersonTVSeriesCreditsTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -60,7 +48,8 @@ struct PersonTVSeriesCreditsTests {
         let castCredit2 = TVSeriesCastCredit.mock(id: 2)
         let crewCredit1 = TVSeriesCrewCredit.mock(id: 1)
         let credits = PersonTVSeriesCredits(
-            id: 999, cast: [castCredit1, castCredit2], crew: [crewCredit1])
+            id: 999, cast: [castCredit1, castCredit2], crew: [crewCredit1]
+        )
 
         let tvSeries1 = TVSeries(
             id: castCredit1.id,
@@ -108,8 +97,8 @@ struct PersonTVSeriesCreditsTests {
                 name: "Growing Pains",
                 originalName: "Growing Pains",
                 originalLanguage: "en",
-                overview:
-                    "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
+                // swiftlint:disable:next line_length
+                overview: "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
                 genreIDs: [35],
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "1985-09-24"),
                 originCountries: ["US"],
@@ -130,8 +119,8 @@ struct PersonTVSeriesCreditsTests {
                 name: "The OA",
                 originalName: "The OA",
                 originalLanguage: "en",
-                overview:
-                    "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won't talk with the FBI or her parents about the seven years she went missing.",
+                // swiftlint:disable:next line_length
+                overview: "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won't talk with the FBI or her parents about the seven years she went missing.",
                 genreIDs: [18, 9648, 10765],
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-12-16"),
                 originCountries: [],

@@ -23,7 +23,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: macos-26
-    timeout-minutes: 120
+    timeout-minutes: 60
     permissions:
       actions: read
       contents: read
@@ -38,9 +38,8 @@ jobs:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-${{ hashFiles('.github/workflows/*.yml') }}
+          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-
             ${{ runner.os }}-swift-
 
       - name: Initialize CodeQL

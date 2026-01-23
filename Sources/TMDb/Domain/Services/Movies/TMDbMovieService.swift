@@ -2,19 +2,7 @@
 //  TMDbMovieService.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -77,8 +65,7 @@ final class TMDbMovieService: MovieService {
     }
 
     func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws
-        -> ImageCollection
-    {
+    -> ImageCollection {
         let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
         let imageCollection: ImageCollection
@@ -92,8 +79,7 @@ final class TMDbMovieService: MovieService {
     }
 
     func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws
-        -> VideoCollection
-    {
+    -> VideoCollection {
         let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 
         let videoCollection: VideoCollection
@@ -150,7 +136,8 @@ final class TMDbMovieService: MovieService {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = MoviesNowPlayingRequest(
-            page: page, country: countryCode, language: languageCode)
+            page: page, country: countryCode, language: languageCode
+        )
 
         let movieList: MoviePageableList
         do {
@@ -189,7 +176,8 @@ final class TMDbMovieService: MovieService {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = TopRatedMoviesRequest(
-            page: page, country: countryCode, language: languageCode)
+            page: page, country: countryCode, language: languageCode
+        )
 
         let movieList: MoviePageableList
         do {
@@ -209,7 +197,8 @@ final class TMDbMovieService: MovieService {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = UpcomingMoviesRequest(
-            page: page, country: countryCode, language: languageCode)
+            page: page, country: countryCode, language: languageCode
+        )
 
         let movieList: MoviePageableList
         do {
