@@ -75,6 +75,11 @@ public final class TMDbClient: Sendable {
     public let genres: any GenreService
 
     ///
+    /// TMDb keywords.
+    ///
+    public let keywords: any KeywordService
+
+    ///
     /// TMDb lists.
     ///
     public let lists: any ListService
@@ -167,6 +172,7 @@ public final class TMDbClient: Sendable {
                 apiClient: apiClient, configuration: configuration),
             findService: TMDbFindService(apiClient: apiClient, configuration: configuration),
             genreService: TMDbGenreService(apiClient: apiClient, configuration: configuration),
+            keywordService: TMDbKeywordService(apiClient: apiClient),
             listService: TMDbListService(apiClient: apiClient),
             movieService: TMDbMovieService(apiClient: apiClient, configuration: configuration),
             personService: TMDbPersonService(apiClient: apiClient, configuration: configuration),
@@ -195,6 +201,7 @@ public final class TMDbClient: Sendable {
         discoverService: some DiscoverService,
         findService: some FindService,
         genreService: some GenreService,
+        keywordService: some KeywordService,
         listService: some ListService,
         movieService: some MovieService,
         personService: some PersonService,
@@ -215,6 +222,7 @@ public final class TMDbClient: Sendable {
         self.discover = discoverService
         self.find = findService
         self.genres = genreService
+        self.keywords = keywordService
         self.lists = listService
         self.movies = movieService
         self.people = personService
