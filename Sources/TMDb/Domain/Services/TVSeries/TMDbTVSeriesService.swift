@@ -178,6 +178,64 @@ final class TMDbTVSeriesService: TVSeriesService {
         return tvSeriesList
     }
 
+    func airingToday(
+        page: Int? = nil,
+        timezone: String? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesAiringTodayRequest(
+            page: page,
+            timezone: timezone,
+            language: languageCode
+        )
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    func onTheAir(
+        page: Int? = nil,
+        timezone: String? = nil,
+        language: String? = nil
+    ) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesOnTheAirRequest(
+            page: page,
+            timezone: timezone,
+            language: languageCode
+        )
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    func topRated(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TopRatedTVSeriesRequest(page: page, language: languageCode)
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
     func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID
     ) async throws -> [ShowWatchProvidersByCountry] {
