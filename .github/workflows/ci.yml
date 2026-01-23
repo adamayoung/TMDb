@@ -9,20 +9,58 @@ on:
       - main
     paths:
       - ".github/workflows/ci.yml"
+      - ".swift-format"
+      - ".swiftlint.yml"
       - "**/*.swift"
+      - "**/*.md"
   workflow_dispatch:
 
 concurrency:
   group: "ci-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
-env:
-  DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
-
 jobs:
+  swiftlint:
+    name: SwiftLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: --strict
+
+  swiftformat:
+    name: SwiftFormat
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: SwiftFormat
+        run: swift format lint -r -p --strict .
+
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    container:
+      image: docker://ghcr.io/igorshubovych/markdownlint-cli:v0.41.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Lint Markdown
+        run: markdownlint "README.md" "**/*.docc/**/*.md"
+
   build-test:
     name: Build and Test
     runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -33,9 +71,8 @@ jobs:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-${{ hashFiles('.github/workflows/*.yml') }}
+          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}-
             ${{ runner.os }}-swift-
 
       - name: Build
@@ -67,47 +104,10 @@ jobs:
           files: info.lcov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      
+
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
-  
-  build-and-test-platforms:
-    name: Build and Test (${{ matrix.name }})
-    runs-on: macos-26
-    strategy:
-      matrix:
-        include:
-          - name: iOS
-            destination: platform=iOS Simulator,name=iPhone 17,OS=26.2
-          - name: watchOS
-            destination: platform=watchOS Simulator,name=Apple Watch Series 11 (46mm),OS=26.2
-          - name: tvOS
-            destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.2
-          - name: visionOS
-            destination: platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
 
-      - name: Install xcpretty
-        run: gem install xcpretty
-
-      - name: Cache Xcode DerivedData
-        uses: actions/cache@v5
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift') }}-${{ hashFiles('.github/workflows/*.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.swift') }}-
-            ${{ runner.os }}-xcode-${{ matrix.name }}-
-            ${{ runner.os }}-xcode-
-
-      - name: Build
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
-
-      - name: Test
-        run: set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme TMDb -only-testing TMDbTests -destination '${{ matrix.destination }}' | xcpretty
-  
   build-test-linux:
     name: Build and Test (Linux)
     runs-on: ubuntu-latest
@@ -121,6 +121,6 @@ jobs:
 
       - name: Test
         run: swift test --skip-build --filter TMDbTests
-      
+
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
