@@ -80,6 +80,11 @@ public final class TMDbClient: Sendable {
     public let movies: any MovieService
 
     ///
+    /// TMDb TV networks.
+    ///
+    public let networks: any NetworkService
+
+    ///
     /// TMDb people.
     ///
     public let people: any PersonService
@@ -163,6 +168,7 @@ public final class TMDbClient: Sendable {
             genreService: TMDbGenreService(apiClient: apiClient, configuration: configuration),
             listService: TMDbListService(apiClient: apiClient),
             movieService: TMDbMovieService(apiClient: apiClient, configuration: configuration),
+            networkService: TMDbNetworkService(apiClient: apiClient),
             personService: TMDbPersonService(apiClient: apiClient, configuration: configuration),
             searchService: TMDbSearchService(apiClient: apiClient, configuration: configuration),
             trendingService: TMDbTrendingService(
@@ -190,6 +196,7 @@ public final class TMDbClient: Sendable {
         genreService: some GenreService,
         listService: some ListService,
         movieService: some MovieService,
+        networkService: some NetworkService,
         personService: some PersonService,
         searchService: some SearchService,
         trendingService: some TrendingService,
@@ -209,6 +216,7 @@ public final class TMDbClient: Sendable {
         self.genres = genreService
         self.lists = listService
         self.movies = movieService
+        self.networks = networkService
         self.people = personService
         self.search = searchService
         self.trending = trendingService

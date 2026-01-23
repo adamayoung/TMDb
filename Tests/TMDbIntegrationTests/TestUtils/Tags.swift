@@ -31,6 +31,7 @@ extension Tag {
     @Tag static var genre: Self
     @Tag static var list: Self
     @Tag static var movie: Self
+    @Tag static var network: Self
     @Tag static var person: Self
     @Tag static var search: Self
     @Tag static var trending: Self
