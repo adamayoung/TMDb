@@ -2,19 +2,7 @@
 //  TVSeriesListItem+Mocks.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -64,8 +52,8 @@ extension TVSeriesListItem {
             name: "Big Brother",
             originalName: "Big Brother",
             originalLanguage: "en",
-            overview:
-                "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
+            // swiftlint:disable:next line_length
+            overview: "A British reality television game show in which a number of contestants live in an isolated house for several weeks, trying to avoid being evicted by the public with the aim of winning a large cash prize at the end of the run.",
             genreIDs: [10764],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-07-18"),
             originCountries: ["GB"],
@@ -84,8 +72,8 @@ extension TVSeriesListItem {
             name: "CSI: Crime Scene Investigation",
             originalName: "CSI: Crime Scene Investigation",
             originalLanguage: "en",
-            overview:
-                "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
+            // swiftlint:disable:next line_length
+            overview: "A Las Vegas team of forensic investigators are trained to solve criminal cases by scouring the crime scene, collecting irrefutable evidence and finding the missing pieces that solve the mystery.",
             genreIDs: [80, 18, 9648],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "2000-10-06"),
             originCountries: ["US"],

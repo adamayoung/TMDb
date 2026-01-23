@@ -2,7 +2,7 @@
 //  CollectionListItemTests.swift
 //  TMDb
 //
-//  Created by Adam Young on 14/07/2025.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -16,7 +16,8 @@ struct CollectionListItemTests {
     @Test("JSON decoding of CollectionListItem", .tags(.decoding))
     func decodeReturnsCollectionListItem() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            CollectionListItem.self, fromResource: "collection-list-item")
+            CollectionListItem.self, fromResource: "collection-list-item"
+        )
 
         #expect(result == collection)
     }
@@ -32,7 +33,7 @@ extension CollectionListItemTests {
             originalTitle: "Vinyl + The Velvet Underground & Nico",
             originalLanguage: "en",
             overview:
-                "Vinyl (1965) 1h 10m\r The Velvet Underground and Nico: A Symphony of Sound (1966) 1h 10m",
+            "Vinyl (1965) 1h 10m\r The Velvet Underground and Nico: A Symphony of Sound (1966) 1h 10m",
             posterPath: URL(string: "/8sYdZSdgquS1iO4XzsGy9dN3DJ3.jpg"),
             backdropPath: nil,
             isAdultOnly: false

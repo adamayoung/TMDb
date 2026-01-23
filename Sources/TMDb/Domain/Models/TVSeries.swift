@@ -2,19 +2,7 @@
 //  TVSeries.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -318,7 +306,6 @@ extension TVSeries {
         case isAdultOnly = "adult"
     }
 
-    ///
     /// Creates a new instance by decoding from the given decoder.
     ///
     /// This initializer throws an error if reading from the decoder fails, or
@@ -326,11 +313,11 @@ extension TVSeries {
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
-    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
-    ///
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws { // swiftlint:disable:this function_body_length
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -339,7 +326,8 @@ extension TVSeries {
         self.tagline = try container.decodeIfPresent(String.self, forKey: .tagline)
         self.originalName = try container.decodeIfPresent(String.self, forKey: .originalName)
         self.originalLanguage = try container.decodeIfPresent(
-            String.self, forKey: .originalLanguage)
+            String.self, forKey: .originalLanguage
+        )
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.episodeRunTime = try container.decodeIfPresent([Int].self, forKey: .episodeRunTime)
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
@@ -376,12 +364,15 @@ extension TVSeries {
         self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
         self.lastAirDate = try container.decodeIfPresent(Date.self, forKey: .lastAirDate)
         self.lastEpisodeToAir = try container.decodeIfPresent(
-            TVEpisodeAirDate.self, forKey: .lastEpisodeToAir)
+            TVEpisodeAirDate.self, forKey: .lastEpisodeToAir
+        )
         self.nextEpisodeToAir = try container.decodeIfPresent(
-            TVEpisodeAirDate.self, forKey: .nextEpisodeToAir)
+            TVEpisodeAirDate.self, forKey: .nextEpisodeToAir
+        )
         self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
         self.productionCompanies = try container.decodeIfPresent(
-            [ProductionCompany].self, forKey: .productionCompanies)
+            [ProductionCompany].self, forKey: .productionCompanies
+        )
         self.status = try container.decodeIfPresent(String.self, forKey: .status)
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)

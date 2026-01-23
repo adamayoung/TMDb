@@ -2,19 +2,7 @@
 //  PersonCombinedCreditsTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -128,8 +116,8 @@ struct PersonCombinedCreditsTests {
                     name: "Growing Pains",
                     originalName: "Growing Pains",
                     originalLanguage: "en",
-                    overview:
-                        "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
+                    // swiftlint:disable:next line_length
+                    overview: "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
                     genreIDs: [35],
                     firstAirDate: DateFormatter.theMovieDatabase.date(from: "1985-09-24"),
                     originCountries: ["US"],
@@ -149,8 +137,8 @@ struct PersonCombinedCreditsTests {
                     title: "The Counselor",
                     originalTitle: "The Counselor",
                     originalLanguage: "en",
-                    overview:
-                        "A rich and successful lawyer named Counselor is about to get married to his fiancée but soon meets up with the middle-man known as Westray who tells him his drug trafficking plan has taken a horrible twist and now he must protect himself and his soon bride-to-be lover as the truth of the drug business uncovers and targets become chosen.",
+                    // swiftlint:disable:next line_length
+                    overview: "A rich and successful lawyer named Counselor is about to get married to his fiancée but soon meets up with the middle-man known as Westray who tells him his drug trafficking plan has taken a horrible twist and now he must protect himself and his soon bride-to-be lover as the truth of the drug business uncovers and targets become chosen.",
                     genreIDs: [80, 18, 53],
                     releaseDate: DateFormatter.theMovieDatabase.date(from: "2013-10-25"),
                     posterPath: URL(string: "/uxp6rHVBzUqZCyTaUI8xzUP5sOf.jpg"),
@@ -172,8 +160,8 @@ struct PersonCombinedCreditsTests {
                     name: "The OA",
                     originalName: "The OA",
                     originalLanguage: "en",
-                    overview:
-                        "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won't talk with the FBI or her parents about the seven years she went missing.",
+                    // swiftlint:disable:next line_length
+                    overview: "Prairie Johnson, blind as a child, comes home to the community she grew up in with her sight restored. Some hail her a miracle, others a dangerous mystery, but Prairie won't talk with the FBI or her parents about the seven years she went missing.",
                     genreIDs: [18, 9648, 10765],
                     firstAirDate: DateFormatter.theMovieDatabase.date(from: "2016-12-16"),
                     originCountries: [],
@@ -194,8 +182,8 @@ struct PersonCombinedCreditsTests {
                     title: "Big Men",
                     originalTitle: "Big Men",
                     originalLanguage: "en",
-                    overview:
-                        "For her latest industrial exposé, Rachel Boynton (Our Brand Is Crisis) gained unprecedented access to Africa's oil companies. The result is a gripping account of the costly personal tolls levied when American corporate interests pursue oil in places like Ghana and the Niger River Delta. Executive produced by Steven Shainberg and Brad Pitt, Big Men investigates the caustic blend of ambition, corruption and greed that threatens to exacerbate Africa's resource curse.",
+                    // swiftlint:disable:next line_length
+                    overview: "For her latest industrial exposé, Rachel Boynton (Our Brand Is Crisis) gained unprecedented access to Africa's oil companies. The result is a gripping account of the costly personal tolls levied when American corporate interests pursue oil in places like Ghana and the Niger River Delta. Executive produced by Steven Shainberg and Brad Pitt, Big Men investigates the caustic blend of ambition, corruption and greed that threatens to exacerbate Africa's resource curse.",
                     genreIDs: [99],
                     releaseDate: DateFormatter.theMovieDatabase.date(from: "2014-03-14"),
                     posterPath: URL(string: "/q5uKDMl1PXIeMoD10CTbXST7XoN.jpg"),

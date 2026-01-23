@@ -2,19 +2,7 @@
 //  JSONDecoder+TMDbTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -30,7 +18,7 @@ struct JSONDecoderTMDbTests {
 
     init() {
         self.dateFormatter = DateFormatter()
-        self.dateFormatter.dateFormat = "yyyy-MM-ddd"
+        dateFormatter.dateFormat = "yyyy-MM-ddd"
         self.jsonDecoder = JSONDecoder.theMovieDatabase
     }
 
@@ -43,12 +31,12 @@ struct JSONDecoderTMDbTests {
         )
 
         let jsonString = """
-            {
-                "id": "abc123",
-                "first_name": "Adam",
-                "date_of_birth": "1990-01-02"
-            }
-            """
+        {
+            "id": "abc123",
+            "first_name": "Adam",
+            "date_of_birth": "1990-01-02"
+        }
+        """
         let data = Data(jsonString.utf8)
 
         let result = try jsonDecoder.decode(SomeThing.self, from: data)

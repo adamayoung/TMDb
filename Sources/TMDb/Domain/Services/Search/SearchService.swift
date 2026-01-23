@@ -2,19 +2,7 @@
 //  SearchService.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -36,7 +24,8 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -60,7 +49,8 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -84,7 +74,8 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -108,7 +99,8 @@ public protocol SearchService: Sendable {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -123,7 +115,7 @@ public protocol SearchService: Sendable {
 
 }
 
-extension SearchService {
+public extension SearchService {
 
     ///
     /// Returns search results for movies, TV series and people based on a query.
@@ -136,13 +128,14 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies, TV series and people matching the query.
     ///
-    public func searchAll(
+    func searchAll(
         query: String,
         filter: AllMediaSearchFilter? = nil,
         page: Int? = nil,
@@ -162,13 +155,14 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Movies matching the query.
     ///
-    public func searchMovies(
+    func searchMovies(
         query: String,
         filter: MovieSearchFilter? = nil,
         page: Int? = nil,
@@ -188,13 +182,14 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: TV series matching the query.
     ///
-    public func searchTVSeries(
+    func searchTVSeries(
         query: String,
         filter: TVSeriesSearchFilter? = nil,
         page: Int? = nil,
@@ -214,13 +209,14 @@ extension SearchService {
     ///    - query: A text query to search for.
     ///    - filter: Search filter.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: People matching the query.
     ///
-    public func searchPeople(
+    func searchPeople(
         query: String,
         filter: PersonSearchFilter? = nil,
         page: Int? = nil,

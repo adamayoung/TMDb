@@ -2,20 +2,10 @@
 //  TVSeriesService.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
+//  Copyright © 2026 Adam Young.
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//
+
+// swiftlint:disable file_length
 
 import Foundation
 
@@ -32,7 +22,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -47,7 +38,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -62,11 +54,13 @@ public protocol TVSeriesService: Sendable {
     /// the newest season. Instead, it is a view of all the entire cast & crew
     /// for all episodes belonging to a TV series.
     ///
-    /// [TMDb API - TV Series: Aggregate Credits](https://developer.themoviedb.org/reference/tv-series-aggregate-credits)
+    /// [TMDb API - TV Series: Aggregate
+    /// Credits](https://developer.themoviedb.org/reference/tv-series-aggregate-credits)
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -87,7 +81,8 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -145,7 +140,8 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -169,7 +165,8 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series for get similar TV series for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -190,7 +187,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -201,14 +199,16 @@ public protocol TVSeriesService: Sendable {
     ///
     /// Returns a list of TV series that are airing today.
     ///
-    /// [TMDb API - TV Series Lists: Airing Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
+    /// [TMDb API - TV Series Lists: Airing
+    /// Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -229,7 +229,8 @@ public protocol TVSeriesService: Sendable {
     /// - Parameters:
     ///    - page: The page of results to return.
     ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -247,7 +248,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -301,7 +303,7 @@ public protocol TVSeriesService: Sendable {
     func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating]
 }
 
-extension TVSeriesService {
+public extension TVSeriesService {
 
     ///
     /// Returns the primary information about a TV series.
@@ -310,13 +312,14 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching TV series.
     ///
-    public func details(
+    func details(
         forTVSeries id: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeries {
@@ -330,13 +333,14 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func credits(
+    func credits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> ShowCredits {
@@ -350,17 +354,19 @@ extension TVSeriesService {
     /// the newest season. Instead, it is a view of all the entire cast & crew
     /// for all episodes belonging to a TV series.
     ///
-    /// [TMDb API - TV Series: Aggregate Credits](https://developer.themoviedb.org/reference/tv-series-aggregate-credits)
+    /// [TMDb API - TV Series: Aggregate
+    /// Credits](https://developer.themoviedb.org/reference/tv-series-aggregate-credits)
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    public func aggregateCredits(
+    func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeriesAggregateCredits {
@@ -377,13 +383,14 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Reviews for the matching TV series as a pageable list.
     ///
-    public func reviews(
+    func reviews(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -404,7 +411,7 @@ extension TVSeriesService {
     ///
     /// - Returns: A collection of images for the matching TV series.
     ///
-    public func images(
+    func images(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesImageFilter? = nil
     ) async throws -> ImageCollection {
@@ -424,7 +431,7 @@ extension TVSeriesService {
     ///
     /// - Returns: A collection of videos for the matching TV series.
     ///
-    public func videos(
+    func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesVideoFilter? = nil
     ) async throws -> VideoCollection {
@@ -441,13 +448,14 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Recommended TV series for the matching TV series as a pageable list.
     ///
-    public func recommendations(
+    func recommendations(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -467,13 +475,14 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series for get similar TV series for.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Similar TV series for the matching TV series as a pageable list.
     ///
-    public func similar(
+    func similar(
         toTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
@@ -490,13 +499,14 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Current popular TV series as a pageable list.
     ///
-    public func popular(
+    func popular(
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
@@ -506,20 +516,22 @@ extension TVSeriesService {
     ///
     /// Returns a list of TV series that are airing today.
     ///
-    /// [TMDb API - TV Series Lists: Airing Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
+    /// [TMDb API - TV Series Lists: Airing
+    /// Today](https://developer.themoviedb.org/reference/tv-series-airing-today-list)
     ///
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
     ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: TV series airing today as a pageable list.
     ///
-    public func airingToday(
+    func airingToday(
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
@@ -539,13 +551,14 @@ extension TVSeriesService {
     /// - Parameters:
     ///    - page: The page of results to return.
     ///    - timezone: A valid timezone to filter the day by. Defaults to "America/New_York".
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: TV series on the air as a pageable list.
     ///
-    public func onTheAir(
+    func onTheAir(
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
@@ -562,13 +575,14 @@ extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Top rated TV series as a pageable list.
     ///
-    public func topRated(
+    func topRated(
         page: Int? = nil,
         language: String? = nil
     ) async throws -> TVSeriesPageableList {

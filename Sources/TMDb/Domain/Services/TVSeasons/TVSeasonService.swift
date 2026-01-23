@@ -2,19 +2,7 @@
 //  TVSeasonService.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -33,7 +21,8 @@ public protocol TVSeasonService: Sendable {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -52,12 +41,14 @@ public protocol TVSeasonService: Sendable {
     /// the newest season. Instead, it is a view of all the entire cast & crew
     /// for all episodes belonging to a TV season.
     ///
-    /// [TMDb API - TV Season: Aggregate Credits](https://developer.themoviedb.org/reference/tv-season-aggregate-credits)
+    /// [TMDb API - TV Season: Aggregate
+    /// Credits](https://developer.themoviedb.org/reference/tv-season-aggregate-credits)
     ///
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -77,7 +68,8 @@ public protocol TVSeasonService: Sendable {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -131,7 +123,7 @@ public protocol TVSeasonService: Sendable {
 
 }
 
-extension TVSeasonService {
+public extension TVSeasonService {
 
     ///
     /// Returns the primary information about a TV season.
@@ -141,13 +133,14 @@ extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A season of the matching TV series.
     ///
-    public func details(
+    func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
@@ -162,24 +155,27 @@ extension TVSeasonService {
     /// the newest season. Instead, it is a view of all the entire cast & crew
     /// for all episodes belonging to a TV season.
     ///
-    /// [TMDb API - TV Season: Aggregate Credits](https://developer.themoviedb.org/reference/tv-season-aggregate-credits)
+    /// [TMDb API - TV Season: Aggregate
+    /// Credits](https://developer.themoviedb.org/reference/tv-season-aggregate-credits)
     ///
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV season.
     ///
-    public func aggregateCredits(
+    func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws -> TVSeasonAggregateCredits {
         try await aggregateCredits(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language
+        )
     }
 
     ///
@@ -190,13 +186,14 @@ extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching TV season.
     ///
-    public func credits(
+    func credits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
@@ -218,7 +215,7 @@ extension TVSeasonService {
     ///
     /// - Returns: A collection of images for the matching TV's season.
     ///
-    public func images(
+    func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonImageFilter? = nil
@@ -240,7 +237,7 @@ extension TVSeasonService {
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
-    public func videos(
+    func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonVideoFilter? = nil

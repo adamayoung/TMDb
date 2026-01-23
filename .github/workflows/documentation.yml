@@ -19,7 +19,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "deploy-documentation"
+  group: "ci-${{ github.head_ref || github.run_id }}"
   cancel-in-progress: true
 
 jobs:

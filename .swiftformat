@@ -1,0 +1,20 @@
+--typeblanklines preserve
+--indent 4
+--commas inline
+--self init-only
+--wraparguments before-first
+--wrapparameters before-first
+--xcodeindentation enabled
+--patternlet inline
+--maxwidth 120
+--guardelse next-line
+--elseposition same-line
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes same-line
+
+--disable wrapMultilineStatementBraces
+--disable redundantLetError
+--disable unusedArguments
+
+--header \n {file}\n TMDb\n\n Copyright © 2026 Adam Young.\n

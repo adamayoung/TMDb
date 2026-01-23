@@ -2,19 +2,7 @@
 //  TVSeasonIntegrationTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -41,7 +29,8 @@ struct TVSeasonIntegrationTests {
         let tvSeriesID = 1399
 
         let season = try await tvSeasonService.details(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
 
         #expect(season.seasonNumber == seasonNumber)
         #expect(!(season.episodes ?? []).isEmpty)
@@ -53,7 +42,8 @@ struct TVSeasonIntegrationTests {
         let tvSeriesID = 1399
 
         let credits = try await tvSeasonService.aggregateCredits(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
 
         #expect(credits.id == 3625)
         #expect(!credits.cast.isEmpty)
@@ -66,7 +56,8 @@ struct TVSeasonIntegrationTests {
         let tvSeriesID = 1399
 
         let credits = try await tvSeasonService.credits(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
 
         #expect(credits.id == 3625)
         #expect(!credits.cast.isEmpty)
@@ -79,7 +70,8 @@ struct TVSeasonIntegrationTests {
         let tvSeriesID = 1399
 
         let imagesCollection = try await tvSeasonService.images(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
 
         #expect(!imagesCollection.posters.isEmpty)
     }
@@ -90,7 +82,8 @@ struct TVSeasonIntegrationTests {
         let tvSeriesID = 1399
 
         let videoCollection = try await tvSeasonService.videos(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID)
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
 
         #expect(!videoCollection.results.isEmpty)
     }

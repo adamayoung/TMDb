@@ -2,19 +2,7 @@
 //  ShowTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -60,16 +48,17 @@ struct ShowTests {
     }
 
     @Test("JSON decoding of Show", .tags(.decoding))
-    func testDecodeReturnsMovie() throws {
+    func decodeReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(Show.self, fromResource: "show-movie")
 
         #expect(result == movieShow)
     }
 
     @Test("JSON decoding of TV series", .tags(.decoding))
-    func testDecodeReturnsTVSeries() throws {
+    func decodeReturnsTVSeries() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            Show.self, fromResource: "show-tv-series")
+            Show.self, fromResource: "show-tv-series"
+        )
 
         #expect(result == tvSeriesShow)
     }
@@ -85,8 +74,8 @@ extension ShowTests {
                 title: "The Counselor",
                 originalTitle: "The Counselor",
                 originalLanguage: "en",
-                overview:
-                    "A rich and successful lawyer named Counselor is about to get married to his fiancée but soon meets up with the middle-man known as Westray who tells him his drug trafficking plan has taken a horrible twist and now he must protect himself and his soon bride-to-be lover as the truth of the drug business uncovers and targets become chosen.",
+                // swiftlint:disable:next line_length
+                overview: "A rich and successful lawyer named Counselor is about to get married to his fiancée but soon meets up with the middle-man known as Westray who tells him his drug trafficking plan has taken a horrible twist and now he must protect himself and his soon bride-to-be lover as the truth of the drug business uncovers and targets become chosen.",
                 genreIDs: [80, 18, 53],
                 releaseDate: DateFormatter.theMovieDatabase.date(from: "2013-10-25"),
                 posterPath: URL(string: "/uxp6rHVBzUqZCyTaUI8xzUP5sOf.jpg"),
@@ -107,8 +96,8 @@ extension ShowTests {
                 name: "Growing Pains",
                 originalName: "Growing Pains",
                 originalLanguage: "en",
-                overview:
-                    "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
+                // swiftlint:disable:next line_length
+                overview: "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
                 genreIDs: [35],
                 firstAirDate: DateFormatter.theMovieDatabase.date(from: "1985-09-24"),
                 originCountries: ["US"],

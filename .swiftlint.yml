@@ -1,0 +1,45 @@
+excluded:
+  - "**/.build/**"
+  - "**/.swiftpm/**"
+  - "**/DerivedData/**"
+  - "**/*.xcodeproj/**"
+  - "**/*.xcworkspace/**"
+
+disabled_rules:
+  - type_name
+  - large_tuple
+
+opt_in_rules:
+  - attributes
+  - closure_spacing
+  - conditional_returns_on_newline
+  - empty_count
+  - first_where
+  - force_unwrapping
+  - operator_usage_whitespace
+  - sorted_imports
+
+attributes:
+  always_on_same_line:
+    - "@testable"
+  attributes_with_arguments_always_on_line_above: true
+
+identifier_name:
+  excluded:
+    - 'id'
+    - 'l'
+    - 'on'
+    - 'r'
+    - 'tv'
+
+line_length:
+  ignores_urls: true
+  ignores_comments: true
+  ignores_interpolated_strings: true
+
+cyclomatic_complexity:
+  ignores_case_statements: true
+
+nesting:
+  type_level: 2
+  function_level: 2

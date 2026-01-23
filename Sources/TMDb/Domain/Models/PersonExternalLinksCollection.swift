@@ -2,19 +2,7 @@
 //  PersonExternalLinksCollection.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -91,7 +79,7 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
 
 }
 
-extension PersonExternalLinksCollection {
+public extension PersonExternalLinksCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -111,11 +99,12 @@ extension PersonExternalLinksCollection {
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
-    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested type.
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
     ///
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(Person.ID.self, forKey: .id)
@@ -159,7 +148,7 @@ extension PersonExternalLinksCollection {
     /// - throws: `EncodingError.invalidValue` if the given value is invalid in
     ///   the current context for this format.
     ///
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)

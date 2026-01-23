@@ -2,19 +2,7 @@
 //  TVSeriesCastCreditTests.swift
 //  TMDb
 //
-//  Copyright © 2025 Adam Young.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an AS IS BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//  Copyright © 2026 Adam Young.
 //
 
 import Foundation
@@ -28,7 +16,8 @@ struct TVSeriesCastCreditTests {
     @Test("JSON decoding of TVSeriesCastCredit", .tags(.decoding))
     func decodeReturnsTVSeriesCastCredit() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            TVSeriesCastCredit.self, fromResource: "tv-series-cast-credit")
+            TVSeriesCastCredit.self, fromResource: "tv-series-cast-credit"
+        )
 
         #expect(result == credit)
     }
@@ -43,8 +32,8 @@ extension TVSeriesCastCreditTests {
             name: "Growing Pains",
             originalName: "Growing Pains",
             originalLanguage: "en",
-            overview:
-                "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
+            // swiftlint:disable:next line_length
+            overview: "Growing Pains is an American television sitcom about an affluent family, residing in Huntington, Long Island, New York, with a working mother and a stay-at-home psychiatrist father raising three children together, which aired on ABC from September 24, 1985, to April 25, 1992.",
             genreIDs: [35],
             firstAirDate: DateFormatter.theMovieDatabase.date(from: "1985-09-24"),
             originCountries: ["US"],

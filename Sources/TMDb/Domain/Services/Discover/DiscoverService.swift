@@ -15,7 +15,8 @@ public protocol DiscoverService: Sendable {
     ///    - filter: Movie filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -39,7 +40,8 @@ public protocol DiscoverService: Sendable {
     ///    - filter: TV series filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -54,7 +56,7 @@ public protocol DiscoverService: Sendable {
 
 }
 
-extension DiscoverService {
+public extension DiscoverService {
 
     ///
     /// Returns movies to be discovered.
@@ -67,13 +69,14 @@ extension DiscoverService {
     ///    - filter: Movie filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching movies as a pageable list.
     ///
-    public func movies(
+    func movies(
         filter: DiscoverMovieFilter? = nil,
         sortedBy: MovieSort? = nil,
         page: Int? = nil,
@@ -93,13 +96,14 @@ extension DiscoverService {
     ///    - filter: TV series filter.
     ///    - sortedBy: How results should be sorted.
     ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default language.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching TV series as a pageable list.
     ///
-    public func tvSeries(
+    func tvSeries(
         filter: DiscoverTVSeriesFilter? = nil,
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
