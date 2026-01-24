@@ -16,7 +16,7 @@ extension CrewMember {
         name: String = "Crew Name",
         job: String = "Job Name",
         department: String = "Department Name",
-        gender: Gender? = Gender.male,
+        gender: Gender = .male,
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
     ) -> CrewMember {
         CrewMember(

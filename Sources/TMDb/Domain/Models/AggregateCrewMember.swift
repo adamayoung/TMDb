@@ -1,5 +1,5 @@
 //
-//  AggregrateCrewMember.swift
+//  AggregateCrewMember.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A model representing an aggregate crew member.
 ///
-public struct AggregrateCrewMember: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct AggregateCrewMember: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Person identifier.
@@ -28,19 +28,19 @@ public struct AggregrateCrewMember: Identifiable, Codable, Equatable, Hashable, 
     public let originalName: String
 
     ///
-    /// Cast member's gender.
+    /// Crew member's gender.
     ///
     public let gender: Gender
 
     ///
-    /// Cast member's profile image.
+    /// Crew member's profile image.
     ///
     /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
     public let profilePath: URL?
 
     ///
-    /// Cast member's roles.
+    /// Crew member's jobs.
     ///
     public let jobs: [CrewJob]
 
@@ -60,12 +60,12 @@ public struct AggregrateCrewMember: Identifiable, Codable, Equatable, Hashable, 
     public let totalEpisodeCount: Int
 
     ///
-    /// Cast member's popularity.
+    /// Crew member's popularity.
     ///
     public let popularity: Double?
 
     ///
-    /// Creates an aggregate cast member's role object.
+    /// Creates an aggregate crew member's role object.
     ///
     /// - Parameters:
     ///   - id: Person identifier.
@@ -73,7 +73,7 @@ public struct AggregrateCrewMember: Identifiable, Codable, Equatable, Hashable, 
     ///   - originalName: Crew member's original name.
     ///   - gender: Crew member's gender.
     ///   - profilePath: Crew member's profile image.
-    ///   - jobs: Crew member's job.
+    ///   - jobs: Crew member's jobs.
     ///   - knownForDepartment: Department this person is known for.
     ///   - adult: Is adult?
     ///   - totalEpisodeCount: Total episodes this crew member appears in.
@@ -104,3 +104,7 @@ public struct AggregrateCrewMember: Identifiable, Codable, Equatable, Hashable, 
     }
 
 }
+
+/// Backwards compatibility alias.
+@available(*, deprecated, renamed: "AggregateCrewMember")
+public typealias AggregrateCrewMember = AggregateCrewMember

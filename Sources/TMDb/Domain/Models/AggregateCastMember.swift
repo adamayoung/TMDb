@@ -1,5 +1,5 @@
 //
-//  AggregrateCastMember.swift
+//  AggregateCastMember.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A model representing an aggregate cast member.
 ///
-public struct AggregrateCastMember: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Person identifier.
@@ -104,3 +104,7 @@ public struct AggregrateCastMember: Identifiable, Codable, Equatable, Hashable, 
     }
 
 }
+
+/// Backwards compatibility alias.
+@available(*, deprecated, renamed: "AggregateCastMember")
+public typealias AggregrateCastMember = AggregateCastMember

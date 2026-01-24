@@ -74,8 +74,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeries``
 - ``ShowCredits``
 - ``TVSeriesAggregateCredits``
-- ``AggregrateCastMember``
-- ``AggregrateCrewMember``
+- ``AggregateCastMember``
+- ``AggregateCrewMember``
 - ``CastRole``
 - ``CrewJob``
 - ``ReviewPageableList``

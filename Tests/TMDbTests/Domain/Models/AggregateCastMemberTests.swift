@@ -1,5 +1,5 @@
 //
-//  AggregrateCastMemberTests.swift
+//  AggregateCastMemberTests.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
@@ -11,12 +11,12 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.models))
-struct AggregrateCastMemberTests {
+struct AggregateCastMemberTests {
 
-    @Test("JSON decoding of AggregrateCastMember", .tags(.decoding))
+    @Test("JSON decoding of AggregateCastMember", .tags(.decoding))
     func decodeCastMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            AggregrateCastMember.self,
+            AggregateCastMember.self,
             fromResource: "aggregate-cast-member"
         )
 
@@ -32,7 +32,7 @@ struct AggregrateCastMemberTests {
         #expect(result.popularity == castMember.popularity)
     }
 
-    private let castMember = AggregrateCastMember(
+    private let castMember = AggregateCastMember(
         id: 11824,
         name: "Tom Welling",
         originalName: "Tom Peter Welling",

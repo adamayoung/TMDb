@@ -1,5 +1,5 @@
 //
-//  AggregrateCrewMemberTests.swift
+//  AggregateCrewMemberTests.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
@@ -11,12 +11,12 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.models))
-struct AggregrateCrewMemberTests {
+struct AggregateCrewMemberTests {
 
-    @Test("JSON decoding of AggregrateCrewMember", .tags(.decoding))
+    @Test("JSON decoding of AggregateCrewMember", .tags(.decoding))
     func decodeCrewMember() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
-            AggregrateCrewMember.self,
+            AggregateCrewMember.self,
             fromResource: "aggregate-crew-member"
         )
 
@@ -32,7 +32,7 @@ struct AggregrateCrewMemberTests {
         #expect(result.popularity == crewMember.popularity)
     }
 
-    private let crewMember = AggregrateCrewMember(
+    private let crewMember = AggregateCrewMember(
         id: 1_856_851,
         name: "Lance King",
         originalName: "Lance King",

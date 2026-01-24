@@ -88,6 +88,15 @@ Enforced via `.swift-format`:
 
 **CRITICAL: Always run both unit tests AND integration tests after making code changes.**
 
+### Test Coverage Requirements
+
+**All code changes MUST have corresponding test coverage:**
+
+- **New features**: Add unit tests AND integration tests
+- **Bug fixes**: Add tests that reproduce and verify the fix
+- **Refactoring**: Ensure existing tests still pass; add tests if coverage gaps exist
+- **Model changes**: Add/update unit tests with JSON fixtures AND integration tests
+
 ### Why Both Test Types Matter
 
 - **Unit tests** verify code logic with mocked data and fast execution
@@ -101,9 +110,11 @@ Enforced via `.swift-format`:
 
 After implementing or modifying features:
 
-1. **Run unit tests**: `make test` - Fast feedback on logic and mocked scenarios
-2. **Run integration tests**: `make integration-test` - Validates against real API
-3. **Both must pass** before considering the work complete
+1. **Add/update unit tests**: Create tests in `Tests/TMDbTests/` with JSON fixtures
+2. **Add/update integration tests**: Create tests in `Tests/TMDbIntegrationTests/`
+3. **Run unit tests**: `make test` - Fast feedback on logic and mocked scenarios
+4. **Run integration tests**: `make integration-test` - Validates against real API
+5. **Both must pass** before considering the work complete
 
 ### Common Pitfalls
 
@@ -115,6 +126,17 @@ Unit tests alone may pass even when:
 
 **Integration tests catch these issues by using real API data.**
 
+## Completion Checklist
+
+**CRITICAL: Before considering ANY task complete, run these steps in order:**
+
+1. **Format code**: `make format` - Auto-format all Swift files
+2. **Check lint**: `make lint` - Verify swift-format compliance
+3. **Run unit tests**: `make test` - All unit tests must pass
+4. **Run integration tests**: `make integration-test` - All integration tests must pass
+
+**All four steps must succeed before the work is complete.**
+
 ## Adding New Features
 
 1. Define protocol in `Domain/Services/<ServiceName>/`
@@ -123,6 +145,8 @@ Unit tests alone may pass even when:
 4. Register in `TMDbFactory.swift`
 5. Expose via `TMDbClient.swift`
 6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
+7. Add integration tests in `Tests/TMDbIntegrationTests/`
+8. Run completion checklist (format, lint, test, integration-test)
 
 ## Understanding the TMDb API
 

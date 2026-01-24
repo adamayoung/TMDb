@@ -243,12 +243,12 @@ struct TMDbAuthenticationServiceTests {
     }
 
     @Test("validateKey when errors throws error")
-    func validateKeyWhenErrorsReturnsFalse() async throws {
+    func validateKeyWhenErrorsThrowsError() async throws {
         apiClient.addResponse(.failure(.unknown))
 
-        let result = try await service.validateKey()
-
-        #expect(!result)
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.validateKey()
+        }
     }
 
 }

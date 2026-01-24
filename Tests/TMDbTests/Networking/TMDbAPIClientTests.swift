@@ -99,7 +99,7 @@ struct TMDbAPIClientTests {
         #expect(request.method == .post)
     }
 
-    @Test("perfom when DELETE method")
+    @Test("perform when DELETE method")
     @MainActor
     func performWhenDeleteMethod() async throws {
         let stubRequest = APIStubRequest<String, String>(path: "/endpoint", method: .delete)
@@ -110,6 +110,181 @@ struct TMDbAPIClientTests {
         let request = try #require(httpClient.lastRequest)
 
         #expect(request.method == .delete)
+    }
+
+    @Test("perform when successful returns decoded response")
+    @MainActor
+    func performWhenSuccessfulReturnsDecodedResponse() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let expectedResponse = "Hello, World!"
+        let responseData = try JSONEncoder().encode(expectedResponse)
+        httpClient.result = .success(HTTPResponse(statusCode: 200, data: responseData))
+
+        let response = try await apiClient.perform(stubRequest)
+
+        #expect(response == expectedResponse)
+    }
+
+    @Test("perform when network error throws network error")
+    @MainActor
+    func performWhenNetworkErrorThrowsNetworkError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let networkError = URLError(.notConnectedToInternet)
+        httpClient.result = .failure(networkError)
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .network(networkError))
+    }
+
+    @Test("perform when response has no data throws unknown error")
+    @MainActor
+    func performWhenResponseHasNoDataThrowsUnknownError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        httpClient.result = .success(HTTPResponse(statusCode: 200, data: nil))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .unknown)
+    }
+
+    @Test("perform when decode fails throws decode error")
+    @MainActor
+    func performWhenDecodeFailsThrowsDecodeError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let invalidData = Data("not valid json".utf8)
+        httpClient.result = .success(HTTPResponse(statusCode: 200, data: invalidData))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        guard case .decode = thrownError else {
+            Issue.record("Expected decode error but got \(String(describing: thrownError))")
+            return
+        }
+    }
+
+    @Test("perform when body encode fails throws encode error")
+    @MainActor
+    func performWhenBodyEncodeFailsThrowsEncodeError() async throws {
+        let stubRequest = APIStubRequest<UnencodableValue, String>(
+            path: "/endpoint",
+            method: .post,
+            body: UnencodableValue()
+        )
+        httpClient.result = .success(HTTPResponse(statusCode: 200, data: Data()))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        guard case .encode = thrownError else {
+            Issue.record("Expected encode error but got \(String(describing: thrownError))")
+            return
+        }
+    }
+
+    @Test("perform when error response without data throws error with status code")
+    @MainActor
+    func performWhenErrorResponseWithoutDataThrowsErrorWithStatusCode() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        httpClient.result = .success(HTTPResponse(statusCode: 404, data: nil))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .notFound(nil))
+    }
+
+    @Test("perform when error response with message throws error with message")
+    @MainActor
+    func performWhenErrorResponseWithMessageThrowsErrorWithMessage() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let statusResponseJSON = """
+        {
+            "success": false,
+            "status_code": 34,
+            "status_message": "The resource you requested could not be found."
+        }
+        """
+        let responseData = Data(statusResponseJSON.utf8)
+        httpClient.result = .success(HTTPResponse(statusCode: 404, data: responseData))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .notFound("The resource you requested could not be found."))
+    }
+
+    @Test("perform when 401 response throws unauthorised error")
+    @MainActor
+    func performWhen401ResponseThrowsUnauthorisedError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        httpClient.result = .success(HTTPResponse(statusCode: 401, data: nil))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .unauthorised(nil))
+    }
+
+    @Test("perform when 500 response throws server error")
+    @MainActor
+    func performWhen500ResponseThrowsServerError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        httpClient.result = .success(HTTPResponse(statusCode: 500, data: nil))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .internalServerError(nil))
+    }
+
+}
+
+private struct UnencodableValue: Encodable, Equatable, Sendable {
+
+    func encode(to encoder: Encoder) throws {
+        throw EncodingError.invalidValue(
+            self,
+            EncodingError.Context(
+                codingPath: [],
+                debugDescription: "Cannot encode UnencodableValue"
+            )
+        )
     }
 
 }

@@ -16,7 +16,7 @@ extension CastMember {
         creditID: String = "3",
         name: String = "Actor Name",
         character: String = "Character Name",
-        gender: Gender? = .male,
+        gender: Gender = .male,
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         order: Int = 1
     ) -> CastMember {

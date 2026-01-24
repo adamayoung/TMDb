@@ -210,4 +210,15 @@ struct TVSeriesServiceTests {
         // nextEpisodeToAir should be nil for ended series
         #expect(tvSeries.nextEpisodeToAir == nil)
     }
+
+    @Test("watchProviders")
+    func watchProviders() async throws {
+        let tvSeriesID = 1399 // Game of Thrones
+
+        let result = try await tvSeriesService.watchProviders(forTVSeries: tvSeriesID)
+
+        #expect(!result.isEmpty)
+        let usProvider = result.first { $0.countryCode == "US" }
+        #expect(usProvider != nil)
+    }
 }

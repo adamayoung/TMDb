@@ -19,7 +19,7 @@ extension PersonListItem {
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = nil,
         knownFor: [Show]? = nil,
-        isAdultOnly: Bool = false
+        isAdultOnly: Bool? = nil
     ) -> PersonListItem {
         PersonListItem(
             id: id,
@@ -43,7 +43,8 @@ extension PersonListItem {
             id: 287,
             name: "Brad Pitt",
             originalName: "Brad Pitt",
-            gender: .male
+            gender: .male,
+            isAdultOnly: false
         )
     }
 

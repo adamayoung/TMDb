@@ -57,7 +57,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
     ///
     /// Is the Person only suitable for adults.
     ///
-    public let isAdultOnly: Bool
+    public let isAdultOnly: Bool?
 
     ///
     /// Creates a person object.
@@ -82,7 +82,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
         profilePath: URL? = nil,
         popularity: Double? = nil,
         knownFor: [Show]? = nil,
-        isAdultOnly: Bool = false
+        isAdultOnly: Bool? = nil
     ) {
         self.id = id
         self.name = name

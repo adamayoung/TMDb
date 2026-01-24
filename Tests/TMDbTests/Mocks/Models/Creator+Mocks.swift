@@ -16,7 +16,7 @@ extension Creator {
         creditID: String = "credit1",
         name: String = "Creator Name",
         originalName: String = "Original Creator Name",
-        gender: Gender? = .male,
+        gender: Gender = .male,
         profilePath: URL? = URL(string: "/creator.jpg")
     ) -> Self {
         .init(

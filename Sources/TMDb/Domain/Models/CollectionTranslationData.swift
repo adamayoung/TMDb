@@ -67,18 +67,17 @@ extension CollectionTranslationData {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.title = try container.decode(String.self, forKey: .title)
         self.overview = try container.decode(String.self, forKey: .overview)
 
         let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
-        self.homepageURL = try {
+        self.homepageURL = {
             guard let homepageURLString, !homepageURLString.isEmpty else {
                 return nil
             }
 
-            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
+            return URL(string: homepageURLString)
         }()
     }
 

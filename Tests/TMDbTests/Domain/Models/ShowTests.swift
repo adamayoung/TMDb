@@ -63,6 +63,26 @@ struct ShowTests {
         #expect(result == tvSeriesShow)
     }
 
+    @Test("JSON encoding of movie Show encodes as MovieListItem", .tags(.encoding))
+    func encodeMovieShowEncodesAsMovieListItem() throws {
+        let data = try JSONEncoder.theMovieDatabase.encode(movieShow)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(MovieListItem.self, from: data)
+
+        #expect(decoded.id == 109_091)
+        #expect(decoded.title == "The Counselor")
+        #expect(decoded.originalTitle == "The Counselor")
+    }
+
+    @Test("JSON encoding of TV series Show encodes as TVSeriesListItem", .tags(.encoding))
+    func encodeTVSeriesShowEncodesAsTVSeriesListItem() throws {
+        let data = try JSONEncoder.theMovieDatabase.encode(tvSeriesShow)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(TVSeriesListItem.self, from: data)
+
+        #expect(decoded.id == 54)
+        #expect(decoded.name == "Growing Pains")
+        #expect(decoded.originalName == "Growing Pains")
+    }
+
 }
 
 extension ShowTests {
