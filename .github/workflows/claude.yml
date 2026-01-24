@@ -28,12 +28,19 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_tools: "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Read,Glob,Grep"
           prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
             Review this PR for:
             1. Code quality and Swift best practices
             2. Potential bugs or edge cases
             3. Test coverage gaps
             4. Documentation completeness
+
+            Use `gh pr comment` to post a summary review comment on the PR.
+            Use inline comments for specific code issues.
             Be concise and actionable.
 
   claude-respond:
