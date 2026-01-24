@@ -45,13 +45,24 @@ The library uses protocol-based services with dependency injection:
 TMDbClient (main facade)
 ├── AccountService
 ├── AuthenticationService
+├── CertificationService
+├── CollectionService
+├── CompanyService
+├── ConfigurationService
+├── DiscoverService
+├── FindService
+├── GenreService
+├── KeywordService
+├── ListService
 ├── MovieService
-├── TVSeriesService
+├── NetworkService
 ├── PersonService
 ├── SearchService
-├── DiscoverService
 ├── TrendingService
-└── ... (15 service protocols total)
+├── TVEpisodeService
+├── TVSeasonService
+├── TVSeriesService
+└── WatchProviderService
 ```
 
 **Key files:**
@@ -134,8 +145,48 @@ Unit tests alone may pass even when:
 2. **Check lint**: `make lint` - Verify swift-format compliance
 3. **Run unit tests**: `make test` - All unit tests must pass
 4. **Run integration tests**: `make integration-test` - All integration tests must pass
+5. **Build documentation**: `make build-docs` - Verify DocC builds without warnings (if public API changed)
 
-**All four steps must succeed before the work is complete.**
+**All steps must succeed before the work is complete.**
+
+## Documentation Requirements
+
+**CRITICAL: Update DocC documentation whenever the public API changes.**
+
+### When to Update Documentation
+
+Update documentation when:
+
+- **Adding new services**: Create extension file in `TMDb.docc/Extensions/`
+- **Adding new public models**: Add to appropriate topic section in `TMDb.docc/TMDb.md`
+- **Adding new service methods**: Update the service's extension file
+- **Adding new TMDbClient properties**: Update `TMDb.docc/Extensions/TMDbClient.md`
+- **Renaming or removing public API**: Update all affected documentation files
+
+### Documentation Structure
+
+```
+Sources/TMDb/TMDb.docc/
+├── TMDb.md                      # Main catalog with all topic sections
+├── Extensions/
+│   ├── TMDbClient.md            # TMDbClient properties documentation
+│   ├── <ServiceName>Service.md  # Service method groupings
+│   └── ...
+├── GettingStarted/              # Getting started guides
+├── HowTos/                      # How-to articles
+└── Resources/                   # Images and assets
+```
+
+### Adding a New Service
+
+1. Create `TMDb.docc/Extensions/<ServiceName>Service.md` with method groupings
+2. Add topic section to `TMDb.docc/TMDb.md` with service and related models
+3. Add service property to `TMDb.docc/Extensions/TMDbClient.md`
+4. Run `make build-docs` to verify documentation builds without warnings
+
+### Verification
+
+Always run `make build-docs` after documentation changes - it uses `--warnings-as-errors` to catch broken links and missing symbols.
 
 ## Adding New Features
 
@@ -146,7 +197,8 @@ Unit tests alone may pass even when:
 5. Expose via `TMDbClient.swift`
 6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
 7. Add integration tests in `Tests/TMDbIntegrationTests/`
-8. Run completion checklist (format, lint, test, integration-test)
+8. **Update DocC documentation** (see Documentation Requirements section)
+9. Run completion checklist (format, lint, test, integration-test, build-docs)
 
 ## Understanding the TMDb API
 

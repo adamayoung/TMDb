@@ -17,10 +17,13 @@
 - ``discover``
 - ``trending``
 - ``search``
+- ``find``
 - ``certifications``
 - ``collections``
 - ``companies``
 - ``genres``
+- ``keywords``
+- ``networks``
 - ``lists``
 - ``watchProviders``
 - ``configurations``

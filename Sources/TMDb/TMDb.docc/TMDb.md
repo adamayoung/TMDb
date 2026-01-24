@@ -153,10 +153,25 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeriesSearchFilter``
 - ``PersonSearchFilter``
 
+### Find
+
+- ``FindService``
+- ``FindResults``
+- ``ExternalSource``
+
 ### Certifications
 
 - ``CertificationService``
 - ``Certification``
+
+### Collections
+
+- ``CollectionService``
+- ``Collection``
+- ``CollectionImageCollection``
+- ``CollectionListItem``
+- ``CollectionTranslation``
+- ``CollectionTranslationData``
 
 ### Companies
 
@@ -168,6 +183,18 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``GenreService``
 - ``Genre``
+
+### Keywords
+
+- ``KeywordService``
+- ``Keyword``
+
+### Networks
+
+- ``NetworkService``
+- ``Network``
+- ``NetworkAlternativeName``
+- ``NetworkLogo``
 
 ### Watch Providers
 
@@ -198,6 +225,14 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Movie``
 - ``TVSeriesPageableList``
 - ``TVSeries``
+
+### Lists
+
+- ``ListService``
+- ``MediaList``
+- ``MediaListItem``
+- ``MediaListItemStatus``
+- ``CreateListResult``
 
 ### Authentication
 
