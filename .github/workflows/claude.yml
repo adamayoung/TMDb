@@ -10,10 +10,10 @@ on:
 
 jobs:
   claude-review:
-    # Only run for PR author adamayoung
+    # Only run when adamayoung pushes code or creates the PR
     if: |
       github.event_name == 'pull_request' &&
-      github.event.pull_request.user.login == 'adamayoung'
+      github.event.sender.login == 'adamayoung'
     runs-on: ubuntu-latest
     permissions:
       contents: read
