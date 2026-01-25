@@ -11,7 +11,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
-    .tags(.tvSeason),
+    .tags(.watchProvider),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
 )
 struct WatchProviderIntegrationTests {

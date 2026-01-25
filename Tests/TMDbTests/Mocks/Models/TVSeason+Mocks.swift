@@ -1,5 +1,5 @@
 //
-//  TVSeason+Mock.swift
+//  TVSeason+Mocks.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
