@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -19,7 +18,7 @@ struct ReleaseDateTests {
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
         // swiftlint:disable:next force_unwrapping
-        let releaseDate = formatter.date(from: "1999-10-15T00:00:00.000Z")!
+        let releaseDate = try #require(formatter.date(from: "1999-10-15T00:00:00.000Z"))
         let expectedResult = ReleaseDate(
             certification: "R",
             languageCode: "",

@@ -15,7 +15,9 @@ public struct CollectionTranslation: Identifiable, Codable, Equatable, Hashable,
     ///
     /// Collection translation's identifier (same as `languageCode`).
     ///
-    public var id: String { languageCode }
+    public var id: String {
+        languageCode
+    }
 
     ///
     /// ISO 3166-1 country code.

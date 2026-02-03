@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -68,7 +67,8 @@ struct TVSeriesTests {
         #expect(episode.episodeNumber == 7)
         #expect(episode.seasonNumber == 7)
         #expect(
-            episode.overview == "A meeting is held in King's Landing. Problems arise in the North.")
+            episode.overview == "A meeting is held in King's Landing. Problems arise in the North."
+        )
         #expect(episode.airDate == DateFormatter.theMovieDatabase.date(from: "2017-08-27"))
         #expect(episode.productionCode == "707")
         #expect(episode.showID == 1399)

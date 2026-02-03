@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 @testable import TMDb
 
 final class APIStubRequest<Body: Encodable & Equatable & Sendable, Response: Decodable>:

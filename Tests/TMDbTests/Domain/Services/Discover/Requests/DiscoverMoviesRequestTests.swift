@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.requests, .discover))
@@ -60,7 +59,8 @@ struct DiscoverMoviesRequestTests {
             request.queryItems == [
                 "primary_release_date.gte": "2025-01-01",
                 "primary_release_date.lte": "2025-12-31"
-            ])
+            ]
+        )
     }
 
     @Test("queryItems with primary release date from year")
@@ -88,7 +88,8 @@ struct DiscoverMoviesRequestTests {
             request.queryItems == [
                 "primary_release_date.gte": "2020-01-01",
                 "primary_release_date.lte": "2025-12-31"
-            ])
+            ]
+        )
     }
 
     @Test("queryItems with sortedBy")
@@ -129,7 +130,8 @@ struct DiscoverMoviesRequestTests {
                 "with_people": "1,2,3",
                 "page": "2",
                 "language": "en"
-            ])
+            ]
+        )
     }
 
     @Test("method is GET")

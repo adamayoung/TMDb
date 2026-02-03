@@ -48,11 +48,9 @@ final class TMDbAuthenticationService: AuthenticationService {
     }
 
     func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
-        let url = authenticateURLBuilder.authenticateURL(
+        authenticateURLBuilder.authenticateURL(
             with: token.requestToken, redirectURL: redirectURL
         )
-
-        return url
     }
 
     func createSession(withToken token: Token) async throws -> Session {
@@ -84,9 +82,7 @@ final class TMDbAuthenticationService: AuthenticationService {
             throw TMDbError(error: error)
         }
 
-        let session = try await createSession(withToken: validatedToken)
-
-        return session
+        return try await createSession(withToken: validatedToken)
     }
 
     @discardableResult

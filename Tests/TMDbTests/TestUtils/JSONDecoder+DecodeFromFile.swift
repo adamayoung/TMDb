@@ -10,13 +10,13 @@ import Testing
 
 extension JSONDecoder {
 
-    func decode<T>(
+    func decode<T: Decodable>(
         _: T.Type,
         fromResource fileName: String,
         withExtension fileType: String = "json",
         file _: StaticString = #filePath,
         line _: UInt = #line
-    ) throws -> T where T: Decodable {
+    ) throws -> T {
         do {
             let data = try Data(fromResource: fileName, withExtension: fileType)
             return try decode(T.self, from: data)

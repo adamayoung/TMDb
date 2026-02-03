@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(
@@ -80,7 +79,7 @@ struct AuthenticationIntegrationTests {
     @Test("authenticateURL with redirect URL returns valid URL")
     func authenticateURLWithRedirectReturnsValidURL() async throws {
         let token = try await authenticationService.requestToken()
-        let redirectURL = URL(string: "myapp://callback")!
+        let redirectURL = try #require(URL(string: "myapp://callback"))
 
         let url = authenticationService.authenticateURL(for: token, redirectURL: redirectURL)
 

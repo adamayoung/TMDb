@@ -15,7 +15,9 @@ public struct Country: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Country's identifier (same as `countryCode`).
     ///
-    public var id: String { countryCode }
+    public var id: String {
+        countryCode
+    }
 
     ///
     /// The ISO 3166-1 country code.

@@ -15,7 +15,9 @@ public struct SpokenLanguage: Identifiable, Codable, Equatable, Hashable, Sendab
     ///
     /// Language code.
     ///
-    public var id: String { languageCode }
+    public var id: String {
+        languageCode
+    }
 
     ///
     /// The ISO 639-1 language code.

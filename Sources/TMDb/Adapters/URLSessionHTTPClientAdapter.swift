@@ -30,8 +30,7 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
             throw error
         }
 
-        let httpResponse = Self.httpResponse(from: data, response: response)
-        return httpResponse
+        return Self.httpResponse(from: data, response: response)
     }
 
 }
@@ -73,7 +72,8 @@ extension URLSessionHTTPClientAdapter {
 
                     guard let data, let response else {
                         continuation.resume(
-                            throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1))
+                            throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1)
+                        )
                         return
                     }
 

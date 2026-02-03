@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -68,7 +67,7 @@ struct PersonCombinedCreditsTests {
     }
 
     @Test("allShows contains a unique list of cast and crew TV series")
-    func allShowsContainsUniqueListOfCastAndCrewTVSeries() throws {
+    func allShowsContainsUniqueListOfCastAndCrewTVSeries() {
         let credits = PersonCombinedCredits(
             id: 1,
             cast: [
@@ -130,7 +129,8 @@ struct PersonCombinedCreditsTests {
                     episodeCount: 2,
                     character: "",
                     creditID: "525333fb19c295794002c720"
-                )),
+                )
+            ),
             ShowCastCredit.movie(
                 MovieCastCredit(
                     id: 109_091,
@@ -151,7 +151,8 @@ struct PersonCombinedCreditsTests {
                     character: "Westray",
                     creditID: "52fe4aaac3a36847f81db47d",
                     order: 2
-                ))
+                )
+            )
         ],
         crew: [
             ShowCrewCredit.tvSeries(
@@ -175,7 +176,8 @@ struct PersonCombinedCreditsTests {
                     job: "Executive Producer",
                     department: "Production",
                     creditID: "58cf92ae9251415a7d0339c3"
-                )),
+                )
+            ),
             ShowCrewCredit.movie(
                 MovieCrewCredit(
                     id: 174_349,
@@ -196,7 +198,8 @@ struct PersonCombinedCreditsTests {
                     job: "Executive Producer",
                     department: "Production",
                     creditID: "52fe4d49c3a36847f8258cf3"
-                ))
+                )
+            )
         ]
     )
 

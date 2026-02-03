@@ -15,7 +15,9 @@ public struct Language: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Language code.
     ///
-    public var id: String { code }
+    public var id: String {
+        code
+    }
 
     ///
     /// The ISO 639-1 language code.

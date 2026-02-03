@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.requests, .account))
@@ -53,7 +52,8 @@ struct FavouriteMoviesRequestTests {
         )
 
         #expect(
-            request.queryItems == ["sort_by": "created_at.desc", "page": "2", "session_id": "abc"])
+            request.queryItems == ["sort_by": "created_at.desc", "page": "2", "session_id": "abc"]
+        )
     }
 
     @Test("method is GET")

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 @testable import TMDb
 
 extension ReleaseDate {

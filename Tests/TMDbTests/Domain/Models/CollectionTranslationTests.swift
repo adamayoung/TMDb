@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.models))
@@ -55,7 +54,7 @@ struct CollectionTranslationTests {
         }
         """
 
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let translation = try JSONDecoder.theMovieDatabase.decode(
             CollectionTranslation.self,
             from: data
