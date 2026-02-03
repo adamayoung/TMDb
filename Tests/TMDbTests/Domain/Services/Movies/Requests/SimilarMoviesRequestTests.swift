@@ -1,5 +1,5 @@
 //
-//  SimilarMoviesRequest.swift
+//  SimilarMoviesRequestTests.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.requests, .movie))

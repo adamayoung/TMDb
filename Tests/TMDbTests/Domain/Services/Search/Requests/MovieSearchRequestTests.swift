@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.requests, .search))
@@ -79,7 +78,8 @@ struct MovieSearchRequestTests {
                 "include_adult": "false",
                 "page": "2",
                 "language": "en"
-            ])
+            ]
+        )
     }
 
     @Test("method is GET")

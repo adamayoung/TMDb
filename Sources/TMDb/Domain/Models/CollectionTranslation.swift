@@ -15,7 +15,9 @@ public struct CollectionTranslation: Identifiable, Codable, Equatable, Hashable,
     ///
     /// Collection translation's identifier (same as `languageCode`).
     ///
-    public var id: String { languageCode }
+    public var id: String {
+        languageCode
+    }
 
     ///
     /// ISO 3166-1 country code.
@@ -71,10 +73,10 @@ public struct CollectionTranslation: Identifiable, Codable, Equatable, Hashable,
 extension CollectionTranslation {
 
     private enum CodingKeys: String, CodingKey {
-        case countryCode = "iso_3166_1"
-        case languageCode = "iso_639_1"
+        case countryCode = "iso31661"
+        case languageCode = "iso6391"
         case name
-        case englishName = "english_name"
+        case englishName
         case data
     }
 

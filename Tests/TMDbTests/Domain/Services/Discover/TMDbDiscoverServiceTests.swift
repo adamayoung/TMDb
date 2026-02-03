@@ -7,10 +7,9 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
-@Suite(.tags(.services, .configuration))
+@Suite(.tags(.services, .discover))
 struct TMDbDiscoverServiceTests {
 
     var service: TMDbDiscoverService!
@@ -64,6 +63,96 @@ struct TMDbDiscoverServiceTests {
         }
     }
 
+    @Test("movies with filter using original language returns movies")
+    func moviesWithFilterUsingOriginalLanguageReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(originalLanguage: "en")
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
+    @Test("movies with filter using genres returns movies")
+    func moviesWithFilterUsingGenresReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(genres: [28, 12, 16])
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
+    @Test("movies with filter using primary release year on returns movies")
+    func moviesWithFilterUsingPrimaryReleaseYearOnReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(primaryReleaseYear: .on(2024))
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
+    @Test("movies with filter using primary release year from returns movies")
+    func moviesWithFilterUsingPrimaryReleaseYearFromReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(primaryReleaseYear: .from(2020))
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
+    @Test("movies with filter using primary release year up to returns movies")
+    func moviesWithFilterUsingPrimaryReleaseYearUpToReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(primaryReleaseYear: .upTo(2020))
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
+    @Test("movies with filter using primary release year between returns movies")
+    func moviesWithFilterUsingPrimaryReleaseYearBetweenReturnsMovies() async throws {
+        let filter = DiscoverMovieFilter(primaryReleaseYear: .between(start: 2015, end: 2020))
+        let expectedResult = MoviePageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverMoviesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.movies(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverMoviesRequest == expectedRequest)
+    }
+
     @Test("tvSeries with default parameter values returns TV series")
     func tvSeriesWithDefaultParameterValuesReturnsTVSeries() async throws {
         let expectedResult = TVSeriesPageableList.mock()
@@ -100,6 +189,36 @@ struct TMDbDiscoverServiceTests {
         await #expect(throws: TMDbError.unknown) {
             _ = try await service.tvSeries()
         }
+    }
+
+    @Test("tvSeries with filter using original language returns TV series")
+    func tvSeriesWithFilterUsingOriginalLanguageReturnsTVSeries() async throws {
+        let filter = DiscoverTVSeriesFilter(originalLanguage: "en")
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.tvSeries(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverTVSeriesRequest == expectedRequest)
+    }
+
+    @Test("tvSeries with filter using genres returns TV series")
+    func tvSeriesWithFilterUsingGenresReturnsTVSeries() async throws {
+        let filter = DiscoverTVSeriesFilter(genres: [18, 35, 10765])
+        let expectedResult = TVSeriesPageableList.mock()
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = DiscoverTVSeriesRequest(
+            filter: filter, sortedBy: nil, page: nil, language: nil
+        )
+
+        let result = try await service.tvSeries(filter: filter)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? DiscoverTVSeriesRequest == expectedRequest)
     }
 
 }

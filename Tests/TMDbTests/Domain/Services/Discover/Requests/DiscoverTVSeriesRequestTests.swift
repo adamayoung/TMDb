@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(.tags(.requests, .discover))
@@ -35,7 +34,7 @@ struct DiscoverTVSeriesRequestTests {
     }
 
     @Test("queryItems with page")
-    func queryItemsWithPage() throws {
+    func queryItemsWithPage() {
         let request = DiscoverTVSeriesRequest(page: 1)
 
         #expect(request.queryItems == ["page": "1"])
@@ -77,7 +76,8 @@ struct DiscoverTVSeriesRequestTests {
                 "sort_by": "first_air_date.asc",
                 "page": "2",
                 "language": "en"
-            ])
+            ]
+        )
     }
 
     @Test("method is GET")

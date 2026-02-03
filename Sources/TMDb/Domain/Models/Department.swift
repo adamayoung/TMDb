@@ -15,7 +15,9 @@ public struct Department: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Departments's identifier (same as `name`).
     ///
-    public var id: String { name }
+    public var id: String {
+        name
+    }
 
     ///
     /// Department's name.

@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 @Suite(
@@ -79,21 +78,16 @@ struct CollectionIntegrationTests {
         #expect(!imageCollection.posters.isEmpty)
     }
 
-    @Test("translations", .disabled("Known issue - needs investigation"))
+    @Test("translations")
     func translations() async throws {
         let collectionID = 10
 
-        do {
-            let translations = try await collectionService.translations(
-                forCollection: collectionID
-            )
+        let translations = try await collectionService.translations(
+            forCollection: collectionID
+        )
 
-            #expect(!translations.isEmpty)
-            #expect(translations.contains(where: { $0.languageCode == "en" }))
-        } catch {
-            Issue.record("Failed with error: \(error)")
-            throw error
-        }
+        #expect(!translations.isEmpty)
+        #expect(translations.contains(where: { $0.languageCode == "en" }))
     }
 
 }

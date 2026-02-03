@@ -102,7 +102,8 @@ extension TMDbAPIClient {
         var queryItems = urlComponents.queryItems ?? []
         for requestQueryItem in requestQueryItems {
             queryItems.append(
-                URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value))
+                URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value)
+            )
         }
 
         urlComponents.queryItems = queryItems

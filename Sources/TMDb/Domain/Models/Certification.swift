@@ -15,7 +15,9 @@ public struct Certification: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// Certification's identifier (same as ``code``).
     ///
-    public var id: String { code }
+    public var id: String {
+        code
+    }
 
     ///
     /// Certification code.

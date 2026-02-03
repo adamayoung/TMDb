@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 @testable import TMDb
 
 final class AuthenticateURLMockBuilder: AuthenticateURLBuilding, @unchecked Sendable {

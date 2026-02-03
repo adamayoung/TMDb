@@ -1,0 +1,27 @@
+{
+  "id": 10,
+  "translations": [
+    {
+      "iso_3166_1": "DE",
+      "iso_639_1": "de",
+      "name": "Deutsch",
+      "english_name": "German",
+      "data": {
+        "title": "Star Wars Filmreihe",
+        "overview": "Star Wars™ ist die größte Science-Fiction-Saga aller Zeiten.",
+        "homepage": "http://www.starwars-union.de"
+      }
+    },
+    {
+      "iso_3166_1": "US",
+      "iso_639_1": "en",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "title": "",
+        "overview": "An epic space-opera theatrical film series.",
+        "homepage": "https://www.starwars.com/films"
+      }
+    }
+  ]
+}

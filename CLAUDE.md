@@ -23,9 +23,9 @@ swift test --filter "TestClassName"
 swift test --filter "TestClassName/testMethodName"
 
 # Code Quality
-make lint                     # Check swift-format compliance
-make format                   # Auto-format code
-make lint-markdown            # Lint markdown files
+make format                   # Auto-format code (requires swiftlint and swiftformat)
+make lint                     # Check swiftlint and swiftformat compliance
+make lint-markdown            # Lint markdown files (requires markdownlint)
 
 # Documentation
 make preview-docs             # Preview DocC locally
@@ -85,15 +85,31 @@ HTTPClient (protocol)
 - `Tests/TMDbIntegrationTests/` - Live API tests
 - Uses Swift Testing framework (not XCTest)
 
+### Test Writing Guidelines
+
+**CRITICAL: Never use force unwrapping in tests**
+- Always use `#require()` instead of force unwrapping (`!`) when working with optionals
+- `#require()` provides better error messages and handles nil gracefully
+- Example:
+  ```swift
+  // ❌ BAD - force unwrap
+  let translation = result.translations.first { $0.languageCode == "en" }!
+
+  // ✅ GOOD - use #require
+  let translation = try #require(result.translations.first { $0.languageCode == "en" })
+  ```
+
 ## Code Style Requirements
 
-Enforced via `.swift-format`:
+Enforced via `swiftlint` and `swiftformat`:
 
 - **Line length:** 100 characters
 - **All public declarations must have documentation** (`///` style)
 - **No force unwrapping** (`!`) or force try (`try!`)
 - **Use guard for early exits**
 - **No leading underscores** - use file-private instead
+
+**Note:** The `swiftlint` and `swiftformat` tools must be installed separately. If not available, ensure code follows existing style patterns and compiles without warnings.
 
 ## Testing Requirements
 
@@ -141,13 +157,15 @@ Unit tests alone may pass even when:
 
 **CRITICAL: Before considering ANY task complete, run these steps in order:**
 
-1. **Format code**: `make format` - Auto-format all Swift files
-2. **Check lint**: `make lint` - Verify swift-format compliance
-3. **Run unit tests**: `make test` - All unit tests must pass
-4. **Run integration tests**: `make integration-test` - All integration tests must pass
+1. **Format code** (if tools available): `make format` - Auto-format all Swift files with swiftlint and swiftformat
+   - If tools not installed: Manually verify code follows existing style patterns
+2. **Check lint** (if tools available): `make lint` - Verify swiftlint and swiftformat compliance
+   - If tools not installed: Ensure code compiles with `swift build -Xswiftc -warnings-as-errors`
+3. **Run unit tests**: `make test` - All unit tests must pass ✅ **REQUIRED**
+4. **Run integration tests**: `make integration-test` - All integration tests must pass ✅ **REQUIRED**
 5. **Build documentation**: `make build-docs` - Verify DocC builds without warnings (if public API changed)
 
-**All steps must succeed before the work is complete.**
+**Required steps (3-5) must succeed before the work is complete. Steps 1-2 are strongly recommended but can be skipped if formatting tools are not available.**
 
 ## Documentation Requirements
 

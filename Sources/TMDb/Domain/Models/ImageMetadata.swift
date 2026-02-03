@@ -15,7 +15,9 @@ public struct ImageMetadata: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// Image metadata's identifier (same as `filePath`).
     ///
-    public var id: URL { filePath }
+    public var id: URL {
+        filePath
+    }
 
     ///
     /// Path of the image.

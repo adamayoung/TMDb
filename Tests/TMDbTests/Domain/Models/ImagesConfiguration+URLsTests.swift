@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-
 @testable import TMDb
 
 // swiftlint:disable type_body_length
@@ -49,7 +48,8 @@ struct ImagesConfigurationURLsTests {
     func backdropURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.backdropURL(for: path)
 
@@ -60,7 +60,8 @@ struct ImagesConfigurationURLsTests {
     func backdropURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.backdropURL(for: path, idealWidth: 100_000)
 
@@ -101,7 +102,8 @@ struct ImagesConfigurationURLsTests {
     func backdropURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = emptyConfiguration.backdropURL(for: path)
 
@@ -112,7 +114,8 @@ struct ImagesConfigurationURLsTests {
     func logoURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.logoURL(for: path)
 
@@ -123,7 +126,8 @@ struct ImagesConfigurationURLsTests {
     func logoURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.logoURL(for: path, idealWidth: 100_000)
 
@@ -164,7 +168,8 @@ struct ImagesConfigurationURLsTests {
     func logoURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = emptyConfiguration.logoURL(for: path)
 
@@ -175,7 +180,8 @@ struct ImagesConfigurationURLsTests {
     func posterURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.posterURL(for: path)
 
@@ -186,7 +192,8 @@ struct ImagesConfigurationURLsTests {
     func posterURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.posterURL(for: path, idealWidth: 100_000)
 
@@ -227,7 +234,8 @@ struct ImagesConfigurationURLsTests {
     func posterURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = emptyConfiguration.posterURL(for: path)
 
@@ -238,7 +246,8 @@ struct ImagesConfigurationURLsTests {
     func profileURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.profileURL(for: path)
 
@@ -249,7 +258,8 @@ struct ImagesConfigurationURLsTests {
     func profileURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.profileURL(for: path, idealWidth: 100_000)
 
@@ -290,7 +300,8 @@ struct ImagesConfigurationURLsTests {
     func profileURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = emptyConfiguration.profileURL(for: path)
 
@@ -301,7 +312,8 @@ struct ImagesConfigurationURLsTests {
     func stillURLWhenNoWidthIsGivenReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.stillURL(for: path)
 
@@ -312,7 +324,8 @@ struct ImagesConfigurationURLsTests {
     func stillURLWhenWidthIsVeryLargeReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = configuration.stillURL(for: path, idealWidth: 100_000)
 
@@ -353,7 +366,8 @@ struct ImagesConfigurationURLsTests {
     func stillURLWhenConfigurationIsEmptyReturnsOriginalURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
         let expectedResult = try #require(
-            URL(string: "https://image.tmdb.org/t/p/original/image.jpg"))
+            URL(string: "https://image.tmdb.org/t/p/original/image.jpg")
+        )
 
         let result = emptyConfiguration.stillURL(for: path)
 
