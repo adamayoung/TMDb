@@ -85,6 +85,20 @@ HTTPClient (protocol)
 - `Tests/TMDbIntegrationTests/` - Live API tests
 - Uses Swift Testing framework (not XCTest)
 
+### Test Writing Guidelines
+
+**CRITICAL: Never use force unwrapping in tests**
+- Always use `#require()` instead of force unwrapping (`!`) when working with optionals
+- `#require()` provides better error messages and handles nil gracefully
+- Example:
+  ```swift
+  // ❌ BAD - force unwrap
+  let translation = result.translations.first { $0.languageCode == "en" }!
+
+  // ✅ GOOD - use #require
+  let translation = try #require(result.translations.first { $0.languageCode == "en" })
+  ```
+
 ## Code Style Requirements
 
 Enforced via `swiftlint` and `swiftformat`:
