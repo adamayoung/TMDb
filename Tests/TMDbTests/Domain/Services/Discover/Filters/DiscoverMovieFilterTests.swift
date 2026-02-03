@@ -24,9 +24,7 @@ struct DiscoverMovieFilterTests {
     }
 
     @Test("init with people sets people property")
-    func initWithPeopleSets
-
-PeopleProperty() {
+    func initWithPeopleSetsPeopleProperty() {
         let people = [1, 2, 3]
 
         let filter = DiscoverMovieFilter(people: people)
