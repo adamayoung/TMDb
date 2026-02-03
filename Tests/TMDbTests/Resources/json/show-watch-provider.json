@@ -1,0 +1,31 @@
+{
+    "link": "https://www.themoviedb.org/movie/550-fight-club/watch",
+    "flatrate": [
+        {
+            "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
+            "provider_id": 8,
+            "provider_name": "Netflix"
+        }
+    ],
+    "buy": [
+        {
+            "logo_path": "/peURlLlr8jggOwK53fJ5wdQl05y.jpg",
+            "provider_id": 2,
+            "provider_name": "Apple TV"
+        }
+    ],
+    "rent": [
+        {
+            "logo_path": "/peURlLlr8jggOwK53fJ5wdQl05y.jpg",
+            "provider_id": 2,
+            "provider_name": "Apple TV"
+        }
+    ],
+    "free": [
+        {
+            "logo_path": "/aS2zvJWn9mwiCOeaaCkIh4wleZS.jpg",
+            "provider_id": 300,
+            "provider_name": "Pluto TV"
+        }
+    ]
+}

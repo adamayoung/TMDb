@@ -1,0 +1,29 @@
+{
+    "adult": false,
+    "gender": 2,
+    "id": 287,
+    "known_for_department": "Acting",
+    "name": "Brad Pitt",
+    "original_name": "William Bradley Pitt",
+    "popularity": 65.732,
+    "profile_path": "/kU3B75TyRiCgE270EyZnHjfivoq.jpg",
+    "known_for": [
+        {
+            "media_type": "movie",
+            "adult": false,
+            "backdrop_path": "/tkHQ7tnYYUEnqlrKuhufIsSVToU.jpg",
+            "genre_ids": [27],
+            "id": 550,
+            "original_language": "en",
+            "original_title": "Fight Club",
+            "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+            "popularity": 1080.713,
+            "poster_path": "/uGyiewQnDHPuiHN9V4k2t9QBPnh.jpg",
+            "release_date": "1999-10-12",
+            "title": "Fight Club",
+            "video": false,
+            "vote_average": 7.8,
+            "vote_count": 3439
+        }
+    ]
+}
