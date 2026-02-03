@@ -72,6 +72,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVSeriesService``
 - ``TVSeries``
+- ``TVSeriesPageableList``
 - ``ShowCredits``
 - ``TVSeriesAggregateCredits``
 - ``AggregateCastMember``
@@ -85,6 +86,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeriesExternalLinksCollection``
 - ``TVSeriesImageFilter``
 - ``TVSeriesVideoFilter``
+- ``ContentRating``
 
 ### TV Seasons
 
@@ -122,9 +124,11 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MoviePageableList``
 - ``Movie``
 - ``MovieSort``
+- ``DiscoverMovieFilter``
 - ``TVSeriesPageableList``
 - ``TVSeries``
 - ``TVSeriesSort``
+- ``DiscoverTVSeriesFilter``
 
 ### Trending
 

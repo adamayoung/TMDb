@@ -38,7 +38,7 @@ struct TVEpisodeServiceTests {
         #expect(episode.id == 63068)
         #expect(episode.episodeNumber == episodeNumber)
         #expect(episode.seasonNumber == seasonNumber)
-        #expect(episode.name == "What is Dead May Never Die")
+        #expect(episode.name == "What Is Dead May Never Die")
     }
 
     @Test("credits")
