@@ -1,0 +1,29 @@
+{
+  "id": 550,
+  "translations": [
+    {
+      "iso_3166_1": "US",
+      "iso_639_1": "en",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "title": "Fight Club",
+        "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+        "homepage": "https://www.foxmovies.com/movies/fight-club",
+        "tagline": "Mischief. Mayhem. Soap."
+      }
+    },
+    {
+      "iso_3166_1": "FR",
+      "iso_639_1": "fr",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "title": "Fight Club",
+        "overview": "Un insomniac qui souffre d'insomnie et un vendeur de savon forment un club de combat secret.",
+        "homepage": null,
+        "tagline": null
+      }
+    }
+  ]
+}

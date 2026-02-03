@@ -251,4 +251,134 @@ final class TMDbMovieService: MovieService {
         return result.results
     }
 
+    func accountStates(forMovie movieID: Movie.ID, session: Session) async throws -> AccountStates {
+        let request = MovieAccountStatesRequest(id: movieID, sessionID: session.sessionID)
+
+        let accountStates: AccountStates
+        do {
+            accountStates = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return accountStates
+    }
+
+    func addRating(_ rating: Double, toMovie movieID: Movie.ID, session: Session) async throws {
+        let request = AddMovieRatingRequest(rating: rating, movieID: movieID, sessionID: session.sessionID)
+
+        do {
+            _ = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws {
+        let request = DeleteMovieRatingRequest(movieID: movieID, sessionID: session.sessionID)
+
+        do {
+            _ = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    func alternativeTitles(
+        forMovie movieID: Movie.ID,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> AlternativeTitleCollection {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieAlternativeTitlesRequest(id: movieID, country: country, language: languageCode)
+
+        let alternativeTitleCollection: AlternativeTitleCollection
+        do {
+            alternativeTitleCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return alternativeTitleCollection
+    }
+
+    func translations(forMovie movieID: Movie.ID) async throws -> TranslationCollection<MovieTranslationData> {
+        let request = MovieTranslationsRequest(id: movieID)
+
+        let translationCollection: TranslationCollection<MovieTranslationData>
+        do {
+            translationCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return translationCollection
+    }
+
+    func lists(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieListsRequest(id: movieID, page: page, language: languageCode)
+
+        let mediaList: MediaPageableList
+        do {
+            mediaList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return mediaList
+    }
+
+    func changes(
+        forMovie movieID: Movie.ID,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangeCollection {
+        let request = MovieChangesRequest(id: movieID, startDate: startDate, endDate: endDate, page: page)
+
+        let changeCollection: ChangeCollection
+        do {
+            changeCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return changeCollection
+    }
+
+    func latest() async throws -> Movie {
+        let request = LatestMovieRequest()
+
+        let movie: Movie
+        do {
+            movie = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movie
+    }
+
+    func changes(
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangedIDCollection {
+        let request = MovieChangesListRequest(startDate: startDate, endDate: endDate, page: page)
+
+        let changedIDCollection: ChangedIDCollection
+        do {
+            changedIDCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return changedIDCollection
+    }
+
 }
