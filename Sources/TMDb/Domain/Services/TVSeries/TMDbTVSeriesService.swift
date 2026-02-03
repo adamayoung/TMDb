@@ -268,4 +268,166 @@ final class TMDbTVSeriesService: TVSeriesService {
         return linksCollection
     }
 
+    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+    -> AccountStates {
+        let request = TVSeriesAccountStatesRequest(id: tvSeriesID, sessionID: session.sessionID)
+
+        let accountStates: AccountStates
+        do {
+            accountStates = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return accountStates
+    }
+
+    func addRating(
+        _ rating: Double,
+        toTVSeries tvSeriesID: TVSeries.ID,
+        session: Session
+    ) async throws {
+        guard (0.5...10.0).contains(rating), rating.truncatingRemainder(dividingBy: 0.5) == 0 else {
+            throw TMDbError.invalidRating
+        }
+
+        let request = TVSeriesAddRatingRequest(
+            rating: rating,
+            tvSeriesID: tvSeriesID,
+            sessionID: session.sessionID
+        )
+
+        do {
+            _ = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws {
+        let request = TVSeriesDeleteRatingRequest(tvSeriesID: tvSeriesID, sessionID: session.sessionID)
+
+        do {
+            _ = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+    }
+
+    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws -> KeywordCollection {
+        let request = TVSeriesKeywordsRequest(id: tvSeriesID)
+
+        let keywordCollection: KeywordCollection
+        do {
+            keywordCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return keywordCollection
+    }
+
+    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    -> AlternativeTitleCollection {
+        let request = TVSeriesAlternativeTitlesRequest(id: tvSeriesID)
+
+        let alternativeTitleCollection: AlternativeTitleCollection
+        do {
+            alternativeTitleCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return alternativeTitleCollection
+    }
+
+    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    -> TranslationCollection<TVSeriesTranslationData> {
+        let request = TVSeriesTranslationsRequest(id: tvSeriesID)
+
+        let translationCollection: TranslationCollection<TVSeriesTranslationData>
+        do {
+            translationCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return translationCollection
+    }
+
+    func lists(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesListsRequest(id: tvSeriesID, page: page, language: languageCode)
+
+        let mediaList: MediaPageableList
+        do {
+            mediaList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return mediaList
+    }
+
+    func changes(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangeCollection {
+        let request = TVSeriesChangesRequest(
+            id: tvSeriesID,
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+
+        let changeCollection: ChangeCollection
+        do {
+            changeCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return changeCollection
+    }
+
+    func latest() async throws -> TVSeries {
+        let request = LatestTVSeriesRequest()
+
+        let tvSeries: TVSeries
+        do {
+            tvSeries = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeries
+    }
+
+    func changes(
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangedIDCollection {
+        let request = TVSeriesChangesListRequest(
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+
+        let changedIDCollection: ChangedIDCollection
+        do {
+            changedIDCollection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return changedIDCollection
+    }
+
 }

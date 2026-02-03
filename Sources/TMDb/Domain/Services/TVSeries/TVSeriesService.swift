@@ -301,6 +301,170 @@ public protocol TVSeriesService: Sendable {
     /// - Returns: Content ratings for the TV series grouped by country.
     ///
     func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating]
+
+    ///
+    /// Returns the user's rating, favorite, and watchlist state for a TV series.
+    ///
+    /// [TMDb API - TV Series: Account States](https://developer.themoviedb.org/reference/tv-series-account-states)
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - session: The session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The user's account states for the TV series.
+    ///
+    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws -> AccountStates
+
+    ///
+    /// Adds a rating for a TV series.
+    ///
+    /// [TMDb API - TV Series: Add Rating](https://developer.themoviedb.org/reference/tv-series-add-rating)
+    ///
+    /// - Precondition: `rating` must be between 0.5 and 10.0, in increments of 0.5.
+    ///
+    /// - Parameters:
+    ///   - rating: The rating value.
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - session: The session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    func addRating(_ rating: Double, toTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+
+    ///
+    /// Deletes the user's rating for a TV series.
+    ///
+    /// [TMDb API - TV Series: Delete Rating](https://developer.themoviedb.org/reference/tv-series-delete-rating)
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - session: The session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+
+    ///
+    /// Returns keywords for a TV series.
+    ///
+    /// [TMDb API - TV Series: Keywords](https://developer.themoviedb.org/reference/tv-series-keywords)
+    ///
+    /// - Parameter tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of keywords for the TV series.
+    ///
+    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws -> KeywordCollection
+
+    ///
+    /// Returns alternative titles for a TV series.
+    ///
+    /// [TMDb API - TV Series: Alternative Titles](https://developer.themoviedb.org/reference/tv-series-alternative-titles)
+    ///
+    /// - Parameter tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of alternative titles for the TV series.
+    ///
+    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws -> AlternativeTitleCollection
+
+    ///
+    /// Returns translations for a TV series.
+    ///
+    /// [TMDb API - TV Series: Translations](https://developer.themoviedb.org/reference/tv-series-translations)
+    ///
+    /// - Parameter tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of translations for the TV series.
+    ///
+    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws
+        -> TranslationCollection<TVSeriesTranslationData>
+
+    ///
+    /// Returns lists that contain the TV series.
+    ///
+    /// [TMDb API - TV Series: Lists](https://developer.themoviedb.org/reference/tv-series-lists)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - page: The page of results to return.
+    ///   - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Lists containing the TV series as a pageable list.
+    ///
+    func lists(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int?,
+        language: String?
+    ) async throws -> MediaPageableList
+
+    ///
+    /// Returns change history for a TV series.
+    ///
+    /// [TMDb API - TV Series: Changes](https://developer.themoviedb.org/reference/tv-series-changes)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the TV series.
+    ///
+    func changes(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        startDate: Date?,
+        endDate: Date?,
+        page: Int?
+    ) async throws -> ChangeCollection
+
+    ///
+    /// Returns the latest TV series added to TMDb.
+    ///
+    /// [TMDb API - TV Series: Latest](https://developer.themoviedb.org/reference/tv-series-latest-id)
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The latest TV series.
+    ///
+    func latest() async throws -> TVSeries
+
+    ///
+    /// Returns a list of TV series IDs that have changed.
+    ///
+    /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of TV series IDs that have changed.
+    ///
+    func changes(
+        startDate: Date?,
+        endDate: Date?,
+        page: Int?
+    ) async throws -> ChangedIDCollection
 }
 
 public extension TVSeriesService {
@@ -587,6 +751,86 @@ public extension TVSeriesService {
         language: String? = nil
     ) async throws -> TVSeriesPageableList {
         try await topRated(page: page, language: language)
+    }
+
+    ///
+    /// Returns lists that contain the TV series.
+    ///
+    /// [TMDb API - TV Series: Lists](https://developer.themoviedb.org/reference/tv-series-lists)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - page: The page of results to return.
+    ///   - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Lists containing the TV series as a pageable list.
+    ///
+    func lists(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaPageableList {
+        try await lists(forTVSeries: tvSeriesID, page: page, language: language)
+    }
+
+    ///
+    /// Returns change history for a TV series.
+    ///
+    /// [TMDb API - TV Series: Changes](https://developer.themoviedb.org/reference/tv-series-changes)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the TV series.
+    ///
+    func changes(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangeCollection {
+        try await changes(
+            forTVSeries: tvSeriesID,
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+    }
+
+    ///
+    /// Returns a list of TV series IDs that have changed.
+    ///
+    /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of TV series IDs that have changed.
+    ///
+    func changes(
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangedIDCollection {
+        try await changes(startDate: startDate, endDate: endDate, page: page)
     }
 
 }

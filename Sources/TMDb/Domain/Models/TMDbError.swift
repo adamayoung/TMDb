@@ -36,6 +36,9 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An error indicating there was a problem decoding data.
     case decode(Error)
 
+    /// An error indicating an invalid rating value was provided.
+    case invalidRating
+
     /// An unknown error.
     case unknown
 
@@ -75,6 +78,9 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
             true
 
         case (.decode, .decode):
+            true
+
+        case (.invalidRating, .invalidRating):
             true
 
         case (.unknown, .unknown):
@@ -117,6 +123,9 @@ public extension TMDbError {
 
         case .decode:
             "Decode error"
+
+        case .invalidRating:
+            "Invalid rating (must be between 0.5 and 10.0, in increments of 0.5)"
 
         case .unknown:
             "Unknown"
