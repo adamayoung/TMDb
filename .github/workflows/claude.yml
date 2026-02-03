@@ -41,6 +41,8 @@ jobs:
             Use `gh pr comment` to post a summary review comment on the PR.
             Use inline comments for specific code issues.
             Be concise and actionable.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   claude-respond:
     # Only respond to @claude mentions from adamayoung
@@ -62,3 +64,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          trigger_phrase: "@claude"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
