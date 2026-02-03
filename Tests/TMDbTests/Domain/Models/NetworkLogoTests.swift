@@ -14,21 +14,23 @@ struct NetworkLogoTests {
 
     @Test("JSON decoding of NetworkLogo")
     func decodeReturnsNetworkLogo() throws {
+        let expectedResult = try networkLogo()
+
         let result = try JSONDecoder.theMovieDatabase.decode(
             NetworkLogo.self,
             fromResource: "network-logo"
         )
 
-        #expect(result == networkLogo)
+        #expect(result == expectedResult)
     }
 
 }
 
 extension NetworkLogoTests {
 
-    private var networkLogo: NetworkLogo {
-        NetworkLogo(
-            filePath: URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png")!,
+    private func networkLogo() throws -> NetworkLogo {
+        try NetworkLogo(
+            filePath: #require(URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png")),
             aspectRatio: 3.73134328358209
         )
     }

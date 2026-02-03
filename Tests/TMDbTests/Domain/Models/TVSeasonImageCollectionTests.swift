@@ -14,25 +14,26 @@ struct TVSeasonImageCollectionTests {
 
     @Test("JSON decoding of TVSeasonImageCollection")
     func decodeReturnsTVSeasonImageCollection() throws {
+        let expectedResult = try tvSeasonImageCollection()
         let result = try JSONDecoder.theMovieDatabase.decode(
             TVSeasonImageCollection.self,
             fromResource: "tv-season-image-collection"
         )
 
-        #expect(result.id == tvSeasonImageCollection.id)
-        #expect(result.posters == tvSeasonImageCollection.posters)
+        #expect(result.id == expectedResult.id)
+        #expect(result.posters == expectedResult.posters)
     }
 
 }
 
 extension TVSeasonImageCollectionTests {
 
-    private var tvSeasonImageCollection: TVSeasonImageCollection {
-        TVSeasonImageCollection(
+    private func tvSeasonImageCollection() throws -> TVSeasonImageCollection {
+        try TVSeasonImageCollection(
             id: 3624,
             posters: [
                 ImageMetadata(
-                    filePath: URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg")!,
+                    filePath: #require(URL(string: "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg")),
                     width: 1280,
                     height: 720,
                     aspectRatio: 1.77777777777778,
