@@ -50,7 +50,7 @@ public struct AccountStates: Codable, Equatable, Hashable, Sendable {
 
 }
 
-extension AccountStates {
+public extension AccountStates {
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -59,7 +59,7 @@ extension AccountStates {
         case isInWatchlist = "watchlist"
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
@@ -74,7 +74,7 @@ extension AccountStates {
         }
     }
 
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)

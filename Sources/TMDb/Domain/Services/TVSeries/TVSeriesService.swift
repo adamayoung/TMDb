@@ -362,7 +362,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// Returns alternative titles for a TV series.
     ///
-    /// [TMDb API - TV Series: Alternative Titles](https://developer.themoviedb.org/reference/tv-series-alternative-titles)
+    /// [TMDb API - TV Series: Alternative
+    /// Titles](https://developer.themoviedb.org/reference/tv-series-alternative-titles)
     ///
     /// - Parameter tvSeriesID: The identifier of the TV series.
     ///

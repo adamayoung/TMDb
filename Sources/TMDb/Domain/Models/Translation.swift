@@ -11,7 +11,7 @@ import Foundation
 /// A model representing a translation.
 ///
 public struct Translation<Data: Codable & Equatable & Hashable & Sendable>:
-    Identifiable, Codable, Equatable, Hashable, Sendable {
+Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Translation's identifier (same as `languageCode`).
@@ -87,7 +87,7 @@ extension Translation {
 /// A model representing a collection of translations.
 ///
 public struct TranslationCollection<Data: Codable & Equatable & Hashable & Sendable>:
-    Codable, Equatable, Hashable, Sendable {
+Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Media identifier.

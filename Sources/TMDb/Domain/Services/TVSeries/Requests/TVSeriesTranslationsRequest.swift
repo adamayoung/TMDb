@@ -8,7 +8,7 @@
 import Foundation
 
 final class TVSeriesTranslationsRequest:
-    DecodableAPIRequest<TranslationCollection<TVSeriesTranslationData>> {
+DecodableAPIRequest<TranslationCollection<TVSeriesTranslationData>> {
 
     init(id: TVSeries.ID) {
         let path = "/tv/\(id)/translations"
