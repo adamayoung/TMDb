@@ -312,7 +312,7 @@ extension TMDbAccountServiceRatedTests {
     func listsWithDefaultParameterValuesReturnsLists() async throws {
         let accountID = 123
         let session = Session.mock()
-        let expectedResult = MediaListPageableList.mock()
+        let expectedResult = MediaListSummaryPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = AccountListsRequest(
             page: nil,
@@ -334,7 +334,7 @@ extension TMDbAccountServiceRatedTests {
         let accountID = 123
         let session = Session.mock()
         let page = 2
-        let expectedResult = MediaListPageableList.mock()
+        let expectedResult = MediaListSummaryPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = AccountListsRequest(
             page: page,

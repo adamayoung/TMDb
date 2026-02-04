@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class AccountListsRequest: DecodableAPIRequest<MediaListPageableList> {
+final class AccountListsRequest: DecodableAPIRequest<MediaListSummaryPageableList> {
 
     init(page: Int? = nil, accountID: Int, sessionID: String) {
         let path = "/account/\(accountID)/lists"

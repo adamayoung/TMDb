@@ -187,8 +187,9 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        #expect(ratedMoviesList.page >= 1)
-        #expect(ratedMoviesList.results.count >= 0)
+        let page = try #require(ratedMoviesList.page)
+        #expect(page >= 1)
+        #expect(ratedMoviesList.results.isEmpty)
     }
 
     @Test("ratedTVSeries")
@@ -200,8 +201,9 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        #expect(ratedTVSeriesList.page >= 1)
-        #expect(ratedTVSeriesList.results.count >= 0)
+        let page = try #require(ratedTVSeriesList.page)
+        #expect(page >= 1)
+        #expect(ratedTVSeriesList.results.isEmpty)
     }
 
     @Test("ratedTVEpisodes")
@@ -213,8 +215,9 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        #expect(ratedTVEpisodesList.page >= 1)
-        #expect(ratedTVEpisodesList.results.count >= 0)
+        let page = try #require(ratedTVEpisodesList.page)
+        #expect(page >= 1)
+        #expect(ratedTVEpisodesList.results.isEmpty)
     }
 
     @Test("lists")
@@ -226,8 +229,9 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        #expect(listsList.page >= 1)
-        #expect(listsList.results.count >= 0)
+        let page = try #require(listsList.page)
+        #expect(page >= 1)
+        #expect(listsList.results.isEmpty)
     }
 
 }

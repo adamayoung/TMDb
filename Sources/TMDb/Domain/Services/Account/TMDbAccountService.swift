@@ -278,14 +278,14 @@ final class TMDbAccountService: AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> MediaListPageableList {
+    ) async throws -> MediaListSummaryPageableList {
         let request = AccountListsRequest(
             page: page,
             accountID: accountID,
             sessionID: session.sessionID
         )
 
-        let listResult: MediaListPageableList
+        let listResult: MediaListSummaryPageableList
         do {
             listResult = try await apiClient.perform(request)
         } catch let error {
