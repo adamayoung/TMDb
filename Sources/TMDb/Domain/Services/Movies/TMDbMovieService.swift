@@ -7,6 +7,8 @@
 
 import Foundation
 
+// swiftlint:disable type_body_length
+
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 final class TMDbMovieService: MovieService {
 
@@ -382,3 +384,5 @@ final class TMDbMovieService: MovieService {
     }
 
 }
+
+// swiftlint:enable type_body_length

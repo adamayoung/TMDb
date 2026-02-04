@@ -11,8 +11,7 @@ import Foundation
 /// A model representing a translation for a media item.
 ///
 public struct Translation<DataType: Codable & Equatable & Hashable & Sendable>: Codable, Equatable, Hashable,
-    Sendable
-{
+Sendable {
 
     ///
     /// The ISO 3166-1 country code.
@@ -81,8 +80,7 @@ extension Translation {
 /// A model representing a collection of translations.
 ///
 public struct TranslationCollection<DataType: Codable & Equatable & Hashable & Sendable>: Codable, Equatable,
-    Hashable, Sendable
-{
+Hashable, Sendable {
 
     ///
     /// The media item identifier.
