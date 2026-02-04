@@ -40,7 +40,30 @@ extension AlternativeTitleCollection {
 
     private enum CodingKeys: String, CodingKey {
         case id
-        case titles = "results"
+        case titles
+        case results
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+
+        // Movies API uses "titles", TV Series API uses "results"
+        if let titles = try container.decodeIfPresent([AlternativeTitle].self, forKey: .titles) {
+            self.titles = titles
+        } else if let results = try container.decodeIfPresent([AlternativeTitle].self, forKey: .results) {
+            self.titles = results
+        } else {
+            self.titles = []
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(titles, forKey: .titles)
     }
 
 }
