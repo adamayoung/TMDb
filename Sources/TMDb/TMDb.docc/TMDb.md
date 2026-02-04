@@ -99,6 +99,18 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeriesImageFilter``
 - ``TVSeriesVideoFilter``
 - ``ContentRating``
+- ``KeywordCollection``
+- ``AlternativeTitleCollection``
+- ``AlternativeTitle``
+- ``TranslationCollection``
+- ``Translation``
+- ``TVSeriesTranslationData``
+- ``ChangeCollection``
+- ``Change``
+- ``ChangeItem``
+- ``AnyCodable``
+- ``ChangedIDCollection``
+- ``ChangedID``
 
 ### TV Seasons
 
@@ -189,6 +201,10 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``CollectionTranslation``
 - ``CollectionTranslationData``
 
+### Account States
+
+- ``AccountStates``
+
 ### Companies
 
 - ``CompanyService``
@@ -204,6 +220,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``KeywordService``
 - ``Keyword``
+- ``KeywordCollection``
 
 ### Networks
 

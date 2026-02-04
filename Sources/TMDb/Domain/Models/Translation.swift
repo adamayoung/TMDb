@@ -148,3 +148,46 @@ public struct MovieTranslationData: Codable, Equatable, Hashable, Sendable {
     }
 
 }
+
+///
+/// A model representing TV series-specific translation data.
+///
+public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The translated TV series name.
+    ///
+    public let name: String
+
+    ///
+    /// The translated TV series overview.
+    ///
+    public let overview: String
+
+    ///
+    /// The translated TV series homepage URL.
+    ///
+    public let homepage: String?
+
+    ///
+    /// The translated TV series tagline.
+    ///
+    public let tagline: String?
+
+    ///
+    /// Creates a TV series translation data object.
+    ///
+    /// - Parameters:
+    ///    - name: The translated TV series name.
+    ///    - overview: The translated TV series overview.
+    ///    - homepage: The translated TV series homepage URL.
+    ///    - tagline: The translated TV series tagline.
+    ///
+    public init(name: String, overview: String, homepage: String? = nil, tagline: String? = nil) {
+        self.name = name
+        self.overview = overview
+        self.homepage = homepage
+        self.tagline = tagline
+    }
+
+}

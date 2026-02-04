@@ -54,32 +54,3 @@ extension AlternativeTitle {
     }
 
 }
-
-///
-/// A model representing a collection of alternative titles.
-///
-public struct AlternativeTitleCollection: Codable, Equatable, Hashable, Sendable {
-
-    ///
-    /// The media item identifier.
-    ///
-    public let id: Int
-
-    ///
-    /// The list of alternative titles.
-    ///
-    public let titles: [AlternativeTitle]
-
-    ///
-    /// Creates an alternative title collection object.
-    ///
-    /// - Parameters:
-    ///    - id: The media item identifier.
-    ///    - titles: The list of alternative titles.
-    ///
-    public init(id: Int, titles: [AlternativeTitle]) {
-        self.id = id
-        self.titles = titles
-    }
-
-}

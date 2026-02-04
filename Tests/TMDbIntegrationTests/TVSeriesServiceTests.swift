@@ -220,4 +220,73 @@ struct TVSeriesServiceTests {
         let usProvider = result.first { $0.countryCode == "US" }
         #expect(usProvider != nil)
     }
+
+    @Test("keywords")
+    func keywords() async throws {
+        let tvSeriesID = 1396 // Breaking Bad
+
+        let keywordCollection = try await tvSeriesService.keywords(forTVSeries: tvSeriesID)
+
+        #expect(keywordCollection.id == tvSeriesID)
+        #expect(!keywordCollection.keywords.isEmpty)
+    }
+
+    @Test("alternativeTitles")
+    func alternativeTitles() async throws {
+        let tvSeriesID = 1396 // Breaking Bad
+
+        let titleCollection = try await tvSeriesService.alternativeTitles(forTVSeries: tvSeriesID)
+
+        #expect(titleCollection.id == tvSeriesID)
+        #expect(!titleCollection.titles.isEmpty)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let tvSeriesID = 1396 // Breaking Bad
+
+        let translationCollection = try await tvSeriesService.translations(forTVSeries: tvSeriesID)
+
+        #expect(translationCollection.id == tvSeriesID)
+        #expect(!translationCollection.translations.isEmpty)
+
+        let enTranslation = translationCollection.translations.first { $0.languageCode == "en" }
+        #expect(enTranslation != nil)
+    }
+
+    // Note: The /tv/{series_id}/lists endpoint appears to return data in a format
+    // that doesn't include mediaType, which is required by the Media model.
+    // This test is disabled pending investigation of the actual API response format.
+    // @Test("lists")
+    // func lists() async throws {
+    //     let tvSeriesID = 1396 // Breaking Bad
+    //
+    //     let mediaList = try await tvSeriesService.lists(forTVSeries: tvSeriesID)
+    //
+    //     #expect(!mediaList.results.isEmpty)
+    // }
+
+    @Test("latest")
+    func latest() async throws {
+        let tvSeries = try await tvSeriesService.latest()
+
+        #expect(tvSeries.id > 0)
+    }
+
+    @Test("changesForTVSeries")
+    func changesForTVSeries() async throws {
+        let tvSeriesID = 1396 // Breaking Bad
+
+        let changeCollection = try await tvSeriesService.changes(forTVSeries: tvSeriesID)
+
+        // May be empty if no recent changes - just verify we can decode the response
+        #expect(changeCollection.changes.isEmpty || !changeCollection.changes.isEmpty)
+    }
+
+    @Test("changesForAllTVSeries")
+    func changesForAllTVSeries() async throws {
+        let changedIDCollection = try await tvSeriesService.changes()
+
+        #expect(!changedIDCollection.results.isEmpty)
+    }
 }

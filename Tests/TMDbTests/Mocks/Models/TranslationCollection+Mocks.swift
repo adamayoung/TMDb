@@ -48,3 +48,30 @@ extension TranslationCollection where DataType == MovieTranslationData {
     }
 
 }
+
+extension TranslationCollection where DataType == TVSeriesTranslationData {
+
+    static func mock(
+        id: Int = 1,
+        translations: [Translation<TVSeriesTranslationData>] = [
+            Translation(
+                countryCode: "US",
+                languageCode: "en",
+                name: "English",
+                englishName: "English",
+                data: TVSeriesTranslationData(
+                    name: "Test TV Series",
+                    overview: "Test overview",
+                    homepage: "https://example.com",
+                    tagline: "Test tagline"
+                )
+            )
+        ]
+    ) -> TranslationCollection<TVSeriesTranslationData> {
+        TranslationCollection(
+            id: id,
+            translations: translations
+        )
+    }
+
+}

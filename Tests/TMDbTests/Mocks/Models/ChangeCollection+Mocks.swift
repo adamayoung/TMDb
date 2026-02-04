@@ -21,8 +21,8 @@ extension ChangeCollection {
                         time: Date(timeIntervalSince1970: 1_704_067_200),
                         languageCode: "en",
                         countryCode: "US",
-                        value: AnyCodable("New Title"),
-                        originalValue: AnyCodable("Old Title")
+                        value: .string("New Title"),
+                        originalValue: .string("Old Title")
                     )
                 ]
             )

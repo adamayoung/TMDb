@@ -65,47 +65,47 @@ struct ChangeTests {
 
     @Test("AnyCodable string encoding and decoding")
     func anyCodableString() throws {
-        let original = AnyCodable("test")
+        let original = AnyCodable.string("test")
         let encoded = try JSONEncoder.theMovieDatabase.encode(original)
         let decoded = try JSONDecoder.theMovieDatabase.decode(AnyCodable.self, from: encoded)
 
-        #expect(decoded.value as? String == "test")
+        #expect(decoded == .string("test"))
     }
 
     @Test("AnyCodable int encoding and decoding")
     func anyCodableInt() throws {
-        let original = AnyCodable(42)
+        let original = AnyCodable.int(42)
         let encoded = try JSONEncoder.theMovieDatabase.encode(original)
         let decoded = try JSONDecoder.theMovieDatabase.decode(AnyCodable.self, from: encoded)
 
-        #expect(decoded.value as? Int == 42)
+        #expect(decoded == .int(42))
     }
 
     @Test("AnyCodable double encoding and decoding")
     func anyCodableDouble() throws {
-        let original = AnyCodable(3.14)
+        let original = AnyCodable.double(3.14)
         let encoded = try JSONEncoder.theMovieDatabase.encode(original)
         let decoded = try JSONDecoder.theMovieDatabase.decode(AnyCodable.self, from: encoded)
 
-        #expect(decoded.value as? Double == 3.14)
+        #expect(decoded == .double(3.14))
     }
 
     @Test("AnyCodable bool encoding and decoding")
     func anyCodableBool() throws {
-        let original = AnyCodable(true)
+        let original = AnyCodable.bool(true)
         let encoded = try JSONEncoder.theMovieDatabase.encode(original)
         let decoded = try JSONDecoder.theMovieDatabase.decode(AnyCodable.self, from: encoded)
 
-        #expect(decoded.value as? Bool == true)
+        #expect(decoded == .bool(true))
     }
 
-    @Test("AnyCodable nil encoding and decoding")
-    func anyCodableNil() throws {
-        let original = AnyCodable(nil)
+    @Test("AnyCodable null encoding and decoding")
+    func anyCodableNull() throws {
+        let original = AnyCodable.null
         let encoded = try JSONEncoder.theMovieDatabase.encode(original)
         let decoded = try JSONDecoder.theMovieDatabase.decode(AnyCodable.self, from: encoded)
 
-        #expect(decoded.value == nil)
+        #expect(decoded == .null)
     }
 
 }
