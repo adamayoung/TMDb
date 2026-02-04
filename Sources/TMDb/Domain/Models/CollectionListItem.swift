@@ -8,7 +8,7 @@
 import Foundation
 
 ///
-/// A model representing a TV series.
+/// A model representing a collection list item.
 ///
 public struct CollectionListItem: Identifiable, Codable, Equatable, Hashable, Sendable {
 
@@ -57,17 +57,17 @@ public struct CollectionListItem: Identifiable, Codable, Equatable, Hashable, Se
     public let isAdultOnly: Bool?
 
     ///
-    /// Creates a TV series object.
+    /// Creates a collection list item object.
     ///
     /// - Parameters:
-    ///    - id: TV series identifier.
+    ///    - id: Collection identifier.
     ///    - title: Collection title.
     ///    - originalTitle: Original collection name.
     ///    - originalLanguage: Original language of the collection.
     ///    - overview: Collection overview.
     ///    - posterPath: Collection poster path.
     ///    - backdropPath: Collection backdrop path.
-    ///    - isAdultOnly: Is the TV series only suitable for adults.
+    ///    - isAdultOnly: Is the collection only suitable for adults.
     ///
     public init(
         id: Int,

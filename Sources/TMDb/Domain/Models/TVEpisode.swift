@@ -120,3 +120,61 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
     }
 
 }
+
+extension TVEpisode {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case episodeNumber
+        case seasonNumber
+        case overview
+        case airDate
+        case productionCode
+        case stillPath
+        case crew
+        case guestStars
+        case voteAverage
+        case voteCount
+    }
+
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
+    /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
+    /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container2 = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.episodeNumber = try container.decode(Int.self, forKey: .episodeNumber)
+        self.seasonNumber = try container.decode(Int.self, forKey: .seasonNumber)
+        self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
+
+        // Need to deal with empty strings - date decoding will fail with an empty string
+        let airDateString = try container.decodeIfPresent(String.self, forKey: .airDate)
+        self.airDate = try {
+            guard let airDateString, !airDateString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(Date.self, forKey: .airDate)
+        }()
+
+        self.productionCode = try container.decodeIfPresent(String.self, forKey: .productionCode)
+        self.stillPath = try container.decodeIfPresent(URL.self, forKey: .stillPath)
+        self.crew = try container.decodeIfPresent([CrewMember].self, forKey: .crew)
+        self.guestStars = try container.decodeIfPresent([CastMember].self, forKey: .guestStars)
+        self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
+        self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)
+    }
+
+}

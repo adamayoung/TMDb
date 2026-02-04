@@ -150,4 +150,54 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .unknown)
     }
 
+    @Test("init when error is a TMDbAPIError.methodNotAllowed returns badRequest error")
+    func initWithMethodNotAllowedTMDbAPIErrorReturnsBadRequestError() {
+        let message = "Method not allowed message"
+        let error = TMDbAPIError.methodNotAllowed(message)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(message))
+    }
+
+    @Test("init when error is a TMDbAPIError.notAcceptable returns badRequest error")
+    func initWithNotAcceptableTMDbAPIErrorReturnsBadRequestError() {
+        let message = "Not acceptable message"
+        let error = TMDbAPIError.notAcceptable(message)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(message))
+    }
+
+    @Test("init when error is a TMDbAPIError.unprocessableContent returns badRequest error")
+    func initWithUnprocessableContentTMDbAPIErrorReturnsBadRequestError() {
+        let message = "Unprocessable content message"
+        let error = TMDbAPIError.unprocessableContent(message)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(message))
+    }
+
+    @Test("init when error is a TMDbAPIError.invalidURL returns badRequest error")
+    func initWithInvalidURLTMDbAPIErrorReturnsBadRequestError() {
+        let url = "https://invalid-url.example.com"
+        let error = TMDbAPIError.invalidURL(url)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest("Invalid URL: \(url)"))
+    }
+
+    @Test("init when error is a TMDbAPIError.encode returns network error")
+    func initWithEncodeTMDbAPIErrorReturnsNetworkError() {
+        let encodeError = NSError(domain: "encode", code: -1)
+        let error = TMDbAPIError.encode(encodeError)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .network(encodeError))
+    }
+
 }

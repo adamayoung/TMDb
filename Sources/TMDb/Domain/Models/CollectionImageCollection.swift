@@ -12,7 +12,7 @@ import Foundation
 ///
 /// A collection of poster and backdrop images for a collection.
 ///
-public struct CollectionImageCollection: Codable, Equatable, Hashable, Sendable {
+public struct CollectionImageCollection: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Collection identifier for these images.

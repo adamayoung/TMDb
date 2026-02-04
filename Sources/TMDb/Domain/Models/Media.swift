@@ -113,20 +113,24 @@ extension Media {
     ///   the current context for this format.
     ///
     public func encode(to encoder: Encoder) throws {
-        var singleContainer = encoder.singleValueContainer()
+        var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
         case .movie(let movie):
-            try singleContainer.encode(movie)
+            try container.encode(MediaType.movie, forKey: .mediaType)
+            try movie.encode(to: encoder)
 
         case .tvSeries(let tvSeries):
-            try singleContainer.encode(tvSeries)
+            try container.encode(MediaType.tvSeries, forKey: .mediaType)
+            try tvSeries.encode(to: encoder)
 
         case .person(let person):
-            try singleContainer.encode(person)
+            try container.encode(MediaType.person, forKey: .mediaType)
+            try person.encode(to: encoder)
 
         case .collection(let collection):
-            try singleContainer.encode(collection)
+            try container.encode(MediaType.collection, forKey: .mediaType)
+            try collection.encode(to: encoder)
         }
     }
 

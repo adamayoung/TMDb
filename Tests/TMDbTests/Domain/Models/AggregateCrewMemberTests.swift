@@ -26,7 +26,7 @@ struct AggregateCrewMemberTests {
         #expect(result.profilePath == crewMember.profilePath)
         #expect(result.jobs == crewMember.jobs)
         #expect(result.knownForDepartment == crewMember.knownForDepartment)
-        #expect(result.adult == crewMember.adult)
+        #expect(result.isAdultOnly == crewMember.isAdultOnly)
         #expect(result.totalEpisodeCount == crewMember.totalEpisodeCount)
         #expect(result.popularity == crewMember.popularity)
     }
@@ -41,7 +41,7 @@ struct AggregateCrewMemberTests {
             CrewJob(creditID: "5ff88c4b383df2003c330070", job: "Production Design", episodeCount: 1)
         ],
         knownForDepartment: "Production",
-        adult: false,
+        isAdultOnly: false,
         totalEpisodeCount: 1,
         popularity: 1.646
     )

@@ -32,7 +32,15 @@ public struct PersonMovieCredits: Identifiable, Codable, Equatable, Hashable, Se
     ///
     /// All movies the person is in.
     ///
+    @available(*, deprecated, renamed: "allMovies")
     public var allShows: [Movie] {
+        allMovies
+    }
+
+    ///
+    /// All movies the person is in.
+    ///
+    public var allMovies: [Movie] {
         let castMovies = cast.map { credit in
             Movie(
                 id: credit.id,

@@ -6,6 +6,53 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TMDb is a Swift Package for The Movie Database API, supporting iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, and Windows. Built with Swift 6.0+ and strict concurrency.
 
+## Build and Test Tooling
+
+**CRITICAL: Choose the appropriate tooling based on environment:**
+
+### When Xcode MCP is Available
+- **ALWAYS prefer Xcode MCP tools** (`mcp__xcode-tools__*`) when available
+- Use `mcp__xcode-tools__BuildProject` for building
+- Use `mcp__xcode-tools__RunAllTests` for running tests
+- Use `mcp__xcode-tools__XcodeRead`, `XcodeWrite`, `XcodeUpdate` for file operations
+- Benefits: Native Xcode integration, better diagnostics, faster feedback
+
+**CRITICAL: Test Plan Selection:**
+- **Unit tests**: Use the **TMDb** test plan (default)
+- **Integration tests**: Use the **Integration** test plan
+- The test plan determines which tests are executed
+
+### When Xcode MCP is Not Available
+- Fall back to `make` commands for build and test operations
+- Use `make build` for building
+- Use `make test` for unit tests
+- Use `make integration-test` for integration tests
+
+### Shell Environment Requirements
+
+**CRITICAL: Always source `.zshrc` when running terminal commands that require environment variables:**
+
+```bash
+source ~/.zshrc 2>/dev/null && <command>
+```
+
+This is required because:
+- New shell sessions don't automatically load user environment variables
+- Integration tests require `TMDB_API_KEY`, `TMDB_USERNAME`, `TMDB_PASSWORD` from `.zshrc`
+- The `gh` CLI tool path may only be available after sourcing `.zshrc`
+
+**Examples:**
+```bash
+# Integration tests
+source ~/.zshrc 2>/dev/null && make integration-test
+
+# Using gh CLI
+source ~/.zshrc 2>/dev/null && gh pr create ...
+
+# If gh not in PATH, use full path
+/opt/homebrew/bin/gh pr create ...
+```
+
 ## Common Commands
 
 ```bash
@@ -110,6 +157,23 @@ Enforced via `swiftlint` and `swiftformat`:
 - **No leading underscores** - use file-private instead
 
 **Note:** The `swiftlint` and `swiftformat` tools must be installed separately. If not available, ensure code follows existing style patterns and compiles without warnings.
+
+### Running Format and Lint in Xcode Environment
+
+When running `make format` or `make lint` from within Xcode (or when tools are not in PATH):
+
+```bash
+# Use full paths to formatting tools
+/opt/homebrew/bin/swiftlint --fix .
+/opt/homebrew/bin/swiftformat .
+
+# Or source .zshrc first to get tools in PATH
+source ~/.zshrc 2>/dev/null && make format
+```
+
+The tools are installed via Homebrew and located at:
+- **swiftlint**: `/opt/homebrew/bin/swiftlint`
+- **swiftformat**: `/opt/homebrew/bin/swiftformat`
 
 ## Testing Requirements
 

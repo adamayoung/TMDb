@@ -8,7 +8,7 @@
 import Foundation
 
 ///
-/// An Facebook external link.
+/// A Facebook external link.
 ///
 /// e.g. to a movie's Facebook profile.
 ///

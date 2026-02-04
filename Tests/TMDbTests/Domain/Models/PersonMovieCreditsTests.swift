@@ -40,8 +40,8 @@ struct PersonMovieCreditsTests {
         }
     }
 
-    @Test("allShows returns combined cast and crew movies")
-    func allShowsReturnsCombinedMovies() {
+    @Test("allMovies returns combined cast and crew movies")
+    func allMoviesReturnsCombinedMovies() {
         let castCredit1 = MovieCastCredit.mock(id: 1)
         let castCredit2 = MovieCastCredit.mock(id: 2)
         let crewCredit1 = MovieCrewCredit.mock(id: 1)
@@ -82,7 +82,7 @@ struct PersonMovieCreditsTests {
 
         let expectedResult = [movie1, movie2]
 
-        let result = credits.allShows
+        let result = credits.allMovies
 
         #expect(result == expectedResult)
     }

@@ -26,7 +26,7 @@ struct AggregateCastMemberTests {
         #expect(result.profilePath == castMember.profilePath)
         #expect(result.roles == castMember.roles)
         #expect(result.knownForDepartment == castMember.knownForDepartment)
-        #expect(result.adult == castMember.adult)
+        #expect(result.isAdultOnly == castMember.isAdultOnly)
         #expect(result.totalEpisodeCount == castMember.totalEpisodeCount)
         #expect(result.popularity == castMember.popularity)
     }
@@ -43,7 +43,7 @@ struct AggregateCastMemberTests {
             )
         ],
         knownForDepartment: "Acting",
-        adult: false,
+        isAdultOnly: false,
         totalEpisodeCount: 216,
         popularity: 35.505
     )

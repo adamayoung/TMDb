@@ -12,6 +12,16 @@ import Testing
 @Suite(.tags(.models))
 struct TVEpisodeTests {
 
+    @Test("JSON decoding of TVEpisode with empty air date returns nil air date", .tags(.decoding))
+    func decodeWithEmptyAirDateReturnsNilAirDate() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVEpisode.self, fromResource: "tv-episode-empty-air-date"
+        )
+
+        #expect(result.id == 63056)
+        #expect(result.airDate == nil)
+    }
+
     @Test("JSON decoding of TVEpisode", .tags(.decoding))
     func decodeReturnsTVEpisode() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(

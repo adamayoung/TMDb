@@ -50,9 +50,9 @@ public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, S
     public let knownForDepartment: String?
 
     ///
-    /// Is adult?
+    /// Is the cast member only suitable for adults.
     ///
-    public let adult: Bool?
+    public let isAdultOnly: Bool?
 
     ///
     /// Total episodes this cast member appears in.
@@ -65,7 +65,7 @@ public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, S
     public let popularity: Double?
 
     ///
-    /// Creates an aggregate cast member's role object.
+    /// Creates an aggregate cast member object.
     ///
     /// - Parameters:
     ///   - id: Person identifier.
@@ -75,7 +75,7 @@ public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, S
     ///   - profilePath: Cast member's profile image.
     ///   - roles: Cast member's roles.
     ///   - knownForDepartment: Department this person is known for.
-    ///   - adult: Is adult?
+    ///   - isAdultOnly: Is the cast member only suitable for adults.
     ///   - totalEpisodeCount: Total episodes this cast member appears in.
     ///   - popularity: Cast member's popularity.
     ///
@@ -87,7 +87,7 @@ public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, S
         profilePath: URL?,
         roles: [CastRole],
         knownForDepartment: String?,
-        adult: Bool?,
+        isAdultOnly: Bool?,
         totalEpisodeCount: Int,
         popularity: Double?
     ) {
@@ -98,9 +98,54 @@ public struct AggregateCastMember: Identifiable, Codable, Equatable, Hashable, S
         self.profilePath = profilePath
         self.roles = roles
         self.knownForDepartment = knownForDepartment
-        self.adult = adult
+        self.isAdultOnly = isAdultOnly
         self.totalEpisodeCount = totalEpisodeCount
         self.popularity = popularity
+    }
+
+}
+
+extension AggregateCastMember {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case originalName
+        case gender
+        case profilePath
+        case roles
+        case knownForDepartment
+        case isAdultOnly = "adult"
+        case totalEpisodeCount
+        case popularity
+    }
+
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
+    /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
+    /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.originalName = try container.decode(String.self, forKey: .originalName)
+        self.gender = (try? container.decodeIfPresent(Gender.self, forKey: .gender)) ?? .unknown
+        self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
+        self.roles = try container.decode([CastRole].self, forKey: .roles)
+        self.knownForDepartment = try container.decodeIfPresent(
+            String.self, forKey: .knownForDepartment
+        )
+        self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
+        self.totalEpisodeCount = try container.decode(Int.self, forKey: .totalEpisodeCount)
+        self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
     }
 
 }
