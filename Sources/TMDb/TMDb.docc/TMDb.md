@@ -261,7 +261,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeries``
 - ``TVEpisodePageableList``
 - ``TVEpisode``
-- ``MediaListPageableList``
+- ``MediaListSummaryPageableList``
 - ``MediaListSummary``
 
 ### Lists
