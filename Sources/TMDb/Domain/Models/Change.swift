@@ -8,17 +8,19 @@
 import Foundation
 
 ///
-/// A model representing a change entry.
+/// A model representing a change to a media item.
 ///
 public struct Change: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// The key that was changed.
+    /// The key identifying what was changed.
+    ///
+    /// Examples include "title", "overview", "cast", etc.
     ///
     public let key: String
 
     ///
-    /// The list of change items.
+    /// The list of individual change items.
     ///
     public let items: [ChangeItem]
 
@@ -26,8 +28,8 @@ public struct Change: Codable, Equatable, Hashable, Sendable {
     /// Creates a change object.
     ///
     /// - Parameters:
-    ///   - key: The key that was changed.
-    ///   - items: The list of change items.
+    ///    - key: The key identifying what was changed.
+    ///    - items: The list of individual change items.
     ///
     public init(key: String, items: [ChangeItem]) {
         self.key = key
@@ -37,56 +39,58 @@ public struct Change: Codable, Equatable, Hashable, Sendable {
 }
 
 ///
-/// A model representing a change item.
+/// A model representing a single change item.
 ///
 public struct ChangeItem: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// Change identifier.
+    /// The unique identifier for this change item.
     ///
     public let id: String
 
     ///
-    /// Action performed.
+    /// The action performed.
+    ///
+    /// Examples include "added", "updated", "deleted", etc.
     ///
     public let action: String
 
     ///
-    /// Time of change.
+    /// The time when the change was made.
     ///
     public let time: Date
 
     ///
-    /// ISO 639-1 language code.
+    /// The ISO 639-1 language code, if applicable.
     ///
     public let languageCode: String?
 
     ///
-    /// ISO 3166-1 country code.
+    /// The ISO 3166-1 country code, if applicable.
     ///
     public let countryCode: String?
 
     ///
-    /// Original value before change.
+    /// The new value after the change.
     ///
-    public let originalValue: ChangeValue?
+    public let value: AnyCodable?
 
     ///
-    /// Value after change.
+    /// The original value before the change.
     ///
-    public let value: ChangeValue?
+    public let originalValue: AnyCodable?
 
     ///
     /// Creates a change item object.
     ///
     /// - Parameters:
-    ///   - id: Change identifier.
-    ///   - action: Action performed.
-    ///   - time: Time of change.
-    ///   - languageCode: ISO 639-1 language code.
-    ///   - countryCode: ISO 3166-1 country code.
-    ///   - originalValue: Original value before change.
-    ///   - value: Value after change.
+    ///    - id: The unique identifier for this change item.
+    ///    - action: The action performed.
+    ///    - time: The time when the change was made.
+    ///    - languageCode: The ISO 639-1 language code, if applicable.
+    ///    - countryCode: The ISO 3166-1 country code, if applicable.
+    ///    - value: The new value after the change.
+    ///    - originalValue: The original value before the change.
     ///
     public init(
         id: String,
@@ -94,16 +98,16 @@ public struct ChangeItem: Codable, Equatable, Hashable, Sendable {
         time: Date,
         languageCode: String? = nil,
         countryCode: String? = nil,
-        originalValue: ChangeValue? = nil,
-        value: ChangeValue? = nil
+        value: AnyCodable? = nil,
+        originalValue: AnyCodable? = nil
     ) {
         self.id = id
         self.action = action
         self.time = time
         self.languageCode = languageCode
         self.countryCode = countryCode
-        self.originalValue = originalValue
         self.value = value
+        self.originalValue = originalValue
     }
 
 }
@@ -116,8 +120,8 @@ extension ChangeItem {
         case time
         case languageCode = "iso6391"
         case countryCode = "iso31661"
-        case originalValue
         case value
+        case originalValue
     }
 
     public init(from decoder: Decoder) throws {
@@ -127,87 +131,20 @@ extension ChangeItem {
         self.action = try container.decode(String.self, forKey: .action)
         self.languageCode = try container.decodeIfPresent(String.self, forKey: .languageCode)
         self.countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode)
-        self.originalValue = try container.decodeIfPresent(ChangeValue.self, forKey: .originalValue)
-        self.value = try container.decodeIfPresent(ChangeValue.self, forKey: .value)
+        self.value = try container.decodeIfPresent(AnyCodable.self, forKey: .value)
+        self.originalValue = try container.decodeIfPresent(AnyCodable.self, forKey: .originalValue)
 
-        // Custom date decoding for time field (uses Auth format: yyyy-MM-dd HH:mm:ss' UTC ')
+        // Decode time using the auth date formatter
         let timeString = try container.decode(String.self, forKey: .time)
         let dateFormatter = DateFormatter.theMovieDatabaseAuth
         guard let date = dateFormatter.date(from: timeString) else {
             throw DecodingError.dataCorruptedError(
                 forKey: .time,
                 in: container,
-                debugDescription: "Date string does not match format expected by formatter."
+                debugDescription: "Date string '\(timeString)' does not match expected format '\(dateFormatter.dateFormat ?? "")'"
             )
         }
         self.time = date
-    }
-
-}
-
-///
-/// A model representing a change value (can be string, number, bool, or dictionary).
-///
-public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
-
-    case string(String)
-    case int(Int)
-    case double(Double)
-    case bool(Bool)
-    case dictionary([String: AnyCodable])
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-
-        if let stringValue = try? container.decode(String.self) {
-            self = .string(stringValue)
-            return
-        }
-
-        if let intValue = try? container.decode(Int.self) {
-            self = .int(intValue)
-            return
-        }
-
-        if let doubleValue = try? container.decode(Double.self) {
-            self = .double(doubleValue)
-            return
-        }
-
-        if let boolValue = try? container.decode(Bool.self) {
-            self = .bool(boolValue)
-            return
-        }
-
-        if let dictionaryValue = try? container.decode([String: AnyCodable].self) {
-            self = .dictionary(dictionaryValue)
-            return
-        }
-
-        throw DecodingError.typeMismatch(
-            ChangeValue.self,
-            DecodingError.Context(
-                codingPath: decoder.codingPath,
-                debugDescription: "Expected String, Int, Double, Bool, or Dictionary"
-            )
-        )
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-
-        switch self {
-        case .string(let value):
-            try container.encode(value)
-        case .int(let value):
-            try container.encode(value)
-        case .double(let value):
-            try container.encode(value)
-        case .bool(let value):
-            try container.encode(value)
-        case .dictionary(let value):
-            try container.encode(value)
-        }
     }
 
 }
@@ -218,14 +155,14 @@ public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
 public struct ChangeCollection: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// List of changes.
+    /// The list of changes.
     ///
     public let changes: [Change]
 
     ///
     /// Creates a change collection object.
     ///
-    /// - Parameter changes: List of changes.
+    /// - Parameter changes: The list of changes.
     ///
     public init(changes: [Change]) {
         self.changes = changes
@@ -234,44 +171,73 @@ public struct ChangeCollection: Codable, Equatable, Hashable, Sendable {
 }
 
 ///
-/// A model representing a changed media ID.
+/// A model representing a media item that has changed.
 ///
-public struct ChangedID: Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct ChangedID: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// Media identifier.
+    /// The media item identifier.
     ///
     public let id: Int
 
     ///
-    /// Is adult content.
+    /// Indicates if the media item is adult content.
     ///
-    public let isAdult: Bool?
+    public let adult: Bool?
 
     ///
     /// Creates a changed ID object.
     ///
     /// - Parameters:
-    ///   - id: Media identifier.
-    ///   - isAdult: Is adult content.
+    ///    - id: The media item identifier.
+    ///    - adult: Indicates if the media item is adult content.
     ///
-    public init(id: Int, isAdult: Bool? = nil) {
+    public init(id: Int, adult: Bool? = nil) {
         self.id = id
-        self.isAdult = isAdult
-    }
-
-}
-
-extension ChangedID {
-
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case isAdult = "adult"
+        self.adult = adult
     }
 
 }
 
 ///
-/// A model representing a collection of changed IDs.
+/// A model representing a pageable collection of changed media items.
 ///
-public typealias ChangedIDCollection = PageableListResult<ChangedID>
+public struct ChangedIDCollection: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The list of changed media items.
+    ///
+    public let results: [ChangedID]
+
+    ///
+    /// The current page number.
+    ///
+    public let page: Int
+
+    ///
+    /// The total number of pages.
+    ///
+    public let totalPages: Int
+
+    ///
+    /// The total number of results.
+    ///
+    public let totalResults: Int
+
+    ///
+    /// Creates a changed ID collection object.
+    ///
+    /// - Parameters:
+    ///    - results: The list of changed media items.
+    ///    - page: The current page number.
+    ///    - totalPages: The total number of pages.
+    ///    - totalResults: The total number of results.
+    ///
+    public init(results: [ChangedID], page: Int, totalPages: Int, totalResults: Int) {
+        self.results = results
+        self.page = page
+        self.totalPages = totalPages
+        self.totalResults = totalResults
+    }
+
+}

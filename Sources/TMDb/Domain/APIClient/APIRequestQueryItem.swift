@@ -56,5 +56,8 @@ extension APIRequestQueryItem.Name {
     static let apiKey = APIRequestQueryItem.Name("api_key")
     static let externalSource = APIRequestQueryItem.Name("external_source")
     static let timezone = APIRequestQueryItem.Name("timezone")
+    static let country = APIRequestQueryItem.Name("country")
+    static let startDate = APIRequestQueryItem.Name("start_date")
+    static let endDate = APIRequestQueryItem.Name("end_date")
 
 }

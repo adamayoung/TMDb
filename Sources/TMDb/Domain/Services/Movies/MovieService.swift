@@ -275,6 +275,162 @@ public protocol MovieService: Sendable {
     ///
     func releaseDates(forMovie movieID: Movie.ID) async throws -> [MovieReleaseDatesByCountry]
 
+    ///
+    /// Returns the user's rating, favorite, and watchlist state for a movie.
+    ///
+    /// [TMDb API - Movies: Account States](https://developer.themoviedb.org/reference/movie-account-states)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The account states for the movie.
+    ///
+    func accountStates(forMovie movieID: Movie.ID, session: Session) async throws -> AccountStates
+
+    ///
+    /// Adds a rating for a movie.
+    ///
+    /// [TMDb API - Movies: Add Rating](https://developer.themoviedb.org/reference/movie-add-rating)
+    ///
+    /// - Precondition: `rating` must be between `0.5` and `10.0` in increments of `0.5`.
+    ///
+    /// - Parameters:
+    ///    - rating: The rating value.
+    ///    - movieID: The identifier of the movie.
+    ///    - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    func addRating(_ rating: Double, toMovie movieID: Movie.ID, session: Session) async throws
+
+    ///
+    /// Deletes the user's rating for a movie.
+    ///
+    /// [TMDb API - Movies: Delete Rating](https://developer.themoviedb.org/reference/movie-delete-rating)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - session: The user's session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws
+
+    ///
+    /// Returns alternative titles for a movie.
+    ///
+    /// [TMDb API - Movies: Alternative Titles](https://developer.themoviedb.org/reference/movie-alternative-titles)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - country: ISO 3166-1 country code to filter results.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of alternative titles for the movie.
+    ///
+    func alternativeTitles(
+        forMovie movieID: Movie.ID,
+        country: String?,
+        language: String?
+    ) async throws -> AlternativeTitleCollection
+
+    ///
+    /// Returns translations for a movie.
+    ///
+    /// [TMDb API - Movies: Translations](https://developer.themoviedb.org/reference/movie-translations)
+    ///
+    /// - Parameter movieID: The identifier of the movie.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of translations for the movie.
+    ///
+    func translations(forMovie movieID: Movie.ID) async throws -> TranslationCollection<MovieTranslationData>
+
+    ///
+    /// Returns lists that contain the movie.
+    ///
+    /// [TMDb API - Movies: Lists](https://developer.themoviedb.org/reference/movie-lists)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Lists containing the movie as a pageable list.
+    ///
+    func lists(
+        forMovie movieID: Movie.ID,
+        page: Int?,
+        language: String?
+    ) async throws -> MediaListSummaryPageableList
+
+    ///
+    /// Returns change history for a movie.
+    ///
+    /// [TMDb API - Movies: Changes](https://developer.themoviedb.org/reference/movie-changes)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - startDate: The start date for changes.
+    ///    - endDate: The end date for changes.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the movie.
+    ///
+    func changes(
+        forMovie movieID: Movie.ID,
+        startDate: Date?,
+        endDate: Date?,
+        page: Int?
+    ) async throws -> ChangeCollection
+
+    ///
+    /// Returns the latest movie added to TMDb.
+    ///
+    /// [TMDb API - Movies: Latest](https://developer.themoviedb.org/reference/movie-latest-id)
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The latest movie.
+    ///
+    func latest() async throws -> Movie
+
+    ///
+    /// Returns a list of movie IDs that have changed.
+    ///
+    /// [TMDb API - Movie Changes: List](https://developer.themoviedb.org/reference/changes-movie-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - startDate: The start date for changes.
+    ///    - endDate: The end date for changes.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A pageable collection of changed movie IDs.
+    ///
+    func changes(
+        startDate: Date?,
+        endDate: Date?,
+        page: Int?
+    ) async throws -> ChangedIDCollection
+
 }
 
 public extension MovieService {
@@ -550,6 +706,102 @@ public extension MovieService {
         forMovie movieID: Movie.ID
     ) async throws -> [MovieReleaseDatesByCountry] {
         try await releaseDates(forMovie: movieID)
+    }
+
+    ///
+    /// Returns alternative titles for a movie.
+    ///
+    /// [TMDb API - Movies: Alternative Titles](https://developer.themoviedb.org/reference/movie-alternative-titles)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - country: ISO 3166-1 country code to filter results.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of alternative titles for the movie.
+    ///
+    func alternativeTitles(
+        forMovie movieID: Movie.ID,
+        country: String? = nil,
+        language: String? = nil
+    ) async throws -> AlternativeTitleCollection {
+        try await alternativeTitles(forMovie: movieID, country: country, language: language)
+    }
+
+    ///
+    /// Returns lists that contain the movie.
+    ///
+    /// [TMDb API - Movies: Lists](https://developer.themoviedb.org/reference/movie-lists)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
+    /// language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Lists containing the movie as a pageable list.
+    ///
+    func lists(
+        forMovie movieID: Movie.ID,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> MediaListSummaryPageableList {
+        try await lists(forMovie: movieID, page: page, language: language)
+    }
+
+    ///
+    /// Returns change history for a movie.
+    ///
+    /// [TMDb API - Movies: Changes](https://developer.themoviedb.org/reference/movie-changes)
+    ///
+    /// - Parameters:
+    ///    - movieID: The identifier of the movie.
+    ///    - startDate: The start date for changes.
+    ///    - endDate: The end date for changes.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the movie.
+    ///
+    func changes(
+        forMovie movieID: Movie.ID,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangeCollection {
+        try await changes(forMovie: movieID, startDate: startDate, endDate: endDate, page: page)
+    }
+
+    ///
+    /// Returns a list of movie IDs that have changed.
+    ///
+    /// [TMDb API - Movie Changes: List](https://developer.themoviedb.org/reference/changes-movie-list)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - startDate: The start date for changes.
+    ///    - endDate: The end date for changes.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A pageable collection of changed movie IDs.
+    ///
+    func changes(
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangedIDCollection {
+        try await changes(startDate: startDate, endDate: endDate, page: page)
     }
 
 }

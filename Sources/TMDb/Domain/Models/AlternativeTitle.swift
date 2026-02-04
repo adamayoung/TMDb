@@ -8,22 +8,24 @@
 import Foundation
 
 ///
-/// A model representing an alternative title.
+/// A model representing an alternative title for a media item.
 ///
 public struct AlternativeTitle: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// ISO 3166-1 country code.
+    /// The ISO 3166-1 country code.
     ///
     public let countryCode: String
 
     ///
-    /// Title.
+    /// The alternative title.
     ///
     public let title: String
 
     ///
-    /// Type of alternative title.
+    /// The type of alternative title.
+    ///
+    /// Examples include "Alternative Title", "Working Title", etc.
     ///
     public let type: String?
 
@@ -31,9 +33,9 @@ public struct AlternativeTitle: Codable, Equatable, Hashable, Sendable {
     /// Creates an alternative title object.
     ///
     /// - Parameters:
-    ///   - countryCode: ISO 3166-1 country code.
-    ///   - title: Title.
-    ///   - type: Type of alternative title.
+    ///    - countryCode: The ISO 3166-1 country code.
+    ///    - title: The alternative title.
+    ///    - type: The type of alternative title.
     ///
     public init(countryCode: String, title: String, type: String? = nil) {
         self.countryCode = countryCode

@@ -8,84 +8,76 @@
 import Foundation
 
 ///
-/// A model representing a user's account states for media.
+/// A model representing the account state for a media item.
+///
+/// Provides information about whether the media has been rated, added to a watchlist, or marked as favorite
+/// by the authenticated user.
 ///
 public struct AccountStates: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// Media identifier.
+    /// The media item identifier.
     ///
     public let id: Int
 
     ///
-    /// Is the media in the user's favorites.
+    /// Indicates if the media is marked as a favorite.
     ///
-    public let isFavourite: Bool
+    public let favorite: Bool
 
     ///
     /// The user's rating for the media.
     ///
-    public let rating: Double?
+    /// `nil` if the media has not been rated.
+    ///
+    public let rated: RatedValue?
 
     ///
-    /// Is the media in the user's watchlist.
+    /// Indicates if the media is on the user's watchlist.
     ///
-    public let isInWatchlist: Bool
+    public let watchlist: Bool
 
     ///
     /// Creates an account states object.
     ///
     /// - Parameters:
-    ///   - id: Media identifier.
-    ///   - isFavourite: Is the media in the user's favorites.
-    ///   - rating: The user's rating for the media.
-    ///   - isInWatchlist: Is the media in the user's watchlist.
+    ///    - id: The media item identifier.
+    ///    - favorite: Indicates if the media is marked as a favorite.
+    ///    - rated: The user's rating for the media.
+    ///    - watchlist: Indicates if the media is on the user's watchlist.
     ///
-    public init(id: Int, isFavourite: Bool, rating: Double? = nil, isInWatchlist: Bool) {
+    public init(id: Int, favorite: Bool, rated: RatedValue?, watchlist: Bool) {
         self.id = id
-        self.isFavourite = isFavourite
-        self.rating = rating
-        self.isInWatchlist = isInWatchlist
+        self.favorite = favorite
+        self.rated = rated
+        self.watchlist = watchlist
     }
 
 }
 
 public extension AccountStates {
 
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case isFavourite = "favorite"
-        case rating = "rated"
-        case isInWatchlist = "watchlist"
-    }
+    ///
+    /// A model representing a rating value.
+    ///
+    struct RatedValue: Codable, Equatable, Hashable, Sendable {
 
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        ///
+        /// The rating value.
+        ///
+        /// Valid range: 0.5 to 10.0 in increments of 0.5.
+        ///
+        public let value: Double
 
-        self.id = try container.decode(Int.self, forKey: .id)
-        self.isFavourite = try container.decode(Bool.self, forKey: .isFavourite)
-        self.isInWatchlist = try container.decode(Bool.self, forKey: .isInWatchlist)
-
-        // rating can be false (boolean) or a number (double)
-        if let ratingValue = try? container.decode(Double.self, forKey: .rating) {
-            self.rating = ratingValue
-        } else {
-            self.rating = nil
+        ///
+        /// Creates a rated value object.
+        ///
+        /// - Parameter value: The rating value.
+        ///
+        public init(value: Double) {
+            self.value = value
         }
-    }
 
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(id, forKey: .id)
-        try container.encode(isFavourite, forKey: .isFavourite)
-        try container.encode(isInWatchlist, forKey: .isInWatchlist)
-
-        if let rating {
-            try container.encode(rating, forKey: .rating)
-        } else {
-            try container.encode(false, forKey: .rating)
-        }
     }
 
 }

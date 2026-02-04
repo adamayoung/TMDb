@@ -10,8 +10,8 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 final class TMDbTVSeriesService: TVSeriesService {
 
-    private let apiClient: any APIClient
-    private let configuration: TMDbConfiguration
+    let apiClient: any APIClient
+    let configuration: TMDbConfiguration
 
     init(apiClient: some APIClient, configuration: TMDbConfiguration = .default) {
         self.apiClient = apiClient

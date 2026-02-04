@@ -18,7 +18,7 @@ extension DateFormatter {
     static var theMovieDatabaseAuth: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC '"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss' UTC'"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         return dateFormatter
     }

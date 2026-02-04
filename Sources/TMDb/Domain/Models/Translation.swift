@@ -8,59 +8,52 @@
 import Foundation
 
 ///
-/// A model representing a translation.
+/// A model representing a translation for a media item.
 ///
-public struct Translation<Data: Codable & Equatable & Hashable & Sendable>:
-Identifiable, Codable, Equatable, Hashable, Sendable {
+public struct Translation<DataType: Codable & Equatable & Hashable & Sendable>: Codable, Equatable, Hashable,
+Sendable {
 
     ///
-    /// Translation's identifier (same as `languageCode`).
-    ///
-    public var id: String {
-        languageCode
-    }
-
-    ///
-    /// ISO 3166-1 country code.
+    /// The ISO 3166-1 country code.
     ///
     public let countryCode: String
 
     ///
-    /// ISO 639-1 language code.
+    /// The ISO 639-1 language code.
     ///
     public let languageCode: String
 
     ///
-    /// Language name.
+    /// The localized language name.
     ///
     public let name: String
 
     ///
-    /// English language name.
+    /// The English language name.
     ///
     public let englishName: String
 
     ///
-    /// Translation data.
+    /// The translated data specific to the media type.
     ///
-    public let data: Data
+    public let data: DataType
 
     ///
     /// Creates a translation object.
     ///
     /// - Parameters:
-    ///    - countryCode: ISO 3166-1 country code.
-    ///    - languageCode: ISO 639-1 language code.
-    ///    - name: Language name.
-    ///    - englishName: English language name.
-    ///    - data: Translation data.
+    ///    - countryCode: The ISO 3166-1 country code.
+    ///    - languageCode: The ISO 639-1 language code.
+    ///    - name: The localized language name.
+    ///    - englishName: The English language name.
+    ///    - data: The translated data specific to the media type.
     ///
     public init(
         countryCode: String,
         languageCode: String,
         name: String,
         englishName: String,
-        data: Data
+        data: DataType
     ) {
         self.countryCode = countryCode
         self.languageCode = languageCode
@@ -86,27 +79,27 @@ extension Translation {
 ///
 /// A model representing a collection of translations.
 ///
-public struct TranslationCollection<Data: Codable & Equatable & Hashable & Sendable>:
-Codable, Equatable, Hashable, Sendable {
+public struct TranslationCollection<DataType: Codable & Equatable & Hashable & Sendable>: Codable, Equatable,
+Hashable, Sendable {
 
     ///
-    /// Media identifier.
+    /// The media item identifier.
     ///
     public let id: Int
 
     ///
-    /// Translations.
+    /// The list of translations.
     ///
-    public let translations: [Translation<Data>]
+    public let translations: [Translation<DataType>]
 
     ///
     /// Creates a translation collection object.
     ///
     /// - Parameters:
-    ///   - id: Media identifier.
-    ///   - translations: Translations.
+    ///    - id: The media item identifier.
+    ///    - translations: The list of translations.
     ///
-    public init(id: Int, translations: [Translation<Data>]) {
+    public init(id: Int, translations: [Translation<DataType>]) {
         self.id = id
         self.translations = translations
     }
@@ -114,27 +107,70 @@ Codable, Equatable, Hashable, Sendable {
 }
 
 ///
-/// A model representing TV series translation data.
+/// A model representing movie-specific translation data.
 ///
-public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
+public struct MovieTranslationData: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// TV series name.
+    /// The translated movie title.
     ///
-    public let name: String
+    public let title: String
 
     ///
-    /// TV series overview.
+    /// The translated movie overview.
     ///
     public let overview: String
 
     ///
-    /// TV series homepage URL.
+    /// The translated movie homepage URL.
     ///
     public let homepage: String?
 
     ///
-    /// TV series tagline.
+    /// The translated movie tagline.
+    ///
+    public let tagline: String?
+
+    ///
+    /// Creates a movie translation data object.
+    ///
+    /// - Parameters:
+    ///    - title: The translated movie title.
+    ///    - overview: The translated movie overview.
+    ///    - homepage: The translated movie homepage URL.
+    ///    - tagline: The translated movie tagline.
+    ///
+    public init(title: String, overview: String, homepage: String? = nil, tagline: String? = nil) {
+        self.title = title
+        self.overview = overview
+        self.homepage = homepage
+        self.tagline = tagline
+    }
+
+}
+
+///
+/// A model representing TV series-specific translation data.
+///
+public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The translated TV series name.
+    ///
+    public let name: String
+
+    ///
+    /// The translated TV series overview.
+    ///
+    public let overview: String
+
+    ///
+    /// The translated TV series homepage URL.
+    ///
+    public let homepage: String?
+
+    ///
+    /// The translated TV series tagline.
     ///
     public let tagline: String?
 
@@ -142,17 +178,12 @@ public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
     /// Creates a TV series translation data object.
     ///
     /// - Parameters:
-    ///   - name: TV series name.
-    ///   - overview: TV series overview.
-    ///   - homepage: TV series homepage URL.
-    ///   - tagline: TV series tagline.
+    ///    - name: The translated TV series name.
+    ///    - overview: The translated TV series overview.
+    ///    - homepage: The translated TV series homepage URL.
+    ///    - tagline: The translated TV series tagline.
     ///
-    public init(
-        name: String,
-        overview: String,
-        homepage: String? = nil,
-        tagline: String? = nil
-    ) {
+    public init(name: String, overview: String, homepage: String? = nil, tagline: String? = nil) {
         self.name = name
         self.overview = overview
         self.homepage = homepage

@@ -156,4 +156,65 @@ struct MovieIntegrationTests {
         #expect(usProvider != nil)
     }
 
+    @Test("alternativeTitles")
+    func alternativeTitles() async throws {
+        let movieID = 346_698
+
+        let alternativeTitleCollection = try await movieService.alternativeTitles(forMovie: movieID)
+
+        #expect(alternativeTitleCollection.id == movieID)
+        #expect(!alternativeTitleCollection.titles.isEmpty)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let movieID = 346_698
+
+        let translationCollection = try await movieService.translations(forMovie: movieID)
+
+        #expect(translationCollection.id == movieID)
+        #expect(!translationCollection.translations.isEmpty)
+        let englishTranslation = try #require(
+            translationCollection.translations.first { $0.languageCode == "en" }
+        )
+        // The English translation may have an empty title field in the API response
+        #expect(!englishTranslation.data.overview.isEmpty)
+    }
+
+    @Test("lists")
+    func lists() async throws {
+        let movieID = 550 // Fight Club
+
+        let mediaList = try await movieService.lists(forMovie: movieID)
+
+        #expect(!mediaList.results.isEmpty)
+    }
+
+    @Test("changes for movie")
+    func changesForMovie() async throws {
+        let movieID = 346_698
+
+        let changeCollection = try await movieService.changes(forMovie: movieID)
+
+        #expect(!changeCollection.changes.isEmpty)
+    }
+
+    @Test("latest")
+    func latest() async throws {
+        let movie = try await movieService.latest()
+
+        #expect(movie.id > 0)
+        #expect(!movie.title.isEmpty)
+    }
+
+    @Test("changes list")
+    func changesList() async throws {
+        let changedIDCollection = try await movieService.changes()
+
+        #expect(!changedIDCollection.results.isEmpty)
+        #expect(changedIDCollection.page > 0)
+        #expect(changedIDCollection.totalPages > 0)
+        #expect(changedIDCollection.totalResults > 0)
+    }
+
 }
