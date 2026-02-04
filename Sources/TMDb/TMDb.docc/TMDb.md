@@ -55,6 +55,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``MovieService``
 - ``Movie``
+- ``AccountStates``
 - ``ShowCredits``
 - ``ReviewPageableList``
 - ``Review``
@@ -67,6 +68,17 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MovieReleaseDatesByCountry``
 - ``ReleaseDate``
 - ``ReleaseType``
+- ``AlternativeTitle``
+- ``AlternativeTitleCollection``
+- ``Translation``
+- ``TranslationCollection``
+- ``MovieTranslationData``
+- ``Change``
+- ``ChangeItem``
+- ``ChangeCollection``
+- ``ChangedID``
+- ``ChangedIDCollection``
+- ``AnyCodable``
 
 ### TV Series
 

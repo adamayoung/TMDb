@@ -250,4 +250,42 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
+    @Test("lists with default parameter values returns media list summaries")
+    func listsWithDefaultParameterValuesReturnsMediaListSummaries() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
+        let movieID = 1
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieListsRequest(id: movieID, page: nil, language: nil)
+
+        let result = try await (service as MovieService).lists(forMovie: movieID)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieListsRequest == expectedRequest)
+    }
+
+    @Test("lists with page and language returns media list summaries")
+    func listsWithPageAndLanguageReturnsMediaListSummaries() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
+        let movieID = 1
+        let page = 2
+        let language = "en"
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieListsRequest(id: movieID, page: page, language: language)
+
+        let result = try await service.lists(forMovie: movieID, page: page, language: language)
+
+        #expect(result == expectedResult)
+        #expect(apiClient.lastRequest as? MovieListsRequest == expectedRequest)
+    }
+
+    @Test("lists when errors throws error")
+    func listsWhenErrorsThrowsError() async throws {
+        let movieID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.lists(forMovie: movieID)
+        }
+    }
+
 }

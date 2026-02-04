@@ -1,0 +1,20 @@
+{
+  "id": 550,
+  "titles": [
+    {
+      "iso_3166_1": "US",
+      "title": "Fight Club",
+      "type": null
+    },
+    {
+      "iso_3166_1": "DE",
+      "title": "Kampf-Club",
+      "type": "Alternative Title"
+    },
+    {
+      "iso_3166_1": "FR",
+      "title": "Le Club de Combat",
+      "type": "Alternative Title"
+    }
+  ]
+}
