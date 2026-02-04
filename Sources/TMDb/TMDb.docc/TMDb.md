@@ -108,7 +108,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``ChangeCollection``
 - ``Change``
 - ``ChangeItem``
-- ``ChangeValue``
+- ``AnyCodable``
 - ``ChangedIDCollection``
 - ``ChangedID``
 
