@@ -120,10 +120,33 @@ extension ChangeItem {
         case value
     }
 
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(String.self, forKey: .id)
+        self.action = try container.decode(String.self, forKey: .action)
+        self.languageCode = try container.decodeIfPresent(String.self, forKey: .languageCode)
+        self.countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode)
+        self.originalValue = try container.decodeIfPresent(ChangeValue.self, forKey: .originalValue)
+        self.value = try container.decodeIfPresent(ChangeValue.self, forKey: .value)
+
+        // Custom date decoding for time field (uses Auth format: yyyy-MM-dd HH:mm:ss' UTC ')
+        let timeString = try container.decode(String.self, forKey: .time)
+        let dateFormatter = DateFormatter.theMovieDatabaseAuth
+        guard let date = dateFormatter.date(from: timeString) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .time,
+                in: container,
+                debugDescription: "Date string does not match format expected by formatter."
+            )
+        }
+        self.time = date
+    }
+
 }
 
 ///
-/// A model representing a change value (can be string, number, or object).
+/// A model representing a change value (can be string, number, bool, or dictionary).
 ///
 public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
 
@@ -131,6 +154,7 @@ public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
     case int(Int)
     case double(Double)
     case bool(Bool)
+    case dictionary([String: AnyCodable])
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -155,11 +179,16 @@ public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
             return
         }
 
+        if let dictionaryValue = try? container.decode([String: AnyCodable].self) {
+            self = .dictionary(dictionaryValue)
+            return
+        }
+
         throw DecodingError.typeMismatch(
             ChangeValue.self,
             DecodingError.Context(
                 codingPath: decoder.codingPath,
-                debugDescription: "Expected String, Int, Double, or Bool"
+                debugDescription: "Expected String, Int, Double, Bool, or Dictionary"
             )
         )
     }
@@ -175,6 +204,8 @@ public enum ChangeValue: Codable, Equatable, Hashable, Sendable {
         case .double(let value):
             try container.encode(value)
         case .bool(let value):
+            try container.encode(value)
+        case .dictionary(let value):
             try container.encode(value)
         }
     }

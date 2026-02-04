@@ -279,8 +279,8 @@ struct TVSeriesServiceTests {
 
         let changeCollection = try await tvSeriesService.changes(forTVSeries: tvSeriesID)
 
-        // May be empty if no recent changes
-        #expect(changeCollection.changes.count >= 0)
+        // May be empty if no recent changes - just verify we can decode the response
+        #expect(changeCollection.changes.isEmpty || !changeCollection.changes.isEmpty)
     }
 
     @Test("changesForAllTVSeries")
