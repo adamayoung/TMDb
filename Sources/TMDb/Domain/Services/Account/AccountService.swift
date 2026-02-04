@@ -232,12 +232,8 @@ public protocol AccountService: Sendable {
         session: Session
     ) async throws
 
-}
-
-public extension AccountService {
-
     ///
-    /// Returns a list of the user's favourited movies.
+    /// Returns a list of movies rated by the user.
     ///
     /// - Parameters:
     ///   - sortedBy: How results should be sorted.
@@ -247,24 +243,17 @@ public extension AccountService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A list of the user's favourited movies.
+    /// - Returns: A list of movies rated by the user.
     ///
-    func favouriteMovies(
-        sortedBy: FavouriteSort? = nil,
-        page: Int? = nil,
+    func ratedMovies(
+        sortedBy: RatedSort?,
+        page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList {
-        try await favouriteMovies(
-            sortedBy: sortedBy,
-            page: page,
-            accountID: accountID,
-            session: session
-        )
-    }
+    ) async throws -> MoviePageableList
 
     ///
-    /// Returns a list of the user's favourited TV series.
+    /// Returns a list of TV series rated by the user.
     ///
     /// - Parameters:
     ///   - sortedBy: How results should be sorted.
@@ -274,24 +263,17 @@ public extension AccountService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A list of the user's favourited TV series.
+    /// - Returns: A list of TV series rated by the user.
     ///
-    func favouriteTVSeries(
-        sortedBy: FavouriteSort? = nil,
-        page: Int? = nil,
+    func ratedTVSeries(
+        sortedBy: RatedSort?,
+        page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList {
-        try await favouriteTVSeries(
-            sortedBy: sortedBy,
-            page: page,
-            accountID: accountID,
-            session: session
-        )
-    }
+    ) async throws -> TVSeriesPageableList
 
     ///
-    /// Returns a list of movies in the user's watchlist.
+    /// Returns a list of TV episodes rated by the user.
     ///
     /// - Parameters:
     ///   - sortedBy: How results should be sorted.
@@ -301,47 +283,31 @@ public extension AccountService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A list of movies in the user's watchlist.
+    /// - Returns: A list of TV episodes rated by the user.
     ///
-    func movieWatchlist(
-        sortedBy: WatchlistSort? = nil,
-        page: Int? = nil,
+    func ratedTVEpisodes(
+        sortedBy: RatedSort?,
+        page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList {
-        try await movieWatchlist(
-            sortedBy: sortedBy,
-            page: page,
-            accountID: accountID,
-            session: session
-        )
-    }
+    ) async throws -> TVEpisodePageableList
 
     ///
-    /// Returns a list of TV series in the user's watchlist.
+    /// Returns a list of the user's custom lists.
     ///
     /// - Parameters:
-    ///   - sortedBy: How results should be sorted.
     ///   - page: The page of results to return.
     ///   - accountID: The user's account identifier.
     ///   - session: The user's TMDb session.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A list of TV series in the user's watchlist.
+    /// - Returns: A list of the user's custom lists.
     ///
-    func tvSeriesWatchlist(
-        sortedBy: WatchlistSort? = nil,
-        page: Int? = nil,
+    func lists(
+        page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList {
-        try await tvSeriesWatchlist(
-            sortedBy: sortedBy,
-            page: page,
-            accountID: accountID,
-            session: session
-        )
-    }
+    ) async throws -> MediaListSummaryPageableList
 
 }

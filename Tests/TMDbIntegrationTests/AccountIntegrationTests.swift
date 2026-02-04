@@ -178,4 +178,60 @@ final class AccountIntegrationTests {
         #expect(!isTVSeriesInWatchlistAfterRemoved)
     }
 
+    @Test("ratedMovies")
+    func ratedMovies() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedMoviesList = try await accountService.ratedMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let page = try #require(ratedMoviesList.page)
+        #expect(page >= 1)
+        #expect(ratedMoviesList.results.isEmpty)
+    }
+
+    @Test("ratedTVSeries")
+    func ratedTVSeries() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedTVSeriesList = try await accountService.ratedTVSeries(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let page = try #require(ratedTVSeriesList.page)
+        #expect(page >= 1)
+        #expect(ratedTVSeriesList.results.isEmpty)
+    }
+
+    @Test("ratedTVEpisodes")
+    func ratedTVEpisodes() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedTVEpisodesList = try await accountService.ratedTVEpisodes(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let page = try #require(ratedTVEpisodesList.page)
+        #expect(page >= 1)
+        #expect(ratedTVEpisodesList.results.isEmpty)
+    }
+
+    @Test("lists")
+    func lists() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let listsList = try await accountService.lists(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        let page = try #require(listsList.page)
+        #expect(page >= 1)
+        #expect(listsList.results.isEmpty)
+    }
+
 }
