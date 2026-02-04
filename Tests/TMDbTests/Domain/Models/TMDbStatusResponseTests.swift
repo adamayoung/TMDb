@@ -13,7 +13,7 @@ import Testing
 struct TMDbStatusResponseTests {
 
     @Test
-    func testDecodeReturnsStatusResponse() throws {
+    func decodeReturnsStatusResponse() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             TMDbStatusResponse.self,
             fromResource: "error-status-response"
