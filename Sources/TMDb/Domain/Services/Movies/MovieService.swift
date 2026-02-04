@@ -374,7 +374,7 @@ public protocol MovieService: Sendable {
         forMovie movieID: Movie.ID,
         page: Int?,
         language: String?
-    ) async throws -> MediaPageableList
+    ) async throws -> MediaListSummaryPageableList
 
     ///
     /// Returns change history for a movie.
@@ -752,7 +752,7 @@ public extension MovieService {
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaPageableList {
+    ) async throws -> MediaListSummaryPageableList {
         try await lists(forMovie: movieID, page: page, language: language)
     }
 

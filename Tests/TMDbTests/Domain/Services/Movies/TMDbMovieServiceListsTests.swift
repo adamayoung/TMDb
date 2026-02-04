@@ -250,9 +250,9 @@ struct TMDbMovieServiceListsTests {
         }
     }
 
-    @Test("lists with default parameter values returns media lists")
-    func listsWithDefaultParameterValuesReturnsMediaLists() async throws {
-        let expectedResult = MediaPageableList.mock()
+    @Test("lists with default parameter values returns media list summaries")
+    func listsWithDefaultParameterValuesReturnsMediaListSummaries() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
         let movieID = 1
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = MovieListsRequest(id: movieID, page: nil, language: nil)
@@ -263,9 +263,9 @@ struct TMDbMovieServiceListsTests {
         #expect(apiClient.lastRequest as? MovieListsRequest == expectedRequest)
     }
 
-    @Test("lists with page and language returns media lists")
-    func listsWithPageAndLanguageReturnsMediaLists() async throws {
-        let expectedResult = MediaPageableList.mock()
+    @Test("lists with page and language returns media list summaries")
+    func listsWithPageAndLanguageReturnsMediaListSummaries() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
         let movieID = 1
         let page = 2
         let language = "en"

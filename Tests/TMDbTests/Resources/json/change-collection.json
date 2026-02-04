@@ -6,7 +6,7 @@
         {
           "id": "5f8b1234abc12345",
           "action": "updated",
-          "time": "2024-12-15",
+          "time": "2024-12-15 10:30:00 UTC",
           "iso_639_1": "en",
           "iso_3166_1": "US",
           "value": "Fight Club",
@@ -20,7 +20,7 @@
         {
           "id": "5f8b5678def67890",
           "action": "added",
-          "time": "2024-12-15",
+          "time": "2024-12-15 11:45:30 UTC",
           "value": {
             "name": "Brad Pitt",
             "character": "Tyler Durden"

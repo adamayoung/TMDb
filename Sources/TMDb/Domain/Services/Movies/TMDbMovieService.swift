@@ -321,11 +321,11 @@ final class TMDbMovieService: MovieService {
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaPageableList {
+    ) async throws -> MediaListSummaryPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieListsRequest(id: movieID, page: page, language: languageCode)
 
-        let mediaList: MediaPageableList
+        let mediaList: MediaListSummaryPageableList
         do {
             mediaList = try await apiClient.perform(request)
         } catch let error {

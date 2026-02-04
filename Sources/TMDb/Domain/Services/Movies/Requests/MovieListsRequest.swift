@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MovieListsRequest: DecodableAPIRequest<MediaPageableList> {
+final class MovieListsRequest: DecodableAPIRequest<MediaListSummaryPageableList> {
 
     init(id: Movie.ID, page: Int? = nil, language: String? = nil) {
         let path = "/movie/\(id)/lists"

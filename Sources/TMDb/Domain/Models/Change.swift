@@ -124,6 +124,29 @@ extension ChangeItem {
         case originalValue
     }
 
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(String.self, forKey: .id)
+        self.action = try container.decode(String.self, forKey: .action)
+        self.languageCode = try container.decodeIfPresent(String.self, forKey: .languageCode)
+        self.countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode)
+        self.value = try container.decodeIfPresent(AnyCodable.self, forKey: .value)
+        self.originalValue = try container.decodeIfPresent(AnyCodable.self, forKey: .originalValue)
+
+        // Decode time using the auth date formatter
+        let timeString = try container.decode(String.self, forKey: .time)
+        let dateFormatter = DateFormatter.theMovieDatabaseAuth
+        guard let date = dateFormatter.date(from: timeString) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .time,
+                in: container,
+                debugDescription: "Date string '\(timeString)' does not match expected format '\(dateFormatter.dateFormat ?? "")'"
+            )
+        }
+        self.time = date
+    }
+
 }
 
 ///
