@@ -53,6 +53,22 @@ struct MediaTests {
         #expect(result == media)
     }
 
+    @Test("JSON encoding and decoding of Media round trips correctly", .tags(.encoding, .decoding))
+    func encodeDecodeRoundTrip() throws {
+        let mediaItems: [Media] = [
+            .movie(.theFirstOmen),
+            .tvSeries(.bigBrother),
+            .person(.bradPitt),
+            .collection(.vinylAndTheVelvetUndergroundAndNico)
+        ]
+
+        for media in mediaItems {
+            let data = try JSONEncoder.theMovieDatabase.encode(media)
+            let decoded = try JSONDecoder.theMovieDatabase.decode(Media.self, from: data)
+            #expect(decoded == media)
+        }
+    }
+
     @Test("JSON encoding of movie media", .tags(.encoding))
     func encodeMovieMedia() throws {
         let movie = MovieListItem.theFirstOmen

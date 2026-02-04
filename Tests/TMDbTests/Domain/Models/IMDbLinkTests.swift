@@ -19,6 +19,13 @@ struct IMDbLinkTests {
         #expect(imdbLink == nil)
     }
 
+    @Test("init with IMDB title ID when ID is empty string returns nil")
+    func initWithIMDbTitleIDWhenIDIsEmptyStringReturnsNil() {
+        let imdbLink = IMDbLink(imdbTitleID: "")
+
+        #expect(imdbLink == nil)
+    }
+
     @Test("init with IMDB name ID when ID is nil returns nil")
     func initWithIMDbNameIDWhenIDIsNilReturnsNil() {
         let imdbLink = IMDbLink(imdbNameID: nil)

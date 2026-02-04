@@ -362,7 +362,16 @@ extension TVSeries {
 
         self.isInProduction = try container.decodeIfPresent(Bool.self, forKey: .isInProduction)
         self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
-        self.lastAirDate = try container.decodeIfPresent(Date.self, forKey: .lastAirDate)
+
+        // Need to deal with empty strings - date decoding will fail with an empty string
+        let lastAirDateString = try container.decodeIfPresent(String.self, forKey: .lastAirDate)
+        self.lastAirDate = try {
+            guard let lastAirDateString, !lastAirDateString.isEmpty else {
+                return nil
+            }
+
+            return try container2.decodeIfPresent(Date.self, forKey: .lastAirDate)
+        }()
         self.lastEpisodeToAir = try container.decodeIfPresent(
             TVEpisodeAirDate.self, forKey: .lastEpisodeToAir
         )

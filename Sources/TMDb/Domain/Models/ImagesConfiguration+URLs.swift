@@ -94,8 +94,8 @@ extension ImagesConfiguration {
 
         return
             secureBaseURL
-                .appendingPathComponent(sizePathComponent)
-                .appendingPathComponent(path.absoluteString)
+                .appending(path: sizePathComponent)
+                .appending(path: path.absoluteString)
     }
 
     private static func imageSizePathComponent(for width: Int, from sizes: [String]) -> String {

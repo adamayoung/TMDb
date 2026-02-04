@@ -43,10 +43,10 @@ Codable, Equatable, Hashable, Sendable {
     ///    - totalPages: Total pages.
     ///
     public init(
-        page: Int? = 1,
+        page: Int? = nil,
         results: [Result],
-        totalResults: Int? = 0,
-        totalPages: Int? = 0
+        totalResults: Int? = nil,
+        totalPages: Int? = nil
     ) {
         self.page = page
         self.results = results

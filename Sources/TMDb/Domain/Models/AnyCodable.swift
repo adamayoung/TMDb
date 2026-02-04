@@ -25,12 +25,12 @@ public enum AnyCodable: Codable, Equatable, Hashable, Sendable {
 
         if let stringValue = try? container.decode(String.self) {
             self = .string(stringValue)
+        } else if let boolValue = try? container.decode(Bool.self) {
+            self = .bool(boolValue)
         } else if let intValue = try? container.decode(Int.self) {
             self = .int(intValue)
         } else if let doubleValue = try? container.decode(Double.self) {
             self = .double(doubleValue)
-        } else if let boolValue = try? container.decode(Bool.self) {
-            self = .bool(boolValue)
         } else if let arrayValue = try? container.decode([AnyCodable].self) {
             self = .array(arrayValue)
         } else if let dictionaryValue = try? container.decode([String: AnyCodable].self) {

@@ -34,6 +34,7 @@ public struct IMDbLink: ExternalLink {
     public init?(imdbTitleID: String?) {
         guard
             let imdbTitleID,
+            !imdbTitleID.isEmpty,
             let url = Self.imdbURL(forTitle: imdbTitleID)
         else {
             return nil

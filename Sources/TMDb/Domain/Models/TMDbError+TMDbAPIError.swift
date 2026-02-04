@@ -38,13 +38,24 @@ extension TMDbError {
              .gatewayTimeout(let message):
             self = .serverError(message)
 
+        case .methodNotAllowed(let message),
+             .notAcceptable(let message),
+             .unprocessableContent(let message):
+            self = .badRequest(message)
+
+        case .invalidURL(let url):
+            self = .badRequest("Invalid URL: \(url)")
+
         case .network(let error):
             self = .network(error)
 
         case .decode(let error):
             self = .decode(error)
 
-        default:
+        case .encode(let error):
+            self = .network(error)
+
+        case .unknown:
             self = .unknown
         }
     }

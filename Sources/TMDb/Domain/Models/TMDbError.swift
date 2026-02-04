@@ -100,23 +100,23 @@ public extension TMDbError {
     ///
     var errorDescription: String? {
         switch self {
-        case .badRequest:
-            "Bad request"
+        case .badRequest(let message):
+            message ?? "Bad request"
 
-        case .unauthorised:
-            "Unauthorised"
+        case .unauthorised(let message):
+            message ?? "Unauthorised"
 
-        case .forbidden:
-            "Forbidden"
+        case .forbidden(let message):
+            message ?? "Forbidden"
 
-        case .notFound:
-            "Not found"
+        case .notFound(let message):
+            message ?? "Not found"
 
-        case .tooManyRequests:
-            "Too many requests"
+        case .tooManyRequests(let message):
+            message ?? "Too many requests"
 
-        case .serverError:
-            "Server error"
+        case .serverError(let message):
+            message ?? "Server error"
 
         case .network:
             "Network error"

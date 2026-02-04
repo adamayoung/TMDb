@@ -87,7 +87,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let homepageURL: URL?
 
     ///
-    /// IMDd identifier.
+    /// IMDb identifier.
     ///
     public let imdbID: String?
 
@@ -154,7 +154,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - budget: Movie budget, in US dollars.
     ///    - revenue: Movie revenue, in US dollars.
     ///    - homepageURL: Movie's web site URL.
-    ///    - imdbID: IMDd identifier.
+    ///    - imdbID: IMDb identifier.
     ///    - status: Movie status.
     ///    - productionCompanies: Movie production companies.
     ///    - productionCountries: Movie production countries.

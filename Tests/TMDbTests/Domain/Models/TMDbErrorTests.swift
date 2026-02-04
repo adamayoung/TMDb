@@ -203,6 +203,48 @@ struct TMDbErrorTests {
         #expect(description == "Unknown")
     }
 
+    @Test("bad request error description with message includes message")
+    func badRequestErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.badRequest("Invalid API key").errorDescription
+
+        #expect(description == "Invalid API key")
+    }
+
+    @Test("unauthorised error description with message includes message")
+    func unauthorisedErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.unauthorised("Authentication failed").errorDescription
+
+        #expect(description == "Authentication failed")
+    }
+
+    @Test("forbidden error description with message includes message")
+    func forbiddenErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.forbidden("Access denied").errorDescription
+
+        #expect(description == "Access denied")
+    }
+
+    @Test("not found error description with message includes message")
+    func notFoundErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.notFound("Resource not found").errorDescription
+
+        #expect(description == "Resource not found")
+    }
+
+    @Test("too many requests error description with message includes message")
+    func tooManyRequestsErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.tooManyRequests("Rate limit exceeded").errorDescription
+
+        #expect(description == "Rate limit exceeded")
+    }
+
+    @Test("server error error description with message includes message")
+    func serverErrorErrorDescriptionWithMessageIncludesMessage() {
+        let description = TMDbError.serverError("Internal error").errorDescription
+
+        #expect(description == "Internal error")
+    }
+
 }
 
 private extension TMDbErrorTests {
