@@ -254,10 +254,15 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``AccountAvatar/TMDb``
 - ``FavouriteSort``
 - ``WatchlistSort``
+- ``RatedSort``
 - ``MoviePageableList``
 - ``Movie``
 - ``TVSeriesPageableList``
 - ``TVSeries``
+- ``TVEpisodePageableList``
+- ``TVEpisode``
+- ``MediaListPageableList``
+- ``MediaListSummary``
 
 ### Lists
 

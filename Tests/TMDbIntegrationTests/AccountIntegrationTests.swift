@@ -178,4 +178,56 @@ final class AccountIntegrationTests {
         #expect(!isTVSeriesInWatchlistAfterRemoved)
     }
 
+    @Test("ratedMovies")
+    func ratedMovies() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedMoviesList = try await accountService.ratedMovies(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        #expect(ratedMoviesList.page >= 1)
+        #expect(ratedMoviesList.results.count >= 0)
+    }
+
+    @Test("ratedTVSeries")
+    func ratedTVSeries() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedTVSeriesList = try await accountService.ratedTVSeries(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        #expect(ratedTVSeriesList.page >= 1)
+        #expect(ratedTVSeriesList.results.count >= 0)
+    }
+
+    @Test("ratedTVEpisodes")
+    func ratedTVEpisodes() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let ratedTVEpisodesList = try await accountService.ratedTVEpisodes(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        #expect(ratedTVEpisodesList.page >= 1)
+        #expect(ratedTVEpisodesList.results.count >= 0)
+    }
+
+    @Test("lists")
+    func lists() async throws {
+        let accountDetails = try await accountService.details(session: session)
+
+        let listsList = try await accountService.lists(
+            accountID: accountDetails.id,
+            session: session
+        )
+
+        #expect(listsList.page >= 1)
+        #expect(listsList.results.count >= 0)
+    }
+
 }

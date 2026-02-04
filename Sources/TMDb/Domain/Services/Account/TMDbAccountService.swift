@@ -205,6 +205,96 @@ final class TMDbAccountService: AccountService {
         )
     }
 
+    func ratedMovies(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        let request = RatedMoviesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
+        let movieList: MoviePageableList
+        do {
+            movieList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return movieList
+    }
+
+    func ratedTVSeries(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        let request = RatedTVSeriesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
+        let tvSeriesList: TVSeriesPageableList
+        do {
+            tvSeriesList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvSeriesList
+    }
+
+    func ratedTVEpisodes(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVEpisodePageableList {
+        let request = RatedTVEpisodesRequest(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
+        let tvEpisodeList: TVEpisodePageableList
+        do {
+            tvEpisodeList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return tvEpisodeList
+    }
+
+    func lists(
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MediaListPageableList {
+        let request = AccountListsRequest(
+            page: page,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
+
+        let listResult: MediaListPageableList
+        do {
+            listResult = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return listResult
+    }
+
 }
 
 extension TMDbAccountService {

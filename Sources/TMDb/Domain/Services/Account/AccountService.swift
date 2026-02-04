@@ -232,6 +232,84 @@ public protocol AccountService: Sendable {
         session: Session
     ) async throws
 
+    ///
+    /// Returns a list of movies rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of movies rated by the user.
+    ///
+    func ratedMovies(
+        sortedBy: RatedSort?,
+        page: Int?,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList
+
+    ///
+    /// Returns a list of TV series rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV series rated by the user.
+    ///
+    func ratedTVSeries(
+        sortedBy: RatedSort?,
+        page: Int?,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList
+
+    ///
+    /// Returns a list of TV episodes rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV episodes rated by the user.
+    ///
+    func ratedTVEpisodes(
+        sortedBy: RatedSort?,
+        page: Int?,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVEpisodePageableList
+
+    ///
+    /// Returns a list of the user's custom lists.
+    ///
+    /// - Parameters:
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's custom lists.
+    ///
+    func lists(
+        page: Int?,
+        accountID: Int,
+        session: Session
+    ) async throws -> MediaListPageableList
+
 }
 
 public extension AccountService {
@@ -338,6 +416,111 @@ public extension AccountService {
     ) async throws -> TVSeriesPageableList {
         try await tvSeriesWatchlist(
             sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Returns a list of movies rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of movies rated by the user.
+    ///
+    func ratedMovies(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MoviePageableList {
+        try await ratedMovies(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Returns a list of TV series rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV series rated by the user.
+    ///
+    func ratedTVSeries(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVSeriesPageableList {
+        try await ratedTVSeries(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Returns a list of TV episodes rated by the user.
+    ///
+    /// - Parameters:
+    ///   - sortedBy: How results should be sorted.
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of TV episodes rated by the user.
+    ///
+    func ratedTVEpisodes(
+        sortedBy: RatedSort? = nil,
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> TVEpisodePageableList {
+        try await ratedTVEpisodes(
+            sortedBy: sortedBy,
+            page: page,
+            accountID: accountID,
+            session: session
+        )
+    }
+
+    ///
+    /// Returns a list of the user's custom lists.
+    ///
+    /// - Parameters:
+    ///   - page: The page of results to return.
+    ///   - accountID: The user's account identifier.
+    ///   - session: The user's TMDb session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A list of the user's custom lists.
+    ///
+    func lists(
+        page: Int? = nil,
+        accountID: Int,
+        session: Session
+    ) async throws -> MediaListPageableList {
+        try await lists(
             page: page,
             accountID: accountID,
             session: session

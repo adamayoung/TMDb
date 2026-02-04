@@ -29,3 +29,19 @@
 - ``tvSeriesWatchlist(sortedBy:page:accountID:session:)``
 - ``addToWatchlist(tvSeries:accountID:session:)``
 - ``removeFromWatchlist(tvSeries:accountID:session:)``
+
+### Rated Movies
+
+- ``ratedMovies(sortedBy:page:accountID:session:)``
+
+### Rated TV Series
+
+- ``ratedTVSeries(sortedBy:page:accountID:session:)``
+
+### Rated TV Episodes
+
+- ``ratedTVEpisodes(sortedBy:page:accountID:session:)``
+
+### Custom Lists
+
+- ``lists(page:accountID:session:)``
