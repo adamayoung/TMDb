@@ -158,6 +158,23 @@ Enforced via `swiftlint` and `swiftformat`:
 
 **Note:** The `swiftlint` and `swiftformat` tools must be installed separately. If not available, ensure code follows existing style patterns and compiles without warnings.
 
+### Running Format and Lint in Xcode Environment
+
+When running `make format` or `make lint` from within Xcode (or when tools are not in PATH):
+
+```bash
+# Use full paths to formatting tools
+/opt/homebrew/bin/swiftlint --fix .
+/opt/homebrew/bin/swiftformat .
+
+# Or source .zshrc first to get tools in PATH
+source ~/.zshrc 2>/dev/null && make format
+```
+
+The tools are installed via Homebrew and located at:
+- **swiftlint**: `/opt/homebrew/bin/swiftlint`
+- **swiftformat**: `/opt/homebrew/bin/swiftformat`
+
 ## Testing Requirements
 
 **CRITICAL: Always run both unit tests AND integration tests after making code changes.**
