@@ -299,21 +299,21 @@ public struct AnyCodable: Codable, Equatable, Hashable, Sendable {
     public static func == (lhs: AnyCodable, rhs: AnyCodable) -> Bool {
         switch (lhs.value, rhs.value) {
         case (.none, .none):
-            return true
-        case let (lhs as Bool, rhs as Bool):
-            return lhs == rhs
-        case let (lhs as Int, rhs as Int):
-            return lhs == rhs
-        case let (lhs as Double, rhs as Double):
-            return lhs == rhs
-        case let (lhs as String, rhs as String):
-            return lhs == rhs
-        case let (lhs as [AnyCodable], rhs as [AnyCodable]):
-            return lhs == rhs
-        case let (lhs as [String: AnyCodable], rhs as [String: AnyCodable]):
-            return lhs == rhs
+            true
+        case (let lhs as Bool, let rhs as Bool):
+            lhs == rhs
+        case (let lhs as Int, let rhs as Int):
+            lhs == rhs
+        case (let lhs as Double, let rhs as Double):
+            lhs == rhs
+        case (let lhs as String, let rhs as String):
+            lhs == rhs
+        case (let lhs as [AnyCodable], let rhs as [AnyCodable]):
+            lhs == rhs
+        case (let lhs as [String: AnyCodable], let rhs as [String: AnyCodable]):
+            lhs == rhs
         default:
-            return false
+            false
         }
     }
 

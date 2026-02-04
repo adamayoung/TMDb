@@ -55,12 +55,12 @@ public struct AccountStates: Codable, Equatable, Hashable, Sendable {
 
 }
 
-extension AccountStates {
+public extension AccountStates {
 
     ///
     /// A model representing a rating value.
     ///
-    public struct RatedValue: Codable, Equatable, Hashable, Sendable {
+    struct RatedValue: Codable, Equatable, Hashable, Sendable {
 
         ///
         /// The rating value.
