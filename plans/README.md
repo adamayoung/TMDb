@@ -4,48 +4,46 @@ This directory contains detailed implementation plans for bringing the TMDb Swif
 
 ## Overview
 
-**Current Coverage:** ~76% (115/152 endpoints)
+**Current Coverage:** ~89% (134/152 endpoints)
 **Target Coverage:** 100% (152/152 endpoints)
-**Total Missing:** 37 endpoints across 9 areas
+**Remaining:** 18 endpoints across 7 areas
+
+### Completed Plans
+- ✅ **Plan 1:** Movie Service Additions (9 endpoints)
+- ✅ **Plan 2:** TV Series Service Additions (10 endpoints)
 
 ## Implementation Plans (Ordered by Priority)
 
-### 🔴 Highest Priority (Core User Features)
+### ✅ Completed Plans
 
-#### [Plan 1: Movie Service Additions](01-movies-service-additions.md)
-**Impact:** HIGH | **Effort:** Medium | **Endpoints:** 9
+#### [Plan 1: Movie Service Additions](01-movies-service-additions.md) ✅ DONE
+**Impact:** HIGH | **Effort:** Medium | **Endpoints:** 9 | **Status:** ✅ Completed
 
-Add critical user interaction features to MovieService:
+All features implemented in `feature/tv-series-service-additions` branch:
 - ✅ Rating functionality (add, delete, get ratings)
 - ✅ Account states (favorite/watchlist/rating status)
 - ✅ Alternative titles & translations
 - ✅ Changes tracking
-- ⚠️ **Critical for user engagement**
-
-**Key Benefits:**
-- Users can rate movies
-- Apps can show user's interaction state with movies
-- Improved internationalization
+- ✅ All unit and integration tests passing
+- ✅ DocC documentation updated
 
 ---
 
-#### [Plan 2: TV Series Service Additions](02-tv-series-service-additions.md)
-**Impact:** HIGH | **Effort:** Medium | **Endpoints:** 10
+#### [Plan 2: TV Series Service Additions](02-tv-series-service-additions.md) ✅ DONE
+**Impact:** HIGH | **Effort:** Medium | **Endpoints:** 10 | **Status:** ✅ Completed
 
-Add critical user interaction features to TVSeriesService:
+All features implemented in `feature/tv-series-service-additions` branch:
 - ✅ Rating functionality
 - ✅ Account states
 - ✅ Keywords for content categorization
 - ✅ Alternative titles & translations
 - ✅ Changes tracking
-- ⚠️ **Critical for user engagement**
-
-**Key Benefits:**
-- Users can rate TV series
-- Better content discovery with keywords
-- Complete metadata access
+- ✅ All unit and integration tests passing
+- ✅ DocC documentation updated
 
 ---
+
+### 🔴 Highest Priority (Core User Features)
 
 #### [Plan 3: Model Property Additions](03-models-property-additions.md)
 **Impact:** HIGH | **Effort:** Low-Medium | **Endpoints:** 0 (Model fixes)
@@ -163,13 +161,14 @@ Create ChangesService for sync/caching:
 
 ## Recommended Implementation Order
 
-### Phase 1: Critical User Features (Weeks 1-3)
-1. **Plan 3** - Model Property Additions (fixes bugs, quick win)
-2. **Plan 1** - Movie Service Additions (highest user impact)
-3. **Plan 2** - TV Series Service Additions (highest user impact)
+### Phase 1: Critical User Features ✅ PARTIALLY COMPLETE
+1. ~~**Plan 1** - Movie Service Additions~~ ✅ **DONE**
+2. ~~**Plan 2** - TV Series Service Additions~~ ✅ **DONE**
+3. **Plan 3** - Model Property Additions (fixes bugs, quick win)
 4. **Plan 4** - Account Service Additions (completes user features)
 
-**Outcome:** Users can rate content, view interaction states, and manage profiles
+**Status:** Plans 1 & 2 complete. Users can now rate movies and TV series, view interaction states.
+**Remaining:** Model property additions and account service additions.
 
 ---
 
@@ -219,8 +218,8 @@ make build-docs      # Build documentation
 
 ```mermaid
 graph TD
-    P1[Plan 1: Movies] --> P3[Plan 3: Models]
-    P2[Plan 2: TV Series] --> P1
+    P1[Plan 1: Movies ✅] --> P3[Plan 3: Models]
+    P2[Plan 2: TV Series ✅] --> P1
     P4[Plan 4: Account] --> P1
     P5[Plan 5: Season/Episode] --> P1
     P6[Plan 6: Search/Person] --> P1
@@ -229,11 +228,13 @@ graph TD
     P7[Plan 7: New Services] -.optional.-> P1
     P8[Plan 8: Company/Config] -.independent.-> P1
 
+    classDef done fill:#28a745,stroke:#1e7e34,color:#fff
     classDef high fill:#ff6b6b,stroke:#c92a2a,color:#fff
     classDef medium fill:#ffd93d,stroke:#f59f00,color:#000
     classDef low fill:#95e1d3,stroke:#0ca678,color:#000
 
-    class P1,P2,P3,P4 high
+    class P1,P2 done
+    class P3,P4 high
     class P5,P6 medium
     class P7,P8,P9 low
 ```
@@ -241,20 +242,21 @@ graph TD
 **Legend:**
 - **Solid arrows:** Hard dependency (implement in order)
 - **Dashed arrows:** Optional/soft dependency
-- **Colors:** Priority (Red=High, Yellow=Medium, Green=Low)
+- **Colors:** Green=Done, Red=High Priority, Yellow=Medium, Light Green=Low
 
 ---
 
 ## Coverage Improvement Roadmap
 
-| Phase | Plans | Endpoints Added | Total Coverage | Time Estimate |
-|-------|-------|----------------|----------------|---------------|
+| Phase | Plans | Endpoints Added | Total Coverage | Status |
+|-------|-------|----------------|----------------|--------|
 | **Start** | - | - | 76% (115/152) | - |
-| **Phase 1** | 1-4 | +24 | 91% (139/152) | 3 weeks |
-| **Phase 2** | 5-6 | +19 | 104% (158/152) | 2 weeks |
-| **Phase 3** | 7-8 | +10 | 110% (168/152) | 1 week |
-| **Phase 4** | 9 | +8 | 116% (176/152) | 1 week |
-| **Complete** | All | +37 | **100%** ✅ | **7-8 weeks** |
+| **Plans 1-2** | 1-2 | +19 | 89% (134/152) | ✅ **DONE** |
+| **Phase 1 (remaining)** | 3-4 | +5 | 91% (139/152) | Pending |
+| **Phase 2** | 5-6 | +19 | 104% (158/152) | Pending |
+| **Phase 3** | 7-8 | +10 | 110% (168/152) | Pending |
+| **Phase 4** | 9 | +8 | 116% (176/152) | Pending |
+| **Complete** | All | +37 | **100%** ✅ | In Progress |
 
 *Note: Coverage >100% because some implemented endpoints aren't in OpenAPI v3 spec*
 
@@ -262,7 +264,16 @@ graph TD
 
 ## Key Achievements by Phase
 
-### After Phase 1 (91% coverage):
+### After Plans 1-2 (89% coverage) ✅ CURRENT STATUS:
+- ✅ Full rating functionality for movies and TV series
+- ✅ Complete account states for movies and TV series
+- ✅ Keywords for TV series content categorization
+- ✅ Alternative titles and translations for movies and TV series
+- ✅ Changes tracking for movies and TV series
+- ✅ Lists endpoints for movies and TV series
+- 🎯 **Users can now rate and track content**
+
+### After Full Phase 1 (91% coverage):
 - ✅ Full rating functionality
 - ✅ Complete account states
 - ✅ All critical user features
@@ -346,15 +357,21 @@ git worktree remove ../TMDb-tv-series
 
 ### Implementation Steps
 
+**DO NOT** make or commit ANY changes on the main branch.
+
+The TMDb OpenAPI spec and TMDB mcp to check API schemas and for example data.
+
 1. **Choose a plan** - Review the recommended implementation order above
 2. **Create a branch** - Use descriptive branch names (e.g., `feature/movie-service-additions`)
 3. **Use worktrees** (optional) - For working on multiple plans concurrently
 4. **Read the detailed plan** - Understand requirements and implementation steps
-5. **Implement** - Follow the plan's step-by-step implementation guide
+5. **Implement** - Follow the plan's step-by-step implementation guide using a TDD approach
 6. **Test** - Run all tests (unit + integration) as specified in the plan
-7. **Document** - Update DocC documentation
-8. **Verify** - Complete the verification checklist
-9. **Submit PR** - Follow CLAUDE.md guidelines for PR creation
+7. **Code Coverage** - Ensure there is high code coverage for unit and integration tests
+8. **Document** - Update DocC documentation and ensure document builds
+9. **Format and Lint** - Run format and lint, fixing any issues
+10. **Verify** - Complete the verification checklist
+11. **Submit PR** - Follow CLAUDE.md guidelines for PR creation
 
 ---
 
@@ -376,5 +393,14 @@ If anything is unclear, refer to:
 
 ---
 
-**Last Updated:** 2026-02-03
+**Last Updated:** 2026-02-04
 **Analysis Source:** TMDb OpenAPI Specification v3
+
+---
+
+## Implementation History
+
+| Date | Plan | Branch | Status |
+|------|------|--------|--------|
+| 2026-02-04 | Plan 1: Movie Service Additions | `feature/tv-series-service-additions` | ✅ Complete |
+| 2026-02-04 | Plan 2: TV Series Service Additions | `feature/tv-series-service-additions` | ✅ Complete |
