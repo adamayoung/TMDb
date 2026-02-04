@@ -12,6 +12,7 @@ import Testing
 @Suite(.tags(.models))
 struct TMDbStatusResponseTests {
 
+    @Test
     func testDecodeReturnsStatusResponse() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             TMDbStatusResponse.self,
