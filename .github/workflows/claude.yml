@@ -27,6 +27,8 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          track_progress: true
+          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
           plugin_marketplaces: |
             https://github.com/AvdLee/Swift-Concurrency-Agent-Skill.git
           plugins: |
@@ -36,7 +38,9 @@ jobs:
             Use the swift-concurrency skill for Swift concurrency guidance.
             Minimize style nitpicks unless they indicate correctness or safety problems.
 
-            Review this PR and categorize issues by severity.
+            Review this PR and post your findings as inline comments on the specific lines of code where issues are found using the create_inline_comment tool. For code suggestions, use GitHub suggestion blocks.
+
+            After reviewing all files, post a summary comment on the PR using `gh pr comment` with your overall assessment.
 
             ## Review Checklist
 
