@@ -19,6 +19,28 @@ struct MovieTests {
         #expect(result == movie)
     }
 
+    @Test("JSON decoding of Movie with belongs to collection", .tags(.decoding))
+    func decodeReturnsMovieWithBelongsToCollection() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Movie.self, fromResource: "movie-with-collection"
+        )
+
+        let collection = try #require(result.belongsToCollection)
+        #expect(collection.id == 1241)
+        #expect(collection.name == "Harry Potter Collection")
+        #expect(collection.posterPath == URL(string: "/eVPs2Y0LyvTLZn6AP5Z6O2rtiGB.jpg"))
+        #expect(collection.backdropPath == URL(string: "/kmEsQL2vOTA0jnM28fXS45Ky8kX.jpg"))
+    }
+
+    @Test("JSON decoding of Movie with null belongs to collection", .tags(.decoding))
+    func decodeReturnsMovieWithNullBelongsToCollection() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Movie.self, fromResource: "movie"
+        )
+
+        #expect(result.belongsToCollection == nil)
+    }
+
     @Test("JSON decoding of Movie with empty homepage and release date")
     func decodeWhenHomepageAndReleaseDateIsEmptyStringReturnsMovie() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(

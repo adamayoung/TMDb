@@ -32,6 +32,21 @@ struct MovieIntegrationTests {
         #expect(movie.title == "Barbie")
     }
 
+    @Test("details for movie in a collection includes belongsToCollection")
+    func detailsForMovieInCollection() async throws {
+        // Harry Potter and the Philosopher's Stone
+        let movieID = 671
+
+        let movie = try await movieService.details(forMovie: movieID)
+
+        #expect(movie.id == movieID)
+        let collection = try #require(movie.belongsToCollection)
+        #expect(collection.id == 1241)
+        #expect(collection.name == "Harry Potter Collection")
+        #expect(collection.posterPath != nil)
+        #expect(collection.backdropPath != nil)
+    }
+
     @Test("credits")
     func credits() async throws {
         let movieID = 346_698

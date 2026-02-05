@@ -112,6 +112,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let spokenLanguages: [SpokenLanguage]?
 
     ///
+    /// The collection this movie belongs to.
+    ///
+    public let belongsToCollection: BelongsToCollection?
+
+    ///
     /// Current popularity.
     ///
     public let popularity: Double?
@@ -159,6 +164,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - productionCompanies: Movie production companies.
     ///    - productionCountries: Movie production countries.
     ///    - spokenLanguages: Movie spoken languages.
+    ///    - belongsToCollection: The collection this movie belongs to.
     ///    - popularity: Current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
@@ -185,6 +191,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         productionCompanies: [ProductionCompany]? = nil,
         productionCountries: [ProductionCountry]? = nil,
         spokenLanguages: [SpokenLanguage]? = nil,
+        belongsToCollection: BelongsToCollection? = nil,
         popularity: Double? = nil,
         voteAverage: Double? = nil,
         voteCount: Int? = nil,
@@ -210,6 +217,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.productionCompanies = productionCompanies
         self.productionCountries = productionCountries
         self.spokenLanguages = spokenLanguages
+        self.belongsToCollection = belongsToCollection
         self.popularity = popularity
         self.voteAverage = voteAverage
         self.voteCount = voteCount
@@ -241,6 +249,7 @@ extension Movie {
         case productionCompanies
         case productionCountries
         case spokenLanguages
+        case belongsToCollection
         case popularity
         case voteAverage
         case voteCount
@@ -311,6 +320,9 @@ extension Movie {
         )
         self.spokenLanguages = try container.decodeIfPresent(
             [SpokenLanguage].self, forKey: .spokenLanguages
+        )
+        self.belongsToCollection = try container.decodeIfPresent(
+            BelongsToCollection.self, forKey: .belongsToCollection
         )
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)

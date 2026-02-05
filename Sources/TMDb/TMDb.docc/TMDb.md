@@ -196,6 +196,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``CollectionService``
 - ``Collection``
+- ``BelongsToCollection``
 - ``CollectionImageCollection``
 - ``CollectionListItem``
 - ``CollectionTranslation``
