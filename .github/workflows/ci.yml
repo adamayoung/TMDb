@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - ".github/workflows/ci.yml"
-      - ".swift-format"
+      - ".swiftformat"
       - ".swiftlint.yml"
       - "**/*.swift"
       - "**/*.md"
@@ -20,8 +20,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      swift: ${{ steps.filter.outputs.swift }}
+      markdown: ${{ steps.filter.outputs.markdown }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Detect file changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            swift:
+              - '**/*.swift'
+              - '.swiftformat'
+              - '.swiftlint.yml'
+              - 'Package.swift'
+              - 'Package.resolved'
+              - '.github/workflows/ci.yml'
+            markdown:
+              - 'README.md'
+              - '**/*.docc/**/*.md'
+              - '.github/workflows/ci.yml'
+
   lint:
     name: Lint
+    needs: changes
+    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: macos-26
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
@@ -40,6 +71,8 @@ jobs:
 
   lint-markdown:
     name: Lint Markdown
+    needs: changes
+    if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     container:
       image: docker://ghcr.io/igorshubovych/markdownlint-cli:v0.41.0
@@ -52,6 +85,8 @@ jobs:
 
   build-test:
     name: Build and Test
+    needs: changes
+    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: macos-26
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
@@ -104,6 +139,8 @@ jobs:
 
   build-test-linux:
     name: Build and Test (Linux)
+    needs: changes
+    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     container: swift:6.0.2-jammy
     steps:
@@ -118,3 +155,24 @@ jobs:
 
       - name: Build for Release
         run: swift build -c release -Xswiftc -warnings-as-errors
+
+  ci:
+    name: CI
+    if: always()
+    needs: [lint, lint-markdown, build-test, build-test-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job results
+        run: |
+          results=( \
+            "${{ needs.lint.result }}" \
+            "${{ needs.lint-markdown.result }}" \
+            "${{ needs.build-test.result }}" \
+            "${{ needs.build-test-linux.result }}" \
+          )
+          for result in "${results[@]}"; do
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "Job failed or cancelled: $result"
+              exit 1
+            fi
+          done

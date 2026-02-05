@@ -2,10 +2,14 @@
 
 ## Topics
 
-### Creating a TMDBClient
+### Creating a TMDbClient
 
 - ``init(apiKey:configuration:)``
 - ``init(apiKey:httpClient:configuration:)``
+
+### Configuration
+
+- ``configuration``
 
 ### TMDb Areas
 

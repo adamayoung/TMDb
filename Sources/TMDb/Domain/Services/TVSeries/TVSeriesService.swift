@@ -279,11 +279,11 @@ public protocol TVSeriesService: Sendable {
     ///
     /// [TMDb API - TVSeries: External IDs](https://developer.themoviedb.org/reference/tv-series-external-ids)
     ///
-    /// - Parameters tvSeriesID: The identifier of the TV series.
+    /// - Parameter tvSeriesID: The identifier of the TV series.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of external links for the specificed TV series.
+    /// - Returns: A collection of external links for the specified TV series.
     ///
     func externalLinks(
         forTVSeries tvSeriesID: TVSeries.ID

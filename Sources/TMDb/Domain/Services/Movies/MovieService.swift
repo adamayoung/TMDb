@@ -258,7 +258,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Throws: TMDb data error ``TMDbError``.
     ///
-    /// - Returns: A collection of external links for the specificed movie.
+    /// - Returns: A collection of external links for the specified movie.
     ///
     func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection
 

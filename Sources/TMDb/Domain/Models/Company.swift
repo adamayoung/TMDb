@@ -8,7 +8,7 @@
 import Foundation
 
 ///
-/// A model representing  a production company.
+/// A model representing a production company.
 ///
 public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
 

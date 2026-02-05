@@ -227,9 +227,11 @@ Unit tests alone may pass even when:
    - If tools not installed: Ensure code compiles with `swift build -Xswiftc -warnings-as-errors`
 3. **Run unit tests**: `make test` - All unit tests must pass ✅ **REQUIRED**
 4. **Run integration tests**: `make integration-test` - All integration tests must pass ✅ **REQUIRED**
-5. **Build documentation**: `make build-docs` - Verify DocC builds without warnings (if public API changed)
+5. **Build documentation**: `make build-docs` - Verify DocC builds without warnings (if public API changed) ✅ **REQUIRED if public API changed**
+6. **Lint markdown**: `make lint-markdown` - Verify markdown formatting (if any `.md` files changed) ✅ **REQUIRED if markdown changed**
+7. **Documentation consistency**: Verify DocC extensions, catalog, TMDbClient.md, and README.md are all in sync (see Documentation Consistency Checklist) ✅ **REQUIRED if public API changed**
 
-**Required steps (3-5) must succeed before the work is complete. Steps 1-2 are strongly recommended but can be skipped if formatting tools are not available.**
+**Required steps (3-4) must always succeed. Steps 5-7 are required when the public API or documentation files change. Steps 1-2 are strongly recommended but can be skipped if formatting tools are not available.**
 
 ## Documentation Requirements
 
@@ -244,6 +246,26 @@ Update documentation when:
 - **Adding new service methods**: Update the service's extension file
 - **Adding new TMDbClient properties**: Update `TMDb.docc/Extensions/TMDbClient.md`
 - **Renaming or removing public API**: Update all affected documentation files
+- **Any public API change**: Update `README.md` service table if services or capabilities change
+
+### Documentation Consistency Checklist
+
+**CRITICAL: After any changes to the public API, verify ALL of the following are in sync:**
+
+1. **Service extension files** (`TMDb.docc/Extensions/<Service>Service.md`) must reference **every** method in the corresponding service protocol. Compare the `.md` file against the protocol `.swift` file to ensure no methods are missing.
+2. **DocC catalog** (`TMDb.docc/TMDb.md`) must include all return types used by documented methods in the appropriate topic section (e.g., if a service returns `ShowCredits`, that type must appear in the section).
+3. **TMDbClient extension** (`TMDb.docc/Extensions/TMDbClient.md`) must list all public properties on `TMDbClient`.
+4. **README.md service table** must list all services exposed by `TMDbClient` with accurate descriptions and correct service count.
+5. **README.md examples** must use the correct `swift-tools-version` matching `Package.swift`.
+6. **Inline DocC comments** (`///`) on all public declarations must be accurate, free of typos, and use correct DocC syntax (e.g., `- Parameter` singular for single parameters, `- Parameters:` plural for multiple).
+
+### Common Documentation Mistakes to Avoid
+
+- Missing `credits()` or other methods from DocC extension files when both `credits()` and `aggregateCredits()` exist on a service
+- Missing return types (e.g., `ShowCredits`, aggregate credit types) from `TMDb.md` topic sections
+- Stale service count in README when new services are added
+- Using `- Parameters name:` (plural) instead of `- Parameter name:` (singular) for single-parameter methods
+- Typos in doc comments (run a spell check on `///` comments in changed files)
 
 ### Documentation Structure
 
@@ -264,11 +286,24 @@ Sources/TMDb/TMDb.docc/
 1. Create `TMDb.docc/Extensions/<ServiceName>Service.md` with method groupings
 2. Add topic section to `TMDb.docc/TMDb.md` with service and related models
 3. Add service property to `TMDb.docc/Extensions/TMDbClient.md`
-4. Run `make build-docs` to verify documentation builds without warnings
+4. Update `README.md` service table and service count
+5. Run `make build-docs` to verify documentation builds without warnings
+6. Run `make lint-markdown` to verify markdown formatting
+
+### Adding New Methods to Existing Services
+
+1. Add `///` doc comment to the new method with parameters, throws, and returns
+2. Add method reference to the service's `TMDb.docc/Extensions/<Service>Service.md`
+3. Add any new return types to the appropriate topic section in `TMDb.docc/TMDb.md`
+4. Update `README.md` service description if the new method adds a notable capability
+5. Run `make build-docs` and `make lint-markdown`
 
 ### Verification
 
-Always run `make build-docs` after documentation changes - it uses `--warnings-as-errors` to catch broken links and missing symbols.
+Always run these after documentation changes:
+
+- `make build-docs` - Uses `--warnings-as-errors` to catch broken links and missing symbols
+- `make lint-markdown` - Verifies markdown formatting in README and DocC files
 
 ## Adding New Features
 
@@ -280,7 +315,8 @@ Always run `make build-docs` after documentation changes - it uses `--warnings-a
 6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
 7. Add integration tests in `Tests/TMDbIntegrationTests/`
 8. **Update DocC documentation** (see Documentation Requirements section)
-9. Run completion checklist (format, lint, test, integration-test, build-docs)
+9. **Update README.md** service table and service count if adding new services or notable capabilities
+10. Run completion checklist (format, lint, test, integration-test, build-docs, lint-markdown, documentation consistency)
 
 ## Understanding the TMDb API
 

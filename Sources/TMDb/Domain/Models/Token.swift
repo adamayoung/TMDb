@@ -8,7 +8,7 @@
 import Foundation
 
 ///
-/// A model representing an internediate request token.
+/// A model representing an intermediate request token.
 ///
 public struct Token: Codable, Equatable, Hashable, Sendable {
 
@@ -28,7 +28,7 @@ public struct Token: Codable, Equatable, Hashable, Sendable {
     public let expiresAt: Date
 
     ///
-    /// Creates an internediate request token object.
+    /// Creates an intermediate request token object.
     ///
     /// - Parameters:
     ///   - success: Was token creation successful.

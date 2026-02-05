@@ -13,7 +13,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Features
 
-* **Comprehensive API Coverage**: Full support for TMDb API v3 with 17
+* **Comprehensive API Coverage**: Full support for TMDb API v3 with 20
   specialized services
 * **Movie & TV Data**: Details, credits, images, videos, reviews,
   recommendations, similar content
@@ -35,25 +35,23 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 | Service | Description |
 | ------- | ----------- |
-| **movies** | Movie details, credits, images, videos, reviews, |
-| | recommendations, similar, releases, watch providers |
-| **tvSeries** | TV show details, credits, images, videos, reviews, |
-| | recommendations, similar, watch providers |
-| **tvSeasons** | Season-specific details, credits, images, videos |
-| **tvEpisodes** | Episode-specific details, credits, images, videos |
-| **people** | Person details, movie/TV credits, images |
-| **search** | Multi-search across movies, TV shows, people, |
-| | collections, companies, keywords |
-| **discover** | Advanced filtering for movies and TV shows with 30+ |
-| | filter options |
+| **movies** | Movie details, credits, images, videos, reviews, recommendations, similar, releases, watch providers |
+| **tvSeries** | TV show details, credits, images, videos, reviews, recommendations, similar, watch providers |
+| **tvSeasons** | Season-specific details, aggregate credits, credits, images, videos, translations, watch providers |
+| **tvEpisodes** | Episode-specific details, credits, images, videos, translations |
+| **people** | Person details, combined/movie/TV credits, images, external links, translations |
+| **search** | Multi-search across movies, TV shows, people, collections, companies, keywords |
+| **discover** | Advanced filtering for movies and TV shows with 30+ filter options |
 | **trending** | Trending movies, TV shows, and people (daily/weekly) |
-| **account** | User favorites, watchlist, rated items |
-| | (requires authentication) |
+| **find** | Find movies, TV shows, and people by external IDs (IMDb, TVDB, etc.) |
+| **account** | User favorites, watchlist, rated items (requires authentication) |
 | **authentication** | Session management, guest sessions, request tokens |
 | **genres** | Genre lists for movies and TV shows |
+| **keywords** | Keyword details and movies by keyword |
+| **networks** | TV network details, alternative names, logos |
 | **watchProviders** | Streaming availability by region |
 | **certifications** | Content ratings (G, PG, R, etc.) |
-| **collections** | Movie collection details and metadata |
+| **collections** | Movie collection details, images, translations |
 | **companies** | Production company information |
 | **lists** | Custom list management (requires authentication) |
 | **configurations** | API configuration and image URL generation |
@@ -81,7 +79,7 @@ Add the TMDb package as a dependency to your `Package.swift` file, and add it
 as a dependency to your target.
 
 ```swift
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 import PackageDescription
 

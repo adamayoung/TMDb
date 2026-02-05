@@ -6,6 +6,10 @@
 
 - ``details(forEpisode:inSeason:inTVSeries:language:)``
 
+### Credits
+
+- ``credits(forEpisode:inSeason:inTVSeries:language:)``
+
 ### Media
 
 - ``images(forEpisode:inSeason:inTVSeries:filter:)``

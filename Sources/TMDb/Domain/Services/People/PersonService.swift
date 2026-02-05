@@ -126,7 +126,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of external links for the specificed person.
+    /// - Returns: A collection of external links for the specified person.
     ///
     func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection
 

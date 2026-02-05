@@ -8,6 +8,7 @@
 
 ### Credits
 
+- ``credits(forSeason:inTVSeries:language:)``
 - ``aggregateCredits(forSeason:inTVSeries:language:)``
 
 ### Media
