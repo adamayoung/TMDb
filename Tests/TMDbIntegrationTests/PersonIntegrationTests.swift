@@ -97,4 +97,49 @@ struct PersonIntegrationTests {
         #expect(linksCollection.tikTok != nil)
     }
 
+    @Test("taggedImages")
+    func taggedImages() async throws {
+        let personID = 500
+
+        let taggedImageList = try await personService
+            .taggedImages(forPerson: personID)
+
+        #expect(!taggedImageList.results.isEmpty)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let personID = 500
+
+        let translationCollection = try await personService
+            .translations(forPerson: personID)
+
+        #expect(translationCollection.id == personID)
+        #expect(!translationCollection.translations.isEmpty)
+    }
+
+    @Test("changes")
+    func changes() async throws {
+        let personID = 500
+
+        _ = try await personService
+            .changes(forPerson: personID)
+    }
+
+    @Test("latestPerson")
+    func latestPerson() async throws {
+        let person = try await personService.latestPerson()
+
+        #expect(person.id > 0)
+    }
+
+    @Test("personChanges")
+    func personChanges() async throws {
+        let changedIDCollection = try await personService
+            .personChanges()
+
+        #expect(changedIDCollection.page > 0)
+        #expect(changedIDCollection.totalResults > 0)
+    }
+
 }

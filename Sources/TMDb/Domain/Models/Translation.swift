@@ -192,7 +192,6 @@ public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
 
 }
 
-///
 /// A model representing TV season-specific translation data.
 ///
 public struct TVSeasonTranslationData: Codable, Equatable, Hashable, Sendable {
@@ -246,6 +245,27 @@ public struct TVEpisodeTranslationData: Codable, Equatable, Hashable, Sendable {
     public init(name: String, overview: String) {
         self.name = name
         self.overview = overview
+    }
+
+}
+
+///
+/// A model representing person-specific translation data.
+///
+public struct PersonTranslationData: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The translated biography.
+    ///
+    public let biography: String
+
+    ///
+    /// Creates a person translation data object.
+    ///
+    /// - Parameter biography: The translated biography.
+    ///
+    public init(biography: String) {
+        self.biography = biography
     }
 
 }

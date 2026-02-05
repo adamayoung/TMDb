@@ -113,6 +113,69 @@ public protocol SearchService: Sendable {
         language: String?
     ) async throws -> PersonPageableList
 
+    ///
+    /// Returns search results for collections.
+    ///
+    /// [TMDb API - Search: Collection](https://developer.themoviedb.org/reference/search-collection)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in.
+    ///   Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Collections matching the query.
+    ///
+    func searchCollections(
+        query: String,
+        page: Int?,
+        language: String?
+    ) async throws -> CollectionPageableList
+
+    ///
+    /// Returns search results for companies.
+    ///
+    /// [TMDb API - Search: Company](https://developer.themoviedb.org/reference/search-company)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Companies matching the query.
+    ///
+    func searchCompanies(
+        query: String,
+        page: Int?
+    ) async throws -> CompanyPageableList
+
+    ///
+    /// Returns search results for keywords.
+    ///
+    /// [TMDb API - Search: Keyword](https://developer.themoviedb.org/reference/search-keyword)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Keywords matching the query.
+    ///
+    func searchKeywords(
+        query: String,
+        page: Int?
+    ) async throws -> KeywordPageableList
+
 }
 
 public extension SearchService {
@@ -223,6 +286,77 @@ public extension SearchService {
         language: String? = nil
     ) async throws -> PersonPageableList {
         try await searchPeople(query: query, filter: filter, page: page, language: language)
+    }
+
+    ///
+    /// Returns search results for collections.
+    ///
+    /// [TMDb API - Search: Collection](https://developer.themoviedb.org/reference/search-collection)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in.
+    ///   Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Collections matching the query.
+    ///
+    func searchCollections(
+        query: String,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> CollectionPageableList {
+        try await searchCollections(
+            query: query, page: page, language: language
+        )
+    }
+
+    ///
+    /// Returns search results for companies.
+    ///
+    /// [TMDb API - Search: Company](https://developer.themoviedb.org/reference/search-company)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Companies matching the query.
+    ///
+    func searchCompanies(
+        query: String,
+        page: Int? = nil
+    ) async throws -> CompanyPageableList {
+        try await searchCompanies(query: query, page: page)
+    }
+
+    ///
+    /// Returns search results for keywords.
+    ///
+    /// [TMDb API - Search: Keyword](https://developer.themoviedb.org/reference/search-keyword)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - query: A text query to search for.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Keywords matching the query.
+    ///
+    func searchKeywords(
+        query: String,
+        page: Int? = nil
+    ) async throws -> KeywordPageableList {
+        try await searchKeywords(query: query, page: page)
     }
 
 }

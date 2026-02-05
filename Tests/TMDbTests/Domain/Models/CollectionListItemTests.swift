@@ -21,6 +21,26 @@ struct CollectionListItemTests {
         #expect(result == collection)
     }
 
+    @Test(
+        "JSON decoding of CollectionListItem with name/original_name keys",
+        .tags(.decoding)
+    )
+    func decodeWithNameKeysReturnsCollectionListItem() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            CollectionListItem.self,
+            fromResource: "collection-list-item-name"
+        )
+
+        #expect(result.id == 10)
+        #expect(result.title == "Star Wars Collection")
+        #expect(result.originalTitle == "Star Wars Collection")
+        #expect(result.originalLanguage == "en")
+        #expect(result.overview == "An epic space opera franchise.")
+        #expect(result.posterPath != nil)
+        #expect(result.backdropPath != nil)
+        #expect(result.isAdultOnly == false)
+    }
+
 }
 
 extension CollectionListItemTests {
