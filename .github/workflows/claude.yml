@@ -18,6 +18,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,7 +27,6 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           track_progress: true
           claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
           plugin_marketplaces: |
@@ -113,8 +113,6 @@ jobs:
             **Reasoning:** [1-2 sentence technical assessment]
 
             Be concise and actionable. Don't mark nitpicks as Critical.
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   claude-respond:
     if: |
@@ -126,6 +124,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,7 +133,4 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           trigger_phrase: "@claude"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
