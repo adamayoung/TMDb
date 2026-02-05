@@ -68,7 +68,7 @@ Sendable {
     ///
     /// The media item associated with the tagged image.
     ///
-    public let media: Media
+    public let media: TaggedImageMedia
 
     ///
     /// Creates a tagged image object.
@@ -97,7 +97,7 @@ Sendable {
         voteAverage: Double,
         voteCount: Int,
         imageType: String,
-        media: Media
+        media: TaggedImageMedia
     ) {
         self.id = id
         self.aspectRatio = aspectRatio

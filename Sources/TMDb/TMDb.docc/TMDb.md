@@ -162,6 +162,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``PersonExternalLinksCollection``
 - ``PersonPageableList``
 - ``TaggedImage``
+- ``TaggedImageMedia``
 - ``TaggedImagePageableList``
 - ``TranslationCollection``
 - ``Translation``

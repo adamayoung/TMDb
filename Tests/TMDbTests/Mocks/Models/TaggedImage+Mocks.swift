@@ -24,7 +24,7 @@ extension TaggedImage {
         voteAverage: Double = 6.5,
         voteCount: Int = 19,
         imageType: String = "poster",
-        media: Media = .mock()
+        media: TaggedImageMedia = .movie(.mock())
         // swiftlint:enable force_unwrapping
     ) -> TaggedImage {
         TaggedImage(
