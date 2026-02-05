@@ -132,6 +132,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let hasVideo: Bool?
 
     ///
+    /// The collection this movie belongs to.
+    ///
+    public let belongsToCollection: BelongsToCollection?
+
+    ///
     /// Is the movie only suitable for adults.
     ///
     public let isAdultOnly: Bool?
@@ -163,6 +168,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
     ///    - hasVideo: Has video.
+    ///    - belongsToCollection: The collection this movie belongs to.
     ///    - isAdultOnly: Is the movie only suitable for adults.
     ///
     public init(
@@ -189,6 +195,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         voteAverage: Double? = nil,
         voteCount: Int? = nil,
         hasVideo: Bool? = nil,
+        belongsToCollection: BelongsToCollection? = nil,
         isAdultOnly: Bool? = nil
     ) {
         self.id = id
@@ -214,6 +221,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.voteAverage = voteAverage
         self.voteCount = voteCount
         self.hasVideo = hasVideo
+        self.belongsToCollection = belongsToCollection
         self.isAdultOnly = isAdultOnly
     }
 
@@ -245,6 +253,7 @@ extension Movie {
         case voteAverage
         case voteCount
         case hasVideo = "video"
+        case belongsToCollection
         case isAdultOnly = "adult"
     }
 
@@ -316,6 +325,9 @@ extension Movie {
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
         self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)
         self.hasVideo = try container.decodeIfPresent(Bool.self, forKey: .hasVideo)
+        self.belongsToCollection = try container.decodeIfPresent(
+            BelongsToCollection.self, forKey: .belongsToCollection
+        )
         self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
     }
 

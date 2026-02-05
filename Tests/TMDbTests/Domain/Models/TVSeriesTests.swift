@@ -77,6 +77,30 @@ struct TVSeriesTests {
         #expect(episode.voteCount == 31)
     }
 
+    @Test("productionCountries decodes correctly", .tags(.decoding))
+    func productionCountriesDecodesCorrectly() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series"
+        )
+
+        let productionCountries = try #require(result.productionCountries)
+        #expect(productionCountries.count == 1)
+        #expect(productionCountries[0].countryCode == "US")
+        #expect(productionCountries[0].name == "United States of America")
+    }
+
+    @Test("spokenLanguages decodes correctly", .tags(.decoding))
+    func spokenLanguagesDecodesCorrectly() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series"
+        )
+
+        let spokenLanguages = try #require(result.spokenLanguages)
+        #expect(spokenLanguages.count == 1)
+        #expect(spokenLanguages[0].languageCode == "en")
+        #expect(spokenLanguages[0].name == "English")
+    }
+
     @Test("nextEpisodeToAir decodes correctly when null")
     func nextEpisodeToAirDecodesNull() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
@@ -174,6 +198,18 @@ extension TVSeriesTests {
                     name: "HBO",
                     originCountry: "US",
                     logoPath: URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png")
+                )
+            ],
+            productionCountries: [
+                ProductionCountry(
+                    countryCode: "US",
+                    name: "United States of America"
+                )
+            ],
+            spokenLanguages: [
+                SpokenLanguage(
+                    languageCode: "en",
+                    name: "English"
                 )
             ],
             status: "Returning Series",

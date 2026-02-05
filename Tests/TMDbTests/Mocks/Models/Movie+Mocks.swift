@@ -34,6 +34,7 @@ extension Movie {
         voteAverage: Double? = 6,
         voteCount: Int? = 120,
         hasVideo: Bool? = false,
+        belongsToCollection: BelongsToCollection? = nil,
         isAdultOnly: Bool? = false
     ) -> Movie {
         Movie(
@@ -60,6 +61,7 @@ extension Movie {
             voteAverage: voteAverage,
             voteCount: voteCount,
             hasVideo: hasVideo,
+            belongsToCollection: belongsToCollection,
             isAdultOnly: isAdultOnly
         )
     }

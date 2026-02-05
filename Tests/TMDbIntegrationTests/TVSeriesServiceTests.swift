@@ -158,6 +158,22 @@ struct TVSeriesServiceTests {
         #expect(unwrappedUSRating.countryCode == "US")
     }
 
+    @Test("details includes productionCountries and spokenLanguages")
+    func detailsIncludesProductionCountriesAndSpokenLanguages() async throws {
+        // Breaking Bad
+        let tvSeriesID = 1396
+
+        let tvSeries = try await tvSeriesService.details(forTVSeries: tvSeriesID)
+
+        #expect(tvSeries.id == tvSeriesID)
+
+        let productionCountries = try #require(tvSeries.productionCountries)
+        #expect(!productionCountries.isEmpty)
+
+        let spokenLanguages = try #require(tvSeries.spokenLanguages)
+        #expect(!spokenLanguages.isEmpty)
+    }
+
     @Test("details includes lastEpisodeToAir and nextEpisodeToAir for airing series")
     func detailsIncludesEpisodeAirDatesForAiringSeries() async throws {
         // The Pitt - currently airing series

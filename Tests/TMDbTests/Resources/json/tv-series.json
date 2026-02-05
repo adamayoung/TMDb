@@ -86,6 +86,19 @@
             "origin_country": "US"
         }
     ],
+    "production_countries": [
+        {
+            "iso_3166_1": "US",
+            "name": "United States of America"
+        }
+    ],
+    "spoken_languages": [
+        {
+            "english_name": "English",
+            "iso_639_1": "en",
+            "name": "English"
+        }
+    ],
     "seasons": [
         {
             "air_date": "2011-04-17",

@@ -5,6 +5,8 @@
 //  Copyright © 2026 Adam Young.
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 
 ///
@@ -141,6 +143,16 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let productionCompanies: [ProductionCompany]?
 
     ///
+    /// Production countries of the TV series.
+    ///
+    public let productionCountries: [ProductionCountry]?
+
+    ///
+    /// Spoken languages in the TV series.
+    ///
+    public let spokenLanguages: [SpokenLanguage]?
+
+    ///
     /// TV series status.
     ///
     public let status: String?
@@ -198,6 +210,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - nextEpisodeToAir: Next episode to air for this TV series.
     ///    - networks: Networks involved in the TV series.
     ///    - productionCompanies: Production companies involved in the TV series.
+    ///    - productionCountries: Production countries of the TV series.
+    ///    - spokenLanguages: Spoken languages in the TV series.
     ///    - status: TV series status.
     ///    - type: TV series type.
     ///    - popularity: TV series current popularity.
@@ -230,6 +244,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         nextEpisodeToAir: TVEpisodeAirDate? = nil,
         networks: [Network]? = nil,
         productionCompanies: [ProductionCompany]? = nil,
+        productionCountries: [ProductionCountry]? = nil,
+        spokenLanguages: [SpokenLanguage]? = nil,
         status: String? = nil,
         type: String? = nil,
         popularity: Double? = nil,
@@ -261,6 +277,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.nextEpisodeToAir = nextEpisodeToAir
         self.networks = networks
         self.productionCompanies = productionCompanies
+        self.productionCountries = productionCountries
+        self.spokenLanguages = spokenLanguages
         self.status = status
         self.type = type
         self.popularity = popularity
@@ -296,6 +314,8 @@ extension TVSeries {
         case nextEpisodeToAir
         case networks
         case productionCompanies
+        case productionCountries
+        case spokenLanguages
         case status
         case type
         case popularity
@@ -381,6 +401,12 @@ extension TVSeries {
         self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
         self.productionCompanies = try container.decodeIfPresent(
             [ProductionCompany].self, forKey: .productionCompanies
+        )
+        self.productionCountries = try container.decodeIfPresent(
+            [ProductionCountry].self, forKey: .productionCountries
+        )
+        self.spokenLanguages = try container.decodeIfPresent(
+            [SpokenLanguage].self, forKey: .spokenLanguages
         )
         self.status = try container.decodeIfPresent(String.self, forKey: .status)
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
