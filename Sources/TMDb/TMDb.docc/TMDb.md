@@ -124,6 +124,10 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TranslationCollection``
 - ``Translation``
 - ``TVSeasonTranslationData``
+- ``AccountStates``
+- ``ShowWatchProvidersByCountry``
+- ``ShowWatchProvider``
+- ``Session``
 - ``ChangeCollection``
 - ``Change``
 - ``ChangeItem``
@@ -140,6 +144,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TranslationCollection``
 - ``Translation``
 - ``TVEpisodeTranslationData``
+- ``AccountStates``
+- ``Session``
 - ``ChangeCollection``
 - ``Change``
 - ``ChangeItem``

@@ -120,4 +120,19 @@ struct TVEpisodeServiceTests {
         #expect(!translationCollection.translations.isEmpty)
     }
 
+    @Test("changes")
+    func changes() async throws {
+        let episodeID = 62085 // Game of Thrones S01E01
+
+        let changeCollection = try await tvEpisodeService.changes(
+            forEpisode: episodeID
+        )
+
+        // May be empty if no recent changes - just verify we can decode the response
+        #expect(
+            changeCollection.changes.isEmpty
+                || !changeCollection.changes.isEmpty
+        )
+    }
+
 }

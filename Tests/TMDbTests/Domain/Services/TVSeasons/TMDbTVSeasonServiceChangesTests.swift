@@ -41,6 +41,39 @@ struct TMDbTVSeasonServiceChangesTests {
         )
     }
 
+    @Test(
+        "changes with start date, end date and page returns changes"
+    )
+    func changesWithStartDateAndEndDateAndPageReturnsChanges()
+    async throws {
+        let expectedResult = ChangeCollection.mock()
+        let seasonID = 3625
+        let startDate = Date(timeIntervalSince1970: 1_704_067_200)
+        let endDate = Date(timeIntervalSince1970: 1_735_689_600)
+        let page = 2
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeasonChangesRequest(
+            seasonID: seasonID,
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+
+        let result = try await service.changes(
+            forSeason: seasonID,
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest
+                as? TVSeasonChangesRequest
+                == expectedRequest
+        )
+    }
+
     @Test("changes when errors throws error")
     func changesWhenErrorsThrowsError() async throws {
         let seasonID = 3625

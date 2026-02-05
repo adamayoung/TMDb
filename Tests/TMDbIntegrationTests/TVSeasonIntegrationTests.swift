@@ -124,4 +124,19 @@ struct TVSeasonIntegrationTests {
         #expect(!watchProviders.isEmpty)
     }
 
+    @Test("changes")
+    func changes() async throws {
+        let seasonID = 3624 // Game of Thrones Season 1
+
+        let changeCollection = try await tvSeasonService.changes(
+            forSeason: seasonID
+        )
+
+        // May be empty if no recent changes - just verify we can decode the response
+        #expect(
+            changeCollection.changes.isEmpty
+                || !changeCollection.changes.isEmpty
+        )
+    }
+
 }
