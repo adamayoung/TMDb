@@ -118,4 +118,64 @@ final class TMDbSearchService: SearchService {
         return peopleList
     }
 
+    func searchCollections(
+        query: String,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> CollectionPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = CollectionSearchRequest(
+            query: query,
+            page: page,
+            language: languageCode
+        )
+
+        let collectionList: CollectionPageableList
+        do {
+            collectionList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return collectionList
+    }
+
+    func searchCompanies(
+        query: String,
+        page: Int? = nil
+    ) async throws -> CompanyPageableList {
+        let request = CompanySearchRequest(
+            query: query,
+            page: page
+        )
+
+        let companyList: CompanyPageableList
+        do {
+            companyList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return companyList
+    }
+
+    func searchKeywords(
+        query: String,
+        page: Int? = nil
+    ) async throws -> KeywordPageableList {
+        let request = KeywordSearchRequest(
+            query: query,
+            page: page
+        )
+
+        let keywordList: KeywordPageableList
+        do {
+            keywordList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return keywordList
+    }
+
 }

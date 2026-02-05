@@ -141,6 +141,17 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Show``
 - ``PersonExternalLinksCollection``
 - ``PersonPageableList``
+- ``TaggedImage``
+- ``TaggedImagePageableList``
+- ``TranslationCollection``
+- ``Translation``
+- ``PersonTranslationData``
+- ``ChangeCollection``
+- ``Change``
+- ``ChangeItem``
+- ``AnyCodable``
+- ``ChangedIDCollection``
+- ``ChangedID``
 
 ### Discover
 
@@ -176,6 +187,12 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeries``
 - ``PersonPageableList``
 - ``Person``
+- ``CollectionPageableList``
+- ``CollectionListItem``
+- ``CompanyPageableList``
+- ``ProductionCompany``
+- ``KeywordPageableList``
+- ``Keyword``
 - ``AllMediaSearchFilter``
 - ``MovieSearchFilter``
 - ``TVSeriesSearchFilter``

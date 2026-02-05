@@ -17,3 +17,15 @@
 ### People
 
 - ``searchPeople(query:filter:page:language:)``
+
+### Collections
+
+- ``searchCollections(query:page:language:)``
+
+### Companies
+
+- ``searchCompanies(query:page:)``
+
+### Keywords
+
+- ``searchKeywords(query:page:)``

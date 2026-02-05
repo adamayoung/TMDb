@@ -97,4 +97,25 @@ struct PersonIntegrationTests {
         #expect(linksCollection.tikTok != nil)
     }
 
+    @Test("taggedImages")
+    func taggedImages() async throws {
+        let personID = 500
+
+        let taggedImageList = try await personService
+            .taggedImages(forPerson: personID)
+
+        #expect(!taggedImageList.results.isEmpty)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let personID = 500
+
+        let translationCollection = try await personService
+            .translations(forPerson: personID)
+
+        #expect(translationCollection.id == personID)
+        #expect(!translationCollection.translations.isEmpty)
+    }
+
 }

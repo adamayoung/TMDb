@@ -73,4 +73,34 @@ struct SearchIntegrationTests {
         #expect(!personList.results.isEmpty)
     }
 
+    @Test("searchCollections")
+    func searchCollections() async throws {
+        let query = "avengers"
+
+        let collectionList = try await searchService
+            .searchCollections(query: query)
+
+        #expect(!collectionList.results.isEmpty)
+    }
+
+    @Test("searchCompanies")
+    func searchCompanies() async throws {
+        let query = "marvel"
+
+        let companyList = try await searchService
+            .searchCompanies(query: query)
+
+        #expect(!companyList.results.isEmpty)
+    }
+
+    @Test("searchKeywords")
+    func searchKeywords() async throws {
+        let query = "marvel"
+
+        let keywordList = try await searchService
+            .searchKeywords(query: query)
+
+        #expect(!keywordList.results.isEmpty)
+    }
+
 }

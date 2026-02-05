@@ -20,3 +20,11 @@
 
 - ``popular(page:language:)``
 - ``externalLinks(forPerson:)``
+- ``taggedImages(forPerson:page:)``
+- ``translations(forPerson:)``
+
+### Changes
+
+- ``changes(forPerson:startDate:endDate:page:)``
+- ``latestPerson()``
+- ``personChanges(startDate:endDate:page:)``

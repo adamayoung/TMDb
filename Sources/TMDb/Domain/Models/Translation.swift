@@ -191,3 +191,25 @@ public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
     }
 
 }
+
+///
+/// A model representing person-specific translation data.
+///
+public struct PersonTranslationData: Codable, Equatable, Hashable,
+Sendable {
+
+    ///
+    /// The translated biography.
+    ///
+    public let biography: String
+
+    ///
+    /// Creates a person translation data object.
+    ///
+    /// - Parameter biography: The translated biography.
+    ///
+    public init(biography: String) {
+        self.biography = biography
+    }
+
+}
