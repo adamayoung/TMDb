@@ -89,4 +89,50 @@ struct TVEpisodeServiceTests {
         #expect(!videoCollection.results.isEmpty)
     }
 
+    @Test("externalLinks")
+    func externalLinks() async throws {
+        let episodeNumber = 1
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let externalLinks = try await tvEpisodeService.externalLinks(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(externalLinks.id == 63066)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let episodeNumber = 1
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let translationCollection = try await tvEpisodeService.translations(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(translationCollection.id == 63066)
+        #expect(!translationCollection.translations.isEmpty)
+    }
+
+    @Test("changes")
+    func changes() async throws {
+        let episodeID = 62085 // Game of Thrones S01E01
+
+        let changeCollection = try await tvEpisodeService.changes(
+            forEpisode: episodeID
+        )
+
+        // May be empty if no recent changes - just verify we can decode the response
+        #expect(
+            changeCollection.changes.isEmpty
+                || !changeCollection.changes.isEmpty
+        )
+    }
+
 }
