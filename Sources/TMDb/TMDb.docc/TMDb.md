@@ -116,6 +116,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVSeasonService``
 - ``TVSeason``
+- ``ShowCredits``
+- ``TVSeasonAggregateCredits``
 - ``TVSeasonImageCollection``
 - ``VideoCollection``
 - ``TVSeasonExternalLinksCollection``
@@ -136,6 +138,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVEpisodeService``
 - ``TVEpisode``
+- ``ShowCredits``
 - ``TVEpisodeImageCollection``
 - ``VideoCollection``
 - ``TVEpisodeExternalLinksCollection``
