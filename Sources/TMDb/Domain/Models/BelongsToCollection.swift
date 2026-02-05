@@ -58,3 +58,14 @@ public struct BelongsToCollection: Identifiable, Codable, Equatable, Hashable, S
     }
 
 }
+
+extension BelongsToCollection {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case posterPath
+        case backdropPath
+    }
+
+}

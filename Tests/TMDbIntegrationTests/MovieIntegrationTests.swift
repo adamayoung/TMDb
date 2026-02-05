@@ -43,6 +43,8 @@ struct MovieIntegrationTests {
         let collection = try #require(movie.belongsToCollection)
         #expect(collection.id == 1241)
         #expect(collection.name == "Harry Potter Collection")
+        #expect(collection.posterPath != nil)
+        #expect(collection.backdropPath != nil)
     }
 
     @Test("credits")

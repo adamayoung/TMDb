@@ -30,11 +30,11 @@ extension Movie {
         productionCompanies: [ProductionCompany]? = .mocks,
         productionCountries: [ProductionCountry]? = .mocks,
         spokenLanguages: [SpokenLanguage]? = .mocks,
+        belongsToCollection: BelongsToCollection? = nil,
         popularity: Double? = 5,
         voteAverage: Double? = 6,
         voteCount: Int? = 120,
         hasVideo: Bool? = false,
-        belongsToCollection: BelongsToCollection? = nil,
         isAdultOnly: Bool? = false
     ) -> Movie {
         Movie(
@@ -57,11 +57,11 @@ extension Movie {
             productionCompanies: productionCompanies,
             productionCountries: productionCountries,
             spokenLanguages: spokenLanguages,
+            belongsToCollection: belongsToCollection,
             popularity: popularity,
             voteAverage: voteAverage,
             voteCount: voteCount,
             hasVideo: hasVideo,
-            belongsToCollection: belongsToCollection,
             isAdultOnly: isAdultOnly
         )
     }

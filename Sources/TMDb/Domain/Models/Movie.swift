@@ -112,6 +112,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let spokenLanguages: [SpokenLanguage]?
 
     ///
+    /// The collection this movie belongs to.
+    ///
+    public let belongsToCollection: BelongsToCollection?
+
+    ///
     /// Current popularity.
     ///
     public let popularity: Double?
@@ -130,11 +135,6 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     /// Has video.
     ///
     public let hasVideo: Bool?
-
-    ///
-    /// The collection this movie belongs to.
-    ///
-    public let belongsToCollection: BelongsToCollection?
 
     ///
     /// Is the movie only suitable for adults.
@@ -164,11 +164,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - productionCompanies: Movie production companies.
     ///    - productionCountries: Movie production countries.
     ///    - spokenLanguages: Movie spoken languages.
+    ///    - belongsToCollection: The collection this movie belongs to.
     ///    - popularity: Current popularity.
     ///    - voteAverage: Average vote score.
     ///    - voteCount: Number of votes.
     ///    - hasVideo: Has video.
-    ///    - belongsToCollection: The collection this movie belongs to.
     ///    - isAdultOnly: Is the movie only suitable for adults.
     ///
     public init(
@@ -191,11 +191,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         productionCompanies: [ProductionCompany]? = nil,
         productionCountries: [ProductionCountry]? = nil,
         spokenLanguages: [SpokenLanguage]? = nil,
+        belongsToCollection: BelongsToCollection? = nil,
         popularity: Double? = nil,
         voteAverage: Double? = nil,
         voteCount: Int? = nil,
         hasVideo: Bool? = nil,
-        belongsToCollection: BelongsToCollection? = nil,
         isAdultOnly: Bool? = nil
     ) {
         self.id = id
@@ -217,11 +217,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.productionCompanies = productionCompanies
         self.productionCountries = productionCountries
         self.spokenLanguages = spokenLanguages
+        self.belongsToCollection = belongsToCollection
         self.popularity = popularity
         self.voteAverage = voteAverage
         self.voteCount = voteCount
         self.hasVideo = hasVideo
-        self.belongsToCollection = belongsToCollection
         self.isAdultOnly = isAdultOnly
     }
 
@@ -249,11 +249,11 @@ extension Movie {
         case productionCompanies
         case productionCountries
         case spokenLanguages
+        case belongsToCollection
         case popularity
         case voteAverage
         case voteCount
         case hasVideo = "video"
-        case belongsToCollection
         case isAdultOnly = "adult"
     }
 
@@ -321,13 +321,13 @@ extension Movie {
         self.spokenLanguages = try container.decodeIfPresent(
             [SpokenLanguage].self, forKey: .spokenLanguages
         )
+        self.belongsToCollection = try container.decodeIfPresent(
+            BelongsToCollection.self, forKey: .belongsToCollection
+        )
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
         self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)
         self.hasVideo = try container.decodeIfPresent(Bool.self, forKey: .hasVideo)
-        self.belongsToCollection = try container.decodeIfPresent(
-            BelongsToCollection.self, forKey: .belongsToCollection
-        )
         self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
     }
 
