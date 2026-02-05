@@ -89,4 +89,35 @@ struct TVEpisodeServiceTests {
         #expect(!videoCollection.results.isEmpty)
     }
 
+    @Test("externalLinks")
+    func externalLinks() async throws {
+        let episodeNumber = 1
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let externalLinks = try await tvEpisodeService.externalLinks(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(externalLinks.id == 63066)
+    }
+
+    @Test("translations")
+    func translations() async throws {
+        let episodeNumber = 1
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let translationCollection = try await tvEpisodeService.translations(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        #expect(translationCollection.id == 63066)
+        #expect(!translationCollection.translations.isEmpty)
+    }
+
 }
