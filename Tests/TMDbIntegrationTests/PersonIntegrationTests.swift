@@ -118,4 +118,28 @@ struct PersonIntegrationTests {
         #expect(!translationCollection.translations.isEmpty)
     }
 
+    @Test("changes")
+    func changes() async throws {
+        let personID = 500
+
+        _ = try await personService
+            .changes(forPerson: personID)
+    }
+
+    @Test("latestPerson")
+    func latestPerson() async throws {
+        let person = try await personService.latestPerson()
+
+        #expect(person.id > 0)
+    }
+
+    @Test("personChanges")
+    func personChanges() async throws {
+        let changedIDCollection = try await personService
+            .personChanges()
+
+        #expect(changedIDCollection.page > 0)
+        #expect(changedIDCollection.totalResults > 0)
+    }
+
 }

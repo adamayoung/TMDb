@@ -10,41 +10,6 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 extension TMDbPersonService {
 
-    func taggedImages(
-        forPerson personID: Person.ID,
-        page: Int? = nil
-    ) async throws -> TaggedImagePageableList {
-        let request = PersonTaggedImagesRequest(
-            id: personID, page: page
-        )
-
-        let taggedImageList: TaggedImagePageableList
-        do {
-            taggedImageList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return taggedImageList
-    }
-
-    func translations(
-        forPerson personID: Person.ID
-    ) async throws -> TranslationCollection<PersonTranslationData> {
-        let request = PersonTranslationsRequest(id: personID)
-
-        let translationCollection:
-            TranslationCollection<PersonTranslationData>
-        do {
-            translationCollection = try await apiClient
-                .perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
-    }
-
     func changes(
         forPerson personID: Person.ID,
         startDate: Date? = nil,

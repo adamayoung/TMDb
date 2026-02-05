@@ -26,11 +26,43 @@ struct PersonChangesListRequestTests {
         #expect(request.queryItems.isEmpty)
     }
 
+    @Test("queryItems contains startDate when provided")
+    func queryItemsContainsStartDate() {
+        let date = Date(timeIntervalSince1970: 1_704_067_200) // 2024-01-01
+        let request = PersonChangesListRequest(startDate: date)
+
+        #expect(request.queryItems.count == 1)
+        #expect(request.queryItems["start_date"] == "2024-01-01")
+    }
+
+    @Test("queryItems contains endDate when provided")
+    func queryItemsContainsEndDate() {
+        let date = Date(timeIntervalSince1970: 1_704_153_600) // 2024-01-02
+        let request = PersonChangesListRequest(endDate: date)
+
+        #expect(request.queryItems.count == 1)
+        #expect(request.queryItems["end_date"] == "2024-01-02")
+    }
+
     @Test("queryItems with page")
     func queryItemsWithPage() {
         let request = PersonChangesListRequest(page: 2)
 
         #expect(request.queryItems == ["page": "2"])
+    }
+
+    @Test("queryItems contains all parameters when provided")
+    func queryItemsContainsAllParameters() {
+        let startDate = Date(timeIntervalSince1970: 1_704_067_200)
+        let endDate = Date(timeIntervalSince1970: 1_704_153_600)
+        let request = PersonChangesListRequest(
+            startDate: startDate, endDate: endDate, page: 2
+        )
+
+        #expect(request.queryItems.count == 3)
+        #expect(request.queryItems["start_date"] == "2024-01-01")
+        #expect(request.queryItems["end_date"] == "2024-01-02")
+        #expect(request.queryItems["page"] == "2")
     }
 
     @Test("method is GET")
