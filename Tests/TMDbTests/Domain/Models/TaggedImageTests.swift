@@ -20,8 +20,7 @@ struct TaggedImageTests {
 
         #expect(result.id == "59164af592514156f50269b6")
         #expect(result.aspectRatio == 0.667)
-        let filePath = try #require(result.filePath)
-        #expect(filePath.path().contains("iOpi3ut5DhQIbrVVjlnmfy2U7dI.jpg"))
+        #expect(result.filePath.path().contains("iOpi3ut5DhQIbrVVjlnmfy2U7dI.jpg"))
         #expect(result.height == 3000)
         #expect(result.width == 2000)
         let languageCode = try #require(result.languageCode)
