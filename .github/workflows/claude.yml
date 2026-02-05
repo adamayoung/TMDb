@@ -10,7 +10,6 @@ on:
 
 jobs:
   claude-review:
-    # Only run when adamayoung pushes code or creates the PR
     if: |
       github.event_name == 'pull_request' &&
       github.event.sender.login == 'adamayoung'
@@ -28,24 +27,94 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          track_progress: true
+          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+          plugin_marketplaces: |
+            https://github.com/AvdLee/Swift-Concurrency-Agent-Skill.git
+          plugins: |
+            swift-concurrency@swift-concurrency-agent-skill
           prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            You are reviewing code changes for production readiness.
+            Use the swift-concurrency skill for Swift concurrency guidance.
+            Minimize style nitpicks unless they indicate correctness or safety problems.
 
-            Review this PR for:
-            1. Code quality and Swift best practices
-            2. Potential bugs or edge cases
-            3. Test coverage gaps
-            4. Documentation completeness
+            Review this PR and post your findings as inline comments on the specific lines of code where issues are found using the create_inline_comment tool. For code suggestions, use GitHub suggestion blocks.
 
-            Use `gh pr comment` to post a summary review comment on the PR.
-            Use inline comments for specific code issues.
-            Be concise and actionable.
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            After reviewing all files, post a summary comment on the PR using `gh pr comment` with your overall assessment.
+
+            ## Review Checklist
+
+            **Code Quality:**
+            - Code quality and Swift best practices
+            - Proper error handling with guard for early exits
+            - Type safety and strict concurrency (Swift 6.0+)
+            - No force unwrapping (!) or force try (try!)
+            - Line length under 100 characters
+            - All public declarations have documentation (/// style)
+
+            **Swift Concurrency:**
+            - Correct use of async/await, actors, and Sendable
+            - Prefer structured concurrency over unstructured tasks
+            - No blanket @MainActor without justification (this is a library, not a UI app)
+            - Proper actor isolation boundaries
+            - Safe handling of @preconcurrency and @unchecked Sendable
+
+            **Architecture:**
+            - Sound design decisions
+            - Protocol-based services with dependency injection
+            - New services follow protocol + TMDb-prefixed implementation pattern
+            - New public API exposed through TMDbClient and registered in TMDbFactory
+            - Clean separation of concerns
+            - Models conform to Codable, Equatable, Hashable, Sendable
+
+            **Testing:**
+            - Test coverage for new/changed code
+            - Uses Swift Testing framework (not XCTest)
+            - Uses #require() instead of force unwrapping in tests
+            - JSON fixtures match real TMDb API responses
+            - Request patterns correct (path, query items, HTTP method)
+            - Edge cases covered
+            - Integration tests where needed
+
+            **Security:**
+            - No force unwraps or force try
+            - Data validation at system boundaries
+            - API key handling (no hardcoded credentials)
+
+            **Documentation:**
+            - DocC documentation updated if public API changed
+            - Extension files in TMDb.docc/Extensions/ updated
+
+            ## Output Format
+
+            ### Strengths
+            [What's well done - be specific with file:line references]
+
+            ### Issues
+
+            #### Critical
+            [Bugs, security issues, data loss risks, broken functionality]
+
+            #### High
+            [Architecture problems, missing features, poor error handling, test gaps]
+
+            #### Medium
+            [Concurrency concerns, missing documentation, suboptimal patterns]
+
+            #### Low
+            [Code style, optimization opportunities, minor improvements]
+
+            For each issue provide: file:line reference, what's wrong, why it matters, and how to fix.
+
+            If no issues, explicitly state "No significant issues found".
+
+            ### Assessment
+            **Ready to merge?** [Yes/No/With fixes]
+            **Reasoning:** [1-2 sentence technical assessment]
+
+            Be concise and actionable. Don't mark nitpicks as Critical.
 
   claude-respond:
-    # Only respond to @claude mentions from adamayoung
     if: |
       (github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment') &&
       contains(github.event.comment.body, '@claude') &&
@@ -65,5 +134,3 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           trigger_phrase: "@claude"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
