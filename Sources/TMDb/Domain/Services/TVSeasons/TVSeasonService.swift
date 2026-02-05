@@ -121,6 +121,111 @@ public protocol TVSeasonService: Sendable {
         filter: TVSeasonVideoFilter?
     ) async throws -> VideoCollection
 
+    ///
+    /// Returns the user's account states for a TV season.
+    ///
+    /// [TMDb API - TV Season: Account
+    /// States](https://developer.themoviedb.org/reference/tv-season-account-states)
+    ///
+    /// - Parameters:
+    ///   - seasonNumber: The season number of a TV series.
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///   - session: The session.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The user's account states for the TV season.
+    ///
+    func accountStates(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        session: Session
+    ) async throws -> AccountStates
+
+    ///
+    /// Returns a collection of external links for a TV season.
+    ///
+    /// [TMDb API - TV Season: External
+    /// IDs](https://developer.themoviedb.org/reference/tv-season-external-ids)
+    ///
+    /// - Parameters:
+    ///   - seasonNumber: The season number of a TV series.
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of external links for the TV season.
+    ///
+    func externalLinks(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVSeasonExternalLinksCollection
+
+    ///
+    /// Returns translations for a TV season.
+    ///
+    /// [TMDb API - TV Season:
+    /// Translations](https://developer.themoviedb.org/reference/tv-season-translations)
+    ///
+    /// - Parameters:
+    ///   - seasonNumber: The season number of a TV series.
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of translations for the TV season.
+    ///
+    func translations(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws
+        -> TranslationCollection<TVSeasonTranslationData>
+
+    ///
+    /// Returns watch providers for a TV season.
+    ///
+    /// [TMDb API - TV Season: Watch
+    /// Providers](https://developer.themoviedb.org/reference/tv-season-watch-providers)
+    ///
+    /// Data provided by [JustWatch](https://www.justwatch.com).
+    ///
+    /// - Parameters:
+    ///   - seasonNumber: The season number of a TV series.
+    ///   - tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Watch providers for the TV season grouped by
+    ///   country.
+    ///
+    func watchProviders(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> [ShowWatchProvidersByCountry]
+
+    ///
+    /// Returns change history for a TV season.
+    ///
+    /// [TMDb API - TV Season:
+    /// Changes](https://developer.themoviedb.org/reference/tv-season-changes-by-id)
+    ///
+    /// - Parameters:
+    ///   - seasonID: The identifier of the TV season.
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the TV season.
+    ///
+    func changes(
+        forSeason seasonID: Int,
+        startDate: Date?,
+        endDate: Date?,
+        page: Int?
+    ) async throws -> ChangeCollection
+
 }
 
 public extension TVSeasonService {
@@ -243,6 +348,36 @@ public extension TVSeasonService {
         filter: TVSeasonVideoFilter? = nil
     ) async throws -> VideoCollection {
         try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+    }
+
+    ///
+    /// Returns change history for a TV season.
+    ///
+    /// [TMDb API - TV Season:
+    /// Changes](https://developer.themoviedb.org/reference/tv-season-changes-by-id)
+    ///
+    /// - Parameters:
+    ///   - seasonID: The identifier of the TV season.
+    ///   - startDate: The start date for changes.
+    ///   - endDate: The end date for changes.
+    ///   - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of changes for the TV season.
+    ///
+    func changes(
+        forSeason seasonID: Int,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws -> ChangeCollection {
+        try await changes(
+            forSeason: seasonID,
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
     }
 
 }

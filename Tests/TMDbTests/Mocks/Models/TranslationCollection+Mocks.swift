@@ -75,3 +75,53 @@ extension TranslationCollection where DataType == TVSeriesTranslationData {
     }
 
 }
+
+extension TranslationCollection where DataType == TVSeasonTranslationData {
+
+    static func mock(
+        id: Int = 1,
+        translations: [Translation<TVSeasonTranslationData>] = [
+            Translation(
+                countryCode: "US",
+                languageCode: "en",
+                name: "English",
+                englishName: "English",
+                data: TVSeasonTranslationData(
+                    name: "Test TV Season",
+                    overview: "Test overview"
+                )
+            )
+        ]
+    ) -> TranslationCollection<TVSeasonTranslationData> {
+        TranslationCollection(
+            id: id,
+            translations: translations
+        )
+    }
+
+}
+
+extension TranslationCollection where DataType == TVEpisodeTranslationData {
+
+    static func mock(
+        id: Int = 1,
+        translations: [Translation<TVEpisodeTranslationData>] = [
+            Translation(
+                countryCode: "US",
+                languageCode: "en",
+                name: "English",
+                englishName: "English",
+                data: TVEpisodeTranslationData(
+                    name: "Test TV Episode",
+                    overview: "Test overview"
+                )
+            )
+        ]
+    ) -> TranslationCollection<TVEpisodeTranslationData> {
+        TranslationCollection(
+            id: id,
+            translations: translations
+        )
+    }
+
+}

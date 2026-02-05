@@ -118,8 +118,19 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeason``
 - ``TVSeasonImageCollection``
 - ``VideoCollection``
+- ``TVSeasonExternalLinksCollection``
 - ``TVSeasonImageFilter``
 - ``TVSeasonVideoFilter``
+- ``TranslationCollection``
+- ``Translation``
+- ``TVSeasonTranslationData``
+- ``AccountStates``
+- ``ShowWatchProvidersByCountry``
+- ``ShowWatchProvider``
+- ``Session``
+- ``ChangeCollection``
+- ``Change``
+- ``ChangeItem``
 
 ### TV Episodes
 
@@ -127,8 +138,17 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVEpisode``
 - ``TVEpisodeImageCollection``
 - ``VideoCollection``
+- ``TVEpisodeExternalLinksCollection``
 - ``TVEpisodeImageFilter``
 - ``TVEpisodeVideoFilter``
+- ``TranslationCollection``
+- ``Translation``
+- ``TVEpisodeTranslationData``
+- ``AccountStates``
+- ``Session``
+- ``ChangeCollection``
+- ``Change``
+- ``ChangeItem``
 
 ### People
 

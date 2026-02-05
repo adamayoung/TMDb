@@ -192,11 +192,67 @@ public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
 
 }
 
+/// A model representing TV season-specific translation data.
+///
+public struct TVSeasonTranslationData: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The translated TV season name.
+    ///
+    public let name: String
+
+    ///
+    /// The translated TV season overview.
+    ///
+    public let overview: String
+
+    ///
+    /// Creates a TV season translation data object.
+    ///
+    /// - Parameters:
+    ///    - name: The translated TV season name.
+    ///    - overview: The translated TV season overview.
+    ///
+    public init(name: String, overview: String) {
+        self.name = name
+        self.overview = overview
+    }
+
+}
+
+///
+/// A model representing TV episode-specific translation data.
+///
+public struct TVEpisodeTranslationData: Codable, Equatable, Hashable, Sendable {
+
+    ///
+    /// The translated TV episode name.
+    ///
+    public let name: String
+
+    ///
+    /// The translated TV episode overview.
+    ///
+    public let overview: String
+
+    ///
+    /// Creates a TV episode translation data object.
+    ///
+    /// - Parameters:
+    ///    - name: The translated TV episode name.
+    ///    - overview: The translated TV episode overview.
+    ///
+    public init(name: String, overview: String) {
+        self.name = name
+        self.overview = overview
+    }
+
+}
+
 ///
 /// A model representing person-specific translation data.
 ///
-public struct PersonTranslationData: Codable, Equatable, Hashable,
-Sendable {
+public struct PersonTranslationData: Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The translated biography.
