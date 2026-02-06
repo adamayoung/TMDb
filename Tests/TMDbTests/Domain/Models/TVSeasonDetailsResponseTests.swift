@@ -33,6 +33,29 @@ struct TVSeasonDetailsResponseTests {
         #expect(credits.crew[0].id == 44797)
         #expect(credits.crew[0].name == "Tim Van Patten")
         #expect(credits.crew[0].job == "Director")
+
+        let aggregateCredits = try #require(result.aggregateCredits)
+        #expect(aggregateCredits.id == 3624)
+        #expect(!aggregateCredits.cast.isEmpty)
+        #expect(!aggregateCredits.crew.isEmpty)
+
+        let images = try #require(result.images)
+        #expect(images.id == 3624)
+        #expect(!images.posters.isEmpty)
+
+        let videos = try #require(result.videos)
+        #expect(videos.id == 3624)
+        #expect(!videos.results.isEmpty)
+
+        let translations = try #require(result.translations)
+        #expect(!translations.isEmpty)
+
+        let watchProviders = try #require(result.watchProviders)
+        #expect(!watchProviders.isEmpty)
+
+        let externalIDs = try #require(result.externalIDs)
+        #expect(externalIDs.id == 3624)
+        #expect(externalIDs.wikiData != nil)
     }
 
     @Test(

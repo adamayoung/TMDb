@@ -34,6 +34,21 @@ struct TVEpisodeDetailsResponseTests {
         #expect(credits.crew[0].id == 44797)
         #expect(credits.crew[0].name == "Tim Van Patten")
         #expect(credits.crew[0].job == "Director")
+
+        let images = try #require(result.images)
+        #expect(images.id == 63056)
+        #expect(!images.stills.isEmpty)
+
+        let videos = try #require(result.videos)
+        #expect(videos.id == 63056)
+        #expect(!videos.results.isEmpty)
+
+        let translations = try #require(result.translations)
+        #expect(!translations.isEmpty)
+
+        let externalIDs = try #require(result.externalIDs)
+        #expect(externalIDs.id == 63056)
+        #expect(externalIDs.imdb != nil)
     }
 
     @Test(

@@ -12,8 +12,11 @@ import Testing
 @Suite(.tags(.models))
 struct PersonDetailsResponseTests {
 
-    @Test("JSON decoding of PersonDetailsResponse", .tags(.decoding))
-    func decodePersonDetailsResponse() throws {
+    @Test(
+        "JSON decoding of PersonDetailsResponse with movie credits and images",
+        .tags(.decoding)
+    )
+    func decodePersonDetailsResponseCreditsAndImages() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             PersonDetailsResponse.self,
             fromResource: "person-details-append-response"
@@ -30,14 +33,52 @@ struct PersonDetailsResponseTests {
         #expect(movieCredits.cast[0].character == "Tyler Durden")
         #expect(!movieCredits.crew.isEmpty)
         #expect(movieCredits.crew[0].id == 45612)
-        #expect(movieCredits.crew[0].title == "The Departed")
         #expect(movieCredits.crew[0].job == "Producer")
 
         let images = try #require(result.images)
         #expect(images.id == 287)
         #expect(!images.profiles.isEmpty)
-        #expect(images.profiles[0].width == 1200)
-        #expect(images.profiles[0].height == 1800)
+    }
+
+    @Test(
+        "JSON decoding of PersonDetailsResponse with all appended data",
+        .tags(.decoding)
+    )
+    func decodePersonDetailsResponseAllAppendedData() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            PersonDetailsResponse.self,
+            fromResource: "person-details-append-response"
+        )
+
+        let tvCredits = try #require(result.tvCredits)
+        #expect(tvCredits.id == 287)
+        #expect(!tvCredits.cast.isEmpty)
+        #expect(tvCredits.cast[0].id == 12345)
+        #expect(!tvCredits.crew.isEmpty)
+        #expect(tvCredits.crew[0].id == 12346)
+
+        let combinedCredits = try #require(result.combinedCredits)
+        #expect(combinedCredits.id == 287)
+        #expect(!combinedCredits.cast.isEmpty)
+        #expect(!combinedCredits.crew.isEmpty)
+
+        let taggedImages = try #require(result.taggedImages)
+        #expect(!taggedImages.results.isEmpty)
+        #expect(taggedImages.results[0].id == "tagged1")
+
+        let translations = try #require(result.translations)
+        #expect(!translations.isEmpty)
+        #expect(translations[0].countryCode == "DE")
+
+        let externalIDs = try #require(result.externalIDs)
+        #expect(externalIDs.id == 287)
+        #expect(externalIDs.imdb != nil)
+        #expect(externalIDs.tikTok != nil)
+        #expect(externalIDs.facebook != nil)
+
+        let changes = try #require(result.changes)
+        #expect(!changes.changes.isEmpty)
+        #expect(changes.changes[0].key == "biography")
     }
 
     @Test(

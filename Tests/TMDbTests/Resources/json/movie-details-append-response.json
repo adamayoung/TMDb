@@ -105,5 +105,169 @@
         "facebook_id": "FightClub",
         "instagram_id": null,
         "twitter_id": null
+    },
+    "videos": {
+        "results": [
+            {
+                "id": "533ec654c3a36854480003eb",
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "key": "SUXWAEX2jlg",
+                "name": "Trailer",
+                "site": "YouTube",
+                "size": 720,
+                "type": "Trailer",
+                "official": true,
+                "published_at": "1999-09-10T00:00:00.000Z"
+            }
+        ]
+    },
+    "reviews": {
+        "page": 1,
+        "results": [
+            {
+                "id": "58a23e01c3a3687f72003c30",
+                "author": "Cat Ellington",
+                "content": "A masterpiece.",
+                "url": "https://www.themoviedb.org/review/58a23e01c3a3687f72003c30"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "recommendations": {
+        "page": 1,
+        "results": [
+            {
+                "id": 680,
+                "title": "Pulp Fiction",
+                "overview": "A burger-loving hit man.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "release_date": "1994-09-10",
+                "vote_average": 8.5,
+                "vote_count": 100,
+                "adult": false,
+                "genre_ids": [53, 80],
+                "original_language": "en",
+                "original_title": "Pulp Fiction",
+                "popularity": 50.0,
+                "video": false
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "similar": {
+        "page": 1,
+        "results": [
+            {
+                "id": 807,
+                "title": "Se7en",
+                "overview": "Two detectives.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "release_date": "1995-09-22",
+                "vote_average": 8.3,
+                "vote_count": 200,
+                "adult": false,
+                "genre_ids": [80, 53],
+                "original_language": "en",
+                "original_title": "Se7en",
+                "popularity": 40.0,
+                "video": false
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "release_dates": {
+        "results": [
+            {
+                "iso_3166_1": "US",
+                "release_dates": [
+                    {
+                        "certification": "R",
+                        "descriptors": [],
+                        "iso_639_1": "",
+                        "release_date": "1999-10-15T00:00:00.000Z",
+                        "type": 3,
+                        "note": "Wide release"
+                    }
+                ]
+            }
+        ]
+    },
+    "alternative_titles": {
+        "titles": [
+            {
+                "iso_3166_1": "DE",
+                "title": "Fight Club",
+                "type": ""
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "DE",
+                "iso_639_1": "de",
+                "name": "Deutsch",
+                "english_name": "German",
+                "data": {
+                    "title": "Fight Club",
+                    "overview": "Ein Büroangestellter.",
+                    "homepage": "",
+                    "tagline": ""
+                }
+            }
+        ]
+    },
+    "watch/providers": {
+        "results": {
+            "US": {
+                "link": "https://www.themoviedb.org/movie/550/watch?locale=US",
+                "flatrate": [
+                    {
+                        "display_priority": 1,
+                        "logo_path": "/pbpMk2JmcoNnQwN5JGpXngfoWtp.jpg",
+                        "provider_id": 8,
+                        "provider_name": "Netflix"
+                    }
+                ]
+            }
+        }
+    },
+    "lists": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1,
+                "name": "Best Movies",
+                "description": "A list of best movies",
+                "favorite_count": 10,
+                "item_count": 50,
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "list_type": "movie",
+                "poster_path": null
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "changes": {
+        "changes": [
+            {
+                "key": "overview",
+                "items": [
+                    {
+                        "id": "12345",
+                        "action": "updated",
+                        "time": "2024-01-01 12:00:00 UTC"
+                    }
+                ]
+            }
+        ]
     }
 }

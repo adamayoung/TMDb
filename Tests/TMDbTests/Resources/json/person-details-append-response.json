@@ -72,5 +72,167 @@
                 "iso_639_1": null
             }
         ]
+    },
+    "tv_credits": {
+        "cast": [
+            {
+                "id": 12345,
+                "name": "Some TV Show",
+                "original_name": "Some TV Show",
+                "original_language": "en",
+                "overview": "A TV show.",
+                "genre_ids": [18],
+                "first_air_date": "2000-01-01",
+                "origin_country": ["US"],
+                "poster_path": null,
+                "backdrop_path": null,
+                "popularity": 10.0,
+                "vote_average": 7.0,
+                "vote_count": 50,
+                "adult": false,
+                "episode_count": 1,
+                "character": "Guest",
+                "credit_id": "tv_cast_credit_1"
+            }
+        ],
+        "crew": [
+            {
+                "id": 12346,
+                "name": "Another TV Show",
+                "original_name": "Another TV Show",
+                "original_language": "en",
+                "overview": "Another TV show.",
+                "genre_ids": [18],
+                "first_air_date": "2005-01-01",
+                "origin_country": ["US"],
+                "poster_path": null,
+                "backdrop_path": null,
+                "popularity": 5.0,
+                "vote_average": 6.0,
+                "vote_count": 20,
+                "adult": false,
+                "episode_count": 5,
+                "job": "Executive Producer",
+                "department": "Production",
+                "credit_id": "tv_crew_credit_1"
+            }
+        ]
+    },
+    "combined_credits": {
+        "cast": [
+            {
+                "id": 744,
+                "media_type": "movie",
+                "title": "Top Gun",
+                "original_title": "Top Gun",
+                "original_language": "en",
+                "overview": "A fighter pilot.",
+                "genre_ids": [28, 18],
+                "release_date": "1986-05-16",
+                "poster_path": null,
+                "backdrop_path": null,
+                "popularity": 30.0,
+                "vote_average": 6.9,
+                "vote_count": 100,
+                "adult": false,
+                "video": false,
+                "character": "Maverick",
+                "credit_id": "comb_cast_credit_1",
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "id": 56292,
+                "media_type": "movie",
+                "title": "Mission: Impossible",
+                "original_title": "Mission: Impossible",
+                "original_language": "en",
+                "overview": "An agent.",
+                "genre_ids": [28, 53],
+                "release_date": "1996-05-22",
+                "poster_path": null,
+                "backdrop_path": null,
+                "popularity": 25.0,
+                "vote_average": 7.1,
+                "vote_count": 80,
+                "adult": false,
+                "video": false,
+                "department": "Production",
+                "job": "Producer",
+                "credit_id": "comb_crew_credit_1"
+            }
+        ]
+    },
+    "tagged_images": {
+        "page": 1,
+        "results": [
+            {
+                "aspect_ratio": 1.778,
+                "file_path": "/tagged_image.jpg",
+                "height": 1080,
+                "id": "tagged1",
+                "iso_639_1": null,
+                "vote_average": 5.0,
+                "vote_count": 1,
+                "width": 1920,
+                "image_type": "backdrop",
+                "media": {
+                    "id": 744,
+                    "media_type": "movie",
+                    "title": "Top Gun",
+                    "original_title": "Top Gun",
+                    "original_language": "en",
+                    "overview": "A fighter pilot.",
+                    "genre_ids": [28],
+                    "release_date": "1986-05-16",
+                    "poster_path": null,
+                    "backdrop_path": null,
+                    "popularity": 30.0,
+                    "vote_average": 6.9,
+                    "vote_count": 100,
+                    "adult": false,
+                    "video": false
+                },
+                "media_type": "movie"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "DE",
+                "iso_639_1": "de",
+                "name": "Deutsch",
+                "english_name": "German",
+                "data": {
+                    "biography": "Brad Pitt ist ein amerikanischer Schauspieler."
+                }
+            }
+        ]
+    },
+    "external_ids": {
+        "imdb_id": "nm0000093",
+        "wikidata_id": "Q35332",
+        "facebook_id": "BradPitt",
+        "instagram_id": "bradpitt",
+        "twitter_id": "BradPitt",
+        "tiktok_id": "bradpitt"
+    },
+    "changes": {
+        "changes": [
+            {
+                "key": "biography",
+                "items": [
+                    {
+                        "id": "change1",
+                        "action": "updated",
+                        "time": "2024-01-01 12:00:00 UTC"
+                    }
+                ]
+            }
+        ]
     }
 }

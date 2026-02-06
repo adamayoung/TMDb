@@ -135,6 +135,50 @@
             }
         ]
     },
+    "aggregate_credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 22970,
+                "known_for_department": "Acting",
+                "name": "Peter Dinklage",
+                "original_name": "Peter Dinklage",
+                "popularity": 5.89,
+                "profile_path": "/9CAd7wr8QZyIN0E7nm8v1B6WkGn.jpg",
+                "roles": [
+                    {
+                        "credit_id": "5256c8b219c2956ff6047cd8",
+                        "character": "Tyrion Lannister",
+                        "episode_count": 67
+                    }
+                ],
+                "total_episode_count": 67,
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 9813,
+                "known_for_department": "Writing",
+                "name": "David Benioff",
+                "original_name": "David Benioff",
+                "popularity": 1.864,
+                "profile_path": "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg",
+                "jobs": [
+                    {
+                        "credit_id": "5256c8a019c2956ff6046e2b",
+                        "job": "Writer",
+                        "episode_count": 15
+                    }
+                ],
+                "department": "Writing",
+                "total_episode_count": 15
+            }
+        ]
+    },
     "images": {
         "backdrops": [
             {
@@ -157,6 +201,219 @@
                 "vote_count": 11,
                 "width": 2000,
                 "iso_639_1": "en"
+            }
+        ]
+    },
+    "videos": {
+        "results": [
+            {
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "name": "Official Trailer",
+                "key": "KPLWWIOCOOQ",
+                "site": "YouTube",
+                "size": 1080,
+                "type": "Trailer",
+                "official": true,
+                "published_at": "2011-03-01T00:00:00.000Z",
+                "id": "vid1399"
+            }
+        ]
+    },
+    "reviews": {
+        "page": 1,
+        "results": [
+            {
+                "id": "review123",
+                "author": "Reviewer",
+                "content": "Great show.",
+                "url": "https://www.themoviedb.org/review/review123",
+                "author_details": {
+                    "name": "Reviewer",
+                    "username": "reviewer1",
+                    "avatar_path": null,
+                    "rating": 9.0
+                },
+                "created_at": "2020-01-01T00:00:00.000Z",
+                "updated_at": "2020-01-01T00:00:00.000Z"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "recommendations": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1396,
+                "name": "Breaking Bad",
+                "overview": "A teacher turns to crime.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2008-01-20",
+                "vote_average": 8.9,
+                "vote_count": 500,
+                "adult": false,
+                "genre_ids": [18, 80],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Breaking Bad",
+                "popularity": 100.0,
+                "media_type": "tv"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "similar": {
+        "page": 1,
+        "results": [
+            {
+                "id": 66732,
+                "name": "Stranger Things",
+                "overview": "Strange things happen.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2016-07-15",
+                "vote_average": 8.6,
+                "vote_count": 300,
+                "adult": false,
+                "genre_ids": [18, 10765],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Stranger Things",
+                "popularity": 80.0
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "content_ratings": {
+        "results": [
+            {
+                "descriptors": [],
+                "iso_3166_1": "US",
+                "rating": "TV-MA"
+            }
+        ]
+    },
+    "alternative_titles": {
+        "results": [
+            {
+                "iso_3166_1": "DE",
+                "title": "Game of Thrones",
+                "type": ""
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "DE",
+                "iso_639_1": "de",
+                "name": "Deutsch",
+                "english_name": "German",
+                "data": {
+                    "name": "Game of Thrones",
+                    "overview": "Die Handlung ist in einer fiktiven Welt angesiedelt.",
+                    "homepage": "",
+                    "tagline": ""
+                }
+            }
+        ]
+    },
+    "keywords": {
+        "results": [
+            {
+                "id": 6091,
+                "name": "war"
+            }
+        ]
+    },
+    "watch/providers": {
+        "results": {
+            "US": {
+                "link": "https://www.themoviedb.org/tv/1399/watch?locale=US",
+                "flatrate": [
+                    {
+                        "display_priority": 1,
+                        "logo_path": "/Ajqyt5aNxNGjmF6uR6Lswlg2HaQ.jpg",
+                        "provider_id": 384,
+                        "provider_name": "HBO Max"
+                    }
+                ]
+            }
+        }
+    },
+    "external_ids": {
+        "imdb_id": "tt0944947",
+        "wikidata_id": "Q23572",
+        "facebook_id": "GameOfThrones",
+        "instagram_id": "gameofthrones",
+        "twitter_id": "GameOfThrones"
+    },
+    "screened_theatrically": {
+        "results": [
+            {
+                "id": 63056,
+                "episode_number": 1,
+                "season_number": 1
+            }
+        ]
+    },
+    "episode_groups": {
+        "results": [
+            {
+                "description": "Episode ordering by release.",
+                "episode_count": 73,
+                "group_count": 8,
+                "id": "5b114aa40e0a264ecb1c17c9",
+                "name": "Aired Order",
+                "type": 1,
+                "network": {
+                    "id": 49,
+                    "logo_path": "/tuomPhY2UtuPTqqFnKMVHo0WBN.png",
+                    "name": "HBO",
+                    "origin_country": "US"
+                }
+            }
+        ]
+    },
+    "lists": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1396,
+                "name": "Breaking Bad",
+                "overview": "A teacher turns to crime.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2008-01-20",
+                "vote_average": 8.9,
+                "vote_count": 500,
+                "adult": false,
+                "genre_ids": [18, 80],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Breaking Bad",
+                "popularity": 100.0,
+                "media_type": "tv"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "changes": {
+        "changes": [
+            {
+                "key": "overview",
+                "items": [
+                    {
+                        "id": "67890",
+                        "action": "updated",
+                        "time": "2024-01-01 12:00:00 UTC"
+                    }
+                ]
             }
         ]
     }

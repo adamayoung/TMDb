@@ -61,5 +61,53 @@
                 "job": "Director"
             }
         ]
+    },
+    "images": {
+        "stills": [
+            {
+                "aspect_ratio": 1.777,
+                "height": 995,
+                "iso_3166_1": "US",
+                "iso_639_1": "en",
+                "file_path": "/c05nayHjwQR2uPwkQwNy4UVVQlt.jpg",
+                "vote_average": 3.334,
+                "vote_count": 2,
+                "width": 1768
+            }
+        ]
+    },
+    "videos": {
+        "results": [
+            {
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "name": "Game of Thrones: Iron Throne Preview",
+                "key": "hhqRmcsWqac",
+                "site": "YouTube",
+                "size": 1080,
+                "type": "Teaser",
+                "official": true,
+                "published_at": "2011-01-15T01:59:02.000Z",
+                "id": "68dee65b4432b3ce7e2e4317"
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "US",
+                "iso_639_1": "en",
+                "name": "English",
+                "english_name": "English",
+                "data": {
+                    "name": "Winter Is Coming",
+                    "overview": "Jon Arryn, the Hand of the King, is dead."
+                }
+            }
+        ]
+    },
+    "external_ids": {
+        "imdb_id": "tt1480055",
+        "wikidata_id": "Q2614622"
     }
 }

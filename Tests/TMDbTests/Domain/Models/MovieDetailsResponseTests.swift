@@ -12,8 +12,11 @@ import Testing
 @Suite(.tags(.models))
 struct MovieDetailsResponseTests {
 
-    @Test("JSON decoding of MovieDetailsResponse", .tags(.decoding))
-    func decodeMovieDetailsResponse() throws {
+    @Test(
+        "JSON decoding of MovieDetailsResponse with credits and images",
+        .tags(.decoding)
+    )
+    func decodeMovieDetailsResponseCreditsAndImages() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
             MovieDetailsResponse.self,
             fromResource: "movie-details-append-response"
@@ -51,6 +54,71 @@ struct MovieDetailsResponseTests {
         #expect(externalIDs.imdb?.id == "tt0137523")
         #expect(externalIDs.wikiData != nil)
         #expect(externalIDs.facebook != nil)
+    }
+
+    @Test(
+        "JSON decoding of MovieDetailsResponse with all appended data",
+        .tags(.decoding)
+    )
+    func decodeMovieDetailsResponseAllAppendedData() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            MovieDetailsResponse.self,
+            fromResource: "movie-details-append-response"
+        )
+
+        let videos = try #require(result.videos)
+        #expect(videos.id == 550)
+        #expect(!videos.results.isEmpty)
+        #expect(videos.results[0].id == "533ec654c3a36854480003eb")
+        #expect(videos.results[0].name == "Trailer")
+        #expect(videos.results[0].site == "YouTube")
+        #expect(videos.results[0].key == "SUXWAEX2jlg")
+        #expect(videos.results[0].type == .trailer)
+        #expect(videos.results[0].size == .s720)
+
+        let reviews = try #require(result.reviews)
+        #expect(!reviews.results.isEmpty)
+        #expect(reviews.results[0].id == "58a23e01c3a3687f72003c30")
+        #expect(reviews.results[0].author == "Cat Ellington")
+
+        let recommendations = try #require(result.recommendations)
+        #expect(!recommendations.results.isEmpty)
+        #expect(recommendations.results[0].id == 680)
+        #expect(recommendations.results[0].title == "Pulp Fiction")
+
+        let similar = try #require(result.similar)
+        #expect(!similar.results.isEmpty)
+        #expect(similar.results[0].id == 807)
+        #expect(similar.results[0].title == "Se7en")
+
+        let releaseDates = try #require(result.releaseDates)
+        #expect(!releaseDates.isEmpty)
+        #expect(releaseDates[0].countryCode == "US")
+        #expect(releaseDates[0].releaseDates[0].certification == "R")
+        #expect(releaseDates[0].releaseDates[0].type == .theatrical)
+
+        let altTitles = try #require(result.alternativeTitles)
+        #expect(!altTitles.isEmpty)
+        #expect(altTitles[0].countryCode == "DE")
+
+        let translations = try #require(result.translations)
+        #expect(!translations.isEmpty)
+        #expect(translations[0].countryCode == "DE")
+        #expect(translations[0].data.title == "Fight Club")
+
+        let watchProviders = try #require(result.watchProviders)
+        let usProvider = try #require(watchProviders["US"])
+        let flatRate = try #require(usProvider.flatRate)
+        #expect(flatRate[0].id == 8)
+        #expect(flatRate[0].name == "Netflix")
+
+        let lists = try #require(result.lists)
+        #expect(!lists.results.isEmpty)
+        #expect(lists.results[0].id == 1)
+
+        let changes = try #require(result.changes)
+        #expect(!changes.changes.isEmpty)
+        #expect(changes.changes[0].key == "overview")
     }
 
     @Test(

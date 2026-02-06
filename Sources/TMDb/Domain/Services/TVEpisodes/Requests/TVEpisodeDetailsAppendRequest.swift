@@ -38,7 +38,9 @@ private extension APIRequestQueryItems {
     ) {
         self.init()
 
-        self[.appendToResponse] = appendToResponse.queryValue
+        if !appendToResponse.isEmpty {
+            self[.appendToResponse] = appendToResponse.queryValue
+        }
 
         if let language {
             self[.language] = language
