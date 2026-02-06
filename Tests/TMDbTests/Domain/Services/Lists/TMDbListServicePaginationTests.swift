@@ -25,17 +25,17 @@ struct TMDbListServicePaginationTests {
     @Test("allItems yields items from multiple pages")
     func allItemsYieldsItemsFromMultiplePages() async throws {
         let listID = 1
-        let page1 = PageableListResult(
+        let page1 = MediaList.mock(
+            items: [MediaListItem.mock(id: 1), MediaListItem.mock(id: 2)],
             page: 1,
-            results: [MediaListItem.mock(id: 1), MediaListItem.mock(id: 2)],
-            totalResults: 4,
-            totalPages: 2
+            totalPages: 2,
+            totalResults: 4
         )
-        let page2 = PageableListResult(
+        let page2 = MediaList.mock(
+            items: [MediaListItem.mock(id: 3), MediaListItem.mock(id: 4)],
             page: 2,
-            results: [MediaListItem.mock(id: 3), MediaListItem.mock(id: 4)],
-            totalResults: 4,
-            totalPages: 2
+            totalPages: 2,
+            totalResults: 4
         )
         apiClient.addResponse(.success(page1))
         apiClient.addResponse(.success(page2))
@@ -51,11 +51,11 @@ struct TMDbListServicePaginationTests {
     @Test("allItemsPages yields page objects")
     func allItemsPagesYieldsPageObjects() async throws {
         let listID = 1
-        let page = PageableListResult(
+        let page = MediaList.mock(
+            items: [MediaListItem.mock(id: 1), MediaListItem.mock(id: 2)],
             page: 1,
-            results: [MediaListItem.mock(id: 1), MediaListItem.mock(id: 2)],
-            totalResults: 2,
-            totalPages: 1
+            totalPages: 1,
+            totalResults: 2
         )
         apiClient.addResponse(.success(page))
 
