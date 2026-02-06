@@ -35,14 +35,14 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 | Service | Description |
 | ------- | ----------- |
-| **movies** | Movie details, credits, images, videos, reviews, recommendations, similar, releases, watch providers |
-| **tvSeries** | TV show details, credits, images, videos, reviews, recommendations, similar, watch providers |
+| **movies** | Movie details, credits, keywords, images, videos, reviews, recommendations, similar, releases, watch providers |
+| **tvSeries** | TV show details, credits, images, videos, reviews, recommendations, similar, watch providers, screened theatrically, episode groups |
 | **tvSeasons** | Season-specific details, aggregate credits, credits, images, videos, translations, watch providers |
 | **tvEpisodes** | Episode-specific details, credits, images, videos, translations |
 | **people** | Person details, combined/movie/TV credits, images, external links, translations |
 | **search** | Multi-search across movies, TV shows, people, collections, companies, keywords |
 | **discover** | Advanced filtering for movies and TV shows with 30+ filter options |
-| **trending** | Trending movies, TV shows, and people (daily/weekly) |
+| **trending** | Trending movies, TV shows, people, and all media (daily/weekly) |
 | **find** | Find movies, TV shows, and people by external IDs (IMDb, TVDB, etc.) |
 | **account** | User favorites, watchlist, rated items (requires authentication) |
 | **authentication** | Session management, guest sessions, request tokens |

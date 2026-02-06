@@ -7,7 +7,7 @@
 
 import Foundation
 
-// swiftlint:disable type_body_length
+// swiftlint:disable file_length type_body_length
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 final class TMDbMovieService: MovieService {
@@ -383,6 +383,19 @@ final class TMDbMovieService: MovieService {
         return changedIDCollection
     }
 
+    func keywords(forMovie movieID: Movie.ID) async throws -> KeywordCollection {
+        let request = MovieKeywordsRequest(id: movieID)
+
+        let response: MovieKeywordsResponse
+        do {
+            response = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return response.keywordCollection
+    }
+
 }
 
-// swiftlint:enable type_body_length
+// swiftlint:enable file_length type_body_length

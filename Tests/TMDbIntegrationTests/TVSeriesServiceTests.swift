@@ -311,4 +311,24 @@ struct TVSeriesServiceTests {
 
         #expect(!changedIDCollection.results.isEmpty)
     }
+
+    @Test("screenedTheatrically")
+    func screenedTheatrically() async throws {
+        let tvSeriesID = 1399 // Game of Thrones
+
+        let collection = try await tvSeriesService.screenedTheatrically(forTVSeries: tvSeriesID)
+
+        #expect(collection.id == tvSeriesID)
+        #expect(!collection.results.isEmpty)
+    }
+
+    @Test("episodeGroups")
+    func episodeGroups() async throws {
+        let tvSeriesID = 1399 // Game of Thrones
+
+        let collection = try await tvSeriesService.episodeGroups(forTVSeries: tvSeriesID)
+
+        #expect(collection.id == tvSeriesID)
+        #expect(!collection.episodeGroups.isEmpty)
+    }
 }

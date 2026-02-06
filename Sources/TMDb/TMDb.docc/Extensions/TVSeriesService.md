@@ -50,6 +50,8 @@
 - ``watchProviders(forTVSeries:)``
 - ``externalLinks(forTVSeries:)``
 - ``contentRatings(forTVSeries:)``
+- ``screenedTheatrically(forTVSeries:)``
+- ``episodeGroups(forTVSeries:)``
 - ``airingToday(page:timezone:language:)``
 - ``onTheAir(page:timezone:language:)``
 - ``topRated(page:language:)``

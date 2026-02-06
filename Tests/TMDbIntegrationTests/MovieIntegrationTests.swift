@@ -232,4 +232,14 @@ struct MovieIntegrationTests {
         #expect(changedIDCollection.totalResults > 0)
     }
 
+    @Test("keywords")
+    func keywords() async throws {
+        let movieID = 550 // Fight Club
+
+        let keywordCollection = try await movieService.keywords(forMovie: movieID)
+
+        #expect(keywordCollection.id == movieID)
+        #expect(!keywordCollection.keywords.isEmpty)
+    }
+
 }

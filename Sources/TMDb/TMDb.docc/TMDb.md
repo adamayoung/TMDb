@@ -68,6 +68,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MovieReleaseDatesByCountry``
 - ``ReleaseDate``
 - ``ReleaseType``
+- ``KeywordCollection``
 - ``AlternativeTitle``
 - ``AlternativeTitleCollection``
 - ``Translation``
@@ -105,6 +106,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TranslationCollection``
 - ``Translation``
 - ``TVSeriesTranslationData``
+- ``ScreenedTheatricallyCollection``
+- ``ScreenedTheatricallyResult``
+- ``TVEpisodeGroupCollection``
 - ``ChangeCollection``
 - ``Change``
 - ``ChangeItem``
@@ -205,6 +209,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``PersonPageableList``
 - ``Person``
 - ``TrendingTimeWindowFilterType``
+- ``TrendingItem``
+- ``TrendingPageableList``
 
 ### Search
 

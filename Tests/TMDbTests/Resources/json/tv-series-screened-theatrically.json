@@ -1,0 +1,30 @@
+{
+    "id": 1399,
+    "results": [
+        {
+            "id": 62085,
+            "episode_number": 1,
+            "season_number": 1
+        },
+        {
+            "id": 62086,
+            "episode_number": 2,
+            "season_number": 1
+        },
+        {
+            "id": 1019560,
+            "episode_number": 1,
+            "season_number": 3
+        },
+        {
+            "id": 1019561,
+            "episode_number": 2,
+            "season_number": 3
+        },
+        {
+            "id": 1019562,
+            "episode_number": 3,
+            "season_number": 3
+        }
+    ]
+}

@@ -113,4 +113,34 @@ extension TMDbTVSeriesService {
         return mediaList
     }
 
+    func screenedTheatrically(
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> ScreenedTheatricallyCollection {
+        let request = TVSeriesScreenedTheatricallyRequest(id: tvSeriesID)
+
+        let collection: ScreenedTheatricallyCollection
+        do {
+            collection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return collection
+    }
+
+    func episodeGroups(
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVEpisodeGroupCollection {
+        let request = TVSeriesEpisodeGroupsRequest(id: tvSeriesID)
+
+        let collection: TVEpisodeGroupCollection
+        do {
+            collection = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return collection
+    }
+
 }

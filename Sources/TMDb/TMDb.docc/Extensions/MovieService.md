@@ -37,6 +37,7 @@
 
 ### Content Discovery
 
+- ``keywords(forMovie:)``
 - ``alternativeTitles(forMovie:country:language:)``
 - ``translations(forMovie:)``
 

@@ -78,4 +78,24 @@ final class TMDbTrendingService: TrendingService {
         return peopleList
     }
 
+    func allTrending(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TrendingPageableList {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TrendingAllRequest(
+            timeWindow: timeWindow, page: page, language: languageCode
+        )
+
+        let trendingList: TrendingPageableList
+        do {
+            trendingList = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return trendingList
+    }
+
 }
