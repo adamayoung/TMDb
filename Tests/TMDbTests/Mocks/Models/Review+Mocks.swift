@@ -13,12 +13,22 @@ extension Review {
     static func mock(
         id: String = "1",
         author: String = "Author Name",
-        content: String = "Some review content"
+        content: String = "Some review content",
+        languageCode: String? = nil,
+        mediaID: Int? = nil,
+        mediaTitle: String? = nil,
+        mediaType: String? = nil,
+        url: URL? = nil
     ) -> Review {
         Review(
             id: id,
             author: author,
-            content: content
+            content: content,
+            languageCode: languageCode,
+            mediaID: mediaID,
+            mediaTitle: mediaTitle,
+            mediaType: mediaType,
+            url: url
         )
     }
 
