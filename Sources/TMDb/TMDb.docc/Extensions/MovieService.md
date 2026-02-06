@@ -26,6 +26,25 @@
 - ``addRating(_:toMovie:session:)``
 - ``deleteRating(forMovie:session:)``
 
+### Auto-Pagination
+
+- ``allPopular(country:language:)``
+- ``allTopRated(country:language:)``
+- ``allNowPlaying(country:language:)``
+- ``allUpcoming(country:language:)``
+- ``allRecommendations(forMovie:language:)``
+- ``allSimilar(toMovie:language:)``
+- ``allReviews(forMovie:language:)``
+- ``allLists(forMovie:language:)``
+- ``allPopularPages(country:language:)``
+- ``allTopRatedPages(country:language:)``
+- ``allNowPlayingPages(country:language:)``
+- ``allUpcomingPages(country:language:)``
+- ``allRecommendationsPages(forMovie:language:)``
+- ``allSimilarPages(toMovie:language:)``
+- ``allReviewsPages(forMovie:language:)``
+- ``allListsPages(forMovie:language:)``
+
 ### Lists and Related Content
 
 - ``recommendations(forMovie:page:language:)``

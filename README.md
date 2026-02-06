@@ -214,6 +214,38 @@ if let usProvider = providers.first(where: { $0.countryCode == "US" }) {
 }
 ```
 
+### Auto-Pagination
+
+Iterate through all pages of paginated results using AsyncSequence without
+manual pagination:
+
+```swift
+// Iterate through all popular movies across all pages
+for try await movie in tmdbClient.movies.allPopular() {
+    print(movie.title)
+    // Automatically fetches next page when needed
+}
+
+// Early break stops fetching additional pages
+var count = 0
+for try await movie in tmdbClient.movies.allTopRated() {
+    count += 1
+    if count >= 50 { break }
+}
+
+// Iterate through entire pages with metadata
+for try await page in tmdbClient.movies.allPopularPages() {
+    print("Page \(page.page ?? 0) of \(page.totalPages ?? 0)")
+    for movie in page.results {
+        print("  - \(movie.title)")
+    }
+}
+```
+
+Available for all paginated endpoints including `allPopular`, `allTopRated`,
+`allNowPlaying`, `allUpcoming`, `allRecommendations`, `allSimilar`,
+`allReviews`, and `allLists`.
+
 ### User Account Features (Authentication Required)
 
 ```swift
