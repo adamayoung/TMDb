@@ -29,5 +29,6 @@ extension Tag {
     @Tag static var tvSeason: Self
     @Tag static var tvSeries: Self
     @Tag static var watchProvider: Self
+    @Tag static var changes: Self
 
 }
