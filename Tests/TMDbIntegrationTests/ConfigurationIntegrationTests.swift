@@ -55,4 +55,19 @@ struct ConfigurationIntegrationTests {
         #expect(!languages.isEmpty)
     }
 
+    @Test("primaryTranslations")
+    func primaryTranslations() async throws {
+        let translations = try await configurationService
+            .primaryTranslations()
+
+        #expect(!translations.isEmpty)
+    }
+
+    @Test("timezones")
+    func timezones() async throws {
+        let timezones = try await configurationService.timezones()
+
+        #expect(!timezones.isEmpty)
+    }
+
 }

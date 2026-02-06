@@ -252,6 +252,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``CompanyService``
 - ``Company``
 - ``Company/Parent``
+- ``CompanyAlternativeNameCollection``
+- ``CompanyAlternativeName``
+- ``CompanyImageCollection``
 
 ### Genres
 
@@ -286,6 +289,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Country``
 - ``Department``
 - ``Language``
+- ``Timezone``
 
 ### Account
 

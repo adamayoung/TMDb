@@ -44,4 +44,58 @@ struct TMDbCompanyServiceTests {
         }
     }
 
+    @Test("alternativeNames returns alternative names")
+    func alternativeNamesReturnsAlternativeNames() async throws {
+        let expectedResult = CompanyAlternativeNameCollection.mock()
+        let companyID = expectedResult.id
+        let expectedRequest = CompanyAlternativeNamesRequest(id: companyID)
+
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.alternativeNames(forCompany: companyID)
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest as? CompanyAlternativeNamesRequest
+                == expectedRequest
+        )
+    }
+
+    @Test("alternativeNames when errors throws error")
+    func alternativeNamesWhenErrorsThrowsError() async throws {
+        let companyID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.alternativeNames(forCompany: companyID)
+        }
+    }
+
+    @Test("images returns company images")
+    func imagesReturnsCompanyImages() async throws {
+        let expectedResult = CompanyImageCollection.mock()
+        let companyID = expectedResult.id
+        let expectedRequest = CompanyImagesRequest(id: companyID)
+
+        apiClient.addResponse(.success(expectedResult))
+
+        let result = try await service.images(forCompany: companyID)
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest as? CompanyImagesRequest
+                == expectedRequest
+        )
+    }
+
+    @Test("images when errors throws error")
+    func imagesWhenErrorsThrowsError() async throws {
+        let companyID = 1
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.images(forCompany: companyID)
+        }
+    }
+
 }

@@ -117,4 +117,53 @@ struct TMDbConfigurationServiceTests {
         }
     }
 
+    @Test("primaryTranslations returns translations")
+    func primaryTranslationsReturnsTranslations() async throws {
+        let expectedResult = ["en-US", "fr-FR", "de-DE"]
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = ConfigurationPrimaryTranslationsRequest()
+
+        let result = try await service.primaryTranslations()
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest
+                as? ConfigurationPrimaryTranslationsRequest
+                == expectedRequest
+        )
+    }
+
+    @Test("primaryTranslations when errors throws error")
+    func primaryTranslationsWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.primaryTranslations()
+        }
+    }
+
+    @Test("timezones returns timezones")
+    func timezonesReturnsTimezones() async throws {
+        let expectedResult = [Timezone].mocks
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = ConfigurationTimezonesRequest()
+
+        let result = try await service.timezones()
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest as? ConfigurationTimezonesRequest
+                == expectedRequest
+        )
+    }
+
+    @Test("timezones when errors throws error")
+    func timezonesWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.timezones()
+        }
+    }
+
 }

@@ -1,0 +1,23 @@
+[
+    {
+        "iso_3166_1": "AD",
+        "zones": [
+            "Europe/Andorra"
+        ]
+    },
+    {
+        "iso_3166_1": "US",
+        "zones": [
+            "America/New_York",
+            "America/Chicago",
+            "America/Denver",
+            "America/Los_Angeles"
+        ]
+    },
+    {
+        "iso_3166_1": "GB",
+        "zones": [
+            "Europe/London"
+        ]
+    }
+]

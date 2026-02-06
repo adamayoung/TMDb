@@ -60,6 +60,29 @@ public protocol ConfigurationService: Sendable {
     ///
     func languages() async throws -> [Language]
 
+    ///
+    /// Returns a list of the officially supported translations on TMDb.
+    ///
+    /// [TMDb API - Configuration: Primary
+    /// Translations](https://developer.themoviedb.org/reference/configuration-primary-translations)
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Primary translations used throughout TMDb.
+    ///
+    func primaryTranslations() async throws -> [String]
+
+    ///
+    /// Returns the list of timezones used throughout TMDb.
+    ///
+    /// [TMDb API - Configuration: Timezones](https://developer.themoviedb.org/reference/configuration-timezones)
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Timezones used throughout TMDb.
+    ///
+    func timezones() async throws -> [Timezone]
+
 }
 
 public extension ConfigurationService {

@@ -11,3 +11,5 @@
 - ``countries(language:)``
 - ``jobsByDepartment()``
 - ``languages()``
+- ``primaryTranslations()``
+- ``timezones()``

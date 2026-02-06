@@ -32,4 +32,24 @@ struct CompanyIntegrationTests {
         #expect(company.name == "LuckyChap Entertainment")
     }
 
+    @Test("alternativeNames")
+    func alternativeNames() async throws {
+        let companyID = 82968
+
+        let result = try await companyService.alternativeNames(
+            forCompany: companyID
+        )
+
+        #expect(result.id == companyID)
+    }
+
+    @Test("images")
+    func images() async throws {
+        let companyID = 82968
+
+        let result = try await companyService.images(forCompany: companyID)
+
+        #expect(result.id == companyID)
+    }
+
 }
