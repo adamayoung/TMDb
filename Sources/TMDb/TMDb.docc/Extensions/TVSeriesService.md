@@ -34,6 +34,25 @@
 - ``addRating(_:toTVSeries:session:)``
 - ``deleteRating(forTVSeries:session:)``
 
+### Auto-Pagination
+
+- ``allReviews(forTVSeries:language:)``
+- ``allRecommendations(forTVSeries:language:)``
+- ``allSimilar(toTVSeries:language:)``
+- ``allLists(forTVSeries:language:)``
+- ``allPopular(language:)``
+- ``allAiringToday(timezone:language:)``
+- ``allOnTheAir(timezone:language:)``
+- ``allTopRated(language:)``
+- ``allReviewsPages(forTVSeries:language:)``
+- ``allRecommendationsPages(forTVSeries:language:)``
+- ``allSimilarPages(toTVSeries:language:)``
+- ``allListsPages(forTVSeries:language:)``
+- ``allPopularPages(language:)``
+- ``allAiringTodayPages(timezone:language:)``
+- ``allOnTheAirPages(timezone:language:)``
+- ``allTopRatedPages(language:)``
+
 ### Content Discovery
 
 - ``keywords(forTVSeries:)``

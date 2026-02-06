@@ -17,6 +17,13 @@
 
 - ``images(forPerson:)``
 
+### Auto-Pagination
+
+- ``allPopular(language:)``
+- ``allTaggedImages(forPerson:)``
+- ``allPopularPages(language:)``
+- ``allTaggedImagesPages(forPerson:)``
+
 ### Lists and Related Content
 
 - ``popular(page:language:)``

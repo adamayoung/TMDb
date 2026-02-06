@@ -8,6 +8,11 @@
 - ``items(forList:page:)``
 - ``itemStatus(forMedia:inList:)``
 
+### Auto-Pagination
+
+- ``allItems(forList:)``
+- ``allItemsPages(forList:)``
+
 ### List Management
 
 - ``create(name:description:language:isPublic:session:)``
