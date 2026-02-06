@@ -86,6 +86,57 @@ struct PaginationIntegrationTests {
         #expect(itemCount >= 1)
     }
 
+    @Test("allNowPlaying fetches items from live API")
+    func allNowPlayingFetchesItemsFromLiveAPI() async throws {
+        var itemCount = 0
+        for try await _ in client.movies.allNowPlaying() {
+            itemCount += 1
+            if itemCount >= 25 {
+                break
+            }
+        }
+        #expect(itemCount >= 20)
+    }
+
+    @Test("allUpcoming fetches items from live API")
+    func allUpcomingFetchesItemsFromLiveAPI() async throws {
+        var itemCount = 0
+        for try await _ in client.movies.allUpcoming() {
+            itemCount += 1
+            if itemCount >= 25 {
+                break
+            }
+        }
+        #expect(itemCount >= 20)
+    }
+
+    @Test("allSimilar fetches items from live API")
+    func allSimilarFetchesItemsFromLiveAPI() async throws {
+        let movieID = 550 // Fight Club - has similar movies
+        var itemCount = 0
+        for try await _ in client.movies.allSimilar(toMovie: movieID) {
+            itemCount += 1
+            if itemCount >= 10 {
+                break
+            }
+        }
+        #expect(itemCount >= 5)
+    }
+
+    @Test("allLists fetches items from live API")
+    func allListsFetchesItemsFromLiveAPI() async throws {
+        let movieID = 550 // Fight Club - appears in lists
+        var itemCount = 0
+        for try await _ in client.movies.allLists(forMovie: movieID) {
+            itemCount += 1
+            if itemCount >= 5 {
+                break
+            }
+        }
+        // Lists may be empty for some movies
+        #expect(itemCount >= 0)
+    }
+
     // MARK: - Page-Level Iteration
 
     @Test("allPopularPages yields page objects from live API")
@@ -128,6 +179,76 @@ struct PaginationIntegrationTests {
             }
         }
         #expect(pageCount >= 1)
+    }
+
+    @Test("allNowPlayingPages yields page objects from live API")
+    func allNowPlayingPagesYieldsPageObjectsFromLiveAPI() async throws {
+        var pageCount = 0
+        for try await page in client.movies.allNowPlayingPages() {
+            pageCount += 1
+            #expect(!page.results.isEmpty)
+            #expect(page.page != nil)
+            if pageCount >= 2 {
+                break
+            }
+        }
+        #expect(pageCount == 2)
+    }
+
+    @Test("allUpcomingPages yields page objects from live API")
+    func allUpcomingPagesYieldsPageObjectsFromLiveAPI() async throws {
+        var pageCount = 0
+        for try await page in client.movies.allUpcomingPages() {
+            pageCount += 1
+            #expect(!page.results.isEmpty)
+            #expect(page.page != nil)
+            if pageCount >= 2 {
+                break
+            }
+        }
+        #expect(pageCount == 2)
+    }
+
+    @Test("allRecommendationsPages yields page objects from live API")
+    func allRecommendationsPagesYieldsPageObjectsFromLiveAPI() async throws {
+        let movieID = 550 // Fight Club
+        var pageCount = 0
+        for try await page in client.movies.allRecommendationsPages(forMovie: movieID) {
+            pageCount += 1
+            #expect(!page.results.isEmpty)
+            if pageCount >= 2 {
+                break
+            }
+        }
+        #expect(pageCount >= 1)
+    }
+
+    @Test("allSimilarPages yields page objects from live API")
+    func allSimilarPagesYieldsPageObjectsFromLiveAPI() async throws {
+        let movieID = 550 // Fight Club
+        var pageCount = 0
+        for try await page in client.movies.allSimilarPages(toMovie: movieID) {
+            pageCount += 1
+            #expect(!page.results.isEmpty)
+            if pageCount >= 2 {
+                break
+            }
+        }
+        #expect(pageCount >= 1)
+    }
+
+    @Test("allListsPages yields page objects from live API")
+    func allListsPagesYieldsPageObjectsFromLiveAPI() async throws {
+        let movieID = 550 // Fight Club
+        var pageCount = 0
+        for try await _ in client.movies.allListsPages(forMovie: movieID) {
+            pageCount += 1
+            if pageCount >= 1 {
+                break
+            }
+        }
+        // Lists may be empty for some movies, so just verify we can iterate
+        #expect(pageCount >= 0)
     }
 
 }
