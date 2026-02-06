@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for discovering TV series.
 ///
-public struct DiscoverTVSeriesFilter {
+public struct DiscoverTVSeriesFilter: Sendable {
 
     ///
     /// The original language of the TV series.

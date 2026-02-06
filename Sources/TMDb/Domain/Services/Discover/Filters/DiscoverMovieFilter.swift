@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for discovering movies.
 ///
-public struct DiscoverMovieFilter {
+public struct DiscoverMovieFilter: Sendable {
 
     ///
     /// A list of Person identifiers who have appeared in the movie.
