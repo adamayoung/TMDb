@@ -9,7 +9,8 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.serialized, 
+@Suite(
+    .serialized,
     .tags(.authentication),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
 )

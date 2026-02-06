@@ -355,9 +355,11 @@ After public API changes, verify all of the following are in sync:
    changed
 6. **Lint markdown**: `make lint-markdown` — required if `.md` files
    changed
+7. **Run full CI**: `make ci` — **REQUIRED before creating any PR**
 
 Steps 3-4 must always pass. Steps 5-6 are conditional. Steps 1-2 can
-be skipped if formatting tools are not installed.
+be skipped if formatting tools are not installed. Step 7 is mandatory
+before pushing code or creating a pull request.
 
 ### Self-Review
 
@@ -392,17 +394,17 @@ Run `make lint-markdown` after any README changes.
 
 ## Creating Pull Requests
 
-**Before pushing and creating a PR, run `make ci` and ensure it
-passes.** This runs the full CI validation locally (lint, tests, build,
-docs).
+**CRITICAL: You MUST run `make ci` and ensure it passes before pushing
+and creating a PR.** This is a hard requirement - no exceptions.
 
-### 1. Run Full CI Check
+### 1. Run Full CI Check (MANDATORY)
 
 ```bash
 source ~/.zshrc 2>/dev/null && make ci
 ```
 
-All checks must pass before proceeding.
+**All checks must pass before proceeding.** Do not skip this step. Do not
+push code or create PRs if CI is failing.
 
 ### 2. Determine Changes
 
