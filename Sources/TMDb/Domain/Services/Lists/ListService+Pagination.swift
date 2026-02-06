@@ -19,32 +19,6 @@ public extension ListService {
     // MARK: - Item-Level Iteration
 
     ///
-    /// Returns an async sequence of all details pages for a list across all pages.
-    ///
-    /// Pages are fetched lazily as items are consumed from the sequence.
-    ///
-    /// [TMDb API - Lists: Details](https://developer.themoviedb.org/reference/list-details)
-    ///
-    /// - Parameter listID: The identifier of the list.
-    ///
-    /// - Returns: An async sequence that yields individual ``MediaList`` objects.
-    ///
-    func allDetails(
-        forList listID: Int
-    ) -> PagedAsyncSequence<MediaList> {
-        PagedAsyncSequence { [self] page in
-            // Return MediaList wrapped in PageableListResult to satisfy PageFetcher
-            let list = try await details(forList: listID, page: page)
-            return PageableListResult(
-                page: page,
-                results: [list],
-                totalResults: 1,
-                totalPages: 1
-            )
-        }
-    }
-
-    ///
     /// Returns an async sequence of all items in a list across all pages.
     ///
     /// Pages are fetched lazily as items are consumed from the sequence.
@@ -64,32 +38,6 @@ public extension ListService {
     }
 
     // MARK: - Page-Level Iteration
-
-    ///
-    /// Returns an async sequence of all detail pages for a list.
-    ///
-    /// Pages are fetched lazily as they are consumed from the sequence.
-    ///
-    /// [TMDb API - Lists: Details](https://developer.themoviedb.org/reference/list-details)
-    ///
-    /// - Parameter listID: The identifier of the list.
-    ///
-    /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``MediaList`` objects.
-    ///
-    func allDetailsPages(
-        forList listID: Int
-    ) -> PagedPagesAsyncSequence<MediaList> {
-        PagedPagesAsyncSequence { [self] page in
-            // Return MediaList wrapped in PageableListResult to satisfy PageFetcher
-            let list = try await details(forList: listID, page: page)
-            return PageableListResult(
-                page: page,
-                results: [list],
-                totalResults: 1,
-                totalPages: 1
-            )
-        }
-    }
 
     ///
     /// Returns an async sequence of all item pages in a list.
