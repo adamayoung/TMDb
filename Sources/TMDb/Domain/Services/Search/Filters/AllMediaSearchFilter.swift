@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A search filter when searching for all media.
 ///
-public struct AllMediaSearchFilter {
+public struct AllMediaSearchFilter: Sendable {
 
     ///
     /// Include adult results.

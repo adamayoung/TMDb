@@ -10,7 +10,7 @@ import Foundation
 ///
 /// Sort specifier when fetching TV series.
 ///
-public enum TrendingTimeWindowFilterType: String {
+public enum TrendingTimeWindowFilterType: String, Sendable {
 
     ///
     /// Day time window filter.

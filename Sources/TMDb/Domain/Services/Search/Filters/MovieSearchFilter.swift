@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A search filter when searching for movies.
 ///
-public struct MovieSearchFilter {
+public struct MovieSearchFilter: Sendable {
 
     ///
     /// Filter by primary release year.

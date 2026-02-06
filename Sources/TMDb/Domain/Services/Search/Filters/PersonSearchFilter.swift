@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A search filter when searching for people.
 ///
-public struct PersonSearchFilter {
+public struct PersonSearchFilter: Sendable {
 
     ///
     /// Include adult results.
