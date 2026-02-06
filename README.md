@@ -15,6 +15,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 * **Comprehensive API Coverage**: Full support for TMDb API v3 with 25
   specialized services
+* **Append to Response**: Fetch details with credits, images, videos,
+  and more in a single request using `append_to_response`
 * **Movie & TV Data**: Details, credits, images, videos, reviews,
   recommendations, similar content
 * **Discovery & Search**: Advanced filtering, multi-type search,
@@ -35,11 +37,11 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 | Service | Description |
 | ------- | ----------- |
-| **movies** | Movie details, credits, keywords, images, videos, reviews, recommendations, similar, releases, watch providers |
-| **tvSeries** | TV show details, credits, images, videos, reviews, recommendations, similar, watch providers, screened theatrically, episode groups |
-| **tvSeasons** | Season-specific details, aggregate credits, credits, images, videos, translations, watch providers |
-| **tvEpisodes** | Episode-specific details, credits, images, videos, translations |
-| **people** | Person details, combined/movie/TV credits, images, external links, translations |
+| **movies** | Movie details, credits, keywords, images, videos, reviews, recommendations, similar, releases, watch providers, append-to-response |
+| **tvSeries** | TV show details, credits, images, videos, reviews, recommendations, similar, watch providers, screened theatrically, episode groups, append-to-response |
+| **tvSeasons** | Season-specific details, aggregate credits, credits, images, videos, translations, watch providers, append-to-response |
+| **tvEpisodes** | Episode-specific details, credits, images, videos, translations, append-to-response |
+| **people** | Person details, combined/movie/TV credits, images, external links, translations, append-to-response |
 | **search** | Multi-search across movies, TV shows, people, collections, companies, keywords |
 | **discover** | Advanced filtering for movies and TV shows with 30+ filter options |
 | **trending** | Trending movies, TV shows, people, and all media (daily/weekly) |

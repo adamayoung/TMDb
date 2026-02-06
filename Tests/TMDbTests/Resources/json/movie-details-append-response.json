@@ -1,0 +1,273 @@
+{
+    "adult": false,
+    "backdrop_path": "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg",
+    "belongs_to_collection": null,
+    "budget": 63000000,
+    "genres": [
+        {
+            "id": 18,
+            "name": "Drama"
+        }
+    ],
+    "homepage": null,
+    "id": 550,
+    "imdb_id": "tt0137523",
+    "original_language": "en",
+    "original_title": "Fight Club",
+    "overview": "A ticking-time-bomb insomniac.",
+    "popularity": 0.5,
+    "poster_path": null,
+    "production_companies": [],
+    "production_countries": [],
+    "release_date": "1999-10-12",
+    "revenue": 100853753,
+    "runtime": 139,
+    "spoken_languages": [],
+    "status": "Released",
+    "tagline": "How much can you know about yourself if you've never been in a fight?",
+    "title": "Fight Club",
+    "video": false,
+    "vote_average": 7.8,
+    "vote_count": 3439,
+    "credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 819,
+                "known_for_department": "Acting",
+                "name": "Edward Norton",
+                "original_name": "Edward Norton",
+                "popularity": 7.861,
+                "profile_path": "/5XBzD5WuTyVQZeS4nbcA3Yoimg.jpg",
+                "cast_id": 4,
+                "character": "The Narrator",
+                "credit_id": "52fe4250c3a36847f80149f3",
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 7467,
+                "known_for_department": "Directing",
+                "name": "David Fincher",
+                "original_name": "David Fincher",
+                "popularity": 9.654,
+                "profile_path": "/dcBHejOsKvzVZVozWJAPaYKrk8S.jpg",
+                "credit_id": "52fe4250c3a36847f80149e9",
+                "department": "Directing",
+                "job": "Director"
+            }
+        ]
+    },
+    "images": {
+        "backdrops": [
+            {
+                "aspect_ratio": 1.778,
+                "height": 720,
+                "file_path": "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg",
+                "vote_average": 1.21,
+                "vote_count": 435,
+                "width": 1280,
+                "iso_639_1": null
+            }
+        ],
+        "logos": [],
+        "posters": [
+            {
+                "aspect_ratio": 0.667,
+                "height": 1800,
+                "file_path": "/fpemzjF623QVTe98pCVlwwtFC5N.jpg",
+                "vote_average": 5.21,
+                "vote_count": 3,
+                "width": 1200,
+                "iso_639_1": "en"
+            }
+        ]
+    },
+    "keywords": {
+        "keywords": [
+            {
+                "id": 851,
+                "name": "dual identity"
+            },
+            {
+                "id": 818,
+                "name": "based on novel or book"
+            }
+        ]
+    },
+    "external_ids": {
+        "imdb_id": "tt0137523",
+        "wikidata_id": "Q190050",
+        "facebook_id": "FightClub",
+        "instagram_id": null,
+        "twitter_id": null
+    },
+    "videos": {
+        "results": [
+            {
+                "id": "533ec654c3a36854480003eb",
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "key": "SUXWAEX2jlg",
+                "name": "Trailer",
+                "site": "YouTube",
+                "size": 720,
+                "type": "Trailer",
+                "official": true,
+                "published_at": "1999-09-10T00:00:00.000Z"
+            }
+        ]
+    },
+    "reviews": {
+        "page": 1,
+        "results": [
+            {
+                "id": "58a23e01c3a3687f72003c30",
+                "author": "Cat Ellington",
+                "content": "A masterpiece.",
+                "url": "https://www.themoviedb.org/review/58a23e01c3a3687f72003c30"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "recommendations": {
+        "page": 1,
+        "results": [
+            {
+                "id": 680,
+                "title": "Pulp Fiction",
+                "overview": "A burger-loving hit man.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "release_date": "1994-09-10",
+                "vote_average": 8.5,
+                "vote_count": 100,
+                "adult": false,
+                "genre_ids": [53, 80],
+                "original_language": "en",
+                "original_title": "Pulp Fiction",
+                "popularity": 50.0,
+                "video": false
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "similar": {
+        "page": 1,
+        "results": [
+            {
+                "id": 807,
+                "title": "Se7en",
+                "overview": "Two detectives.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "release_date": "1995-09-22",
+                "vote_average": 8.3,
+                "vote_count": 200,
+                "adult": false,
+                "genre_ids": [80, 53],
+                "original_language": "en",
+                "original_title": "Se7en",
+                "popularity": 40.0,
+                "video": false
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "release_dates": {
+        "results": [
+            {
+                "iso_3166_1": "US",
+                "release_dates": [
+                    {
+                        "certification": "R",
+                        "descriptors": [],
+                        "iso_639_1": "",
+                        "release_date": "1999-10-15T00:00:00.000Z",
+                        "type": 3,
+                        "note": "Wide release"
+                    }
+                ]
+            }
+        ]
+    },
+    "alternative_titles": {
+        "titles": [
+            {
+                "iso_3166_1": "DE",
+                "title": "Fight Club",
+                "type": ""
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "DE",
+                "iso_639_1": "de",
+                "name": "Deutsch",
+                "english_name": "German",
+                "data": {
+                    "title": "Fight Club",
+                    "overview": "Ein Büroangestellter.",
+                    "homepage": "",
+                    "tagline": ""
+                }
+            }
+        ]
+    },
+    "watch/providers": {
+        "results": {
+            "US": {
+                "link": "https://www.themoviedb.org/movie/550/watch?locale=US",
+                "flatrate": [
+                    {
+                        "display_priority": 1,
+                        "logo_path": "/pbpMk2JmcoNnQwN5JGpXngfoWtp.jpg",
+                        "provider_id": 8,
+                        "provider_name": "Netflix"
+                    }
+                ]
+            }
+        }
+    },
+    "lists": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1,
+                "name": "Best Movies",
+                "description": "A list of best movies",
+                "favorite_count": 10,
+                "item_count": 50,
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "list_type": "movie",
+                "poster_path": null
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "changes": {
+        "changes": [
+            {
+                "key": "overview",
+                "items": [
+                    {
+                        "id": "12345",
+                        "action": "updated",
+                        "time": "2024-01-01 12:00:00 UTC"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -34,6 +34,28 @@ final class TMDbMovieService: MovieService {
         return movie
     }
 
+    func details(
+        forMovie id: Movie.ID,
+        appending: MovieAppendOption,
+        language: String? = nil
+    ) async throws -> MovieDetailsResponse {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = MovieDetailsAppendRequest(
+            id: id,
+            appendToResponse: appending,
+            language: languageCode
+        )
+
+        let response: MovieDetailsResponse
+        do {
+            response = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return response
+    }
+
     func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieCreditsRequest(id: movieID, language: languageCode)

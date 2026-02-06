@@ -5,6 +5,7 @@
 ### Details
 
 - ``details(forTVSeries:language:)``
+- ``details(forTVSeries:appending:language:)``
 
 ### Credits
 

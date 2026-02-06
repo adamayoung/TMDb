@@ -142,4 +142,22 @@ struct PersonIntegrationTests {
         #expect(changedIDCollection.totalResults > 0)
     }
 
+    @Test("details with appended credits and images")
+    func detailsWithAppendedData() async throws {
+        let personID = 500
+
+        let result = try await personService.details(
+            forPerson: personID,
+            appending: [.movieCredits, .images]
+        )
+
+        #expect(result.person.id == personID)
+        #expect(result.person.name == "Tom Cruise")
+        let movieCredits = try #require(result.movieCredits)
+        #expect(movieCredits.id == personID)
+        #expect(!movieCredits.cast.isEmpty)
+        let images = try #require(result.images)
+        #expect(images.id == personID)
+    }
+
 }

@@ -5,6 +5,7 @@
 ### Details
 
 - ``details(forEpisode:inSeason:inTVSeries:language:)``
+- ``details(forEpisode:inSeason:inTVSeries:appending:language:)``
 
 ### Credits
 

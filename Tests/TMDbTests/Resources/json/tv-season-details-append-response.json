@@ -1,0 +1,161 @@
+{
+    "air_date": "2011-04-17",
+    "id": 3624,
+    "name": "Season 1",
+    "overview": "Trouble is brewing in the Seven Kingdoms of Westeros.",
+    "poster_path": "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
+    "season_number": 1,
+    "episodes": [
+        {
+            "air_date": "2011-04-17",
+            "episode_number": 1,
+            "id": 63056,
+            "name": "Winter Is Coming",
+            "overview": "Jon Arryn, the Hand of the King, is dead.",
+            "production_code": "101",
+            "season_number": 1,
+            "still_path": "/wrGWeW4WKxnaeA8sxJb2T9O6ryo.jpg",
+            "vote_average": 7.12,
+            "vote_count": 21
+        }
+    ],
+    "vote_average": 8.3,
+    "credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 1,
+                "id": 1223786,
+                "known_for_department": "Acting",
+                "name": "Emilia Clarke",
+                "original_name": "Emilia Clarke",
+                "popularity": 18.765,
+                "profile_path": "/r6i4C3kYrBRzUzZ8JKAHYQ0T0dD.jpg",
+                "cast_id": 10,
+                "character": "Daenerys Targaryen",
+                "credit_id": "5256c8c219c2956ff6048620",
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 44797,
+                "known_for_department": "Directing",
+                "name": "Tim Van Patten",
+                "original_name": "Tim Van Patten",
+                "popularity": 2.456,
+                "profile_path": "/6b7l9YbkDHDOzOKUFNqBVaPjcgm.jpg",
+                "credit_id": "5256c8a219c2956ff6046e77",
+                "department": "Directing",
+                "job": "Director"
+            }
+        ]
+    },
+    "aggregate_credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 22970,
+                "known_for_department": "Acting",
+                "name": "Peter Dinklage",
+                "original_name": "Peter Dinklage",
+                "popularity": 5.89,
+                "profile_path": "/9CAd7wr8QZyIN0E7nm8v1B6WkGn.jpg",
+                "roles": [
+                    {
+                        "credit_id": "5256c8b219c2956ff6047cd8",
+                        "character": "Tyrion Lannister",
+                        "episode_count": 10
+                    }
+                ],
+                "total_episode_count": 10,
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 9813,
+                "known_for_department": "Writing",
+                "name": "David Benioff",
+                "original_name": "David Benioff",
+                "popularity": 1.864,
+                "profile_path": "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg",
+                "jobs": [
+                    {
+                        "credit_id": "5256c8a019c2956ff6046e2b",
+                        "job": "Writer",
+                        "episode_count": 2
+                    }
+                ],
+                "department": "Writing",
+                "total_episode_count": 2
+            }
+        ]
+    },
+    "images": {
+        "posters": [
+            {
+                "aspect_ratio": 0.667,
+                "height": 1500,
+                "iso_639_1": "en",
+                "file_path": "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
+                "vote_average": 5.384,
+                "vote_count": 2,
+                "width": 1000
+            }
+        ]
+    },
+    "videos": {
+        "results": [
+            {
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "name": "Season 1 Recap",
+                "key": "abc123",
+                "site": "YouTube",
+                "size": 1080,
+                "type": "Recap",
+                "official": true,
+                "published_at": "2012-03-01T00:00:00.000Z",
+                "id": "vid123"
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "US",
+                "iso_639_1": "en",
+                "name": "English",
+                "english_name": "English",
+                "data": {
+                    "name": "Season 1",
+                    "overview": "The first season."
+                }
+            }
+        ]
+    },
+    "watch/providers": {
+        "results": {
+            "US": {
+                "link": "https://www.themoviedb.org/tv/1399/season/1/watch?locale=US",
+                "flatrate": [
+                    {
+                        "display_priority": 1,
+                        "logo_path": "/Ajqyt5aNxNGjmF6uR6Lswlg2HaQ.jpg",
+                        "provider_id": 384,
+                        "provider_name": "HBO Max"
+                    }
+                ]
+            }
+        }
+    },
+    "external_ids": {
+        "wikidata_id": "Q3286994"
+    }
+}

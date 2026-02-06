@@ -1,0 +1,420 @@
+{
+    "backdrop_path": "/gX8SYlnL9ZznfZwEH4KJUePBFUM.jpg",
+    "created_by": [
+        {
+            "id": 9813,
+            "credit_id": "5256c8c219c2956ff604858a",
+            "name": "David Benioff",
+            "original_name": "David Benioff",
+            "gender": 2,
+            "profile_path": "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg"
+        }
+    ],
+    "episode_run_time": [
+        60
+    ],
+    "first_air_date": "2011-04-17",
+    "genres": [
+        {
+            "id": 10765,
+            "name": "Sci-Fi & Fantasy"
+        },
+        {
+            "id": 18,
+            "name": "Drama"
+        }
+    ],
+    "homepage": "http://www.hbo.com/game-of-thrones",
+    "id": 1399,
+    "in_production": true,
+    "languages": [
+        "es",
+        "en"
+    ],
+    "last_air_date": "2017-08-27",
+    "last_episode_to_air": {
+        "air_date": "2017-08-27",
+        "episode_number": 7,
+        "id": 1340528,
+        "name": "The Dragon and the Wolf",
+        "overview": "A meeting is held in King's Landing.",
+        "production_code": "707",
+        "season_number": 7,
+        "show_id": 1399,
+        "still_path": "/jLe9VcbGRDUJeuM8IwB7VX4GDRg.jpg",
+        "vote_average": 9.145,
+        "vote_count": 31
+    },
+    "name": "Game of Thrones",
+    "next_episode_to_air": null,
+    "networks": [
+        {
+            "name": "HBO",
+            "id": 49,
+            "logo_path": "/tuomPhY2UtuPTqqFnKMVHvSb724.png",
+            "origin_country": "US"
+        }
+    ],
+    "number_of_episodes": 67,
+    "number_of_seasons": 7,
+    "origin_country": [
+        "US"
+    ],
+    "original_language": "en",
+    "original_name": "Game of Thrones",
+    "overview": "Seven noble families fight for control of the mythical land of Westeros.",
+    "popularity": 53.516,
+    "poster_path": "/gwPSoYUHAKmdyVywgLpKKA4BjRr.jpg",
+    "production_companies": [
+        {
+            "id": 3268,
+            "logo_path": "/tuomPhY2UtuPTqqFnKMVHvSb724.png",
+            "name": "HBO",
+            "origin_country": "US"
+        }
+    ],
+    "production_countries": [
+        {
+            "iso_3166_1": "US",
+            "name": "United States of America"
+        }
+    ],
+    "spoken_languages": [
+        {
+            "english_name": "English",
+            "iso_639_1": "en",
+            "name": "English"
+        }
+    ],
+    "seasons": [
+        {
+            "air_date": "2011-04-17",
+            "episode_count": 10,
+            "id": 3624,
+            "name": "Season 1",
+            "overview": "Trouble is brewing in the Seven Kingdoms of Westeros.",
+            "poster_path": "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
+            "season_number": 1
+        }
+    ],
+    "status": "Returning Series",
+    "type": "Scripted",
+    "vote_average": 8.2,
+    "vote_count": 4682,
+    "adult": false,
+    "credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 22970,
+                "known_for_department": "Acting",
+                "name": "Peter Dinklage",
+                "original_name": "Peter Dinklage",
+                "popularity": 12.432,
+                "profile_path": "/aKX0Ypma8RkcaGMi3Jx2hWaNnk.jpg",
+                "cast_id": 1,
+                "character": "Tyrion Lannister",
+                "credit_id": "5256c8b219c2956ff6047cd8",
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 9813,
+                "known_for_department": "Writing",
+                "name": "David Benioff",
+                "original_name": "David Benioff",
+                "popularity": 4.123,
+                "profile_path": "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg",
+                "credit_id": "5256c8c219c2956ff604858c",
+                "department": "Production",
+                "job": "Executive Producer"
+            }
+        ]
+    },
+    "aggregate_credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 22970,
+                "known_for_department": "Acting",
+                "name": "Peter Dinklage",
+                "original_name": "Peter Dinklage",
+                "popularity": 5.89,
+                "profile_path": "/9CAd7wr8QZyIN0E7nm8v1B6WkGn.jpg",
+                "roles": [
+                    {
+                        "credit_id": "5256c8b219c2956ff6047cd8",
+                        "character": "Tyrion Lannister",
+                        "episode_count": 67
+                    }
+                ],
+                "total_episode_count": 67,
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 9813,
+                "known_for_department": "Writing",
+                "name": "David Benioff",
+                "original_name": "David Benioff",
+                "popularity": 1.864,
+                "profile_path": "/xvNN5huL0X8yJ7h3IZfGG4O2zBD.jpg",
+                "jobs": [
+                    {
+                        "credit_id": "5256c8a019c2956ff6046e2b",
+                        "job": "Writer",
+                        "episode_count": 15
+                    }
+                ],
+                "department": "Writing",
+                "total_episode_count": 15
+            }
+        ]
+    },
+    "images": {
+        "backdrops": [
+            {
+                "aspect_ratio": 1.778,
+                "height": 1080,
+                "file_path": "/gX8SYlnL9ZznfZwEH4KJUePBFUM.jpg",
+                "vote_average": 5.312,
+                "vote_count": 6,
+                "width": 1920,
+                "iso_639_1": null
+            }
+        ],
+        "logos": [],
+        "posters": [
+            {
+                "aspect_ratio": 0.667,
+                "height": 3000,
+                "file_path": "/gwPSoYUHAKmdyVywgLpKKA4BjRr.jpg",
+                "vote_average": 5.384,
+                "vote_count": 11,
+                "width": 2000,
+                "iso_639_1": "en"
+            }
+        ]
+    },
+    "videos": {
+        "results": [
+            {
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "name": "Official Trailer",
+                "key": "KPLWWIOCOOQ",
+                "site": "YouTube",
+                "size": 1080,
+                "type": "Trailer",
+                "official": true,
+                "published_at": "2011-03-01T00:00:00.000Z",
+                "id": "vid1399"
+            }
+        ]
+    },
+    "reviews": {
+        "page": 1,
+        "results": [
+            {
+                "id": "review123",
+                "author": "Reviewer",
+                "content": "Great show.",
+                "url": "https://www.themoviedb.org/review/review123",
+                "author_details": {
+                    "name": "Reviewer",
+                    "username": "reviewer1",
+                    "avatar_path": null,
+                    "rating": 9.0
+                },
+                "created_at": "2020-01-01T00:00:00.000Z",
+                "updated_at": "2020-01-01T00:00:00.000Z"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "recommendations": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1396,
+                "name": "Breaking Bad",
+                "overview": "A teacher turns to crime.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2008-01-20",
+                "vote_average": 8.9,
+                "vote_count": 500,
+                "adult": false,
+                "genre_ids": [18, 80],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Breaking Bad",
+                "popularity": 100.0,
+                "media_type": "tv"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "similar": {
+        "page": 1,
+        "results": [
+            {
+                "id": 66732,
+                "name": "Stranger Things",
+                "overview": "Strange things happen.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2016-07-15",
+                "vote_average": 8.6,
+                "vote_count": 300,
+                "adult": false,
+                "genre_ids": [18, 10765],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Stranger Things",
+                "popularity": 80.0
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "content_ratings": {
+        "results": [
+            {
+                "descriptors": [],
+                "iso_3166_1": "US",
+                "rating": "TV-MA"
+            }
+        ]
+    },
+    "alternative_titles": {
+        "results": [
+            {
+                "iso_3166_1": "DE",
+                "title": "Game of Thrones",
+                "type": ""
+            }
+        ]
+    },
+    "translations": {
+        "translations": [
+            {
+                "iso_3166_1": "DE",
+                "iso_639_1": "de",
+                "name": "Deutsch",
+                "english_name": "German",
+                "data": {
+                    "name": "Game of Thrones",
+                    "overview": "Die Handlung ist in einer fiktiven Welt angesiedelt.",
+                    "homepage": "",
+                    "tagline": ""
+                }
+            }
+        ]
+    },
+    "keywords": {
+        "results": [
+            {
+                "id": 6091,
+                "name": "war"
+            }
+        ]
+    },
+    "watch/providers": {
+        "results": {
+            "US": {
+                "link": "https://www.themoviedb.org/tv/1399/watch?locale=US",
+                "flatrate": [
+                    {
+                        "display_priority": 1,
+                        "logo_path": "/Ajqyt5aNxNGjmF6uR6Lswlg2HaQ.jpg",
+                        "provider_id": 384,
+                        "provider_name": "HBO Max"
+                    }
+                ]
+            }
+        }
+    },
+    "external_ids": {
+        "imdb_id": "tt0944947",
+        "wikidata_id": "Q23572",
+        "facebook_id": "GameOfThrones",
+        "instagram_id": "gameofthrones",
+        "twitter_id": "GameOfThrones"
+    },
+    "screened_theatrically": {
+        "results": [
+            {
+                "id": 63056,
+                "episode_number": 1,
+                "season_number": 1
+            }
+        ]
+    },
+    "episode_groups": {
+        "results": [
+            {
+                "description": "Episode ordering by release.",
+                "episode_count": 73,
+                "group_count": 8,
+                "id": "5b114aa40e0a264ecb1c17c9",
+                "name": "Aired Order",
+                "type": 1,
+                "network": {
+                    "id": 49,
+                    "logo_path": "/tuomPhY2UtuPTqqFnKMVHo0WBN.png",
+                    "name": "HBO",
+                    "origin_country": "US"
+                }
+            }
+        ]
+    },
+    "lists": {
+        "page": 1,
+        "results": [
+            {
+                "id": 1396,
+                "name": "Breaking Bad",
+                "overview": "A teacher turns to crime.",
+                "poster_path": null,
+                "backdrop_path": null,
+                "first_air_date": "2008-01-20",
+                "vote_average": 8.9,
+                "vote_count": 500,
+                "adult": false,
+                "genre_ids": [18, 80],
+                "origin_country": ["US"],
+                "original_language": "en",
+                "original_name": "Breaking Bad",
+                "popularity": 100.0,
+                "media_type": "tv"
+            }
+        ],
+        "total_pages": 1,
+        "total_results": 1
+    },
+    "changes": {
+        "changes": [
+            {
+                "key": "overview",
+                "items": [
+                    {
+                        "id": "67890",
+                        "action": "updated",
+                        "time": "2024-01-01 12:00:00 UTC"
+                    }
+                ]
+            }
+        ]
+    }
+}

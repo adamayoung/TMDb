@@ -32,6 +32,27 @@ public protocol MovieService: Sendable {
     func details(forMovie id: Movie.ID, language: String?) async throws -> Movie
 
     ///
+    /// Returns the primary information about a movie with appended data.
+    ///
+    /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the movie.
+    ///    - appending: The additional data to append to the response.
+    ///    - language: ISO 639-1 language code to display results in.
+    ///     Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching movie with appended data.
+    ///
+    func details(
+        forMovie id: Movie.ID,
+        appending: MovieAppendOption,
+        language: String?
+    ) async throws -> MovieDetailsResponse
+
+    ///
     /// Returns the cast and crew of a movie.
     ///
     /// [TMDb API - Movies: Credits](https://developer.themoviedb.org/reference/movie-credits)
@@ -464,6 +485,33 @@ public extension MovieService {
     ///
     func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
         try await details(forMovie: id, language: language)
+    }
+
+    ///
+    /// Returns the primary information about a movie with appended data.
+    ///
+    /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the movie.
+    ///    - appending: The additional data to append to the response.
+    ///    - language: ISO 639-1 language code to display results in.
+    ///     Defaults to the client's configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching movie with appended data.
+    ///
+    func details(
+        forMovie id: Movie.ID,
+        appending: MovieAppendOption,
+        language: String? = nil
+    ) async throws -> MovieDetailsResponse {
+        try await details(
+            forMovie: id,
+            appending: appending,
+            language: language
+        )
     }
 
     ///

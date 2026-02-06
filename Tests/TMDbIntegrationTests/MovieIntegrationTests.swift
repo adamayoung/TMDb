@@ -242,4 +242,22 @@ struct MovieIntegrationTests {
         #expect(!keywordCollection.keywords.isEmpty)
     }
 
+    @Test("details with appended credits and images")
+    func detailsWithAppendedData() async throws {
+        let movieID = 550 // Fight Club
+
+        let result = try await movieService.details(
+            forMovie: movieID,
+            appending: [.credits, .images]
+        )
+
+        #expect(result.movie.id == movieID)
+        #expect(result.movie.title == "Fight Club")
+        let credits = try #require(result.credits)
+        #expect(credits.id == movieID)
+        #expect(!credits.cast.isEmpty)
+        let images = try #require(result.images)
+        #expect(images.id == movieID)
+    }
+
 }
