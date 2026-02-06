@@ -242,9 +242,12 @@ for try await page in tmdbClient.movies.allPopularPages() {
 }
 ```
 
-Available for all paginated endpoints including `allPopular`, `allTopRated`,
+Available for `MovieService` (8 endpoints: `allPopular`, `allTopRated`,
 `allNowPlaying`, `allUpcoming`, `allRecommendations`, `allSimilar`,
-`allReviews`, and `allLists`.
+`allReviews`, `allLists`), `SearchService` (7 endpoints: `allMulti`,
+`allMovies`, `allTVSeries`, `allPeople`, `allCollections`, `allCompanies`,
+`allKeywords`), and `TrendingService` (4 endpoints: `allMovies`,
+`allTVSeries`, `allPeople`, `allTrending`).
 
 ### User Account Features (Authentication Required)
 
