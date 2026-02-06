@@ -13,7 +13,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Features
 
-* **Comprehensive API Coverage**: Full support for TMDb API v3 with 21
+* **Comprehensive API Coverage**: Full support for TMDb API v3 with 25
   specialized services
 * **Movie & TV Data**: Details, credits, images, videos, reviews,
   recommendations, similar content
@@ -56,6 +56,10 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **lists** | Custom list management (requires authentication) |
 | **configurations** | API configuration, countries, languages, primary translations, timezones |
 | **changes** | Track changes to movies, TV series, people, seasons, and episodes |
+| **credits** | Credit details including person and media information |
+| **reviews** | Review details with author and media information |
+| **tvEpisodeGroups** | TV episode group details and episode organization |
+| **guestSessions** | Guest session rated movies, TV series, and episodes |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
 for detailed usage.

@@ -17,11 +17,14 @@
 - ``tvSeries``
 - ``tvSeasons``
 - ``tvEpisodes``
+- ``tvEpisodeGroups``
 - ``people``
 - ``discover``
 - ``trending``
 - ``search``
 - ``find``
+- ``credits``
+- ``reviews``
 - ``certifications``
 - ``collections``
 - ``companies``
@@ -34,3 +37,4 @@
 - ``account``
 - ``authentication``
 - ``changes``
+- ``guestSessions``

@@ -1,0 +1,31 @@
+{
+    "credit_type": "cast",
+    "department": "Acting",
+    "job": "Actor",
+    "media": {
+        "id": 1396,
+        "name": "Breaking Bad",
+        "original_name": "Breaking Bad",
+        "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer.",
+        "poster_path": "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+        "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+        "media_type": "tv",
+        "original_language": "en",
+        "popularity": 108.6266,
+        "first_air_date": "2008-01-20",
+        "vote_average": 8.937,
+        "vote_count": 17020,
+        "character": "Walter White"
+    },
+    "media_type": "tv",
+    "id": "52542282760ee313280017f9",
+    "person": {
+        "id": 17419,
+        "name": "Bryan Cranston",
+        "original_name": "Bryan Cranston",
+        "gender": 2,
+        "known_for_department": "Acting",
+        "profile_path": "/npIIZJGSrcJIJ6yHdmbqO6Jzo5I.jpg",
+        "popularity": 7.1326
+    }
+}

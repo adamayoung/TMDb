@@ -1,0 +1,38 @@
+{
+    "description": "Comedians in Cars organized in Netflix collections.",
+    "episode_count": 83,
+    "group_count": 6,
+    "groups": [
+        {
+            "id": "5acf93efc3a368739a0000a9",
+            "name": "First Cup",
+            "order": 1,
+            "episodes": [
+                {
+                    "id": 1078262,
+                    "name": "Jim Carrey: We Love Breathing What You're Burning, Baby",
+                    "overview": "Jerry's full of testosterone.",
+                    "episode_number": 3,
+                    "season_number": 6,
+                    "show_id": 59717,
+                    "air_date": "2015-06-17",
+                    "vote_average": 7.2,
+                    "vote_count": 10,
+                    "order": 0,
+                    "production_code": "",
+                    "still_path": "/aOyE420zuFq9zWtEWjIccAiTrzU.jpg"
+                }
+            ],
+            "locked": true
+        }
+    ],
+    "id": "5acf93e60e0a26346d0000ce",
+    "name": "Netflix Collections",
+    "network": {
+        "id": 213,
+        "logo_path": "/wwemzKWzjKYJFfCeiB57q3r4Bcm.png",
+        "name": "Netflix",
+        "origin_country": ""
+    },
+    "type": 4
+}

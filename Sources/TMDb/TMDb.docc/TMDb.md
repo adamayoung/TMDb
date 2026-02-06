@@ -153,6 +153,12 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Change``
 - ``ChangeItem``
 
+### TV Episode Groups
+
+- ``TVEpisodeGroupService``
+- ``TVEpisodeGroup``
+- ``TVEpisodeGroup/Group``
+
 ### People
 
 - ``PersonService``
@@ -227,6 +233,21 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``FindService``
 - ``FindResults``
 - ``ExternalSource``
+
+### Credits
+
+- ``CreditService``
+- ``Credit``
+- ``CreditType``
+- ``CreditMedia``
+- ``CreditMovie``
+- ``CreditTVSeries``
+- ``CreditPerson``
+
+### Reviews
+
+- ``ReviewService``
+- ``Review``
 
 ### Certifications
 
@@ -309,6 +330,15 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVEpisode``
 - ``MediaListSummaryPageableList``
 - ``MediaListSummary``
+
+### Guest Sessions
+
+- ``GuestSessionService``
+- ``GuestSession``
+- ``RatedSort``
+- ``MoviePageableList``
+- ``TVSeriesPageableList``
+- ``TVEpisodePageableList``
 
 ### Lists
 

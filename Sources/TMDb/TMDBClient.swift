@@ -48,6 +48,11 @@ public final class TMDbClient: Sendable {
     public let configurations: any ConfigurationService
 
     ///
+    /// TMDb credits.
+    ///
+    public let credits: any CreditService
+
+    ///
     /// TMDb discover.
     ///
     public let discover: any DiscoverService
@@ -61,6 +66,11 @@ public final class TMDbClient: Sendable {
     /// TMDb genres.
     ///
     public let genres: any GenreService
+
+    ///
+    /// TMDb guest sessions.
+    ///
+    public let guestSessions: any GuestSessionService
 
     ///
     /// TMDb keywords.
@@ -88,6 +98,11 @@ public final class TMDbClient: Sendable {
     public let people: any PersonService
 
     ///
+    /// TMDb reviews.
+    ///
+    public let reviews: any ReviewService
+
+    ///
     /// TMDb search.
     ///
     public let search: any SearchService
@@ -101,6 +116,11 @@ public final class TMDbClient: Sendable {
     /// TMDb TV episodes.
     ///
     public let tvEpisodes: any TVEpisodeService
+
+    ///
+    /// TMDb TV episode groups.
+    ///
+    public let tvEpisodeGroups: any TVEpisodeGroupService
 
     ///
     /// TMDb TV seasons.
@@ -129,7 +149,10 @@ public final class TMDbClient: Sendable {
     ///   - apiKey: The TMDb API key to use.
     ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
     ///
-    public convenience init(apiKey: String, configuration: TMDbConfiguration = .system) {
+    public convenience init(
+        apiKey: String,
+        configuration: TMDbConfiguration = .system
+    ) {
         self.init(
             apiKey: apiKey,
             httpClient: TMDbFactory.defaultHTTPClientAdapter(),
@@ -137,6 +160,7 @@ public final class TMDbClient: Sendable {
         )
     }
 
+    // swiftlint:disable function_body_length
     ///
     /// Creates a TMDb client.
     ///
@@ -150,45 +174,97 @@ public final class TMDbClient: Sendable {
         httpClient: some HTTPClient,
         configuration: TMDbConfiguration = .system
     ) {
-        let apiClient = TMDbFactory.apiClient(apiKey: apiKey, httpClient: httpClient)
-        let authAPIClient = TMDbFactory.authAPIClient(apiKey: apiKey, httpClient: httpClient)
-        let authenticateURLBuilder = TMDbFactory.authenticateURLBuilder()
+        let apiClient = TMDbFactory.apiClient(
+            apiKey: apiKey, httpClient: httpClient
+        )
+        let authAPIClient = TMDbFactory.authAPIClient(
+            apiKey: apiKey, httpClient: httpClient
+        )
+        let authenticateURLBuilder =
+            TMDbFactory.authenticateURLBuilder()
 
         self.init(
             configuration: configuration,
-            accountService: TMDbAccountService(apiClient: apiClient),
+            accountService: TMDbAccountService(
+                apiClient: apiClient
+            ),
             authenticationService: TMDbAuthenticationService(
                 apiClient: authAPIClient,
                 authenticateURLBuilder: authenticateURLBuilder
             ),
-            certificationService: TMDbCertificationService(apiClient: apiClient),
+            certificationService: TMDbCertificationService(
+                apiClient: apiClient
+            ),
             collectionService: TMDbCollectionService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
             ),
-            companyService: TMDbCompanyService(apiClient: apiClient),
-            configurationService: TMDbConfigurationService(apiClient: apiClient),
+            companyService: TMDbCompanyService(
+                apiClient: apiClient
+            ),
+            configurationService: TMDbConfigurationService(
+                apiClient: apiClient
+            ),
+            creditService: TMDbCreditService(
+                apiClient: apiClient
+            ),
             discoverService: TMDbDiscoverService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
             ),
-            findService: TMDbFindService(apiClient: apiClient, configuration: configuration),
-            genreService: TMDbGenreService(apiClient: apiClient, configuration: configuration),
-            keywordService: TMDbKeywordService(apiClient: apiClient),
-            listService: TMDbListService(apiClient: apiClient),
-            movieService: TMDbMovieService(apiClient: apiClient, configuration: configuration),
-            networkService: TMDbNetworkService(apiClient: apiClient),
-            personService: TMDbPersonService(apiClient: apiClient, configuration: configuration),
-            searchService: TMDbSearchService(apiClient: apiClient, configuration: configuration),
+            findService: TMDbFindService(
+                apiClient: apiClient,
+                configuration: configuration
+            ),
+            genreService: TMDbGenreService(
+                apiClient: apiClient,
+                configuration: configuration
+            ),
+            guestSessionService: TMDbGuestSessionService(
+                apiClient: apiClient
+            ),
+            keywordService: TMDbKeywordService(
+                apiClient: apiClient
+            ),
+            listService: TMDbListService(
+                apiClient: apiClient
+            ),
+            movieService: TMDbMovieService(
+                apiClient: apiClient,
+                configuration: configuration
+            ),
+            networkService: TMDbNetworkService(
+                apiClient: apiClient
+            ),
+            personService: TMDbPersonService(
+                apiClient: apiClient,
+                configuration: configuration
+            ),
+            reviewService: TMDbReviewService(
+                apiClient: apiClient
+            ),
+            searchService: TMDbSearchService(
+                apiClient: apiClient,
+                configuration: configuration
+            ),
             trendingService: TMDbTrendingService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
             ),
             tvEpisodeService: TMDbTVEpisodeService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
+            ),
+            tvEpisodeGroupService: TMDbTVEpisodeGroupService(
+                apiClient: apiClient
             ),
             tvSeasonService: TMDbTVSeasonService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
             ),
             tvSeriesService: TMDbTVSeriesService(
-                apiClient: apiClient, configuration: configuration
+                apiClient: apiClient,
+                configuration: configuration
             ),
             watchProviderService: TMDbWatchProviderService(
                 apiClient: apiClient, configuration: configuration
@@ -196,6 +272,8 @@ public final class TMDbClient: Sendable {
             changesService: TMDbChangesService(apiClient: apiClient)
         )
     }
+
+    // swiftlint:enable function_body_length
 
     init(
         configuration: TMDbConfiguration = .system,
@@ -205,17 +283,21 @@ public final class TMDbClient: Sendable {
         collectionService: some CollectionService,
         companyService: some CompanyService,
         configurationService: some ConfigurationService,
+        creditService: some CreditService,
         discoverService: some DiscoverService,
         findService: some FindService,
         genreService: some GenreService,
+        guestSessionService: some GuestSessionService,
         keywordService: some KeywordService,
         listService: some ListService,
         movieService: some MovieService,
         networkService: some NetworkService,
         personService: some PersonService,
+        reviewService: some ReviewService,
         searchService: some SearchService,
         trendingService: some TrendingService,
         tvEpisodeService: some TVEpisodeService,
+        tvEpisodeGroupService: some TVEpisodeGroupService,
         tvSeasonService: some TVSeasonService,
         tvSeriesService: some TVSeriesService,
         watchProviderService: some WatchProviderService,
@@ -228,17 +310,21 @@ public final class TMDbClient: Sendable {
         self.collections = collectionService
         self.companies = companyService
         self.configurations = configurationService
+        self.credits = creditService
         self.discover = discoverService
         self.find = findService
         self.genres = genreService
+        self.guestSessions = guestSessionService
         self.keywords = keywordService
         self.lists = listService
         self.movies = movieService
         self.networks = networkService
         self.people = personService
+        self.reviews = reviewService
         self.search = searchService
         self.trending = trendingService
         self.tvEpisodes = tvEpisodeService
+        self.tvEpisodeGroups = tvEpisodeGroupService
         self.tvSeasons = tvSeasonService
         self.tvSeries = tvSeriesService
         self.watchProviders = watchProviderService
