@@ -5,6 +5,7 @@
 ### Details
 
 - ``details(forMovie:language:)``
+- ``details(forMovie:appending:language:)``
 
 ### Credits
 

@@ -40,6 +40,30 @@ final class TMDbTVSeasonService: TVSeasonService {
         return season
     }
 
+    func details(
+        forSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVSeasonAppendOption,
+        language: String? = nil
+    ) async throws -> TVSeasonDetailsResponse {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeasonDetailsAppendRequest(
+            tvSeriesID: tvSeriesID,
+            seasonNumber: seasonNumber,
+            appendToResponse: appending,
+            language: languageCode
+        )
+
+        let response: TVSeasonDetailsResponse
+        do {
+            response = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return response
+    }
+
     func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,

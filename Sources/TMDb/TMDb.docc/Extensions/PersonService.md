@@ -5,6 +5,7 @@
 ### Details
 
 - ``details(forPerson:language:)``
+- ``details(forPerson:appending:language:)``
 
 ### Credits
 

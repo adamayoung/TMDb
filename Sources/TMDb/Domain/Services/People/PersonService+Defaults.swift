@@ -28,6 +28,35 @@ public extension PersonService {
     }
 
     ///
+    /// Returns the primary information about a person with
+    /// appended data.
+    ///
+    /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the person.
+    ///    - appending: The additional data to append.
+    ///    - language: ISO 639-1 language code to display results
+    ///     in. Defaults to the client's configured default
+    ///     language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching person with appended data.
+    ///
+    func details(
+        forPerson id: Person.ID,
+        appending: PersonAppendOption,
+        language: String? = nil
+    ) async throws -> PersonDetailsResponse {
+        try await details(
+            forPerson: id,
+            appending: appending,
+            language: language
+        )
+    }
+
+    ///
     /// Returns the combined movie and TV series credits of a person.
     ///
     /// [TMDb API - People: Combined Credits](https://developer.themoviedb.org/reference/person-combined-credits)

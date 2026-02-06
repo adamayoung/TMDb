@@ -331,4 +331,22 @@ struct TVSeriesServiceTests {
         #expect(collection.id == tvSeriesID)
         #expect(!collection.episodeGroups.isEmpty)
     }
+
+    @Test("details with appended credits and images")
+    func detailsWithAppendedData() async throws {
+        let tvSeriesID = 1399 // Game of Thrones
+
+        let result = try await tvSeriesService.details(
+            forTVSeries: tvSeriesID,
+            appending: [.credits, .images]
+        )
+
+        #expect(result.tvSeries.id == tvSeriesID)
+        #expect(result.tvSeries.name == "Game of Thrones")
+        let credits = try #require(result.credits)
+        #expect(credits.id == tvSeriesID)
+        #expect(!credits.cast.isEmpty)
+        let images = try #require(result.images)
+        #expect(images.id == tvSeriesID)
+    }
 }

@@ -1,0 +1,76 @@
+{
+    "birthday": "1963-12-18",
+    "known_for_department": "Acting",
+    "deathday": null,
+    "id": 287,
+    "name": "Brad Pitt",
+    "also_known_as": [
+        "Buratto Pitto",
+        "Брэд Питт"
+    ],
+    "gender": 2,
+    "biography": "William Bradley 'Brad' Pitt is an American actor and film producer.",
+    "popularity": 10.647,
+    "place_of_birth": "Shawnee, Oklahoma, USA",
+    "profile_path": "/kU3B75TyRiCgE270EyZnHjfivoq.jpg",
+    "adult": false,
+    "imdb_id": "nm0000093",
+    "homepage": null,
+    "movie_credits": {
+        "cast": [
+            {
+                "id": 550,
+                "title": "Fight Club",
+                "original_title": "Fight Club",
+                "original_language": "en",
+                "overview": "A ticking-time-bomb insomniac.",
+                "genre_ids": [18],
+                "release_date": "1999-10-12",
+                "poster_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+                "backdrop_path": "/fCayJrkfRaCRCTh8GqN30f8oyQF.jpg",
+                "popularity": 0.5,
+                "vote_average": 7.8,
+                "vote_count": 3439,
+                "adult": false,
+                "video": false,
+                "character": "Tyler Durden",
+                "credit_id": "52fe4250c3a36847f80149f7",
+                "order": 1
+            }
+        ],
+        "crew": [
+            {
+                "id": 45612,
+                "title": "The Departed",
+                "original_title": "The Departed",
+                "original_language": "en",
+                "overview": "To take down a notorious gang.",
+                "genre_ids": [80, 18, 53],
+                "release_date": "2006-10-05",
+                "poster_path": "/kWWAt2FMRgqLECTwcU9Q6MHkPEG.jpg",
+                "backdrop_path": "/5Jdr6KRKxAOFNT3IsmIOwOeoQiW.jpg",
+                "popularity": 1.2,
+                "vote_average": 8.1,
+                "vote_count": 5000,
+                "adult": false,
+                "video": false,
+                "department": "Production",
+                "job": "Producer",
+                "credit_id": "52fe4267c3a36847f8014a23"
+            }
+        ]
+    },
+    "images": {
+        "profiles": [
+            {
+                "aspect_ratio": 0.667,
+                "height": 1800,
+                "file_path": "/kU3B75TyRiCgE270EyZnHjfivoq.jpg",
+                "vote_average": 5.312,
+                "vote_count": 10,
+                "width": 1200,
+                "iso_639_1": null
+            }
+        ]
+    }
+}

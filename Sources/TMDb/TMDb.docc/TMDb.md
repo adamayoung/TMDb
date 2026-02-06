@@ -55,6 +55,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``MovieService``
 - ``Movie``
+- ``MovieDetailsResponse``
+- ``MovieAppendOption``
 - ``AccountStates``
 - ``ShowCredits``
 - ``ReviewPageableList``
@@ -85,6 +87,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVSeriesService``
 - ``TVSeries``
+- ``TVSeriesDetailsResponse``
+- ``TVSeriesAppendOption``
 - ``TVSeriesPageableList``
 - ``ShowCredits``
 - ``TVSeriesAggregateCredits``
@@ -120,6 +124,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVSeasonService``
 - ``TVSeason``
+- ``TVSeasonDetailsResponse``
+- ``TVSeasonAppendOption``
 - ``ShowCredits``
 - ``TVSeasonAggregateCredits``
 - ``TVSeasonImageCollection``
@@ -142,6 +148,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``TVEpisodeService``
 - ``TVEpisode``
+- ``TVEpisodeDetailsResponse``
+- ``TVEpisodeAppendOption``
 - ``ShowCredits``
 - ``TVEpisodeImageCollection``
 - ``VideoCollection``
@@ -167,6 +175,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``PersonService``
 - ``Person``
+- ``PersonDetailsResponse``
+- ``PersonAppendOption``
 - ``PersonCombinedCredits``
 - ``PersonMovieCredits``
 - ``PersonTVSeriesCredits``

@@ -1,0 +1,56 @@
+{
+    "air_date": "2011-04-17",
+    "id": 3624,
+    "name": "Season 1",
+    "overview": "Trouble is brewing in the Seven Kingdoms of Westeros.",
+    "poster_path": "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
+    "season_number": 1,
+    "episodes": [
+        {
+            "air_date": "2011-04-17",
+            "episode_number": 1,
+            "id": 63056,
+            "name": "Winter Is Coming",
+            "overview": "Jon Arryn, the Hand of the King, is dead.",
+            "production_code": "101",
+            "season_number": 1,
+            "still_path": "/wrGWeW4WKxnaeA8sxJb2T9O6ryo.jpg",
+            "vote_average": 7.12,
+            "vote_count": 21
+        }
+    ],
+    "vote_average": 8.3,
+    "credits": {
+        "cast": [
+            {
+                "adult": false,
+                "gender": 1,
+                "id": 1223786,
+                "known_for_department": "Acting",
+                "name": "Emilia Clarke",
+                "original_name": "Emilia Clarke",
+                "popularity": 18.765,
+                "profile_path": "/r6i4C3kYrBRzUzZ8JKAHYQ0T0dD.jpg",
+                "cast_id": 10,
+                "character": "Daenerys Targaryen",
+                "credit_id": "5256c8c219c2956ff6048620",
+                "order": 0
+            }
+        ],
+        "crew": [
+            {
+                "adult": false,
+                "gender": 2,
+                "id": 44797,
+                "known_for_department": "Directing",
+                "name": "Tim Van Patten",
+                "original_name": "Tim Van Patten",
+                "popularity": 2.456,
+                "profile_path": "/6b7l9YbkDHDOzOKUFNqBVaPjcgm.jpg",
+                "credit_id": "5256c8a219c2956ff6046e77",
+                "department": "Directing",
+                "job": "Director"
+            }
+        ]
+    }
+}

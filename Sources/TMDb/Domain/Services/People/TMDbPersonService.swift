@@ -32,6 +32,28 @@ final class TMDbPersonService: PersonService {
         return person
     }
 
+    func details(
+        forPerson id: Person.ID,
+        appending: PersonAppendOption,
+        language: String? = nil
+    ) async throws -> PersonDetailsResponse {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = PersonDetailsAppendRequest(
+            id: id,
+            appendToResponse: appending,
+            language: languageCode
+        )
+
+        let response: PersonDetailsResponse
+        do {
+            response = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return response
+    }
+
     func combinedCredits(
         forPerson personID: Person.ID,
         language: String? = nil

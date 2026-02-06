@@ -5,6 +5,8 @@
 //  Copyright © 2026 Adam Young.
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 
 ///
@@ -35,6 +37,33 @@ public protocol TVEpisodeService: Sendable {
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
     ) async throws -> TVEpisode
+
+    ///
+    /// Returns the primary information about a TV episode with
+    /// appended data.
+    ///
+    /// [TMDb API - TV Episodes: Details](https://developer.themoviedb.org/reference/tv-episode-details)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number.
+    ///    - seasonNumber: The season number.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - appending: The additional data to append.
+    ///    - language: ISO 639-1 language code to display results
+    ///     in. Defaults to the client's configured default
+    ///     language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching TV episode with appended data.
+    ///
+    func details(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVEpisodeAppendOption,
+        language: String?
+    ) async throws -> TVEpisodeDetailsResponse
 
     ///
     /// Returns the cast and crew of a TV episode.
@@ -270,6 +299,41 @@ public extension TVEpisodeService {
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
+            language: language
+        )
+    }
+
+    ///
+    /// Returns the primary information about a TV episode with
+    /// appended data.
+    ///
+    /// [TMDb API - TV Episodes: Details](https://developer.themoviedb.org/reference/tv-episode-details)
+    ///
+    /// - Parameters:
+    ///    - episodeNumber: The episode number.
+    ///    - seasonNumber: The season number.
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - appending: The additional data to append.
+    ///    - language: ISO 639-1 language code to display results
+    ///     in. Defaults to the client's configured default
+    ///     language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching TV episode with appended data.
+    ///
+    func details(
+        forEpisode episodeNumber: Int,
+        inSeason seasonNumber: Int,
+        inTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVEpisodeAppendOption,
+        language: String? = nil
+    ) async throws -> TVEpisodeDetailsResponse {
+        try await details(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            appending: appending,
             language: language
         )
     }

@@ -59,5 +59,6 @@ extension APIRequestQueryItem.Name {
     static let country = APIRequestQueryItem.Name("country")
     static let startDate = APIRequestQueryItem.Name("start_date")
     static let endDate = APIRequestQueryItem.Name("end_date")
+    static let appendToResponse = APIRequestQueryItem.Name("append_to_response")
 
 }

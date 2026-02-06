@@ -32,6 +32,28 @@ final class TMDbTVSeriesService: TVSeriesService {
         return tvSeries
     }
 
+    func details(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVSeriesAppendOption,
+        language: String? = nil
+    ) async throws -> TVSeriesDetailsResponse {
+        let languageCode = language ?? configuration.defaultLanguage
+        let request = TVSeriesDetailsAppendRequest(
+            id: tvSeriesID,
+            appendToResponse: appending,
+            language: languageCode
+        )
+
+        let response: TVSeriesDetailsResponse
+        do {
+            response = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return response
+    }
+
     func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws
     -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage

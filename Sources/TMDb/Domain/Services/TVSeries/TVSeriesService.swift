@@ -32,6 +32,29 @@ public protocol TVSeriesService: Sendable {
     func details(forTVSeries id: TVSeries.ID, language: String?) async throws -> TVSeries
 
     ///
+    /// Returns the primary information about a TV series with
+    /// appended data.
+    ///
+    /// [TMDb API - TV Series: Details](https://developer.themoviedb.org/reference/tv-series-details)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - appending: The additional data to append.
+    ///    - language: ISO 639-1 language code to display results
+    ///     in. Defaults to the client's configured default
+    ///     language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching TV series with appended data.
+    ///
+    func details(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVSeriesAppendOption,
+        language: String?
+    ) async throws -> TVSeriesDetailsResponse
+
+    ///
     /// Returns the cast and crew of a TV series.
     ///
     /// [TMDb API - TV Series: Credits](https://developer.themoviedb.org/reference/tv-series-credits)
@@ -521,6 +544,35 @@ public extension TVSeriesService {
         language: String? = nil
     ) async throws -> TVSeries {
         try await details(forTVSeries: id, language: language)
+    }
+
+    ///
+    /// Returns the primary information about a TV series with
+    /// appended data.
+    ///
+    /// [TMDb API - TV Series: Details](https://developer.themoviedb.org/reference/tv-series-details)
+    ///
+    /// - Parameters:
+    ///    - tvSeriesID: The identifier of the TV series.
+    ///    - appending: The additional data to append.
+    ///    - language: ISO 639-1 language code to display results
+    ///     in. Defaults to the client's configured default
+    ///     language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The matching TV series with appended data.
+    ///
+    func details(
+        forTVSeries tvSeriesID: TVSeries.ID,
+        appending: TVSeriesAppendOption,
+        language: String? = nil
+    ) async throws -> TVSeriesDetailsResponse {
+        try await details(
+            forTVSeries: tvSeriesID,
+            appending: appending,
+            language: language
+        )
     }
 
     ///

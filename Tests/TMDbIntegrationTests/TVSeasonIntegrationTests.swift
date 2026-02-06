@@ -139,4 +139,21 @@ struct TVSeasonIntegrationTests {
         )
     }
 
+    @Test("details with appended credits and images")
+    func detailsWithAppendedData() async throws {
+        let tvSeriesID = 1399 // Game of Thrones
+        let seasonNumber = 1
+
+        let result = try await tvSeasonService.details(
+            forSeason: seasonNumber,
+            inTVSeries: tvSeriesID,
+            appending: [.credits, .images]
+        )
+
+        #expect(result.season.seasonNumber == seasonNumber)
+        let credits = try #require(result.credits)
+        #expect(!credits.cast.isEmpty)
+        _ = try #require(result.images)
+    }
+
 }
