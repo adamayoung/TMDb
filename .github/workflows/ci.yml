@@ -52,49 +52,77 @@ jobs:
   lint:
     name: Lint
     needs: changes
-    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: macos-26
+    if: always()
+    runs-on: >-
+      ${{
+        (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
+        && 'macos-26' || 'ubuntu-latest'
+      }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
     steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping lint"
+
       - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6
 
       - name: Install SwiftLint and SwiftFormat
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: brew install swiftlint swiftformat
 
       - name: SwiftLint
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swiftlint --strict .
 
       - name: SwiftFormat
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swiftformat --lint .
 
   lint-markdown:
     name: Lint Markdown
     needs: changes
-    if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
+    if: always()
     runs-on: ubuntu-latest
     container:
       image: docker://ghcr.io/igorshubovych/markdownlint-cli:v0.41.0
     steps:
+      - name: No changes detected
+        if: needs.changes.outputs.markdown != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Markdown changes detected, skipping lint"
+
       - name: Checkout
+        if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6
 
       - name: Lint Markdown
+        if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
         run: markdownlint "README.md" "**/*.docc/**/*.md"
 
   build-test:
     name: Build and Test
     needs: changes
-    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: macos-26
+    if: always()
+    runs-on: >-
+      ${{
+        (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
+        && 'macos-26' || 'ubuntu-latest'
+      }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
     steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping build and test"
+
       - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6
 
       - name: Cache Swift packages
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/cache@v5
         with:
           path: |
@@ -105,12 +133,15 @@ jobs:
             ${{ runner.os }}-swift-
 
       - name: Build
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build --build-tests -Xswiftc -warnings-as-errors
 
       - name: Test
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml
 
       - name: Prepare Code Coverage
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           xcrun llvm-cov export -format="lcov" \
             .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
@@ -118,7 +149,9 @@ jobs:
             echo "Warning: Coverage export failed, continuing without coverage"
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: >-
+          !cancelled()
+          && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
         uses: codecov/test-results-action@v1
         with:
           file: ./junit.xml
@@ -128,6 +161,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload coverage reports to Codecov
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: codecov/codecov-action@v5
         with:
           files: info.lcov
@@ -135,25 +169,34 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build for Release
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build -c release -Xswiftc -warnings-as-errors
 
   build-test-linux:
     name: Build and Test (Linux)
     needs: changes
-    if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+    if: always()
     runs-on: ubuntu-latest
     container: swift:6.0.2-jammy
     steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping build and test"
+
       - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6
 
       - name: Build
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build --build-tests -Xswiftc -warnings-as-errors
 
       - name: Test
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift test --skip-build --filter TMDbTests
 
       - name: Build for Release
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build -c release -Xswiftc -warnings-as-errors
 
   ci:

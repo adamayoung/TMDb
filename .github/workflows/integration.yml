@@ -48,20 +48,40 @@ jobs:
   integration-test:
     name: Integration Test
     needs: changes
-    if: >-
-      needs.changes.outputs.swift == 'true'
-      || github.event_name == 'workflow_dispatch'
-      || github.event_name == 'schedule'
-    runs-on: macos-26
+    if: always()
+    runs-on: >-
+      ${{
+        (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        && 'macos-26' || 'ubuntu-latest'
+      }}
     timeout-minutes: 30
     steps:
+      - name: No changes detected
+        if: >-
+          needs.changes.outputs.swift != 'true'
+          && github.event_name != 'workflow_dispatch'
+          && github.event_name != 'schedule'
+        run: echo "No Swift changes detected, skipping integration tests"
+
       - name: Checkout
+        if: >-
+          needs.changes.outputs.swift == 'true'
+          || github.event_name == 'workflow_dispatch'
+          || github.event_name == 'schedule'
         uses: actions/checkout@v6
 
       - name: Build
+        if: >-
+          needs.changes.outputs.swift == 'true'
+          || github.event_name == 'workflow_dispatch'
+          || github.event_name == 'schedule'
         run: swift build --build-tests
 
       - name: Test
+        if: >-
+          needs.changes.outputs.swift == 'true'
+          || github.event_name == 'workflow_dispatch'
+          || github.event_name == 'schedule'
         run: swift test --skip-build --filter TMDbIntegrationTests --xunit-output junit.xml
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
@@ -69,7 +89,9 @@ jobs:
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: >-
+          !cancelled()
+          && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
         uses: codecov/test-results-action@v1
         with:
           file: ./junit.xml
