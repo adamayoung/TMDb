@@ -4,7 +4,7 @@
 |----------|----------------------------------------|
 | Priority | Medium                                 |
 | Effort   | Medium                                 |
-| Status   | Draft                                  |
+| Status   | Complete                               |
 
 ## Problem Statement
 
