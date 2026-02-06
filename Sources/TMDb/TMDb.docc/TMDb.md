@@ -9,7 +9,7 @@ Millions of movies, TV series and people to discover. Explore now.
 The Movie Database (TMDB) is a community built movie and TV database. Every
 piece of data has been added by their amazing community dating back to 2008.
 TMDB's strong international focus and breadth of data is largely unmatched and
-something they're' incredibly proud of. Put simply, they live and breathe
+something they're incredibly proud of. Put simply, they live and breathe
 community and that's precisely what makes them different.
 
 Every year since 2008, the number of contributions to their database has

@@ -54,7 +54,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **collections** | Movie collection details, images, translations |
 | **companies** | Production company details, alternative names, logos |
 | **lists** | Custom list management (requires authentication) |
-| **configurations** | API configuration, countries, languages, primary translations, timezones |
+| **configurations** | API configuration, countries, jobs, languages, primary translations, timezones |
 | **changes** | Track changes to movies, TV series, people, seasons, and episodes |
 | **credits** | Credit details including person and media information |
 | **reviews** | Review details with author and media information |
