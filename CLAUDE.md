@@ -196,6 +196,9 @@ Enforced via `swiftlint` and `swiftformat`:
 - **No force unwrapping** (`!`) or force try (`try!`)
 - **Use guard for early exits**
 - **No leading underscores** — use file-private instead
+- **Validate inputs at public API boundaries** — guard against empty
+  `OptionSet` values, nil/empty strings, and other degenerate inputs
+  even if callers are unlikely to pass them
 
 Tools are installed via Homebrew at `/opt/homebrew/bin/swiftlint` and
 `/opt/homebrew/bin/swiftformat`. If not in PATH:
@@ -235,6 +238,20 @@ changed. Integration tests catch these issues.
 - **Bug fixes**: test that reproduces the bug, then the fix
 - **Refactoring**: existing tests must still pass; add tests for gaps
 - **Model changes**: unit tests with JSON fixtures AND integration tests
+
+### JSON Fixture Completeness
+
+JSON fixtures must exercise **every code path** in the decoder. If a
+custom `Decodable` init has separate branches for each optional
+property, the fixture must include **all** of those properties — not
+just a representative subset. Untested branches hide bugs.
+
+- When a model decodes N optional appended properties, the fixture
+  must include all N (use minimal data — one item per array is fine)
+- Always pair with a "without appended data" test that verifies all
+  optionals are `nil` when absent
+- Never assume that "if one branch works, the rest will too" — each
+  branch has its own `CodingKeys` and decoding logic
 
 ### Never Force Unwrap in Tests
 
