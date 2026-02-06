@@ -431,7 +431,7 @@ public protocol TVSeriesService: Sendable {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int?,
         language: String?
-    ) async throws -> MediaPageableList
+    ) async throws -> MediaListSummaryPageableList
 
     ///
     /// Returns change history for a TV series.
@@ -859,7 +859,7 @@ public extension TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaPageableList {
+    ) async throws -> MediaListSummaryPageableList {
         try await lists(forTVSeries: tvSeriesID, page: page, language: language)
     }
 

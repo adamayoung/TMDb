@@ -382,6 +382,12 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``ChangedID``
 - ``AnyCodable``
 
+### Async Sequences
+
+- ``PagedAsyncSequence``
+- ``PagedPagesAsyncSequence``
+- ``PageableListResult``
+
 ### Custom HTTP Client
 
 - ``HTTPClient``

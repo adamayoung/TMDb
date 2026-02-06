@@ -214,6 +214,40 @@ if let usProvider = providers.first(where: { $0.countryCode == "US" }) {
 }
 ```
 
+### Auto-Pagination
+
+Iterate through all pages of paginated results using AsyncSequence without
+manual pagination:
+
+```swift
+// Iterate through all popular movies across all pages
+for try await movie in tmdbClient.movies.allPopular() {
+    print(movie.title)
+    // Automatically fetches next page when needed
+}
+
+// Early break stops fetching additional pages
+var count = 0
+for try await movie in tmdbClient.movies.allTopRated() {
+    count += 1
+    if count >= 50 { break }
+}
+
+// Iterate through entire pages with metadata
+for try await page in tmdbClient.movies.allPopularPages() {
+    print("Page \(page.page ?? 0) of \(page.totalPages ?? 0)")
+    for movie in page.results {
+        print("  - \(movie.title)")
+    }
+}
+```
+
+Available for all paginated endpoints across 7 services: `MovieService`
+(8 endpoints), `SearchService` (7 endpoints), `TrendingService` (4 endpoints),
+`TVSeriesService` (8 endpoints), `PersonService` (2 endpoints),
+`DiscoverService` (2 endpoints), and `ListService` (1 endpoint). Total: 32
+paginated endpoints with 64 auto-pagination methods.
+
 ### User Account Features (Authentication Required)
 
 ```swift

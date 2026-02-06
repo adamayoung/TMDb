@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A search filter when searching for TV series.
 ///
-public struct TVSeriesSearchFilter {
+public struct TVSeriesSearchFilter: Sendable {
 
     ///
     /// Filter by first air date year.
