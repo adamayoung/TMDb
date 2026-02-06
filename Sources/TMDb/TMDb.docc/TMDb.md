@@ -322,6 +322,16 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Token``
 - ``Session``
 
+### Changes
+
+- ``ChangesService``
+- ``ChangeCollection``
+- ``Change``
+- ``ChangeItem``
+- ``ChangedIDCollection``
+- ``ChangedID``
+- ``AnyCodable``
+
 ### Custom HTTP Client
 
 - ``HTTPClient``

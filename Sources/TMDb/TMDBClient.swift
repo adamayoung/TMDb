@@ -118,6 +118,11 @@ public final class TMDbClient: Sendable {
     public let watchProviders: any WatchProviderService
 
     ///
+    /// TMDb changes.
+    ///
+    public let changes: any ChangesService
+
+    ///
     /// Creates a TMDb client using `URLSession` as the `HTTPClient`.
     ///
     /// - Parameters:
@@ -187,7 +192,8 @@ public final class TMDbClient: Sendable {
             ),
             watchProviderService: TMDbWatchProviderService(
                 apiClient: apiClient, configuration: configuration
-            )
+            ),
+            changesService: TMDbChangesService(apiClient: apiClient)
         )
     }
 
@@ -212,7 +218,8 @@ public final class TMDbClient: Sendable {
         tvEpisodeService: some TVEpisodeService,
         tvSeasonService: some TVSeasonService,
         tvSeriesService: some TVSeriesService,
-        watchProviderService: some WatchProviderService
+        watchProviderService: some WatchProviderService,
+        changesService: some ChangesService
     ) {
         self.configuration = configuration
         self.account = accountService
@@ -235,6 +242,7 @@ public final class TMDbClient: Sendable {
         self.tvSeasons = tvSeasonService
         self.tvSeries = tvSeriesService
         self.watchProviders = watchProviderService
+        self.changes = changesService
     }
 
 }

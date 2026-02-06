@@ -33,3 +33,4 @@
 - ``configurations``
 - ``account``
 - ``authentication``
+- ``changes``
