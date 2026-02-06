@@ -58,7 +58,7 @@ public struct TVEpisodeAirDate: Identifiable, Codable, Equatable, Hashable, Send
     ///
     /// Identifier of the parent TV series.
     ///
-    public let showID: Int
+    public let showID: Int?
 
     ///
     /// TV episode production code.
@@ -109,7 +109,7 @@ public struct TVEpisodeAirDate: Identifiable, Codable, Equatable, Hashable, Send
         airDate: Date? = nil,
         episodeType: String? = nil,
         runtime: Int? = nil,
-        showID: Int,
+        showID: Int? = nil,
         productionCode: String? = nil,
         stillPath: URL? = nil,
         voteAverage: Double? = nil,
@@ -185,7 +185,7 @@ extension TVEpisodeAirDate {
 
         self.episodeType = try container.decodeIfPresent(String.self, forKey: .episodeType)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
-        self.showID = try container.decode(Int.self, forKey: .showID)
+        self.showID = try container.decodeIfPresent(Int.self, forKey: .showID)
         self.productionCode = try container.decodeIfPresent(String.self, forKey: .productionCode)
         self.stillPath = try container.decodeIfPresent(URL.self, forKey: .stillPath)
         self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)

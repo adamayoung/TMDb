@@ -70,19 +70,26 @@ jobs:
           || github.event_name == 'schedule'
         uses: actions/checkout@v6
 
+      - name: Install xcsift
+        if: >-
+          needs.changes.outputs.swift == 'true'
+          || github.event_name == 'workflow_dispatch'
+          || github.event_name == 'schedule'
+        run: brew install xcsift
+
       - name: Build
         if: >-
           needs.changes.outputs.swift == 'true'
           || github.event_name == 'workflow_dispatch'
           || github.event_name == 'schedule'
-        run: swift build --build-tests
+        run: set -o pipefail && swift build --build-tests 2>&1 | xcsift -f github-actions
 
       - name: Test
         if: >-
           needs.changes.outputs.swift == 'true'
           || github.event_name == 'workflow_dispatch'
           || github.event_name == 'schedule'
-        run: swift test --skip-build --filter TMDbIntegrationTests --xunit-output junit.xml
+        run: set -o pipefail && swift test --skip-build --filter TMDbIntegrationTests --xunit-output junit.xml 2>&1 | xcsift -f github-actions
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}

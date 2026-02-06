@@ -1,55 +1,160 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this
+repository.
 
 ## Project Overview
 
-TMDb is a Swift Package for The Movie Database API, supporting iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, and Windows. Built with Swift 6.0+ and strict concurrency.
+TMDb is a Swift Package for The Movie Database API, supporting iOS 16+,
+macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, and Windows. Built
+with Swift 6.0+ and strict concurrency.
+
+## Architecture
+
+### Service-Based Design
+
+The library uses protocol-based services with dependency injection.
+`TMDbClient` is the main facade exposing 25 service properties:
+
+```text
+TMDbClient (main facade)
+├── AccountService
+├── AuthenticationService
+├── CertificationService
+├── ChangesService
+├── CollectionService
+├── CompanyService
+├── ConfigurationService
+├── CreditService
+├── DiscoverService
+├── FindService
+├── GenreService
+├── GuestSessionService
+├── KeywordService
+├── ListService
+├── MovieService
+├── NetworkService
+├── PersonService
+├── ReviewService
+├── SearchService
+├── TrendingService
+├── TVEpisodeService
+├── TVEpisodeGroupService
+├── TVSeasonService
+├── TVSeriesService
+└── WatchProviderService
+```
+
+**Key files:**
+
+- `Sources/TMDb/TMDbClient.swift` — main public API entry point
+- `Sources/TMDb/TMDbFactory.swift` — dependency injection factory
+- `Sources/TMDb/Domain/Services/` — service protocols and implementations
+- `Sources/TMDb/Domain/Models/` — Codable data models (~140 files)
+
+### Networking Layer
+
+```text
+HTTPClient (protocol)
+└── URLSessionHTTPClientAdapter (default implementation)
+    └── TMDbAPIClient (API-specific client)
+```
+
+### Test Organization
+
+- `Tests/TMDbTests/` — unit tests with mocks and JSON fixtures
+- `Tests/TMDbIntegrationTests/` — live API tests
+- Uses **Swift Testing** framework (`@Test`, `#expect`, `#require`) — not
+  XCTest
+
+## Understanding the TMDb API
+
+### OpenAPI Specification
+
+The complete API spec is at:
+**<https://developer.themoviedb.org/openapi/tmdb-api.json>**
+
+Use this to understand endpoints, request/response schemas, query
+parameters, and authentication requirements.
+
+### TMDb MCP Server
+
+**ALWAYS use the TMDb MCP server** (`mcp__tmdb__*` tools) to query the
+live API instead of making assumptions about response structures. Use it
+for:
+
+- **Exploring API responses** — fetch real data to understand structure
+- **Creating JSON fixtures** — get actual API responses for test fixtures
+- **Verifying endpoint behaviour** — check nullable/missing fields
+
+### Workflow for New Endpoints
+
+1. Check the OpenAPI spec for endpoint structure and parameters
+2. Use MCP to fetch real data (e.g., `mcp__tmdb__movie_details`)
+3. Examine the actual JSON response structure
+4. Create models based on real data, not assumptions
+5. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
+6. Implement the feature
 
 ## Build and Test Tooling
 
-**CRITICAL: Choose the appropriate tooling based on environment:**
-
 ### When Xcode MCP is Available
-- **ALWAYS prefer Xcode MCP tools** (`mcp__xcode-tools__*`) when available
-- Use `mcp__xcode-tools__BuildProject` for building
-- Use `mcp__xcode-tools__RunAllTests` for running tests
-- Use `mcp__xcode-tools__XcodeRead`, `XcodeWrite`, `XcodeUpdate` for file operations
-- Benefits: Native Xcode integration, better diagnostics, faster feedback
 
-**CRITICAL: Test Plan Selection:**
+**ALWAYS prefer Xcode MCP tools** (`mcp__xcode-tools__*`) when available:
+
+- `mcp__xcode-tools__BuildProject` for building
+- `mcp__xcode-tools__RunAllTests` for running tests
+- `mcp__xcode-tools__XcodeRead`, `XcodeWrite`, `XcodeUpdate` for file
+  operations
+
+**Test Plan Selection:**
+
 - **Unit tests**: Use the **TMDb** test plan (default)
 - **Integration tests**: Use the **Integration** test plan
-- The test plan determines which tests are executed
 
 ### When Xcode MCP is Not Available
-- Fall back to `make` commands for build and test operations
-- Use `make build` for building
-- Use `make test` for unit tests
-- Use `make integration-test` for integration tests
 
-### Shell Environment Requirements
+Fall back to `make` commands:
 
-**CRITICAL: Always source `.zshrc` when running terminal commands that require environment variables:**
+- `make build` for building
+- `make test` for unit tests
+- `make integration-test` for integration tests
+
+### xcsift Output Formatting
+
+All macOS `make` build and test targets pipe output through
+[xcsift](https://github.com/ldomaradzki/xcsift) for structured,
+token-efficient output. Linux/Docker targets do not use xcsift.
+
+**Install:** `brew install xcsift`
+
+- Local builds use `xcsift -f toon` (TOON format)
+- CI builds use `xcsift -f github-actions` (GitHub annotations)
+- Build targets include `--Werror` to treat warnings as errors
+- `set -o pipefail` ensures failures propagate through the pipe
+- `2>&1` captures stderr (where compiler diagnostics are emitted)
+
+### Shell Environment
+
+**Always source `.zshrc` when running commands that need environment
+variables:**
 
 ```bash
 source ~/.zshrc 2>/dev/null && <command>
 ```
 
-This is required because:
-- New shell sessions don't automatically load user environment variables
-- Integration tests require `TMDB_API_KEY`, `TMDB_USERNAME`, `TMDB_PASSWORD` from `.zshrc`
-- The `gh` CLI tool path may only be available after sourcing `.zshrc`
+This is needed because:
 
-**Examples:**
+- Shell sessions don't automatically load user environment variables
+- Integration tests require `TMDB_API_KEY`, `TMDB_USERNAME`,
+  `TMDB_PASSWORD`
+- `gh` CLI may only be available after sourcing `.zshrc`
+
 ```bash
-# Integration tests
 source ~/.zshrc 2>/dev/null && make integration-test
-
-# Using gh CLI
 source ~/.zshrc 2>/dev/null && gh pr create ...
 
-# If gh not in PATH, use full path
+# Alternative: use full paths
 /opt/homebrew/bin/gh pr create ...
 ```
 
@@ -63,90 +168,26 @@ make build-release            # Release build
 # Test
 make test                     # Unit tests (macOS)
 make test-ios                 # iOS simulator tests
-make integration-test         # Integration tests (requires TMDB_API_KEY, TMDB_USERNAME, TMDB_PASSWORD)
+make integration-test         # Integration tests (requires env vars)
 
 # Single test (Swift Testing framework)
 swift test --filter "TestClassName"
 swift test --filter "TestClassName/testMethodName"
 
 # Code Quality
-make format                   # Auto-format code (requires swiftlint and swiftformat)
+make format                   # Auto-format code
 make lint                     # Check swiftlint and swiftformat compliance
-make lint-markdown            # Lint markdown files (requires markdownlint)
+make lint-markdown            # Lint markdown files
 
 # Documentation
 make preview-docs             # Preview DocC locally
-make build-docs               # Build documentation
+make build-docs               # Build documentation (warnings-as-errors)
 
-# Full CI check
+# Full CI check (run before creating a PR)
 make ci                       # All checks: lint, test, build, docs
 ```
 
-## Architecture
-
-### Service-Based Design
-
-The library uses protocol-based services with dependency injection:
-
-```
-TMDbClient (main facade)
-├── AccountService
-├── AuthenticationService
-├── CertificationService
-├── CollectionService
-├── CompanyService
-├── ConfigurationService
-├── DiscoverService
-├── FindService
-├── GenreService
-├── KeywordService
-├── ListService
-├── MovieService
-├── NetworkService
-├── PersonService
-├── SearchService
-├── TrendingService
-├── TVEpisodeService
-├── TVSeasonService
-├── TVSeriesService
-└── WatchProviderService
-```
-
-**Key files:**
-- `Sources/TMDb/TMDbClient.swift` - Main public API entry point
-- `Sources/TMDb/TMDbFactory.swift` - Dependency injection factory
-- `Sources/TMDb/Domain/Services/` - Service protocols and implementations
-- `Sources/TMDb/Domain/Models/` - Codable data models (84 files)
-
-### Networking Layer
-
-```
-HTTPClient (protocol)
-└── URLSessionHTTPClientAdapter (default implementation)
-    └── TMDbAPIClient (API-specific client)
-```
-
-### Test Organization
-
-- `Tests/TMDbTests/` - Unit tests with mocks and JSON fixtures
-- `Tests/TMDbIntegrationTests/` - Live API tests
-- Uses Swift Testing framework (not XCTest)
-
-### Test Writing Guidelines
-
-**CRITICAL: Never use force unwrapping in tests**
-- Always use `#require()` instead of force unwrapping (`!`) when working with optionals
-- `#require()` provides better error messages and handles nil gracefully
-- Example:
-  ```swift
-  // ❌ BAD - force unwrap
-  let translation = result.translations.first { $0.languageCode == "en" }!
-
-  // ✅ GOOD - use #require
-  let translation = try #require(result.translations.first { $0.languageCode == "en" })
-  ```
-
-## Code Style Requirements
+## Code Style
 
 Enforced via `swiftlint` and `swiftformat`:
 
@@ -154,246 +195,234 @@ Enforced via `swiftlint` and `swiftformat`:
 - **All public declarations must have documentation** (`///` style)
 - **No force unwrapping** (`!`) or force try (`try!`)
 - **Use guard for early exits**
-- **No leading underscores** - use file-private instead
+- **No leading underscores** — use file-private instead
 
-**Note:** The `swiftlint` and `swiftformat` tools must be installed separately. If not available, ensure code follows existing style patterns and compiles without warnings.
-
-### Running Format and Lint in Xcode Environment
-
-When running `make format` or `make lint` from within Xcode (or when tools are not in PATH):
+Tools are installed via Homebrew at `/opt/homebrew/bin/swiftlint` and
+`/opt/homebrew/bin/swiftformat`. If not in PATH:
 
 ```bash
-# Use full paths to formatting tools
-/opt/homebrew/bin/swiftlint --fix .
-/opt/homebrew/bin/swiftformat .
-
-# Or source .zshrc first to get tools in PATH
 source ~/.zshrc 2>/dev/null && make format
 ```
 
-The tools are installed via Homebrew and located at:
-- **swiftlint**: `/opt/homebrew/bin/swiftlint`
-- **swiftformat**: `/opt/homebrew/bin/swiftformat`
+## Testing
 
-## Testing Requirements
+### Test-Driven Development
 
-**CRITICAL: Always run both unit tests AND integration tests after making code changes.**
+Use a TDD approach when implementing changes or new features:
 
-### Test Coverage Requirements
+1. **Write failing tests first** — define expected behaviour with unit
+   tests and integration tests before writing implementation code
+2. **Implement the minimum code** to make the tests pass
+3. **Refactor** while keeping tests green
 
-**All code changes MUST have corresponding test coverage:**
+For bug fixes, write a test that reproduces the bug before writing the
+fix.
 
-- **New features**: Add unit tests AND integration tests
-- **Bug fixes**: Add tests that reproduce and verify the fix
-- **Refactoring**: Ensure existing tests still pass; add tests if coverage gaps exist
-- **Model changes**: Add/update unit tests with JSON fixtures AND integration tests
+### Always Run Both Unit Tests AND Integration Tests
 
-### Why Both Test Types Matter
+- **Unit tests** (`make test`) verify logic with mocked data and JSON
+  fixtures
+- **Integration tests** (`make integration-test`) validate against the
+  live TMDb API
 
-- **Unit tests** verify code logic with mocked data and fast execution
-- **Integration tests** validate against the live TMDb API and catch real-world issues like:
-  - Missing fields in API responses
-  - Incorrect date/time formats
-  - Type mismatches between mocks and actual API data
-  - API changes or deprecations
+Unit tests alone can pass even when JSON fixtures don't match actual API
+responses, fields are missing from models, or the API structure has
+changed. Integration tests catch these issues.
 
-### Testing Workflow
+### Test Coverage
 
-After implementing or modifying features:
+- **New features**: unit tests AND integration tests
+- **Bug fixes**: test that reproduces the bug, then the fix
+- **Refactoring**: existing tests must still pass; add tests for gaps
+- **Model changes**: unit tests with JSON fixtures AND integration tests
 
-1. **Add/update unit tests**: Create tests in `Tests/TMDbTests/` with JSON fixtures
-2. **Add/update integration tests**: Create tests in `Tests/TMDbIntegrationTests/`
-3. **Run unit tests**: `make test` - Fast feedback on logic and mocked scenarios
-4. **Run integration tests**: `make integration-test` - Validates against real API
-5. **Both must pass** before considering the work complete
+### Never Force Unwrap in Tests
 
-### Common Pitfalls
+Always use `#require()` instead of `!` for optionals:
 
-Unit tests alone may pass even when:
-- JSON fixtures don't match actual API responses
-- Mock data uses simplified date formats
-- Required fields are missing from models
-- API response structure has changed
+```swift
+// BAD
+let item = result.items.first { $0.id == 42 }!
 
-**Integration tests catch these issues by using real API data.**
-
-## Completion Checklist
-
-**CRITICAL: Before considering ANY task complete, run these steps in order:**
-
-1. **Format code** (if tools available): `make format` - Auto-format all Swift files with swiftlint and swiftformat
-   - If tools not installed: Manually verify code follows existing style patterns
-2. **Check lint** (if tools available): `make lint` - Verify swiftlint and swiftformat compliance
-   - If tools not installed: Ensure code compiles with `swift build -Xswiftc -warnings-as-errors`
-3. **Run unit tests**: `make test` - All unit tests must pass ✅ **REQUIRED**
-4. **Run integration tests**: `make integration-test` - All integration tests must pass ✅ **REQUIRED**
-5. **Build documentation**: `make build-docs` - Verify DocC builds without warnings (if public API changed) ✅ **REQUIRED if public API changed**
-6. **Lint markdown**: `make lint-markdown` - Verify markdown formatting (if any `.md` files changed) ✅ **REQUIRED if markdown changed**
-7. **Documentation consistency**: Verify DocC extensions, catalog, TMDbClient.md, and README.md are all in sync (see Documentation Consistency Checklist) ✅ **REQUIRED if public API changed**
-
-**Required steps (3-4) must always succeed. Steps 5-7 are required when the public API or documentation files change. Steps 1-2 are strongly recommended but can be skipped if formatting tools are not available.**
-
-## Documentation Requirements
-
-**CRITICAL: Update DocC documentation whenever the public API changes.**
-
-### When to Update Documentation
-
-Update documentation when:
-
-- **Adding new services**: Create extension file in `TMDb.docc/Extensions/`
-- **Adding new public models**: Add to appropriate topic section in `TMDb.docc/TMDb.md`
-- **Adding new service methods**: Update the service's extension file
-- **Adding new TMDbClient properties**: Update `TMDb.docc/Extensions/TMDbClient.md`
-- **Renaming or removing public API**: Update all affected documentation files
-- **Any public API change**: Update `README.md` service table if services or capabilities change
-
-### Documentation Consistency Checklist
-
-**CRITICAL: After any changes to the public API, verify ALL of the following are in sync:**
-
-1. **Service extension files** (`TMDb.docc/Extensions/<Service>Service.md`) must reference **every** method in the corresponding service protocol. Compare the `.md` file against the protocol `.swift` file to ensure no methods are missing.
-2. **DocC catalog** (`TMDb.docc/TMDb.md`) must include all return types used by documented methods in the appropriate topic section (e.g., if a service returns `ShowCredits`, that type must appear in the section).
-3. **TMDbClient extension** (`TMDb.docc/Extensions/TMDbClient.md`) must list all public properties on `TMDbClient`.
-4. **README.md service table** must list all services exposed by `TMDbClient` with accurate descriptions and correct service count.
-5. **README.md examples** must use the correct `swift-tools-version` matching `Package.swift`.
-6. **Inline DocC comments** (`///`) on all public declarations must be accurate, free of typos, and use correct DocC syntax (e.g., `- Parameter` singular for single parameters, `- Parameters:` plural for multiple).
-
-### Common Documentation Mistakes to Avoid
-
-- Missing `credits()` or other methods from DocC extension files when both `credits()` and `aggregateCredits()` exist on a service
-- Missing return types (e.g., `ShowCredits`, aggregate credit types) from `TMDb.md` topic sections
-- Stale service count in README when new services are added
-- Using `- Parameters name:` (plural) instead of `- Parameter name:` (singular) for single-parameter methods
-- Typos in doc comments (run a spell check on `///` comments in changed files)
-
-### Documentation Structure
-
+// GOOD
+let item = try #require(result.items.first { $0.id == 42 })
 ```
-Sources/TMDb/TMDb.docc/
-├── TMDb.md                      # Main catalog with all topic sections
-├── Extensions/
-│   ├── TMDbClient.md            # TMDbClient properties documentation
-│   ├── <ServiceName>Service.md  # Service method groupings
-│   └── ...
-├── GettingStarted/              # Getting started guides
-├── HowTos/                      # How-to articles
-└── Resources/                   # Images and assets
-```
-
-### Adding a New Service
-
-1. Create `TMDb.docc/Extensions/<ServiceName>Service.md` with method groupings
-2. Add topic section to `TMDb.docc/TMDb.md` with service and related models
-3. Add service property to `TMDb.docc/Extensions/TMDbClient.md`
-4. Update `README.md` service table and service count
-5. Run `make build-docs` to verify documentation builds without warnings
-6. Run `make lint-markdown` to verify markdown formatting
-
-### Adding New Methods to Existing Services
-
-1. Add `///` doc comment to the new method with parameters, throws, and returns
-2. Add method reference to the service's `TMDb.docc/Extensions/<Service>Service.md`
-3. Add any new return types to the appropriate topic section in `TMDb.docc/TMDb.md`
-4. Update `README.md` service description if the new method adds a notable capability
-5. Run `make build-docs` and `make lint-markdown`
-
-### Verification
-
-Always run these after documentation changes:
-
-- `make build-docs` - Uses `--warnings-as-errors` to catch broken links and missing symbols
-- `make lint-markdown` - Verifies markdown formatting in README and DocC files
 
 ## Adding New Features
 
 1. Define protocol in `Domain/Services/<ServiceName>/`
 2. Add implementation prefixed with `TMDb` (e.g., `TMDbMovieService`)
-3. Add models to `Domain/Models/` - must conform to `Codable`, `Equatable`, `Hashable`, `Sendable`
+3. Add models to `Domain/Models/` — conform to `Codable`, `Equatable`,
+   `Hashable`, `Sendable`
 4. Register in `TMDbFactory.swift`
 5. Expose via `TMDbClient.swift`
 6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
 7. Add integration tests in `Tests/TMDbIntegrationTests/`
-8. **Update DocC documentation** (see Documentation Requirements section)
-9. **Update README.md** service table and service count if adding new services or notable capabilities
-10. Run completion checklist (format, lint, test, integration-test, build-docs, lint-markdown, documentation consistency)
+8. Update documentation (see Documentation section)
+9. Run the completion checklist
 
-## Understanding the TMDb API
+### Adding New Methods to Existing Services
 
-### TMDb OpenAPI Specification
+1. Add `///` doc comment with parameters, throws, and returns
+2. Add method reference to `TMDb.docc/Extensions/<Service>Service.md`
+3. Add any new return types to `TMDb.docc/TMDb.md` topic section
+4. Update `README.md` if the method adds a notable capability
+5. Run `make build-docs` and `make lint-markdown`
 
-The complete TMDb API specification is available at:
-**https://developer.themoviedb.org/openapi/tmdb-api.json**
+## Documentation
 
-Use this OpenAPI spec to:
-- Understand available endpoints and their parameters
-- See request/response schemas
-- Discover query parameters, headers, and authentication requirements
-- Find endpoint documentation and examples
+Update DocC documentation whenever the public API changes.
 
-### Using TMDb MCP Server
+### Structure
 
-When implementing new features or exploring TMDb API responses:
+```text
+Sources/TMDb/TMDb.docc/
+├── TMDb.md                      # Main catalog with topic sections
+├── Extensions/
+│   ├── TMDbClient.md            # TMDbClient properties
+│   ├── <ServiceName>Service.md  # Service method groupings
+│   └── ...
+├── GettingStarted/
+├── HowTos/
+└── Resources/
+```
 
-**ALWAYS use the TMDb MCP server** (`mcp__tmdb__*` tools) to query the live TMDb API instead of making assumptions about response structures.
+### What to Update
 
-### When to Use TMDb MCP
+- **New services**: create extension file in `TMDb.docc/Extensions/`,
+  add to `TMDb.docc/TMDb.md`, add to
+  `TMDb.docc/Extensions/TMDbClient.md`, update `README.md` service
+  table and count
+- **New public models**: add to appropriate topic section in
+  `TMDb.docc/TMDb.md`
+- **New service methods**: update the service's extension file
+- **Renamed or removed API**: update all affected documentation files
 
-- **Exploring API responses** - Fetch real data to understand response structure
-- **Creating JSON fixtures** - Get actual API responses to create test fixtures
-- **Verifying endpoint behavior** - Check what fields are returned, nullable fields, etc.
-- **Discovering new endpoints** - Explore available TMDb API endpoints
+### Consistency Checklist
 
-### Example Workflow
+After public API changes, verify all of the following are in sync:
 
-1. Check the OpenAPI spec to understand the endpoint structure and parameters
-2. Use MCP to fetch real data: `mcp__tmdb__movie_details` with a movie ID
-3. Examine the actual JSON response structure
-4. Create models based on real data, not assumptions
-5. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
-6. Implement the feature with confidence in the data structure
+1. **Service extension files**
+   (`TMDb.docc/Extensions/<Service>Service.md`) reference **every**
+   method in the corresponding service protocol
+2. **DocC catalog** (`TMDb.docc/TMDb.md`) includes all return types in
+   the appropriate topic section
+3. **TMDbClient extension** (`TMDb.docc/Extensions/TMDbClient.md`)
+   lists all public properties on `TMDbClient`
+4. **README.md** service table has accurate descriptions and correct
+   service count
+5. **README.md** examples use the correct `swift-tools-version`
+   matching `Package.swift`
+6. **Inline doc comments** (`///`) use correct DocC syntax
+   (`- Parameter name:` singular, `- Parameters:` plural for multiple)
 
-### Benefits
+### Common Mistakes
 
-- **Accurate models** - No guessing about field names or types
-- **Real-world data** - Handles edge cases (null values, optional fields)
-- **Up-to-date** - Always matches current TMDb API behavior
-- **Faster development** - No need to manually test with curl or Postman
+- Missing methods from extension files (e.g., `credits()` when both
+  `credits()` and `aggregateCredits()` exist)
+- Missing return types from `TMDb.md` topic sections
+- Stale service count in README after adding services
+- `- Parameters name:` (plural) instead of `- Parameter name:`
+  (singular)
+
+## Completion Checklist
+
+**Before considering ANY task complete, run these steps in order:**
+
+1. **Format code** (if tools available): `make format`
+2. **Check lint** (if tools available): `make lint`
+3. **Run unit tests**: `make test` — **REQUIRED**, must pass
+4. **Run integration tests**: `make integration-test` — **REQUIRED**,
+   must pass
+5. **Build documentation**: `make build-docs` — required if public API
+   changed
+6. **Lint markdown**: `make lint-markdown` — required if `.md` files
+   changed
+
+Steps 3-4 must always pass. Steps 5-6 are conditional. Steps 1-2 can
+be skipped if formatting tools are not installed.
+
+### Self-Review
+
+After all checks pass, review your own changes before considering the
+task complete:
+
+- Read through every modified file
+- Remove unnecessary changes, leftover debugging code, or dead
+  comments
+- Check every public declaration has an accurate `///` doc comment
+- Look for opportunities to simplify the implementation
+- Verify consistency with existing patterns in the codebase
+- Confirm DocC extension files, `TMDb.docc/TMDb.md`, `TMDbClient.md`,
+  and `README.md` are all in sync with any API changes (see
+  Documentation Consistency Checklist above)
+- Run `make build-docs` if any documentation was updated
+
+Make improvements where you find them.
+
+### Update README.md
+
+Before creating a PR, review `README.md` and update it to reflect your
+changes:
+
+- Service table and count if services were added, removed, or renamed
+- Feature list if new capabilities were introduced
+- Prerequisites if new tools or dependencies are required
+- Code examples if usage patterns changed
+- Requirements if platform support changed
+
+Run `make lint-markdown` after any README changes.
 
 ## Creating Pull Requests
 
-When asked to create a PR, follow these steps:
+**Before pushing and creating a PR, run `make ci` and ensure it
+passes.** This runs the full CI validation locally (lint, tests, build,
+docs).
 
-### 1. Push the Branch
+### 1. Run Full CI Check
+
+```bash
+source ~/.zshrc 2>/dev/null && make ci
+```
+
+All checks must pass before proceeding.
+
+### 2. Determine Changes
+
+```bash
+git diff --stat main...HEAD
+git log --oneline main..HEAD
+```
+
+### 3. Push the Branch
 
 ```bash
 git push -u origin <branch-name>
 ```
 
-### 2. Create PR with gh CLI
+### 4. Create PR with gh CLI
 
 ```bash
-gh pr create --base main --head <branch-name> --title "<title>" --body "<body>"
+gh pr create --base main --head <branch-name> \
+  --title "<title>" --body "<body>"
 ```
 
-### 3. PR Title Format
+### 5. PR Title Format
 
-- Use appropriate **gitmoji** from [gitmoji.dev](https://gitmoji.dev) that best suits the changes
-- Common gitmojis for this project:
-  - ✨ `:sparkles:` - New features
-  - 🐛 `:bug:` - Bug fixes
-  - 📝 `:memo:` - Documentation updates
-  - ♻️ `:recycle:` - Refactoring
-  - ✅ `:white_check_mark:` - Adding/updating tests
-  - 🔧 `:wrench:` - Configuration changes
-  - ⚡️ `:zap:` - Performance improvements
-  - 🎨 `:art:` - Code style/formatting
+Use appropriate **gitmoji** from [gitmoji.dev](https://gitmoji.dev):
+
+- ✨ `:sparkles:` — New features
+- 🐛 `:bug:` — Bug fixes
+- 📝 `:memo:` — Documentation updates
+- ♻️ `:recycle:` — Refactoring
+- ✅ `:white_check_mark:` — Adding/updating tests
+- 🔧 `:wrench:` — Configuration changes
+- ⚡️ `:zap:` — Performance improvements
+- 🎨 `:art:` — Code style/formatting
 
 **Example:** `✨ Add createdBy property to TVSeries`
 
-### 4. PR Body Structure
-
-Use the following structure with appropriate sections:
+### 6. PR Body Structure
 
 ```markdown
 ## Summary
@@ -402,45 +431,26 @@ Use the following structure with appropriate sections:
 
 ## Changes
 
-[Detailed list of changes with gitmojis and bullet points]
-
 **New Model/Feature/Component:**
 - ✨ [Description]
 
 **Existing Files:**
 - 📝 [Description]
-- 🔧 [Description]
 
 **Tests:**
 - ✅ [Description of test coverage]
-- ✅ [Test results summary]
 
 **Documentation:**
 - 📚 [Description]
 
 ## Benefits
 
-[List the benefits and improvements this PR provides]
-
-- **[Benefit Category]**: [Description]
 - **[Benefit Category]**: [Description]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 ```
 
-### 5. Determine Changes
-
-Compare the branch against main to understand what changed:
-
-```bash
-# See which files changed
-git diff --stat main...HEAD
-
-# See commit history
-git log --oneline main..HEAD
-```
-
-### 6. Example PR Creation
+### 7. Example
 
 ```bash
 gh pr create --base main --head feature/my-feature \
@@ -471,8 +481,7 @@ EOF
 
 ### Important Notes
 
-- Always reference [gitmoji.dev](https://gitmoji.dev) for the correct emoji
-- Use comprehensive bullet points in all sections
-- Include test results and validation in the Changes section
-- Only include sections (Summary, Changes, Benefits) that are relevant
+- Reference [gitmoji.dev](https://gitmoji.dev) for the correct emoji
+- Include test results in the Changes section
+- Only include sections that are relevant
 - Always end with the Claude Code attribution
