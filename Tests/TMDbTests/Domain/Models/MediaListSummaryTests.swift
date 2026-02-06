@@ -69,4 +69,33 @@ struct MediaListSummaryTests {
         #expect(result.posterPath == nil)
     }
 
+    @Test("JSON decoding of MediaListSummary without list_type field", .tags(.decoding))
+    func decodeReturnsMediaListSummaryWithoutListType() throws {
+        let json = """
+        {
+            "id": 3,
+            "name": "TV List",
+            "description": "TV Series List",
+            "item_count": 30,
+            "favorite_count": 15,
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "poster_path": "/tv_poster.jpg"
+        }
+        """
+
+        let data = try #require(json.data(using: .utf8))
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListSummary.self, from: data)
+
+        #expect(result.id == 3)
+        #expect(result.name == "TV List")
+        #expect(result.description == "TV Series List")
+        #expect(result.itemCount == 30)
+        #expect(result.favoriteCount == 15)
+        #expect(result.iso6391 == "en")
+        #expect(result.iso31661 == "US")
+        #expect(result.listType == nil)
+        #expect(result.posterPath == URL(string: "/tv_poster.jpg"))
+    }
+
 }

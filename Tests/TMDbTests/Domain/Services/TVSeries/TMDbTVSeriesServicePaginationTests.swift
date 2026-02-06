@@ -113,23 +113,23 @@ struct TMDbTVSeriesServicePaginationTests {
     @Test("allLists yields items from multiple pages")
     func allListsYieldsItemsFromMultiplePages() async throws {
         let tvSeriesID = 1
-        apiClient.addResponse(.success(MediaPageableList.mock(page: 1, totalPages: 2)))
-        apiClient.addResponse(.success(MediaPageableList.mock(page: 2, totalPages: 2)))
+        apiClient.addResponse(.success(MediaListSummaryPageableList.mock(page: 1, totalPages: 2)))
+        apiClient.addResponse(.success(MediaListSummaryPageableList.mock(page: 2, totalPages: 2)))
 
-        var items: [Media] = []
+        var items: [MediaListSummary] = []
         for try await item in service.allLists(forTVSeries: tvSeriesID) {
             items.append(item)
         }
 
-        #expect(items.count == 10) // 5 per page × 2 pages
+        #expect(items.count == 6) // 3 per page × 2 pages
     }
 
     @Test("allListsPages yields page objects")
     func allListsPagesYieldsPageObjects() async throws {
         let tvSeriesID = 1
-        apiClient.addResponse(.success(MediaPageableList.mock(page: 1, totalPages: 1)))
+        apiClient.addResponse(.success(MediaListSummaryPageableList.mock(page: 1, totalPages: 1)))
 
-        var pages: [MediaPageableList] = []
+        var pages: [MediaListSummaryPageableList] = []
         for try await page in service.allListsPages(forTVSeries: tvSeriesID) {
             pages.append(page)
         }

@@ -52,7 +52,9 @@ public struct MediaListSummary: Identifiable, Codable, Equatable, Hashable, Send
     ///
     /// List type (e.g., "movie", "tv").
     ///
-    public let listType: String
+    /// Note: This field is only present in movie lists responses. TV series lists responses do not include this field.
+    ///
+    public let listType: String?
 
     ///
     /// Poster path for the list.
@@ -70,7 +72,7 @@ public struct MediaListSummary: Identifiable, Codable, Equatable, Hashable, Send
     ///    - favoriteCount: Number of users who have favorited this list.
     ///    - iso6391: ISO 639-1 language code.
     ///    - iso31661: ISO 3166-1 country code.
-    ///    - listType: List type (e.g., "movie", "tv").
+    ///    - listType: List type (e.g., "movie", "tv"). Only present in movie lists responses.
     ///    - posterPath: Poster path for the list.
     ///
     public init(
@@ -81,7 +83,7 @@ public struct MediaListSummary: Identifiable, Codable, Equatable, Hashable, Send
         favoriteCount: Int,
         iso6391: String? = nil,
         iso31661: String? = nil,
-        listType: String,
+        listType: String? = nil,
         posterPath: URL? = nil
     ) {
         self.id = id

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class TVSeriesListsRequest: DecodableAPIRequest<MediaPageableList> {
+final class TVSeriesListsRequest: DecodableAPIRequest<MediaListSummaryPageableList> {
 
     init(id: TVSeries.ID, page: Int? = nil, language: String? = nil) {
         let path = "/tv/\(id)/lists"

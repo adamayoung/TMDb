@@ -90,8 +90,8 @@ struct TMDbTVSeriesServiceMetadataExtrasTests {
     }
 
     @Test("lists returns media pageable list")
-    func listsReturnsMediaPageableList() async throws {
-        let expectedResult = MediaPageableList.mock()
+    func listsReturnsMediaListSummaryPageableList() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
         let tvSeriesID = 1
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesListsRequest(id: tvSeriesID, page: nil, language: nil)
@@ -103,8 +103,8 @@ struct TMDbTVSeriesServiceMetadataExtrasTests {
     }
 
     @Test("lists with page and language returns media pageable list")
-    func listsWithPageAndLanguageReturnsMediaPageableList() async throws {
-        let expectedResult = MediaPageableList.mock()
+    func listsWithPageAndLanguageReturnsMediaListSummaryPageableList() async throws {
+        let expectedResult = MediaListSummaryPageableList.mock()
         let tvSeriesID = 1
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = TVSeriesListsRequest(id: tvSeriesID, page: 2, language: "de")

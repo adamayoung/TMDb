@@ -18,7 +18,7 @@ extension MediaListSummary {
         favoriteCount: Int = 5,
         iso6391: String? = "en",
         iso31661: String? = "US",
-        listType: String = "movie",
+        listType: String? = "movie",
         posterPath: URL? = URL(string: "/poster.jpg")
     ) -> MediaListSummary {
         MediaListSummary(

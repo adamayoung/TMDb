@@ -99,12 +99,12 @@ public extension TVSeriesService {
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
-    /// - Returns: An async sequence that yields individual ``Media`` objects.
+    /// - Returns: An async sequence that yields individual ``MediaListSummary`` objects.
     ///
     func allLists(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) -> PagedAsyncSequence<Media> {
+    ) -> PagedAsyncSequence<MediaListSummary> {
         PagedAsyncSequence { [self] page in
             try await lists(forTVSeries: tvSeriesID, page: page, language: language)
         }
@@ -282,12 +282,12 @@ public extension TVSeriesService {
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
-    /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``Media`` objects.
+    /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``MediaListSummary`` objects.
     ///
     func allListsPages(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) -> PagedPagesAsyncSequence<Media> {
+    ) -> PagedPagesAsyncSequence<MediaListSummary> {
         PagedPagesAsyncSequence { [self] page in
             try await lists(forTVSeries: tvSeriesID, page: page, language: language)
         }
