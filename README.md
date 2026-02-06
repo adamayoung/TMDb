@@ -253,9 +253,10 @@ Install [homebrew](https://brew.sh) and the following formulae
 * [swiftlint](https://github.com/realm/SwiftLint)
 * [swiftformat](https://github.com/nicklockwood/SwiftFormat)
 * [markdownlint](https://github.com/igorshubovych/markdownlint-cli)
+* [xcsift](https://github.com/ldomaradzki/xcsift)
 
 ```bash
-brew install swiftlint swiftformat markdownlint
+brew install swiftlint swiftformat markdownlint xcsift
 ```
 
 ### Before Submitting a PR

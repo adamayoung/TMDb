@@ -132,13 +132,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-swift-
 
+      - name: Install xcsift
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: brew install xcsift
+
       - name: Build
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: swift build --build-tests -Xswiftc -warnings-as-errors
+        run: set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
 
       - name: Test
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml
+        run: set -o pipefail && swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml 2>&1 | xcsift -f github-actions
 
       - name: Prepare Code Coverage
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
@@ -170,7 +174,7 @@ jobs:
 
       - name: Build for Release
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: swift build -c release -Xswiftc -warnings-as-errors
+        run: set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
 
   build-test-linux:
     name: Build and Test (Linux)

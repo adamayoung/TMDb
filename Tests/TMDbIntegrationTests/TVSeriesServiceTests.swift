@@ -189,7 +189,9 @@ struct TVSeriesServiceTests {
             #expect(!lastEpisode.name.isEmpty)
             #expect(lastEpisode.episodeNumber > 0)
             #expect(lastEpisode.seasonNumber > 0)
-            #expect(lastEpisode.showID == tvSeriesID)
+            if let showID = lastEpisode.showID {
+                #expect(showID == tvSeriesID)
+            }
         }
 
         // nextEpisodeToAir may exist for currently airing shows
@@ -198,7 +200,9 @@ struct TVSeriesServiceTests {
             #expect(!nextEpisode.name.isEmpty)
             #expect(nextEpisode.episodeNumber > 0)
             #expect(nextEpisode.seasonNumber > 0)
-            #expect(nextEpisode.showID == tvSeriesID)
+            if let showID = nextEpisode.showID {
+                #expect(showID == tvSeriesID)
+            }
         }
     }
 
@@ -218,7 +222,9 @@ struct TVSeriesServiceTests {
             #expect(lastEpisode.name == "Felina")
             #expect(lastEpisode.episodeNumber == 16)
             #expect(lastEpisode.seasonNumber == 5)
-            #expect(lastEpisode.showID == tvSeriesID)
+            if let showID = lastEpisode.showID {
+                #expect(showID == tvSeriesID)
+            }
             #expect(lastEpisode.episodeType == "finale")
         }
 

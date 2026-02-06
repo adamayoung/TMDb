@@ -32,6 +32,18 @@ struct TVEpisodeAirDateTests {
         #expect(result.overview != nil)
     }
 
+    @Test("JSON decoding handles missing showId", .tags(.decoding))
+    func decodeHandlesMissingShowID() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVEpisodeAirDate.self,
+            fromResource: "tv-episode-air-date-without-show-id"
+        )
+
+        #expect(result.id == 62161)
+        #expect(result.name == "Felina")
+        #expect(result.showID == nil)
+    }
+
 }
 
 extension TVEpisodeAirDateTests {

@@ -31,11 +31,11 @@ lint-markdown:
 
 .PHONY: build
 build:
-	swift build -Xswiftc -warnings-as-errors
+	set -o pipefail && swift build -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-tests
 build-tests:
-	swift build --build-tests -Xswiftc -warnings-as-errors
+	set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-linux
 build-linux:
@@ -43,7 +43,7 @@ build-linux:
 
 .PHONY: build-release
 build-release:
-	swift build -c release -Xswiftc -warnings-as-errors
+	set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-linux-release
 build-linux-release:
@@ -69,28 +69,28 @@ generate-docs:
 
 .PHONY: test
 test:
-	swift build --build-tests -Xswiftc -warnings-as-errors
-	swift test --skip-build --filter $(TEST_TARGET)
+	set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && swift test --skip-build --filter $(TEST_TARGET) 2>&1 | xcsift -f toon
 
 .PHONY: test-ios
 test-ios:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild clean build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION)
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild clean build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) 2>&1 | xcsift -f toon
 
 .PHONY: test-watchos
 test-watchos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION)
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION) 2>&1 | xcsift -f toon
 
 .PHONY: test-tvos
 test-tvos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION)
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) 2>&1 | xcsift -f toon
 
 .PHONY: test-visionos
 test-visionos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION)
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION)
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) 2>&1 | xcsift -f toon
 
 .PHONY: test-linux
 test-linux:
@@ -98,8 +98,8 @@ test-linux:
 
 .PHONY: integration-test
 integration-test: .check-env-vars
-	swift build --build-tests
-	swift test --skip-build --filter $(INTEGRATION_TEST_TARGET)
+	set -o pipefail && swift build --build-tests 2>&1 | xcsift -f toon
+	set -o pipefail && swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) 2>&1 | xcsift -f toon
 
 .PHONY: ci
 ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos integration-test build-release build-docs
