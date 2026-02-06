@@ -68,4 +68,30 @@ final class TMDbConfigurationService: ConfigurationService {
         return languages
     }
 
+    func primaryTranslations() async throws -> [String] {
+        let request = ConfigurationPrimaryTranslationsRequest()
+
+        let primaryTranslations: [String]
+        do {
+            primaryTranslations = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return primaryTranslations
+    }
+
+    func timezones() async throws -> [Timezone] {
+        let request = ConfigurationTimezonesRequest()
+
+        let timezones: [Timezone]
+        do {
+            timezones = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return timezones
+    }
+
 }

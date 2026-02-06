@@ -29,4 +29,34 @@ final class TMDbCompanyService: CompanyService {
         return company
     }
 
+    func alternativeNames(
+        forCompany id: Company.ID
+    ) async throws -> CompanyAlternativeNameCollection {
+        let request = CompanyAlternativeNamesRequest(id: id)
+
+        let result: CompanyAlternativeNameCollection
+        do {
+            result = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result
+    }
+
+    func images(
+        forCompany id: Company.ID
+    ) async throws -> CompanyImageCollection {
+        let request = CompanyImagesRequest(id: id)
+
+        let result: CompanyImageCollection
+        do {
+            result = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return result
+    }
+
 }

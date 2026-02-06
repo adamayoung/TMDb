@@ -26,4 +26,34 @@ public protocol CompanyService: Sendable {
     ///
     func details(forCompany id: Company.ID) async throws -> Company
 
+    ///
+    /// Returns a company's alternative names.
+    ///
+    /// [TMDb API - Companies: Alternative Names](https://developer.themoviedb.org/reference/company-alternative-names)
+    ///
+    /// - Parameter id: The identifier of the company.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Matching company's alternative names.
+    ///
+    func alternativeNames(
+        forCompany id: Company.ID
+    ) async throws -> CompanyAlternativeNameCollection
+
+    ///
+    /// Returns a company's images (logos).
+    ///
+    /// [TMDb API - Companies: Images](https://developer.themoviedb.org/reference/company-images)
+    ///
+    /// - Parameter id: The identifier of the company.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Matching company's image collection.
+    ///
+    func images(
+        forCompany id: Company.ID
+    ) async throws -> CompanyImageCollection
+
 }

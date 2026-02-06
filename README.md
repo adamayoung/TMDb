@@ -52,9 +52,9 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **watchProviders** | Streaming availability by region |
 | **certifications** | Content ratings (G, PG, R, etc.) |
 | **collections** | Movie collection details, images, translations |
-| **companies** | Production company information |
+| **companies** | Production company details, alternative names, logos |
 | **lists** | Custom list management (requires authentication) |
-| **configurations** | API configuration and image URL generation |
+| **configurations** | API configuration, countries, languages, primary translations, timezones |
 | **changes** | Track changes to movies, TV series, people, seasons, and episodes |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
