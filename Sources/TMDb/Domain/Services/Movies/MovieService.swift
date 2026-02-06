@@ -431,6 +431,19 @@ public protocol MovieService: Sendable {
         page: Int?
     ) async throws -> ChangedIDCollection
 
+    ///
+    /// Returns keywords for a movie.
+    ///
+    /// [TMDb API - Movies: Keywords](https://developer.themoviedb.org/reference/movie-keywords)
+    ///
+    /// - Parameter movieID: The identifier of the movie.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of keywords for the movie.
+    ///
+    func keywords(forMovie movieID: Movie.ID) async throws -> KeywordCollection
+
 }
 
 public extension MovieService {

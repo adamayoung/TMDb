@@ -4,7 +4,7 @@
 |----------|----------------------------------------|
 | Priority | High                                   |
 | Effort   | Small                                  |
-| Status   | Draft                                  |
+| Status   | Complete                               |
 
 ## Problem Statement
 
@@ -260,21 +260,21 @@ test methods to the existing files:
 
 ## Acceptance Criteria
 
-- [ ] `MovieService.keywords(forMovie:)` returns a `KeywordCollection`
+- [x] `MovieService.keywords(forMovie:)` returns a `KeywordCollection`
       with the correct keywords for a given movie
-- [ ] `TrendingService.allTrending(inTimeWindow:page:language:)` returns
+- [x] `TrendingService.allTrending(inTimeWindow:page:language:)` returns
       a pageable list of mixed media results
-- [ ] `TVSeriesService.screenedTheatrically(forTVSeries:)` returns
+- [x] `TVSeriesService.screenedTheatrically(forTVSeries:)` returns
       theatrical screening data
-- [ ] `TVSeriesService.episodeGroups(forTVSeries:)` returns episode
+- [x] `TVSeriesService.episodeGroups(forTVSeries:)` returns episode
       group data for a TV series
-- [ ] All new methods have `///` doc comments with parameters, throws,
+- [x] All new methods have `///` doc comments with parameters, throws,
       and returns
-- [ ] DocC extension files reference the new methods
-- [ ] `TMDb.docc/TMDb.md` topic sections include new model types
-- [ ] Unit tests pass with JSON fixtures
-- [ ] Integration tests pass against the live TMDb API
-- [ ] `make ci` passes
+- [x] DocC extension files reference the new methods
+- [x] `TMDb.docc/TMDb.md` topic sections include new model types
+- [x] Unit tests pass with JSON fixtures
+- [x] Integration tests pass against the live TMDb API
+- [x] `make ci` passes
 
 ## Dependencies
 

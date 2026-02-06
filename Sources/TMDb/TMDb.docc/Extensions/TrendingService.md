@@ -13,3 +13,7 @@
 ### People
 
 - ``people(inTimeWindow:page:language:)``
+
+### All
+
+- ``allTrending(inTimeWindow:page:language:)``

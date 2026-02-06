@@ -466,6 +466,38 @@ public protocol TVSeriesService: Sendable {
         endDate: Date?,
         page: Int?
     ) async throws -> ChangedIDCollection
+
+    ///
+    /// Returns the seasons and episodes that have been screened theatrically for a TV series.
+    ///
+    /// [TMDb API - TV Series: Screened
+    /// Theatrically](https://developer.themoviedb.org/reference/tv-series-screened-theatrically)
+    ///
+    /// - Parameter tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of screened theatrically results for the TV series.
+    ///
+    func screenedTheatrically(
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> ScreenedTheatricallyCollection
+
+    ///
+    /// Returns the episode groups for a TV series.
+    ///
+    /// [TMDb API - TV Series: Episode
+    /// Groups](https://developer.themoviedb.org/reference/tv-series-episode-groups)
+    ///
+    /// - Parameter tvSeriesID: The identifier of the TV series.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of episode groups for the TV series.
+    ///
+    func episodeGroups(
+        forTVSeries tvSeriesID: TVSeries.ID
+    ) async throws -> TVEpisodeGroupCollection
 }
 
 public extension TVSeriesService {

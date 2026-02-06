@@ -91,6 +91,32 @@ public protocol TrendingService: Sendable {
         language: String?
     ) async throws -> PersonPageableList
 
+    ///
+    /// Returns a list of the daily or weekly trending movies, TV series, and people.
+    ///
+    /// The daily trending list tracks items over the period of a day while items have a 24 hour
+    /// half life. The weekly list tracks items over a 7 day period, with a 7 day half life.
+    ///
+    /// [TMDb API - Trending: All](https://developer.themoviedb.org/reference/trending-all)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's
+    /// configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Trending movies, TV series, and people in a time window as a pageable list.
+    ///
+    func allTrending(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType,
+        page: Int?,
+        language: String?
+    ) async throws -> TrendingPageableList
+
 }
 
 public extension TrendingService {
@@ -177,6 +203,34 @@ public extension TrendingService {
         language: String? = nil
     ) async throws -> PersonPageableList {
         try await people(inTimeWindow: timeWindow, page: page, language: language)
+    }
+
+    ///
+    /// Returns a list of the daily or weekly trending movies, TV series, and people.
+    ///
+    /// The daily trending list tracks items over the period of a day while items have a 24 hour
+    /// half life. The weekly list tracks items over a 7 day period, with a 7 day half life.
+    ///
+    /// [TMDb API - Trending: All](https://developer.themoviedb.org/reference/trending-all)
+    ///
+    /// - Precondition: `page` can be between `1` and `1000`.
+    ///
+    /// - Parameters:
+    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - page: The page of results to return.
+    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's
+    /// configured default language.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Trending movies, TV series, and people in a time window as a pageable list.
+    ///
+    func allTrending(
+        inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws -> TrendingPageableList {
+        try await allTrending(inTimeWindow: timeWindow, page: page, language: language)
     }
 
 }

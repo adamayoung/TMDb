@@ -1,0 +1,60 @@
+{
+    "page": 1,
+    "results": [
+        {
+            "adult": false,
+            "backdrop_path": "/tNONILTe9OJz574KZWaLze4v6RC.jpg",
+            "id": 1368166,
+            "title": "The Housemaid",
+            "original_title": "The Housemaid",
+            "original_language": "en",
+            "overview": "Trying to escape her past, Millie Calloway accepts a job.",
+            "poster_path": "/cWsBscZzwu5brg9YjNkGewRUvJX.jpg",
+            "media_type": "movie",
+            "genre_ids": [
+                9648,
+                53
+            ],
+            "popularity": 353.14,
+            "release_date": "2025-12-18",
+            "video": false,
+            "vote_average": 7.1,
+            "vote_count": 743
+        },
+        {
+            "adult": false,
+            "backdrop_path": "/cIgHBLTMbcIkS0yvIrUUVVKLdOz.jpg",
+            "id": 106379,
+            "name": "Fallout",
+            "original_name": "Fallout",
+            "original_language": "en",
+            "overview": "The story of haves and have-nots in a world.",
+            "poster_path": "/c15BtJxCXMrISLVmysdsnZUPQft.jpg",
+            "media_type": "tv",
+            "genre_ids": [
+                10759,
+                10765
+            ],
+            "popularity": 188.24,
+            "first_air_date": "2024-04-10",
+            "vote_average": 8.144,
+            "vote_count": 2501,
+            "origin_country": [
+                "US"
+            ]
+        },
+        {
+            "adult": false,
+            "id": 12345,
+            "name": "John Doe",
+            "original_name": "John Doe",
+            "media_type": "person",
+            "gender": 2,
+            "known_for_department": "Acting",
+            "popularity": 100.5,
+            "profile_path": "/path.jpg"
+        }
+    ],
+    "total_pages": 500,
+    "total_results": 10000
+}

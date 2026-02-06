@@ -64,4 +64,18 @@ struct TrendingIntegrationTests {
         #expect(!personList.results.isEmpty)
     }
 
+    @Test("all trending by day")
+    func allTrendingByDay() async throws {
+        let trendingList = try await trendingService.allTrending(inTimeWindow: .day)
+
+        #expect(!trendingList.results.isEmpty)
+    }
+
+    @Test("all trending by week")
+    func allTrendingByWeek() async throws {
+        let trendingList = try await trendingService.allTrending(inTimeWindow: .week)
+
+        #expect(!trendingList.results.isEmpty)
+    }
+
 }
