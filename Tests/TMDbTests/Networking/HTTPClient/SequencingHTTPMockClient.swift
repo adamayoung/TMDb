@@ -27,7 +27,12 @@ final class SequencingHTTPMockClient: HTTPClient, @unchecked Sendable {
             performCount += 1
             allRequests.append(request)
             guard index < results.count else {
-                preconditionFailure("No more results enqueued.")
+                preconditionFailure(
+                    "No more results enqueued."
+                        + " performCount: \(performCount),"
+                        + " results.count: \(results.count),"
+                        + " index: \(index)"
+                )
             }
             let result = results[index]
             index += 1

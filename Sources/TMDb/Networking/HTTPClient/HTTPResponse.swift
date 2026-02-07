@@ -46,6 +46,7 @@ public struct HTTPResponse: Sendable {
     ///
     /// Parses the `Retry-After` header using a case-insensitive key lookup.
     /// Only supports the `delta-seconds` format (integer number of seconds).
+    /// The HTTP-date format is not supported and will return `nil`.
     ///
     public var retryAfterDuration: Duration? {
         let value = headers.first { $0.key.lowercased() == "retry-after" }?.value
