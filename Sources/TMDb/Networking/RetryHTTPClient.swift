@@ -18,33 +18,29 @@ final class RetryHTTPClient: HTTPClient {
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
-        for attempt in 0 ... configuration.maxRetries {
+        for attempt in 0 ..< configuration.maxRetries {
             let response: HTTPResponse
             do {
                 response = try await httpClient.perform(request: request)
             } catch {
-                if attempt < configuration.maxRetries, isRetryableError(error) {
-                    try await delay(forAttempt: attempt + 1, retryAfter: nil)
-                    continue
+                guard isRetryableError(error) else {
+                    throw error
                 }
-                throw error
-            }
-
-            if attempt < configuration.maxRetries,
-               isRetryableStatusCode(response.statusCode) {
-                try await delay(
-                    forAttempt: attempt + 1,
-                    retryAfter: response.retryAfterDuration
-                )
+                try await delay(forAttempt: attempt + 1, retryAfter: nil)
                 continue
             }
 
-            return response
+            guard isRetryableStatusCode(response.statusCode) else {
+                return response
+            }
+
+            try await delay(
+                forAttempt: attempt + 1,
+                retryAfter: response.retryAfterDuration
+            )
         }
 
-        // This line is unreachable because the loop always returns or throws
-        // on the last iteration (attempt == maxRetries). The compiler requires it.
-        fatalError("Unreachable")
+        return try await httpClient.perform(request: request)
     }
 
 }
