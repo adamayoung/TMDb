@@ -393,3 +393,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``HTTPClient``
 - ``HTTPRequest``
 - ``HTTPResponse``
+
+### Retry Configuration
+
+- ``RetryConfiguration``
+- ``RetryableErrors``

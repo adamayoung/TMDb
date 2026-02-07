@@ -54,7 +54,14 @@ extension URLSessionHTTPClientAdapter {
         }
 
         let statusCode = httpURLResponse.statusCode
-        return HTTPResponse(statusCode: statusCode, data: data)
+        var headers = [String: String]()
+        for (key, value) in httpURLResponse.allHeaderFields {
+            if let key = key as? String, let value = value as? String {
+                headers[key] = value
+            }
+        }
+
+        return HTTPResponse(statusCode: statusCode, data: data, headers: headers)
     }
 
 }

@@ -90,4 +90,41 @@ struct TMDbConfigurationTests {
         #expect(configuration1 != configuration2)
     }
 
+    @Test("default has retry nil")
+    func defaultRetryIsNil() {
+        let configuration = TMDbConfiguration()
+
+        #expect(configuration.retry == nil)
+    }
+
+    @Test("init with retry stores retry configuration")
+    func initWithRetry() {
+        let retryConfig = RetryConfiguration(maxRetries: 5)
+        let configuration = TMDbConfiguration(retry: retryConfig)
+
+        #expect(configuration.retry == retryConfig)
+    }
+
+    @Test("equatable with retry returns true for equal configurations")
+    func equatableWithRetry() {
+        let configuration1 = TMDbConfiguration(
+            defaultLanguage: "en",
+            retry: .default
+        )
+        let configuration2 = TMDbConfiguration(
+            defaultLanguage: "en",
+            retry: .default
+        )
+
+        #expect(configuration1 == configuration2)
+    }
+
+    @Test("equatable with different retry returns false")
+    func equatableWithDifferentRetry() {
+        let configuration1 = TMDbConfiguration(retry: .default)
+        let configuration2 = TMDbConfiguration(retry: RetryConfiguration(maxRetries: 10))
+
+        #expect(configuration1 != configuration2)
+    }
+
 }

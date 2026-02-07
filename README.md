@@ -30,6 +30,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 * **Swift 6 Ready**: Full strict concurrency support with Sendable types
 * **Cross-Platform**: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+,
   visionOS 1+, Linux, Windows
+* **Automatic Retry**: Opt-in retry with exponential backoff for rate
+  limits (HTTP 429) and server errors (HTTP 5xx)
 * **Modern Swift**: Async/await throughout, strongly-typed models,
   protocol-based architecture
 
@@ -183,6 +185,27 @@ Per-request overrides are always available:
 ```swift
 // Override language for a specific request
 let movieInFrench = try await tmdbClient.movies.details(forMovie: 550, language: "fr")
+```
+
+#### Automatic Retry
+
+Enable automatic retry with exponential backoff for transient errors:
+
+```swift
+// Use default retry (3 retries, exponential backoff)
+let configuration = TMDbConfiguration(retry: .default)
+let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: configuration)
+
+// Custom retry configuration
+let retryConfig = RetryConfiguration(
+    maxRetries: 5,
+    initialDelay: .seconds(2),
+    retryableErrors: .rateLimit  // Only retry rate limit errors
+)
+let tmdbClient = TMDbClient(
+    apiKey: "<your-api-key>",
+    configuration: TMDbConfiguration(retry: retryConfig)
+)
 ```
 
 ## Common Use Cases

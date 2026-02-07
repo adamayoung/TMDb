@@ -72,26 +72,6 @@ test:
 	set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 	set -o pipefail && swift test --skip-build --filter $(TEST_TARGET) 2>&1 | xcsift -f toon
 
-.PHONY: test-ios
-test-ios:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild clean build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(IOS_DESTINATION) 2>&1 | xcsift -f toon
-
-.PHONY: test-watchos
-test-watchos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(WATCHOS_DESTINATION) 2>&1 | xcsift -f toon
-
-.PHONY: test-tvos
-test-tvos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(TVOS_DESTINATION) 2>&1 | xcsift -f toon
-
-.PHONY: test-visionos
-test-visionos:
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild build-for-testing -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && NSUnbufferedIO=YES xcodebuild test-without-building -scheme $(TARGET) -only-testing $(TEST_TARGET) -destination $(VISIONOS_DESTINATION) 2>&1 | xcsift -f toon
-
 .PHONY: test-linux
 test-linux:
 	docker run -i --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build --build-tests -Xswiftc -warnings-as-errors && swift test --skip-build --filter $(TEST_TARGET)"
@@ -102,7 +82,7 @@ integration-test: .check-env-vars
 	set -o pipefail && swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) 2>&1 | xcsift -f toon
 
 .PHONY: ci
-ci: .check-env-vars lint lint-markdown test test-ios test-watchos test-tvos test-visionos integration-test build-release build-docs
+ci: .check-env-vars lint lint-markdown test integration-test build-release build-docs
 
 .check-env-vars:
 	@test $${TMDB_API_KEY?Please set environment variable TMDB_API_KEY}

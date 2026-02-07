@@ -46,15 +46,38 @@ public struct TMDbConfiguration: Sendable, Equatable {
     public let defaultCountry: String?
 
     ///
-    /// Creates a TMDb configuration with optional default language and country.
+    /// The retry configuration for automatic retry with exponential backoff.
+    ///
+    /// When set, transient HTTP errors such as rate limiting (HTTP 429) and
+    /// server errors (HTTP 5xx) will be automatically retried according to
+    /// the provided configuration.
+    ///
+    /// When `nil` (the default), no automatic retry is performed.
+    ///
+    /// ```swift
+    /// let configuration = TMDbConfiguration(
+    ///     retry: .default
+    /// )
+    /// ```
+    ///
+    public let retry: RetryConfiguration?
+
+    ///
+    /// Creates a TMDb configuration with optional default language, country, and retry settings.
     ///
     /// - Parameters:
     ///   - defaultLanguage: The default ISO 639-1 language code. Defaults to `nil`.
     ///   - defaultCountry: The default ISO 3166-1 country code. Defaults to `nil`.
+    ///   - retry: The retry configuration for automatic retry. Defaults to `nil` (no retry).
     ///
-    public init(defaultLanguage: String? = nil, defaultCountry: String? = nil) {
+    public init(
+        defaultLanguage: String? = nil,
+        defaultCountry: String? = nil,
+        retry: RetryConfiguration? = nil
+    ) {
         self.defaultLanguage = defaultLanguage
         self.defaultCountry = defaultCountry
+        self.retry = retry
     }
 
     ///
