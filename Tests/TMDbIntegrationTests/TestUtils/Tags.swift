@@ -34,5 +34,6 @@ extension Tag {
     @Tag static var tvSeries: Self
     @Tag static var watchProvider: Self
     @Tag static var changes: Self
+    @Tag static var retry: Self
 
 }

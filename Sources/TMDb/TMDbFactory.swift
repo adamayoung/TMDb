@@ -49,6 +49,17 @@ extension TMDbFactory {
 
 extension TMDbFactory {
 
+    static func httpClient(
+        wrapping client: some HTTPClient,
+        retryConfiguration: RetryConfiguration?
+    ) -> any HTTPClient {
+        guard let retryConfiguration else {
+            return client
+        }
+
+        return RetryHTTPClient(httpClient: client, configuration: retryConfiguration)
+    }
+
     static func defaultHTTPClientAdapter() -> some HTTPClient {
         URLSessionHTTPClientAdapter(urlSession: urlSession)
     }

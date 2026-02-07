@@ -174,11 +174,15 @@ public final class TMDbClient: Sendable {
         httpClient: some HTTPClient,
         configuration: TMDbConfiguration = .system
     ) {
+        let wrappedHTTPClient = TMDbFactory.httpClient(
+            wrapping: httpClient,
+            retryConfiguration: configuration.retry
+        )
         let apiClient = TMDbFactory.apiClient(
-            apiKey: apiKey, httpClient: httpClient
+            apiKey: apiKey, httpClient: wrappedHTTPClient
         )
         let authAPIClient = TMDbFactory.authAPIClient(
-            apiKey: apiKey, httpClient: httpClient
+            apiKey: apiKey, httpClient: wrappedHTTPClient
         )
         let authenticateURLBuilder =
             TMDbFactory.authenticateURLBuilder()

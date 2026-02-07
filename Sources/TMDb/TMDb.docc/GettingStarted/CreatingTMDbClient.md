@@ -74,6 +74,40 @@ let tmdbClient = TMDbClient(
 )
 ```
 
+### Configuration with Automatic Retry
+
+Enable automatic retry with exponential backoff for transient errors
+such as rate limiting (HTTP 429) and server errors (HTTP 5xx):
+
+```swift
+let configuration = TMDbConfiguration(
+    retry: .default  // 3 retries, exponential backoff
+)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
+Customise the retry behaviour:
+
+```swift
+let retryConfig = RetryConfiguration(
+    maxRetries: 5,
+    initialDelay: .seconds(2),
+    maxDelay: .seconds(60),
+    retryableErrors: .rateLimit  // Only retry rate limit errors
+)
+
+let configuration = TMDbConfiguration(retry: retryConfig)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
 ## Using TMDbClient
 
 Once created, your instance of ``TMDbClient`` can be used to interact with the
