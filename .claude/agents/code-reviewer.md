@@ -49,7 +49,7 @@ TMDbClient (main public facade)
 └── ListService
 ```
 
-**Pattern:** Each service = public protocol + internal `TMDb`-prefixed implementation.
+**Pattern:** Each service = public protocol + internal `TMDb`-prefixed implementation. Clean separation of concerns between layers.
 
 **Networking Layer:**
 ```
@@ -80,6 +80,7 @@ Service → APIRequest (DecodableAPIRequest/CodableAPIRequest)
 - Line length: 100 characters.
 - Use `guard` for early exits.
 - No leading underscores — use `fileprivate` instead.
+- Data validation at system boundaries (user input, external API responses).
 
 ## Swift Concurrency Rules
 
@@ -99,6 +100,8 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - **Both must pass.** Unit tests alone are insufficient — integration tests catch API mismatches.
 - **New features require both** unit tests with fixtures AND integration tests.
 - **Model changes** require updated JSON fixtures that match real API responses.
+- **JSON fixtures must exercise every code path** in the decoder.
+- **Edge cases** must be covered — boundary values, empty collections, nil optionals.
 
 ## Build/Tooling
 
@@ -138,10 +141,12 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Correctness, safety, and concurrency issues
 - Architecture violations (service layer boundaries, DI patterns, protocol conformance)
 - Missing or inadequate tests — both unit AND integration
+- Edge cases not covered
+- Clean separation of concerns between layers
 - Missing or incorrect model conformances
 - Public API missing documentation
 - DocC documentation not updated for public API changes
-- Security concerns (force unwraps, data validation, API key handling)
+- Security concerns (force unwraps, data validation at system boundaries, API key handling)
 - JSON fixture accuracy (should match real TMDb API responses)
 - Request pattern correctness (path, query items, HTTP method)
 
