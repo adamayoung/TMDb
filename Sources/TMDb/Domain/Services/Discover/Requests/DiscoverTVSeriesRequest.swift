@@ -47,13 +47,11 @@ private extension APIRequestQueryItems {
         }
 
         if let genres = filter.genres {
-            self[.withGenres] = genres.map(String.init)
-                .joined(separator: ",")
+            self[.withGenres] = Self.idsQueryItemValue(for: genres)
         }
 
         if let withoutGenres = filter.withoutGenres {
-            self[.withoutGenres] = withoutGenres.map(String.init)
-                .joined(separator: ",")
+            self[.withoutGenres] = Self.idsQueryItemValue(for: withoutGenres)
         }
 
         if let firstAirDateYear = filter.firstAirDateYear {
@@ -107,23 +105,21 @@ private extension APIRequestQueryItems {
         }
 
         if let networks = filter.networks {
-            self[.withNetworks] = networks.map(String.init)
-                .joined(separator: ",")
+            self[.withNetworks] = Self.idsQueryItemValue(for: networks)
         }
 
         if let companies = filter.companies {
-            self[.withCompanies] = companies.map(String.init)
-                .joined(separator: ",")
+            self[.withCompanies] = Self.idsQueryItemValue(for: companies)
         }
 
         if let keywords = filter.keywords {
-            self[.withKeywords] = keywords.map(String.init)
-                .joined(separator: ",")
+            self[.withKeywords] = Self.idsQueryItemValue(for: keywords)
         }
 
         if let withoutKeywords = filter.withoutKeywords {
-            self[.withoutKeywords] = withoutKeywords.map(String.init)
-                .joined(separator: ",")
+            self[.withoutKeywords] = Self.idsQueryItemValue(
+                for: withoutKeywords
+            )
         }
     }
 
@@ -143,13 +139,18 @@ private extension APIRequestQueryItems {
         }
 
         if let watchProviders = filter.watchProviders {
-            self[.withWatchProviders] = watchProviders
-                .map(String.init).joined(separator: ",")
+            self[.withWatchProviders] = Self.idsQueryItemValue(
+                for: watchProviders
+            )
         }
 
         if let watchRegion = filter.watchRegion {
             self[.watchRegion] = watchRegion
         }
+    }
+
+    static func idsQueryItemValue(for ids: [Int]) -> String {
+        ids.map(\.description).joined(separator: ",")
     }
 
     static func dateString(from date: Date) -> String {

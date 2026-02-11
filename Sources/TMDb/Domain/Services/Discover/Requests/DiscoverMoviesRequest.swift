@@ -39,9 +39,9 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 }
 
-extension APIRequestQueryItems {
+private extension APIRequestQueryItems {
 
-    fileprivate mutating func apply(_ filter: DiscoverMovieFilter) {
+    mutating func apply(_ filter: DiscoverMovieFilter) {
         if let people = filter.people {
             self[.withPeople] = Self.idsQueryItemValue(for: people)
         }
@@ -74,7 +74,7 @@ extension APIRequestQueryItems {
         applyContentAndProviderFilters(from: filter)
     }
 
-    private mutating func applyVoteAndRuntimeFilters(
+    mutating func applyVoteAndRuntimeFilters(
         from filter: DiscoverMovieFilter
     ) {
         if let voteAverageMin = filter.voteAverageMin {
@@ -116,7 +116,7 @@ extension APIRequestQueryItems {
         }
     }
 
-    private mutating func applyContentAndProviderFilters(
+    mutating func applyContentAndProviderFilters(
         from filter: DiscoverMovieFilter
     ) {
         if let includeAdult = filter.includeAdult {
@@ -138,7 +138,7 @@ extension APIRequestQueryItems {
         }
     }
 
-    fileprivate static func idsQueryItemValue(for ids: [Int]) -> String {
+    static func idsQueryItemValue(for ids: [Int]) -> String {
         ids.map(\.description).joined(separator: ",")
     }
 
