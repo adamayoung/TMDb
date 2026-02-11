@@ -58,17 +58,16 @@ private actor ResponseCache {
     }
 
     private func evictOldest() {
-        guard let oldestKey = entries.min(by: { $0.value.expiresAt < $1.value.expiresAt })?.key
-        else {
-            return
+        if let oldestKey = entries.min(
+            by: { $0.value.expiresAt < $1.value.expiresAt }
+        )?.key {
+            entries.removeValue(forKey: oldestKey)
         }
-
-        entries.removeValue(forKey: oldestKey)
     }
 
 }
 
-final class CacheHTTPClient: HTTPClient {
+final class CacheHTTPClient: HTTPClient, Sendable {
 
     private let httpClient: any HTTPClient
     private let configuration: CacheConfiguration
