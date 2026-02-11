@@ -22,13 +22,7 @@ final class URLSessionHTTPClientAdapter: HTTPClient {
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
         let urlRequest = Self.urlRequest(from: request)
 
-        let data: Data
-        let response: URLResponse
-        do {
-            (data, response) = try await perform(urlRequest)
-        } catch let error {
-            throw error
-        }
+        let (data, response) = try await perform(urlRequest)
 
         return Self.httpResponse(from: data, response: response)
     }
@@ -69,24 +63,52 @@ extension URLSessionHTTPClientAdapter {
 extension URLSessionHTTPClientAdapter {
 
     #if canImport(FoundationNetworking)
+        // Thread-safe: all access to `task` is guarded by `lock`.
+        private final class DataTaskBox: @unchecked Sendable {
+            private let lock = NSLock()
+            private var task: URLSessionDataTask?
+
+            func store(_ task: URLSessionDataTask) {
+                lock.withLock { self.task = task }
+            }
+
+            func cancel() {
+                lock.withLock { task?.cancel() }
+            }
+        }
+
         private func perform(_ urlRequest: URLRequest) async throws -> (Data, URLResponse) {
-            try await withCheckedThrowingContinuation { continuation in
-                urlSession.dataTask(with: urlRequest) { data, response, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                        return
+            let box = DataTaskBox()
+
+            return try await withTaskCancellationHandler {
+                try await withCheckedThrowingContinuation { continuation in
+                    let dataTask = urlSession.dataTask(with: urlRequest) { data, response, error in
+                        if let error {
+                            continuation.resume(throwing: error)
+                            return
+                        }
+
+                        guard let response else {
+                            continuation.resume(
+                                throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1)
+                            )
+                            return
+                        }
+
+                        continuation.resume(returning: (data ?? Data(), response))
                     }
 
-                    guard let data, let response else {
-                        continuation.resume(
-                            throwing: NSError(domain: "uk.co.adam-young.TMDb", code: -1)
-                        )
-                        return
-                    }
+                    box.store(dataTask)
+                    dataTask.resume()
 
-                    continuation.resume(returning: (data, response))
+                    // Handle case where task was already cancelled before
+                    // the cancellation handler was registered.
+                    if Task.isCancelled {
+                        dataTask.cancel()
+                    }
                 }
-                .resume()
+            } onCancel: {
+                box.cancel()
             }
         }
     #else

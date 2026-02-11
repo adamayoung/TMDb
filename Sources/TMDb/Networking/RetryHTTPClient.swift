@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class RetryHTTPClient: HTTPClient {
+final class RetryHTTPClient: HTTPClient, Sendable {
 
     private let httpClient: any HTTPClient
     private let configuration: RetryConfiguration

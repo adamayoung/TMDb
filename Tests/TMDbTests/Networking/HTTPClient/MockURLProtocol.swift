@@ -49,6 +49,7 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
     }
 
     override func startLoading() {
+        Self.lastRequest = request
         let failError = Self.failError
         let data = Self.data
         let statusCode = Self.responseStatusCode ?? 200

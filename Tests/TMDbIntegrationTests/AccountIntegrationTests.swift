@@ -13,7 +13,7 @@ import Testing
     .serialized,
     .tags(.account),
     .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential),
-    .disabled()
+    .disabled("TMDb validate_with_login endpoint rejects session creation")
 )
 final class AccountIntegrationTests {
 
