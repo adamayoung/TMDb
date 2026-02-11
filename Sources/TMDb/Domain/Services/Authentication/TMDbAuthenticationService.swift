@@ -66,6 +66,21 @@ final class TMDbAuthenticationService: AuthenticationService {
         return session
     }
 
+    func createSession(withV4AccessToken v4AccessToken: String) async throws -> Session {
+        let request = CreateSessionFromV4AccessTokenRequest(
+            accessToken: v4AccessToken
+        )
+
+        let session: Session
+        do {
+            session = try await apiClient.perform(request)
+        } catch let error {
+            throw TMDbError(error: error)
+        }
+
+        return session
+    }
+
     func createSession(withCredential credential: Credential) async throws -> Session {
         let token = try await requestToken()
 

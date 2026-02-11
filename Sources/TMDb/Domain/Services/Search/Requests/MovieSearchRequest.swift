@@ -12,6 +12,7 @@ final class MovieSearchRequest: DecodableAPIRequest<MoviePageableList> {
     init(
         query: String,
         primaryReleaseYear: Int? = nil,
+        year: Int? = nil,
         country: String? = nil,
         includeAdult: Bool? = nil,
         page: Int? = nil,
@@ -22,6 +23,7 @@ final class MovieSearchRequest: DecodableAPIRequest<MoviePageableList> {
         let queryItems = APIRequestQueryItems(
             query: query,
             primaryReleaseYear: primaryReleaseYear,
+            year: year,
             country: country,
             includeAdult: includeAdult,
             page: page,
@@ -38,6 +40,7 @@ private extension APIRequestQueryItems {
     init(
         query: String,
         primaryReleaseYear: Int?,
+        year: Int?,
         country: String?,
         includeAdult: Bool?,
         page: Int?,
@@ -49,6 +52,10 @@ private extension APIRequestQueryItems {
 
         if let primaryReleaseYear {
             self[.primaryReleaseYear] = primaryReleaseYear
+        }
+
+        if let year {
+            self[.year] = year
         }
 
         if let country {

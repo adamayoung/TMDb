@@ -137,6 +137,38 @@ struct TMDbAuthenticationServiceTests {
         }
     }
 
+    @Test("createSession with v4 access token returns session")
+    func createSessionWithV4AccessTokenReturnsSession() async throws {
+        let accessToken = "v4-access-token-123"
+        let expectedResult = Session(success: true, sessionID: "987yxz")
+        apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = CreateSessionFromV4AccessTokenRequest(
+            accessToken: accessToken
+        )
+
+        let result = try await service.createSession(
+            withV4AccessToken: accessToken
+        )
+
+        #expect(result == expectedResult)
+        #expect(
+            apiClient.lastRequest
+                as? CreateSessionFromV4AccessTokenRequest
+                == expectedRequest
+        )
+    }
+
+    @Test("createSession with v4 access token when errors throws error")
+    func createSessionWithV4AccessTokenWhenErrorsThrowsError() async throws {
+        apiClient.addResponse(.failure(.unknown))
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await service.createSession(
+                withV4AccessToken: "v4-token"
+            )
+        }
+    }
+
     @Test("createSession with credential returns session")
     func createSessionWithCredentialReturnsSession() async throws {
         let credential = Credential(username: "test", password: "pass123")

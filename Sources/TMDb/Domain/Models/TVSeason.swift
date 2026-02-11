@@ -45,6 +45,11 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let posterPath: URL?
 
     ///
+    /// Average vote score.
+    ///
+    public let voteAverage: Double?
+
+    ///
     /// Episodes in this TV season.
     ///
     public let episodes: [TVEpisode]?
@@ -59,6 +64,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - overview: Overview of TV season.
     ///    - airDate: TV season's air date.
     ///    - posterPath: TV season's poster path.
+    ///    - voteAverage: Average vote score.
     ///    - episodes: Episodes in this TV season.
     ///
     public init(
@@ -68,6 +74,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         overview: String? = nil,
         airDate: Date? = nil,
         posterPath: URL? = nil,
+        voteAverage: Double? = nil,
         episodes: [TVEpisode]? = nil
     ) {
         self.id = id
@@ -76,6 +83,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.overview = overview
         self.airDate = airDate
         self.posterPath = posterPath
+        self.voteAverage = voteAverage
         self.episodes = episodes
     }
 
@@ -90,6 +98,7 @@ extension TVSeason {
         case overview
         case airDate
         case posterPath
+        case voteAverage
         case episodes
     }
 
@@ -124,6 +133,7 @@ extension TVSeason {
         }()
 
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
+        self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
         self.episodes = try container.decodeIfPresent([TVEpisode].self, forKey: .episodes)
     }
 

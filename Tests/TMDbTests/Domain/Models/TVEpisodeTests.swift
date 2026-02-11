@@ -34,6 +34,9 @@ struct TVEpisodeTests {
         #expect(result.seasonNumber == tvEpisode.seasonNumber)
         #expect(result.overview == tvEpisode.overview)
         #expect(result.airDate == tvEpisode.airDate)
+        #expect(result.episodeType == tvEpisode.episodeType)
+        #expect(result.runtime == tvEpisode.runtime)
+        #expect(result.showID == tvEpisode.showID)
         #expect(result.productionCode == tvEpisode.productionCode)
         #expect(result.stillPath == tvEpisode.stillPath)
         #expect(result.crew == tvEpisode.crew)
@@ -51,6 +54,9 @@ struct TVEpisodeTests {
         // swiftlint:disable:next line_length
         "Jon Arryn, the Hand of the King, is dead. King Robert Baratheon plans to ask his oldest friend, Eddard Stark, to take Jon's place. Across the sea, Viserys Targaryen plans to wed his sister to a nomadic warlord in exchange for an army.",
         airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
+        episodeType: "standard",
+        runtime: 62,
+        showID: 1399,
         productionCode: "101",
         stillPath: URL(string: "/wrGWeW4WKxnaeA8sxJb2T9O6ryo.jpg"),
         crew: [

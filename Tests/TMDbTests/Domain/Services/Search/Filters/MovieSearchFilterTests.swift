@@ -17,58 +17,52 @@ struct MovieSearchFilterTests {
         let filter = MovieSearchFilter()
 
         #expect(filter.primaryReleaseYear == nil)
+        #expect(filter.year == nil)
         #expect(filter.country == nil)
         #expect(filter.includeAdult == nil)
     }
 
     @Test("init with primary release year sets primary release year property")
     func initWithPrimaryReleaseYearSetsPrimaryReleaseYearProperty() {
-        let primaryReleaseYear = 2024
+        let filter = MovieSearchFilter(primaryReleaseYear: 2024)
 
-        let filter = MovieSearchFilter(primaryReleaseYear: primaryReleaseYear)
+        #expect(filter.primaryReleaseYear == 2024)
+    }
 
-        #expect(filter.primaryReleaseYear == primaryReleaseYear)
-        #expect(filter.country == nil)
-        #expect(filter.includeAdult == nil)
+    @Test("init with year sets year property")
+    func initWithYearSetsYearProperty() {
+        let filter = MovieSearchFilter(year: 2024)
+
+        #expect(filter.year == 2024)
     }
 
     @Test("init with country sets country property")
     func initWithCountrySetsCountryProperty() {
-        let country = "US"
+        let filter = MovieSearchFilter(country: "US")
 
-        let filter = MovieSearchFilter(country: country)
-
-        #expect(filter.primaryReleaseYear == nil)
-        #expect(filter.country == country)
-        #expect(filter.includeAdult == nil)
+        #expect(filter.country == "US")
     }
 
     @Test("init with include adult sets include adult property")
     func initWithIncludeAdultSetsIncludeAdultProperty() {
-        let includeAdult = true
+        let filter = MovieSearchFilter(includeAdult: true)
 
-        let filter = MovieSearchFilter(includeAdult: includeAdult)
-
-        #expect(filter.primaryReleaseYear == nil)
-        #expect(filter.country == nil)
-        #expect(filter.includeAdult == includeAdult)
+        #expect(filter.includeAdult == true)
     }
 
     @Test("init with all parameters sets all properties")
     func initWithAllParametersSetsAllProperties() {
-        let primaryReleaseYear = 2024
-        let country = "US"
-        let includeAdult = true
-
         let filter = MovieSearchFilter(
-            primaryReleaseYear: primaryReleaseYear,
-            country: country,
-            includeAdult: includeAdult
+            primaryReleaseYear: 2024,
+            year: 2024,
+            country: "US",
+            includeAdult: true
         )
 
-        #expect(filter.primaryReleaseYear == primaryReleaseYear)
-        #expect(filter.country == country)
-        #expect(filter.includeAdult == includeAdult)
+        #expect(filter.primaryReleaseYear == 2024)
+        #expect(filter.year == 2024)
+        #expect(filter.country == "US")
+        #expect(filter.includeAdult == true)
     }
 
 }

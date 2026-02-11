@@ -52,6 +52,7 @@ final class TMDbSearchService: SearchService {
         let request = MovieSearchRequest(
             query: query,
             primaryReleaseYear: filter?.primaryReleaseYear,
+            year: filter?.year,
             country: filter?.country,
             includeAdult: filter?.includeAdult,
             page: page,

@@ -166,7 +166,7 @@ jobs:
           && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
         uses: codecov/codecov-action@v5
         with:
-          files: ./junit.xml
+          files: ./junit-swift-testing.xml
           report_type: test_results
           flags: unit-tests
         env:

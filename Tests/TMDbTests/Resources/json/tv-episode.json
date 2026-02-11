@@ -11,6 +11,9 @@
         }
     ],
     "episode_number": 1,
+    "episode_type": "standard",
+    "runtime": 62,
+    "show_id": 1399,
     "guest_stars": [
         {
             "id": 117642,

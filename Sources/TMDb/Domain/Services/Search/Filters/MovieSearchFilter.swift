@@ -18,6 +18,11 @@ public struct MovieSearchFilter: Sendable {
     public let primaryReleaseYear: Int?
 
     ///
+    /// Filter by release year (includes all release dates, not just primary).
+    ///
+    public let year: Int?
+
+    ///
     /// ISO-3166-1 country code to filter by.
     ///
     /// Filters movies that were released in the specified country.
@@ -34,15 +39,18 @@ public struct MovieSearchFilter: Sendable {
     ///
     /// - Parameters:
     ///   - primaryReleaseYear: Filter by primary release year.
+    ///   - year: Filter by release year.
     ///   - country: ISO-3166-1 country code to filter by.
     ///   - includeAdult: Include adult results.
     ///
     public init(
         primaryReleaseYear: Int? = nil,
+        year: Int? = nil,
         country: String? = nil,
         includeAdult: Bool? = nil
     ) {
         self.primaryReleaseYear = primaryReleaseYear
+        self.year = year
         self.country = country
         self.includeAdult = includeAdult
     }

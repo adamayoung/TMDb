@@ -82,6 +82,163 @@ struct APIRequestQueryItemNameTests {
         #expect(APIRequestQueryItem.Name.region == "region")
     }
 
+    @Test("withOriginalLanguage")
+    func withOriginalLanguageQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withOriginalLanguage
+                == "with_original_language"
+        )
+    }
+
+    @Test("withGenres")
+    func withGenresQueryItemName() {
+        #expect(APIRequestQueryItem.Name.withGenres == "with_genres")
+    }
+
+    @Test("withoutGenres")
+    func withoutGenresQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withoutGenres == "without_genres"
+        )
+    }
+
+    @Test("withCompanies")
+    func withCompaniesQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withCompanies == "with_companies"
+        )
+    }
+
+    @Test("withKeywords")
+    func withKeywordsQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withKeywords == "with_keywords"
+        )
+    }
+
+    @Test("withoutKeywords")
+    func withoutKeywordsQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withoutKeywords == "without_keywords"
+        )
+    }
+
+    @Test("withNetworks")
+    func withNetworksQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withNetworks == "with_networks"
+        )
+    }
+
+    @Test("withWatchProviders")
+    func withWatchProvidersQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withWatchProviders
+                == "with_watch_providers"
+        )
+    }
+
+    @Test("withRuntimeGreaterThan")
+    func withRuntimeGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withRuntimeGreaterThan
+                == "with_runtime.gte"
+        )
+    }
+
+    @Test("withRuntimeLessThan")
+    func withRuntimeLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.withRuntimeLessThan
+                == "with_runtime.lte"
+        )
+    }
+
+    @Test("voteAverageGreaterThan")
+    func voteAverageGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.voteAverageGreaterThan
+                == "vote_average.gte"
+        )
+    }
+
+    @Test("voteAverageLessThan")
+    func voteAverageLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.voteAverageLessThan
+                == "vote_average.lte"
+        )
+    }
+
+    @Test("voteCountGreaterThan")
+    func voteCountGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.voteCountGreaterThan
+                == "vote_count.gte"
+        )
+    }
+
+    @Test("voteCountLessThan")
+    func voteCountLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.voteCountLessThan
+                == "vote_count.lte"
+        )
+    }
+
+    @Test("includeVideo")
+    func includeVideoQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.includeVideo == "include_video"
+        )
+    }
+
+    @Test("primaryReleaseDateGreaterThan")
+    func primaryReleaseDateGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.primaryReleaseDateGreaterThan
+                == "primary_release_date.gte"
+        )
+    }
+
+    @Test("primaryReleaseDateLessThan")
+    func primaryReleaseDateLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.primaryReleaseDateLessThan
+                == "primary_release_date.lte"
+        )
+    }
+
+    @Test("firstAirDateGreaterThan")
+    func firstAirDateGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.firstAirDateGreaterThan
+                == "first_air_date.gte"
+        )
+    }
+
+    @Test("firstAirDateLessThan")
+    func firstAirDateLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.firstAirDateLessThan
+                == "first_air_date.lte"
+        )
+    }
+
+    @Test("airDateGreaterThan")
+    func airDateGreaterThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.airDateGreaterThan == "air_date.gte"
+        )
+    }
+
+    @Test("airDateLessThan")
+    func airDateLessThanQueryItemName() {
+        #expect(
+            APIRequestQueryItem.Name.airDateLessThan == "air_date.lte"
+        )
+    }
+
     @Test("apiKey")
     func apiKeyQueryItemName() {
         #expect(APIRequestQueryItem.Name.apiKey == "api_key")
