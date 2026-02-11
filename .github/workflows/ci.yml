@@ -152,23 +152,23 @@ jobs:
             -instr-profile .build/debug/codecov/default.profdata > info.lcov || \
             echo "Warning: Coverage export failed, continuing without coverage"
 
-      - name: Upload test results to Codecov
-        if: >-
-          !cancelled()
-          && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
-        uses: codecov/test-results-action@v1
-        with:
-          file: ./junit.xml
-          flags: unit-tests
-          verbose: true
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Upload coverage reports to Codecov
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: codecov/codecov-action@v5
         with:
           files: info.lcov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: >-
+          !cancelled()
+          && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./junit.xml
+          report_type: test_results
+          flags: unit-tests
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 

@@ -108,6 +108,54 @@ let tmdbClient = TMDbClient(
 )
 ```
 
+### Configuration with Response Caching
+
+Enable in-memory response caching to reduce redundant network requests.
+All successful GET responses are cached automatically. User-specific
+requests (with session IDs) bypass the cache, and any successful POST or
+DELETE invalidates the entire cache.
+
+```swift
+let configuration = TMDbConfiguration(
+    cache: .default  // 1-hour TTL, 100 entries
+)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
+Customise the cache behaviour:
+
+```swift
+let cacheConfig = CacheConfiguration(
+    defaultTTL: .seconds(1800),    // 30-minute TTL
+    maximumEntryCount: 200
+)
+
+let configuration = TMDbConfiguration(cache: cacheConfig)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
+Combine with automatic retry:
+
+```swift
+let configuration = TMDbConfiguration(
+    retry: .default,
+    cache: .default
+)
+
+let tmdbClient = TMDbClient(
+    apiKey: "<your-tmdb-api-key>",
+    configuration: configuration
+)
+```
+
 ## Using TMDbClient
 
 Once created, your instance of ``TMDbClient`` can be used to interact with the

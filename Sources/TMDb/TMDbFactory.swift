@@ -51,13 +51,22 @@ extension TMDbFactory {
 
     static func httpClient(
         wrapping client: some HTTPClient,
-        retryConfiguration: RetryConfiguration?
+        retryConfiguration: RetryConfiguration?,
+        cacheConfiguration: CacheConfiguration?
     ) -> any HTTPClient {
-        guard let retryConfiguration else {
-            return client
+        // Order matters: retry wraps the base client, cache wraps retry.
+        // Cache hits return immediately; misses go through retry then network.
+        var wrapped: any HTTPClient = client
+
+        if let retryConfiguration {
+            wrapped = RetryHTTPClient(httpClient: wrapped, configuration: retryConfiguration)
         }
 
-        return RetryHTTPClient(httpClient: client, configuration: retryConfiguration)
+        if let cacheConfiguration {
+            wrapped = CacheHTTPClient(httpClient: wrapped, configuration: cacheConfiguration)
+        }
+
+        return wrapped
     }
 
     static func defaultHTTPClientAdapter() -> some HTTPClient {

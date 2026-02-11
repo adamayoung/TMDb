@@ -127,4 +127,43 @@ struct TMDbConfigurationTests {
         #expect(configuration1 != configuration2)
     }
 
+    @Test("default has cache nil")
+    func defaultCacheIsNil() {
+        let configuration = TMDbConfiguration()
+
+        #expect(configuration.cache == nil)
+    }
+
+    @Test("init with cache stores cache configuration")
+    func initWithCache() {
+        let cacheConfig = CacheConfiguration(defaultTTL: .seconds(600), maximumEntryCount: 50)
+        let configuration = TMDbConfiguration(cache: cacheConfig)
+
+        #expect(configuration.cache == cacheConfig)
+    }
+
+    @Test("equatable with cache returns true for equal configurations")
+    func equatableWithCache() {
+        let configuration1 = TMDbConfiguration(
+            defaultLanguage: "en",
+            cache: .default
+        )
+        let configuration2 = TMDbConfiguration(
+            defaultLanguage: "en",
+            cache: .default
+        )
+
+        #expect(configuration1 == configuration2)
+    }
+
+    @Test("equatable with different cache returns false")
+    func equatableWithDifferentCache() {
+        let configuration1 = TMDbConfiguration(cache: .default)
+        let configuration2 = TMDbConfiguration(
+            cache: CacheConfiguration(maximumEntryCount: 50)
+        )
+
+        #expect(configuration1 != configuration2)
+    }
+
 }
