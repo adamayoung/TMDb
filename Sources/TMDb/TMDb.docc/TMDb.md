@@ -65,6 +65,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``VideoCollection``
 - ``MovieExternalLinksCollection``
 - ``MoviePageableList``
+- ``MovieListItem``
 - ``MovieImageFilter``
 - ``MovieVideoFilter``
 - ``MovieReleaseDatesByCountry``
@@ -204,6 +205,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Movie``
 - ``MovieSort``
 - ``DiscoverMovieFilter``
+- ``DiscoverMovieFilter/PrimaryReleaseYearFilter``
 - ``TVSeriesPageableList``
 - ``TVSeries``
 - ``TVSeriesSort``
