@@ -13,18 +13,9 @@ import Testing
     import FoundationNetworking
 #endif
 
-private let isLinux = {
-    #if os(Linux)
-        return true
-    #else
-        return false
-    #endif
-}()
-
 @Suite(
     .serialized,
-    .tags(.adapter),
-    .disabled(if: isLinux)
+    .tags(.adapter)
 )
 final class URLSessionHTTPClientAdapterTests {
 
@@ -112,6 +103,36 @@ final class URLSessionHTTPClientAdapterTests {
         let result = MockURLProtocol.lastRequest?.url
 
         #expect(result == expectedURL)
+    }
+
+    @Test("perform when response has no data returns empty data")
+    func performWhenResponseHasNoDataReturnsEmptyData() async throws {
+        MockURLProtocol.data = nil
+        MockURLProtocol.responseStatusCode = 204
+        let url = try #require(URL(string: "/no-content"))
+        let request = HTTPRequest(url: url)
+
+        let response = try await httpClient.perform(request: request)
+
+        #expect(response.statusCode == 204)
+        #expect(response.data == Data())
+    }
+
+    @Test("perform when task is cancelled completes without hanging")
+    func performWhenTaskIsCancelledCompletesWithoutHanging() async throws {
+        MockURLProtocol.responseStatusCode = 200
+        let url = try #require(URL(string: "/cancel"))
+        let request = HTTPRequest(url: url)
+        let client = try #require(httpClient)
+
+        let task = Task {
+            try await client.perform(request: request)
+        }
+        task.cancel()
+
+        // The task should complete — either with a cancellation error
+        // or a successful response if it finished before cancellation.
+        _ = await task.result
     }
 
     @Test("perform when header set should be present in URL request")

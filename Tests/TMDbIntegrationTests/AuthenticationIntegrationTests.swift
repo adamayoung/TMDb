@@ -42,7 +42,7 @@ struct AuthenticationIntegrationTests {
     @Test(
         "createSession with credential",
         .enabled(if: CredentialHelper.shared.hasCredential),
-        .disabled()
+        .disabled("TMDb validate_with_login endpoint rejects session creation")
     )
     func createAndDeleteSessionWithCredential() async throws {
         let credential = CredentialHelper.shared.tmdbCredential
