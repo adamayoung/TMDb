@@ -15,6 +15,7 @@ extension MovieListItem {
         title: String = "Movie",
         originalTitle: String = "Movie a",
         originalLanguage: String = "en",
+        originCountry: [String]? = ["US"],
         overview: String = "Movie Overview",
         genreIDs: [Genre.ID] = [Genre].mocks.map(\.id),
         releaseDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
@@ -31,6 +32,7 @@ extension MovieListItem {
             title: title,
             originalTitle: originalTitle,
             originalLanguage: originalLanguage,
+            originCountry: originCountry,
             overview: overview,
             genreIDs: genreIDs,
             releaseDate: releaseDate,
@@ -106,6 +108,7 @@ extension MovieListItem {
             title: "The First Omen",
             originalTitle: "The First Omen",
             originalLanguage: "en",
+            originCountry: ["US"],
             // swiftlint:disable:next line_length
             overview: "When a young American woman is sent to Rome to begin a life of service to the church, she encounters a darkness that causes her to question her own faith and uncovers a terrifying conspiracy that hopes to bring about the birth of evil incarnate.",
             genreIDs: [27],

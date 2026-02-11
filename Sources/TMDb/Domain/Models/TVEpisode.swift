@@ -43,6 +43,21 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let airDate: Date?
 
     ///
+    /// Type of episode (e.g., "finale", "standard").
+    ///
+    public let episodeType: String?
+
+    ///
+    /// Episode runtime in minutes.
+    ///
+    public let runtime: Int?
+
+    ///
+    /// Identifier of the parent TV series.
+    ///
+    public let showID: Int?
+
+    ///
     /// TV episode production code.
     ///
     public let productionCode: String?
@@ -84,6 +99,9 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - seasonNumber: TV episode season number.
     ///    - overview: TV episode overview.
     ///    - airDate: TV episode air date.
+    ///    - episodeType: Type of episode.
+    ///    - runtime: Episode runtime in minutes.
+    ///    - showID: Identifier of the parent TV series.
     ///    - productionCode: TV episode production code.
     ///    - stillPath: TV episode still image path.
     ///    - crew: TV episode crew.
@@ -98,6 +116,9 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
         seasonNumber: Int,
         overview: String? = nil,
         airDate: Date? = nil,
+        episodeType: String? = nil,
+        runtime: Int? = nil,
+        showID: Int? = nil,
         productionCode: String? = nil,
         stillPath: URL? = nil,
         crew: [CrewMember]? = nil,
@@ -111,6 +132,9 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.seasonNumber = seasonNumber
         self.overview = overview
         self.airDate = airDate
+        self.episodeType = episodeType
+        self.runtime = runtime
+        self.showID = showID
         self.productionCode = productionCode
         self.stillPath = stillPath
         self.crew = crew
@@ -130,6 +154,9 @@ extension TVEpisode {
         case seasonNumber
         case overview
         case airDate
+        case episodeType
+        case runtime
+        case showID = "showId"
         case productionCode
         case stillPath
         case crew
@@ -169,6 +196,9 @@ extension TVEpisode {
             return try container2.decodeIfPresent(Date.self, forKey: .airDate)
         }()
 
+        self.episodeType = try container.decodeIfPresent(String.self, forKey: .episodeType)
+        self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
+        self.showID = try container.decodeIfPresent(Int.self, forKey: .showID)
         self.productionCode = try container.decodeIfPresent(String.self, forKey: .productionCode)
         self.stillPath = try container.decodeIfPresent(URL.self, forKey: .stillPath)
         self.crew = try container.decodeIfPresent([CrewMember].self, forKey: .crew)

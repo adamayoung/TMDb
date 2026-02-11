@@ -38,6 +38,11 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let originalLanguage: String?
 
     ///
+    /// Origin countries of the movie.
+    ///
+    public let originCountry: [String]?
+
+    ///
     /// Movie overview.
     ///
     public let overview: String?
@@ -150,6 +155,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - tagline: Movie tagline.
     ///    - originalTitle: Original movie title.
     ///    - originalLanguage: Original language of the movie.
+    ///    - originCountry: Origin countries of the movie.
     ///    - overview: Movie overview.
     ///    - runtime: Movie runtime, in minutes.
     ///    - genres: Movie genres.
@@ -177,6 +183,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         tagline: String? = nil,
         originalTitle: String? = nil,
         originalLanguage: String? = nil,
+        originCountry: [String]? = nil,
         overview: String? = nil,
         runtime: Int? = nil,
         genres: [Genre]? = nil,
@@ -203,6 +210,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.tagline = tagline
         self.originalTitle = originalTitle
         self.originalLanguage = originalLanguage
+        self.originCountry = originCountry
         self.overview = overview
         self.runtime = runtime
         self.genres = genres
@@ -235,6 +243,7 @@ extension Movie {
         case tagline
         case originalTitle
         case originalLanguage
+        case originCountry
         case overview
         case runtime
         case genres
@@ -270,7 +279,7 @@ extension Movie {
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
     ///
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws { // swiftlint:disable:this function_body_length
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -280,6 +289,9 @@ extension Movie {
         self.originalTitle = try container.decodeIfPresent(String.self, forKey: .originalTitle)
         self.originalLanguage = try container.decodeIfPresent(
             String.self, forKey: .originalLanguage
+        )
+        self.originCountry = try container.decodeIfPresent(
+            [String].self, forKey: .originCountry
         )
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)

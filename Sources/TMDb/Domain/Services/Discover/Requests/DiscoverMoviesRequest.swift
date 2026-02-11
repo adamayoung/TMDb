@@ -16,12 +16,23 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
         language: String? = nil
     ) {
         let path = "/discover/movie"
-        let queryItems = APIRequestQueryItems(
-            filter: filter,
-            sortedBy: sortedBy,
-            page: page,
-            language: language
-        )
+        var queryItems = APIRequestQueryItems()
+
+        if let filter {
+            queryItems.apply(filter)
+        }
+
+        if let sortedBy {
+            queryItems[.sortBy] = sortedBy
+        }
+
+        if let page {
+            queryItems[.page] = page
+        }
+
+        if let language {
+            queryItems[.language] = language
+        }
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -30,55 +41,105 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
 
 extension APIRequestQueryItems {
 
-    fileprivate init(
-        filter: DiscoverMovieFilter?,
-        sortedBy: MovieSort?,
-        page: Int?,
-        language: String?
+    fileprivate mutating func apply(_ filter: DiscoverMovieFilter) {
+        if let people = filter.people {
+            self[.withPeople] = Self.idsQueryItemValue(for: people)
+        }
+
+        if let originalLanguage = filter.originalLanguage {
+            self[.withOriginalLanguage] = originalLanguage
+        }
+
+        if let genres = filter.genres {
+            self[.withGenres] = Self.idsQueryItemValue(for: genres)
+        }
+
+        if let withoutGenres = filter.withoutGenres {
+            self[.withoutGenres] = Self.idsQueryItemValue(
+                for: withoutGenres
+            )
+        }
+
+        if let primaryReleaseYear = filter.primaryReleaseYear {
+            let bounds = primaryReleaseYear.dateBounds()
+            if let lte = bounds.lte {
+                self[.primaryReleaseDateLessThan] = lte
+            }
+            if let gte = bounds.gte {
+                self[.primaryReleaseDateGreaterThan] = gte
+            }
+        }
+
+        applyVoteAndRuntimeFilters(from: filter)
+        applyContentAndProviderFilters(from: filter)
+    }
+
+    private mutating func applyVoteAndRuntimeFilters(
+        from filter: DiscoverMovieFilter
     ) {
-        self.init()
-
-        if let filter {
-            if let people = filter.people {
-                self[.withPeople] = Self.peopleQueryItemValue(for: people)
-            }
-
-            if let originalLanguage = filter.originalLanguage {
-                self[.withOriginalLanguage] = originalLanguage
-            }
-
-            if let genres = filter.genres {
-                self[.withGenres] = genres.map(String.init).joined(separator: ",")
-            }
-
-            if let primaryReleaseYear = filter.primaryReleaseYear {
-                let bounds = primaryReleaseYear.dateBounds()
-                if let lte = bounds.lte {
-                    self[.primaryReleaseDateLessThan] = lte
-                }
-                if let gte = bounds.gte {
-                    self[.primaryReleaseDateGreaterThan] = gte
-                }
-            }
+        if let voteAverageMin = filter.voteAverageMin {
+            self[.voteAverageGreaterThan] = voteAverageMin
         }
 
-        if let sortedBy {
-            self[.sortBy] = sortedBy
+        if let voteAverageMax = filter.voteAverageMax {
+            self[.voteAverageLessThan] = voteAverageMax
         }
 
-        if let page {
-            self[.page] = page
+        if let voteCountMin = filter.voteCountMin {
+            self[.voteCountGreaterThan] = voteCountMin
         }
 
-        if let language {
-            self[.language] = language
+        if let voteCountMax = filter.voteCountMax {
+            self[.voteCountLessThan] = voteCountMax
+        }
+
+        if let companies = filter.companies {
+            self[.withCompanies] = Self.idsQueryItemValue(for: companies)
+        }
+
+        if let keywords = filter.keywords {
+            self[.withKeywords] = Self.idsQueryItemValue(for: keywords)
+        }
+
+        if let withoutKeywords = filter.withoutKeywords {
+            self[.withoutKeywords] = Self.idsQueryItemValue(
+                for: withoutKeywords
+            )
+        }
+
+        if let runtimeMin = filter.runtimeMin {
+            self[.withRuntimeGreaterThan] = runtimeMin
+        }
+
+        if let runtimeMax = filter.runtimeMax {
+            self[.withRuntimeLessThan] = runtimeMax
         }
     }
 
-    private static func peopleQueryItemValue(for people: [Person.ID]) -> String {
-        people
-            .map(\.description)
-            .joined(separator: ",")
+    private mutating func applyContentAndProviderFilters(
+        from filter: DiscoverMovieFilter
+    ) {
+        if let includeAdult = filter.includeAdult {
+            self[.includeAdult] = includeAdult
+        }
+
+        if let includeVideo = filter.includeVideo {
+            self[.includeVideo] = includeVideo
+        }
+
+        if let watchProviders = filter.watchProviders {
+            self[.withWatchProviders] = Self.idsQueryItemValue(
+                for: watchProviders
+            )
+        }
+
+        if let watchRegion = filter.watchRegion {
+            self[.watchRegion] = watchRegion
+        }
+    }
+
+    fileprivate static func idsQueryItemValue(for ids: [Int]) -> String {
+        ids.map(\.description).joined(separator: ",")
     }
 
 }

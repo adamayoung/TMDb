@@ -89,6 +89,23 @@ public protocol AuthenticationService: Sendable {
     func createSession(withCredential credential: Credential) async throws -> Session
 
     ///
+    /// Creates a TMDb session from a v4 access token.
+    ///
+    /// Use this method if you already have a v4 access token and want to
+    /// create a v3 session from it.
+    ///
+    /// [TMDb API - Authentication: Create Session (from v4 access
+    /// token)](https://developer.themoviedb.org/reference/authentication-create-session-from-v4-token)
+    ///
+    /// - Parameter v4AccessToken: A v4 access token.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A TMDb session.
+    ///
+    func createSession(withV4AccessToken v4AccessToken: String) async throws -> Session
+
+    ///
     /// Deletes a user's session on TMDb.
     ///
     /// - Parameter session: The user's session.

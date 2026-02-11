@@ -33,6 +33,21 @@ struct MovieSearchRequestTests {
         #expect(request.queryItems == ["query": "fight club", "primary_release_year": "2024"])
     }
 
+    @Test("queryItems with query and year")
+    func queryItemsWithQueryAndYear() {
+        let request = MovieSearchRequest(
+            query: "fight club",
+            year: 1999
+        )
+
+        #expect(
+            request.queryItems == [
+                "query": "fight club",
+                "year": "1999"
+            ]
+        )
+    }
+
     @Test("queryItems with query and country")
     func queryItemsWithQueryAndCountry() {
         let request = MovieSearchRequest(query: "fight club", country: "GB")

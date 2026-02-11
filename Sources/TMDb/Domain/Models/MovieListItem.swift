@@ -33,6 +33,11 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     public let originalLanguage: String
 
     ///
+    /// Origin countries of the movie.
+    ///
+    public let originCountry: [String]?
+
+    ///
     /// Movie overview.
     ///
     public let overview: String
@@ -94,6 +99,7 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///    - title: Movie title.
     ///    - originalTitle: Original movie title.
     ///    - originalLanguage: Original language of the movie.
+    ///    - originCountry: Origin countries of the movie.
     ///    - overview: Movie overview.
     ///    - genreIDs: Movie genre identifiers.
     ///    - releaseDate: Movie release date.
@@ -110,6 +116,7 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
         title: String,
         originalTitle: String,
         originalLanguage: String,
+        originCountry: [String]? = nil,
         overview: String,
         genreIDs: [Genre.ID],
         releaseDate: Date? = nil,
@@ -125,6 +132,7 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
         self.title = title
         self.originalTitle = originalTitle
         self.originalLanguage = originalLanguage
+        self.originCountry = originCountry
         self.overview = overview
         self.genreIDs = genreIDs
         self.releaseDate = releaseDate
@@ -146,6 +154,7 @@ extension MovieListItem {
         case title
         case originalTitle
         case originalLanguage
+        case originCountry
         case overview
         case genreIDs = "genreIds"
         case releaseDate
@@ -179,6 +188,9 @@ extension MovieListItem {
         self.title = try container.decode(String.self, forKey: .title)
         self.originalTitle = try container.decode(String.self, forKey: .originalTitle)
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
+        self.originCountry = try container.decodeIfPresent(
+            [String].self, forKey: .originCountry
+        )
         self.overview = try container.decode(String.self, forKey: .overview)
         self.genreIDs = try container.decode([Genre.ID].self, forKey: .genreIDs)
 
