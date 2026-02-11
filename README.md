@@ -32,6 +32,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   visionOS 1+, Linux, Windows
 * **Automatic Retry**: Opt-in retry with exponential backoff for rate
   limits (HTTP 429) and server errors (HTTP 5xx)
+* **Response Caching**: Opt-in in-memory HTTP response cache with
+  configurable TTL and entry limits
 * **Modern Swift**: Async/await throughout, strongly-typed models,
   protocol-based architecture
 
@@ -205,6 +207,32 @@ let retryConfig = RetryConfiguration(
 let tmdbClient = TMDbClient(
     apiKey: "<your-api-key>",
     configuration: TMDbConfiguration(retry: retryConfig)
+)
+```
+
+#### Response Caching
+
+Enable in-memory response caching to reduce redundant network requests:
+
+```swift
+// Use default caching (1-hour TTL, 100 entries)
+let configuration = TMDbConfiguration(cache: .default)
+let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: configuration)
+
+// Custom cache configuration
+let cacheConfig = CacheConfiguration(
+    defaultTTL: .seconds(1800),    // 30-minute TTL
+    maximumEntryCount: 200
+)
+let tmdbClient = TMDbClient(
+    apiKey: "<your-api-key>",
+    configuration: TMDbConfiguration(cache: cacheConfig)
+)
+
+// Combine retry and caching
+let tmdbClient = TMDbClient(
+    apiKey: "<your-api-key>",
+    configuration: TMDbConfiguration(retry: .default, cache: .default)
 )
 ```
 

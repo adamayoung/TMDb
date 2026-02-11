@@ -398,3 +398,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``RetryConfiguration``
 - ``RetryableErrors``
+
+### Cache Configuration
+
+- ``CacheConfiguration``

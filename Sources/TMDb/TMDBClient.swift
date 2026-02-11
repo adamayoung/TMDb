@@ -176,7 +176,8 @@ public final class TMDbClient: Sendable {
     ) {
         let wrappedHTTPClient = TMDbFactory.httpClient(
             wrapping: httpClient,
-            retryConfiguration: configuration.retry
+            retryConfiguration: configuration.retry,
+            cacheConfiguration: configuration.cache
         )
         let apiClient = TMDbFactory.apiClient(
             apiKey: apiKey, httpClient: wrappedHTTPClient

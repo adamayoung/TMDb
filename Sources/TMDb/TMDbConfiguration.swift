@@ -11,7 +11,8 @@ import Foundation
 /// Configuration options for the TMDb client.
 ///
 /// Use this struct to set default language and country values that will be applied
-/// to API requests when explicit values are not provided.
+/// to API requests when explicit values are not provided. Optionally enable
+/// automatic retry and response caching.
 ///
 /// ```swift
 /// let configuration = TMDbConfiguration(
@@ -63,21 +64,42 @@ public struct TMDbConfiguration: Sendable, Equatable {
     public let retry: RetryConfiguration?
 
     ///
-    /// Creates a TMDb configuration with optional default language, country, and retry settings.
+    /// The cache configuration for in-memory HTTP response caching.
+    ///
+    /// When set, successful GET responses are automatically cached in memory.
+    /// User-specific requests (with session IDs) bypass the cache. Any
+    /// successful POST or DELETE request invalidates the entire cache.
+    ///
+    /// When `nil` (the default), no response caching is performed.
+    ///
+    /// ```swift
+    /// let configuration = TMDbConfiguration(
+    ///     cache: .default
+    /// )
+    /// ```
+    ///
+    public let cache: CacheConfiguration?
+
+    ///
+    /// Creates a TMDb configuration with optional default language,
+    /// country, retry, and cache settings.
     ///
     /// - Parameters:
     ///   - defaultLanguage: The default ISO 639-1 language code. Defaults to `nil`.
     ///   - defaultCountry: The default ISO 3166-1 country code. Defaults to `nil`.
     ///   - retry: The retry configuration for automatic retry. Defaults to `nil` (no retry).
+    ///   - cache: The cache configuration for response caching. Defaults to `nil` (no caching).
     ///
     public init(
         defaultLanguage: String? = nil,
         defaultCountry: String? = nil,
-        retry: RetryConfiguration? = nil
+        retry: RetryConfiguration? = nil,
+        cache: CacheConfiguration? = nil
     ) {
         self.defaultLanguage = defaultLanguage
         self.defaultCountry = defaultCountry
         self.retry = retry
+        self.cache = cache
     }
 
     ///

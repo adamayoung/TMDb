@@ -14,8 +14,7 @@ import Foundation
 public protocol ConfigurationService: Sendable {
 
     ///
-    /// Returns the TMDb API system wide configuration information. The result is cached, so there is no overhead in
-    /// making multiple calls.
+    /// Returns the TMDb API system wide configuration information.
     ///
     /// [TMDb API - Configuration: Details](https://developer.themoviedb.org/reference/configuration-details)
     ///
@@ -49,6 +48,7 @@ public protocol ConfigurationService: Sendable {
     /// - Returns: Jobs and departments used on TMDb.
     ///
     func jobsByDepartment() async throws -> [Department]
+
     ///
     /// Returns the list of languages (ISO 639-1 tags) used throughout TMDb.
     ///
