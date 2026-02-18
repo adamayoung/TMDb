@@ -136,11 +136,56 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Check that new models have all required conformances (`Codable`, `Equatable`, `Hashable`, `Sendable`).
 - Verify new public API is exposed through `TMDbClient` and registered in `TMDbFactory`.
 - Check that DocC documentation is updated when public API changes (extensions in `TMDb.docc/Extensions/`, topics in `TMDb.docc/TMDb.md`).
-- When reviewing model changes or fixture accuracy, use TMDb MCP tools (`mcp__tmdb__*`) to verify responses match the live API.
+- When reviewing model changes or fixture accuracy, verify properties against the live TMDb API (see Model Verification below).
 - When needing to verify Apple APIs (concurrency safety, availability, behavior), use `mcp__claude_ai_sosumi__searchAppleDocumentation` and `mcp__claude_ai_sosumi__fetchAppleDocumentation` to check official documentation.
 - For deep Swift Concurrency analysis (async/await patterns, actor isolation, Sendable conformance, data races), invoke the `swift-concurrency` skill.
 - For Swift Testing review (test structure, macros, traits, parameterized tests), invoke the `swift-testing-expert` skill.
 - After reviewing, remind to run `/format` to apply formatting fixes.
+
+## Model Verification
+
+When reviewing new or changed models, verify that Swift properties match the TMDb API. Use two sources of truth:
+
+### 1. OpenAPI Specification
+
+The complete API spec is at: <https://developer.themoviedb.org/openapi/tmdb-api.json>
+
+Use `WebFetch` to retrieve the spec and check:
+- Required vs optional fields — required API fields should be non-optional Swift properties; nullable or absent fields should be optional (`?`).
+- Field names — verify `CodingKeys` map correctly between the API's `snake_case` JSON keys and the model's `camelCase` Swift properties.
+- Field types — confirm the Swift type matches the JSON schema type (e.g., `number` → `Double`, `integer` → `Int`, `string` with date format → `Date?`).
+- Missing fields — flag API response fields that exist in the spec but are absent from the model, especially if they appear in the endpoint being reviewed.
+
+### 2. TMDb MCP Server
+
+Use TMDb MCP tools (`mcp__tmdb__*`) to fetch live API responses and compare against the model. For example:
+- `mcp__tmdb__movie_details` — verify `Movie` properties
+- `mcp__tmdb__tv_series_details` — verify `TVSeries` properties
+- `mcp__tmdb__person_details` — verify `Person` properties
+- `mcp__tmdb__search_movie` — verify `MovieListItem` properties in paginated results
+
+### What to Check
+
+For each model under review:
+
+1. **Property completeness** — Compare model properties against the API response. Flag fields present in the API response that are missing from the model if they are relevant to the endpoint.
+2. **Optionality correctness** — A property should be optional (`?`) only if the API can return `null` or omit the field. Non-optional properties must always be present in the API response.
+3. **Type accuracy** — Verify Swift types match API types. Common mappings:
+   - `string` → `String`; `string` (date) → `Date?`; `string` (uri) → `URL?`
+   - `integer` → `Int`; `number` → `Double` or `Float`
+   - `boolean` → `Bool`
+   - `array` → `[Element]` or `[Element]?`
+   - `object` → nested model type
+4. **CodingKeys alignment** — If the model has custom `CodingKeys`, verify each case maps to the correct JSON key. Watch for typos or stale keys after renames.
+5. **JSON fixture accuracy** — Compare test fixtures in `Tests/TMDbTests/Resources/json/` against real API responses fetched via MCP. Fixtures should contain realistic values and include all fields the model decodes.
+6. **Custom decoder correctness** — If the model has a custom `init(from:)`, verify it handles all fields in the API response, including optional/nullable fields and any conditional decoding logic.
+
+### When to Verify
+
+- **Always** when the diff adds or modifies a model in `Sources/TMDb/Domain/Models/`.
+- **Always** when the diff changes a JSON fixture in `Tests/TMDbTests/Resources/json/`.
+- **Always** when the diff adds a new service endpoint that returns an existing model — the model may be missing fields the new endpoint includes.
+- **Selectively** when reviewing service implementations — spot-check that the response type matches what the endpoint actually returns.
 
 ## What to Ignore
 
@@ -161,7 +206,8 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - DocC documentation not updated for public API changes
 - Security concerns (force unwraps, data validation at system boundaries, API key handling)
 - Performance issues (unnecessary allocations, redundant decoding, inefficient algorithms)
-- JSON fixture accuracy (should match real TMDb API responses)
+- JSON fixture accuracy (should match real TMDb API responses — verify via MCP)
+- Model-API alignment (properties, optionality, types match the TMDb API — see Model Verification)
 - Request pattern correctness (path, query items, HTTP method)
 
 **Out of Scope:**
