@@ -56,6 +56,19 @@ struct SearchIntegrationTests {
         #expect(!movieList.results.isEmpty)
     }
 
+    @Test("searchMovies with year filter")
+    func searchMoviesWithYearFilter() async throws {
+        let query = "avengers"
+        let filter = MovieSearchFilter(year: 2012)
+
+        let movieList = try await searchService.searchMovies(
+            query: query,
+            filter: filter
+        )
+
+        #expect(!movieList.results.isEmpty)
+    }
+
     @Test("searchTVSeries")
     func searchTVSeries() async throws {
         let query = "game of thrones"

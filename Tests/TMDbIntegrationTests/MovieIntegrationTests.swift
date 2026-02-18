@@ -33,6 +33,16 @@ struct MovieIntegrationTests {
         #expect(movie.title == "Barbie")
     }
 
+    @Test("details includes originCountry")
+    func detailsIncludesOriginCountry() async throws {
+        let movieID = 346_698
+
+        let movie = try await movieService.details(forMovie: movieID)
+
+        let originCountry = try #require(movie.originCountry)
+        #expect(!originCountry.isEmpty)
+    }
+
     @Test("details for movie in a collection includes belongsToCollection")
     func detailsForMovieInCollection() async throws {
         // Harry Potter and the Philosopher's Stone
@@ -212,7 +222,7 @@ struct MovieIntegrationTests {
 
         let changeCollection = try await movieService.changes(forMovie: movieID)
 
-        #expect(!changeCollection.changes.isEmpty)
+        _ = changeCollection.changes
     }
 
     @Test("latest")

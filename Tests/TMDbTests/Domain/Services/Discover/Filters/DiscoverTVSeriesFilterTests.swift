@@ -190,4 +190,58 @@ struct DiscoverTVSeriesFilterTests {
         #expect(filter.watchRegion == "US")
     }
 
+    @Test("init with all parameters sets all properties")
+    func initWithAllParametersSetsAllProperties() {
+        let firstAirDateMin = Date(iso8601: "2024-01-01T00:00:00Z")
+        let firstAirDateMax = Date(iso8601: "2024-12-31T00:00:00Z")
+        let airDateMin = Date(iso8601: "2024-06-01T00:00:00Z")
+        let airDateMax = Date(iso8601: "2024-06-30T00:00:00Z")
+
+        let filter = DiscoverTVSeriesFilter(
+            originalLanguage: "en",
+            genres: [18, 35],
+            withoutGenres: [27, 53],
+            firstAirDateYear: 2024,
+            firstAirDateMin: firstAirDateMin,
+            firstAirDateMax: firstAirDateMax,
+            airDateMin: airDateMin,
+            airDateMax: airDateMax,
+            voteAverageMin: 7.0,
+            voteAverageMax: 10.0,
+            voteCountMin: 100,
+            voteCountMax: 1000,
+            networks: [213, 1024],
+            companies: [100, 200],
+            keywords: [10, 20],
+            withoutKeywords: [30, 40],
+            runtimeMin: 30,
+            runtimeMax: 60,
+            includeAdult: false,
+            watchProviders: [8, 9],
+            watchRegion: "US"
+        )
+
+        #expect(filter.originalLanguage == "en")
+        #expect(filter.genres == [18, 35])
+        #expect(filter.withoutGenres == [27, 53])
+        #expect(filter.firstAirDateYear == 2024)
+        #expect(filter.firstAirDateMin == firstAirDateMin)
+        #expect(filter.firstAirDateMax == firstAirDateMax)
+        #expect(filter.airDateMin == airDateMin)
+        #expect(filter.airDateMax == airDateMax)
+        #expect(filter.voteAverageMin == 7.0)
+        #expect(filter.voteAverageMax == 10.0)
+        #expect(filter.voteCountMin == 100)
+        #expect(filter.voteCountMax == 1000)
+        #expect(filter.networks == [213, 1024])
+        #expect(filter.companies == [100, 200])
+        #expect(filter.keywords == [10, 20])
+        #expect(filter.withoutKeywords == [30, 40])
+        #expect(filter.runtimeMin == 30)
+        #expect(filter.runtimeMax == 60)
+        #expect(filter.includeAdult == false)
+        #expect(filter.watchProviders == [8, 9])
+        #expect(filter.watchRegion == "US")
+    }
+
 }

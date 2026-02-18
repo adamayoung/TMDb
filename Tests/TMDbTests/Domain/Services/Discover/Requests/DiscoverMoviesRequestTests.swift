@@ -251,6 +251,30 @@ struct DiscoverMoviesRequestTests {
         )
     }
 
+    @Test("queryItems with multiple filter parameters")
+    func queryItemsWithMultipleFilterParameters() {
+        let filter = DiscoverMovieFilter(
+            voteAverageMin: 7.0,
+            voteAverageMax: 9.0,
+            companies: [420, 7505],
+            keywords: [9715, 180_547],
+            runtimeMin: 90,
+            runtimeMax: 180
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "vote_average.gte": "7.0",
+                "vote_average.lte": "9.0",
+                "with_companies": "420,7505",
+                "with_keywords": "9715,180547",
+                "with_runtime.gte": "90",
+                "with_runtime.lte": "180"
+            ]
+        )
+    }
+
     @Test("method is GET")
     func methodIsGet() {
         let request = DiscoverMoviesRequest()

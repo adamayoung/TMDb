@@ -138,8 +138,4 @@ private extension APIRequestQueryItems {
         }
     }
 
-    static func idsQueryItemValue(for ids: [Int]) -> String {
-        ids.map(\.description).joined(separator: ",")
-    }
-
 }

@@ -36,6 +36,19 @@ struct TVSeasonIntegrationTests {
         #expect(!(season.episodes ?? []).isEmpty)
     }
 
+    @Test("details includes voteAverage")
+    func detailsIncludesVoteAverage() async throws {
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let season = try await tvSeasonService.details(
+            forSeason: seasonNumber, inTVSeries: tvSeriesID
+        )
+
+        let voteAverage = try #require(season.voteAverage)
+        #expect(voteAverage >= 0)
+    }
+
     @Test("aggregateCredits")
     func aggregateCredits() async throws {
         let seasonNumber = 2

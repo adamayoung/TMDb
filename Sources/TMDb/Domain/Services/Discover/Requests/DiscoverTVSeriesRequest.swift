@@ -149,10 +149,6 @@ private extension APIRequestQueryItems {
         }
     }
 
-    static func idsQueryItemValue(for ids: [Int]) -> String {
-        ids.map(\.description).joined(separator: ",")
-    }
-
     static func dateString(from date: Date) -> String {
         DateFormatter.theMovieDatabase.string(from: date)
     }

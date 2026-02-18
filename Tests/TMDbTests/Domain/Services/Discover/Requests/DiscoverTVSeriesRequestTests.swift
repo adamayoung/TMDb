@@ -236,6 +236,30 @@ struct DiscoverTVSeriesRequestTests {
         )
     }
 
+    @Test("queryItems with multiple filter parameters")
+    func queryItemsWithMultipleFilterParameters() {
+        let filter = DiscoverTVSeriesFilter(
+            firstAirDateMin: Date(iso8601: "2024-01-01T00:00:00Z"),
+            firstAirDateMax: Date(iso8601: "2024-12-31T00:00:00Z"),
+            voteAverageMin: 7.0,
+            voteAverageMax: 9.0,
+            networks: [213],
+            keywords: [9715, 180_547]
+        )
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "first_air_date.gte": "2024-01-01",
+                "first_air_date.lte": "2024-12-31",
+                "vote_average.gte": "7.0",
+                "vote_average.lte": "9.0",
+                "with_networks": "213",
+                "with_keywords": "9715,180547"
+            ]
+        )
+    }
+
     @Test("method is GET")
     func methodIsGet() {
         let request = DiscoverTVSeriesRequest()
