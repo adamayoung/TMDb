@@ -32,6 +32,18 @@ let session = try await tmdbClient.authentication.createSession(
 )
 ```
 
+## Getting the Account ID
+
+Retrieve the user's account details to get their account ID, which is
+required for favorites, watchlists, and rated item requests.
+
+```swift
+let accountDetails = try await tmdbClient.account.details(
+    session: session
+)
+let accountID = accountDetails.id
+```
+
 ## Managing Favorites
 
 Add and remove movies and TV series from the user's favorites.

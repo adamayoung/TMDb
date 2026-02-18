@@ -36,13 +36,12 @@ vote average, and more.
 
 ```swift
 // Action & Adventure movies from the last year
+let currentYear = Calendar.current.component(.year, from: Date())
 let filter = DiscoverMovieFilter(
     genres: [28, 12],
-    releaseDateRange: DateRange(
-        minimum: Calendar.current.date(
-            byAdding: .year, value: -1, to: Date()
-        ),
-        maximum: Date()
+    primaryReleaseYear: .between(
+        start: currentYear - 1,
+        end: currentYear
     )
 )
 

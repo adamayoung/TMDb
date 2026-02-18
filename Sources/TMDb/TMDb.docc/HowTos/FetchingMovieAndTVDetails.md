@@ -104,7 +104,7 @@ if let usProvider = providers.first(where: {
     $0.countryCode == "US"
 }) {
     let streaming = usProvider.watchProviders.flatRate?.map(
-        \.providerName
+        \.name
     ) ?? []
     print("Streaming on: \(streaming.joined(separator: ", "))")
 }

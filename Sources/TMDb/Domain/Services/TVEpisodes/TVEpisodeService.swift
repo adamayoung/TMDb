@@ -116,8 +116,8 @@ public protocol TVEpisodeService: Sendable {
     /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Video filter.
     ///
@@ -403,8 +403,8 @@ public extension TVEpisodeService {
     /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Video filter.
     ///
