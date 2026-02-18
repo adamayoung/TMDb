@@ -154,6 +154,18 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Cosmetic changes that don't impact functionality
 - Refactoring suggestions unless directly related to correctness/safety
 
+## Adversarial Re-Evaluation
+
+After completing the initial review, re-read the diff and challenge every finding:
+
+1. **Verify each issue against the actual code** — confirm the problem exists and isn't a misreading of the diff.
+2. **Challenge severity levels** — would this actually cause a bug, or is it theoretical? Downgrade or remove findings that don't hold up.
+3. **Check for false positives** — does the existing codebase already handle the concern elsewhere? Is there context that makes the finding invalid?
+4. **Look for missed issues** — did the initial review overlook anything while focused on other areas?
+5. **Confirm findings are in scope** — does the issue relate to code changed in this diff, or is it a pre-existing concern being attributed to this commit?
+
+After re-evaluation, adjust the final output: remove withdrawn findings, update severity levels, and note any findings that were downgraded with a brief reason why.
+
 ## Reviewer Output Format
 
 ### Strengths

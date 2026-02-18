@@ -79,3 +79,11 @@ extension APIRequestQueryItem.Name {
     static let appendToResponse = APIRequestQueryItem.Name("append_to_response")
 
 }
+
+extension APIRequestQueryItems {
+
+    static func idsQueryItemValue(for ids: [Int]) -> String {
+        ids.map(\.description).joined(separator: ",")
+    }
+
+}

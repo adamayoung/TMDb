@@ -19,8 +19,8 @@ format:
 	@swiftlint --fix .
 	@swiftformat .
 
-.PHONY: lint format-check
-lint format-check:
+.PHONY: lint
+lint:
 	@swiftlint --strict .
 	@swiftformat --lint .
 

@@ -41,6 +41,24 @@ struct TVEpisodeServiceTests {
         #expect(episode.name == "What Is Dead May Never Die")
     }
 
+    @Test("details includes runtime and episodeType")
+    func detailsIncludesRuntimeAndEpisodeType() async throws {
+        let episodeNumber = 3
+        let seasonNumber = 2
+        let tvSeriesID = 1399
+
+        let episode = try await tvEpisodeService.details(
+            forEpisode: episodeNumber,
+            inSeason: seasonNumber,
+            inTVSeries: tvSeriesID
+        )
+
+        let runtime = try #require(episode.runtime)
+        #expect(runtime > 0)
+        let episodeType = try #require(episode.episodeType)
+        #expect(!episodeType.isEmpty)
+    }
+
     @Test("credits")
     func credits() async throws {
         let episodeNumber = 3

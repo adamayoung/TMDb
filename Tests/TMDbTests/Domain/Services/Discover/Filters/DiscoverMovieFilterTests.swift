@@ -169,6 +169,59 @@ struct DiscoverMovieFilterTests {
         #expect(filter.watchRegion == "US")
     }
 
+    @Test("init with all parameters sets all properties")
+    func initWithAllParametersSetsAllProperties() {
+        let people = [1, 2, 3]
+        let genres = [28, 12]
+        let withoutGenres = [27, 53]
+        let primaryReleaseYear = DiscoverMovieFilter
+            .PrimaryReleaseYearFilter.on(2024)
+        let companies = [100, 200]
+        let keywords = [10, 20]
+        let withoutKeywords = [30, 40]
+        let watchProviders = [8, 9]
+
+        let filter = DiscoverMovieFilter(
+            people: people,
+            originalLanguage: "en",
+            genres: genres,
+            withoutGenres: withoutGenres,
+            primaryReleaseYear: primaryReleaseYear,
+            voteAverageMin: 7.0,
+            voteAverageMax: 10.0,
+            voteCountMin: 100,
+            voteCountMax: 1000,
+            companies: companies,
+            keywords: keywords,
+            withoutKeywords: withoutKeywords,
+            runtimeMin: 90,
+            runtimeMax: 180,
+            includeAdult: false,
+            includeVideo: true,
+            watchProviders: watchProviders,
+            watchRegion: "US"
+        )
+
+        #expect(filter.people == people)
+        #expect(filter.originalLanguage == "en")
+        #expect(filter.genres == genres)
+        #expect(filter.withoutGenres == withoutGenres)
+        #expect(filter.primaryReleaseYear == primaryReleaseYear)
+        #expect(filter.voteAverageMin == 7.0)
+        #expect(filter.voteAverageMax == 10.0)
+        #expect(filter.voteCountMin == 100)
+        #expect(filter.voteCountMax == 1000)
+        #expect(filter.companies == companies)
+        #expect(filter.keywords == keywords)
+        #expect(filter.withoutKeywords == withoutKeywords)
+        #expect(filter.runtimeMin == 90)
+        #expect(filter.runtimeMax == 180)
+        #expect(filter.includeAdult == false)
+        #expect(filter.includeVideo == true)
+        #expect(filter.watchProviders == watchProviders)
+        #expect(filter.watchRegion == "US")
+    }
+
     @Test("primary release year filter on returns correct date bounds")
     func primaryReleaseYearFilterOnReturnsCorrectDateBounds() {
         let filter = DiscoverMovieFilter.PrimaryReleaseYearFilter.on(2024)
