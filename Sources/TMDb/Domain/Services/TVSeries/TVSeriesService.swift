@@ -202,7 +202,7 @@ public protocol TVSeriesService: Sendable {
     ) async throws -> TVSeriesPageableList
 
     ///
-    /// Returns a list current popular TV series.
+    /// Returns a list of current popular TV series.
     ///
     /// [TMDb API - TV Series Lists: Popular](https://developer.themoviedb.org/reference/tv-series-popular-list)
     ///
@@ -740,7 +740,7 @@ public extension TVSeriesService {
     }
 
     ///
-    /// Returns a list current popular TV series.
+    /// Returns a list of current popular TV series.
     ///
     /// [TMDb API - TV Series Lists: Popular](https://developer.themoviedb.org/reference/tv-series-popular-list)
     ///

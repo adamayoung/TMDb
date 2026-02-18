@@ -112,7 +112,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Whether or not the session was successfully delete.
+    /// - Returns: Whether or not the session was successfully deleted.
     ///
     @discardableResult
     func deleteSession(_ session: Session) async throws -> Bool

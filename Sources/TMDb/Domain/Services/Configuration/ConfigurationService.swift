@@ -34,7 +34,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Countries used throughout TMDb,
+    /// - Returns: Countries used throughout TMDb.
     ///
     func countries(language: String?) async throws -> [Country]
 
@@ -97,7 +97,7 @@ public extension ConfigurationService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: Countries used throughout TMDb,
+    /// - Returns: Countries used throughout TMDb.
     ///
     func countries(language: String? = nil) async throws -> [Country] {
         try await countries(language: language)

@@ -5,6 +5,8 @@
 //  Copyright © 2026 Adam Young.
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 
 ///
@@ -190,6 +192,21 @@ public protocol ChangesService: Sendable {
 
 public extension ChangesService {
 
+    ///
+    /// Returns a list of movie IDs that have been changed in the past 24
+    /// hours, or within the specified date range.
+    ///
+    /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
+    ///
+    /// - Parameters:
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changed movie IDs.
+    ///
     func movieChanges(
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -202,6 +219,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns a list of TV series IDs that have been changed in the past
+    /// 24 hours, or within the specified date range.
+    ///
+    /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
+    ///
+    /// - Parameters:
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changed TV series IDs.
+    ///
     func tvSeriesChanges(
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -214,6 +246,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns a list of person IDs that have been changed in the past
+    /// 24 hours, or within the specified date range.
+    ///
+    /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
+    ///
+    /// - Parameters:
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changed person IDs.
+    ///
     func personChanges(
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -226,6 +273,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns the changes for a specific movie.
+    ///
+    /// [TMDb API - Movies: Changes](https://developer.themoviedb.org/reference/movie-changes)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the movie.
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changes for the movie.
+    ///
     func movieDetails(
         forMovie id: Movie.ID,
         startDate: Date? = nil,
@@ -240,6 +302,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns the changes for a specific TV series.
+    ///
+    /// [TMDb API - TV Series: Changes](https://developer.themoviedb.org/reference/tv-series-changes)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the TV series.
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changes for the TV series.
+    ///
     func tvSeriesDetails(
         forTVSeries id: TVSeries.ID,
         startDate: Date? = nil,
@@ -254,6 +331,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns the changes for a specific person.
+    ///
+    /// [TMDb API - People: Changes](https://developer.themoviedb.org/reference/person-changes)
+    ///
+    /// - Parameters:
+    ///    - id: The identifier of the person.
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changes for the person.
+    ///
     func personDetails(
         forPerson id: Person.ID,
         startDate: Date? = nil,
@@ -268,6 +360,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns the changes for a specific TV season.
+    ///
+    /// [TMDb API - TV Seasons: Changes](https://developer.themoviedb.org/reference/tv-season-changes-by-id)
+    ///
+    /// - Parameters:
+    ///    - seasonID: The identifier of the TV season.
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changes for the TV season.
+    ///
     func tvSeasonDetails(
         forSeason seasonID: Int,
         startDate: Date? = nil,
@@ -282,6 +389,21 @@ public extension ChangesService {
         )
     }
 
+    ///
+    /// Returns the changes for a specific TV episode.
+    ///
+    /// [TMDb API - TV Episodes: Changes](https://developer.themoviedb.org/reference/tv-episode-changes-by-id)
+    ///
+    /// - Parameters:
+    ///    - episodeID: The identifier of the TV episode.
+    ///    - startDate: Filter from this date.
+    ///    - endDate: Filter to this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: Changes for the TV episode.
+    ///
     func tvEpisodeDetails(
         forEpisode episodeID: Int,
         startDate: Date? = nil,
