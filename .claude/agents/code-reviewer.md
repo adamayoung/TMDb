@@ -231,6 +231,33 @@ Sources/TMDb/TMDb.docc/
 - For each new or changed public symbol, check that the corresponding DocC catalog file references it.
 - Flag missing entries as **High** severity — `make build-docs` runs with warnings-as-errors, so missing documentation references will break the build.
 
+## Documentation Code Examples
+
+When the diff includes new or changed documentation articles (`.docc/HowTos/`, `.docc/GettingStarted/`), verify that every Swift code example is correct. Documentation code examples are not compiled, so errors silently mislead users.
+
+### What to Check
+
+1. **Property names** — Verify key paths and property accesses use the Swift property name, not the JSON `CodingKey`. For example, if `WatchProvider` has `public let name: String` with `CodingKeys` mapping `case name = "providerName"`, the example must use `\.name`, not `\.providerName`.
+2. **Type existence** — Every type referenced in an example must exist in the codebase. Search for `struct`/`class`/`enum` declarations to confirm. Flag invented types (e.g., `DateRange` when no such type exists).
+3. **Initialiser and method signatures** — Verify that init parameters and method calls in examples match the actual API. Check parameter names, types, and labels against the real declarations.
+4. **Variable completeness** — Every variable used in a code example must be defined within that example or in a preceding example in the same article. Flag undefined variables (e.g., `accountID` used without being obtained first).
+5. **`try`/`await` correctness** — Synchronous methods should not have `try` or `await`. Async throwing methods must have both. Check the actual declaration.
+
+### How to Verify
+
+- For each code example in the diff, identify every type, property, method, and initialiser used.
+- Use `Grep` or `Glob` to locate the actual declarations in `Sources/TMDb/`.
+- Compare the example usage against the real API signature.
+- Pay special attention to `CodingKeys` — the JSON key name is often different from the Swift property name, and examples must use the Swift property name.
+
+## Consistency of Repeated Fixes
+
+When the diff applies the same textual fix (e.g., grammar correction, parameter rename) to multiple locations, verify completeness:
+
+1. **Protocol + extension pairs** — Service protocols have a protocol block and a `public extension` block. Doc comments are duplicated in both. If a fix is applied to one, it must be applied to the other. Grep for the old text to confirm no occurrences remain.
+2. **All methods, not just similar ones** — A pattern like `"of a TV."` may appear in `images()`, `videos()`, and other methods. Fixes must cover all occurrences, not just methods with identical surrounding context.
+3. **Verification step** — After identifying a repeated fix, search the entire file for the old text to confirm zero remaining occurrences. Flag any misses.
+
 ## What to Ignore
 
 - Files in `.swiftpm/` or `.build/` directories (build artifacts only).
@@ -253,6 +280,8 @@ Sources/TMDb/TMDb.docc/
 - JSON fixture accuracy (should match real TMDb API responses — verify via MCP)
 - Model-API alignment (properties, optionality, types match the TMDb API — see Model Verification)
 - Request pattern correctness (path, query items, HTTP method)
+- Documentation code example correctness (types, properties, signatures — see Documentation Code Examples)
+- Completeness of repeated fixes across protocol + extension pairs (see Consistency of Repeated Fixes)
 
 **Out of Scope:**
 - Cosmetic changes that don't impact functionality
