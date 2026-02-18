@@ -9,3 +9,4 @@
 ### Movies
 
 - ``movies(forKeyword:page:language:)``
+- ``movies(forKeyword:)``

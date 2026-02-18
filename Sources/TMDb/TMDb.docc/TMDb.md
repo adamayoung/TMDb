@@ -46,10 +46,18 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/CreatingTMDbClient>
 - <doc:/CreatingTMDbAPIKey>
 - ``TMDbClient``
+- ``TMDbConfiguration``
+- ``TMDbError``
 
-### API Configuration
+### How-To Guides
 
+- <doc:/FetchingMovieAndTVDetails>
+- <doc:/DiscoveringMoviesAndTVSeries>
+- <doc:/SearchingForContent>
+- <doc:/WorkingWithTrending>
+- <doc:/UsingAutoPagination>
 - <doc:/GeneratingImageURLs>
+- <doc:/ManagingUserAccounts>
 
 ### Movies
 
@@ -68,6 +76,13 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MovieListItem``
 - ``MovieImageFilter``
 - ``MovieVideoFilter``
+- ``ImageMetadata``
+- ``VideoMetadata``
+- ``VideoType``
+- ``VideoSize``
+- ``CastMember``
+- ``CrewMember``
+- ``Gender``
 - ``MovieReleaseDatesByCountry``
 - ``ReleaseDate``
 - ``ReleaseType``
@@ -91,6 +106,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeriesDetailsResponse``
 - ``TVSeriesAppendOption``
 - ``TVSeriesPageableList``
+- ``TVSeriesListItem``
+- ``Creator``
 - ``ShowCredits``
 - ``TVSeriesAggregateCredits``
 - ``AggregateCastMember``
@@ -160,6 +177,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TranslationCollection``
 - ``Translation``
 - ``TVEpisodeTranslationData``
+- ``TVEpisodeAirDate``
 - ``AccountStates``
 - ``Session``
 - ``ChangeCollection``
@@ -185,6 +203,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Show``
 - ``PersonExternalLinksCollection``
 - ``PersonPageableList``
+- ``PersonListItem``
 - ``TaggedImage``
 - ``TaggedImageMedia``
 - ``TaggedImagePageableList``
@@ -261,6 +280,12 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``CreditMovie``
 - ``CreditTVSeries``
 - ``CreditPerson``
+- ``ShowCastCredit``
+- ``ShowCrewCredit``
+- ``MovieCastCredit``
+- ``MovieCrewCredit``
+- ``TVSeriesCastCredit``
+- ``TVSeriesCrewCredit``
 
 ### Reviews
 
@@ -317,6 +342,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``WatchProviderService``
 - ``WatchProvider``
+- ``ShowWatchProvidersByCountry``
+- ``ShowWatchProvider``
 - ``Country``
 - ``WatchProviderFilter``
 
@@ -400,6 +427,25 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``RetryConfiguration``
 - ``RetryableErrors``
+
+### External Links
+
+- ``ExternalLink``
+- ``IMDbLink``
+- ``FacebookLink``
+- ``InstagramLink``
+- ``TwitterLink``
+- ``TikTokLink``
+- ``WikiDataLink``
+
+### Common Types
+
+- ``Status``
+- ``ShowType``
+- ``Show``
+- ``SpokenLanguage``
+- ``ProductionCountry``
+- ``ProductionCompany``
 
 ### Cache Configuration
 

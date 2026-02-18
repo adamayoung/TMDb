@@ -180,7 +180,7 @@ public protocol MovieService: Sendable {
     ///
     /// [TMDb API - Movie Lists: Now Playing](https://developer.themoviedb.org/reference/movie-now-playing-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -203,7 +203,7 @@ public protocol MovieService: Sendable {
     ///
     /// [TMDb API - Movie List: Popular](https://developer.themoviedb.org/reference/movie-popular-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -222,7 +222,7 @@ public protocol MovieService: Sendable {
     ///
     /// [TMDb API - Movie List: Top Rated](https://developer.themoviedb.org/reference/movie-top-rated-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -241,7 +241,7 @@ public protocol MovieService: Sendable {
     ///
     /// [TMDb API - Movie List: Upcoming](https://developer.themoviedb.org/reference/movie-upcoming-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -657,7 +657,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie Lists: Now Playing](https://developer.themoviedb.org/reference/movie-now-playing-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -682,7 +682,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie List: Popular](https://developer.themoviedb.org/reference/movie-popular-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -707,7 +707,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie List: Top Rated](https://developer.themoviedb.org/reference/movie-top-rated-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.
@@ -732,7 +732,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie List: Upcoming](https://developer.themoviedb.org/reference/movie-upcoming-list)
     ///
-    /// - precondition: `page` can be between `1` and `1000`.
+    /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - page: The page of results to return.

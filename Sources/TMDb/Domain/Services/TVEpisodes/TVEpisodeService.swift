@@ -29,7 +29,7 @@ public protocol TVEpisodeService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A episode of the matching TV series.
+    /// - Returns: An episode of the matching TV series.
     ///
     func details(
         forEpisode episodeNumber: Int,
@@ -94,14 +94,14 @@ public protocol TVEpisodeService: Sendable {
     /// [TMDb API - TV Episode: Images](https://developer.themoviedb.org/reference/tv-episode-images)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
-    ///    - tvSeriesID: The identifier of the TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of images for the matching TV's episode.
+    /// - Returns: A collection of images for the matching TV episode.
     ///
     func images(
         forEpisode episodeNumber: Int,
@@ -116,14 +116,14 @@ public protocol TVEpisodeService: Sendable {
     /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of videos for the matching TV's episode.
+    /// - Returns: A collection of videos for the matching TV episode.
     ///
     func videos(
         forEpisode episodeNumber: Int,
@@ -287,7 +287,7 @@ public extension TVEpisodeService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A episode of the matching TV series.
+    /// - Returns: An episode of the matching TV series.
     ///
     func details(
         forEpisode episodeNumber: Int,
@@ -374,14 +374,14 @@ public extension TVEpisodeService {
     /// [TMDb API - TV Episode: Images](https://developer.themoviedb.org/reference/tv-episode-images)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
-    ///    - tvSeriesID: The identifier of the TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of images for the matching TV's episode.
+    /// - Returns: A collection of images for the matching TV episode.
     ///
     func images(
         forEpisode episodeNumber: Int,
@@ -403,14 +403,14 @@ public extension TVEpisodeService {
     /// [TMDb API - TV Episode: Videos](https://developer.themoviedb.org/reference/tv-episode-videos)
     ///
     /// - Parameters:
-    ///    - episodeNumber: The episode number of a TV.
-    ///    - seasonNumber: The season number of a TV.
+    ///    - episodeNumber: The episode number of a TV series.
+    ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of videos for the matching TV's episode.
+    /// - Returns: A collection of videos for the matching TV episode.
     ///
     func videos(
         forEpisode episodeNumber: Int,

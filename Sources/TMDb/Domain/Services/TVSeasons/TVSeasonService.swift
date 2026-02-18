@@ -120,7 +120,7 @@ public protocol TVSeasonService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of images for the matching TV's season.
+    /// - Returns: A collection of images for the matching TV season.
     ///
     func images(
         forSeason seasonNumber: Int,
@@ -377,7 +377,7 @@ public extension TVSeasonService {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    /// - Returns: A collection of images for the matching TV's season.
+    /// - Returns: A collection of images for the matching TV season.
     ///
     func images(
         forSeason seasonNumber: Int,

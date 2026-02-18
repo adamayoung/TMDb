@@ -8,7 +8,20 @@
 import Foundation
 
 ///
-/// The TMDb client.
+/// The main entry point for interacting with The Movie Database (TMDb)
+/// API.
+///
+/// Use `TMDbClient` to access all TMDb services including movies, TV
+/// series, people, search, discover, and more.
+///
+/// ```swift
+/// let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
+///
+/// let movie = try await tmdbClient.movies.details(forMovie: 550)
+/// print(movie.title) // "Fight Club"
+/// ```
+///
+/// - SeeAlso: <doc:/CreatingTMDbClient>
 ///
 public final class TMDbClient: Sendable {
 
@@ -18,127 +31,151 @@ public final class TMDbClient: Sendable {
     public let configuration: TMDbConfiguration
 
     ///
-    /// TMDb account.
+    /// Provides access to user account features including favorites,
+    /// watchlists, rated items, and account details.
     ///
     public let account: any AccountService
 
     ///
-    /// TMDb authentication.
+    /// Provides access to authentication features including session
+    /// management, guest sessions, and request tokens.
     ///
     public let authentication: any AuthenticationService
 
     ///
-    /// TMDb certifications.
+    /// Provides access to content certifications (e.g. G, PG, R) for
+    /// movies and TV series.
     ///
     public let certifications: any CertificationService
 
     ///
-    /// TMDb collections.
+    /// Provides access to movie collection details, images, and
+    /// translations.
     ///
     public let collections: any CollectionService
 
     ///
-    /// TMDb companies.
+    /// Provides access to production company details, alternative names,
+    /// and logos.
     ///
     public let companies: any CompanyService
 
     ///
-    /// TMDb configuration.
+    /// Provides access to API configuration including image base URLs,
+    /// countries, languages, jobs, and timezones.
     ///
     public let configurations: any ConfigurationService
 
     ///
-    /// TMDb credits.
+    /// Provides access to credit details including person and media
+    /// information.
     ///
     public let credits: any CreditService
 
     ///
-    /// TMDb discover.
+    /// Provides access to movie and TV series discovery with advanced
+    /// filtering and sorting options.
     ///
     public let discover: any DiscoverService
 
     ///
-    /// TMDb find.
+    /// Provides access to finding movies, TV series, and people by
+    /// external IDs (e.g. IMDb, TVDB).
     ///
     public let find: any FindService
 
     ///
-    /// TMDb genres.
+    /// Provides access to genre lists for movies and TV series.
     ///
     public let genres: any GenreService
 
     ///
-    /// TMDb guest sessions.
+    /// Provides access to guest session rated movies, TV series, and
+    /// episodes.
     ///
     public let guestSessions: any GuestSessionService
 
     ///
-    /// TMDb keywords.
+    /// Provides access to keyword details and discovering movies by
+    /// keyword.
     ///
     public let keywords: any KeywordService
 
     ///
-    /// TMDb lists.
+    /// Provides access to custom list management including creating,
+    /// updating, and deleting lists.
     ///
     public let lists: any ListService
 
     ///
-    /// TMDb movies.
+    /// Provides access to movie details, credits, images, videos,
+    /// reviews, recommendations, similar movies, and more.
     ///
     public let movies: any MovieService
 
     ///
-    /// TMDb TV networks.
+    /// Provides access to TV network details, alternative names, and
+    /// logos.
     ///
     public let networks: any NetworkService
 
     ///
-    /// TMDb people.
+    /// Provides access to person details, combined credits, movie and
+    /// TV credits, images, and external links.
     ///
     public let people: any PersonService
 
     ///
-    /// TMDb reviews.
+    /// Provides access to review details including author and media
+    /// information.
     ///
     public let reviews: any ReviewService
 
     ///
-    /// TMDb search.
+    /// Provides access to searching for movies, TV series, people,
+    /// collections, companies, and keywords.
     ///
     public let search: any SearchService
 
     ///
-    /// TMDb trending.
+    /// Provides access to trending movies, TV series, people, and all
+    /// media types.
     ///
     public let trending: any TrendingService
 
     ///
-    /// TMDb TV episodes.
+    /// Provides access to TV episode details, credits, images, videos,
+    /// and translations.
     ///
     public let tvEpisodes: any TVEpisodeService
 
     ///
-    /// TMDb TV episode groups.
+    /// Provides access to TV episode group details and episode
+    /// organization.
     ///
     public let tvEpisodeGroups: any TVEpisodeGroupService
 
     ///
-    /// TMDb TV seasons.
+    /// Provides access to TV season details, aggregate credits, images,
+    /// videos, translations, and watch providers.
     ///
     public let tvSeasons: any TVSeasonService
 
     ///
-    /// TMDb TV series.
+    /// Provides access to TV series details, credits, images, videos,
+    /// reviews, recommendations, similar series, and more.
     ///
     public let tvSeries: any TVSeriesService
 
     ///
-    /// TMDb watch providers.
+    /// Provides access to streaming and watch provider availability by
+    /// region.
     ///
     public let watchProviders: any WatchProviderService
 
     ///
-    /// TMDb changes.
+    /// Provides access to tracking changes made to movies, TV series,
+    /// people, seasons, and episodes.
     ///
     public let changes: any ChangesService
 

@@ -11,12 +11,13 @@ generated.
 ## Fetching Images Configuration
 
 Before an image's full URL can be generated from its path, the
-``ImagesConfiguration`` needs to be fetched from TMDb.
+``ImagesConfiguration`` needs to be fetched from TMDb using your
+``TMDbClient`` instance.
 
 ```swift
-let configurationService = ConfigurationService()
+let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 
-let apiConfiguration = try await configurationService.apiConfiguration()
+let apiConfiguration = try await tmdbClient.configurations.apiConfiguration()
 let imagesConfiguration = apiConfiguration.images
 ```
 
@@ -26,10 +27,11 @@ Once you have the ``ImagesConfiguration`` it can be used to generate the full
 URL to an image.
 
 ```swift
-let movieService = MovieService()
-let barbieMovie = try await movieService.details(forMovie: 346698)
+let barbieMovie = try await tmdbClient.movies.details(forMovie: 346698)
 
-let barbiePosterURL = imagesConfiguration.posterURL(for: barbieMovie.posterPath)
+let barbiePosterURL = imagesConfiguration.posterURL(
+    for: barbieMovie.posterPath
+)
 ```
 
 > Tip: You can add the `idealWidth` parameter to generate the URL for the image
