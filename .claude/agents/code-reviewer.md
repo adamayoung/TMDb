@@ -135,7 +135,7 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Verify new services follow the protocol + `TMDb`-prefixed implementation pattern.
 - Check that new models have all required conformances (`Codable`, `Equatable`, `Hashable`, `Sendable`).
 - Verify new public API is exposed through `TMDbClient` and registered in `TMDbFactory`.
-- Check that DocC documentation is updated when public API changes (extensions in `TMDb.docc/Extensions/`, topics in `TMDb.docc/TMDb.md`).
+- Check that DocC catalog is updated when public API changes (see DocC Catalog Sync below).
 - When reviewing model changes or fixture accuracy, verify properties against the live TMDb API (see Model Verification below).
 - When needing to verify Apple APIs (concurrency safety, availability, behavior), use `mcp__claude_ai_sosumi__searchAppleDocumentation` and `mcp__claude_ai_sosumi__fetchAppleDocumentation` to check official documentation.
 - For deep Swift Concurrency analysis (async/await patterns, actor isolation, Sendable conformance, data races), invoke the `swift-concurrency` skill.
@@ -187,6 +187,50 @@ For each model under review:
 - **Always** when the diff adds a new service endpoint that returns an existing model — the model may be missing fields the new endpoint includes.
 - **Selectively** when reviewing service implementations — spot-check that the response type matches what the endpoint actually returns.
 
+## DocC Catalog Sync
+
+The DocC catalog at `Sources/TMDb/TMDb.docc/` must stay in sync with the public API. When reviewing changes that add, rename, or remove public declarations, verify the catalog is updated.
+
+### Catalog Structure
+
+```
+Sources/TMDb/TMDb.docc/
+├── TMDb.md                          # Main catalog — topic sections for all public types
+├── Extensions/
+│   ├── TMDbClient.md                # TMDbClient properties (one entry per service)
+│   ├── <ServiceName>Service.md      # Method groupings by category (one per service)
+│   └── ...
+├── GettingStarted/                  # Getting started guides
+├── HowTos/                         # How-to articles
+└── Resources/                       # Images and assets
+```
+
+### What to Verify
+
+**When a new service is added:**
+1. `Extensions/<ServiceName>Service.md` exists with method references grouped by topic.
+2. `TMDb.md` has a new topic section listing the service protocol and its return types.
+3. `Extensions/TMDbClient.md` lists the new service property under "TMDb Areas".
+
+**When a new method is added to an existing service:**
+1. The method is listed in `Extensions/<ServiceName>Service.md` under the appropriate topic heading, using double-backtick syntax: `` ``methodName(param:param:)`` ``.
+
+**When a new public model or type is added:**
+1. The type appears in the appropriate topic section of `TMDb.md` (e.g., a new movie-related model goes under "### Movies").
+
+**When a public declaration is renamed or removed:**
+1. All references in `TMDb.md`, `Extensions/TMDbClient.md`, and the relevant `Extensions/<ServiceName>Service.md` are updated or removed.
+
+**When `///` doc comments change on existing declarations:**
+1. No catalog changes needed — inline doc comments are picked up automatically by DocC.
+2. However, if the change adds a new `- Parameter`, `- Returns`, or `- Throws` to a service method, confirm the method is already listed in its extension file.
+
+### How to Verify
+
+- Read the diff for any changes to files in `Sources/TMDb/Domain/Services/` (protocol definitions), `Sources/TMDb/Domain/Models/`, or `Sources/TMDb/TMDbClient.swift`.
+- For each new or changed public symbol, check that the corresponding DocC catalog file references it.
+- Flag missing entries as **High** severity — `make build-docs` runs with warnings-as-errors, so missing documentation references will break the build.
+
 ## What to Ignore
 
 - Files in `.swiftpm/` or `.build/` directories (build artifacts only).
@@ -202,8 +246,8 @@ For each model under review:
 - Edge cases not covered
 - Clean separation of concerns between layers
 - Missing or incorrect model conformances
-- Public API missing documentation
-- DocC documentation not updated for public API changes
+- Public API missing `///` documentation
+- DocC catalog not updated for public API changes (see DocC Catalog Sync)
 - Security concerns (force unwraps, data validation at system boundaries, API key handling)
 - Performance issues (unnecessary allocations, redundant decoding, inefficient algorithms)
 - JSON fixture accuracy (should match real TMDb API responses — verify via MCP)
