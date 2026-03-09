@@ -33,6 +33,11 @@ public enum VideoSize: Int, Codable, Equatable, Hashable, Sendable {
     case s1080 = 1080
 
     ///
+    /// 2160.
+    ///
+    case s2160 = 2160
+
+    ///
     /// Unknown.
     ///
     case unknown

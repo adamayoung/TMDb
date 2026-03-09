@@ -23,7 +23,8 @@ extension Person {
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
         popularity: Double? = 6.8,
         imdbID: String? = nil,
-        homepageURL: URL? = URL(string: "https://www.person.com")
+        homepageURL: URL? = URL(string: "https://www.person.com"),
+        isAdultOnly: Bool? = false
     ) -> Person {
         Person(
             id: id,
@@ -38,7 +39,8 @@ extension Person {
             profilePath: profilePath,
             popularity: popularity,
             imdbID: imdbID,
-            homepageURL: homepageURL
+            homepageURL: homepageURL,
+            isAdultOnly: isAdultOnly
         )
     }
 

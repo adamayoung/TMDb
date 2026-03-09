@@ -147,6 +147,50 @@ private extension APIRequestQueryItems {
         if let watchRegion = filter.watchRegion {
             self[.watchRegion] = watchRegion
         }
+
+        applyExtendedFilters(from: filter)
+    }
+
+    mutating func applyExtendedFilters(
+        from filter: DiscoverTVSeriesFilter
+    ) {
+        if let withOriginCountry = filter.withOriginCountry {
+            self[.withOriginCountry] = withOriginCountry
+        }
+
+        if let withStatus = filter.withStatus {
+            self[.withStatus] = withStatus
+                .map { "\($0.rawValue)" }
+                .joined(separator: "|")
+        }
+
+        if let withType = filter.withType {
+            self[.withType] = withType
+                .map { "\($0.rawValue)" }
+                .joined(separator: "|")
+        }
+
+        if let withoutCompanies = filter.withoutCompanies {
+            self[.withoutCompanies] = Self.idsQueryItemValue(
+                for: withoutCompanies
+            )
+        }
+
+        if let types = filter.watchMonetizationTypes {
+            self[.withWatchMonetizationTypes] = types
+                .map(\.rawValue)
+                .joined(separator: "|")
+        }
+
+        if let screenedTheatrically = filter.screenedTheatrically {
+            self[.screenedTheatrically] = screenedTheatrically
+        }
+
+        if let withPeople = filter.withPeople {
+            self[.withPeople] = Self.idsQueryItemValue(
+                for: withPeople
+            )
+        }
     }
 
     static func dateString(from date: Date) -> String {

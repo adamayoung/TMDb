@@ -6,5 +6,13 @@
     "media_id": 118340,
     "media_title": "Guardians of the Galaxy",
     "media_type": "movie",
-    "url": "https://www.themoviedb.org/review/5488c29bc3a3686f4a00004a"
+    "author_details": {
+        "name": "Travis Bell",
+        "username": "travisbell",
+        "avatar_path": "/utBEztLMnid37MJOhm4Nfg0Frv6.jpg",
+        "rating": 8.0
+    },
+    "url": "https://www.themoviedb.org/review/5488c29bc3a3686f4a00004a",
+    "created_at": "2014-12-10T17:22:35.385Z",
+    "updated_at": "2021-06-23T15:57:54.428Z"
 }

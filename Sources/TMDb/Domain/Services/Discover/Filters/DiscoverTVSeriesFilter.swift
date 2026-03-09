@@ -118,11 +118,47 @@ public struct DiscoverTVSeriesFilter: Sendable {
     public let watchRegion: String?
 
     ///
+    /// Filter by origin country (ISO-3166-1).
+    ///
+    public let withOriginCountry: String?
+
+    ///
+    /// TV series status filter.
+    ///
+    public let withStatus: [TVSeriesStatus]?
+
+    ///
+    /// Show type filter.
+    ///
+    public let withType: [TVSeriesType]?
+
+    ///
+    /// A list of production company identifiers to exclude.
+    ///
+    public let withoutCompanies: [Company.ID]?
+
+    ///
+    /// Filter by watch monetization type.
+    ///
+    public let watchMonetizationTypes: [WatchMonetizationType]?
+
+    ///
+    /// Filter for TV series that have been screened theatrically.
+    ///
+    public let screenedTheatrically: Bool?
+
+    ///
+    /// A list of Person identifiers to filter by.
+    ///
+    public let withPeople: [Person.ID]?
+
+    ///
     /// Creates a discover TV series filter.
     ///
     /// - Parameters:
     ///   - originalLanguage: The original language of the TV series.
-    ///   - genres: A list of genre identifiers associated with the TV series.
+    ///   - genres: A list of genre identifiers associated with the
+    ///     TV series.
     ///   - withoutGenres: A list of genre identifiers to exclude.
     ///   - firstAirDateYear: The first air date year.
     ///   - firstAirDateMin: Minimum first air date.
@@ -142,6 +178,14 @@ public struct DiscoverTVSeriesFilter: Sendable {
     ///   - includeAdult: Include adult content.
     ///   - watchProviders: A list of watch provider identifiers.
     ///   - watchRegion: ISO-3166-1 watch region code.
+    ///   - withOriginCountry: Filter by origin country.
+    ///   - withStatus: TV series status filter.
+    ///   - withType: Show type filter.
+    ///   - withoutCompanies: Production company identifiers to exclude.
+    ///   - watchMonetizationTypes: Filter by monetization type.
+    ///   - screenedTheatrically: Filter for theatrically screened
+    ///     series.
+    ///   - withPeople: A list of Person identifiers to filter by.
     ///
     public init(
         originalLanguage: String? = nil,
@@ -164,7 +208,14 @@ public struct DiscoverTVSeriesFilter: Sendable {
         runtimeMax: Int? = nil,
         includeAdult: Bool? = nil,
         watchProviders: [WatchProvider.ID]? = nil,
-        watchRegion: String? = nil
+        watchRegion: String? = nil,
+        withOriginCountry: String? = nil,
+        withStatus: [TVSeriesStatus]? = nil,
+        withType: [TVSeriesType]? = nil,
+        withoutCompanies: [Company.ID]? = nil,
+        watchMonetizationTypes: [WatchMonetizationType]? = nil,
+        screenedTheatrically: Bool? = nil,
+        withPeople: [Person.ID]? = nil
     ) {
         self.originalLanguage = originalLanguage
         self.genres = genres
@@ -187,6 +238,13 @@ public struct DiscoverTVSeriesFilter: Sendable {
         self.includeAdult = includeAdult
         self.watchProviders = watchProviders
         self.watchRegion = watchRegion
+        self.withOriginCountry = withOriginCountry
+        self.withStatus = withStatus
+        self.withType = withType
+        self.withoutCompanies = withoutCompanies
+        self.watchMonetizationTypes = watchMonetizationTypes
+        self.screenedTheatrically = screenedTheatrically
+        self.withPeople = withPeople
     }
 
 }

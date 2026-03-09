@@ -27,5 +27,12 @@
             "provider_id": 300,
             "provider_name": "Pluto TV"
         }
+    ],
+    "ads": [
+        {
+            "logo_path": "/xL9SUR63qrEjFZAhtsipskeAMR7.jpg",
+            "provider_id": 1899,
+            "provider_name": "Max"
+        }
     ]
 }

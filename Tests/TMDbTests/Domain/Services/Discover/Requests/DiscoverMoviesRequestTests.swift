@@ -10,7 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.requests, .discover))
-struct DiscoverMoviesRequestTests {
+struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
 
     @Test("path is correct")
     func path() {
@@ -203,6 +203,98 @@ struct DiscoverMoviesRequestTests {
             request.queryItems == [
                 "with_watch_providers": "8,9",
                 "watch_region": "US"
+            ]
+        )
+    }
+
+    @Test("queryItems with certification")
+    func queryItemsWithCertification() {
+        let filter = DiscoverMovieFilter(certification: "PG-13")
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(request.queryItems == ["certification": "PG-13"])
+    }
+
+    @Test("queryItems with certification range")
+    func queryItemsWithCertificationRange() {
+        let filter = DiscoverMovieFilter(
+            certificationMin: "G",
+            certificationMax: "R",
+            certificationCountry: "US"
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "certification.gte": "G",
+                "certification.lte": "R",
+                "certification_country": "US"
+            ]
+        )
+    }
+
+    @Test("queryItems with release types")
+    func queryItemsWithReleaseTypes() {
+        let filter = DiscoverMovieFilter(
+            releaseTypes: [.theatrical, .digital]
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["with_release_type": "3|4"]
+        )
+    }
+
+    @Test("queryItems with cast")
+    func queryItemsWithCast() {
+        let filter = DiscoverMovieFilter(withCast: [287, 819])
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_cast": "287,819"])
+    }
+
+    @Test("queryItems with crew")
+    func queryItemsWithCrew() {
+        let filter = DiscoverMovieFilter(withCrew: [1223, 5678])
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["with_crew": "1223,5678"]
+        )
+    }
+
+    @Test("queryItems with origin country")
+    func queryItemsWithOriginCountry() {
+        let filter = DiscoverMovieFilter(withOriginCountry: "US")
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["with_origin_country": "US"]
+        )
+    }
+
+    @Test("queryItems with without companies")
+    func queryItemsWithWithoutCompanies() {
+        let filter = DiscoverMovieFilter(
+            withoutCompanies: [420, 7505]
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["without_companies": "420,7505"]
+        )
+    }
+
+    @Test("queryItems with watch monetization types")
+    func queryItemsWithWatchMonetizationTypes() {
+        let filter = DiscoverMovieFilter(
+            watchMonetizationTypes: [.flatrate, .rent]
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "with_watch_monetization_types": "flatrate|rent"
             ]
         )
     }

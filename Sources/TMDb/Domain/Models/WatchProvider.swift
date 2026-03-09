@@ -30,21 +30,29 @@ public struct WatchProvider: Identifiable, Codable, Equatable, Hashable, Sendabl
     public let logoPath: URL?
 
     ///
+    /// Display priority for ordering providers.
+    ///
+    public let displayPriority: Int?
+
+    ///
     /// Creates a watch provider object.
     ///
     /// - Parameters:
     ///    - id: Watch Provider identifier.
     ///    - name: Watch Provider name.
     ///    - logoPath: Watch Provider logo path.
+    ///    - displayPriority: Display priority for ordering providers.
     ///
     public init(
         id: Int,
         name: String,
-        logoPath: URL? = nil
+        logoPath: URL? = nil,
+        displayPriority: Int? = nil
     ) {
         self.id = id
         self.name = name
         self.logoPath = logoPath
+        self.displayPriority = displayPriority
     }
 
 }
@@ -55,7 +63,7 @@ extension WatchProvider {
         case id = "providerId"
         case name = "providerName"
         case logoPath
-
+        case displayPriority
     }
 
 }

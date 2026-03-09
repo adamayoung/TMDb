@@ -36,6 +36,12 @@ struct ReviewIntegrationTests {
         #expect(review.id == reviewID)
         #expect(review.author == "Travis Bell")
         #expect(review.content.isEmpty == false)
+
+        let authorDetails = try #require(review.authorDetails)
+        #expect(!authorDetails.username.isEmpty)
+
+        #expect(review.createdAt != nil)
+        #expect(review.updatedAt != nil)
     }
 
 }

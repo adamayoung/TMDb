@@ -80,6 +80,11 @@ public struct Person: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let homepageURL: URL?
 
     ///
+    /// Is adult only content.
+    ///
+    public let isAdultOnly: Bool?
+
+    ///
     /// Creates a person object.
     ///
     /// - Parameters:
@@ -96,6 +101,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - popularity: Person's current popularity.
     ///    - imdbID: Person's IMDb identifier.
     ///    - homepageURL: Person's web site.
+    ///    - isAdultOnly: Is adult only content.
     ///
     public init(
         id: Int,
@@ -110,7 +116,8 @@ public struct Person: Identifiable, Codable, Equatable, Hashable, Sendable {
         profilePath: URL? = nil,
         popularity: Double? = nil,
         imdbID: String? = nil,
-        homepageURL: URL? = nil
+        homepageURL: URL? = nil,
+        isAdultOnly: Bool? = nil
     ) {
         self.id = id
         self.name = name
@@ -125,6 +132,7 @@ public struct Person: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.popularity = popularity
         self.imdbID = imdbID
         self.homepageURL = homepageURL
+        self.isAdultOnly = isAdultOnly
     }
 
 }
@@ -145,6 +153,7 @@ extension Person {
         case popularity
         case imdbID = "imdbId"
         case homepageURL = "homepage"
+        case isAdultOnly = "adult"
     }
 
     ///
@@ -188,6 +197,10 @@ extension Person {
 
             return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
         }()
+
+        self.isAdultOnly = try container.decodeIfPresent(
+            Bool.self, forKey: .isAdultOnly
+        )
     }
 
 }

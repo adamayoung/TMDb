@@ -38,7 +38,12 @@ public struct ShowWatchProvider: Codable, Equatable, Hashable, Sendable {
     public let rent: [WatchProvider]?
 
     ///
-    /// Creates a show credits object.
+    /// A list of ad-supported watch providers.
+    ///
+    public let ads: [WatchProvider]?
+
+    ///
+    /// Creates a show watch provider object.
     ///
     /// - Parameters:
     ///   - link: A link to the watch provider.
@@ -46,19 +51,22 @@ public struct ShowWatchProvider: Codable, Equatable, Hashable, Sendable {
     ///   - flatRate: A list of flat rate watch providers.
     ///   - buy: A list of watch providers to buy from.
     ///   - rent: A list of watch providers to rent from.
+    ///   - ads: A list of ad-supported watch providers.
     ///
     public init(
         link: URL? = nil,
         free: [WatchProvider]? = nil,
         flatRate: [WatchProvider]? = nil,
         buy: [WatchProvider]? = nil,
-        rent: [WatchProvider]? = nil
+        rent: [WatchProvider]? = nil,
+        ads: [WatchProvider]? = nil
     ) {
         self.link = link
         self.free = free
         self.flatRate = flatRate
         self.buy = buy
         self.rent = rent
+        self.ads = ads
     }
 
 }
@@ -71,16 +79,30 @@ public extension ShowWatchProvider {
         case flatRate = "flatrate"
         case buy
         case rent
+        case ads
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let linkString = try container.decodeIfPresent(String.self, forKey: .link)
+        let linkString = try container.decodeIfPresent(
+            String.self, forKey: .link
+        )
         self.link = linkString.flatMap { $0.isEmpty ? nil : URL(string: $0) }
-        self.free = try container.decodeIfPresent([WatchProvider].self, forKey: .free)
-        self.flatRate = try container.decodeIfPresent([WatchProvider].self, forKey: .flatRate)
-        self.buy = try container.decodeIfPresent([WatchProvider].self, forKey: .buy)
-        self.rent = try container.decodeIfPresent([WatchProvider].self, forKey: .rent)
+        self.free = try container.decodeIfPresent(
+            [WatchProvider].self, forKey: .free
+        )
+        self.flatRate = try container.decodeIfPresent(
+            [WatchProvider].self, forKey: .flatRate
+        )
+        self.buy = try container.decodeIfPresent(
+            [WatchProvider].self, forKey: .buy
+        )
+        self.rent = try container.decodeIfPresent(
+            [WatchProvider].self, forKey: .rent
+        )
+        self.ads = try container.decodeIfPresent(
+            [WatchProvider].self, forKey: .ads
+        )
     }
 
     func encode(to encoder: Encoder) throws {
@@ -90,6 +112,7 @@ public extension ShowWatchProvider {
         try container.encodeIfPresent(flatRate, forKey: .flatRate)
         try container.encodeIfPresent(buy, forKey: .buy)
         try container.encodeIfPresent(rent, forKey: .rent)
+        try container.encodeIfPresent(ads, forKey: .ads)
     }
 
 }

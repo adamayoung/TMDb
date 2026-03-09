@@ -28,6 +28,11 @@ public enum TVSeriesSort: CustomStringConvertible, Equatable, Sendable {
     case voteAverage(descending: Bool = true)
 
     ///
+    /// By vote count.
+    ///
+    case voteCount(descending: Bool = true)
+
+    ///
     /// A textual representation of this sort.
     ///
     public var description: String {
@@ -42,6 +47,7 @@ extension TVSeriesSort {
         static let popularity = "popularity"
         static let firstAirDate = "first_air_date"
         static let voteAverage = "vote_average"
+        static let voteCount = "vote_count"
     }
 
     private var fieldName: String {
@@ -54,6 +60,9 @@ extension TVSeriesSort {
 
         case .voteAverage:
             FieldName.voteAverage
+
+        case .voteCount:
+            FieldName.voteCount
         }
     }
 
@@ -66,6 +75,9 @@ extension TVSeriesSort {
             descending
 
         case .voteAverage(let descending):
+            descending
+
+        case .voteCount(let descending):
             descending
         }
     }

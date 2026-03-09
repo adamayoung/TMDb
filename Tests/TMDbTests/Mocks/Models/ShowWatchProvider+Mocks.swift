@@ -15,14 +15,16 @@ extension ShowWatchProvider {
         free: [WatchProvider]? = [.netflix],
         flatRate: [WatchProvider]? = [.netflix],
         buy: [WatchProvider]? = [.netflix],
-        rent: [WatchProvider]? = [.netflix]
+        rent: [WatchProvider]? = [.netflix],
+        ads: [WatchProvider]? = [.netflix]
     ) -> ShowWatchProvider {
         ShowWatchProvider(
             link: link,
             free: free,
             flatRate: flatRate,
             buy: buy,
-            rent: rent
+            rent: rent,
+            ads: ads
         )
     }
 }

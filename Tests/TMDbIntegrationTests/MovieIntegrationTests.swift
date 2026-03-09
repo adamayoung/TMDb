@@ -67,6 +67,20 @@ struct MovieIntegrationTests {
         #expect(credits.id == movieID)
         #expect(!credits.cast.isEmpty)
         #expect(!credits.crew.isEmpty)
+
+        let castMember = try #require(credits.cast.first)
+        #expect(!castMember.name.isEmpty)
+        #expect(castMember.originalName != nil)
+        #expect(castMember.knownForDepartment != nil)
+        #expect(castMember.popularity != nil)
+        #expect(castMember.isAdultOnly != nil)
+
+        let crewMember = try #require(credits.crew.first)
+        #expect(!crewMember.name.isEmpty)
+        #expect(crewMember.originalName != nil)
+        #expect(crewMember.knownForDepartment != nil)
+        #expect(crewMember.popularity != nil)
+        #expect(crewMember.isAdultOnly != nil)
     }
 
     @Test("reviews")
@@ -76,6 +90,11 @@ struct MovieIntegrationTests {
         let reviewList = try await movieService.reviews(forMovie: movieID)
 
         #expect(!reviewList.results.isEmpty)
+
+        let review = try #require(reviewList.results.first)
+        #expect(review.authorDetails != nil)
+        #expect(review.createdAt != nil)
+        #expect(review.updatedAt != nil)
     }
 
     @Test("images")
@@ -181,8 +200,18 @@ struct MovieIntegrationTests {
         let result = try await movieService.watchProviders(forMovie: movieID)
 
         #expect(!result.isEmpty)
-        let usProvider = try #require(result.first { $0.countryCode == "US" })
+        let usProvider = try #require(
+            result.first { $0.countryCode == "US" }
+        )
         #expect(usProvider.watchProviders.link != nil)
+
+        let providers = usProvider.watchProviders
+        let anyProvider = try #require(
+            (providers.flatRate ?? []).first
+                ?? (providers.buy ?? []).first
+                ?? (providers.rent ?? []).first
+        )
+        #expect(anyProvider.displayPriority != nil)
     }
 
     @Test("alternativeTitles")

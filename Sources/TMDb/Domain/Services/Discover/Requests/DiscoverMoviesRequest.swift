@@ -136,6 +136,58 @@ private extension APIRequestQueryItems {
         if let watchRegion = filter.watchRegion {
             self[.watchRegion] = watchRegion
         }
+
+        applyCertificationAndExtendedFilters(from: filter)
+    }
+
+    mutating func applyCertificationAndExtendedFilters(
+        from filter: DiscoverMovieFilter
+    ) {
+        if let certification = filter.certification {
+            self[.certification] = certification
+        }
+
+        if let certificationMin = filter.certificationMin {
+            self[.certificationMin] = certificationMin
+        }
+
+        if let certificationMax = filter.certificationMax {
+            self[.certificationMax] = certificationMax
+        }
+
+        if let certificationCountry = filter.certificationCountry {
+            self[.certificationCountry] = certificationCountry
+        }
+
+        if let releaseTypes = filter.releaseTypes {
+            self[.withReleaseType] = releaseTypes
+                .map { "\($0.rawValue)" }
+                .joined(separator: "|")
+        }
+
+        if let withCast = filter.withCast {
+            self[.withCast] = Self.idsQueryItemValue(for: withCast)
+        }
+
+        if let withCrew = filter.withCrew {
+            self[.withCrew] = Self.idsQueryItemValue(for: withCrew)
+        }
+
+        if let withOriginCountry = filter.withOriginCountry {
+            self[.withOriginCountry] = withOriginCountry
+        }
+
+        if let withoutCompanies = filter.withoutCompanies {
+            self[.withoutCompanies] = Self.idsQueryItemValue(
+                for: withoutCompanies
+            )
+        }
+
+        if let types = filter.watchMonetizationTypes {
+            self[.withWatchMonetizationTypes] = types
+                .map(\.rawValue)
+                .joined(separator: "|")
+        }
     }
 
 }
