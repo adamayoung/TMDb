@@ -32,6 +32,11 @@ struct VideoSizeTests {
         #expect(VideoSize.s1080.rawValue == 1080)
     }
 
+    @Test("s2160 video size rawValue is 2160")
+    func s2160VideoSizeReturnsRawValue() {
+        #expect(VideoSize.s2160.rawValue == 2160)
+    }
+
     @Test("JSON decoding of VideoSize", .tags(.decoding))
     func decodeWhenInvalidValueReturnsUnknown() throws {
         let data = Data("{\"videoSize\": 999}".utf8)

@@ -35,6 +35,7 @@ struct TVSeasonTests {
         #expect(result.airDate == tvSeason.airDate)
         #expect(result.posterPath == tvSeason.posterPath)
         #expect(result.voteAverage == tvSeason.voteAverage)
+        #expect(result.episodeCount == tvSeason.episodeCount)
         #expect(result.episodes == tvSeason.episodes)
     }
 
@@ -48,6 +49,7 @@ struct TVSeasonTests {
         airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
         posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
         voteAverage: 8.3,
+        episodeCount: 10,
         episodes: nil
     )
 

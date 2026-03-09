@@ -10,7 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.requests, .discover))
-struct DiscoverTVSeriesRequestTests {
+struct DiscoverTVSeriesRequestTests { // swiftlint:disable:this type_body_length
 
     @Test("path is correct")
     func path() {
@@ -216,6 +216,80 @@ struct DiscoverTVSeriesRequestTests {
                 "with_watch_providers": "8,9",
                 "watch_region": "US"
             ]
+        )
+    }
+
+    @Test("queryItems with origin country")
+    func queryItemsWithOriginCountry() {
+        let filter = DiscoverTVSeriesFilter(withOriginCountry: "US")
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["with_origin_country": "US"]
+        )
+    }
+
+    @Test("queryItems with status")
+    func queryItemsWithStatus() {
+        let filter = DiscoverTVSeriesFilter(withStatus: [0, 3])
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_status": "0,3"])
+    }
+
+    @Test("queryItems with type")
+    func queryItemsWithType() {
+        let filter = DiscoverTVSeriesFilter(withType: [2, 4])
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_type": "2,4"])
+    }
+
+    @Test("queryItems with without companies")
+    func queryItemsWithWithoutCompanies() {
+        let filter = DiscoverTVSeriesFilter(
+            withoutCompanies: [420, 7505]
+        )
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["without_companies": "420,7505"]
+        )
+    }
+
+    @Test("queryItems with watch monetization types")
+    func queryItemsWithWatchMonetizationTypes() {
+        let filter = DiscoverTVSeriesFilter(
+            watchMonetizationTypes: [.flatrate, .buy]
+        )
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "with_watch_monetization_types": "flatrate|buy"
+            ]
+        )
+    }
+
+    @Test("queryItems with screened theatrically")
+    func queryItemsWithScreenedTheatrically() {
+        let filter = DiscoverTVSeriesFilter(
+            screenedTheatrically: true
+        )
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["screened_theatrically": "true"]
+        )
+    }
+
+    @Test("queryItems with people")
+    func queryItemsWithPeople() {
+        let filter = DiscoverTVSeriesFilter(withPeople: [287, 819])
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["with_people": "287,819"]
         )
     }
 

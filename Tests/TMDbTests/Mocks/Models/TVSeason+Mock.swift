@@ -18,6 +18,7 @@ extension TVSeason {
         airDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         posterPath: URL? = nil,
         voteAverage: Double? = nil,
+        episodeCount: Int? = 10,
         episodes: [TVEpisode]? = .mocks
     ) -> TVSeason {
         TVSeason(
@@ -28,6 +29,7 @@ extension TVSeason {
             airDate: airDate,
             posterPath: posterPath,
             voteAverage: voteAverage,
+            episodeCount: episodeCount,
             episodes: episodes
         )
     }

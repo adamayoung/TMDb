@@ -24,7 +24,45 @@ struct ReviewTests {
         #expect(result.mediaID == review.mediaID)
         #expect(result.mediaTitle == review.mediaTitle)
         #expect(result.mediaType == review.mediaType)
+
+        let authorDetails = try #require(result.authorDetails)
+        #expect(authorDetails.name == review.authorDetails?.name)
+        #expect(authorDetails.username == review.authorDetails?.username)
+        #expect(authorDetails.avatarPath == review.authorDetails?.avatarPath)
+        #expect(authorDetails.rating == review.authorDetails?.rating)
+
         #expect(result.url == review.url)
+        #expect(result.createdAt != nil)
+        #expect(result.updatedAt != nil)
+    }
+
+    @Test(
+        "JSON decoding of Review without optional data",
+        .tags(.decoding)
+    )
+    func decodeWithoutOptionalDataReturnsReview() throws {
+        let json = """
+        {
+            "id": "abc123",
+            "author": "Test Author",
+            "content": "Test content"
+        }
+        """
+        let data = try #require(json.data(using: .utf8))
+        let result = try JSONDecoder.theMovieDatabase
+            .decode(Review.self, from: data)
+
+        #expect(result.id == "abc123")
+        #expect(result.author == "Test Author")
+        #expect(result.content == "Test content")
+        #expect(result.languageCode == nil)
+        #expect(result.mediaID == nil)
+        #expect(result.mediaTitle == nil)
+        #expect(result.mediaType == nil)
+        #expect(result.authorDetails == nil)
+        #expect(result.url == nil)
+        #expect(result.createdAt == nil)
+        #expect(result.updatedAt == nil)
     }
 
     private let review = Review(
@@ -37,6 +75,12 @@ struct ReviewTests {
         mediaID: 118_340,
         mediaTitle: "Guardians of the Galaxy",
         mediaType: "movie",
+        authorDetails: ReviewAuthorDetails(
+            name: "Travis Bell",
+            username: "travisbell",
+            avatarPath: URL(string: "/utBEztLMnid37MJOhm4Nfg0Frv6.jpg"),
+            rating: 8.0
+        ),
         url: URL(
             string: "https://www.themoviedb.org/review/5488c29bc3a3686f4a00004a"
         )

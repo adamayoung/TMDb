@@ -10,7 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.filters, .discover))
-struct DiscoverMovieFilterTests {
+struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with default values creates filter with nil properties")
     func initWithDefaultValuesCreatesFilterWithNilProperties() {
@@ -34,6 +34,16 @@ struct DiscoverMovieFilterTests {
         #expect(filter.includeVideo == nil)
         #expect(filter.watchProviders == nil)
         #expect(filter.watchRegion == nil)
+        #expect(filter.certification == nil)
+        #expect(filter.certificationMin == nil)
+        #expect(filter.certificationMax == nil)
+        #expect(filter.certificationCountry == nil)
+        #expect(filter.releaseTypes == nil)
+        #expect(filter.withCast == nil)
+        #expect(filter.withCrew == nil)
+        #expect(filter.withOriginCountry == nil)
+        #expect(filter.withoutCompanies == nil)
+        #expect(filter.watchMonetizationTypes == nil)
     }
 
     @Test("init with people sets people property")
@@ -169,8 +179,92 @@ struct DiscoverMovieFilterTests {
         #expect(filter.watchRegion == "US")
     }
 
+    @Test("init with certification sets certification property")
+    func initWithCertificationSetsCertificationProperty() {
+        let filter = DiscoverMovieFilter(certification: "PG-13")
+
+        #expect(filter.certification == "PG-13")
+    }
+
+    @Test("init with certification min sets property")
+    func initWithCertificationMinSetsCertificationMinProperty() {
+        let filter = DiscoverMovieFilter(certificationMin: "G")
+
+        #expect(filter.certificationMin == "G")
+    }
+
+    @Test("init with certification max sets property")
+    func initWithCertificationMaxSetsCertificationMaxProperty() {
+        let filter = DiscoverMovieFilter(certificationMax: "R")
+
+        #expect(filter.certificationMax == "R")
+    }
+
+    @Test("init with certification country sets property")
+    func initWithCertificationCountrySetsProperty() {
+        let filter = DiscoverMovieFilter(certificationCountry: "US")
+
+        #expect(filter.certificationCountry == "US")
+    }
+
+    @Test("init with release types sets property")
+    func initWithReleaseTypesSetsProperty() {
+        let releaseTypes = [3, 4]
+
+        let filter = DiscoverMovieFilter(releaseTypes: releaseTypes)
+
+        #expect(filter.releaseTypes == releaseTypes)
+    }
+
+    @Test("init with cast sets with cast property")
+    func initWithCastSetsWithCastProperty() {
+        let withCast = [287, 819]
+
+        let filter = DiscoverMovieFilter(withCast: withCast)
+
+        #expect(filter.withCast == withCast)
+    }
+
+    @Test("init with crew sets with crew property")
+    func initWithCrewSetsWithCrewProperty() {
+        let withCrew = [1223, 5678]
+
+        let filter = DiscoverMovieFilter(withCrew: withCrew)
+
+        #expect(filter.withCrew == withCrew)
+    }
+
+    @Test("init with origin country sets property")
+    func initWithOriginCountrySetsProperty() {
+        let filter = DiscoverMovieFilter(withOriginCountry: "US")
+
+        #expect(filter.withOriginCountry == "US")
+    }
+
+    @Test("init with without companies sets property")
+    func initWithWithoutCompaniesSetsProperty() {
+        let withoutCompanies = [420, 7505]
+
+        let filter = DiscoverMovieFilter(
+            withoutCompanies: withoutCompanies
+        )
+
+        #expect(filter.withoutCompanies == withoutCompanies)
+    }
+
+    @Test("init with watch monetization types sets property")
+    func initWithWatchMonetizationTypesSetsProperty() {
+        let types: [WatchMonetizationType] = [.flatrate, .free]
+
+        let filter = DiscoverMovieFilter(
+            watchMonetizationTypes: types
+        )
+
+        #expect(filter.watchMonetizationTypes == types)
+    }
+
     @Test("init with all parameters sets all properties")
-    func initWithAllParametersSetsAllProperties() {
+    func initWithAllParametersSetsAllProperties() { // swiftlint:disable:this function_body_length
         let people = [1, 2, 3]
         let genres = [28, 12]
         let withoutGenres = [27, 53]
@@ -180,6 +274,11 @@ struct DiscoverMovieFilterTests {
         let keywords = [10, 20]
         let withoutKeywords = [30, 40]
         let watchProviders = [8, 9]
+
+        let withoutCompanies = [999]
+        let monetizationTypes: [WatchMonetizationType] = [
+            .flatrate, .rent
+        ]
 
         let filter = DiscoverMovieFilter(
             people: people,
@@ -199,7 +298,17 @@ struct DiscoverMovieFilterTests {
             includeAdult: false,
             includeVideo: true,
             watchProviders: watchProviders,
-            watchRegion: "US"
+            watchRegion: "US",
+            certification: "PG-13",
+            certificationMin: "G",
+            certificationMax: "R",
+            certificationCountry: "US",
+            releaseTypes: [3, 4],
+            withCast: [287],
+            withCrew: [1223],
+            withOriginCountry: "US",
+            withoutCompanies: withoutCompanies,
+            watchMonetizationTypes: monetizationTypes
         )
 
         #expect(filter.people == people)
@@ -220,6 +329,16 @@ struct DiscoverMovieFilterTests {
         #expect(filter.includeVideo == true)
         #expect(filter.watchProviders == watchProviders)
         #expect(filter.watchRegion == "US")
+        #expect(filter.certification == "PG-13")
+        #expect(filter.certificationMin == "G")
+        #expect(filter.certificationMax == "R")
+        #expect(filter.certificationCountry == "US")
+        #expect(filter.releaseTypes == [3, 4])
+        #expect(filter.withCast == [287])
+        #expect(filter.withCrew == [1223])
+        #expect(filter.withOriginCountry == "US")
+        #expect(filter.withoutCompanies == withoutCompanies)
+        #expect(filter.watchMonetizationTypes == monetizationTypes)
     }
 
     @Test("primary release year filter on returns correct date bounds")

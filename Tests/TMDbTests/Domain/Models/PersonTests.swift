@@ -29,6 +29,7 @@ struct PersonTests {
         #expect(result.popularity == person.popularity)
         #expect(result.imdbID == person.imdbID)
         #expect(result.homepageURL == person.homepageURL)
+        #expect(result.isAdultOnly == person.isAdultOnly)
     }
 
     @Test("JSON decoding of Person when homepage is empty string", .tags(.decoding))
@@ -65,7 +66,8 @@ extension PersonTests {
             profilePath: URL(string: "/kU3B75TyRiCgE270EyZnHjfivoq.jpg"),
             popularity: 10.647,
             imdbID: "nm0000093",
-            homepageURL: nil
+            homepageURL: nil,
+            isAdultOnly: false
         )
     }
 

@@ -49,9 +49,24 @@ Sendable {
     public let mediaType: String?
 
     ///
+    /// Author details of the review.
+    ///
+    public let authorDetails: ReviewAuthorDetails?
+
+    ///
     /// URL of the review.
     ///
     public let url: URL?
+
+    ///
+    /// Date the review was created.
+    ///
+    public let createdAt: Date?
+
+    ///
+    /// Date the review was last updated.
+    ///
+    public let updatedAt: Date?
 
     ///
     /// Creates a review object.
@@ -64,7 +79,10 @@ Sendable {
     ///    - mediaID: Media identifier.
     ///    - mediaTitle: Media title.
     ///    - mediaType: Media type.
+    ///    - authorDetails: Author details of the review.
     ///    - url: URL of the review.
+    ///    - createdAt: Date the review was created.
+    ///    - updatedAt: Date the review was last updated.
     ///
     public init(
         id: String,
@@ -74,7 +92,10 @@ Sendable {
         mediaID: Int? = nil,
         mediaTitle: String? = nil,
         mediaType: String? = nil,
-        url: URL? = nil
+        authorDetails: ReviewAuthorDetails? = nil,
+        url: URL? = nil,
+        createdAt: Date? = nil,
+        updatedAt: Date? = nil
     ) {
         self.id = id
         self.author = author
@@ -83,7 +104,10 @@ Sendable {
         self.mediaID = mediaID
         self.mediaTitle = mediaTitle
         self.mediaType = mediaType
+        self.authorDetails = authorDetails
         self.url = url
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
     }
 
 }
@@ -98,7 +122,53 @@ extension Review {
         case mediaID = "mediaId"
         case mediaTitle
         case mediaType
+        case authorDetails
         case url
+        case createdAt
+        case updatedAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(String.self, forKey: .id)
+        self.author = try container.decode(String.self, forKey: .author)
+        self.content = try container.decode(String.self, forKey: .content)
+        self.languageCode = try container.decodeIfPresent(
+            String.self, forKey: .languageCode
+        )
+        self.mediaID = try container.decodeIfPresent(Int.self, forKey: .mediaID)
+        self.mediaTitle = try container.decodeIfPresent(
+            String.self, forKey: .mediaTitle
+        )
+        self.mediaType = try container.decodeIfPresent(
+            String.self, forKey: .mediaType
+        )
+        self.authorDetails = try container.decodeIfPresent(
+            ReviewAuthorDetails.self, forKey: .authorDetails
+        )
+        self.url = try container.decodeIfPresent(URL.self, forKey: .url)
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime, .withFractionalSeconds
+        ]
+
+        if let createdAtString = try container.decodeIfPresent(
+            String.self, forKey: .createdAt
+        ) {
+            self.createdAt = formatter.date(from: createdAtString)
+        } else {
+            self.createdAt = nil
+        }
+
+        if let updatedAtString = try container.decodeIfPresent(
+            String.self, forKey: .updatedAt
+        ) {
+            self.updatedAt = formatter.date(from: updatedAtString)
+        } else {
+            self.updatedAt = nil
+        }
     }
 
 }

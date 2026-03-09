@@ -103,13 +103,67 @@ public struct DiscoverMovieFilter: Sendable {
     public let watchRegion: String?
 
     ///
+    /// Certification rating (e.g., "PG-13").
+    ///
+    public let certification: String?
+
+    ///
+    /// Minimum certification rating.
+    ///
+    public let certificationMin: String?
+
+    ///
+    /// Maximum certification rating.
+    ///
+    public let certificationMax: String?
+
+    ///
+    /// Country for certification filter (ISO-3166-1).
+    ///
+    public let certificationCountry: String?
+
+    ///
+    /// Release type filter.
+    ///
+    /// Values: 1=Premiere, 2=TheatricalLimited, 3=Theatrical,
+    /// 4=Digital, 5=Physical, 6=TV.
+    ///
+    public let releaseTypes: [Int]?
+
+    ///
+    /// A list of cast member Person identifiers to filter by.
+    ///
+    public let withCast: [Int]?
+
+    ///
+    /// A list of crew member Person identifiers to filter by.
+    ///
+    public let withCrew: [Int]?
+
+    ///
+    /// Filter by origin country (ISO-3166-1).
+    ///
+    public let withOriginCountry: String?
+
+    ///
+    /// A list of production company identifiers to exclude.
+    ///
+    public let withoutCompanies: [Int]?
+
+    ///
+    /// Filter by watch monetization type.
+    ///
+    public let watchMonetizationTypes: [WatchMonetizationType]?
+
+    ///
     /// Creates a discover movies filter.
     ///
     /// - Parameters:
-    ///   - people: A list of Person identifiers which to return only movies
-    ///     they have appeared in.
+    ///   - people: A list of Person identifiers which to return only
+    ///     movies they have appeared in.
     ///   - originalLanguage: The original language of the movie.
-    ///   - genres: A list of genre identifiers associated with the movie.
+    ///   - genres: A list of genre identifiers associated with the
+    ///     movie.
     ///   - withoutGenres: A list of genre identifiers to exclude.
     ///   - primaryReleaseYear: The date of movie release.
     ///   - voteAverageMin: Minimum vote average score.
@@ -125,6 +179,16 @@ public struct DiscoverMovieFilter: Sendable {
     ///   - includeVideo: Include video content.
     ///   - watchProviders: A list of watch provider identifiers.
     ///   - watchRegion: ISO-3166-1 watch region code.
+    ///   - certification: Certification rating (e.g., "PG-13").
+    ///   - certificationMin: Minimum certification rating.
+    ///   - certificationMax: Maximum certification rating.
+    ///   - certificationCountry: Country for certification filter.
+    ///   - releaseTypes: Release type filter values.
+    ///   - withCast: A list of cast member Person identifiers.
+    ///   - withCrew: A list of crew member Person identifiers.
+    ///   - withOriginCountry: Filter by origin country.
+    ///   - withoutCompanies: Company identifiers to exclude.
+    ///   - watchMonetizationTypes: Filter by monetization type.
     ///
     public init(
         people: [Person.ID]? = nil,
@@ -144,7 +208,17 @@ public struct DiscoverMovieFilter: Sendable {
         includeAdult: Bool? = nil,
         includeVideo: Bool? = nil,
         watchProviders: [WatchProvider.ID]? = nil,
-        watchRegion: String? = nil
+        watchRegion: String? = nil,
+        certification: String? = nil,
+        certificationMin: String? = nil,
+        certificationMax: String? = nil,
+        certificationCountry: String? = nil,
+        releaseTypes: [Int]? = nil,
+        withCast: [Int]? = nil,
+        withCrew: [Int]? = nil,
+        withOriginCountry: String? = nil,
+        withoutCompanies: [Int]? = nil,
+        watchMonetizationTypes: [WatchMonetizationType]? = nil
     ) {
         self.people = people
         self.originalLanguage = originalLanguage
@@ -164,6 +238,16 @@ public struct DiscoverMovieFilter: Sendable {
         self.includeVideo = includeVideo
         self.watchProviders = watchProviders
         self.watchRegion = watchRegion
+        self.certification = certification
+        self.certificationMin = certificationMin
+        self.certificationMax = certificationMax
+        self.certificationCountry = certificationCountry
+        self.releaseTypes = releaseTypes
+        self.withCast = withCast
+        self.withCrew = withCrew
+        self.withOriginCountry = withOriginCountry
+        self.withoutCompanies = withoutCompanies
+        self.watchMonetizationTypes = watchMonetizationTypes
     }
 
 }

@@ -18,7 +18,10 @@ extension Review {
         mediaID: Int? = nil,
         mediaTitle: String? = nil,
         mediaType: String? = nil,
-        url: URL? = nil
+        authorDetails: ReviewAuthorDetails? = nil,
+        url: URL? = nil,
+        createdAt: Date? = nil,
+        updatedAt: Date? = nil
     ) -> Review {
         Review(
             id: id,
@@ -28,7 +31,10 @@ extension Review {
             mediaID: mediaID,
             mediaTitle: mediaTitle,
             mediaType: mediaType,
-            url: url
+            authorDetails: authorDetails,
+            url: url,
+            createdAt: createdAt,
+            updatedAt: updatedAt
         )
     }
 

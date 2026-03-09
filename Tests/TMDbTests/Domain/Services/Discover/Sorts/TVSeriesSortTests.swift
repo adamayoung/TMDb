@@ -54,4 +54,18 @@ struct TVSeriesSortTests {
         #expect(sort.description == "vote_average.desc")
     }
 
+    @Test("voteCount ascending description is vote_count.asc")
+    func voteCountAscendingReturnsRawValue() {
+        let sort = TVSeriesSort.voteCount(descending: false)
+
+        #expect(sort.description == "vote_count.asc")
+    }
+
+    @Test("voteCount descending description is vote_count.desc")
+    func voteCountDescendingReturnsRawValue() {
+        let sort = TVSeriesSort.voteCount(descending: true)
+
+        #expect(sort.description == "vote_count.desc")
+    }
+
 }

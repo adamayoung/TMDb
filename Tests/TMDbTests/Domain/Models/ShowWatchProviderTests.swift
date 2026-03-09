@@ -24,6 +24,7 @@ struct ShowWatchProviderTests {
         #expect(result.buy == showWatchProvider.buy)
         #expect(result.rent == showWatchProvider.rent)
         #expect(result.free == showWatchProvider.free)
+        #expect(result.ads == showWatchProvider.ads)
     }
 
     @Test("JSON decoding of ShowWatchProvider with empty link returns nil link")
@@ -52,16 +53,22 @@ struct ShowWatchProviderTests {
     func encodeDecodeRoundTrip() throws {
         let original = showWatchProvider
         let data = try JSONEncoder().encode(original)
-        let decoded = try JSONDecoder.theMovieDatabase.decode(ShowWatchProvider.self, from: data)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(
+            ShowWatchProvider.self, from: data
+        )
 
         #expect(decoded == original)
     }
 
-    @Test("Encoding and decoding ShowWatchProvider with nil link round-trips correctly")
+    @Test(
+        "Encoding and decoding ShowWatchProvider with nil link round-trips"
+    )
     func encodeDecodeRoundTripWithNilLink() throws {
         let original = ShowWatchProvider()
         let data = try JSONEncoder().encode(original)
-        let decoded = try JSONDecoder.theMovieDatabase.decode(ShowWatchProvider.self, from: data)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(
+            ShowWatchProvider.self, from: data
+        )
 
         #expect(decoded == original)
     }
@@ -72,7 +79,9 @@ extension ShowWatchProviderTests {
 
     private var showWatchProvider: ShowWatchProvider {
         ShowWatchProvider(
-            link: URL(string: "https://www.themoviedb.org/movie/550-fight-club/watch"),
+            link: URL(
+                string: "https://www.themoviedb.org/movie/550-fight-club/watch"
+            ),
             free: [
                 WatchProvider(
                     id: 300,
@@ -99,6 +108,13 @@ extension ShowWatchProviderTests {
                     id: 2,
                     name: "Apple TV",
                     logoPath: URL(string: "/peURlLlr8jggOwK53fJ5wdQl05y.jpg")
+                )
+            ],
+            ads: [
+                WatchProvider(
+                    id: 1899,
+                    name: "Max",
+                    logoPath: URL(string: "/xL9SUR63qrEjFZAhtsipskeAMR7.jpg")
                 )
             ]
         )

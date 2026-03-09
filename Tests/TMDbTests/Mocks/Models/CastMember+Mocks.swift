@@ -15,20 +15,28 @@ extension CastMember {
         castID: Int? = 2,
         creditID: String = "3",
         name: String = "Actor Name",
+        originalName: String? = "Actor Original Name",
         character: String = "Character Name",
+        knownForDepartment: String? = "Acting",
         gender: Gender = .male,
         profilePath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-        order: Int = 1
+        popularity: Double? = 10.5,
+        order: Int = 1,
+        isAdultOnly: Bool? = false
     ) -> CastMember {
         CastMember(
             id: id,
             castID: castID,
             creditID: creditID,
             name: name,
+            originalName: originalName,
             character: character,
+            knownForDepartment: knownForDepartment,
             gender: gender,
             profilePath: profilePath,
-            order: order
+            popularity: popularity,
+            order: order,
+            isAdultOnly: isAdultOnly
         )
     }
 

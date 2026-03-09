@@ -291,6 +291,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 - ``ReviewService``
 - ``Review``
+- ``ReviewAuthorDetails``
 
 ### Certifications
 
@@ -346,6 +347,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``ShowWatchProvider``
 - ``Country``
 - ``WatchProviderFilter``
+- ``WatchMonetizationType``
 
 ### Configuration
 

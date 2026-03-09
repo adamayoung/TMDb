@@ -10,7 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(.tags(.filters, .discover))
-struct DiscoverTVSeriesFilterTests {
+struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with default values creates filter with nil properties")
     func initWithDefaultValuesCreatesFilterWithNilProperties() {
@@ -37,6 +37,13 @@ struct DiscoverTVSeriesFilterTests {
         #expect(filter.includeAdult == nil)
         #expect(filter.watchProviders == nil)
         #expect(filter.watchRegion == nil)
+        #expect(filter.withOriginCountry == nil)
+        #expect(filter.withStatus == nil)
+        #expect(filter.withType == nil)
+        #expect(filter.withoutCompanies == nil)
+        #expect(filter.watchMonetizationTypes == nil)
+        #expect(filter.screenedTheatrically == nil)
+        #expect(filter.withPeople == nil)
     }
 
     @Test("init with original language sets original language property")
@@ -190,12 +197,81 @@ struct DiscoverTVSeriesFilterTests {
         #expect(filter.watchRegion == "US")
     }
 
+    @Test("init with origin country sets property")
+    func initWithOriginCountrySetsProperty() {
+        let filter = DiscoverTVSeriesFilter(withOriginCountry: "US")
+
+        #expect(filter.withOriginCountry == "US")
+    }
+
+    @Test("init with status sets property")
+    func initWithStatusSetsProperty() {
+        let withStatus = [0, 3]
+
+        let filter = DiscoverTVSeriesFilter(withStatus: withStatus)
+
+        #expect(filter.withStatus == withStatus)
+    }
+
+    @Test("init with type sets property")
+    func initWithTypeSetsProperty() {
+        let withType = [2, 4]
+
+        let filter = DiscoverTVSeriesFilter(withType: withType)
+
+        #expect(filter.withType == withType)
+    }
+
+    @Test("init with without companies sets property")
+    func initWithWithoutCompaniesSetsProperty() {
+        let withoutCompanies = [420, 7505]
+
+        let filter = DiscoverTVSeriesFilter(
+            withoutCompanies: withoutCompanies
+        )
+
+        #expect(filter.withoutCompanies == withoutCompanies)
+    }
+
+    @Test("init with watch monetization types sets property")
+    func initWithWatchMonetizationTypesSetsProperty() {
+        let types: [WatchMonetizationType] = [.flatrate, .buy]
+
+        let filter = DiscoverTVSeriesFilter(
+            watchMonetizationTypes: types
+        )
+
+        #expect(filter.watchMonetizationTypes == types)
+    }
+
+    @Test("init with screened theatrically sets property")
+    func initWithScreenedTheatricallySetsProperty() {
+        let filter = DiscoverTVSeriesFilter(
+            screenedTheatrically: true
+        )
+
+        #expect(filter.screenedTheatrically == true)
+    }
+
+    @Test("init with people sets with people property")
+    func initWithPeopleSetsWithPeopleProperty() {
+        let withPeople = [287, 819]
+
+        let filter = DiscoverTVSeriesFilter(withPeople: withPeople)
+
+        #expect(filter.withPeople == withPeople)
+    }
+
     @Test("init with all parameters sets all properties")
-    func initWithAllParametersSetsAllProperties() {
+    func initWithAllParametersSetsAllProperties() { // swiftlint:disable:this function_body_length
         let firstAirDateMin = Date(iso8601: "2024-01-01T00:00:00Z")
         let firstAirDateMax = Date(iso8601: "2024-12-31T00:00:00Z")
         let airDateMin = Date(iso8601: "2024-06-01T00:00:00Z")
         let airDateMax = Date(iso8601: "2024-06-30T00:00:00Z")
+
+        let monetizationTypes: [WatchMonetizationType] = [
+            .flatrate, .rent
+        ]
 
         let filter = DiscoverTVSeriesFilter(
             originalLanguage: "en",
@@ -218,7 +294,14 @@ struct DiscoverTVSeriesFilterTests {
             runtimeMax: 60,
             includeAdult: false,
             watchProviders: [8, 9],
-            watchRegion: "US"
+            watchRegion: "US",
+            withOriginCountry: "US",
+            withStatus: [0, 3],
+            withType: [4],
+            withoutCompanies: [999],
+            watchMonetizationTypes: monetizationTypes,
+            screenedTheatrically: true,
+            withPeople: [287]
         )
 
         #expect(filter.originalLanguage == "en")
@@ -242,6 +325,13 @@ struct DiscoverTVSeriesFilterTests {
         #expect(filter.includeAdult == false)
         #expect(filter.watchProviders == [8, 9])
         #expect(filter.watchRegion == "US")
+        #expect(filter.withOriginCountry == "US")
+        #expect(filter.withStatus == [0, 3])
+        #expect(filter.withType == [4])
+        #expect(filter.withoutCompanies == [999])
+        #expect(filter.watchMonetizationTypes == monetizationTypes)
+        #expect(filter.screenedTheatrically == true)
+        #expect(filter.withPeople == [287])
     }
 
 }
