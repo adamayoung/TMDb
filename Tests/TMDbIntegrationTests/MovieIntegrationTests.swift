@@ -178,8 +178,8 @@ struct MovieIntegrationTests {
         let result = try await movieService.watchProviders(forMovie: movieID)
 
         #expect(!result.isEmpty)
-        let usProvider = result.first { $0.countryCode == "US" }
-        #expect(usProvider != nil)
+        let usProvider = try #require(result.first { $0.countryCode == "US" })
+        #expect(usProvider.watchProviders.link != nil)
     }
 
     @Test("alternativeTitles")

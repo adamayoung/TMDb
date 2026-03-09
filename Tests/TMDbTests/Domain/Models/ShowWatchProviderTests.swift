@@ -48,6 +48,24 @@ struct ShowWatchProviderTests {
         #expect(result.flatRate?.count == 1)
     }
 
+    @Test("Encoding and decoding ShowWatchProvider round-trips correctly")
+    func encodeDecodeRoundTrip() throws {
+        let original = showWatchProvider
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(ShowWatchProvider.self, from: data)
+
+        #expect(decoded == original)
+    }
+
+    @Test("Encoding and decoding ShowWatchProvider with nil link round-trips correctly")
+    func encodeDecodeRoundTripWithNilLink() throws {
+        let original = ShowWatchProvider()
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder.theMovieDatabase.decode(ShowWatchProvider.self, from: data)
+
+        #expect(decoded == original)
+    }
+
 }
 
 extension ShowWatchProviderTests {
