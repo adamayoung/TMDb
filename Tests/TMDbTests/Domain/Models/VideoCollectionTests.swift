@@ -31,7 +31,9 @@ struct VideoCollectionTests {
                 site: "YouTube",
                 key: "SUXWAEX2jlg",
                 type: .trailer,
-                size: .s720
+                size: .s720,
+                official: true,
+                publishedAt: Date(timeIntervalSince1970: 1_729_018_787)
             )
         ]
     )

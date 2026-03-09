@@ -24,6 +24,8 @@ struct VideoMetadataTests {
         #expect(result.key == videoMetadata.key)
         #expect(result.type == videoMetadata.type)
         #expect(result.size == videoMetadata.size)
+        #expect(result.official == videoMetadata.official)
+        #expect(result.publishedAt == videoMetadata.publishedAt)
     }
 
     private let videoMetadata = VideoMetadata(
@@ -32,7 +34,9 @@ struct VideoMetadataTests {
         site: "YouTube",
         key: "SUXWAEX2jlg",
         type: .trailer,
-        size: .s720
+        size: .s720,
+        official: true,
+        publishedAt: Date(timeIntervalSince1970: 1_729_018_787)
     )
 
 }

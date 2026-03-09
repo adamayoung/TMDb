@@ -82,6 +82,9 @@ struct TVSeriesServiceTests {
 
         #expect(videoCollection.id == tvSeriesID)
         #expect(!videoCollection.results.isEmpty)
+
+        let video = try #require(videoCollection.results.first)
+        #expect(video.publishedAt > Date(timeIntervalSince1970: 0))
     }
 
     @Test("recommendations")
