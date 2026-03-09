@@ -112,15 +112,15 @@ extension VideoMetadata {
         self.official = try container.decode(Bool.self, forKey: .official)
 
         let publishedAtString = try container.decode(String.self, forKey: .publishedAt)
-        guard
-            let publishedAtDate = DateFormatter.theMovieDatabaseISO8601
-                .date(from: publishedAtString)
-        else {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        guard let publishedAtDate = formatter.date(from: publishedAtString) else {
             throw DecodingError.dataCorruptedError(
                 forKey: .publishedAt,
                 in: container,
                 debugDescription:
-                "Date string does not match expected format: \(publishedAtString)"
+                "Date string does not match ISO8601 format: \(publishedAtString)"
             )
         }
         self.publishedAt = publishedAtDate
