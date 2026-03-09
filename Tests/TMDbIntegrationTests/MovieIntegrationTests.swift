@@ -98,6 +98,9 @@ struct MovieIntegrationTests {
 
         #expect(videoCollection.id == movieID)
         #expect(!videoCollection.results.isEmpty)
+
+        let video = try #require(videoCollection.results.first)
+        #expect(video.publishedAt > Date(timeIntervalSince1970: 0))
     }
 
     @Test("recommendations")

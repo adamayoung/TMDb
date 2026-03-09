@@ -106,6 +106,9 @@ struct TVEpisodeServiceTests {
 
         #expect(videoCollection.id == 63058)
         #expect(!videoCollection.results.isEmpty)
+
+        let video = try #require(videoCollection.results.first)
+        #expect(video.publishedAt > Date(timeIntervalSince1970: 0))
     }
 
     @Test("externalLinks")

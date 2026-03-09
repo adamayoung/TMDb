@@ -16,7 +16,9 @@ extension VideoMetadata {
         site: String = "YouTube",
         key: String = "abc123",
         type: VideoType = .trailer,
-        size: VideoSize = .s1080
+        size: VideoSize = .s1080,
+        official: Bool = true,
+        publishedAt: Date = Date(timeIntervalSince1970: 0)
     ) -> VideoMetadata {
         VideoMetadata(
             id: id,
@@ -24,7 +26,9 @@ extension VideoMetadata {
             site: site,
             key: key,
             type: type,
-            size: size
+            size: size,
+            official: official,
+            publishedAt: publishedAt
         )
     }
 

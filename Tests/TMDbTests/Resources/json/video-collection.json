@@ -9,7 +9,9 @@
             "name": "Trailer 1",
             "site": "YouTube",
             "size": 720,
-            "type": "Trailer"
+            "type": "Trailer",
+            "official": true,
+            "published_at": "2024-10-15T18:59:47.000Z"
         }
     ]
 }
