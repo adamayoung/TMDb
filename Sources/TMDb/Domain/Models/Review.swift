@@ -128,6 +128,14 @@ extension Review {
         case updatedAt
     }
 
+    private nonisolated(unsafe) static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [
+            .withInternetDateTime, .withFractionalSeconds
+        ]
+        return formatter
+    }()
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -149,15 +157,12 @@ extension Review {
         )
         self.url = try container.decodeIfPresent(URL.self, forKey: .url)
 
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [
-            .withInternetDateTime, .withFractionalSeconds
-        ]
-
         if let createdAtString = try container.decodeIfPresent(
             String.self, forKey: .createdAt
         ) {
-            self.createdAt = formatter.date(from: createdAtString)
+            self.createdAt = Self.iso8601Formatter.date(
+                from: createdAtString
+            )
         } else {
             self.createdAt = nil
         }
@@ -165,7 +170,9 @@ extension Review {
         if let updatedAtString = try container.decodeIfPresent(
             String.self, forKey: .updatedAt
         ) {
-            self.updatedAt = formatter.date(from: updatedAtString)
+            self.updatedAt = Self.iso8601Formatter.date(
+                from: updatedAtString
+            )
         } else {
             self.updatedAt = nil
         }

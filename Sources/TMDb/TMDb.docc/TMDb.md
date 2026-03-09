@@ -229,6 +229,9 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeries``
 - ``TVSeriesSort``
 - ``DiscoverTVSeriesFilter``
+- ``MovieReleaseType``
+- ``TVSeriesStatus``
+- ``TVSeriesType``
 
 ### Trending
 

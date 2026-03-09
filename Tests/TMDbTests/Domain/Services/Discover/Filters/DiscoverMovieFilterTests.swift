@@ -209,7 +209,7 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with release types sets property")
     func initWithReleaseTypesSetsProperty() {
-        let releaseTypes = [3, 4]
+        let releaseTypes: [MovieReleaseType] = [.theatrical, .digital]
 
         let filter = DiscoverMovieFilter(releaseTypes: releaseTypes)
 
@@ -303,7 +303,7 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
             certificationMin: "G",
             certificationMax: "R",
             certificationCountry: "US",
-            releaseTypes: [3, 4],
+            releaseTypes: [.theatrical, .digital],
             withCast: [287],
             withCrew: [1223],
             withOriginCountry: "US",
@@ -333,7 +333,7 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.certificationMin == "G")
         #expect(filter.certificationMax == "R")
         #expect(filter.certificationCountry == "US")
-        #expect(filter.releaseTypes == [3, 4])
+        #expect(filter.releaseTypes == [.theatrical, .digital])
         #expect(filter.withCast == [287])
         #expect(filter.withCrew == [1223])
         #expect(filter.withOriginCountry == "US")

@@ -125,20 +125,17 @@ public struct DiscoverMovieFilter: Sendable {
     ///
     /// Release type filter.
     ///
-    /// Values: 1=Premiere, 2=TheatricalLimited, 3=Theatrical,
-    /// 4=Digital, 5=Physical, 6=TV.
-    ///
-    public let releaseTypes: [Int]?
+    public let releaseTypes: [MovieReleaseType]?
 
     ///
     /// A list of cast member Person identifiers to filter by.
     ///
-    public let withCast: [Int]?
+    public let withCast: [Person.ID]?
 
     ///
     /// A list of crew member Person identifiers to filter by.
     ///
-    public let withCrew: [Int]?
+    public let withCrew: [Person.ID]?
 
     ///
     /// Filter by origin country (ISO-3166-1).
@@ -148,7 +145,7 @@ public struct DiscoverMovieFilter: Sendable {
     ///
     /// A list of production company identifiers to exclude.
     ///
-    public let withoutCompanies: [Int]?
+    public let withoutCompanies: [Company.ID]?
 
     ///
     /// Filter by watch monetization type.
@@ -183,11 +180,11 @@ public struct DiscoverMovieFilter: Sendable {
     ///   - certificationMin: Minimum certification rating.
     ///   - certificationMax: Maximum certification rating.
     ///   - certificationCountry: Country for certification filter.
-    ///   - releaseTypes: Release type filter values.
+    ///   - releaseTypes: Release type filter.
     ///   - withCast: A list of cast member Person identifiers.
     ///   - withCrew: A list of crew member Person identifiers.
     ///   - withOriginCountry: Filter by origin country.
-    ///   - withoutCompanies: Company identifiers to exclude.
+    ///   - withoutCompanies: Production company identifiers to exclude.
     ///   - watchMonetizationTypes: Filter by monetization type.
     ///
     public init(
@@ -213,11 +210,11 @@ public struct DiscoverMovieFilter: Sendable {
         certificationMin: String? = nil,
         certificationMax: String? = nil,
         certificationCountry: String? = nil,
-        releaseTypes: [Int]? = nil,
-        withCast: [Int]? = nil,
-        withCrew: [Int]? = nil,
+        releaseTypes: [MovieReleaseType]? = nil,
+        withCast: [Person.ID]? = nil,
+        withCrew: [Person.ID]? = nil,
         withOriginCountry: String? = nil,
-        withoutCompanies: [Int]? = nil,
+        withoutCompanies: [Company.ID]? = nil,
         watchMonetizationTypes: [WatchMonetizationType]? = nil
     ) {
         self.people = people

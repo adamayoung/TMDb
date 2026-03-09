@@ -235,11 +235,13 @@ struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
 
     @Test("queryItems with release types")
     func queryItemsWithReleaseTypes() {
-        let filter = DiscoverMovieFilter(releaseTypes: [3, 4])
+        let filter = DiscoverMovieFilter(
+            releaseTypes: [.theatrical, .digital]
+        )
         let request = DiscoverMoviesRequest(filter: filter)
 
         #expect(
-            request.queryItems == ["with_release_type": "3,4"]
+            request.queryItems == ["with_release_type": "3|4"]
         )
     }
 

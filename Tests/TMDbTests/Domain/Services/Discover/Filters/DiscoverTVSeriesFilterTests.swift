@@ -206,7 +206,7 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with status sets property")
     func initWithStatusSetsProperty() {
-        let withStatus = [0, 3]
+        let withStatus: [TVSeriesStatus] = [.returning, .ended]
 
         let filter = DiscoverTVSeriesFilter(withStatus: withStatus)
 
@@ -215,7 +215,7 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with type sets property")
     func initWithTypeSetsProperty() {
-        let withType = [2, 4]
+        let withType: [TVSeriesType] = [.miniseries, .scripted]
 
         let filter = DiscoverTVSeriesFilter(withType: withType)
 
@@ -296,8 +296,8 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
             watchProviders: [8, 9],
             watchRegion: "US",
             withOriginCountry: "US",
-            withStatus: [0, 3],
-            withType: [4],
+            withStatus: [.returning, .ended],
+            withType: [.scripted],
             withoutCompanies: [999],
             watchMonetizationTypes: monetizationTypes,
             screenedTheatrically: true,
@@ -326,8 +326,8 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.watchProviders == [8, 9])
         #expect(filter.watchRegion == "US")
         #expect(filter.withOriginCountry == "US")
-        #expect(filter.withStatus == [0, 3])
-        #expect(filter.withType == [4])
+        #expect(filter.withStatus == [.returning, .ended])
+        #expect(filter.withType == [.scripted])
         #expect(filter.withoutCompanies == [999])
         #expect(filter.watchMonetizationTypes == monetizationTypes)
         #expect(filter.screenedTheatrically == true)

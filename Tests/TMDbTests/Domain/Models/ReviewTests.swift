@@ -32,8 +32,26 @@ struct ReviewTests {
         #expect(authorDetails.rating == review.authorDetails?.rating)
 
         #expect(result.url == review.url)
-        #expect(result.createdAt != nil)
-        #expect(result.updatedAt != nil)
+
+        let createdAt = try #require(result.createdAt)
+        let createdAtComponents = try Calendar(identifier: .gregorian)
+            .dateComponents(
+                in: #require(TimeZone(identifier: "UTC")),
+                from: createdAt
+            )
+        #expect(createdAtComponents.year == 2014)
+        #expect(createdAtComponents.month == 12)
+        #expect(createdAtComponents.day == 10)
+
+        let updatedAt = try #require(result.updatedAt)
+        let updatedAtComponents = try Calendar(identifier: .gregorian)
+            .dateComponents(
+                in: #require(TimeZone(identifier: "UTC")),
+                from: updatedAt
+            )
+        #expect(updatedAtComponents.year == 2021)
+        #expect(updatedAtComponents.month == 6)
+        #expect(updatedAtComponents.day == 23)
     }
 
     @Test(

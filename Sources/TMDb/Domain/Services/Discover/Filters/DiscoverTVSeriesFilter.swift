@@ -125,23 +125,17 @@ public struct DiscoverTVSeriesFilter: Sendable {
     ///
     /// TV series status filter.
     ///
-    /// Values: 0=Returning, 1=Planned, 2=InProduction, 3=Ended,
-    /// 4=Cancelled, 5=Pilot.
-    ///
-    public let withStatus: [Int]?
+    public let withStatus: [TVSeriesStatus]?
 
     ///
     /// Show type filter.
     ///
-    /// Values: 0=Documentary, 1=News, 2=Miniseries, 3=Reality,
-    /// 4=Scripted, 5=TalkShow, 6=Video.
-    ///
-    public let withType: [Int]?
+    public let withType: [TVSeriesType]?
 
     ///
     /// A list of production company identifiers to exclude.
     ///
-    public let withoutCompanies: [Int]?
+    public let withoutCompanies: [Company.ID]?
 
     ///
     /// Filter by watch monetization type.
@@ -156,7 +150,7 @@ public struct DiscoverTVSeriesFilter: Sendable {
     ///
     /// A list of Person identifiers to filter by.
     ///
-    public let withPeople: [Int]?
+    public let withPeople: [Person.ID]?
 
     ///
     /// Creates a discover TV series filter.
@@ -185,9 +179,9 @@ public struct DiscoverTVSeriesFilter: Sendable {
     ///   - watchProviders: A list of watch provider identifiers.
     ///   - watchRegion: ISO-3166-1 watch region code.
     ///   - withOriginCountry: Filter by origin country.
-    ///   - withStatus: TV series status filter values.
-    ///   - withType: Show type filter values.
-    ///   - withoutCompanies: Company identifiers to exclude.
+    ///   - withStatus: TV series status filter.
+    ///   - withType: Show type filter.
+    ///   - withoutCompanies: Production company identifiers to exclude.
     ///   - watchMonetizationTypes: Filter by monetization type.
     ///   - screenedTheatrically: Filter for theatrically screened
     ///     series.
@@ -216,12 +210,12 @@ public struct DiscoverTVSeriesFilter: Sendable {
         watchProviders: [WatchProvider.ID]? = nil,
         watchRegion: String? = nil,
         withOriginCountry: String? = nil,
-        withStatus: [Int]? = nil,
-        withType: [Int]? = nil,
-        withoutCompanies: [Int]? = nil,
+        withStatus: [TVSeriesStatus]? = nil,
+        withType: [TVSeriesType]? = nil,
+        withoutCompanies: [Company.ID]? = nil,
         watchMonetizationTypes: [WatchMonetizationType]? = nil,
         screenedTheatrically: Bool? = nil,
-        withPeople: [Int]? = nil
+        withPeople: [Person.ID]? = nil
     ) {
         self.originalLanguage = originalLanguage
         self.genres = genres

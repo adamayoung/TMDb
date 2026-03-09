@@ -160,9 +160,9 @@ private extension APIRequestQueryItems {
         }
 
         if let releaseTypes = filter.releaseTypes {
-            self[.withReleaseType] = Self.idsQueryItemValue(
-                for: releaseTypes
-            )
+            self[.withReleaseType] = releaseTypes
+                .map { "\($0.rawValue)" }
+                .joined(separator: "|")
         }
 
         if let withCast = filter.withCast {
