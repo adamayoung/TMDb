@@ -76,7 +76,7 @@ public extension ShowWatchProvider {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let linkString = try container.decodeIfPresent(String.self, forKey: .link)
-        self.link = linkString.flatMap { URL(string: $0) }
+        self.link = linkString.flatMap { $0.isEmpty ? nil : URL(string: $0) }
         self.free = try container.decodeIfPresent([WatchProvider].self, forKey: .free)
         self.flatRate = try container.decodeIfPresent([WatchProvider].self, forKey: .flatRate)
         self.buy = try container.decodeIfPresent([WatchProvider].self, forKey: .buy)
