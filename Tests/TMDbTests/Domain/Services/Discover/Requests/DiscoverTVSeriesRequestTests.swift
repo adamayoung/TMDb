@@ -236,7 +236,7 @@ struct DiscoverTVSeriesRequestTests { // swiftlint:disable:this type_body_length
         )
         let request = DiscoverTVSeriesRequest(filter: filter)
 
-        #expect(request.queryItems == ["with_status": "0,3"])
+        #expect(request.queryItems == ["with_status": "0|3"])
     }
 
     @Test("queryItems with type")
@@ -246,7 +246,7 @@ struct DiscoverTVSeriesRequestTests { // swiftlint:disable:this type_body_length
         )
         let request = DiscoverTVSeriesRequest(filter: filter)
 
-        #expect(request.queryItems == ["with_type": "2,4"])
+        #expect(request.queryItems == ["with_type": "2|4"])
     }
 
     @Test("queryItems with without companies")

@@ -161,13 +161,13 @@ private extension APIRequestQueryItems {
         if let withStatus = filter.withStatus {
             self[.withStatus] = withStatus
                 .map { "\($0.rawValue)" }
-                .joined(separator: ",")
+                .joined(separator: "|")
         }
 
         if let withType = filter.withType {
             self[.withType] = withType
                 .map { "\($0.rawValue)" }
-                .joined(separator: ",")
+                .joined(separator: "|")
         }
 
         if let withoutCompanies = filter.withoutCompanies {
