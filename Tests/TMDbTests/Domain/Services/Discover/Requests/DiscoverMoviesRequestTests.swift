@@ -226,8 +226,8 @@ struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
 
         #expect(
             request.queryItems == [
-                "certification.lte": "G",
-                "certification.gte": "R",
+                "certification.gte": "G",
+                "certification.lte": "R",
                 "certification_country": "US"
             ]
         )

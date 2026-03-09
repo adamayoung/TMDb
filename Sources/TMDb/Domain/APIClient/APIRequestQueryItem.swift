@@ -71,8 +71,8 @@ extension APIRequestQueryItem.Name {
     static let airDateLessThan = APIRequestQueryItem.Name("air_date.lte")
 
     static let certification = APIRequestQueryItem.Name("certification")
-    static let certificationMin = APIRequestQueryItem.Name("certification.lte")
-    static let certificationMax = APIRequestQueryItem.Name("certification.gte")
+    static let certificationMin = APIRequestQueryItem.Name("certification.gte")
+    static let certificationMax = APIRequestQueryItem.Name("certification.lte")
     static let certificationCountry = APIRequestQueryItem.Name("certification_country")
     static let withReleaseType = APIRequestQueryItem.Name("with_release_type")
     static let withCast = APIRequestQueryItem.Name("with_cast")
