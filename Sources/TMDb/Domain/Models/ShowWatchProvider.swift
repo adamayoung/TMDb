@@ -15,7 +15,7 @@ public struct ShowWatchProvider: Codable, Equatable, Hashable, Sendable {
     ///
     /// A link to the watch provider.
     ///
-    public let link: String
+    public let link: URL?
 
     ///
     /// A list of free watch providers.
@@ -48,7 +48,7 @@ public struct ShowWatchProvider: Codable, Equatable, Hashable, Sendable {
     ///   - rent: A list of watch providers to rent from.
     ///
     public init(
-        link: String,
+        link: URL? = nil,
         free: [WatchProvider]? = nil,
         flatRate: [WatchProvider]? = nil,
         buy: [WatchProvider]? = nil,
@@ -63,7 +63,7 @@ public struct ShowWatchProvider: Codable, Equatable, Hashable, Sendable {
 
 }
 
-extension ShowWatchProvider {
+public extension ShowWatchProvider {
 
     private enum CodingKeys: String, CodingKey {
         case link
@@ -71,6 +71,25 @@ extension ShowWatchProvider {
         case flatRate = "flatrate"
         case buy
         case rent
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let linkString = try container.decodeIfPresent(String.self, forKey: .link)
+        self.link = linkString.flatMap { URL(string: $0) }
+        self.free = try container.decodeIfPresent([WatchProvider].self, forKey: .free)
+        self.flatRate = try container.decodeIfPresent([WatchProvider].self, forKey: .flatRate)
+        self.buy = try container.decodeIfPresent([WatchProvider].self, forKey: .buy)
+        self.rent = try container.decodeIfPresent([WatchProvider].self, forKey: .rent)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(link?.absoluteString, forKey: .link)
+        try container.encodeIfPresent(free, forKey: .free)
+        try container.encodeIfPresent(flatRate, forKey: .flatRate)
+        try container.encodeIfPresent(buy, forKey: .buy)
+        try container.encodeIfPresent(rent, forKey: .rent)
     }
 
 }

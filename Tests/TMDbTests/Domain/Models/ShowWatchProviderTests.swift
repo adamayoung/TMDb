@@ -26,13 +26,35 @@ struct ShowWatchProviderTests {
         #expect(result.free == showWatchProvider.free)
     }
 
+    @Test("JSON decoding of ShowWatchProvider with empty link returns nil link")
+    func decodeWithEmptyLinkReturnsNilLink() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ShowWatchProvider.self,
+            fromResource: "show-watch-provider-empty-link"
+        )
+
+        #expect(result.link == nil)
+        #expect(result.flatRate?.count == 1)
+    }
+
+    @Test("JSON decoding of ShowWatchProvider with null link returns nil link")
+    func decodeWithNullLinkReturnsNilLink() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            ShowWatchProvider.self,
+            fromResource: "show-watch-provider-null-link"
+        )
+
+        #expect(result.link == nil)
+        #expect(result.flatRate?.count == 1)
+    }
+
 }
 
 extension ShowWatchProviderTests {
 
     private var showWatchProvider: ShowWatchProvider {
         ShowWatchProvider(
-            link: "https://www.themoviedb.org/movie/550-fight-club/watch",
+            link: URL(string: "https://www.themoviedb.org/movie/550-fight-club/watch"),
             free: [
                 WatchProvider(
                     id: 300,

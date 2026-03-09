@@ -11,7 +11,7 @@ import Foundation
 extension ShowWatchProvider {
 
     static func mock(
-        link: String = "",
+        link: URL? = nil,
         free: [WatchProvider]? = [.netflix],
         flatRate: [WatchProvider]? = [.netflix],
         buy: [WatchProvider]? = [.netflix],
