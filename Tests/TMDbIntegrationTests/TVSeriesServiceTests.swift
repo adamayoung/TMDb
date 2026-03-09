@@ -95,7 +95,7 @@ struct TVSeriesServiceTests {
 
     @Test("similar")
     func similar() async throws {
-        let tvSeriesID = 76479
+        let tvSeriesID = 1399 // Game of Thrones
 
         let tvSeriesList = try await tvSeriesService.similar(toTVSeries: tvSeriesID)
 
@@ -240,8 +240,8 @@ struct TVSeriesServiceTests {
         let result = try await tvSeriesService.watchProviders(forTVSeries: tvSeriesID)
 
         #expect(!result.isEmpty)
-        let usProvider = result.first { $0.countryCode == "US" }
-        #expect(usProvider != nil)
+        let usProvider = try #require(result.first { $0.countryCode == "US" })
+        #expect(usProvider.watchProviders.link != nil)
     }
 
     @Test("keywords")
