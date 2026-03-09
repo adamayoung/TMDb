@@ -95,7 +95,7 @@ struct TVSeriesServiceTests {
 
     @Test("similar")
     func similar() async throws {
-        let tvSeriesID = 76479
+        let tvSeriesID = 1399 // Game of Thrones
 
         let tvSeriesList = try await tvSeriesService.similar(toTVSeries: tvSeriesID)
 
