@@ -31,6 +31,9 @@ struct TVSeriesServiceTests {
 
         #expect(tvSeries.id == tvSeriesID)
         #expect(tvSeries.name == "Loki")
+
+        let season = try #require(tvSeries.seasons?.first)
+        #expect(season.episodeCount != nil)
     }
 
     @Test("credits")

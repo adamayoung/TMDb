@@ -31,6 +31,7 @@ struct PersonIntegrationTests {
 
         #expect(person.id == personID)
         #expect(person.name == "Tom Cruise")
+        #expect(person.isAdultOnly != nil)
     }
 
     @Test("combinedCredits")
