@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct JSONDecoderTMDbTests {
 
     var jsonDecoder: JSONDecoder!

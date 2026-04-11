@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct HTTPResponseTests {
 
     @Test("default init has empty headers")

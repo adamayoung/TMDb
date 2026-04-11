@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct RetryHTTPClientTests {
 
     private static let fastConfig = RetryConfiguration(

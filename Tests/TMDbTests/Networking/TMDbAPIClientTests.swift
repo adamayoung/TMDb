@@ -274,7 +274,7 @@ struct TMDbAPIClientTests {
 
 }
 
-private struct UnencodableValue: Encodable, Equatable, Sendable {
+private struct UnencodableValue: Encodable, Equatable {
 
     func encode(to encoder: Encoder) throws {
         throw EncodingError.invalidValue(
