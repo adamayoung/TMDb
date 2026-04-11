@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ContentRatingResult: Codable, Equatable, Hashable, Sendable {
+struct ContentRatingResult: Codable, Equatable, Hashable {
     let results: [ContentRating]
     let id: Int
 }

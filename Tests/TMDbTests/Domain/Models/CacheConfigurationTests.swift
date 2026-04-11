@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct CacheConfigurationTests {
 
     @Test("default values are correct")

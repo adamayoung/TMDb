@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WatchProviderResult: Codable, Equatable, Sendable {
+struct WatchProviderResult: Codable, Equatable {
 
     let results: [WatchProvider]
 

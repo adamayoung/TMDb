@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct TMDbFactoryRetryTests {
 
     @Test("httpClient with nil retryConfiguration returns original client")

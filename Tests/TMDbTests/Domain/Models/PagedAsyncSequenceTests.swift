@@ -184,7 +184,7 @@ struct PagedAsyncSequenceTests {
 
 extension PagedAsyncSequenceTests {
 
-    struct MockItem: Codable, Identifiable, Equatable, Hashable, Sendable {
+    struct MockItem: Codable, Identifiable, Equatable, Hashable {
         let id: Int
         let name: String
 

@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct DataFormatterTMDbTests {
 
     @Test("formatter has correct date format")

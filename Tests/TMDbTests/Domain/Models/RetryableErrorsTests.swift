@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct RetryableErrorsTests {
 
     @Test("rateLimit has raw value 1")
