@@ -16,5 +16,6 @@
 --disable wrapMultilineStatementBraces
 --disable redundantLetError
 --disable unusedArguments
+--disable blankLinesAtStartOfScope
 
 --header \n {file}\n TMDb\n\n Copyright © 2026 Adam Young.\n

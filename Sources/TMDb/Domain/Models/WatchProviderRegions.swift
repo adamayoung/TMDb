@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WatchProviderRegions: Codable, Sendable {
+struct WatchProviderRegions: Codable {
 
     let results: [Country]
 

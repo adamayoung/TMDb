@@ -9,7 +9,6 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite
 struct TMDbConfigurationTests {
 
     @Test("init with default values creates configuration with nil values")

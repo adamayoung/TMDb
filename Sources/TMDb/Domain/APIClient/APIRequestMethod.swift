@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum APIRequestMethod: Sendable {
+enum APIRequestMethod {
 
     case get
     case post
