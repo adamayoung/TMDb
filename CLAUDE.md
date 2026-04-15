@@ -341,6 +341,15 @@ After public API changes, verify all of the following are in sync:
 - Stale service count in README after adding services
 - `- Parameters name:` (plural) instead of `- Parameter name:`
   (singular)
+- Copy-paste errors in doc comments when creating similar models
+  (e.g., "movie" instead of "person", wrong parameter descriptions)
+- Initializer parameter types not matching property types (e.g.,
+  `Movie.ID` instead of `Person.ID`) — compiles when both resolve to
+  `Int` but is semantically wrong
+- Missing `///` doc comments on custom `init(from:)` and
+  `encode(to:)` methods in `public extension` blocks
+- Placeholder or incomplete doc comments (e.g., `/// ?`,
+  `Array of....`) — always write complete descriptions
 
 ## Completion Checklist
 

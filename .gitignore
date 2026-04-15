@@ -2,6 +2,7 @@
 .docc-build
 .swiftpm
 /.build
+Package.resolved
 /*.xcodeproj
 xcuserdata/
 .vscode

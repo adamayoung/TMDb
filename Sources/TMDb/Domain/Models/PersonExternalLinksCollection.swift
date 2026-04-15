@@ -43,12 +43,12 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
     public let twitter: TwitterLink?
 
     ///
-    /// TikTok llink.
+    /// TikTok link.
     ///
     public let tikTok: TikTokLink?
 
     ///
-    /// Creates an external links collection for a movie.
+    /// Creates an external links collection for a person.
     ///
     /// - Parameters:
     ///   - id: The TMDb person identifier.
@@ -60,7 +60,7 @@ public struct PersonExternalLinksCollection: Identifiable, Codable, Equatable, H
     ///   - tikTok: TikTok link.
     ///
     public init(
-        id: Movie.ID,
+        id: Person.ID,
         imdb: IMDbLink? = nil,
         wikiData: WikiDataLink? = nil,
         facebook: FacebookLink? = nil,

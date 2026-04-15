@@ -7,7 +7,7 @@ WATCHOS_DESTINATION = 'platform=watchOS Simulator,name=Apple Watch Series 11 (46
 TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.2'
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2'
 
-SWIFT_CONTAINER_IMAGE = swift:6.0.2-jammy
+SWIFT_CONTAINER_IMAGE = swift:6.0.3-jammy
 
 .PHONY: clean
 clean:

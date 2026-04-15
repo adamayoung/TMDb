@@ -13,7 +13,7 @@ import Foundation
 public struct ContentRating: Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// ?
+    /// Content descriptors for the rating (e.g. violence, language).
     ///
     public let descriptors: [String]
 
@@ -23,16 +23,16 @@ public struct ContentRating: Codable, Equatable, Hashable, Sendable {
     public let countryCode: String
 
     ///
-    /// The content rating of the tv show.
+    /// The content rating of the TV series.
     ///
     public let rating: String
 
     /// Creates a content rating object.
     ///
     /// - Parameters:
-    ///    - descriptors: Array of....
+    ///    - descriptors: Content descriptors for the rating.
     ///    - countryCode: ISO 3166-1 country code.
-    ///    - rating: The content rating of the tv show
+    ///    - rating: The content rating of the TV series.
     ///
     public init(descriptors: [String], countryCode: String, rating: String) {
         self.descriptors = descriptors
