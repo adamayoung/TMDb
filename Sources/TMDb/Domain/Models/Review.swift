@@ -136,6 +136,11 @@ extension Review {
         return formatter
     }()
 
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 

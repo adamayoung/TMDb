@@ -12,14 +12,32 @@ import Foundation
 ///
 public enum AnyCodable: Codable, Equatable, Hashable, Sendable {
 
+    /// A string value.
     case string(String)
+
+    /// An integer value.
     case int(Int)
+
+    /// A double value.
     case double(Double)
+
+    /// A boolean value.
     case bool(Bool)
+
+    /// An array of ``AnyCodable`` values.
     case array([AnyCodable])
+
+    /// A dictionary of string keys to ``AnyCodable`` values.
     case dictionary([String: AnyCodable])
+
+    /// A null value.
     case null
 
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
 
@@ -45,6 +63,11 @@ public enum AnyCodable: Codable, Equatable, Hashable, Sendable {
         }
     }
 
+    ///
+    /// Encodes this value into the given encoder.
+    ///
+    /// - Parameter encoder: The encoder to write data to.
+    ///
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
 

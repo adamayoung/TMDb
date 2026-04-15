@@ -181,7 +181,7 @@ jobs:
     needs: changes
     if: always()
     runs-on: ubuntu-latest
-    container: swift:6.0.2-jammy
+    container: swift:6.0.3-jammy
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'

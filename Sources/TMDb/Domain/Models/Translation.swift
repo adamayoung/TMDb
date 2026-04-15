@@ -192,6 +192,7 @@ public struct TVSeriesTranslationData: Codable, Equatable, Hashable, Sendable {
 
 }
 
+///
 /// A model representing TV season-specific translation data.
 ///
 public struct TVSeasonTranslationData: Codable, Equatable, Hashable, Sendable {

@@ -82,6 +82,11 @@ public extension ShowWatchProvider {
         case ads
     }
 
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let linkString = try container.decodeIfPresent(
@@ -105,6 +110,11 @@ public extension ShowWatchProvider {
         )
     }
 
+    ///
+    /// Encodes this value into the given encoder.
+    ///
+    /// - Parameter encoder: The encoder to write data to.
+    ///
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(link?.absoluteString, forKey: .link)

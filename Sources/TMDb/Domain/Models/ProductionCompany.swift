@@ -39,7 +39,7 @@ public struct ProductionCompany: Identifiable, Codable, Equatable, Hashable, Sen
     ///
     /// - Parameters:
     ///    - id: Company identifier.
-    ///    - name: Company's country of origin.
+    ///    - name: Company's name.
     ///    - originCountry: Company's country of origin.
     ///    - logoPath: Company's logo path.
     ///
