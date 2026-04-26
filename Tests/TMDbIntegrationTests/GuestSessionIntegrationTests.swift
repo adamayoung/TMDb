@@ -23,7 +23,10 @@ struct GuestSessionIntegrationTests {
         self.client = TMDbClient(apiKey: apiKey)
     }
 
-    @Test("rated movies for guest session")
+    @Test(
+        "rated movies for guest session",
+        .disabled("TMDb guest_session/rated/movies endpoint returns HTTP 500")
+    )
     func ratedMoviesForGuestSession() async throws {
         let guestSession =
             try await client.authentication.guestSession()
@@ -45,7 +48,10 @@ struct GuestSessionIntegrationTests {
         }
     }
 
-    @Test("rated TV series for guest session")
+    @Test(
+        "rated TV series for guest session",
+        .disabled("TMDb guest_session/rated/tv endpoint returns HTTP 500")
+    )
     func ratedTVSeriesForGuestSession() async throws {
         let guestSession =
             try await client.authentication.guestSession()
@@ -67,7 +73,10 @@ struct GuestSessionIntegrationTests {
         }
     }
 
-    @Test("rated TV episodes for guest session")
+    @Test(
+        "rated TV episodes for guest session",
+        .disabled("TMDb guest_session/rated/tv/episodes endpoint returns HTTP 500")
+    )
     func ratedTVEpisodesForGuestSession() async throws {
         let guestSession =
             try await client.authentication.guestSession()
