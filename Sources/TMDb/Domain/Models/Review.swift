@@ -128,13 +128,24 @@ extension Review {
         case updatedAt
     }
 
-    private nonisolated(unsafe) static let iso8601Formatter: ISO8601DateFormatter = {
+    private nonisolated(unsafe) static let iso8601FractionalFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [
             .withInternetDateTime, .withFractionalSeconds
         ]
         return formatter
     }()
+
+    private nonisolated(unsafe) static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
+    private static func parseDate(_ string: String) -> Date? {
+        iso8601FractionalFormatter.date(from: string)
+            ?? iso8601Formatter.date(from: string)
+    }
 
     ///
     /// Creates a new instance by decoding from the given decoder.
@@ -165,9 +176,7 @@ extension Review {
         if let createdAtString = try container.decodeIfPresent(
             String.self, forKey: .createdAt
         ) {
-            self.createdAt = Self.iso8601Formatter.date(
-                from: createdAtString
-            )
+            self.createdAt = Self.parseDate(createdAtString)
         } else {
             self.createdAt = nil
         }
@@ -175,9 +184,7 @@ extension Review {
         if let updatedAtString = try container.decodeIfPresent(
             String.self, forKey: .updatedAt
         ) {
-            self.updatedAt = Self.iso8601Formatter.date(
-                from: updatedAtString
-            )
+            self.updatedAt = Self.parseDate(updatedAtString)
         } else {
             self.updatedAt = nil
         }
