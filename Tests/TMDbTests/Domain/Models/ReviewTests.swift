@@ -55,6 +55,51 @@ struct ReviewTests {
     }
 
     @Test(
+        "JSON decoding of Review with non-fractional second dates",
+        .tags(.decoding)
+    )
+    func decodeWithNonFractionalSecondDatesReturnsReview() throws {
+        let json = """
+        {
+            "id": "abc123",
+            "author": "Test Author",
+            "content": "Test content",
+            "created_at": "2014-12-10T22:00:59Z",
+            "updated_at": "2021-06-23T15:57:31Z"
+        }
+        """
+        let data = try #require(json.data(using: .utf8))
+        let result = try JSONDecoder.theMovieDatabase
+            .decode(Review.self, from: data)
+
+        let createdAt = try #require(result.createdAt)
+        let createdAtComponents = try Calendar(identifier: .gregorian)
+            .dateComponents(
+                in: #require(TimeZone(identifier: "UTC")),
+                from: createdAt
+            )
+        #expect(createdAtComponents.year == 2014)
+        #expect(createdAtComponents.month == 12)
+        #expect(createdAtComponents.day == 10)
+        #expect(createdAtComponents.hour == 22)
+        #expect(createdAtComponents.minute == 0)
+        #expect(createdAtComponents.second == 59)
+
+        let updatedAt = try #require(result.updatedAt)
+        let updatedAtComponents = try Calendar(identifier: .gregorian)
+            .dateComponents(
+                in: #require(TimeZone(identifier: "UTC")),
+                from: updatedAt
+            )
+        #expect(updatedAtComponents.year == 2021)
+        #expect(updatedAtComponents.month == 6)
+        #expect(updatedAtComponents.day == 23)
+        #expect(updatedAtComponents.hour == 15)
+        #expect(updatedAtComponents.minute == 57)
+        #expect(updatedAtComponents.second == 31)
+    }
+
+    @Test(
         "JSON decoding of Review without optional data",
         .tags(.decoding)
     )
