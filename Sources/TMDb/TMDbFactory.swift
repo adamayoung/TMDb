@@ -45,6 +45,24 @@ extension TMDbFactory {
         AuthenticateURLBuilder(baseURL: tmdbWebSiteURL)
     }
 
+    static func makeServiceDependencies(
+        apiKey: String,
+        httpClient: some HTTPClient,
+        configuration: TMDbConfiguration
+    ) -> TMDbServiceDependencies {
+        let wrappedHTTPClient = TMDbFactory.httpClient(
+            wrapping: httpClient,
+            retryConfiguration: configuration.retry,
+            cacheConfiguration: configuration.cache
+        )
+
+        return TMDbServiceDependencies(
+            apiClient: apiClient(apiKey: apiKey, httpClient: wrappedHTTPClient),
+            authAPIClient: authAPIClient(apiKey: apiKey, httpClient: wrappedHTTPClient),
+            authenticateURLBuilder: authenticateURLBuilder()
+        )
+    }
+
 }
 
 extension TMDbFactory {
