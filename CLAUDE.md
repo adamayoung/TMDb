@@ -136,26 +136,15 @@ token-efficient output. Linux/Docker targets do not use xcsift.
 
 ### Shell Environment
 
-**Always source `.zshrc` when running commands that need environment
-variables:**
+Run shell commands directly — do not prefix them with
+`source ~/.zshrc`. Required environment variables (`TMDB_API_KEY`,
+`TMDB_USERNAME`, `TMDB_PASSWORD`) are injected via the `env` block in
+`.claude/settings.local.json`, and Homebrew tools (`gh`, `swiftlint`,
+`swiftformat`, `xcsift`, `markdownlint-cli2`) are already on `PATH`.
 
 ```bash
-source ~/.zshrc 2>/dev/null && <command>
-```
-
-This is needed because:
-
-- Shell sessions don't automatically load user environment variables
-- Integration tests require `TMDB_API_KEY`, `TMDB_USERNAME`,
-  `TMDB_PASSWORD`
-- `gh` CLI may only be available after sourcing `.zshrc`
-
-```bash
-source ~/.zshrc 2>/dev/null && make integration-test
-source ~/.zshrc 2>/dev/null && gh pr create ...
-
-# Alternative: use full paths
-/opt/homebrew/bin/gh pr create ...
+make integration-test
+gh pr create ...
 ```
 
 ## Common Commands
@@ -201,11 +190,7 @@ Enforced via `swiftlint` and `swiftformat`:
   even if callers are unlikely to pass them
 
 Tools are installed via Homebrew at `/opt/homebrew/bin/swiftlint` and
-`/opt/homebrew/bin/swiftformat`. If not in PATH:
-
-```bash
-source ~/.zshrc 2>/dev/null && make format
-```
+`/opt/homebrew/bin/swiftformat`, which is already on `PATH`.
 
 ## Testing
 
@@ -409,7 +394,7 @@ and creating a PR.** This is a hard requirement - no exceptions.
 ### 1. Run Full CI Check (MANDATORY)
 
 ```bash
-source ~/.zshrc 2>/dev/null && make ci
+make ci
 ```
 
 **All checks must pass before proceeding.** Do not skip this step. Do not
