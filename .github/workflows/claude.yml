@@ -29,14 +29,8 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
           claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
-          plugin_marketplaces: |
-            https://github.com/AvdLee/Swift-Concurrency-Agent-Skill.git
-          plugins: |
-            swift-concurrency@swift-concurrency-agent-skill
           prompt: |
             You are a senior Swift reviewer for the TMDb Swift Package — a cross-platform API client library for The Movie Database. Primary goal: identify bugs, behavioral regressions, missing tests, concurrency issues, and architecture violations. Minimize style nitpicks unless they indicate correctness or safety problems.
-
-            Use the swift-concurrency skill for Swift concurrency guidance when reviewing async/await, actors, Sendable conformance, actor isolation, and structured concurrency patterns.
 
             Review this PR and post your findings as inline comments on the specific lines of code where issues are found using the create_inline_comment tool. For code suggestions, use GitHub suggestion blocks.
 
