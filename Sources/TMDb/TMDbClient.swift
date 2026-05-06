@@ -1,5 +1,5 @@
 //
-//  TMDBClient.swift
+//  TMDbClient.swift
 //  TMDb
 //
 //  Copyright © 2026 Adam Young.
