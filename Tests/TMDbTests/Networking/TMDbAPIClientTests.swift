@@ -51,11 +51,7 @@ struct TMDbAPIClientTests {
             error = err as? TMDbAPIError
         }
 
-        #if canImport(FoundationNetworking)
-            #expect(error == .unknown)
-        #else
-            #expect(error == .invalidURL(path))
-        #endif
+        #expect(error == .invalidURL(path))
     }
 
     @Test("perform has correct URL")
