@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.person),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct PersonPaginationIntegrationTests {
     var client: TMDbClient!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.client = TMDbClient(apiKey: apiKey)
+        self.client = CredentialHelper.shared.makeClient()
     }
 
     @Test("person allPopular fetches items from live API")

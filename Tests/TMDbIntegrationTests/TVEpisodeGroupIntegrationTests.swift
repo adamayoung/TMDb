@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.tvEpisodeGroup),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -20,10 +21,7 @@ struct TVEpisodeGroupIntegrationTests {
         (any TVEpisodeGroupService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.tvEpisodeGroupService = TMDbClient(
-            apiKey: apiKey
-        ).tvEpisodeGroups
+        self.tvEpisodeGroupService = CredentialHelper.shared.makeClient().tvEpisodeGroups
     }
 
     @Test("details")

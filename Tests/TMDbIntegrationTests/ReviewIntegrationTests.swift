@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.review),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,10 +20,7 @@ struct ReviewIntegrationTests {
     var reviewService: (any ReviewService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.reviewService = TMDbClient(
-            apiKey: apiKey
-        ).reviews
+        self.reviewService = CredentialHelper.shared.makeClient().reviews
     }
 
     @Test("details")

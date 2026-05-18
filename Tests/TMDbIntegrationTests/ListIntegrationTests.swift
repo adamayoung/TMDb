@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.list),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct ListIntegrationTests {
     var listService: (any ListService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.listService = TMDbClient(apiKey: apiKey).lists
+        self.listService = CredentialHelper.shared.makeClient().lists
     }
 
     @Test("details")
@@ -67,9 +67,8 @@ struct ListIntegrationTests {
     )
     func createListCreatesNewList() async throws {
         let credential = CredentialHelper.shared.tmdbCredential
-        let session = try await TMDbClient(
-            apiKey: CredentialHelper.shared.tmdbAPIKey
-        ).authentication.createSession(withCredential: credential)
+        let session = try await CredentialHelper.shared.makeClient()
+            .authentication.createSession(withCredential: credential)
 
         let result = try await listService.create(
             name: "Test List",
@@ -90,9 +89,8 @@ struct ListIntegrationTests {
     )
     func addAndRemoveItemFromList() async throws {
         let credential = CredentialHelper.shared.tmdbCredential
-        let session = try await TMDbClient(
-            apiKey: CredentialHelper.shared.tmdbAPIKey
-        ).authentication.createSession(withCredential: credential)
+        let session = try await CredentialHelper.shared.makeClient()
+            .authentication.createSession(withCredential: credential)
         let listID = 1
         let movieID = 550
 
@@ -111,9 +109,8 @@ struct ListIntegrationTests {
     )
     func clearListRemovesAllItems() async throws {
         let credential = CredentialHelper.shared.tmdbCredential
-        let session = try await TMDbClient(
-            apiKey: CredentialHelper.shared.tmdbAPIKey
-        ).authentication.createSession(withCredential: credential)
+        let session = try await CredentialHelper.shared.makeClient()
+            .authentication.createSession(withCredential: credential)
         let listID = 1
 
         try await listService.clear(list: listID, session: session)
@@ -126,9 +123,8 @@ struct ListIntegrationTests {
     )
     func deleteListRemovesList() async throws {
         let credential = CredentialHelper.shared.tmdbCredential
-        let session = try await TMDbClient(
-            apiKey: CredentialHelper.shared.tmdbAPIKey
-        ).authentication.createSession(withCredential: credential)
+        let session = try await CredentialHelper.shared.makeClient()
+            .authentication.createSession(withCredential: credential)
         let listID = 1
 
         try await listService.delete(list: listID, session: session)

@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.discover),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct DiscoverIntegrationTests {
     var discoverService: (any DiscoverService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.discoverService = TMDbClient(apiKey: apiKey).discover
+        self.discoverService = CredentialHelper.shared.makeClient().discover
     }
 
     @Test("movies")

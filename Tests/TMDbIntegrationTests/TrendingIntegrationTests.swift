@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.trending),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct TrendingIntegrationTests {
     var trendingService: (any TrendingService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.trendingService = TMDbClient(apiKey: apiKey).trending
+        self.trendingService = CredentialHelper.shared.makeClient().trending
     }
 
     @Test("movies trending by day")

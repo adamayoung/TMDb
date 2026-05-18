@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.search),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct SearchIntegrationTests {
     var searchService: (any SearchService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.searchService = TMDbClient(apiKey: apiKey).search
+        self.searchService = CredentialHelper.shared.makeClient().search
     }
 
     @Test("searchAll")

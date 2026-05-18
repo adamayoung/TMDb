@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.changes),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct ChangesIntegrationTests {
     var changesService: (any ChangesService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.changesService = TMDbClient(apiKey: apiKey).changes
+        self.changesService = CredentialHelper.shared.makeClient().changes
     }
 
     @Test("movieChanges")
