@@ -386,6 +386,27 @@ changes:
 
 Run `make lint-markdown` after any README changes.
 
+## Branching
+
+**CRITICAL: Never make changes directly on `main`.** All changes —
+features, fixes, documentation, configuration — MUST be made on a
+branch created from `main`.
+
+Before editing any file, verify you are on a branch other than `main`:
+
+```bash
+git branch --show-current
+```
+
+If you are on `main`, create a new branch first:
+
+```bash
+git checkout -b <branch-name>
+```
+
+Use a descriptive branch name with a conventional prefix
+(`feature/`, `fix/`, `chore/`, `docs/`, etc.).
+
 ## Creating Pull Requests
 
 **CRITICAL: You MUST run `make ci` and ensure it passes before pushing

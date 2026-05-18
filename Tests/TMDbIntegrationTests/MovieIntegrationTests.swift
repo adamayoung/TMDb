@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.movie),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct MovieIntegrationTests {
     var movieService: (any MovieService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.movieService = TMDbClient(apiKey: apiKey).movies
+        self.movieService = CredentialHelper.shared.makeClient().movies
     }
 
     @Test("details")

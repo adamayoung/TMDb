@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.keyword),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct KeywordIntegrationTests {
     var keywordService: (any KeywordService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.keywordService = TMDbClient(apiKey: apiKey).keywords
+        self.keywordService = CredentialHelper.shared.makeClient().keywords
     }
 
     @Test("details")

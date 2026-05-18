@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.configuration),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct ConfigurationIntegrationTests {
     var configurationService: (any ConfigurationService)!
 
     init() throws {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.configurationService = TMDbClient(apiKey: apiKey).configurations
+        self.configurationService = CredentialHelper.shared.makeClient().configurations
     }
 
     @Test("apiConfiguration")

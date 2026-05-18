@@ -99,11 +99,11 @@ jobs:
         if: >-
           !cancelled()
           && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v6
         with:
-          file: ./junit.xml
+          files: ./junit-swift-testing.xml
+          report_type: test_results
           flags: integration-tests
-          verbose: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 

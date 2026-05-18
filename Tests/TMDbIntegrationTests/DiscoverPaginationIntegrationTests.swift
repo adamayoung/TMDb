@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.discover),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct DiscoverPaginationIntegrationTests {
     var client: TMDbClient!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.client = TMDbClient(apiKey: apiKey)
+        self.client = CredentialHelper.shared.makeClient()
     }
 
     @Test("discover allMovies fetches items from live API")

@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.genre),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct GenreIntegrationTests {
     var genreService: (any GenreService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.genreService = TMDbClient(apiKey: apiKey).genres
+        self.genreService = CredentialHelper.shared.makeClient().genres
     }
 
     @Test("movieGenres")

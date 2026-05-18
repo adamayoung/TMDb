@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.network),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct NetworkIntegrationTests {
     var networkService: (any NetworkService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.networkService = TMDbClient(apiKey: apiKey).networks
+        self.networkService = CredentialHelper.shared.makeClient().networks
     }
 
     @Test("details")

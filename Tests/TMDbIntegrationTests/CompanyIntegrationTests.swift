@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.company),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct CompanyIntegrationTests {
     var companyService: (any CompanyService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.companyService = TMDbClient(apiKey: apiKey).companies
+        self.companyService = CredentialHelper.shared.makeClient().companies
     }
 
     @Test("details")

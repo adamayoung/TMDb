@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.tvSeason),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct WatchProviderIntegrationTests {
     var watchProviderService: (any WatchProviderService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.watchProviderService = TMDbClient(apiKey: apiKey).watchProviders
+        self.watchProviderService = CredentialHelper.shared.makeClient().watchProviders
     }
 
     @Test("countries")

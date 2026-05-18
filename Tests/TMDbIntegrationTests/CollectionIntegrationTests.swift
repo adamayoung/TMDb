@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.collection),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct CollectionIntegrationTests {
     var collectionService: (any CollectionService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.collectionService = TMDbClient(apiKey: apiKey).collections
+        self.collectionService = CredentialHelper.shared.makeClient().collections
     }
 
     @Test("details")

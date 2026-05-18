@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.authentication),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct AuthenticationIntegrationTests {
     var authenticationService: (any AuthenticationService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.authenticationService = TMDbClient(apiKey: apiKey).authentication
+        self.authenticationService = CredentialHelper.shared.makeClient().authentication
     }
 
     @Test("guestSession")

@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.account),
     .enabled(if: CredentialHelper.shared.hasAPIKey && CredentialHelper.shared.hasCredential),
@@ -22,8 +23,7 @@ final class AccountIntegrationTests {
     var session: Session!
 
     init() async throws {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        let tmdbClient = TMDbClient(apiKey: apiKey)
+        let tmdbClient = CredentialHelper.shared.makeClient()
 
         self.authenticationService = tmdbClient.authentication
         self.accountService = tmdbClient.account

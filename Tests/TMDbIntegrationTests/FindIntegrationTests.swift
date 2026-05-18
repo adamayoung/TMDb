@@ -10,6 +10,7 @@ import Testing
 @testable import TMDb
 
 @Suite(
+    .integrationGate,
     .serialized,
     .tags(.find),
     .enabled(if: CredentialHelper.shared.hasAPIKey)
@@ -19,8 +20,7 @@ struct FindIntegrationTests {
     var findService: (any FindService)!
 
     init() {
-        let apiKey = CredentialHelper.shared.tmdbAPIKey
-        self.findService = TMDbClient(apiKey: apiKey).find
+        self.findService = CredentialHelper.shared.makeClient().find
     }
 
     @Test("find movie by IMDb ID")
