@@ -21,6 +21,9 @@ struct IntegrationGateTrait: TestTrait, SuiteTrait, TestScoping {
         performing function: @Sendable () async throws -> Void
     ) async throws {
         await IntegrationGate.shared.acquire()
+        // Swift does not permit `await` in a `defer` block; an unstructured Task
+        // is the only correct idiom. The actor's serial executor makes both
+        // orderings safe: no missed wake-up is possible.
         defer { Task { await IntegrationGate.shared.release() } }
         try await function()
     }
