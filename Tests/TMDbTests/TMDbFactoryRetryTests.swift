@@ -68,7 +68,7 @@ struct TMDbFactoryRetryTests {
     @Test("cache hit with both configurations skips retry and network")
     func cacheHitSkipsRetryAndNetwork() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("ok".utf8))))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("{\"ok\":true}".utf8))))
 
         let wrappedClient = TMDbFactory.httpClient(
             wrapping: mockClient,
@@ -82,7 +82,7 @@ struct TMDbFactoryRetryTests {
         let cached = try await wrappedClient.perform(request: request)
 
         #expect(mockClient.performCount == 1)
-        #expect(cached.data == Data("ok".utf8))
+        #expect(cached.data == Data("{\"ok\":true}".utf8))
     }
 
 }
