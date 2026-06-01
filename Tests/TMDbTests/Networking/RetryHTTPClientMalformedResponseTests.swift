@@ -96,6 +96,57 @@ struct RetryHTTPClientMalformedResponseTests {
         #expect(mockClient.performCount == 1)
     }
 
+    @Test("200 with nil body is not retried")
+    func successWithNilBodyNotRetried() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200)))
+
+        let retryClient = RetryHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.fastConfig
+        )
+        let request = try HTTPRequest(url: #require(URL(string: "https://example.com")))
+
+        let response = try await retryClient.perform(request: request)
+
+        #expect(response.statusCode == 200)
+        #expect(mockClient.performCount == 1)
+    }
+
+    @Test("200 with whitespace-only body is not retried")
+    func successWithWhitespaceOnlyBodyNotRetried() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("   ".utf8))))
+
+        let retryClient = RetryHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.fastConfig
+        )
+        let request = try HTTPRequest(url: #require(URL(string: "https://example.com")))
+
+        let response = try await retryClient.perform(request: request)
+
+        #expect(response.statusCode == 200)
+        #expect(mockClient.performCount == 1)
+    }
+
+    @Test("non-2xx with non-JSON body is not retried via the malformed-body path")
+    func nonSuccessWithNonJSONBodyNotRetried() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 404, data: Data("Not Found".utf8))))
+
+        let retryClient = RetryHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.fastConfig
+        )
+        let request = try HTTPRequest(url: #require(URL(string: "https://example.com")))
+
+        let response = try await retryClient.perform(request: request)
+
+        #expect(response.statusCode == 404)
+        #expect(mockClient.performCount == 1)
+    }
+
     @Test("200 with non-JSON body is not retried when server errors disabled")
     func malformedSuccessBodyNotRetriedWhenServerErrorsDisabled() async throws {
         let mockClient = SequencingHTTPMockClient()
