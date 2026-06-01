@@ -39,6 +39,10 @@ public struct RetryableErrors: OptionSet, Hashable, Sendable {
     public static let rateLimit = RetryableErrors(rawValue: 1 << 0)
 
     /// HTTP 5xx server errors.
+    ///
+    /// This also covers successful (2xx) responses whose body is not valid
+    /// JSON, which indicate a transient server-side or infrastructure error
+    /// (such as a proxy returning an error page with a 200 status).
     public static let serverErrors = RetryableErrors(rawValue: 1 << 1)
 
 }
