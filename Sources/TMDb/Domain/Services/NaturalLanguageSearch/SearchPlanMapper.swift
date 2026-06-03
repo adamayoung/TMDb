@@ -28,7 +28,6 @@
                 genres: generated.genres,
                 excludeTitles: generated.excludeTitles,
                 companies: generated.companies,
-                networks: [],
                 moodTerm: generated.moodTerm,
                 date: mapDate(generated),
                 runtimeMaxMinutes: generated.runtimeMaxMinutes,
@@ -89,6 +88,12 @@
 
             if let from = generated.yearFrom {
                 return .exactYear(from)
+            }
+
+            // A lone upper bound ("up to 2010"): treat it as that year rather than
+            // dropping the constraint. RelativeDate has no open-ended case.
+            if let upperBound = generated.yearTo {
+                return .exactYear(upperBound)
             }
 
             return nil

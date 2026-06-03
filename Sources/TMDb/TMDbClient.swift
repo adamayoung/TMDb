@@ -279,6 +279,11 @@ public final class TMDbClient: Sendable {
         ///
         /// - Important: Available only on iOS 26, macOS 26, and visionOS 26 or later.
         ///
+        /// - Note: Each access constructs a new service instance. When checking
+        ///   ``NaturalLanguageSearchService/availability`` and then searching, store
+        ///   it in a local first — `let search = client.naturalLanguageSearch` — rather
+        ///   than accessing the property twice.
+        ///
         var naturalLanguageSearch: any NaturalLanguageSearchService {
             let dataSource = LiveNaturalLanguageSearchDataSource(
                 discover: discover,

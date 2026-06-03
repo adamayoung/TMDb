@@ -25,9 +25,6 @@ public enum SearchDegradation: Sendable, Equatable {
     /// A company name could not be matched to a TMDb company.
     case unresolvedCompany(String)
 
-    /// A network name could not be matched to a TMDb network.
-    case unresolvedNetwork(String)
-
     /// A subjective mood term was approximated to genres.
     case moodApproximated(String)
 

@@ -38,7 +38,3 @@
 - ``authentication``
 - ``changes``
 - ``guestSessions``
-
-### On-Device Intelligence
-
-- ``naturalLanguageSearch``

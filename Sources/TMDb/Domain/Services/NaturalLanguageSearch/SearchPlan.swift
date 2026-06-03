@@ -141,6 +141,11 @@ public struct SearchPlan: Sendable, Equatable {
     ///
     /// A crew role named in the prompt, for example `"Director"`.
     ///
+    /// - Note: For the ``Intent/byPerson`` intent this narrows results to titles
+    ///   where the person had a crew credit, but not to the specific job — TMDb's
+    ///   discover `with_crew` filter has no job dimension. The ``Intent/crewRole``
+    ///   intent (with a `title`) filters by the exact job.
+    ///
     public let crewRole: String?
 
     ///
@@ -157,11 +162,6 @@ public struct SearchPlan: Sendable, Equatable {
     /// Production company names mentioned in the prompt.
     ///
     public let companies: [String]
-
-    ///
-    /// TV network names mentioned in the prompt.
-    ///
-    public let networks: [String]
 
     ///
     /// A subjective mood term mapped to genres during execution.
@@ -201,7 +201,6 @@ public struct SearchPlan: Sendable, Equatable {
     ///   - genres: Genre names mentioned in the prompt.
     ///   - excludeTitles: Titles or franchises to exclude.
     ///   - companies: Production company names mentioned in the prompt.
-    ///   - networks: TV network names mentioned in the prompt.
     ///   - moodTerm: A subjective mood term.
     ///   - date: A symbolic date constraint.
     ///   - runtimeMaxMinutes: A maximum runtime in minutes.
@@ -218,7 +217,6 @@ public struct SearchPlan: Sendable, Equatable {
         genres: [String] = [],
         excludeTitles: [String] = [],
         companies: [String] = [],
-        networks: [String] = [],
         moodTerm: String? = nil,
         date: RelativeDate? = nil,
         runtimeMaxMinutes: Int? = nil,
@@ -234,7 +232,6 @@ public struct SearchPlan: Sendable, Equatable {
         self.genres = genres
         self.excludeTitles = excludeTitles
         self.companies = companies
-        self.networks = networks
         self.moodTerm = moodTerm
         self.date = date
         self.runtimeMaxMinutes = runtimeMaxMinutes

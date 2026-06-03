@@ -104,5 +104,12 @@
             #expect(plan.title == "Fight Club")
         }
 
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps a lone upper-bound year")
+        func mapsLoneYearTo() {
+            let plan = SearchPlanMapper.map(generated(yearTo: 2010))
+            #expect(plan.date == .exactYear(2010))
+        }
+
     }
 #endif
