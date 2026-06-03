@@ -76,7 +76,7 @@
     @available(iOS 26, macOS 26, visionOS 26, *)
     @Generable
     enum GeneratedIntent {
-        case browse, byPerson, castOf, crewRole, similar, list, mood
+        case find, browse, byPerson, castOf, crewRole, similar, list, mood
     }
 
     @available(iOS 26, macOS 26, visionOS 26, *)

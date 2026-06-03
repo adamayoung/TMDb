@@ -48,6 +48,9 @@ struct SearchPlanExecutor {
         var degradations: [SearchDegradation] = []
 
         switch plan.intent {
+        case .find:
+            return try await executeFind(plan)
+
         case .castOf:
             return try await executeCastOf(plan)
 
@@ -63,6 +66,34 @@ struct SearchPlanExecutor {
         case .browse, .byPerson, .mood, .crewRole, .similar:
             return try await executeDiscover(plan, degradations: &degradations)
         }
+    }
+
+}
+
+// MARK: - Find (direct title/name lookup)
+
+extension SearchPlanExecutor {
+
+    private func executeFind(_ plan: SearchPlan) async throws -> NaturalLanguageSearchResult {
+        let query = plan.title ?? ""
+        guard !query.isEmpty else {
+            return NaturalLanguageSearchResult(interpretation: plan.title)
+        }
+
+        let found = try await dataSource.searchAll(query: query)
+
+        // Narrow to a single bucket when the model inferred a media type,
+        // otherwise return movies, TV series, and people (like a multi-search).
+        let movies = plan.mediaType == nil || plan.mediaType == .movie ? found.movies : []
+        let tvSeries = plan.mediaType == nil || plan.mediaType == .tv ? found.tvSeries : []
+        let people = plan.mediaType == nil || plan.mediaType == .person ? found.people : []
+
+        return NaturalLanguageSearchResult(
+            interpretation: plan.title,
+            movies: cap(movies),
+            tvSeries: cap(tvSeries),
+            people: cap(people)
+        )
     }
 
 }

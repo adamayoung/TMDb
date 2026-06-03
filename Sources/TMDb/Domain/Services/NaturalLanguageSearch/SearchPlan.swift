@@ -22,6 +22,9 @@ public struct SearchPlan: Sendable, Equatable {
     ///
     public enum Intent: Sendable, Equatable {
 
+        /// Look up a title or name directly (a bare query, like a normal search).
+        case find
+
         /// Browse/filter movies or TV series by attributes.
         case browse
 

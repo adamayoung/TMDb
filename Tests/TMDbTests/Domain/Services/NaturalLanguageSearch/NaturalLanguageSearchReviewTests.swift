@@ -119,6 +119,45 @@ struct SearchPlanExecutorReviewTests {
         #expect(result.people.map(\.id) == [10])
     }
 
+    @Test("find returns movies, TV series, and people for a bare query")
+    func findReturnsAllTypes() async throws {
+        dataSource.searchAllResult = (
+            [NLSFixture.movie(id: 1, title: "Fight Club")],
+            [NLSFixture.tvSeries(id: 2, name: "Some Show")],
+            [NLSFixture.person(id: 3, name: "Some Person")]
+        )
+
+        let result = try await executor.execute(SearchPlan(intent: .find, title: "Fight Club"))
+
+        #expect(result.movies.map(\.id) == [1])
+        #expect(result.tvSeries.map(\.id) == [2])
+        #expect(result.people.map(\.id) == [3])
+        #expect(dataSource.searchAllQueries == ["Fight Club"])
+    }
+
+    @Test("find narrows to a single bucket when a media type is given")
+    func findNarrowsByMediaType() async throws {
+        dataSource.searchAllResult = (
+            [NLSFixture.movie(id: 1)],
+            [NLSFixture.tvSeries(id: 2, name: "Breaking Bad")],
+            [NLSFixture.person(id: 3)]
+        )
+
+        let tv = try await executor.execute(
+            SearchPlan(intent: .find, mediaType: .tv, title: "Breaking Bad")
+        )
+        #expect(tv.tvSeries.map(\.id) == [2])
+        #expect(tv.movies.isEmpty)
+        #expect(tv.people.isEmpty)
+
+        let people = try await executor.execute(
+            SearchPlan(intent: .find, mediaType: .person, title: "Tom Hanks")
+        )
+        #expect(people.people.map(\.id) == [3])
+        #expect(people.movies.isEmpty)
+        #expect(people.tvSeries.isEmpty)
+    }
+
 }
 
 @Suite("TMDbNaturalLanguageSearchService (review coverage)")

@@ -83,6 +83,8 @@
             let year = Calendar(identifier: .gregorian).component(.year, from: now())
             return """
             You convert a movie or TV search request into a structured plan.
+            If the request is just a title or a person's name with no other instruction, \
+            use the find intent and put the text in title.
             Set isInScope to false if the request is not about movies, TV series, or people.
             The current year is \(year); use datePhrase for relative time references rather than \
             computing years yourself.

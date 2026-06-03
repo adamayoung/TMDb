@@ -45,6 +45,24 @@ struct NaturalLanguageSearchIntegrationTests {
         Calendar(identifier: .gregorian).component(.year, from: date)
     }
 
+    @Test("find returns the matching movie for a bare title query")
+    func findBareTitle() async throws {
+        let plan = SearchPlan(intent: .find, title: "Fight Club")
+
+        let result = try await executor.execute(plan)
+
+        #expect(result.movies.contains { $0.title.localizedCaseInsensitiveContains("Fight Club") })
+    }
+
+    @Test("find returns a matching person for a bare name query")
+    func findBareName() async throws {
+        let plan = SearchPlan(intent: .find, mediaType: .person, title: "Tom Hanks")
+
+        let result = try await executor.execute(plan)
+
+        #expect(result.people.contains { $0.name.localizedCaseInsensitiveContains("Tom Hanks") })
+    }
+
     @Test("browse resolves a genre and decade against the live API")
     func browseGenreAndDecade() async throws {
         let plan = SearchPlan(

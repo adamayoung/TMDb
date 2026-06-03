@@ -39,6 +39,7 @@
 
         private static func mapIntent(_ intent: GeneratedIntent) -> SearchPlan.Intent {
             switch intent {
+            case .find: .find
             case .browse: .browse
             case .byPerson: .byPerson
             case .castOf: .castOf

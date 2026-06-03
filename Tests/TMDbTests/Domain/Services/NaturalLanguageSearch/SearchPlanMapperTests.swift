@@ -96,5 +96,13 @@
             #expect(plan.list == .topRated)
         }
 
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps the find intent")
+        func mapsFindIntent() {
+            let plan = SearchPlanMapper.map(generated(intent: .find, title: "Fight Club"))
+            #expect(plan.intent == .find)
+            #expect(plan.title == "Fight Club")
+        }
+
     }
 #endif
