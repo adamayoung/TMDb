@@ -168,6 +168,9 @@ struct NaturalLanguageSearchIntegrationTests {
         let result = try await executor.execute(plan)
 
         #expect(result.degradations.contains(.unresolvedGenre("Definitely Not A Real Genre")))
+        // minRating keeps the query from being underspecified, so the discover
+        // call should still return results despite the unresolved genre.
+        #expect(!result.movies.isEmpty)
     }
 
 }

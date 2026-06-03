@@ -135,6 +135,16 @@ struct SearchPlanExecutorReviewTests {
         #expect(dataSource.searchAllQueries == ["Fight Club"])
     }
 
+    @Test("find with no title returns empty without calling search")
+    func findEmptyTitleReturnsEmpty() async throws {
+        let result = try await executor.execute(SearchPlan(intent: .find))
+
+        #expect(result.movies.isEmpty)
+        #expect(result.tvSeries.isEmpty)
+        #expect(result.people.isEmpty)
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
     @Test("find narrows to a single bucket when a media type is given")
     func findNarrowsByMediaType() async throws {
         dataSource.searchAllResult = (

@@ -63,6 +63,8 @@ struct SearchPlanExecutor {
         case .list:
             return try await executeList(plan)
 
+        // `.crewRole` / `.similar` without a title can't look up credits or
+        // recommendations, so they deliberately fall through to the discover path.
         case .browse, .byPerson, .mood, .crewRole, .similar:
             return try await executeDiscover(plan, degradations: &degradations)
         }

@@ -68,6 +68,8 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
         case (.rateLimited, .rateLimited):
             true
         case (.planningFailed, .planningFailed):
+            // The underlying error is not `Equatable`, so any two `.planningFailed`
+            // values compare equal regardless of their wrapped cause.
             true
         default:
             false
