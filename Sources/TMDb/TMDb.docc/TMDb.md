@@ -233,6 +233,15 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TVSeriesStatus``
 - ``TVSeriesType``
 
+### Natural-Language Search
+
+- ``NaturalLanguageSearchService``
+- ``SearchPlan``
+- ``NaturalLanguageSearchResult``
+- ``SearchDegradation``
+- ``NaturalLanguageSearchAvailability``
+- ``NaturalLanguageSearchError``
+
 ### Trending
 
 - ``TrendingService``

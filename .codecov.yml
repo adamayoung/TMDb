@@ -17,3 +17,9 @@ comment:
 
 ignore:
   - 'Tests'
+  # On-device Foundation Models code that cannot run in CI (no Apple
+  # Intelligence model available) or is macro-generated schema. The live
+  # data-source adapter is validated by the integration tests instead.
+  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/FoundationModelsSearchPlanGenerator.swift'
+  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/GeneratedSearchPlan.swift'
+  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/LiveNaturalLanguageSearchDataSource.swift'

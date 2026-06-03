@@ -262,3 +262,44 @@ public final class TMDbClient: Sendable {
     }
 
 }
+
+#if canImport(FoundationModels)
+    @available(iOS 26, macOS 26, visionOS 26, *)
+    public extension TMDbClient {
+
+        ///
+        /// Provides on-device, natural-language search across movies, TV series, and
+        /// people, powered by Apple Foundation Models.
+        ///
+        /// A prompt such as `"uplifting 90s sci-fi under 2 hours"` is interpreted by
+        /// the on-device model and executed against TMDb. Check
+        /// ``NaturalLanguageSearchService/availability`` before use, as the
+        /// underlying model is only available on supported Apple platforms with
+        /// Apple Intelligence enabled.
+        ///
+        /// - Important: Available only on iOS 26, macOS 26, and visionOS 26 or later.
+        ///
+        /// - Note: Each access constructs a new service instance. When checking
+        ///   ``NaturalLanguageSearchService/availability`` and then searching, store
+        ///   it in a local first — `let search = client.naturalLanguageSearch` — rather
+        ///   than accessing the property twice.
+        ///
+        var naturalLanguageSearch: any NaturalLanguageSearchService {
+            let dataSource = LiveNaturalLanguageSearchDataSource(
+                discover: discover,
+                search: search,
+                genres: genres,
+                movies: movies,
+                tvSeries: tvSeries,
+                trending: trending
+            )
+
+            return TMDbNaturalLanguageSearchService(
+                planner: FoundationModelsSearchPlanGenerator(),
+                executor: SearchPlanExecutor(dataSource: dataSource),
+                dataSource: dataSource
+            )
+        }
+
+    }
+#endif
