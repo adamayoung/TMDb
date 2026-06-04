@@ -25,6 +25,11 @@ public protocol NaturalLanguageSearchService: Sendable {
     ///
     /// The availability of on-device natural-language search.
     ///
+    /// - Note: The default implementation always reports ``NaturalLanguageSearchAvailability/available``,
+    ///   because deterministic interpretation is present on every supported Apple
+    ///   platform. The ``NaturalLanguageSearchAvailability/unavailable(_:)`` cases
+    ///   are therefore only reachable through a custom implementation.
+    ///
     var availability: NaturalLanguageSearchAvailability { get }
 
     ///

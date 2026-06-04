@@ -100,7 +100,9 @@ struct SearchPlanExecutor {
             intent: .byPerson,
             isInScope: plan.isInScope,
             mediaType: plan.mediaType,
-            title: plan.title,
+            // byPerson ignores `title`; drop the (often junk) echoed title so the
+            // interpretation surfaced to callers isn't misleading.
+            title: nil,
             people: names,
             crewRole: plan.crewRole,
             genres: plan.genres,

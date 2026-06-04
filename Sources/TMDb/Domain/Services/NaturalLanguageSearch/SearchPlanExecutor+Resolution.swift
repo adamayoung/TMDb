@@ -101,7 +101,9 @@ extension SearchPlanExecutor {
     }
 
     /// The best-scoring candidate among the top results: an exact (case-insensitive)
-    /// title match dominates, with popularity as the tie-breaker.
+    /// title match dominates, with popularity as the tie-breaker. Only the top 8
+    /// results are scanned — an exact match buried past position 8 by TMDb's own
+    /// ordering (possible for titles with many near-homonyms) would be missed.
     private static func best<Item: Identifiable & PopularityRanked>(
         _ items: [Item],
         query: String,

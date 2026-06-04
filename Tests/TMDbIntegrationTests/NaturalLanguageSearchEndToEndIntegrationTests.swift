@@ -57,6 +57,13 @@
             #expect(!result.movies.isEmpty)
         }
 
+        @Test("tv shows with a named actor returns results from person credits")
+        func byPersonTV() async throws {
+            // Exercises the person-credits path (discover/tv can't filter by person).
+            let result = try await search.search(matching: "shows with Bryan Cranston")
+            #expect(result.tvSeries.contains { $0.name.localizedCaseInsensitiveContains("Breaking Bad") })
+        }
+
         @Test("similar to a known film returns results")
         func similar() async throws {
             let result = try await search.search(matching: "movies like The Matrix")

@@ -37,7 +37,7 @@ struct GatedSearchPlanGenerator: SearchPlanGenerating {
             return confident
         }
 
-        if let fallback, case .available = fallback.availability {
+        if let fallback, fallback.availability == .available {
             let raw = try await fallback.plan(for: prompt)
             return PromptGrounder.ground(raw, prompt: prompt)
         }
