@@ -20,15 +20,20 @@ import Foundation
 enum PromptGrounder {
 
     static func ground(_ plan: SearchPlan, prompt: String) -> SearchPlan {
-        let haystack = prompt.lowercased()
+        let haystack = SearchPlanLexicon.normalize(prompt)
         func present(_ value: String) -> Bool {
-            let trimmed = value.trimmingCharacters(in: .whitespaces).lowercased()
-            return !trimmed.isEmpty && haystack.contains(trimmed)
+            let trimmed = SearchPlanLexicon.normalize(value)
+            // Word-boundary match so a short hallucinated title ("It", "Us") can't
+            // pass by appearing inside an unrelated word ("criterion", "music").
+            return !trimmed.isEmpty && SearchPlanLexicon.contains(haystack, trimmed)
         }
 
         return SearchPlan(
             intent: plan.intent,
-            isInScope: true, // the fallback is only consulted for in-scope prompts
+            // Out-of-scope prompts deliberately degrade to a plain search (matching
+            // the deterministic path, which never throws for OOS in v1) rather than
+            // surfacing an error, so the model's scope verdict is not propagated.
+            isInScope: true,
             mediaType: plan.mediaType,
             title: plan.title.flatMap { present($0) ? $0 : nil },
             people: plan.people.filter(present),

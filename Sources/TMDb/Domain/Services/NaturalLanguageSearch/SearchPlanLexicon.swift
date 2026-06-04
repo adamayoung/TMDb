@@ -55,7 +55,9 @@ enum SearchPlanLexicon {
         if contains(text, anyOf: ["actor", "actors", "actress", "actresses", "people", "directors"]) {
             return .person
         }
-        if contains(text, anyOf: ["show", "shows", "series", "tv", "television", "sitcom", "sitcoms"]) {
+        if contains(text, anyOf: [
+            "show", "shows", "series", "tv", "television", "sitcom", "sitcoms", "airing", "on air"
+        ]) {
             return .tv
         }
         if contains(text, anyOf: ["movie", "movies", "film", "films", "cinema"]) {
@@ -73,7 +75,7 @@ enum SearchPlanLexicon {
     ]
 
     static func isSimilar(_ text: String) -> Bool {
-        similarLeads.contains { text.contains($0) }
+        similarLeads.contains { contains(text, $0) }
     }
 
     // MARK: - Cast
@@ -87,7 +89,7 @@ enum SearchPlanLexicon {
     ]
 
     static func isCastOf(_ text: String) -> Bool {
-        castLeads.contains { text.contains($0) }
+        castLeads.contains { contains(text, $0) }
     }
 
     // MARK: - Crew role
@@ -109,7 +111,7 @@ enum SearchPlanLexicon {
     ]
 
     static func crewRoleJob(in text: String) -> (lead: String, job: String)? {
-        crewRoleLeads.first { text.contains($0.lead) }
+        crewRoleLeads.first { contains(text, $0.lead) }
     }
 
     // MARK: - By person
@@ -122,7 +124,8 @@ enum SearchPlanLexicon {
         "movies featuring ", "films featuring ",
         "shows featuring ", "tv shows featuring ", "tv series featuring ", "series featuring ",
         "movies by ", "films by ", "movie by ", "film by ",
-        "films directed by ", "movies directed by ", "starring ", "directed by ", "featuring "
+        "films directed by ", "movies directed by ", "films written by ", "movies written by ",
+        "starring ", "directed by ", "written by ", "featuring "
     ]
 
     /// Longer phrases first so "X tv shows" trims to "X", not "X tv".
@@ -139,7 +142,7 @@ enum SearchPlanLexicon {
         if byPersonPrefixes.contains(where: { text.hasPrefix($0) }) {
             return true
         }
-        if filmographyLeads.contains(where: { text.contains($0) }) {
+        if filmographyLeads.contains(where: { contains(text, $0) }) {
             return true
         }
         // Trim a trailing date/runtime/rating clause so "Tom Hanks movies from the

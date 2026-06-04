@@ -39,6 +39,10 @@ struct TitleExtractorTests {
         // A real title that merely starts with "The" is not over-trimmed.
         #expect(TitleExtractor.title(from: "cast of The Crown", strippingLeads: SearchPlanLexicon.castLeads)
             == "The Crown")
+        // A title that starts with a bare media word ("Show", "Series") is kept —
+        // only multi-word filler ("the show", "tv show") is stripped.
+        #expect(TitleExtractor.title(from: "cast of Show Me a Hero", strippingLeads: SearchPlanLexicon.castLeads)
+            == "Show Me a Hero")
     }
 
     @Test("excises a trailing slot clause before taking the title")

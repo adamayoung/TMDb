@@ -38,6 +38,14 @@ struct NaturalLanguageSearchPlanGeneratorTests {
         #expect(plan?.mediaType == .tv)
     }
 
+    @Test("an airing-today list resolves to the tv media type")
+    func airingTodayIsTV() {
+        let plan = make().confidentPlan(for: "what's airing today")
+        #expect(plan?.intent == .list)
+        #expect(plan?.list == .airingToday)
+        #expect(plan?.mediaType == .tv)
+    }
+
     @Test("castOf extracts the title")
     func castOf() {
         let plan = make().confidentPlan(for: "cast of The Matrix")

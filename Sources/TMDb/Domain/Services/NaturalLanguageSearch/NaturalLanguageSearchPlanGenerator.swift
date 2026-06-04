@@ -29,7 +29,7 @@ struct NaturalLanguageSearchPlanGenerator: DeterministicSearchPlanning {
 
     func confidentPlan(for prompt: String) -> SearchPlan? {
         let normalized = SearchPlanLexicon.normalize(prompt)
-        guard let intent = classifier.classify(prompt) else {
+        guard let intent = classifier.classify(normalized) else {
             return nil
         }
 

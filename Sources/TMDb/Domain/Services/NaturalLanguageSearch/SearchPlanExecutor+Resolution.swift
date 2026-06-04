@@ -89,6 +89,7 @@ extension SearchPlanExecutor {
 
         switch (movie, tv) {
         case (let movie?, let tv?):
+            // Ties (equal title match and popularity) resolve in favour of the movie.
             return tv.score > movie.score ? .tvSeries(tv.id) : .movie(movie.id)
         case (let movie?, nil):
             return .movie(movie.id)

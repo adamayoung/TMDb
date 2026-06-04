@@ -18,10 +18,11 @@ enum TitleExtractor {
 
     /// Media-type filler a user adds to disambiguate ("cast of the show The Crown"),
     /// stripped from the front of the residual so it doesn't pollute the title.
-    /// Longer phrases first.
+    /// Only multi-word forms: bare "show "/"series " are too close to real titles
+    /// (e.g. "Show Me a Hero"). Longer phrases first.
     private static let leadingFiller = [
         "the tv show ", "the tv series ", "the show ", "the series ",
-        "tv show ", "tv series ", "show ", "series "
+        "tv show ", "tv series "
     ]
 
     static func title(from prompt: String, strippingLeads leads: [String]) -> String {
@@ -114,13 +115,14 @@ enum RelativeDateParser {
 
     private static func lastNYears(_ text: String) -> Int? {
         let words = text.split(separator: " ").map(String.init)
-        guard let lastIndex = words.firstIndex(of: "last"), lastIndex + 2 < words.count + 1 else {
+        // Need a 3-word window: "last" <count> "year(s)".
+        guard let lastIndex = words.firstIndex(of: "last"), lastIndex + 2 < words.count else {
             return nil
         }
-        guard lastIndex + 1 < words.count, let count = Int(words[lastIndex + 1]) else {
+        guard let count = Int(words[lastIndex + 1]) else {
             return nil
         }
-        guard lastIndex + 2 < words.count, words[lastIndex + 2].hasPrefix("year") else {
+        guard words[lastIndex + 2].hasPrefix("year") else {
             return nil
         }
         return count
