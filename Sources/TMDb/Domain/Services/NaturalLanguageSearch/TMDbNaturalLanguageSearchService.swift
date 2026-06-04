@@ -10,10 +10,11 @@ import Foundation
 ///
 /// The default ``NaturalLanguageSearchService`` implementation.
 ///
-/// It composes a plan generator (the on-device model) with a deterministic
-/// executor. When the model rejects a prompt — for example via a guardrail
-/// violation — it falls back to a literal text search so legitimate queries are
-/// not dead-ended.
+/// It composes a ``SearchPlanGenerating`` planner — deterministic-first, with
+/// Foundation Models as an evidence-gated fallback — with a deterministic
+/// executor. When the language-model fallback rejects a prompt (a guardrail
+/// violation, a refusal, or a decoding failure) it falls back to a literal text
+/// search so legitimate queries are not dead-ended.
 ///
 final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
 

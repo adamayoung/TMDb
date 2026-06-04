@@ -167,7 +167,7 @@ struct SearchPlanExecutorTests {
     @Test("similar applies a year window in code")
     func similarYearWindow() async throws {
         dataSource.searchMoviesResult = [NLSFixture.movie(id: 550, title: "Fight Club")]
-        dataSource.similarMoviesResult = [
+        dataSource.recommendedMoviesResult = [
             NLSFixture.movie(id: 1, title: "In Range", year: 2014),
             NLSFixture.movie(id: 2, title: "Too Old", year: 1999),
             NLSFixture.movie(id: 3, title: "Too New", year: 2024)
@@ -219,12 +219,12 @@ struct SearchPlanExecutorTests {
     /// 16. exclusions.
     @Test("exclusions remove matching titles and record a degradation")
     func exclusions() async throws {
-        dataSource.searchTVSeriesResult = [NLSFixture.tvSeries(id: 1, name: "Star Trek: Picard")]
-        dataSource.discoverTVSeriesResult = [
+        dataSource.searchPeopleResult = [NLSFixture.person(id: 2387)]
+        // byPerson TV is answered from the person's TV credits.
+        dataSource.personTVCreditsResult = [
             NLSFixture.tvSeries(id: 1, name: "Star Trek: Picard"),
             NLSFixture.tvSeries(id: 2, name: "Blunt Talk")
         ]
-        dataSource.searchPeopleResult = [NLSFixture.person(id: 2387)]
 
         let result = try await executor.execute(
             SearchPlan(

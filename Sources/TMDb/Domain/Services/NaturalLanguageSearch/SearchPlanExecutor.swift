@@ -40,11 +40,12 @@ struct SearchPlanExecutor {
     ///
     /// - Returns: The matching movies, TV series, and people.
     ///
-    func execute(_ plan: SearchPlan) async throws -> NaturalLanguageSearchResult {
-        guard plan.isInScope else {
+    func execute(_ rawPlan: SearchPlan) async throws -> NaturalLanguageSearchResult {
+        guard rawPlan.isInScope else {
             throw NaturalLanguageSearchError.outOfScope
         }
 
+        let plan = Self.normalize(rawPlan)
         var degradations: [SearchDegradation] = []
 
         switch plan.intent {
@@ -68,6 +69,51 @@ struct SearchPlanExecutor {
         case .browse, .byPerson, .mood, .crewRole, .similar:
             return try await executeDiscover(plan, degradations: &degradations)
         }
+    }
+
+    ///
+    /// Repairs a common planner mistake: a person query (e.g. "Brad Pitt
+    /// movies") is often tagged `find`/`browse` while the person is still
+    /// correctly placed in `people`. Since only `byPerson` uses `people`, a
+    /// populated `people` field means the request is really `byPerson`.
+    ///
+    static func normalize(_ plan: SearchPlan) -> SearchPlan {
+        // A person query ("Brad Pitt movies", "films Bruce Willis has been in") is
+        // often tagged find/browse, with the person in `people` and the title either
+        // empty or echoing the prompt (e.g. title="popular films bruce willis has
+        // been in"). A genuine bare-title find ("Fight Club") has a clean title that
+        // does NOT mention the listed people (any `people` there is an invented cast,
+        // which find ignores). So coerce to byPerson only when there is a real person
+        // name and the title is empty or contains one of those names.
+        let names = plan.people.filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        guard !names.isEmpty, plan.intent == .find || plan.intent == .browse else {
+            return plan
+        }
+
+        let title = (plan.title ?? "").trimmingCharacters(in: .whitespaces)
+        let titleEchoesPerson = names.contains { title.localizedCaseInsensitiveContains($0) }
+        guard title.isEmpty || titleEchoesPerson else {
+            return plan
+        }
+
+        return SearchPlan(
+            intent: .byPerson,
+            isInScope: plan.isInScope,
+            mediaType: plan.mediaType,
+            // byPerson ignores `title`; drop the (often junk) echoed title so the
+            // interpretation surfaced to callers isn't misleading.
+            title: nil,
+            people: names,
+            crewRole: plan.crewRole,
+            genres: plan.genres,
+            excludeTitles: plan.excludeTitles,
+            companies: plan.companies,
+            moodTerm: plan.moodTerm,
+            date: plan.date,
+            runtimeMaxMinutes: plan.runtimeMaxMinutes,
+            minRating: plan.minRating,
+            list: plan.list
+        )
     }
 
 }
@@ -120,8 +166,8 @@ extension SearchPlanExecutor {
             return NaturalLanguageSearchResult(interpretation: plan.title)
         }
 
-        let matching: [CrewMember] = if let role = plan.crewRole?.lowercased() {
-            credits.crew.filter { $0.job.lowercased() == role }
+        let matching: [CrewMember] = if let role = plan.crewRole {
+            credits.crew.filter { Self.jobMatches($0.job, role: role) }
         } else {
             credits.crew
         }
@@ -144,41 +190,33 @@ extension SearchPlanExecutor {
     ) async throws -> NaturalLanguageSearchResult {
         let bounds = plan.date.map(yearBounds(for:))
 
-        if plan.mediaType == .tv {
-            return try await executeSimilarTVSeries(plan, bounds: bounds, degradations: &degradations)
-        }
-
-        guard let id = try await dataSource.searchMovies(query: plan.title ?? "").first?.id else {
+        guard let title = plan.title,
+              let show = try await resolveShow(title: title, mediaType: plan.mediaType)
+        else {
             return NaturalLanguageSearchResult(interpretation: plan.title)
         }
 
-        var movies = try await dataSource.similarMovies(toMovie: id)
-        movies = filterByYear(movies, bounds: bounds, date: { $0.releaseDate })
-        movies = applyExclusions(movies, plan: plan, name: { $0.title }, into: &degradations)
-        return NaturalLanguageSearchResult(
-            interpretation: plan.title,
-            movies: cap(dedupe(movies)),
-            degradations: degradations
-        )
-    }
+        switch show {
+        case .tvSeries(let id):
+            var series = try await dataSource.recommendedTVSeries(forTVSeries: id)
+            series = filterByYear(series, bounds: bounds, date: { $0.firstAirDate })
+            series = applyExclusions(series, plan: plan, name: { $0.name }, into: &degradations)
+            return NaturalLanguageSearchResult(
+                interpretation: plan.title,
+                tvSeries: cap(dedupe(series)),
+                degradations: degradations
+            )
 
-    private func executeSimilarTVSeries(
-        _ plan: SearchPlan,
-        bounds: (from: Int, to: Int)?,
-        degradations: inout [SearchDegradation]
-    ) async throws -> NaturalLanguageSearchResult {
-        guard let id = try await dataSource.searchTVSeries(query: plan.title ?? "").first?.id else {
-            return NaturalLanguageSearchResult(interpretation: plan.title)
+        case .movie(let id):
+            var movies = try await dataSource.recommendedMovies(forMovie: id)
+            movies = filterByYear(movies, bounds: bounds, date: { $0.releaseDate })
+            movies = applyExclusions(movies, plan: plan, name: { $0.title }, into: &degradations)
+            return NaturalLanguageSearchResult(
+                interpretation: plan.title,
+                movies: cap(dedupe(movies)),
+                degradations: degradations
+            )
         }
-
-        var series = try await dataSource.similarTVSeries(toTVSeries: id)
-        series = filterByYear(series, bounds: bounds, date: { $0.firstAirDate })
-        series = applyExclusions(series, plan: plan, name: { $0.name }, into: &degradations)
-        return NaturalLanguageSearchResult(
-            interpretation: plan.title,
-            tvSeries: cap(dedupe(series)),
-            degradations: degradations
-        )
     }
 
 }
@@ -214,7 +252,7 @@ extension SearchPlanExecutor {
         }
     }
 
-    private func executeUnderspecified(
+    func executeUnderspecified(
         _ plan: SearchPlan,
         degradations: inout [SearchDegradation]
     ) async throws -> NaturalLanguageSearchResult {
@@ -236,11 +274,18 @@ extension SearchPlanExecutor {
         _ plan: SearchPlan,
         degradations: inout [SearchDegradation]
     ) async throws -> NaturalLanguageSearchResult {
+        // TMDb's discover/tv cannot filter by person, so a "by person" TV query
+        // (e.g. "shows with Pedro Pascal") is answered from the person's TV
+        // credits instead of discover.
+        if plan.intent == .byPerson, plan.mediaType == .tv {
+            return try await executeByPersonTVSeries(plan, degradations: &degradations)
+        }
+
         let inputs = try await resolveInputs(for: plan, into: &degradations)
 
         let nothingResolved = inputs.genreIDs.isEmpty && inputs.companyIDs.isEmpty
             && inputs.personIDs.isEmpty && inputs.bounds == nil && inputs.minRating == nil
-            && plan.runtimeMaxMinutes == nil
+            && inputs.runtimeMax == nil
         // When nothing resolved (including a `.byPerson` plan whose people all
         // failed to resolve), degrade rather than issuing an unconstrained
         // discover that would return a broad popularity dump.
@@ -248,10 +293,25 @@ extension SearchPlanExecutor {
             return try await executeUnderspecified(plan, degradations: &degradations)
         }
 
+        // The model often invents extra operands (companies, dates, genres) that
+        // AND-combine in discover and zero out the results. Try progressively
+        // relaxed filters and use the first that returns anything.
+        let ladder = Self.relaxationLadder(inputs)
+
         if plan.mediaType == .tv {
-            let filter = tvFilter(plan: plan, inputs: inputs)
-            var series = try await dataSource.discoverTVSeries(filter: filter, sortedBy: nil)
-            series = applyExclusions(series, plan: plan, name: { $0.name }, into: &degradations)
+            var chosen: [TVSeriesListItem] = []
+            var relaxed = false
+            for (level, variant) in ladder.enumerated() {
+                let filter = tvFilter(plan: plan, inputs: variant)
+                let series = try await dataSource.discoverTVSeries(filter: filter, sortedBy: nil)
+                if !series.isEmpty || level == ladder.count - 1 {
+                    chosen = series
+                    relaxed = level > 0 && !series.isEmpty
+                    break
+                }
+            }
+            if relaxed { degradations.append(.relaxedConstraints) }
+            let series = applyExclusions(chosen, plan: plan, name: { $0.name }, into: &degradations)
             return NaturalLanguageSearchResult(
                 interpretation: plan.interpretationText,
                 tvSeries: cap(dedupe(series)),
@@ -259,14 +319,59 @@ extension SearchPlanExecutor {
             )
         }
 
-        let filter = movieFilter(plan: plan, inputs: inputs)
-        var movies = try await dataSource.discoverMovies(filter: filter, sortedBy: nil)
-        movies = applyExclusions(movies, plan: plan, name: { $0.title }, into: &degradations)
+        var chosen: [MovieListItem] = []
+        var relaxed = false
+        for (level, variant) in ladder.enumerated() {
+            let filter = movieFilter(plan: plan, inputs: variant)
+            let movies = try await dataSource.discoverMovies(filter: filter, sortedBy: nil)
+            if !movies.isEmpty || level == ladder.count - 1 {
+                chosen = movies
+                relaxed = level > 0 && !movies.isEmpty
+                break
+            }
+        }
+        if relaxed { degradations.append(.relaxedConstraints) }
+        let movies = applyExclusions(chosen, plan: plan, name: { $0.title }, into: &degradations)
         return NaturalLanguageSearchResult(
             interpretation: plan.interpretationText,
             movies: cap(dedupe(movies)),
             degradations: degradations
         )
+    }
+
+    ///
+    /// Builds progressively relaxed inputs: full, then dropping companies, the
+    /// date window, genres, the rating floor, and finally the runtime ceiling.
+    /// Only adds a step when it actually drops something, so legitimate
+    /// single-constraint queries aren't re-run. Genre, rating, and runtime — the
+    /// constraints closest to user intent — are relaxed last.
+    ///
+    static func relaxationLadder(_ inputs: ResolvedInputs) -> [ResolvedInputs] {
+        var ladder = [inputs]
+        var current = inputs
+
+        if !current.companyIDs.isEmpty {
+            current = current.dropping(companies: true)
+            ladder.append(current)
+        }
+        if current.bounds != nil {
+            current = current.dropping(bounds: true)
+            ladder.append(current)
+        }
+        if !current.genreIDs.isEmpty {
+            current = current.dropping(genres: true)
+            ladder.append(current)
+        }
+        if current.minRating != nil {
+            current = current.dropping(rating: true)
+            ladder.append(current)
+        }
+        if current.runtimeMax != nil {
+            current = current.dropping(runtime: true)
+            ladder.append(current)
+        }
+
+        return ladder
     }
 
 }

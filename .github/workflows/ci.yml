@@ -59,7 +59,7 @@ jobs:
         && 'macos-26' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
@@ -111,7 +111,7 @@ jobs:
         && 'macos-26' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'

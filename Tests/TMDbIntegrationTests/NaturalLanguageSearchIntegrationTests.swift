@@ -36,6 +36,7 @@ struct NaturalLanguageSearchIntegrationTests {
             genres: client.genres,
             movies: client.movies,
             tvSeries: client.tvSeries,
+            people: client.people,
             trending: client.trending
         )
         self.executor = SearchPlanExecutor(dataSource: dataSource)

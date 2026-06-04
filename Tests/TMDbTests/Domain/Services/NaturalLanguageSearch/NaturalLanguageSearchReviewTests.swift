@@ -76,7 +76,7 @@ struct SearchPlanExecutorReviewTests {
     @Test("TV similar applies a year window in code")
     func tvSimilarYearWindow() async throws {
         dataSource.searchTVSeriesResult = [NLSFixture.tvSeries(id: 1, name: "GoT")]
-        dataSource.similarTVSeriesResult = [
+        dataSource.recommendedTVSeriesResult = [
             NLSFixture.tvSeries(id: 10, name: "In Range", year: 2015),
             NLSFixture.tvSeries(id: 11, name: "Too Old", year: 1999)
         ]
@@ -133,6 +133,57 @@ struct SearchPlanExecutorReviewTests {
         #expect(result.tvSeries.map(\.id) == [2])
         #expect(result.people.map(\.id) == [3])
         #expect(dataSource.searchAllQueries == ["Fight Club"])
+    }
+
+    @Test("a find plan with people is repaired to byPerson")
+    func findWithPeopleIsCoercedToByPerson() async throws {
+        dataSource.searchPeopleResult = [NLSFixture.person(id: 42)]
+        dataSource.discoverMoviesResult = [NLSFixture.movie(id: 1)]
+
+        // The model often mislabels "Brad Pitt movies" as `find` with no title but
+        // still fills `people`.
+        _ = try await executor.execute(
+            SearchPlan(intent: .find, mediaType: .movie, people: ["Brad Pitt"])
+        )
+
+        #expect(dataSource.lastMovieFilter?.withCast == [42])
+    }
+
+    @Test("normalize keeps a clean titled find (invented cast ignored)")
+    func normalizeKeepsTitledFind() {
+        // A bare-title find may carry an invented cast not named in the title; keep find.
+        let plan = SearchPlan(intent: .find, title: "Fight Club", people: ["Brad Pitt"])
+        #expect(SearchPlanExecutor.normalize(plan).intent == .find)
+    }
+
+    @Test("normalize coerces a junk title that echoes the person")
+    func normalizeCoercesJunkTitleWithPerson() {
+        // The model often dumps the whole prompt into title for person queries.
+        let plan = SearchPlan(
+            intent: .find,
+            title: "popular films bruce willis has been in",
+            people: ["Bruce Willis"]
+        )
+        #expect(SearchPlanExecutor.normalize(plan).intent == .byPerson)
+    }
+
+    @Test("normalize leaves a plan without people untouched")
+    func normalizeNoOp() {
+        let plan = SearchPlan(intent: .find, title: "Inception")
+        #expect(SearchPlanExecutor.normalize(plan).intent == .find)
+    }
+
+    @Test("an invented zero runtime is dropped from the filter")
+    func sanitizesZeroRuntime() async throws {
+        dataSource.searchPeopleResult = [NLSFixture.person(id: 42)]
+        dataSource.discoverMoviesResult = [NLSFixture.movie(id: 1)]
+
+        _ = try await executor.execute(
+            SearchPlan(intent: .byPerson, mediaType: .movie, people: ["X"], runtimeMaxMinutes: 0, minRating: 0)
+        )
+
+        #expect(dataSource.lastMovieFilter?.runtimeMax == nil)
+        #expect(dataSource.lastMovieFilter?.voteAverageMin == nil)
     }
 
     @Test("find with no title returns empty without calling search")

@@ -19,11 +19,18 @@
             isInScope: Bool = true,
             mediaType: GeneratedMediaType? = nil,
             title: String? = nil,
+            people: [String] = [],
+            crewRole: String? = nil,
             genres: [String] = [],
+            excludeTitles: [String] = [],
+            companies: [String] = [],
+            moodTerm: String? = nil,
             datePhrase: GeneratedDatePhrase? = nil,
             decade: Int? = nil,
             yearFrom: Int? = nil,
             yearTo: Int? = nil,
+            runtimeMaxMinutes: Int? = nil,
+            minRating: Double? = nil,
             list: GeneratedListKind? = nil
         ) -> GeneratedSearchPlan {
             GeneratedSearchPlan(
@@ -31,18 +38,18 @@
                 isInScope: isInScope,
                 mediaType: mediaType,
                 title: title,
-                people: [],
-                crewRole: nil,
+                people: people,
+                crewRole: crewRole,
                 genres: genres,
-                excludeTitles: [],
-                companies: [],
-                moodTerm: nil,
+                excludeTitles: excludeTitles,
+                companies: companies,
+                moodTerm: moodTerm,
                 datePhrase: datePhrase,
                 decade: decade,
                 yearFrom: yearFrom,
                 yearTo: yearTo,
-                runtimeMaxMinutes: nil,
-                minRating: nil,
+                runtimeMaxMinutes: runtimeMaxMinutes,
+                minRating: minRating,
                 list: list
             )
         }
@@ -109,6 +116,76 @@
         func mapsLoneYearTo() {
             let plan = SearchPlanMapper.map(generated(yearTo: 2010))
             #expect(plan.date == .exactYear(2010))
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("passes through people, crew role, exclusions, companies, mood, runtime, and rating")
+        func passesThroughOperands() {
+            let plan = SearchPlanMapper.map(
+                generated(
+                    people: ["Tom Hanks"],
+                    crewRole: "Director",
+                    excludeTitles: ["Star Trek"],
+                    companies: ["Pixar"],
+                    moodTerm: "feel-good",
+                    runtimeMaxMinutes: 120,
+                    minRating: 7.5
+                )
+            )
+
+            #expect(plan.people == ["Tom Hanks"])
+            #expect(plan.crewRole == "Director")
+            #expect(plan.excludeTitles == ["Star Trek"])
+            #expect(plan.companies == ["Pixar"])
+            #expect(plan.moodTerm == "feel-good")
+            #expect(plan.runtimeMaxMinutes == 120)
+            #expect(plan.minRating == 7.5)
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps every intent arm")
+        func mapsEveryIntent() {
+            let cases: [(GeneratedIntent, SearchPlan.Intent)] = [
+                (.find, .find), (.browse, .browse), (.filmography, .byPerson),
+                (.castOf, .castOf), (.crewRole, .crewRole), (.similar, .similar),
+                (.list, .list), (.mood, .mood)
+            ]
+            for (input, expected) in cases {
+                #expect(SearchPlanMapper.map(generated(intent: input)).intent == expected)
+            }
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps every media type")
+        func mapsEveryMediaType() {
+            #expect(SearchPlanMapper.map(generated(mediaType: .movie)).mediaType == .movie)
+            #expect(SearchPlanMapper.map(generated(mediaType: .tv)).mediaType == .tv)
+            #expect(SearchPlanMapper.map(generated(mediaType: .person)).mediaType == .person)
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps every list kind")
+        func mapsEveryListKind() {
+            let cases: [(GeneratedListKind, SearchPlan.ListKind)] = [
+                (.trending, .trending), (.popular, .popular), (.topRated, .topRated),
+                (.nowPlaying, .nowPlaying), (.upcoming, .upcoming), (.airingToday, .airingToday)
+            ]
+            for (input, expected) in cases {
+                #expect(SearchPlanMapper.map(generated(intent: .list, list: input)).list == expected)
+            }
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps the recent and last-ten-years date phrases")
+        func mapsRemainingDatePhrases() {
+            #expect(SearchPlanMapper.map(generated(datePhrase: .recent)).date == .recent)
+            #expect(SearchPlanMapper.map(generated(datePhrase: .lastTenYears)).date == .lastNYears(10))
+        }
+
+        @available(iOS 26, macOS 26, visionOS 26, *)
+        @Test("maps a lone lower-bound year to an exact year")
+        func mapsLoneYearFrom() {
+            #expect(SearchPlanMapper.map(generated(yearFrom: 1999)).date == .exactYear(1999))
         }
 
     }
