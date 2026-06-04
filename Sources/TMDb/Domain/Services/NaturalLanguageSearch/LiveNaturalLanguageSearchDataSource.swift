@@ -22,6 +22,7 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
     private let genres: any GenreService
     private let movies: any MovieService
     private let tvSeries: any TVSeriesService
+    private let people: any PersonService
     private let trending: any TrendingService
 
     init(
@@ -30,6 +31,7 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
         genres: any GenreService,
         movies: any MovieService,
         tvSeries: any TVSeriesService,
+        people: any PersonService,
         trending: any TrendingService
     ) {
         self.discover = discover
@@ -37,6 +39,7 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
         self.genres = genres
         self.movies = movies
         self.tvSeries = tvSeries
+        self.people = people
         self.trending = trending
     }
 
@@ -90,12 +93,46 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
         )
     }
 
-    func similarMovies(toMovie id: Movie.ID) async throws -> [MovieListItem] {
-        try await movies.similar(toMovie: id).results
+    func recommendedMovies(forMovie id: Movie.ID) async throws -> [MovieListItem] {
+        try await movies.recommendations(forMovie: id).results
     }
 
-    func similarTVSeries(toTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem] {
-        try await tvSeries.similar(toTVSeries: id).results
+    func recommendedTVSeries(forTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem] {
+        try await tvSeries.recommendations(forTVSeries: id).results
+    }
+
+    func tvSeriesCredits(forPerson id: Person.ID) async throws -> [TVSeriesListItem] {
+        let credits = try await people.tvSeriesCredits(forPerson: id)
+        // Rank by episode count first: a regular role (Breaking Bad, 62 eps) is far
+        // more relevant to "shows X is in" than a one-off guest spot on a hugely
+        // popular show (The Simpsons). Popularity breaks ties.
+        return credits.cast
+            .sorted { lhs, rhs in
+                let lhsEpisodes = lhs.episodeCount ?? 0
+                let rhsEpisodes = rhs.episodeCount ?? 0
+                if lhsEpisodes != rhsEpisodes {
+                    return lhsEpisodes > rhsEpisodes
+                }
+                return (lhs.popularity ?? 0) > (rhs.popularity ?? 0)
+            }
+            .map { credit in
+                TVSeriesListItem(
+                    id: credit.id,
+                    name: credit.name,
+                    originalName: credit.originalName,
+                    originalLanguage: credit.originalLanguage,
+                    overview: credit.overview,
+                    genreIDs: credit.genreIDs,
+                    firstAirDate: credit.firstAirDate,
+                    originCountries: credit.originCountries,
+                    posterPath: credit.posterPath,
+                    backdropPath: credit.backdropPath,
+                    popularity: credit.popularity,
+                    voteAverage: credit.voteAverage,
+                    voteCount: credit.voteCount,
+                    isAdultOnly: credit.isAdultOnly
+                )
+            }
     }
 
     func movieCredits(forMovie id: Movie.ID) async throws -> ShowCredits {

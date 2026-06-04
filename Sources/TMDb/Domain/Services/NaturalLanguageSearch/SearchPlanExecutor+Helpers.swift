@@ -132,26 +132,6 @@ extension SearchPlanExecutor {
         return ids
     }
 
-    func credits(forTitle plan: SearchPlan) async throws -> ShowCredits? {
-        guard let title = plan.title else {
-            return nil
-        }
-
-        if plan.mediaType == .tv {
-            guard let id = try await dataSource.searchTVSeries(query: title).first?.id else {
-                return nil
-            }
-
-            return try await dataSource.tvSeriesCredits(forTVSeries: id)
-        }
-
-        guard let id = try await dataSource.searchMovies(query: title).first?.id else {
-            return nil
-        }
-
-        return try await dataSource.movieCredits(forMovie: id)
-    }
-
 }
 
 // MARK: - Filter building
@@ -212,6 +192,25 @@ extension SearchPlanExecutor {
             return nil
         }
         return value
+    }
+
+    /// Whether a TMDb crew `job` satisfies a requested role. TMDb records writing
+    /// credits under several jobs ("Screenplay", "Story", …) and music under
+    /// "Music"/"Composer", so a single role maps to a set of jobs.
+    static func jobMatches(_ job: String, role: String) -> Bool {
+        let job = job.lowercased()
+        let role = role.lowercased()
+        if job == role {
+            return true
+        }
+        switch role {
+        case "writer":
+            return ["screenplay", "story", "author", "novel", "screenstory", "writer"].contains(job)
+        case "original music composer":
+            return ["music", "composer", "original music composer", "songs"].contains(job)
+        default:
+            return false
+        }
     }
 
     private func primaryReleaseYear(

@@ -70,10 +70,20 @@ struct NaturalLanguageSearchPlanGeneratorTests {
         #expect(plan?.title == nil)
     }
 
-    @Test("byPerson abstains when no person is extracted")
+    @Test("byPerson recovers the name structurally from a lead when NER misses it")
+    func byPersonStructuralFromLead() {
+        people.result = [] // NER finds nothing
+        let plan = make().confidentPlan(for: "movies with denzel")
+        #expect(plan?.intent == .byPerson)
+        #expect(plan?.people == ["denzel"])
+    }
+
+    @Test("byPerson abstains when no person can be recovered at all")
     func byPersonNoPersonAbstains() {
         people.result = []
-        #expect(make().confidentPlan(for: "movies with denzel") == nil)
+        // A filmography question has no lead/suffix to recover a name structurally,
+        // so when NER finds nothing the planner abstains (defers to the fallback).
+        #expect(make().confidentPlan(for: "what has it been in") == nil)
     }
 
     @Test("an intent whose mandatory slot is missing abstains")
@@ -121,6 +131,46 @@ struct NaturalLanguageSearchPlanGeneratorTests {
 
         let movie = make().confidentPlan(for: "movies like Inception")
         #expect(movie?.mediaType == nil)
+    }
+
+    @Test("who starred in is a cast query, not a plain find")
+    func whoStarredInIsCast() {
+        let plan = make().confidentPlan(for: "who starred in Gladiator")
+        #expect(plan?.intent == .castOf)
+        #expect(plan?.title == "Gladiator")
+    }
+
+    @Test("a filmography question is byPerson")
+    func filmographyQuestion() {
+        people.result = ["Ryan Gosling"]
+        let plan = make().confidentPlan(for: "what has Ryan Gosling been in")
+        #expect(plan?.intent == .byPerson)
+        #expect(plan?.people == ["Ryan Gosling"])
+    }
+
+    @Test("a tv-shows suffix is byPerson with the tv media type")
+    func tvShowsSuffixIsByPerson() {
+        people.result = ["Bryan Cranston"]
+        let plan = make().confidentPlan(for: "Bryan Cranston tv shows")
+        #expect(plan?.intent == .byPerson)
+        #expect(plan?.mediaType == .tv)
+        #expect(plan?.people == ["Bryan Cranston"])
+    }
+
+    @Test("a directed-by lead sets a Director crew role on the byPerson plan")
+    func directedBySetsCrewRole() {
+        people.result = ["Christopher Nolan"]
+        let plan = make().confidentPlan(for: "films directed by Christopher Nolan")
+        #expect(plan?.intent == .byPerson)
+        #expect(plan?.crewRole == "Director")
+    }
+
+    @Test("byPerson recovers the name structurally when NER misses it")
+    func byPersonStructuralFallback() {
+        people.result = [] // NER finds nothing
+        let plan = make().confidentPlan(for: "Scarlett Johansson films")
+        #expect(plan?.intent == .byPerson)
+        #expect(plan?.people == ["Scarlett Johansson"])
     }
 }
 

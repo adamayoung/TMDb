@@ -82,7 +82,8 @@ enum SearchPlanLexicon {
         "cast of", "the cast of", "cast members of", "cast member of", "cast list for",
         "cast list of", "full cast of", "main cast of", "who is in", "who's in", "whos in",
         "actors in", "actors from", "the actors in", "stars of", "people in",
-        "who appears in", "who acted in", "who played in", "who plays in", "lead actors in"
+        "who appears in", "who acted in", "who played in", "who plays in", "lead actors in",
+        "who starred in", "who stars in"
     ]
 
     static func isCastOf(_ text: String) -> Bool {
@@ -115,15 +116,30 @@ enum SearchPlanLexicon {
 
     static let byPersonPrefixes = [
         "movies with ", "movie with ", "films with ", "film with ", "shows with ", "show with ",
-        "tv shows with ", "series with ", "movies starring ", "films starring ", "movie starring ",
-        "movies featuring ", "films featuring ", "movies by ", "films by ", "movie by ", "film by ",
+        "tv shows with ", "tv series with ", "series with ",
+        "movies starring ", "films starring ", "movie starring ",
+        "shows starring ", "show starring ", "tv shows starring ", "tv series starring ", "series starring ",
+        "movies featuring ", "films featuring ",
+        "shows featuring ", "tv shows featuring ", "tv series featuring ", "series featuring ",
+        "movies by ", "films by ", "movie by ", "film by ",
         "films directed by ", "movies directed by ", "starring ", "directed by ", "featuring "
     ]
 
-    static let byPersonSuffixes = [" movies", " films", " movie", " film"]
+    /// Longer phrases first so "X tv shows" trims to "X", not "X tv".
+    static let byPersonSuffixes = [
+        " movies", " films", " movie", " film",
+        " tv shows", " tv series", " tv show", " shows", " series"
+    ]
+
+    /// Filmography questions ("what has Tom Hanks been in") — the named person is
+    /// recovered by the planner's entity extraction.
+    static let filmographyLeads = ["been in"]
 
     static func isByPerson(_ text: String) -> Bool {
         if byPersonPrefixes.contains(where: { text.hasPrefix($0) }) {
+            return true
+        }
+        if filmographyLeads.contains(where: { text.contains($0) }) {
             return true
         }
         // Trim a trailing date/runtime/rating clause so "Tom Hanks movies from the
@@ -139,6 +155,21 @@ enum SearchPlanLexicon {
             }
         }
         return false
+    }
+
+    /// A crew role implied by a `byPerson` lead ("films directed by X" → Director),
+    /// so the executor can filter the discover query by crew rather than cast.
+    static func crewRoleForByPerson(_ text: String) -> String? {
+        if contains(text, "directed by") {
+            return "Director"
+        }
+        if contains(text, "written by") {
+            return "Writer"
+        }
+        if contains(text, anyOf: ["composed by", "music by", "scored by"]) {
+            return "Original Music Composer"
+        }
+        return nil
     }
 
     /// Removes a trailing date / runtime / rating clause (not genres) from a
@@ -171,7 +202,8 @@ enum SearchPlanLexicon {
         ["crime"], ["documentary", "documentaries", "docs"], ["drama", "dramas"],
         ["family"], ["fantasy"], ["history", "historical"], ["horror"],
         ["musical", "musicals"], ["mystery"], ["romance", "romantic"],
-        ["thriller", "thrillers"], ["war"], ["western", "westerns"]
+        ["thriller", "thrillers"], ["war"], ["western", "westerns"],
+        ["superhero", "super hero", "comic book"]
     ]
 
     static func hasGenre(_ text: String) -> Bool {

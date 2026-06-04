@@ -51,11 +51,16 @@ protocol NaturalLanguageSearchDataSource: Sendable {
         query: String
     ) async throws -> (movies: [MovieListItem], tvSeries: [TVSeriesListItem], people: [PersonListItem])
 
-    /// Movies similar to a movie.
-    func similarMovies(toMovie id: Movie.ID) async throws -> [MovieListItem]
+    /// Recommended movies for a movie (TMDb's "recommendations", which are higher
+    /// relevance than the keyword-based "similar" endpoint).
+    func recommendedMovies(forMovie id: Movie.ID) async throws -> [MovieListItem]
 
-    /// TV series similar to a TV series.
-    func similarTVSeries(toTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem]
+    /// Recommended TV series for a TV series.
+    func recommendedTVSeries(forTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem]
+
+    /// The TV series a person is credited in (cast), most popular first. Used for
+    /// "by person" TV queries, since TMDb's discover/tv cannot filter by person.
+    func tvSeriesCredits(forPerson id: Person.ID) async throws -> [TVSeriesListItem]
 
     /// The credits for a movie.
     func movieCredits(forMovie id: Movie.ID) async throws -> ShowCredits

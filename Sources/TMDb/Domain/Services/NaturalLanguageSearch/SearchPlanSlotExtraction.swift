@@ -16,6 +16,14 @@ enum TitleExtractor {
 
     private static let trailingMarkers = ["under", "over", "rated", "from", "in", "released"]
 
+    /// Media-type filler a user adds to disambiguate ("cast of the show The Crown"),
+    /// stripped from the front of the residual so it doesn't pollute the title.
+    /// Longer phrases first.
+    private static let leadingFiller = [
+        "the tv show ", "the tv series ", "the show ", "the series ",
+        "tv show ", "tv series ", "show ", "series "
+    ]
+
     static func title(from prompt: String, strippingLeads leads: [String]) -> String {
         // 1. Find the earliest matching lead phrase; the title is what follows it.
         var afterLead = prompt
@@ -29,11 +37,24 @@ enum TitleExtractor {
             afterLead = String(prompt[earliest.upperBound...])
         }
 
-        // 2. Excise a trailing slot clause.
+        // 2. Excise a trailing slot clause — but not if it would empty the title
+        //    (e.g. the film "1917", whose whole title looks like a year).
         let excised = exciseTrailingSlots(afterLead)
+        let kept = excised.trimmingCharacters(in: .whitespaces).isEmpty ? afterLead : excised
 
-        // 3. Trim whitespace and surrounding punctuation/quotes.
-        return excised.trimmingCharacters(in: CharacterSet(charactersIn: " \t\n\"'.,?!"))
+        // 3. Strip leading media-type filler ("the show", "the series", …).
+        let unfilled = strippingLeadingFiller(kept)
+
+        // 4. Trim whitespace and surrounding punctuation/quotes.
+        return unfilled.trimmingCharacters(in: CharacterSet(charactersIn: " \t\n\"'.,?!"))
+    }
+
+    private static func strippingLeadingFiller(_ text: String) -> String {
+        let leading = text.drop { $0 == " " }
+        for filler in leadingFiller where leading.lowercased().hasPrefix(filler) {
+            return String(leading.dropFirst(filler.count))
+        }
+        return text
     }
 
     private static func exciseTrailingSlots(_ text: String) -> String {

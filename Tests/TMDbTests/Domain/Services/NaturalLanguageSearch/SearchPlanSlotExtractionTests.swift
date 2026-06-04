@@ -22,6 +22,25 @@ struct TitleExtractorTests {
             == "Inception")
     }
 
+    @Test("strips leading media-type filler so the title is clean")
+    func stripsLeadingFiller() {
+        #expect(TitleExtractor.title(
+            from: "actors in the show The Crown",
+            strippingLeads: SearchPlanLexicon.castLeads
+        ) == "The Crown")
+        #expect(TitleExtractor.title(
+            from: "main cast of the series Succession",
+            strippingLeads: SearchPlanLexicon.castLeads
+        ) == "Succession")
+        #expect(TitleExtractor.title(
+            from: "people in the tv show The Office",
+            strippingLeads: SearchPlanLexicon.castLeads
+        ) == "The Office")
+        // A real title that merely starts with "The" is not over-trimmed.
+        #expect(TitleExtractor.title(from: "cast of The Crown", strippingLeads: SearchPlanLexicon.castLeads)
+            == "The Crown")
+    }
+
     @Test("excises a trailing slot clause before taking the title")
     func excisesTrailingSlot() {
         #expect(TitleExtractor.title(

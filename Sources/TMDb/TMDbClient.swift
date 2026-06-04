@@ -290,6 +290,7 @@ public final class TMDbClient: Sendable {
                 genres: genres,
                 movies: movies,
                 tvSeries: tvSeries,
+                people: people,
                 trending: trending
             )
 

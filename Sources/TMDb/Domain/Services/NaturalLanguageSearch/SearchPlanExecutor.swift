@@ -164,8 +164,8 @@ extension SearchPlanExecutor {
             return NaturalLanguageSearchResult(interpretation: plan.title)
         }
 
-        let matching: [CrewMember] = if let role = plan.crewRole?.lowercased() {
-            credits.crew.filter { $0.job.lowercased() == role }
+        let matching: [CrewMember] = if let role = plan.crewRole {
+            credits.crew.filter { Self.jobMatches($0.job, role: role) }
         } else {
             credits.crew
         }
@@ -188,41 +188,33 @@ extension SearchPlanExecutor {
     ) async throws -> NaturalLanguageSearchResult {
         let bounds = plan.date.map(yearBounds(for:))
 
-        if plan.mediaType == .tv {
-            return try await executeSimilarTVSeries(plan, bounds: bounds, degradations: &degradations)
-        }
-
-        guard let id = try await dataSource.searchMovies(query: plan.title ?? "").first?.id else {
+        guard let title = plan.title,
+              let show = try await resolveShow(title: title, mediaType: plan.mediaType)
+        else {
             return NaturalLanguageSearchResult(interpretation: plan.title)
         }
 
-        var movies = try await dataSource.similarMovies(toMovie: id)
-        movies = filterByYear(movies, bounds: bounds, date: { $0.releaseDate })
-        movies = applyExclusions(movies, plan: plan, name: { $0.title }, into: &degradations)
-        return NaturalLanguageSearchResult(
-            interpretation: plan.title,
-            movies: cap(dedupe(movies)),
-            degradations: degradations
-        )
-    }
+        switch show {
+        case .tvSeries(let id):
+            var series = try await dataSource.recommendedTVSeries(forTVSeries: id)
+            series = filterByYear(series, bounds: bounds, date: { $0.firstAirDate })
+            series = applyExclusions(series, plan: plan, name: { $0.name }, into: &degradations)
+            return NaturalLanguageSearchResult(
+                interpretation: plan.title,
+                tvSeries: cap(dedupe(series)),
+                degradations: degradations
+            )
 
-    private func executeSimilarTVSeries(
-        _ plan: SearchPlan,
-        bounds: (from: Int, to: Int)?,
-        degradations: inout [SearchDegradation]
-    ) async throws -> NaturalLanguageSearchResult {
-        guard let id = try await dataSource.searchTVSeries(query: plan.title ?? "").first?.id else {
-            return NaturalLanguageSearchResult(interpretation: plan.title)
+        case .movie(let id):
+            var movies = try await dataSource.recommendedMovies(forMovie: id)
+            movies = filterByYear(movies, bounds: bounds, date: { $0.releaseDate })
+            movies = applyExclusions(movies, plan: plan, name: { $0.title }, into: &degradations)
+            return NaturalLanguageSearchResult(
+                interpretation: plan.title,
+                movies: cap(dedupe(movies)),
+                degradations: degradations
+            )
         }
-
-        var series = try await dataSource.similarTVSeries(toTVSeries: id)
-        series = filterByYear(series, bounds: bounds, date: { $0.firstAirDate })
-        series = applyExclusions(series, plan: plan, name: { $0.name }, into: &degradations)
-        return NaturalLanguageSearchResult(
-            interpretation: plan.title,
-            tvSeries: cap(dedupe(series)),
-            degradations: degradations
-        )
     }
 
 }
@@ -258,7 +250,7 @@ extension SearchPlanExecutor {
         }
     }
 
-    private func executeUnderspecified(
+    func executeUnderspecified(
         _ plan: SearchPlan,
         degradations: inout [SearchDegradation]
     ) async throws -> NaturalLanguageSearchResult {
@@ -280,6 +272,13 @@ extension SearchPlanExecutor {
         _ plan: SearchPlan,
         degradations: inout [SearchDegradation]
     ) async throws -> NaturalLanguageSearchResult {
+        // TMDb's discover/tv cannot filter by person, so a "by person" TV query
+        // (e.g. "shows with Pedro Pascal") is answered from the person's TV
+        // credits instead of discover.
+        if plan.intent == .byPerson, plan.mediaType == .tv {
+            return try await executeByPersonTVSeries(plan, degradations: &degradations)
+        }
+
         let inputs = try await resolveInputs(for: plan, into: &degradations)
 
         let nothingResolved = inputs.genreIDs.isEmpty && inputs.companyIDs.isEmpty

@@ -24,8 +24,8 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
         [],
         []
     )
-    var similarMoviesResult: [MovieListItem] = []
-    var similarTVSeriesResult: [TVSeriesListItem] = []
+    var recommendedMoviesResult: [MovieListItem] = []
+    var recommendedTVSeriesResult: [TVSeriesListItem] = []
     var movieCreditsResult = ShowCredits(id: 0, cast: [], crew: [])
     var tvSeriesCreditsResult = ShowCredits(id: 0, cast: [], crew: [])
     var curatedMoviesResult: [MovieListItem] = []
@@ -91,12 +91,20 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
         return searchAllResult
     }
 
-    func similarMovies(toMovie id: Movie.ID) async throws -> [MovieListItem] {
-        similarMoviesResult
+    func recommendedMovies(forMovie id: Movie.ID) async throws -> [MovieListItem] {
+        recommendedMoviesResult
     }
 
-    func similarTVSeries(toTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem] {
-        similarTVSeriesResult
+    func recommendedTVSeries(forTVSeries id: TVSeries.ID) async throws -> [TVSeriesListItem] {
+        recommendedTVSeriesResult
+    }
+
+    var personTVCreditsResult: [TVSeriesListItem] = []
+    private(set) var personTVCreditsIDs: [Person.ID] = []
+
+    func tvSeriesCredits(forPerson id: Person.ID) async throws -> [TVSeriesListItem] {
+        personTVCreditsIDs.append(id)
+        return personTVCreditsResult
     }
 
     func movieCredits(forMovie id: Movie.ID) async throws -> ShowCredits {
