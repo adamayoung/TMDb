@@ -135,6 +135,159 @@ struct SearchPlanExecutorReviewTests {
         #expect(dataSource.searchAllQueries == ["Fight Club"])
     }
 
+    @Test("a find plan with people is repaired to byPerson")
+    func findWithPeopleIsCoercedToByPerson() async throws {
+        dataSource.searchPeopleResult = [NLSFixture.person(id: 42)]
+        dataSource.discoverMoviesResult = [NLSFixture.movie(id: 1)]
+
+        // The model often mislabels "Brad Pitt movies" as `find` with no title but
+        // still fills `people`.
+        _ = try await executor.execute(
+            SearchPlan(intent: .find, mediaType: .movie, people: ["Brad Pitt"])
+        )
+
+        #expect(dataSource.lastMovieFilter?.withCast == [42])
+    }
+
+    @Test("normalize keeps a clean titled find (invented cast ignored)")
+    func normalizeKeepsTitledFind() {
+        // A bare-title find may carry an invented cast not named in the title; keep find.
+        let plan = SearchPlan(intent: .find, title: "Fight Club", people: ["Brad Pitt"])
+        #expect(SearchPlanExecutor.normalize(plan).intent == .find)
+    }
+
+    @Test("normalize coerces a junk title that echoes the person")
+    func normalizeCoercesJunkTitleWithPerson() {
+        // The model often dumps the whole prompt into title for person queries.
+        let plan = SearchPlan(
+            intent: .find,
+            title: "popular films bruce willis has been in",
+            people: ["Bruce Willis"]
+        )
+        #expect(SearchPlanExecutor.normalize(plan).intent == .byPerson)
+    }
+
+    @Test("normalize leaves a plan without people untouched")
+    func normalizeNoOp() {
+        let plan = SearchPlan(intent: .find, title: "Inception")
+        #expect(SearchPlanExecutor.normalize(plan).intent == .find)
+    }
+
+    @Test("an invented zero runtime is dropped from the filter")
+    func sanitizesZeroRuntime() async throws {
+        dataSource.searchPeopleResult = [NLSFixture.person(id: 42)]
+        dataSource.discoverMoviesResult = [NLSFixture.movie(id: 1)]
+
+        _ = try await executor.execute(
+            SearchPlan(intent: .byPerson, mediaType: .movie, people: ["X"], runtimeMaxMinutes: 0, minRating: 0)
+        )
+
+        #expect(dataSource.lastMovieFilter?.runtimeMax == nil)
+        #expect(dataSource.lastMovieFilter?.voteAverageMin == nil)
+    }
+
+    @Test("an empty result is retried with relaxed constraints")
+    func relaxesConstraintsOnEmpty() async throws {
+        dataSource.searchCompaniesResult = [NLSFixture.company(id: 3, name: "Pixar")]
+        // Empty while a company filter is present; non-empty once it's dropped.
+        dataSource.discoverMoviesHandler = { filter in
+            filter.companies == nil ? [NLSFixture.movie(id: 1)] : []
+        }
+
+        let result = try await executor.execute(
+            SearchPlan(intent: .browse, mediaType: .movie, companies: ["Pixar"], minRating: 7)
+        )
+
+        #expect(result.movies.map(\.id) == [1])
+        #expect(result.degradations.contains(.relaxedConstraints))
+        #expect(dataSource.discoverMoviesCallCount == 2)
+    }
+
+    @Test("relaxation is not reported when every relaxed variant also returns empty")
+    func noRelaxedFlagWhenAllVariantsEmpty() async throws {
+        dataSource.searchCompaniesResult = [NLSFixture.company(id: 3, name: "Pixar")]
+        dataSource.discoverMoviesHandler = { _ in [] } // every ladder level returns nothing
+
+        let result = try await executor.execute(
+            SearchPlan(intent: .browse, mediaType: .movie, companies: ["Pixar"], minRating: 7)
+        )
+
+        #expect(result.movies.isEmpty)
+        #expect(!result.degradations.contains(.relaxedConstraints))
+    }
+
+    @Test("a rating-only query is relaxed rather than dead-ending empty")
+    func relaxesRatingOnly() async throws {
+        // Empty while the rating floor is present; non-empty once it's dropped.
+        dataSource.discoverMoviesHandler = { filter in
+            filter.voteAverageMin == nil ? [NLSFixture.movie(id: 1)] : []
+        }
+
+        let result = try await executor.execute(
+            SearchPlan(intent: .browse, mediaType: .movie, minRating: 9)
+        )
+
+        #expect(result.movies.map(\.id) == [1])
+        #expect(result.degradations.contains(.relaxedConstraints))
+        #expect(dataSource.discoverMoviesCallCount == 2)
+    }
+
+    @Test("a runtime-only query is relaxed rather than dead-ending empty")
+    func relaxesRuntimeOnly() async throws {
+        dataSource.discoverMoviesHandler = { filter in
+            filter.runtimeMax == nil ? [NLSFixture.movie(id: 1)] : []
+        }
+
+        let result = try await executor.execute(
+            SearchPlan(intent: .browse, mediaType: .movie, runtimeMaxMinutes: 90)
+        )
+
+        #expect(result.movies.map(\.id) == [1])
+        #expect(result.degradations.contains(.relaxedConstraints))
+        #expect(dataSource.discoverMoviesCallCount == 2)
+    }
+
+    @Test("the relaxation ladder drops constraints in order, one step per constraint")
+    func relaxationLadderOrdering() {
+        let inputs = SearchPlanExecutor.ResolvedInputs(
+            genreIDs: [1],
+            companyIDs: [2],
+            personIDs: [],
+            bounds: (from: 1990, to: 1999),
+            runtimeMax: 120,
+            minRating: 7
+        )
+
+        let ladder = SearchPlanExecutor.relaxationLadder(inputs)
+
+        // full, -companies, -bounds, -genres, -rating, -runtime
+        #expect(ladder.count == 6)
+        #expect(ladder[0].companyIDs == [2])
+        #expect(ladder[1].companyIDs.isEmpty)
+        #expect(ladder[1].bounds != nil)
+        #expect(ladder[2].bounds == nil)
+        #expect(ladder[2].genreIDs == [1])
+        #expect(ladder[3].genreIDs.isEmpty)
+        #expect(ladder[3].minRating == 7)
+        #expect(ladder[4].minRating == nil)
+        #expect(ladder[4].runtimeMax == 120)
+        #expect(ladder[5].runtimeMax == nil)
+    }
+
+    @Test("a person-only query is not re-run (person is never relaxed)")
+    func relaxationLadderPersonOnly() {
+        let inputs = SearchPlanExecutor.ResolvedInputs(
+            genreIDs: [],
+            companyIDs: [],
+            personIDs: [1],
+            bounds: nil,
+            runtimeMax: nil,
+            minRating: nil
+        )
+
+        #expect(SearchPlanExecutor.relaxationLadder(inputs).count == 1)
+    }
+
     @Test("find with no title returns empty without calling search")
     func findEmptyTitleReturnsEmpty() async throws {
         let result = try await executor.execute(SearchPlan(intent: .find))

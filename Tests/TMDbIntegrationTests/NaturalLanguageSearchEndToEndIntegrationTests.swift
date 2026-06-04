@@ -1,0 +1,73 @@
+//
+//  NaturalLanguageSearchEndToEndIntegrationTests.swift
+//  TMDb
+//
+//  Copyright © 2026 Adam Young.
+//
+
+#if canImport(NaturalLanguage)
+    import Foundation
+    import Testing
+    @testable import TMDb
+
+    ///
+    /// End-to-end coverage for the deterministic NaturalLanguage planner: a sample
+    /// of real prompts driven through `client.naturalLanguageSearch` against the
+    /// live API. These exercise the full chain (classifier → NER → executor →
+    /// TMDb) without the language model, so they are stable on every Apple runner.
+    ///
+    @Suite(
+        .integrationGate,
+        .serialized,
+        .tags(.naturalLanguageSearch),
+        .enabled(if: CredentialHelper.shared.hasAPIKey)
+    )
+    struct NaturalLanguageSearchEndToEndIntegrationTests {
+
+        private var search: any NaturalLanguageSearchService {
+            CredentialHelper.shared.makeClient().naturalLanguageSearch
+        }
+
+        @Test("the feature is available on all Apple platforms")
+        func available() {
+            #expect(search.availability == .available)
+        }
+
+        @Test("bare title returns the matching movie")
+        func findTitle() async throws {
+            let result = try await search.search(matching: "Fight Club")
+            #expect(result.movies.contains { $0.title.localizedCaseInsensitiveContains("Fight Club") })
+        }
+
+        @Test("cast of a known film returns its cast")
+        func castOf() async throws {
+            let result = try await search.search(matching: "cast of The Matrix")
+            #expect(result.people.contains { $0.name.localizedCaseInsensitiveContains("Keanu Reeves") })
+        }
+
+        @Test("director of a known film returns the director")
+        func crewRole() async throws {
+            let result = try await search.search(matching: "who directed Jurassic Park")
+            #expect(result.people.contains { $0.name.localizedCaseInsensitiveContains("Spielberg") })
+        }
+
+        @Test("movies with a named actor returns results")
+        func byPerson() async throws {
+            let result = try await search.search(matching: "movies with Tom Hanks")
+            #expect(!result.movies.isEmpty)
+        }
+
+        @Test("similar to a known film returns results")
+        func similar() async throws {
+            let result = try await search.search(matching: "movies like The Matrix")
+            #expect(!result.movies.isEmpty)
+        }
+
+        @Test("a curated list returns results")
+        func list() async throws {
+            let result = try await search.search(matching: "trending movies")
+            #expect(!result.movies.isEmpty)
+        }
+
+    }
+#endif

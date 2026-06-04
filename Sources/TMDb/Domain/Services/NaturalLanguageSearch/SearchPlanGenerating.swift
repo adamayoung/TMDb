@@ -10,9 +10,11 @@ import Foundation
 ///
 /// A type that turns a natural-language prompt into a ``SearchPlan``.
 ///
-/// This is the seam between the deterministic search machinery and the on-device
-/// language model. The live implementation is backed by Foundation Models; tests
-/// provide a deterministic stand-in.
+/// This is the seam between the deterministic search machinery and prompt
+/// interpretation. The default live conformer is ``GatedSearchPlanGenerator``,
+/// which is deterministic-first and consults an on-device Foundation Models
+/// generator only as an evidence-gated fallback; tests provide deterministic
+/// stand-ins.
 ///
 protocol SearchPlanGenerating: Sendable {
 

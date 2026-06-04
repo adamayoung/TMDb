@@ -10,13 +10,15 @@ import Foundation
 ///
 /// Provides an interface for searching TMDb with natural language.
 ///
-/// A prompt such as `"uplifting 90s sci-fi under 2 hours"` is interpreted by an
-/// on-device language model into a structured plan, which is then executed
-/// against TMDb to return matching movies, TV series, and people.
+/// A prompt such as `"movies with Tom Hanks"` or `"cast of The Matrix"` is
+/// interpreted on device into a structured plan, which is then executed against
+/// TMDb to return matching movies, TV series, and people.
 ///
-/// - Important: This relies on an on-device model available only on supported
-///   Apple platforms with Apple Intelligence enabled. Check ``availability``
-///   before use.
+/// Interpretation is deterministic, using Apple's Natural Language framework,
+/// and is available on every supported Apple platform. On devices with Apple
+/// Intelligence, Foundation Models additionally handles fuzzier, compositional
+/// prompts (for example `"uplifting 90s sci-fi under 2 hours"`); elsewhere such
+/// prompts fall back to a plain multi-search.
 ///
 public protocol NaturalLanguageSearchService: Sendable {
 

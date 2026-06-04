@@ -32,7 +32,8 @@
         @Guide(description: "A movie or TV series title mentioned, if any.")
         let title: String?
 
-        @Guide(description: "Full names of people mentioned, if any.")
+        @Guide(description: "Only person names the user literally typed. "
+            + "Never the cast or actors of a title.")
         let people: [String]
 
         @Guide(description: "A crew role mentioned, for example Director.")
@@ -76,7 +77,7 @@
     @available(iOS 26, macOS 26, visionOS 26, *)
     @Generable
     enum GeneratedIntent {
-        case find, browse, byPerson, castOf, crewRole, similar, list, mood
+        case find, browse, filmography, castOf, crewRole, similar, list, mood
     }
 
     @available(iOS 26, macOS 26, visionOS 26, *)

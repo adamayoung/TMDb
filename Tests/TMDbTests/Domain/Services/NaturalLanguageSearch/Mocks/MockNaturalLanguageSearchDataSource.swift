@@ -49,9 +49,13 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
         tvSeriesGenresResult
     }
 
+    var discoverMoviesHandler: ((DiscoverMovieFilter) -> [MovieListItem])?
+    private(set) var discoverMoviesCallCount = 0
+
     func discoverMovies(filter: DiscoverMovieFilter, sortedBy: MovieSort?) async throws -> [MovieListItem] {
         lastMovieFilter = filter
-        return discoverMoviesResult
+        discoverMoviesCallCount += 1
+        return discoverMoviesHandler?(filter) ?? discoverMoviesResult
     }
 
     func discoverTVSeries(

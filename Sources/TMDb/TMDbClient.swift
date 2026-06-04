@@ -263,21 +263,20 @@ public final class TMDbClient: Sendable {
 
 }
 
-#if canImport(FoundationModels)
-    @available(iOS 26, macOS 26, visionOS 26, *)
+#if canImport(NaturalLanguage)
+    @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, visionOS 1.0, *)
     public extension TMDbClient {
 
         ///
         /// Provides on-device, natural-language search across movies, TV series, and
-        /// people, powered by Apple Foundation Models.
+        /// people.
         ///
-        /// A prompt such as `"uplifting 90s sci-fi under 2 hours"` is interpreted by
-        /// the on-device model and executed against TMDb. Check
-        /// ``NaturalLanguageSearchService/availability`` before use, as the
-        /// underlying model is only available on supported Apple platforms with
-        /// Apple Intelligence enabled.
-        ///
-        /// - Important: Available only on iOS 26, macOS 26, and visionOS 26 or later.
+        /// A prompt such as `"movies with Tom Hanks"` or `"cast of The Matrix"` is
+        /// interpreted on device and executed against TMDb. Interpretation is
+        /// deterministic (Apple's Natural Language framework); on supported devices
+        /// with Apple Intelligence, Foundation Models additionally handles fuzzier,
+        /// compositional prompts. On platforms without either, the prompt runs as a
+        /// plain multi-search.
         ///
         /// - Note: Each access constructs a new service instance. When checking
         ///   ``NaturalLanguageSearchService/availability`` and then searching, store
@@ -294,8 +293,24 @@ public final class TMDbClient: Sendable {
                 trending: trending
             )
 
+            let deterministic = NaturalLanguageSearchPlanGenerator(
+                classifier: RuleBasedIntentClassifier(),
+                personExtractor: NLTaggerPersonNameExtractor()
+            )
+
+            // Foundation Models is an optional fallback for the fuzzy tail, only on
+            // capable OS versions. The NaturalLanguage planner is always the default.
+            var fallback: (any SearchPlanGenerating)?
+            #if canImport(FoundationModels)
+                if #available(iOS 26, macOS 26, visionOS 26, *) {
+                    fallback = FoundationModelsSearchPlanGenerator()
+                }
+            #endif
+
+            let planner = GatedSearchPlanGenerator(deterministic: deterministic, fallback: fallback)
+
             return TMDbNaturalLanguageSearchService(
-                planner: FoundationModelsSearchPlanGenerator(),
+                planner: planner,
                 executor: SearchPlanExecutor(dataSource: dataSource),
                 dataSource: dataSource
             )

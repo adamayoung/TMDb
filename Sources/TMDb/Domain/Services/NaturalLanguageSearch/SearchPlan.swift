@@ -10,10 +10,12 @@ import Foundation
 ///
 /// A structured interpretation of a natural-language search prompt.
 ///
-/// A `SearchPlan` is produced from a prompt by an on-device language model and
-/// then executed deterministically against TMDb services. It contains
-/// natural-language operands (names, symbolic dates) rather than TMDb
-/// identifiers, which are resolved during execution.
+/// A `SearchPlan` is produced from a prompt on device — deterministically via
+/// Apple's Natural Language framework, or, for fuzzier prompts on devices with
+/// Apple Intelligence, by an on-device language model — and then executed
+/// deterministically against TMDb services. It contains natural-language
+/// operands (names, symbolic dates) rather than TMDb identifiers, which are
+/// resolved during execution.
 ///
 public struct SearchPlan: Sendable, Equatable {
 

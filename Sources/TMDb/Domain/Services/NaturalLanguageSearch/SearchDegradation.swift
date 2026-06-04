@@ -31,6 +31,10 @@ public enum SearchDegradation: Sendable, Equatable {
     /// The prompt was too vague to form a specific query; a default was used.
     case underspecified
 
+    /// The initial query returned nothing, so some constraints (companies, dates,
+    /// genres) were dropped to find results.
+    case relaxedConstraints
+
     /// One or more titles or franchises were excluded from results.
     case excludedTermsApplied([String])
 

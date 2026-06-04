@@ -10,8 +10,10 @@ import Foundation
 ///
 /// The availability of on-device natural-language search.
 ///
-/// Natural-language search relies on an on-device language model that is only
-/// present on supported Apple platforms with Apple Intelligence enabled.
+/// Deterministic interpretation (Apple's Natural Language framework) is present
+/// on every supported Apple platform, so this is ``available`` there. The
+/// ``unavailable(_:)`` reasons describe why the optional Foundation Models
+/// enhancement is absent on a given device.
 ///
 public enum NaturalLanguageSearchAvailability: Sendable, Equatable {
 

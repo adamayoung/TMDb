@@ -34,10 +34,11 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   limits (HTTP 429) and server errors (HTTP 5xx)
 * **Response Caching**: Opt-in in-memory HTTP response cache with
   configurable TTL and entry limits
-* **Natural-Language Search**: On-device "super search" powered by Apple
-  Foundation Models — type a prompt, get movies, TV series, and people
-  (Apple platforms 26+ with Apple Intelligence; falls back to literal
-  search when the model declines a prompt)
+* **Natural-Language Search**: On-device "super search" — type a prompt,
+  get movies, TV series, and people. Deterministic interpretation via
+  Apple's Natural Language framework on every Apple platform, with
+  Foundation Models handling fuzzier prompts on devices with Apple
+  Intelligence
 * **Modern Swift**: Async/await throughout, strongly-typed models,
   protocol-based architecture
 
@@ -70,7 +71,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **reviews** | Review details with author and media information |
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
-| **naturalLanguageSearch** | On-device natural-language search (Apple platforms 26+ with Apple Intelligence) |
+| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
 for detailed usage.

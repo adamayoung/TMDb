@@ -16,7 +16,26 @@ extension SearchPlanExecutor {
         let companyIDs: [Company.ID]
         let personIDs: [Person.ID]
         let bounds: (from: Int, to: Int)?
+        let runtimeMax: Int?
         let minRating: Double?
+
+        /// Returns a copy with the named constraints removed (for relaxation).
+        func dropping(
+            companies: Bool = false,
+            bounds dropBounds: Bool = false,
+            genres: Bool = false,
+            runtime: Bool = false,
+            rating: Bool = false
+        ) -> ResolvedInputs {
+            ResolvedInputs(
+                genreIDs: genres ? [] : genreIDs,
+                companyIDs: companies ? [] : companyIDs,
+                personIDs: personIDs,
+                bounds: dropBounds ? nil : bounds,
+                runtimeMax: runtime ? nil : runtimeMax,
+                minRating: rating ? nil : minRating
+            )
+        }
     }
 
     func resolveInputs(
@@ -44,7 +63,8 @@ extension SearchPlanExecutor {
             companyIDs: companyIDs,
             personIDs: personIDs,
             bounds: plan.date.map(yearBounds(for:)),
-            minRating: minRating
+            runtimeMax: Self.sanitizedRuntime(plan.runtimeMaxMinutes),
+            minRating: Self.sanitizedRating(minRating)
         )
     }
 
@@ -143,9 +163,9 @@ extension SearchPlanExecutor {
         return DiscoverMovieFilter(
             genres: inputs.genreIDs.isEmpty ? nil : inputs.genreIDs,
             primaryReleaseYear: inputs.bounds.map(primaryReleaseYear(for:)),
-            voteAverageMin: inputs.minRating,
+            voteAverageMin: Self.sanitizedRating(inputs.minRating),
             companies: inputs.companyIDs.isEmpty ? nil : inputs.companyIDs,
-            runtimeMax: plan.runtimeMaxMinutes,
+            runtimeMax: inputs.runtimeMax,
             includeAdult: false,
             withCast: (!usesCrew && !inputs.personIDs.isEmpty) ? inputs.personIDs : nil,
             withCrew: (usesCrew && !inputs.personIDs.isEmpty) ? inputs.personIDs : nil
@@ -170,12 +190,28 @@ extension SearchPlanExecutor {
             firstAirDateYear: firstAirDateYear,
             firstAirDateMin: firstAirDateMin,
             firstAirDateMax: firstAirDateMax,
-            voteAverageMin: inputs.minRating,
+            voteAverageMin: Self.sanitizedRating(inputs.minRating),
             companies: inputs.companyIDs.isEmpty ? nil : inputs.companyIDs,
-            runtimeMax: plan.runtimeMaxMinutes,
+            runtimeMax: inputs.runtimeMax,
             includeAdult: false,
             withPeople: inputs.personIDs.isEmpty ? nil : inputs.personIDs
         )
+    }
+
+    /// Drops a nonsensical runtime the model sometimes invents (e.g. 0).
+    static func sanitizedRuntime(_ value: Int?) -> Int? {
+        guard let value, value > 0 else {
+            return nil
+        }
+        return value
+    }
+
+    /// Drops an out-of-range rating the model sometimes invents (e.g. 0).
+    static func sanitizedRating(_ value: Double?) -> Double? {
+        guard let value, value > 0, value <= 10 else {
+            return nil
+        }
+        return value
     }
 
     private func primaryReleaseYear(

@@ -22,6 +22,7 @@
 - ``discover``
 - ``trending``
 - ``search``
+- ``naturalLanguageSearch``
 - ``find``
 - ``credits``
 - ``reviews``

@@ -40,7 +40,7 @@
             switch intent {
             case .find: .find
             case .browse: .browse
-            case .byPerson: .byPerson
+            case .filmography: .byPerson
             case .castOf: .castOf
             case .crewRole: .crewRole
             case .similar: .similar
