@@ -5,6 +5,6 @@ description: Run integration tests against the live TMDb API
 
 # Run integration tests
 
-Run `source ~/.zshrc 2>/dev/null && make integration-test` from the project root.
+Run `make integration-test` from the project root.
 
-This requires `TMDB_API_KEY`, `TMDB_USERNAME`, and `TMDB_PASSWORD` environment variables to be set. Sourcing `.zshrc` ensures they are available.
+This requires `TMDB_API_KEY`, `TMDB_USERNAME`, and `TMDB_PASSWORD` environment variables to be set. These are injected automatically via the `env` block in `.claude/settings.local.json`, so no sourcing is needed.

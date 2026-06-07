@@ -11,8 +11,6 @@ autoApprove:
   - Grep
   - mcp__sosumi__searchAppleDocumentation
   - mcp__sosumi__fetchAppleDocumentation
-  - mcp__claude_ai_sosumi__searchAppleDocumentation
-  - mcp__claude_ai_sosumi__fetchAppleDocumentation
   - "Bash(git diff:*)"
   - "Bash(git log:*)"
   - "Bash(ls:*)"
