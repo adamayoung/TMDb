@@ -104,8 +104,8 @@ for:
 
 - `mcp__xcode__BuildProject` for building
 - `mcp__xcode__RunAllTests` for running tests
-- `mcp__xcode__XcodeRead`, `XcodeWrite`, `XcodeUpdate` for file
-  operations
+- `mcp__xcode__XcodeRead`, `mcp__xcode__XcodeWrite`,
+  `mcp__xcode__XcodeUpdate` for file operations
 
 **Test Plan Selection:**
 
