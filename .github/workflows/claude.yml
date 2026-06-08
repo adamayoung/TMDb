@@ -3,6 +3,13 @@ name: Claude
 on:
   pull_request:
     types: [opened, synchronize]
+    # Skip automated review for docs/config-only PRs — these carry no
+    # Swift source to review. @claude can still be invoked manually via a
+    # comment (the claude-respond job), and CI/workflow changes are not
+    # ignored so they still get reviewed.
+    paths-ignore:
+      - '**/*.md'
+      - '.claude/**'
   issue_comment:
     types: [created]
   pull_request_review_comment:
