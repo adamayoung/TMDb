@@ -13,7 +13,9 @@ import Foundation
 ///
 /// TMDb exposes movie and television episode runtimes as an integer number of
 /// minutes (for example ``Movie/runtime`` and ``TVEpisode/runtime``). This
-/// format style turns that integer into a localized, display-ready string.
+/// format style turns that integer into a display-ready string. Numeric
+/// components are formatted using the provided `locale`, while the unit labels
+/// (such as `"h"`, `"m"`, `"min"`, `"hour"`, and `"minute"`) are in English.
 ///
 /// Use it directly:
 ///
@@ -23,17 +25,19 @@ import Foundation
 /// // "2h 15m"
 /// ```
 ///
-/// Or via the ``Foundation/FormatStyle`` convenience on `Int`:
+/// Or via the `FormatStyle` convenience on `Int`:
 ///
 /// ```swift
-/// movie.runtime?.formatted(.runtimeStyle(.full, displayUnit: .hourMinute))
+/// let runtime = 135
+///
+/// runtime.formatted(.runtimeStyle(.full, displayUnit: .hourMinute))
 /// // "2 hours, 15 minutes"
 ///
-/// movie.runtime?.formatted(.runtimeStyle(.abbreviated, displayUnit: .minutesOnly))
-/// // "139 min"
+/// runtime.formatted(.runtimeStyle(.abbreviated, displayUnit: .minutesOnly))
+/// // "135 min"
 /// ```
 ///
-public struct RuntimeFormatStyle: FormatStyle {
+public struct RuntimeFormatStyle: FormatStyle, Sendable {
 
     ///
     /// The runtime, in minutes, to be formatted.
@@ -92,7 +96,8 @@ public struct RuntimeFormatStyle: FormatStyle {
     public let displayUnit: DisplayUnit
 
     ///
-    /// The locale used when formatting numbers and unit labels.
+    /// The locale used when formatting the numeric components. Unit labels are
+    /// always in English.
     ///
     public var locale: Locale
 
@@ -124,7 +129,8 @@ public struct RuntimeFormatStyle: FormatStyle {
     ///
     /// - Parameter value: The runtime, in minutes.
     ///
-    /// - Returns: A localized, human-readable runtime string.
+    /// - Returns: A human-readable runtime string. Numeric components use the
+    ///   format style's `locale`; unit labels are in English.
     ///
     public func format(_ value: Int) -> String {
         let totalMinutes = max(0, value)

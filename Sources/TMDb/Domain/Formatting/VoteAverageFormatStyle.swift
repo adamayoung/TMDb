@@ -12,24 +12,26 @@ import Foundation
 ///
 /// TMDb expresses vote averages as a `Double` on a scale from `0` to `10` (for
 /// example ``Movie/voteAverage``). This format style converts that score into a
-/// rounded, localized percentage string.
+/// rounded percentage string. The percent symbol and its placement are
+/// determined by the provided `locale` via `.percent`, so the exact output
+/// varies by locale (for example `"85%"` in English locales).
 ///
 /// Use it directly:
 ///
 /// ```swift
 /// let style = VoteAverageFormatStyle()
 /// style.format(8.5)
-/// // "85%"
+/// // "85%" in English locales
 /// ```
 ///
-/// Or via the ``Foundation/FormatStyle`` convenience on `Double`:
+/// Or via the `FormatStyle` convenience on `Double`:
 ///
 /// ```swift
 /// movie.voteAverage?.formatted(.voteAveragePercentage)
-/// // "85%"
+/// // "85%" in English locales
 /// ```
 ///
-public struct VoteAverageFormatStyle: FormatStyle {
+public struct VoteAverageFormatStyle: FormatStyle, Sendable {
 
     ///
     /// The vote average, on a scale from `0` to `10`, to be formatted.
@@ -60,14 +62,17 @@ public struct VoteAverageFormatStyle: FormatStyle {
     /// Formats a vote average as a rounded percentage string.
     ///
     /// The score is clamped to the range `0...10` before conversion, and the
-    /// resulting percentage is rounded to the nearest whole number.
+    /// resulting percentage is rounded to the nearest whole number. Non-finite
+    /// values are handled gracefully: `nan` is treated as zero, while positive
+    /// and negative infinity clamp to the upper and lower bounds respectively.
     ///
     /// - Parameter value: The vote average, on a scale from `0` to `10`.
     ///
-    /// - Returns: A localized percentage string, for example `"85%"`.
+    /// - Returns: A percentage string, for example `"85%"` in English locales.
     ///
     public func format(_ value: Double) -> String {
-        let clamped = min(max(value, 0), 10)
+        let sanitised = value.isNaN ? 0 : value
+        let clamped = min(max(sanitised, 0), 10)
         let percent = Int((clamped * 10).rounded())
         return percent.formatted(.percent.scale(1).locale(locale))
     }
@@ -92,7 +97,7 @@ public extension FormatStyle where Self == VoteAverageFormatStyle {
     ///
     /// ```swift
     /// movie.voteAverage?.formatted(.voteAveragePercentage)
-    /// // "85%"
+    /// // "85%" in English locales
     /// ```
     ///
     static var voteAveragePercentage: VoteAverageFormatStyle {

@@ -48,6 +48,11 @@ struct RuntimeFormatStyleTests {
             #expect(style.format(0) == "0m")
         }
 
+        @Test("exact single hour omits minutes")
+        func formatsSingleHour() {
+            #expect(style.format(60) == "1h")
+        }
+
         @Test("large value")
         func formatsLargeValue() {
             #expect(style.format(605) == "10h 5m")
@@ -103,6 +108,11 @@ struct RuntimeFormatStyleTests {
             #expect(style.format(61) == "1 hour, 1 minute")
         }
 
+        @Test("exact single hour uses singular hour and omits minutes")
+        func formatsSingleHour() {
+            #expect(style.format(60) == "1 hour")
+        }
+
         @Test("exact hours omits minutes")
         func formatsExactHours() {
             #expect(style.format(120) == "2 hours")
@@ -143,6 +153,12 @@ struct RuntimeFormatStyleTests {
     func defaultInitialiser() {
         let style = RuntimeFormatStyle(locale: locale)
         #expect(style.format(135) == "2h 15m")
+    }
+
+    @Test("defaulted runtimeStyle accessor uses abbreviated hour-minute")
+    func defaultedRuntimeStyleAccessor() {
+        let result = 135.formatted(.runtimeStyle().locale(locale))
+        #expect(result == "2h 15m")
     }
 
     @Test("Int convenience formatted accessor")

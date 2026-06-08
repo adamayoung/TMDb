@@ -46,6 +46,24 @@ struct VoteAverageFormatStyleTests {
         #expect(style.format(0) == "0%")
     }
 
+    @Test("treats NaN as zero")
+    func formatsNaNAsZero() {
+        let style = VoteAverageFormatStyle(locale: locale)
+        #expect(style.format(.nan) == "0%")
+    }
+
+    @Test("clamps positive infinity to one hundred")
+    func formatsPositiveInfinity() {
+        let style = VoteAverageFormatStyle(locale: locale)
+        #expect(style.format(.infinity) == "100%")
+    }
+
+    @Test("clamps negative infinity to zero")
+    func formatsNegativeInfinity() {
+        let style = VoteAverageFormatStyle(locale: locale)
+        #expect(style.format(-.infinity) == "0%")
+    }
+
     @Test("Double convenience formatted accessor")
     func doubleConvenience() {
         let voteAverage = 8.5
