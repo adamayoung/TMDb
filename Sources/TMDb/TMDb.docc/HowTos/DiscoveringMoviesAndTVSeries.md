@@ -51,6 +51,35 @@ let actionMovies = try await tmdbClient.discover.movies(
 )
 ```
 
+### Composing Filters Fluently
+
+Filters also expose copy-returning builder methods so they can be composed
+incrementally. Each method returns a new filter, leaving the original
+unchanged.
+
+```swift
+let filter = DiscoverMovieFilter()
+    .withGenres([28, 12])
+    .voteAverage(in: 7...10)
+    .primaryReleaseYear(.on(2024))
+```
+
+Range-typed conveniences map a `ClosedRange` onto the underlying minimum and
+maximum fields for ``DiscoverMovieFilter/voteAverage(in:)``,
+``DiscoverMovieFilter/voteCount(in:)`` and
+``DiscoverMovieFilter/runtime(in:)``.
+
+### Combining Values with AND or OR
+
+Multi-valued parameters such as genres and keywords are joined with a
+logical `AND` by default, meaning a result must match **every** value. Use
+``DiscoverFilterJoin/or`` to match **any** value instead.
+
+```swift
+// Movies tagged with genre 28 OR genre 12
+let filter = DiscoverMovieFilter().withGenres([28, 12], joinedBy: .or)
+```
+
 ## Discovering TV Series
 
 Use ``DiscoverService/tvSeries(filter:sortedBy:page:language:)`` to

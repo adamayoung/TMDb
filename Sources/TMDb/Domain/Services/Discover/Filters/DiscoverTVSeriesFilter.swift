@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for discovering TV series.
 ///
-public struct DiscoverTVSeriesFilter: Sendable {
+public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
 
     ///
     /// The original language of the TV series.
@@ -153,6 +153,22 @@ public struct DiscoverTVSeriesFilter: Sendable {
     public let withPeople: [Person.ID]?
 
     ///
+    /// The logical operator used to join ``genres``.
+    ///
+    /// When `nil`, genres are combined using a logical AND (comma), matching
+    /// the default TMDb behaviour.
+    ///
+    public let genresJoin: DiscoverFilterJoin?
+
+    ///
+    /// The logical operator used to join ``keywords``.
+    ///
+    /// When `nil`, keywords are combined using a logical AND (comma), matching
+    /// the default TMDb behaviour.
+    ///
+    public let keywordsJoin: DiscoverFilterJoin?
+
+    ///
     /// Creates a discover TV series filter.
     ///
     /// - Parameters:
@@ -186,6 +202,8 @@ public struct DiscoverTVSeriesFilter: Sendable {
     ///   - screenedTheatrically: Filter for theatrically screened
     ///     series.
     ///   - withPeople: A list of Person identifiers to filter by.
+    ///   - genresJoin: The logical operator used to join ``genres``.
+    ///   - keywordsJoin: The logical operator used to join ``keywords``.
     ///
     public init(
         originalLanguage: String? = nil,
@@ -215,7 +233,9 @@ public struct DiscoverTVSeriesFilter: Sendable {
         withoutCompanies: [Company.ID]? = nil,
         watchMonetizationTypes: [WatchMonetizationType]? = nil,
         screenedTheatrically: Bool? = nil,
-        withPeople: [Person.ID]? = nil
+        withPeople: [Person.ID]? = nil,
+        genresJoin: DiscoverFilterJoin? = nil,
+        keywordsJoin: DiscoverFilterJoin? = nil
     ) {
         self.originalLanguage = originalLanguage
         self.genres = genres
@@ -245,6 +265,8 @@ public struct DiscoverTVSeriesFilter: Sendable {
         self.watchMonetizationTypes = watchMonetizationTypes
         self.screenedTheatrically = screenedTheatrically
         self.withPeople = withPeople
+        self.genresJoin = genresJoin
+        self.keywordsJoin = keywordsJoin
     }
 
 }

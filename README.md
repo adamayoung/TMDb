@@ -261,12 +261,28 @@ let images = try await tmdbClient.movies.images(forMovie: movieId)
 
 ### Building a Discover/Browse Interface
 
+Compose filters fluently with copy-returning builder methods. Each method
+returns a new filter, so filters can be built up incrementally without
+mutating shared state:
+
 ```swift
+let filter = DiscoverMovieFilter()
+    .withGenres([28, 12]) // Action AND Adventure
+    .voteAverage(in: 7...10)
+    .primaryReleaseYear(.on(2024))
+
 let movies = try await tmdbClient.discover.movies(
-    sortedBy: .popularity(descending: true),
-    withGenres: [28, 12], // Action & Adventure
-    releaseDateGTE: Date().addingTimeInterval(-365*24*60*60) // Last year
+    filter: filter,
+    sortedBy: .popularity(descending: true)
 )
+```
+
+Multi-valued parameters such as genres and keywords can be joined with
+logical `AND` (the default) or `OR` using `DiscoverFilterJoin`:
+
+```swift
+// Match movies tagged with genre 28 OR genre 12
+let filter = DiscoverMovieFilter().withGenres([28, 12], joinedBy: .or)
 ```
 
 ### Getting Watch Providers (Streaming Availability)

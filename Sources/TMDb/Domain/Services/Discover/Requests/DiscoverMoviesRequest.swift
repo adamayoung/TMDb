@@ -51,7 +51,8 @@ private extension APIRequestQueryItems {
         }
 
         if let genres = filter.genres {
-            self[.withGenres] = Self.idsQueryItemValue(for: genres)
+            self[.withGenres] = (filter.genresJoin ?? .and)
+                .queryValue(for: genres)
         }
 
         if let withoutGenres = filter.withoutGenres {
@@ -98,7 +99,8 @@ private extension APIRequestQueryItems {
         }
 
         if let keywords = filter.keywords {
-            self[.withKeywords] = Self.idsQueryItemValue(for: keywords)
+            self[.withKeywords] = (filter.keywordsJoin ?? .and)
+                .queryValue(for: keywords)
         }
 
         if let withoutKeywords = filter.withoutKeywords {
