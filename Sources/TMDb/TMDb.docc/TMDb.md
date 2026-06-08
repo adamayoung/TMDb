@@ -371,6 +371,15 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Language``
 - ``Timezone``
 
+### Image URLs
+
+- ``ImageSize``
+- ``PosterImageProviding``
+- ``BackdropImageProviding``
+- ``ProfileImageProviding``
+- ``LogoImageProviding``
+- ``StillImageProviding``
+
 ### Account
 
 - ``AccountService``
