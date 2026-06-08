@@ -99,7 +99,7 @@ jobs:
         if: >-
           !cancelled()
           && (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           files: ./junit-swift-testing.xml
           report_type: test_results
