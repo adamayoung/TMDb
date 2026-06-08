@@ -5,8 +5,6 @@
 //  Copyright © 2026 Adam Young.
 //
 
-import Foundation
-
 ///
 /// A logical operator describing how multiple values of a discover filter
 /// parameter are combined.

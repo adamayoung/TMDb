@@ -51,6 +51,13 @@ struct DiscoverMovieFilterFluentTests {
         #expect(filter.keywordsJoin == .or)
     }
 
+    @Test("withoutKeywords sets without keywords")
+    func withoutKeywordsSetsWithoutKeywords() {
+        let filter = DiscoverMovieFilter().withoutKeywords([11, 12])
+
+        #expect(filter.withoutKeywords == [11, 12])
+    }
+
     @Test("withCompanies sets companies")
     func withCompaniesSetsCompanies() {
         let filter = DiscoverMovieFilter().withCompanies([5, 6, 7])

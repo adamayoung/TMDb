@@ -29,6 +29,14 @@ struct DiscoverTVSeriesFilterFluentTests {
         #expect(filter.genresJoin == .or)
     }
 
+    @Test("withKeywords sets keywords and defaults to AND join")
+    func withKeywordsSetsKeywordsAndDefaultsToAndJoin() {
+        let filter = DiscoverTVSeriesFilter().withKeywords([10, 20])
+
+        #expect(filter.keywords == [10, 20])
+        #expect(filter.keywordsJoin == .and)
+    }
+
     @Test("withKeywords sets keywords and join operator")
     func withKeywordsSetsKeywordsAndJoinOperator() {
         let filter = DiscoverTVSeriesFilter()

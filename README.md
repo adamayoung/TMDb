@@ -278,7 +278,7 @@ let movies = try await tmdbClient.discover.movies(
 ```
 
 Multi-valued parameters such as genres and keywords can be joined with
-logical `AND` (the default) or `OR` using ``DiscoverFilterJoin``:
+logical `AND` (the default) or `OR` using `DiscoverFilterJoin`:
 
 ```swift
 // Match movies tagged with genre 28 OR genre 12
