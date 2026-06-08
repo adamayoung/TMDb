@@ -28,6 +28,9 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 * **Image Generation**: Built-in URL generation for all image types with
   size optimization, typed `ImageSize` selection, and convenience accessors
   on models
+* **Display Formatting**: Foundation `FormatStyle` conformances for
+  rendering runtimes (`"2h 15m"`, `"139 min"`, `"2 hours, 15 minutes"`)
+  and vote averages as percentages (e.g. `"85%"` in English locales)
 * **Swift 6 Ready**: Full strict concurrency support with Sendable types
 * **Cross-Platform**: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+,
   visionOS 1+, Linux, Windows
