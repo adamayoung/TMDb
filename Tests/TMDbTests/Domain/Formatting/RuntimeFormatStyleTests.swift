@@ -147,6 +147,11 @@ struct RuntimeFormatStyleTests {
         func formatsSingularMinute() {
             #expect(style.format(1) == "1 minute")
         }
+
+        @Test("zero minutes")
+        func formatsZero() {
+            #expect(style.format(0) == "0 minutes")
+        }
     }
 
     @Test("default initialiser uses abbreviated hour-minute")

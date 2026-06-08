@@ -31,7 +31,7 @@ import Foundation
 /// // "85%" in English locales
 /// ```
 ///
-public struct VoteAverageFormatStyle: FormatStyle, Sendable {
+public struct VoteAverageFormatStyle: FormatStyle, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The vote average, on a scale from `0` to `10`, to be formatted.
@@ -74,7 +74,7 @@ public struct VoteAverageFormatStyle: FormatStyle, Sendable {
         let sanitised = value.isNaN ? 0 : value
         let clamped = min(max(sanitised, 0), 10)
         let percent = Int((clamped * 10).rounded())
-        return percent.formatted(.percent.scale(1).locale(locale))
+        return percent.formatted(.percent.locale(locale))
     }
 
     ///

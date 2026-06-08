@@ -37,7 +37,7 @@ import Foundation
 /// // "135 min"
 /// ```
 ///
-public struct RuntimeFormatStyle: FormatStyle, Sendable {
+public struct RuntimeFormatStyle: FormatStyle, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The runtime, in minutes, to be formatted.
