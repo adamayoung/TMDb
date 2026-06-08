@@ -464,3 +464,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 ### Cache Configuration
 
 - ``CacheConfiguration``
+
+### Formatting
+
+- ``RuntimeFormatStyle``
+- ``VoteAverageFormatStyle``
