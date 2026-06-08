@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for discovering movies.
 ///
-public struct DiscoverMovieFilter: Sendable {
+public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
 
     ///
     /// A list of Person identifiers who have appeared in the movie.
@@ -153,6 +153,22 @@ public struct DiscoverMovieFilter: Sendable {
     public let watchMonetizationTypes: [WatchMonetizationType]?
 
     ///
+    /// The logical operator used to join ``genres``.
+    ///
+    /// When `nil`, genres are combined using a logical AND (comma), matching
+    /// the default TMDb behaviour.
+    ///
+    public let genresJoin: DiscoverFilterJoin?
+
+    ///
+    /// The logical operator used to join ``keywords``.
+    ///
+    /// When `nil`, keywords are combined using a logical AND (comma), matching
+    /// the default TMDb behaviour.
+    ///
+    public let keywordsJoin: DiscoverFilterJoin?
+
+    ///
     /// Creates a discover movies filter.
     ///
     /// - Parameters:
@@ -186,6 +202,8 @@ public struct DiscoverMovieFilter: Sendable {
     ///   - withOriginCountry: Filter by origin country.
     ///   - withoutCompanies: Production company identifiers to exclude.
     ///   - watchMonetizationTypes: Filter by monetization type.
+    ///   - genresJoin: The logical operator used to join ``genres``.
+    ///   - keywordsJoin: The logical operator used to join ``keywords``.
     ///
     public init(
         people: [Person.ID]? = nil,
@@ -215,7 +233,9 @@ public struct DiscoverMovieFilter: Sendable {
         withCrew: [Person.ID]? = nil,
         withOriginCountry: String? = nil,
         withoutCompanies: [Company.ID]? = nil,
-        watchMonetizationTypes: [WatchMonetizationType]? = nil
+        watchMonetizationTypes: [WatchMonetizationType]? = nil,
+        genresJoin: DiscoverFilterJoin? = nil,
+        keywordsJoin: DiscoverFilterJoin? = nil
     ) {
         self.people = people
         self.originalLanguage = originalLanguage
@@ -245,6 +265,8 @@ public struct DiscoverMovieFilter: Sendable {
         self.withOriginCountry = withOriginCountry
         self.withoutCompanies = withoutCompanies
         self.watchMonetizationTypes = watchMonetizationTypes
+        self.genresJoin = genresJoin
+        self.keywordsJoin = keywordsJoin
     }
 
 }
@@ -254,7 +276,7 @@ public extension DiscoverMovieFilter {
     ///
     /// A release year filter.
     ///
-    enum PrimaryReleaseYearFilter: Equatable, Sendable {
+    enum PrimaryReleaseYearFilter: Equatable, Hashable, Sendable {
 
         ///
         /// On a specific year.
