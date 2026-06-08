@@ -137,7 +137,7 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Verify new public API is exposed through `TMDbClient` and registered in `TMDbFactory`.
 - Check that DocC catalog is updated when public API changes (see DocC Catalog Sync below).
 - When reviewing model changes or fixture accuracy, verify properties against the live TMDb API (see Model Verification below).
-- When needing to verify Apple APIs (concurrency safety, availability, behavior), use `mcp__claude_ai_sosumi__searchAppleDocumentation` and `mcp__claude_ai_sosumi__fetchAppleDocumentation` to check official documentation.
+- When needing to verify Apple APIs (concurrency safety, availability, behavior), use `mcp__sosumi__searchAppleDocumentation` and `mcp__sosumi__fetchAppleDocumentation` to check official documentation.
 - For deep Swift Concurrency analysis (async/await patterns, actor isolation, Sendable conformance, data races), invoke the `swift-concurrency` skill.
 - For Swift Testing review (test structure, macros, traits, parameterized tests), invoke the `swift-testing-expert` skill.
 - After reviewing, remind to run `/format` to apply formatting fixes.

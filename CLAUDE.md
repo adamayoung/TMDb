@@ -100,12 +100,12 @@ for:
 
 ### When Xcode MCP is Available
 
-**ALWAYS prefer Xcode MCP tools** (`mcp__xcode-tools__*`) when available:
+**ALWAYS prefer Xcode MCP tools** (`mcp__xcode__*`) when available:
 
-- `mcp__xcode-tools__BuildProject` for building
-- `mcp__xcode-tools__RunAllTests` for running tests
-- `mcp__xcode-tools__XcodeRead`, `XcodeWrite`, `XcodeUpdate` for file
-  operations
+- `mcp__xcode__BuildProject` for building
+- `mcp__xcode__RunAllTests` for running tests
+- `mcp__xcode__XcodeRead`, `mcp__xcode__XcodeWrite`,
+  `mcp__xcode__XcodeUpdate` for file operations
 
 **Test Plan Selection:**
 

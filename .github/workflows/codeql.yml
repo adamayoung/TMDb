@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   schedule:
     # Every Sunday at 12am
     - cron: '0 0 * * 0'
