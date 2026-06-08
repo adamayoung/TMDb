@@ -5,8 +5,6 @@
 //  Copyright © 2026 Adam Young.
 //
 
-import Foundation
-
 public extension DiscoverMovieFilter {
 
     ///

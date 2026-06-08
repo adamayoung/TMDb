@@ -39,6 +39,15 @@ struct DiscoverTVSeriesRequestJoinTests {
         #expect(request.queryItems == ["with_keywords": "10|20"])
     }
 
+    @Test("keywords with explicit AND join via fluent API produces comma-separated value")
+    func keywordsWithExplicitAndJoinViaFluentAPIProducesCommaSeparatedValue() {
+        let filter = DiscoverTVSeriesFilter()
+            .withKeywords([10, 20], joinedBy: .and)
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["with_keywords": "10,20"])
+    }
+
     @Test("memberwise init genres still produce comma-separated value")
     func memberwiseInitGenresStillProduceCommaSeparatedValue() {
         let filter = DiscoverTVSeriesFilter(genres: [18, 10765])
