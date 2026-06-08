@@ -64,7 +64,7 @@ struct ImageSizeTests {
 
     @Test(
         "init from non-canonical or invalid path component returns nil",
-        arguments: ["w007", "w-500", "w0", "w+5", "h0"]
+        arguments: ["w007", "w-500", "w0", "w+5", "h007", "h-300", "h0", "h+5"]
     )
     func initFromNonCanonicalPathComponentReturnsNil(pathComponent: String) {
         #expect(ImageSize(pathComponent: pathComponent) == nil)

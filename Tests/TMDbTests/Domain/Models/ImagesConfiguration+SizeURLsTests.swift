@@ -62,6 +62,34 @@ struct ImagesConfigurationSizeURLsTests {
         #expect(result == nil)
     }
 
+    @Test("backdropURL with nil path returns nil")
+    func backdropURLWithNilPathReturnsNil() {
+        let result = configuration.backdropURL(for: nil, size: .width(1280))
+
+        #expect(result == nil)
+    }
+
+    @Test("logoURL with nil path returns nil")
+    func logoURLWithNilPathReturnsNil() {
+        let result = configuration.logoURL(for: nil, size: .width(154))
+
+        #expect(result == nil)
+    }
+
+    @Test("profileURL with nil path returns nil")
+    func profileURLWithNilPathReturnsNil() {
+        let result = configuration.profileURL(for: nil, size: .height(632))
+
+        #expect(result == nil)
+    }
+
+    @Test("stillURL with nil path returns nil")
+    func stillURLWithNilPathReturnsNil() {
+        let result = configuration.stillURL(for: nil, size: .width(300))
+
+        #expect(result == nil)
+    }
+
     @Test("profileURL with supported height size returns sized URL")
     func profileURLWithSupportedHeightReturnsSizedURL() throws {
         let path = try #require(URL(string: "/image.jpg"))
@@ -107,6 +135,15 @@ struct ImagesConfigurationSizeURLsTests {
         let path = try #require(URL(string: "/image.jpg"))
 
         let result = configuration.backdropURL(for: path, size: .width(999))
+
+        #expect(result == nil)
+    }
+
+    @Test("backdropURL with unsupported height size returns nil")
+    func backdropURLWithUnsupportedHeightSizeReturnsNil() throws {
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let result = configuration.backdropURL(for: path, size: .height(632))
 
         #expect(result == nil)
     }
