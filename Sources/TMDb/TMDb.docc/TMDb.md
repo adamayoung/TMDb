@@ -366,10 +366,20 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``ConfigurationService``
 - ``APIConfiguration``
 - ``ImagesConfiguration``
+- ``ImageSize``
 - ``Country``
 - ``Department``
 - ``Language``
 - ``Timezone``
+
+### Image URLs
+
+- ``ImageSize``
+- ``PosterImageProviding``
+- ``BackdropImageProviding``
+- ``ProfileImageProviding``
+- ``LogoImageProviding``
+- ``StillImageProviding``
 
 ### Account
 

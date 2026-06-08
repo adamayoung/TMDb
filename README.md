@@ -26,7 +26,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 * **Metadata**: Genres, certifications, companies, collections, watch
   providers
 * **Image Generation**: Built-in URL generation for all image types with
-  size optimization
+  size optimization, typed `ImageSize` selection, and convenience accessors
+  on models
 * **Swift 6 Ready**: Full strict concurrency support with Sendable types
 * **Cross-Platform**: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+,
   visionOS 1+, Linux, Windows
@@ -160,6 +161,9 @@ let config = try await tmdbClient.configurations.apiConfiguration()
 if let posterPath = fightClub.posterPath {
     let posterURL = config.images.posterURL(for: posterPath, idealWidth: 500)
 }
+
+// Or request a specific size, directly from the model
+let posterURL = fightClub.posterURL(using: config.images, size: .width(500))
 ```
 
 ### Configuration
