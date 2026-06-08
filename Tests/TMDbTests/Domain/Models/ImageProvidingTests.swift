@@ -15,9 +15,11 @@ struct ImageProvidingTests {
     var configuration: ImagesConfiguration
 
     init() throws {
-        self.configuration = try ImagesConfiguration(
-            baseURL: #require(URL(string: "http://image.tmdb.org/t/p/")),
-            secureBaseURL: #require(URL(string: "https://image.tmdb.org/t/p/")),
+        let baseURL = try #require(URL(string: "http://image.tmdb.org/t/p/"))
+        let secureBaseURL = try #require(URL(string: "https://image.tmdb.org/t/p/"))
+        self.configuration = ImagesConfiguration(
+            baseURL: baseURL,
+            secureBaseURL: secureBaseURL,
             backdropSizes: ["w300", "w780", "w1280", "original"],
             logoSizes: ["w45", "w92", "w154", "w185", "w300", "w500", "original"],
             posterSizes: ["w92", "w154", "w185", "w342", "w500", "w780", "original"],
@@ -28,12 +30,9 @@ struct ImageProvidingTests {
 
     @Test("Movie poster and backdrop URLs")
     func moviePosterAndBackdropURLs() throws {
-        let movie = try Movie(
-            id: 1,
-            title: "Movie",
-            posterPath: #require(URL(string: "/poster.jpg")),
-            backdropPath: #require(URL(string: "/backdrop.jpg"))
-        )
+        let posterPath = try #require(URL(string: "/poster.jpg"))
+        let backdropPath = try #require(URL(string: "/backdrop.jpg"))
+        let movie = Movie(id: 1, title: "Movie", posterPath: posterPath, backdropPath: backdropPath)
 
         let posterURL = movie.posterURL(using: configuration, size: .width(500))
         let backdropURL = movie.backdropURL(using: configuration, size: .width(1280))
@@ -53,12 +52,8 @@ struct ImageProvidingTests {
 
     @Test("Person profile URL")
     func personProfileURL() throws {
-        let person = try Person(
-            id: 1,
-            name: "Person",
-            gender: .unknown,
-            profilePath: #require(URL(string: "/profile.jpg"))
-        )
+        let profilePath = try #require(URL(string: "/profile.jpg"))
+        let person = Person(id: 1, name: "Person", gender: .unknown, profilePath: profilePath)
 
         let profileURL = person.profileURL(using: configuration, size: .height(632))
 
@@ -67,11 +62,8 @@ struct ImageProvidingTests {
 
     @Test("Network logo URL")
     func networkLogoURL() throws {
-        let network = try Network(
-            id: 1,
-            name: "Network",
-            logoPath: #require(URL(string: "/logo.jpg"))
-        )
+        let logoPath = try #require(URL(string: "/logo.jpg"))
+        let network = Network(id: 1, name: "Network", logoPath: logoPath)
 
         let logoURL = network.logoURL(using: configuration, size: .width(154))
 
@@ -80,12 +72,13 @@ struct ImageProvidingTests {
 
     @Test("TVEpisode still URL")
     func tvEpisodeStillURL() throws {
-        let episode = try TVEpisode(
+        let stillPath = try #require(URL(string: "/still.jpg"))
+        let episode = TVEpisode(
             id: 1,
             name: "Episode",
             episodeNumber: 1,
             seasonNumber: 1,
-            stillPath: #require(URL(string: "/still.jpg"))
+            stillPath: stillPath
         )
 
         let stillURL = episode.stillURL(using: configuration, size: .width(300))
@@ -95,11 +88,8 @@ struct ImageProvidingTests {
 
     @Test("Movie poster URL defaults to original size")
     func moviePosterURLDefaultsToOriginalSize() throws {
-        let movie = try Movie(
-            id: 1,
-            title: "Movie",
-            posterPath: #require(URL(string: "/poster.jpg"))
-        )
+        let posterPath = try #require(URL(string: "/poster.jpg"))
+        let movie = Movie(id: 1, title: "Movie", posterPath: posterPath)
 
         let posterURL = movie.posterURL(using: configuration)
 
@@ -108,11 +98,8 @@ struct ImageProvidingTests {
 
     @Test("Movie poster URL with unsupported size returns nil")
     func moviePosterURLWithUnsupportedSizeReturnsNil() throws {
-        let movie = try Movie(
-            id: 1,
-            title: "Movie",
-            posterPath: #require(URL(string: "/poster.jpg"))
-        )
+        let posterPath = try #require(URL(string: "/poster.jpg"))
+        let movie = Movie(id: 1, title: "Movie", posterPath: posterPath)
 
         let posterURL = movie.posterURL(using: configuration, size: .width(99999))
 
@@ -121,12 +108,9 @@ struct ImageProvidingTests {
 
     @Test("TVSeries conforms to both poster and backdrop providing")
     func tvSeriesPosterAndBackdrop() throws {
-        let series = try TVSeries(
-            id: 1,
-            name: "Series",
-            posterPath: #require(URL(string: "/poster.jpg")),
-            backdropPath: #require(URL(string: "/backdrop.jpg"))
-        )
+        let posterPath = try #require(URL(string: "/poster.jpg"))
+        let backdropPath = try #require(URL(string: "/backdrop.jpg"))
+        let series = TVSeries(id: 1, name: "Series", posterPath: posterPath, backdropPath: backdropPath)
 
         let posterURL = series.posterURL(using: configuration, size: .width(342))
         let backdropURL = series.backdropURL(using: configuration, size: .width(780))
