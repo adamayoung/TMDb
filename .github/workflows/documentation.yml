@@ -23,19 +23,61 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build
-    runs-on: macos-26
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Detect file changes
+        id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            docs:
+              - '**/*.swift'
+              - '**/*.docc/**'
+              - '.github/workflows/documentation.yml'
+
+  build:
+    name: Build
+    needs: changes
+    if: always()
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+    steps:
+      - name: No changes detected
+        if: needs.changes.outputs.docs != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift or DocC changes detected, skipping documentation build"
+
+      - name: Checkout
+        if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v6
+
       - name: Setup Pages
+        if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/configure-pages@v6
-      
+
+      - name: Cache Swift packages
+        if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache@v5
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-docs-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-docs-
+            ${{ runner.os }}-swift-
+
       - name: Build documentation
+        if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           swift package \
           --allow-writing-to-directory docs \
@@ -50,11 +92,13 @@ jobs:
           SWIFTCI_DOCC: 1
 
       - name: Upload documentation
-        if: github.ref == 'refs/heads/main'
+        if: >-
+          github.ref == 'refs/heads/main'
+          && (needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch')
         uses: actions/upload-pages-artifact@v5
         with:
           path: 'docs'
-  
+
   deploy:
     name: Deploy
     if: github.ref == 'refs/heads/main'
