@@ -93,6 +93,32 @@ struct ImageProvidingTests {
         #expect(stillURL == URL(string: "https://image.tmdb.org/t/p/w300/still.jpg"))
     }
 
+    @Test("Movie poster URL defaults to original size")
+    func moviePosterURLDefaultsToOriginalSize() throws {
+        let movie = try Movie(
+            id: 1,
+            title: "Movie",
+            posterPath: #require(URL(string: "/poster.jpg"))
+        )
+
+        let posterURL = movie.posterURL(using: configuration)
+
+        #expect(posterURL == URL(string: "https://image.tmdb.org/t/p/original/poster.jpg"))
+    }
+
+    @Test("Movie poster URL with unsupported size returns nil")
+    func moviePosterURLWithUnsupportedSizeReturnsNil() throws {
+        let movie = try Movie(
+            id: 1,
+            title: "Movie",
+            posterPath: #require(URL(string: "/poster.jpg"))
+        )
+
+        let posterURL = movie.posterURL(using: configuration, size: .width(99999))
+
+        #expect(posterURL == nil)
+    }
+
     @Test("TVSeries conforms to both poster and backdrop providing")
     func tvSeriesPosterAndBackdrop() throws {
         let series = try TVSeries(

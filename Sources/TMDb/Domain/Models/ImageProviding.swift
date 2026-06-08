@@ -13,7 +13,7 @@ import Foundation
 /// Conforming types gain a convenience method to generate a fully qualified poster image URL from
 /// an ``ImagesConfiguration``.
 ///
-public protocol PosterImageProviding {
+public protocol PosterImageProviding: Sendable {
 
     ///
     /// The path to the poster image.
@@ -29,13 +29,14 @@ public extension PosterImageProviding {
     ///
     /// - Parameters:
     ///   - configuration: The images configuration used to build the URL.
-    ///   - size: The desired image size. ``ImageSize/original`` is always supported; any other
-    ///           size must be present in ``ImagesConfiguration/posterSizes``.
+    ///   - size: The desired image size. Defaults to ``ImageSize/original``, which is always
+    ///           supported; any other size must be present in
+    ///           ``ImagesConfiguration/posterSizes``.
     ///
     /// - Returns: A fully qualified URL to the poster image, or `nil` if there is no poster path
     ///            or the size is not supported.
     ///
-    func posterURL(using configuration: ImagesConfiguration, size: ImageSize) -> URL? {
+    func posterURL(using configuration: ImagesConfiguration, size: ImageSize = .original) -> URL? {
         configuration.posterURL(for: posterPath, size: size)
     }
 
@@ -47,7 +48,7 @@ public extension PosterImageProviding {
 /// Conforming types gain a convenience method to generate a fully qualified backdrop image URL
 /// from an ``ImagesConfiguration``.
 ///
-public protocol BackdropImageProviding {
+public protocol BackdropImageProviding: Sendable {
 
     ///
     /// The path to the backdrop image.
@@ -63,13 +64,14 @@ public extension BackdropImageProviding {
     ///
     /// - Parameters:
     ///   - configuration: The images configuration used to build the URL.
-    ///   - size: The desired image size. ``ImageSize/original`` is always supported; any other
-    ///           size must be present in ``ImagesConfiguration/backdropSizes``.
+    ///   - size: The desired image size. Defaults to ``ImageSize/original``, which is always
+    ///           supported; any other size must be present in
+    ///           ``ImagesConfiguration/backdropSizes``.
     ///
     /// - Returns: A fully qualified URL to the backdrop image, or `nil` if there is no backdrop
     ///            path or the size is not supported.
     ///
-    func backdropURL(using configuration: ImagesConfiguration, size: ImageSize) -> URL? {
+    func backdropURL(using configuration: ImagesConfiguration, size: ImageSize = .original) -> URL? {
         configuration.backdropURL(for: backdropPath, size: size)
     }
 
@@ -81,7 +83,7 @@ public extension BackdropImageProviding {
 /// Conforming types gain a convenience method to generate a fully qualified profile image URL
 /// from an ``ImagesConfiguration``.
 ///
-public protocol ProfileImageProviding {
+public protocol ProfileImageProviding: Sendable {
 
     ///
     /// The path to the profile image.
@@ -97,13 +99,14 @@ public extension ProfileImageProviding {
     ///
     /// - Parameters:
     ///   - configuration: The images configuration used to build the URL.
-    ///   - size: The desired image size. ``ImageSize/original`` is always supported; any other
-    ///           size must be present in ``ImagesConfiguration/profileSizes``.
+    ///   - size: The desired image size. Defaults to ``ImageSize/original``, which is always
+    ///           supported; any other size must be present in
+    ///           ``ImagesConfiguration/profileSizes``.
     ///
     /// - Returns: A fully qualified URL to the profile image, or `nil` if there is no profile
     ///            path or the size is not supported.
     ///
-    func profileURL(using configuration: ImagesConfiguration, size: ImageSize) -> URL? {
+    func profileURL(using configuration: ImagesConfiguration, size: ImageSize = .original) -> URL? {
         configuration.profileURL(for: profilePath, size: size)
     }
 
@@ -115,7 +118,7 @@ public extension ProfileImageProviding {
 /// Conforming types gain a convenience method to generate a fully qualified logo image URL from
 /// an ``ImagesConfiguration``.
 ///
-public protocol LogoImageProviding {
+public protocol LogoImageProviding: Sendable {
 
     ///
     /// The path to the logo image.
@@ -131,13 +134,14 @@ public extension LogoImageProviding {
     ///
     /// - Parameters:
     ///   - configuration: The images configuration used to build the URL.
-    ///   - size: The desired image size. ``ImageSize/original`` is always supported; any other
-    ///           size must be present in ``ImagesConfiguration/logoSizes``.
+    ///   - size: The desired image size. Defaults to ``ImageSize/original``, which is always
+    ///           supported; any other size must be present in
+    ///           ``ImagesConfiguration/logoSizes``.
     ///
     /// - Returns: A fully qualified URL to the logo image, or `nil` if there is no logo path or
     ///            the size is not supported.
     ///
-    func logoURL(using configuration: ImagesConfiguration, size: ImageSize) -> URL? {
+    func logoURL(using configuration: ImagesConfiguration, size: ImageSize = .original) -> URL? {
         configuration.logoURL(for: logoPath, size: size)
     }
 
@@ -149,7 +153,7 @@ public extension LogoImageProviding {
 /// Conforming types gain a convenience method to generate a fully qualified still image URL from
 /// an ``ImagesConfiguration``.
 ///
-public protocol StillImageProviding {
+public protocol StillImageProviding: Sendable {
 
     ///
     /// The path to the still image.
@@ -165,13 +169,14 @@ public extension StillImageProviding {
     ///
     /// - Parameters:
     ///   - configuration: The images configuration used to build the URL.
-    ///   - size: The desired image size. ``ImageSize/original`` is always supported; any other
-    ///           size must be present in ``ImagesConfiguration/stillSizes``.
+    ///   - size: The desired image size. Defaults to ``ImageSize/original``, which is always
+    ///           supported; any other size must be present in
+    ///           ``ImagesConfiguration/stillSizes``.
     ///
     /// - Returns: A fully qualified URL to the still image, or `nil` if there is no still path or
     ///            the size is not supported.
     ///
-    func stillURL(using configuration: ImagesConfiguration, size: ImageSize) -> URL? {
+    func stillURL(using configuration: ImagesConfiguration, size: ImageSize = .original) -> URL? {
         configuration.stillURL(for: stillPath, size: size)
     }
 

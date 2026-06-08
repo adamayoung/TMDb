@@ -366,7 +366,6 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``ConfigurationService``
 - ``APIConfiguration``
 - ``ImagesConfiguration``
-- ``ImageSize``
 - ``Country``
 - ``Department``
 - ``Language``

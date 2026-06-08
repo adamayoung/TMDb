@@ -71,8 +71,8 @@ public enum ImageSize: Codable, Equatable, Hashable, Sendable {
         }
 
         let prefix = pathComponent.prefix(1)
-        let valueString = pathComponent.dropFirst()
-        guard let value = Int(valueString) else {
+        let digits = String(pathComponent.dropFirst())
+        guard let value = Int(digits), value > 0, String(value) == digits else {
             return nil
         }
 

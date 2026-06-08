@@ -102,6 +102,42 @@ struct ImagesConfigurationSizeURLsTests {
         #expect(result == expected)
     }
 
+    @Test("backdropURL with unsupported size returns nil")
+    func backdropURLWithUnsupportedSizeReturnsNil() throws {
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let result = configuration.backdropURL(for: path, size: .width(999))
+
+        #expect(result == nil)
+    }
+
+    @Test("logoURL with unsupported size returns nil")
+    func logoURLWithUnsupportedSizeReturnsNil() throws {
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let result = configuration.logoURL(for: path, size: .width(999))
+
+        #expect(result == nil)
+    }
+
+    @Test("profileURL with unsupported size returns nil")
+    func profileURLWithUnsupportedSizeReturnsNil() throws {
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let result = configuration.profileURL(for: path, size: .width(999))
+
+        #expect(result == nil)
+    }
+
+    @Test("stillURL with unsupported size returns nil")
+    func stillURLWithUnsupportedSizeReturnsNil() throws {
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let result = configuration.stillURL(for: path, size: .width(999))
+
+        #expect(result == nil)
+    }
+
     @Test("posterURL with original size always supported even when not listed")
     func posterURLWithOriginalAlwaysSupported() throws {
         let path = try #require(URL(string: "/image.jpg"))

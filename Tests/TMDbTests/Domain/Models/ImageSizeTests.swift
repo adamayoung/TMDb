@@ -55,4 +55,19 @@ struct ImageSizeTests {
         }
     }
 
+    @Test("init from canonical path component returns size")
+    func initFromCanonicalPathComponentReturnsSize() {
+        #expect(ImageSize(pathComponent: "w500") == .width(500))
+        #expect(ImageSize(pathComponent: "h300") == .height(300))
+        #expect(ImageSize(pathComponent: "original") == .original)
+    }
+
+    @Test(
+        "init from non-canonical or invalid path component returns nil",
+        arguments: ["w007", "w-500", "w0", "w+5", "h0"]
+    )
+    func initFromNonCanonicalPathComponentReturnsNil(pathComponent: String) {
+        #expect(ImageSize(pathComponent: pathComponent) == nil)
+    }
+
 }
