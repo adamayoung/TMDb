@@ -35,12 +35,50 @@ struct DiscoverMovieFilterFluentTests {
         #expect(filter.withoutGenres == [27, 53])
     }
 
+    @Test("withKeywords sets keywords and defaults to AND join")
+    func withKeywordsSetsKeywordsAndDefaultsToAndJoin() {
+        let filter = DiscoverMovieFilter().withKeywords([10, 20])
+
+        #expect(filter.keywords == [10, 20])
+        #expect(filter.keywordsJoin == .and)
+    }
+
     @Test("withKeywords sets keywords and join operator")
     func withKeywordsSetsKeywordsAndJoinOperator() {
         let filter = DiscoverMovieFilter().withKeywords([10, 20], joinedBy: .or)
 
         #expect(filter.keywords == [10, 20])
         #expect(filter.keywordsJoin == .or)
+    }
+
+    @Test("withCompanies sets companies")
+    func withCompaniesSetsCompanies() {
+        let filter = DiscoverMovieFilter().withCompanies([5, 6, 7])
+
+        #expect(filter.companies == [5, 6, 7])
+    }
+
+    @Test("originalLanguage sets original language")
+    func originalLanguageSetsOriginalLanguage() {
+        let filter = DiscoverMovieFilter().originalLanguage("en")
+
+        #expect(filter.originalLanguage == "en")
+    }
+
+    @Test("includeVideo sets include video")
+    func includeVideoSetsIncludeVideo() {
+        let filter = DiscoverMovieFilter().includeVideo(true)
+
+        #expect(filter.includeVideo == true)
+    }
+
+    @Test("watchProviders sets providers and region")
+    func watchProvidersSetsProvidersAndRegion() {
+        let filter = DiscoverMovieFilter()
+            .watchProviders([8, 9], region: "US")
+
+        #expect(filter.watchProviders == [8, 9])
+        #expect(filter.watchRegion == "US")
     }
 
     @Test("withPeople sets people")
@@ -114,6 +152,55 @@ struct DiscoverMovieFilterFluentTests {
         let rhs = DiscoverMovieFilter().withGenres([28, 12])
 
         #expect(lhs == rhs)
+    }
+
+    @Test("no-op mutation preserves every other populated field")
+    func noOpMutationPreservesEveryOtherPopulatedField() {
+        // A single no-op-style mutation: re-applying includeAdult must leave
+        // every other field untouched. This guards the ~31-parameter `copy`
+        // helper against a future field being silently dropped to nil.
+        let base = Self.fullyPopulatedFilter(includeAdult: false)
+        let mutated = base.includeAdult(true)
+        let expected = Self.fullyPopulatedFilter(includeAdult: true)
+
+        #expect(mutated == expected)
+    }
+
+    private static func fullyPopulatedFilter(
+        includeAdult: Bool
+    ) -> DiscoverMovieFilter {
+        DiscoverMovieFilter(
+            people: [1],
+            originalLanguage: "en",
+            genres: [28],
+            withoutGenres: [27],
+            primaryReleaseYear: .on(2024),
+            voteAverageMin: 7.0,
+            voteAverageMax: 9.0,
+            voteCountMin: 100,
+            voteCountMax: 1000,
+            companies: [5],
+            keywords: [10],
+            withoutKeywords: [11],
+            runtimeMin: 90,
+            runtimeMax: 180,
+            includeAdult: includeAdult,
+            includeVideo: true,
+            watchProviders: [8],
+            watchRegion: "US",
+            certification: "PG-13",
+            certificationMin: "G",
+            certificationMax: "R",
+            certificationCountry: "US",
+            releaseTypes: [.theatrical],
+            withCast: [2],
+            withCrew: [3],
+            withOriginCountry: "GB",
+            withoutCompanies: [6],
+            watchMonetizationTypes: [.flatrate],
+            genresJoin: .or,
+            keywordsJoin: .or
+        )
     }
 
 }

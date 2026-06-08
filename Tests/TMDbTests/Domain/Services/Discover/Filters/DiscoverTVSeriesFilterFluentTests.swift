@@ -38,6 +38,57 @@ struct DiscoverTVSeriesFilterFluentTests {
         #expect(filter.keywordsJoin == .or)
     }
 
+    @Test("withoutGenres sets without genres")
+    func withoutGenresSetsWithoutGenres() {
+        let filter = DiscoverTVSeriesFilter().withoutGenres([27, 53])
+
+        #expect(filter.withoutGenres == [27, 53])
+    }
+
+    @Test("withoutKeywords sets without keywords")
+    func withoutKeywordsSetsWithoutKeywords() {
+        let filter = DiscoverTVSeriesFilter().withoutKeywords([11, 12])
+
+        #expect(filter.withoutKeywords == [11, 12])
+    }
+
+    @Test("withNetworks sets networks")
+    func withNetworksSetsNetworks() {
+        let filter = DiscoverTVSeriesFilter().withNetworks([213, 49])
+
+        #expect(filter.networks == [213, 49])
+    }
+
+    @Test("withCompanies sets companies")
+    func withCompaniesSetsCompanies() {
+        let filter = DiscoverTVSeriesFilter().withCompanies([5, 6, 7])
+
+        #expect(filter.companies == [5, 6, 7])
+    }
+
+    @Test("originalLanguage sets original language")
+    func originalLanguageSetsOriginalLanguage() {
+        let filter = DiscoverTVSeriesFilter().originalLanguage("en")
+
+        #expect(filter.originalLanguage == "en")
+    }
+
+    @Test("includeAdult sets include adult")
+    func includeAdultSetsIncludeAdult() {
+        let filter = DiscoverTVSeriesFilter().includeAdult(true)
+
+        #expect(filter.includeAdult == true)
+    }
+
+    @Test("watchProviders sets providers and region")
+    func watchProvidersSetsProvidersAndRegion() {
+        let filter = DiscoverTVSeriesFilter()
+            .watchProviders([8, 9], region: "US")
+
+        #expect(filter.watchProviders == [8, 9])
+        #expect(filter.watchRegion == "US")
+    }
+
     @Test("firstAirDateYear sets first air date year")
     func firstAirDateYearSetsFirstAirDateYear() {
         let filter = DiscoverTVSeriesFilter().firstAirDateYear(2024)
@@ -93,6 +144,55 @@ struct DiscoverTVSeriesFilterFluentTests {
         let rhs = DiscoverTVSeriesFilter().withGenres([18])
 
         #expect(lhs == rhs)
+    }
+
+    @Test("no-op mutation preserves every other populated field")
+    func noOpMutationPreservesEveryOtherPopulatedField() {
+        // A single no-op-style mutation: re-applying includeAdult must leave
+        // every other field untouched. This guards the ~31-parameter `copy`
+        // helper against a future field being silently dropped to nil.
+        let base = Self.fullyPopulatedFilter(includeAdult: false)
+        let mutated = base.includeAdult(true)
+        let expected = Self.fullyPopulatedFilter(includeAdult: true)
+
+        #expect(mutated == expected)
+    }
+
+    private static func fullyPopulatedFilter(
+        includeAdult: Bool
+    ) -> DiscoverTVSeriesFilter {
+        DiscoverTVSeriesFilter(
+            originalLanguage: "en",
+            genres: [18],
+            withoutGenres: [27],
+            firstAirDateYear: 2024,
+            firstAirDateMin: Date(timeIntervalSince1970: 1_000_000),
+            firstAirDateMax: Date(timeIntervalSince1970: 2_000_000),
+            airDateMin: Date(timeIntervalSince1970: 3_000_000),
+            airDateMax: Date(timeIntervalSince1970: 4_000_000),
+            voteAverageMin: 7.0,
+            voteAverageMax: 9.0,
+            voteCountMin: 100,
+            voteCountMax: 1000,
+            networks: [213],
+            companies: [5],
+            keywords: [10],
+            withoutKeywords: [11],
+            runtimeMin: 30,
+            runtimeMax: 60,
+            includeAdult: includeAdult,
+            watchProviders: [8],
+            watchRegion: "US",
+            withOriginCountry: "GB",
+            withStatus: [.returning],
+            withType: [.scripted],
+            withoutCompanies: [6],
+            watchMonetizationTypes: [.flatrate],
+            screenedTheatrically: true,
+            withPeople: [2],
+            genresJoin: .or,
+            keywordsJoin: .or
+        )
     }
 
 }
