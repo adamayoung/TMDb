@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "xcode": {
+      "type": "stdio",
+      "command": "xcrun",
+      "args": [
+        "mcpbridge"
+      ],
+      "env": {}
+    },
+    "tmdb": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@adamayoung/mcp-server-tmdb"
+      ],
+      "env": {
+        "TMDB_API_KEY": "${TMDB_API_KEY}"
+      }
+    },
+    "sosumi": {
+      "type": "http",
+      "url": "https://sosumi.ai/mcp"
+    }
+  }
+}
