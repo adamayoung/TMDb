@@ -26,6 +26,20 @@ struct DataFormatterTMDbTests {
         #expect(result.date == expected)
     }
 
+    @Test("theMovieDatabaseAuth decoder throws for invalid date string")
+    func theMovieDatabaseAuthDecoderThrowsForInvalidDate() {
+        let jsonString = """
+        {
+            "date": "not-a-date"
+        }
+        """
+        let data = Data(jsonString.utf8)
+
+        #expect(throws: DecodingError.self) {
+            try JSONDecoder.theMovieDatabaseAuth.decode(DateWrapper.self, from: data)
+        }
+    }
+
 }
 
 private extension DataFormatterTMDbTests {

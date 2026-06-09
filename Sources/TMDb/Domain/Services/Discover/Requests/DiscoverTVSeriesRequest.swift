@@ -196,7 +196,7 @@ private extension APIRequestQueryItems {
     }
 
     static func dateString(from date: Date) -> String {
-        date.formatted(Date.ISO8601FormatStyle().year().month().day())
+        DateFormatter.theMovieDatabase.string(from: date)
     }
 
 }

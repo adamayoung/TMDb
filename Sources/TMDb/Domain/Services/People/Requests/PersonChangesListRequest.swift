@@ -35,11 +35,11 @@ private extension APIRequestQueryItems {
         self.init()
 
         if let startDate {
-            self[Self.startDate] = startDate.formatted(Date.ISO8601FormatStyle().year().month().day())
+            self[Self.startDate] = DateFormatter.theMovieDatabase.string(from: startDate)
         }
 
         if let endDate {
-            self[Self.endDate] = endDate.formatted(Date.ISO8601FormatStyle().year().month().day())
+            self[Self.endDate] = DateFormatter.theMovieDatabase.string(from: endDate)
         }
 
         if let page {

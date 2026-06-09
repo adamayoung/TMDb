@@ -36,7 +36,7 @@ extension JSONDecoder {
             } catch {
                 throw DecodingError.dataCorruptedError(
                     in: container,
-                    debugDescription: "Date string does not match format yyyy-MM-dd: \(dateString)"
+                    debugDescription: "Date string does not match format yyyy-MM-dd: \(dateString). Underlying error: \(error)"
                 )
             }
         }
@@ -54,7 +54,7 @@ extension JSONDecoder {
             } catch {
                 throw DecodingError.dataCorruptedError(
                     in: container,
-                    debugDescription: "Date string does not match format yyyy-MM-dd HH:mm:ss UTC: \(dateString)"
+                    debugDescription: "Date string does not match format yyyy-MM-dd HH:mm:ss UTC: \(dateString). Underlying error: \(error)"
                 )
             }
         }

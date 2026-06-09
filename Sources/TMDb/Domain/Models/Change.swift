@@ -147,7 +147,7 @@ extension ChangeItem {
             throw DecodingError.dataCorruptedError(
                 forKey: .time,
                 in: container,
-                debugDescription: "Date string '\(timeString)' does not match expected format yyyy-MM-dd HH:mm:ss UTC"
+                debugDescription: "Date string '\(timeString)' does not match expected format yyyy-MM-dd HH:mm:ss UTC. Underlying error: \(error)"
             )
         }
     }

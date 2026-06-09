@@ -27,6 +27,7 @@ struct ChangeTests {
         let titleItem = try #require(titleChange.items.first)
         #expect(titleItem.id == "5f8b1234abc12345")
         #expect(titleItem.action == "updated")
+        #expect(titleItem.time == Date(timeIntervalSince1970: 1_734_258_600))
         #expect(titleItem.languageCode == "en")
         #expect(titleItem.countryCode == "US")
 
@@ -36,6 +37,7 @@ struct ChangeTests {
         let castItem = try #require(castChange.items.first)
         #expect(castItem.id == "5f8b5678def67890")
         #expect(castItem.action == "added")
+        #expect(castItem.time == Date(timeIntervalSince1970: 1_734_263_130))
     }
 
     @Test("JSON decoding of ChangedIDCollection", .tags(.decoding))
