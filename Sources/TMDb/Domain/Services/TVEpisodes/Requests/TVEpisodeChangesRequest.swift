@@ -37,15 +37,11 @@ private extension APIRequestQueryItems {
         self.init()
 
         if let startDate {
-            self[Self.startDate] = DateFormatter
-                .theMovieDatabase
-                .string(from: startDate)
+            self[Self.startDate] = DateFormatter.theMovieDatabase.string(from: startDate)
         }
 
         if let endDate {
-            self[Self.endDate] = DateFormatter
-                .theMovieDatabase
-                .string(from: endDate)
+            self[Self.endDate] = DateFormatter.theMovieDatabase.string(from: endDate)
         }
 
         if let page {
