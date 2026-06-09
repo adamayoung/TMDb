@@ -10,6 +10,7 @@ import TMDb
 
 extension ImagesConfiguration {
 
+    // swiftlint:disable force_unwrapping
     static func mock(
         baseURL: URL = URL(string: "http://api.domain.com/v1/")!,
         secureBaseURL: URL = URL(string: "https://api.domain.com/v1/")!,
@@ -19,6 +20,7 @@ extension ImagesConfiguration {
         profileSizes: [String] = ["w45"],
         stillSizes: [String] = ["w92"]
     ) -> ImagesConfiguration {
+        // swiftlint:enable force_unwrapping
         ImagesConfiguration(
             baseURL: baseURL,
             secureBaseURL: secureBaseURL,

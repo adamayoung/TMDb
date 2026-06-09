@@ -10,6 +10,7 @@ import TMDb
 
 extension TaggedImage {
 
+    // swiftlint:disable force_unwrapping
     static func mock(
         id: String = "59164af592514156f50269b6",
         aspectRatio: Double = 0.667,
@@ -24,6 +25,7 @@ extension TaggedImage {
         voteCount: Int = 19,
         imageType: String = "poster",
         media: TaggedImageMedia = .movie(.mock())
+        // swiftlint:enable force_unwrapping
     ) -> TaggedImage {
         TaggedImage(
             id: id,

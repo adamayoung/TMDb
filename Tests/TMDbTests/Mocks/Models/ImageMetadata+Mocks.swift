@@ -10,6 +10,7 @@ import TMDb
 
 extension ImageMetadata {
 
+    // swiftlint:disable force_unwrapping
     static func mock(
         filePath: URL = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")!,
         width: Int = 100,
@@ -29,6 +30,7 @@ extension ImageMetadata {
             languageCode: languageCode
         )
     }
+    // swiftlint:enable force_unwrapping
 
 }
 
