@@ -18,19 +18,10 @@ final class TMDbTVEpisodeGroupService: TVEpisodeGroupService {
 
     func details(
         forTVEpisodeGroup id: TVEpisodeGroup.ID
-    ) async throws -> TVEpisodeGroup {
+    ) async throws(TMDbError) -> TVEpisodeGroup {
         let request = TVEpisodeGroupRequest(id: id)
 
-        let tvEpisodeGroup: TVEpisodeGroup
-        do {
-            tvEpisodeGroup = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvEpisodeGroup
+        return try await apiClient.perform(request)
     }
 
 }

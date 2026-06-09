@@ -44,9 +44,9 @@ struct ListIntegrationTests {
         let result = try await listService.items(forList: listID, page: nil)
 
         #expect(!result.results.isEmpty)
-        #expect(result.page != nil)
-        #expect(result.totalResults != nil)
-        #expect(result.totalPages != nil)
+        #expect(result.page >= 1)
+        #expect(result.totalResults >= 1)
+        #expect(result.totalPages >= 1)
     }
 
     @Test("itemStatus")

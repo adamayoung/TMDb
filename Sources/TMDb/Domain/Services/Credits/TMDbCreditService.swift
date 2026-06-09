@@ -16,17 +16,10 @@ final class TMDbCreditService: CreditService {
         self.apiClient = apiClient
     }
 
-    func details(forCredit id: Credit.ID) async throws -> Credit {
+    func details(forCredit id: Credit.ID) async throws(TMDbError) -> Credit {
         let request = CreditRequest(id: id)
 
-        let credit: Credit
-        do {
-            credit = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credit
+        return try await apiClient.perform(request)
     }
 
 }

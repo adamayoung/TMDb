@@ -25,7 +25,7 @@ public protocol GenreService: Sendable {
     ///
     /// - Returns: A list of genres.
     ///
-    func movieGenres(language: String?) async throws -> [Genre]
+    func movieGenres(language: String?) async throws(TMDbError) -> [Genre]
 
     ///
     /// Returns the list of official genres for TV series.
@@ -39,7 +39,7 @@ public protocol GenreService: Sendable {
     ///
     /// - Returns: A list of genres.
     ///
-    func tvSeriesGenres(language: String?) async throws -> [Genre]
+    func tvSeriesGenres(language: String?) async throws(TMDbError) -> [Genre]
 
 }
 
@@ -57,7 +57,7 @@ public extension GenreService {
     ///
     /// - Returns: A list of genres.
     ///
-    func movieGenres(language: String? = nil) async throws -> [Genre] {
+    func movieGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
         try await movieGenres(language: language)
     }
 
@@ -73,7 +73,7 @@ public extension GenreService {
     ///
     /// - Returns: A list of genres.
     ///
-    func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
+    func tvSeriesGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
         try await tvSeriesGenres(language: language)
     }
 

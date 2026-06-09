@@ -128,23 +128,11 @@ extension Review {
         case updatedAt
     }
 
-    private nonisolated(unsafe) static let iso8601FractionalFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [
-            .withInternetDateTime, .withFractionalSeconds
-        ]
-        return formatter
-    }()
-
-    private nonisolated(unsafe) static let iso8601Formatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter
-    }()
-
     private static func parseDate(_ string: String) -> Date? {
-        iso8601FractionalFormatter.date(from: string)
-            ?? iso8601Formatter.date(from: string)
+        // Try parsing with fractional seconds first (e.g. "2014-12-10T17:22:35.385Z"),
+        // then fall back to whole-second internet date time (e.g. "2014-12-10T17:22:35Z").
+        (try? Date(string, strategy: Date.ISO8601FormatStyle(includingFractionalSeconds: true)))
+            ?? (try? Date(string, strategy: .iso8601))
     }
 
     ///

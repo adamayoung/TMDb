@@ -42,22 +42,36 @@ final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
         planner.availability
     }
 
-    func plan(for prompt: String) async throws -> SearchPlan {
-        try ensureAvailable()
-        return try await planner.plan(for: prompt)
+    func plan(for prompt: String) async throws(NaturalLanguageSearchError) -> SearchPlan {
+        do {
+            try ensureAvailable()
+            return try await planner.plan(for: prompt)
+        } catch let error as NaturalLanguageSearchError {
+            throw error
+        } catch {
+            throw .planningFailed(underlying: error)
+        }
     }
 
-    func search(matching prompt: String) async throws -> NaturalLanguageSearchResult {
-        try ensureAvailable()
-
-        let plan: SearchPlan
+    func search(
+        matching prompt: String
+    ) async throws(NaturalLanguageSearchError) -> NaturalLanguageSearchResult {
         do {
-            plan = try await planner.plan(for: prompt)
-        } catch let error as NaturalLanguageSearchError where canFallBack(from: error) {
-            return try await literalSearch(for: prompt, after: error)
-        }
+            try ensureAvailable()
 
-        return try await executor.execute(plan)
+            let plan: SearchPlan
+            do {
+                plan = try await planner.plan(for: prompt)
+            } catch let error as NaturalLanguageSearchError where canFallBack(from: error) {
+                return try await literalSearch(for: prompt, after: error)
+            }
+
+            return try await executor.execute(plan)
+        } catch let error as NaturalLanguageSearchError {
+            throw error
+        } catch {
+            throw .planningFailed(underlying: error)
+        }
     }
 
 }

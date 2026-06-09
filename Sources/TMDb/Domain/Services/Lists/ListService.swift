@@ -26,7 +26,7 @@ public protocol ListService: Sendable {
     ///
     /// - Returns: The matching list details.
     ///
-    func details(forList listID: Int, page: Int?) async throws -> MediaList
+    func details(forList listID: Int, page: Int?) async throws(TMDbError) -> MediaList
 
     ///
     /// Returns the items in a list.
@@ -44,7 +44,7 @@ public protocol ListService: Sendable {
     func items(
         forList listID: Int,
         page: Int?
-    ) async throws -> PageableListResult<MediaListItem>
+    ) async throws(TMDbError) -> PageableListResult<MediaListItem>
 
     ///
     /// Checks whether an item is present in a list.
@@ -59,7 +59,10 @@ public protocol ListService: Sendable {
     ///
     /// - Returns: The item status in the list.
     ///
-    func itemStatus(forMedia mediaID: Int, inList listID: Int) async throws -> MediaListItemStatus
+    func itemStatus(
+        forMedia mediaID: Int,
+        inList listID: Int
+    ) async throws(TMDbError) -> MediaListItemStatus
 
     ///
     /// Creates a new list.
@@ -83,7 +86,7 @@ public protocol ListService: Sendable {
         language: String?,
         isPublic: Bool?,
         session: Session
-    ) async throws -> CreateListResult
+    ) async throws(TMDbError) -> CreateListResult
 
     ///
     /// Deletes a list.
@@ -96,7 +99,7 @@ public protocol ListService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func delete(list listID: Int, session: Session) async throws
+    func delete(list listID: Int, session: Session) async throws(TMDbError)
 
     ///
     /// Adds an item to a list.
@@ -110,7 +113,7 @@ public protocol ListService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func addItem(mediaID: Int, toList listID: Int, session: Session) async throws
+    func addItem(mediaID: Int, toList listID: Int, session: Session) async throws(TMDbError)
 
     ///
     /// Removes an item from a list.
@@ -124,7 +127,7 @@ public protocol ListService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func removeItem(mediaID: Int, fromList listID: Int, session: Session) async throws
+    func removeItem(mediaID: Int, fromList listID: Int, session: Session) async throws(TMDbError)
 
     ///
     /// Clears all items from a list.
@@ -137,6 +140,6 @@ public protocol ListService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func clear(list listID: Int, session: Session) async throws
+    func clear(list listID: Int, session: Session) async throws(TMDbError)
 
 }

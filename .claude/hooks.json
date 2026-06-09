@@ -1,0 +1,14 @@
+{
+  "hook_events": [
+    {
+      "event": "PreToolUse",
+      "matcher": "Bash\\(git commit.*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "make lint"
+        }
+      ]
+    }
+  ]
+}

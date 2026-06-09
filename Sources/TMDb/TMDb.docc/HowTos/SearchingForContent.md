@@ -87,7 +87,7 @@ for try await movie in tmdbClient.search.allMovies(
 for try await page in tmdbClient.search.allMoviesPages(
     query: "Star Wars"
 ) {
-    print("Page \(page.page ?? 0) of \(page.totalPages ?? 0)")
+    print("Page \(page.page) of \(page.totalPages)")
     for movie in page.results {
         print("  - \(movie.title)")
     }

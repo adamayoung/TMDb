@@ -131,8 +131,10 @@ public extension PagedPagesAsyncSequence {
             currentPage += 1
             let page = try await pageFetcher(currentPage)
 
-            // Update total pages if not yet set
-            if totalPages == nil {
+            // Update total pages if not yet set. A non-positive `totalPages`
+            // means the endpoint did not report a total, so leave the cap unset
+            // and continue fetching until an empty page.
+            if totalPages == nil, page.totalPages > 0 {
                 totalPages = page.totalPages
             }
 

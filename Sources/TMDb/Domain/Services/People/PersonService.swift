@@ -27,7 +27,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person.
     ///
-    func details(forPerson id: Person.ID, language: String?) async throws -> Person
+    func details(forPerson id: Person.ID, language: String?) async throws(TMDbError) -> Person
 
     ///
     /// Returns the primary information about a person with
@@ -50,7 +50,7 @@ public protocol PersonService: Sendable {
         forPerson id: Person.ID,
         appending: PersonAppendOption,
         language: String?
-    ) async throws -> PersonDetailsResponse
+    ) async throws(TMDbError) -> PersonDetailsResponse
 
     ///
     /// Returns the combined movie and TV series credits of a person.
@@ -69,7 +69,7 @@ public protocol PersonService: Sendable {
     func combinedCredits(
         forPerson personID: Person.ID,
         language: String?
-    ) async throws -> PersonCombinedCredits
+    ) async throws(TMDbError) -> PersonCombinedCredits
 
     ///
     /// Returns the movie credits of a person.
@@ -88,7 +88,7 @@ public protocol PersonService: Sendable {
     func movieCredits(
         forPerson personID: Person.ID,
         language: String?
-    ) async throws -> PersonMovieCredits
+    ) async throws(TMDbError) -> PersonMovieCredits
 
     ///
     /// Returns the TV series credits of a person.
@@ -107,7 +107,7 @@ public protocol PersonService: Sendable {
     func tvSeriesCredits(
         forPerson personID: Person.ID,
         language: String?
-    ) async throws -> PersonTVSeriesCredits
+    ) async throws(TMDbError) -> PersonTVSeriesCredits
 
     ///
     /// Returns the images for a person.
@@ -120,7 +120,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person's images.
     ///
-    func images(forPerson personID: Person.ID) async throws -> PersonImageCollection
+    func images(forPerson personID: Person.ID) async throws(TMDbError) -> PersonImageCollection
 
     ///
     /// Returns the list of popular people.
@@ -138,7 +138,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: Current popular people as a pageable list.
     ///
-    func popular(page: Int?, language: String?) async throws -> PersonPageableList
+    func popular(page: Int?, language: String?) async throws(TMDbError) -> PersonPageableList
 
     ///
     /// Returns a collection of media databases and social links for a person.
@@ -151,7 +151,9 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: A collection of external links for the specified person.
     ///
-    func externalLinks(forPerson personID: Person.ID) async throws -> PersonExternalLinksCollection
+    func externalLinks(
+        forPerson personID: Person.ID
+    ) async throws(TMDbError) -> PersonExternalLinksCollection
 
     ///
     /// Returns the tagged images for a person.
@@ -171,7 +173,7 @@ public protocol PersonService: Sendable {
     func taggedImages(
         forPerson personID: Person.ID,
         page: Int?
-    ) async throws -> TaggedImagePageableList
+    ) async throws(TMDbError) -> TaggedImagePageableList
 
     ///
     /// Returns the translations for a person.
@@ -186,7 +188,7 @@ public protocol PersonService: Sendable {
     ///
     func translations(
         forPerson personID: Person.ID
-    ) async throws -> TranslationCollection<PersonTranslationData>
+    ) async throws(TMDbError) -> TranslationCollection<PersonTranslationData>
 
     ///
     /// Returns the recent changes for a person.
@@ -208,7 +210,7 @@ public protocol PersonService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the latest person added to TMDb.
@@ -219,7 +221,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The latest person.
     ///
-    func latestPerson() async throws -> Person
+    func latest() async throws(TMDbError) -> Person
 
     ///
     /// Returns a list of person IDs that have changed.
@@ -235,10 +237,10 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: A collection of person IDs that have changed.
     ///
-    func personChanges(
+    func changes(
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
 }

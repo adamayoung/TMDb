@@ -36,7 +36,7 @@ public protocol SearchService: Sendable {
         filter: AllMediaSearchFilter?,
         page: Int?,
         language: String?
-    ) async throws -> MediaPageableList
+    ) async throws(TMDbError) -> MediaPageableList
 
     ///
     /// Returns search results for movies.
@@ -61,7 +61,7 @@ public protocol SearchService: Sendable {
         filter: MovieSearchFilter?,
         page: Int?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns search results for TV series.
@@ -86,7 +86,7 @@ public protocol SearchService: Sendable {
         filter: TVSeriesSearchFilter?,
         page: Int?,
         language: String?
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns search results for people.
@@ -111,7 +111,7 @@ public protocol SearchService: Sendable {
         filter: PersonSearchFilter?,
         page: Int?,
         language: String?
-    ) async throws -> PersonPageableList
+    ) async throws(TMDbError) -> PersonPageableList
 
     ///
     /// Returns search results for collections.
@@ -134,7 +134,7 @@ public protocol SearchService: Sendable {
         query: String,
         page: Int?,
         language: String?
-    ) async throws -> CollectionPageableList
+    ) async throws(TMDbError) -> CollectionPageableList
 
     ///
     /// Returns search results for companies.
@@ -154,7 +154,7 @@ public protocol SearchService: Sendable {
     func searchCompanies(
         query: String,
         page: Int?
-    ) async throws -> CompanyPageableList
+    ) async throws(TMDbError) -> CompanyPageableList
 
     ///
     /// Returns search results for keywords.
@@ -174,7 +174,7 @@ public protocol SearchService: Sendable {
     func searchKeywords(
         query: String,
         page: Int?
-    ) async throws -> KeywordPageableList
+    ) async throws(TMDbError) -> KeywordPageableList
 
 }
 
@@ -203,7 +203,7 @@ public extension SearchService {
         filter: AllMediaSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaPageableList {
+    ) async throws(TMDbError) -> MediaPageableList {
         try await searchAll(query: query, filter: filter, page: page, language: language)
     }
 
@@ -230,7 +230,7 @@ public extension SearchService {
         filter: MovieSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await searchMovies(query: query, filter: filter, page: page, language: language)
     }
 
@@ -257,7 +257,7 @@ public extension SearchService {
         filter: TVSeriesSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await searchTVSeries(query: query, filter: filter, page: page, language: language)
     }
 
@@ -284,7 +284,7 @@ public extension SearchService {
         filter: PersonSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> PersonPageableList {
+    ) async throws(TMDbError) -> PersonPageableList {
         try await searchPeople(query: query, filter: filter, page: page, language: language)
     }
 
@@ -309,7 +309,7 @@ public extension SearchService {
         query: String,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> CollectionPageableList {
+    ) async throws(TMDbError) -> CollectionPageableList {
         try await searchCollections(
             query: query, page: page, language: language
         )
@@ -333,7 +333,7 @@ public extension SearchService {
     func searchCompanies(
         query: String,
         page: Int? = nil
-    ) async throws -> CompanyPageableList {
+    ) async throws(TMDbError) -> CompanyPageableList {
         try await searchCompanies(query: query, page: page)
     }
 
@@ -355,7 +355,7 @@ public extension SearchService {
     func searchKeywords(
         query: String,
         page: Int? = nil
-    ) async throws -> KeywordPageableList {
+    ) async throws(TMDbError) -> KeywordPageableList {
         try await searchKeywords(query: query, page: page)
     }
 

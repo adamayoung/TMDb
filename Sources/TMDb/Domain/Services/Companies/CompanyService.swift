@@ -24,7 +24,7 @@ public protocol CompanyService: Sendable {
     ///
     /// - Returns: Matching company.
     ///
-    func details(forCompany id: Company.ID) async throws -> Company
+    func details(forCompany id: Company.ID) async throws(TMDbError) -> Company
 
     ///
     /// Returns a company's alternative names.
@@ -39,7 +39,7 @@ public protocol CompanyService: Sendable {
     ///
     func alternativeNames(
         forCompany id: Company.ID
-    ) async throws -> CompanyAlternativeNameCollection
+    ) async throws(TMDbError) -> CompanyAlternativeNameCollection
 
     ///
     /// Returns a company's images (logos).
@@ -54,6 +54,6 @@ public protocol CompanyService: Sendable {
     ///
     func images(
         forCompany id: Company.ID
-    ) async throws -> CompanyImageCollection
+    ) async throws(TMDbError) -> CompanyImageCollection
 
 }

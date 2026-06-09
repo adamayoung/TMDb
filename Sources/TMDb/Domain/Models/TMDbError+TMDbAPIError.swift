@@ -52,8 +52,8 @@ extension TMDbError {
         case .decode(let error):
             self = .decode(error)
 
-        case .encode(let error):
-            self = .network(error)
+        case .encode:
+            self = .unknown
 
         case .unknown:
             self = .unknown

@@ -34,5 +34,5 @@
 ### Changes
 
 - ``changes(forPerson:startDate:endDate:page:)``
-- ``latestPerson()``
-- ``personChanges(startDate:endDate:page:)``
+- ``latest()``
+- ``changes(startDate:endDate:page:)``

@@ -20,63 +20,42 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = MovieChangesListRequest(
             startDate: startDate,
             endDate: endDate,
             page: page
         )
 
-        let result: ChangedIDCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func tvSeriesChanges(
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = TVSeriesChangesListRequest(
             startDate: startDate,
             endDate: endDate,
             page: page
         )
 
-        let result: ChangedIDCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func personChanges(
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = PersonChangesListRequest(
             startDate: startDate,
             endDate: endDate,
             page: page
         )
 
-        let result: ChangedIDCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func movieDetails(
@@ -84,7 +63,7 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = MovieChangesRequest(
             id: id,
             startDate: startDate,
@@ -92,14 +71,7 @@ final class TMDbChangesService: ChangesService {
             page: page
         )
 
-        let result: ChangeCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func tvSeriesDetails(
@@ -107,7 +79,7 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = TVSeriesChangesRequest(
             id: id,
             startDate: startDate,
@@ -115,14 +87,7 @@ final class TMDbChangesService: ChangesService {
             page: page
         )
 
-        let result: ChangeCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func personDetails(
@@ -130,7 +95,7 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = PersonChangesRequest(
             id: id,
             startDate: startDate,
@@ -138,14 +103,7 @@ final class TMDbChangesService: ChangesService {
             page: page
         )
 
-        let result: ChangeCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func tvSeasonDetails(
@@ -153,7 +111,7 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = TVSeasonChangesRequest(
             seasonID: seasonID,
             startDate: startDate,
@@ -161,14 +119,7 @@ final class TMDbChangesService: ChangesService {
             page: page
         )
 
-        let result: ChangeCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func tvEpisodeDetails(
@@ -176,7 +127,7 @@ final class TMDbChangesService: ChangesService {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = TVEpisodeChangesRequest(
             episodeID: episodeID,
             startDate: startDate,
@@ -184,14 +135,7 @@ final class TMDbChangesService: ChangesService {
             page: page
         )
 
-        let result: ChangeCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
 }

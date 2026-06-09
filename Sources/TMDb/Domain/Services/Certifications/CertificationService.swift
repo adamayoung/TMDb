@@ -23,7 +23,7 @@ public protocol CertificationService: Sendable {
     ///
     /// - Returns: A dictionary of movie certifications.
     ///
-    func movieCertifications() async throws -> [String: [Certification]]
+    func movieCertifications() async throws(TMDbError) -> [String: [Certification]]
 
     ///
     /// Returns an up to date list of the officially supported TV certifications on TMDB.
@@ -35,6 +35,6 @@ public protocol CertificationService: Sendable {
     ///
     /// - Returns: A dictionary of TV series certifications.
     ///
-    func tvSeriesCertifications() async throws -> [String: [Certification]]
+    func tvSeriesCertifications() async throws(TMDbError) -> [String: [Certification]]
 
 }

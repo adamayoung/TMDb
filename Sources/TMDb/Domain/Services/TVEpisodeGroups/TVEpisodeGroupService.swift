@@ -27,6 +27,6 @@ public protocol TVEpisodeGroupService: Sendable {
     ///
     func details(
         forTVEpisodeGroup id: TVEpisodeGroup.ID
-    ) async throws -> TVEpisodeGroup
+    ) async throws(TMDbError) -> TVEpisodeGroup
 
 }

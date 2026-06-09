@@ -33,7 +33,7 @@ metadata.
 ```swift
 // Iterate through pages with metadata
 for try await page in tmdbClient.movies.allPopularPages() {
-    print("Page \(page.page ?? 0) of \(page.totalPages ?? 0)")
+    print("Page \(page.page) of \(page.totalPages)")
     for movie in page.results {
         print("  - \(movie.title)")
     }

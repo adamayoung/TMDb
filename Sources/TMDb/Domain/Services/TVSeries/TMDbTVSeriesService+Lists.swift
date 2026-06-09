@@ -14,59 +14,38 @@ extension TMDbTVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesRecommendationsRequest(
             id: tvSeriesID, page: page, language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func similar(
         toTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = SimilarTVSeriesRequest(id: tvSeriesID, page: page, language: languageCode)
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
-    func popular(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+    func popular(page: Int? = nil, language: String? = nil) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PopularTVSeriesRequest(page: page, language: languageCode)
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func airingToday(
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesAiringTodayRequest(
             page: page,
@@ -74,21 +53,14 @@ extension TMDbTVSeriesService {
             language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func onTheAir(
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesOnTheAirRequest(
             page: page,
@@ -96,28 +68,14 @@ extension TMDbTVSeriesService {
             language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
-    func topRated(page: Int? = nil, language: String? = nil) async throws -> TVSeriesPageableList {
+    func topRated(page: Int? = nil, language: String? = nil) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TopRatedTVSeriesRequest(page: page, language: languageCode)
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
 }

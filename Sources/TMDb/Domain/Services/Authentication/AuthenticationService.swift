@@ -33,7 +33,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Returns: A guest session.
     ///
-    func guestSession() async throws -> GuestSession
+    func guestSession() async throws(TMDbError) -> GuestSession
 
     ///
     /// Creates an intermediate request token that can be used to validate a TMDb user login.
@@ -48,7 +48,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Returns: An intermediate request token.
     ///
-    func requestToken() async throws -> Token
+    func requestToken() async throws(TMDbError) -> Token
 
     ///
     /// Builds the URL used for the user to authenticate with after requesting an intermediate request token.
@@ -75,7 +75,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Returns: A TMDb session.
     ///
-    func createSession(withToken token: Token) async throws -> Session
+    func createSession(withToken token: Token) async throws(TMDbError) -> Session
 
     ///
     /// Creates a TMDb session using a user's username and password.
@@ -86,7 +86,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Returns: A TMDb session.
     ///
-    func createSession(withCredential credential: Credential) async throws -> Session
+    func createSession(withCredential credential: Credential) async throws(TMDbError) -> Session
 
     ///
     /// Creates a TMDb session from a v4 access token.
@@ -103,7 +103,7 @@ public protocol AuthenticationService: Sendable {
     ///
     /// - Returns: A TMDb session.
     ///
-    func createSession(withV4AccessToken v4AccessToken: String) async throws -> Session
+    func createSession(withV4AccessToken v4AccessToken: String) async throws(TMDbError) -> Session
 
     ///
     /// Deletes a user's session on TMDb.
@@ -115,14 +115,14 @@ public protocol AuthenticationService: Sendable {
     /// - Returns: Whether or not the session was successfully deleted.
     ///
     @discardableResult
-    func deleteSession(_ session: Session) async throws -> Bool
+    func deleteSession(_ session: Session) async throws(TMDbError) -> Bool
 
     ///
     /// Validates the configured API key.
     ///
     /// - Returns: Whether or not the API key is valid.
     ///
-    func validateKey() async throws -> Bool
+    func validateKey() async throws(TMDbError) -> Bool
 
 }
 

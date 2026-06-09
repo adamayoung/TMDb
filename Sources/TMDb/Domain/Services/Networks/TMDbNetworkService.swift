@@ -16,41 +16,26 @@ final class TMDbNetworkService: NetworkService {
         self.apiClient = apiClient
     }
 
-    func details(forNetwork id: Network.ID) async throws -> Network {
+    func details(forNetwork id: Network.ID) async throws(TMDbError) -> Network {
         let request = NetworkRequest(id: id)
 
-        let network: Network
-        do {
-            network = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return network
+        return try await apiClient.perform(request)
     }
 
-    func alternativeNames(forNetwork id: Network.ID) async throws -> [NetworkAlternativeName] {
+    func alternativeNames(
+        forNetwork id: Network.ID
+    ) async throws(TMDbError) -> [NetworkAlternativeName] {
         let request = NetworkAlternativeNamesRequest(id: id)
 
-        let result: NetworkAlternativeNamesResponse
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: NetworkAlternativeNamesResponse = try await apiClient.perform(request)
 
         return result.results
     }
 
-    func images(forNetwork id: Network.ID) async throws -> [NetworkLogo] {
+    func images(forNetwork id: Network.ID) async throws(TMDbError) -> [NetworkLogo] {
         let request = NetworkImagesRequest(id: id)
 
-        let result: NetworkLogosResponse
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: NetworkLogosResponse = try await apiClient.perform(request)
 
         return result.logos
     }

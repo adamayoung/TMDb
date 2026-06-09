@@ -13,7 +13,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Features
 
-* **Comprehensive API Coverage**: Full support for TMDb API v3 with 25
+* **Comprehensive API Coverage**: Full support for TMDb API v3 with 26
   specialized services
 * **Append to Response**: Fetch details with credits, images, videos,
   and more in a single request using `append_to_response`
@@ -108,7 +108,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "14.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "18.0.0")
   ],
 
   targets: [
@@ -144,8 +144,12 @@ let popularMovies = try await tmdbClient.discover.movies(
 // Get movie details
 let fightClub = try await tmdbClient.movies.details(forMovie: 550)
 print("Title: \(fightClub.title)")
-print("Release Date: \(fightClub.releaseDate)")
-print("Rating: \(fightClub.voteAverage)/10")
+if let releaseDate = fightClub.releaseDate {
+    print("Release Date: \(releaseDate.formatted(.dateTime.year().month().day()))")
+}
+if let voteAverage = fightClub.voteAverage {
+    print("Rating: \(voteAverage.formatted(.voteAveragePercentage))")
+}
 
 // Search across movies, TV shows, and people
 let searchResults = try await tmdbClient.search.multi(query: "Breaking Bad")
@@ -330,15 +334,35 @@ paginated endpoints with 64 auto-pagination methods.
 
 ### User Account Features (Authentication Required)
 
+Account features require an authenticated `Session`. Create one with the
+`AuthenticationService`, then read the account ID from the user's details:
+
 ```swift
-// Add to favorites
-try await tmdbClient.account.addToFavourites(movie: movieId, accountId: accountId)
+// Authenticate the user and create a session
+let token = try await tmdbClient.authentication.requestToken()
+let authURL = tmdbClient.authentication.authenticateURL(for: token)
+// Present authURL to the user to approve the token, then:
+let session = try await tmdbClient.authentication.createSession(withToken: token)
+
+// Get the account ID
+let accountDetails = try await tmdbClient.account.details(session: session)
+let accountID = accountDetails.id
+
+// Add a movie to favourites
+try await tmdbClient.account.addFavourite(
+    movie: movieID,
+    accountID: accountID,
+    session: session
+)
 
 // Rate a movie
-try await tmdbClient.movies.addRating(8.5, toMovie: movieId)
+try await tmdbClient.movies.addRating(8.5, toMovie: movieID, session: session)
 
-// Get watchlist
-let watchlist = try await tmdbClient.account.movieWatchlist(accountId: accountId)
+// Get the movie watchlist
+let watchlist = try await tmdbClient.account.movieWatchlist(
+    accountID: accountID,
+    session: session
+)
 ```
 
 ## Documentation

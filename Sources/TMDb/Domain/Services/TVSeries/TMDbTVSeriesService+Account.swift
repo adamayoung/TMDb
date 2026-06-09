@@ -10,25 +10,18 @@ import Foundation
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 extension TMDbTVSeriesService {
 
-    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws(TMDbError)
     -> AccountStates {
         let request = TVSeriesAccountStatesRequest(id: tvSeriesID, sessionID: session.sessionID)
 
-        let accountStates: AccountStates
-        do {
-            accountStates = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return accountStates
+        return try await apiClient.perform(request)
     }
 
     func addRating(
         _ rating: Double,
         toTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws {
+    ) async throws(TMDbError) {
         guard (0.5 ... 10.0).contains(rating), rating.truncatingRemainder(dividingBy: 0.5) == 0 else {
             throw TMDbError.invalidRating
         }
@@ -39,21 +32,13 @@ extension TMDbTVSeriesService {
             sessionID: session.sessionID
         )
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
-    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws {
+    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws(TMDbError) {
         let request = TVSeriesDeleteRatingRequest(tvSeriesID: tvSeriesID, sessionID: session.sessionID)
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
 }

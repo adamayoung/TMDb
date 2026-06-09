@@ -13,33 +13,19 @@ extension TMDbTVSeriesService {
     func images(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesImageFilter? = nil
-    ) async throws -> ImageCollection {
+    ) async throws(TMDbError) -> ImageCollection {
         let request = TVSeriesImagesRequest(id: tvSeriesID, languages: filter?.languages)
 
-        let imageCollection: ImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
+        return try await apiClient.perform(request)
     }
 
     func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         let request = TVSeriesVideosRequest(id: tvSeriesID, languages: filter?.languages)
 
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
+        return try await apiClient.perform(request)
     }
 
 }

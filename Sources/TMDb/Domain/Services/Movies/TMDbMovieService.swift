@@ -7,8 +7,6 @@
 
 import Foundation
 
-// swiftlint:disable file_length type_body_length
-
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 final class TMDbMovieService: MovieService {
 
@@ -20,25 +18,18 @@ final class TMDbMovieService: MovieService {
         self.configuration = configuration
     }
 
-    func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
+    func details(forMovie id: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieRequest(id: id, language: languageCode)
 
-        let movie: Movie
-        do {
-            movie = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movie
+        return try await apiClient.perform(request)
     }
 
     func details(
         forMovie id: Movie.ID,
         appending: MovieAppendOption,
         language: String? = nil
-    ) async throws -> MovieDetailsResponse {
+    ) async throws(TMDbError) -> MovieDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieDetailsAppendRequest(
             id: id,
@@ -46,315 +37,203 @@ final class TMDbMovieService: MovieService {
             language: languageCode
         )
 
-        let response: MovieDetailsResponse
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return response
+        return try await apiClient.perform(request)
     }
 
-    func credits(forMovie movieID: Movie.ID, language: String? = nil) async throws -> ShowCredits {
+    func credits(
+        forMovie movieID: Movie.ID,
+        language: String? = nil
+    ) async throws(TMDbError) -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieCreditsRequest(id: movieID, language: languageCode)
 
-        let credits: ShowCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func reviews(
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> ReviewPageableList {
+    ) async throws(TMDbError) -> ReviewPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieReviewsRequest(id: movieID, page: page, language: languageCode)
 
-        let reviewList: ReviewPageableList
-        do {
-            reviewList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return reviewList
+        return try await apiClient.perform(request)
     }
 
-    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws(TMDbError)
     -> ImageCollection {
         let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
-        let imageCollection: ImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
+        return try await apiClient.perform(request)
     }
 
-    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws(TMDbError)
     -> VideoCollection {
         let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
+        return try await apiClient.perform(request)
     }
 
     func recommendations(
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieRecommendationsRequest(id: movieID, page: page, language: languageCode)
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func similar(
         toMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = SimilarMoviesRequest(id: movieID, page: page, language: languageCode)
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func nowPlaying(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = MoviesNowPlayingRequest(
             page: page, country: countryCode, language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func popular(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = PopularMoviesRequest(page: page, country: countryCode, language: languageCode)
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func topRated(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = TopRatedMoviesRequest(
             page: page, country: countryCode, language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func upcoming(
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let countryCode = country ?? configuration.defaultCountry
         let request = UpcomingMoviesRequest(
             page: page, country: countryCode, language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
-    func watchProviders(forMovie movieID: Movie.ID) async throws -> [ShowWatchProvidersByCountry] {
+    func watchProviders(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry] {
         let request = MovieWatchProvidersRequest(id: movieID)
 
-        let result: ShowWatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: ShowWatchProviderResult = try await apiClient.perform(request)
 
         return result.results
             .map { ShowWatchProvidersByCountry(countryCode: $0.key, watchProviders: $0.value) }
             .sorted { $0.countryCode < $1.countryCode }
     }
 
-    func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection {
+    func externalLinks(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> MovieExternalLinksCollection {
         let request = MovieExternalLinksRequest(id: movieID)
 
-        let linksCollection: MovieExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return linksCollection
+        return try await apiClient.perform(request)
     }
 
-    func releaseDates(forMovie movieID: Movie.ID) async throws -> [MovieReleaseDatesByCountry] {
+    func releaseDates(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> [MovieReleaseDatesByCountry] {
         let request = MovieReleaseDatesRequest(id: movieID)
 
-        let result: MovieReleaseDatesResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: MovieReleaseDatesResult = try await apiClient.perform(request)
 
         return result.results
     }
 
-    func accountStates(forMovie movieID: Movie.ID, session: Session) async throws -> AccountStates {
+    func accountStates(
+        forMovie movieID: Movie.ID,
+        session: Session
+    ) async throws(TMDbError) -> AccountStates {
         let request = MovieAccountStatesRequest(id: movieID, sessionID: session.sessionID)
 
-        let accountStates: AccountStates
-        do {
-            accountStates = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return accountStates
+        return try await apiClient.perform(request)
     }
 
-    func addRating(_ rating: Double, toMovie movieID: Movie.ID, session: Session) async throws {
+    func addRating(
+        _ rating: Double,
+        toMovie movieID: Movie.ID,
+        session: Session
+    ) async throws(TMDbError) {
         let request = AddMovieRatingRequest(rating: rating, movieID: movieID, sessionID: session.sessionID)
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
-    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws {
+    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws(TMDbError) {
         let request = DeleteMovieRatingRequest(movieID: movieID, sessionID: session.sessionID)
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
     func alternativeTitles(
         forMovie movieID: Movie.ID,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> AlternativeTitleCollection {
+    ) async throws(TMDbError) -> AlternativeTitleCollection {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieAlternativeTitlesRequest(id: movieID, country: country, language: languageCode)
 
-        let alternativeTitleCollection: AlternativeTitleCollection
-        do {
-            alternativeTitleCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return alternativeTitleCollection
+        return try await apiClient.perform(request)
     }
 
-    func translations(forMovie movieID: Movie.ID) async throws -> TranslationCollection<MovieTranslationData> {
+    func translations(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> TranslationCollection<MovieTranslationData> {
         let request = MovieTranslationsRequest(id: movieID)
 
-        let translationCollection: TranslationCollection<MovieTranslationData>
-        do {
-            translationCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
+        return try await apiClient.perform(request)
     }
 
     func lists(
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaListSummaryPageableList {
+    ) async throws(TMDbError) -> MediaListSummaryPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieListsRequest(id: movieID, page: page, language: languageCode)
 
-        let mediaList: MediaListSummaryPageableList
-        do {
-            mediaList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return mediaList
+        return try await apiClient.perform(request)
     }
 
     func changes(
@@ -362,62 +241,34 @@ final class TMDbMovieService: MovieService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = MovieChangesRequest(id: movieID, startDate: startDate, endDate: endDate, page: page)
 
-        let changeCollection: ChangeCollection
-        do {
-            changeCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changeCollection
+        return try await apiClient.perform(request)
     }
 
-    func latest() async throws -> Movie {
+    func latest() async throws(TMDbError) -> Movie {
         let request = LatestMovieRequest()
 
-        let movie: Movie
-        do {
-            movie = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movie
+        return try await apiClient.perform(request)
     }
 
     func changes(
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = MovieChangesListRequest(startDate: startDate, endDate: endDate, page: page)
 
-        let changedIDCollection: ChangedIDCollection
-        do {
-            changedIDCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changedIDCollection
+        return try await apiClient.perform(request)
     }
 
-    func keywords(forMovie movieID: Movie.ID) async throws -> KeywordCollection {
+    func keywords(forMovie movieID: Movie.ID) async throws(TMDbError) -> KeywordCollection {
         let request = MovieKeywordsRequest(id: movieID)
 
-        let response: MovieKeywordsResponse
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let response: MovieKeywordsResponse = try await apiClient.perform(request)
 
         return response.keywordCollection
     }
 
 }
-
-// swiftlint:enable file_length type_body_length

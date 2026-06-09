@@ -23,7 +23,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVEpisode {
+    ) async throws(TMDbError) -> TVEpisode {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeRequest(
             episodeNumber: episodeNumber,
@@ -32,14 +32,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
             language: languageCode
         )
 
-        let episode: TVEpisode
-        do {
-            episode = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return episode
+        return try await apiClient.perform(request)
     }
 
     func details(
@@ -48,7 +41,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVEpisodeAppendOption,
         language: String? = nil
-    ) async throws -> TVEpisodeDetailsResponse {
+    ) async throws(TMDbError) -> TVEpisodeDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeDetailsAppendRequest(
             tvSeriesID: tvSeriesID,
@@ -58,14 +51,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
             language: languageCode
         )
 
-        let response: TVEpisodeDetailsResponse
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return response
+        return try await apiClient.perform(request)
     }
 
     func credits(
@@ -73,7 +59,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> ShowCredits {
+    ) async throws(TMDbError) -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeCreditsRequest(
             episodeNumber: episodeNumber,
@@ -82,14 +68,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
             language: languageCode
         )
 
-        let credits: ShowCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func images(
@@ -97,7 +76,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeImageFilter? = nil
-    ) async throws -> TVEpisodeImageCollection {
+    ) async throws(TMDbError) -> TVEpisodeImageCollection {
         let request = TVEpisodeImagesRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
@@ -105,14 +84,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
             languages: filter?.languages
         )
 
-        let imageCollection: TVEpisodeImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
+        return try await apiClient.perform(request)
     }
 
     func videos(
@@ -120,7 +92,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         let request = TVEpisodeVideosRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
@@ -128,14 +100,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
             languages: filter?.languages
         )
 
-        let videoCollection: VideoCollection
-        do {
-            videoCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return videoCollection
+        return try await apiClient.perform(request)
     }
 
 }

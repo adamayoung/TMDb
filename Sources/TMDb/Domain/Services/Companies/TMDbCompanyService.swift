@@ -16,47 +16,26 @@ final class TMDbCompanyService: CompanyService {
         self.apiClient = apiClient
     }
 
-    func details(forCompany id: Company.ID) async throws -> Company {
+    func details(forCompany id: Company.ID) async throws(TMDbError) -> Company {
         let request = CompanyDetailsRequest(id: id)
 
-        let company: Company
-        do {
-            company = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return company
+        return try await apiClient.perform(request)
     }
 
     func alternativeNames(
         forCompany id: Company.ID
-    ) async throws -> CompanyAlternativeNameCollection {
+    ) async throws(TMDbError) -> CompanyAlternativeNameCollection {
         let request = CompanyAlternativeNamesRequest(id: id)
 
-        let result: CompanyAlternativeNameCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
     func images(
         forCompany id: Company.ID
-    ) async throws -> CompanyImageCollection {
+    ) async throws(TMDbError) -> CompanyImageCollection {
         let request = CompanyImagesRequest(id: id)
 
-        let result: CompanyImageCollection
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
 }

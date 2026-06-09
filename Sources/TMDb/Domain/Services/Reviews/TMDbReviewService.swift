@@ -18,17 +18,10 @@ final class TMDbReviewService: ReviewService {
 
     func details(
         forReview id: Review.ID
-    ) async throws -> Review {
+    ) async throws(TMDbError) -> Review {
         let request = ReviewRequest(id: id)
 
-        let review: Review
-        do {
-            review = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return review
+        return try await apiClient.perform(request)
     }
 
 }

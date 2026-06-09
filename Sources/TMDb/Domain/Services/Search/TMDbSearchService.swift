@@ -23,7 +23,7 @@ final class TMDbSearchService: SearchService {
         filter: AllMediaSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaPageableList {
+    ) async throws(TMDbError) -> MediaPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MultiSearchRequest(
             query: query,
@@ -32,14 +32,7 @@ final class TMDbSearchService: SearchService {
             language: languageCode
         )
 
-        let mediaList: MediaPageableList
-        do {
-            mediaList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return mediaList
+        return try await apiClient.perform(request)
     }
 
     func searchMovies(
@@ -47,7 +40,7 @@ final class TMDbSearchService: SearchService {
         filter: MovieSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieSearchRequest(
             query: query,
@@ -59,14 +52,7 @@ final class TMDbSearchService: SearchService {
             language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func searchTVSeries(
@@ -74,7 +60,7 @@ final class TMDbSearchService: SearchService {
         filter: TVSeriesSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesSearchRequest(
             query: query,
@@ -85,14 +71,7 @@ final class TMDbSearchService: SearchService {
             language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func searchPeople(
@@ -100,7 +79,7 @@ final class TMDbSearchService: SearchService {
         filter: PersonSearchFilter? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> PersonPageableList {
+    ) async throws(TMDbError) -> PersonPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonSearchRequest(
             query: query,
@@ -109,21 +88,14 @@ final class TMDbSearchService: SearchService {
             language: languageCode
         )
 
-        let peopleList: PersonPageableList
-        do {
-            peopleList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return peopleList
+        return try await apiClient.perform(request)
     }
 
     func searchCollections(
         query: String,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> CollectionPageableList {
+    ) async throws(TMDbError) -> CollectionPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = CollectionSearchRequest(
             query: query,
@@ -131,52 +103,31 @@ final class TMDbSearchService: SearchService {
             language: languageCode
         )
 
-        let collectionList: CollectionPageableList
-        do {
-            collectionList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return collectionList
+        return try await apiClient.perform(request)
     }
 
     func searchCompanies(
         query: String,
         page: Int? = nil
-    ) async throws -> CompanyPageableList {
+    ) async throws(TMDbError) -> CompanyPageableList {
         let request = CompanySearchRequest(
             query: query,
             page: page
         )
 
-        let companyList: CompanyPageableList
-        do {
-            companyList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return companyList
+        return try await apiClient.perform(request)
     }
 
     func searchKeywords(
         query: String,
         page: Int? = nil
-    ) async throws -> KeywordPageableList {
+    ) async throws(TMDbError) -> KeywordPageableList {
         let request = KeywordSearchRequest(
             query: query,
             page: page
         )
 
-        let keywordList: KeywordPageableList
-        do {
-            keywordList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return keywordList
+        return try await apiClient.perform(request)
     }
 
 }

@@ -36,7 +36,7 @@ public protocol FindService: Sendable {
         externalID: String,
         externalSource: ExternalSource,
         language: String?
-    ) async throws -> FindResults
+    ) async throws(TMDbError) -> FindResults
 
 }
 
@@ -65,7 +65,7 @@ public extension FindService {
         externalID: String,
         externalSource: ExternalSource,
         language: String? = nil
-    ) async throws -> FindResults {
+    ) async throws(TMDbError) -> FindResults {
         try await find(externalID: externalID, externalSource: externalSource, language: language)
     }
 

@@ -13,19 +13,12 @@ extension TMDbPersonService {
     func taggedImages(
         forPerson personID: Person.ID,
         page: Int? = nil
-    ) async throws -> TaggedImagePageableList {
+    ) async throws(TMDbError) -> TaggedImagePageableList {
         let request = PersonTaggedImagesRequest(
             id: personID, page: page
         )
 
-        let taggedImageList: TaggedImagePageableList
-        do {
-            taggedImageList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return taggedImageList
+        return try await apiClient.perform(request)
     }
 
 }

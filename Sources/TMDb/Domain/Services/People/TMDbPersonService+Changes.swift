@@ -15,7 +15,7 @@ extension TMDbPersonService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = PersonChangesRequest(
             id: personID,
             startDate: startDate,
@@ -23,49 +23,27 @@ extension TMDbPersonService {
             page: page
         )
 
-        let changeCollection: ChangeCollection
-        do {
-            changeCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changeCollection
+        return try await apiClient.perform(request)
     }
 
-    func latestPerson() async throws -> Person {
+    func latest() async throws(TMDbError) -> Person {
         let request = LatestPersonRequest()
 
-        let person: Person
-        do {
-            person = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return person
+        return try await apiClient.perform(request)
     }
 
-    func personChanges(
+    func changes(
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = PersonChangesListRequest(
             startDate: startDate,
             endDate: endDate,
             page: page
         )
 
-        let changedIDCollection: ChangedIDCollection
-        do {
-            changedIDCollection = try await apiClient
-                .perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changedIDCollection
+        return try await apiClient.perform(request)
     }
 
 }

@@ -21,30 +21,16 @@ final class TMDbAuthenticationService: AuthenticationService {
         self.authenticateURLBuilder = authenticateURLBuilder
     }
 
-    func guestSession() async throws -> GuestSession {
+    func guestSession() async throws(TMDbError) -> GuestSession {
         let request = CreateGuestSessionRequest()
 
-        let session: GuestSession
-        do {
-            session = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return session
+        return try await apiClient.perform(request)
     }
 
-    func requestToken() async throws -> Token {
+    func requestToken() async throws(TMDbError) -> Token {
         let request = CreateRequestTokenRequest()
 
-        let token: Token
-        do {
-            token = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return token
+        return try await apiClient.perform(request)
     }
 
     func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
@@ -53,35 +39,21 @@ final class TMDbAuthenticationService: AuthenticationService {
         )
     }
 
-    func createSession(withToken token: Token) async throws -> Session {
+    func createSession(withToken token: Token) async throws(TMDbError) -> Session {
         let request = CreateSessionRequest(requestToken: token.requestToken)
 
-        let session: Session
-        do {
-            session = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return session
+        return try await apiClient.perform(request)
     }
 
-    func createSession(withV4AccessToken v4AccessToken: String) async throws -> Session {
+    func createSession(withV4AccessToken v4AccessToken: String) async throws(TMDbError) -> Session {
         let request = CreateSessionFromV4AccessTokenRequest(
             accessToken: v4AccessToken
         )
 
-        let session: Session
-        do {
-            session = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return session
+        return try await apiClient.perform(request)
     }
 
-    func createSession(withCredential credential: Credential) async throws -> Session {
+    func createSession(withCredential credential: Credential) async throws(TMDbError) -> Session {
         let token = try await requestToken()
 
         let request = ValidateTokenWithLoginRequest(
@@ -90,41 +62,22 @@ final class TMDbAuthenticationService: AuthenticationService {
             requestToken: token.requestToken
         )
 
-        let validatedToken: Token
-        do {
-            validatedToken = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let validatedToken = try await apiClient.perform(request)
 
         return try await createSession(withToken: validatedToken)
     }
 
     @discardableResult
-    func deleteSession(_ session: Session) async throws -> Bool {
+    func deleteSession(_ session: Session) async throws(TMDbError) -> Bool {
         let request = DeleteSessionRequest(sessionID: session.sessionID)
 
-        let result: SuccessResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.success
+        return try await apiClient.perform(request).success
     }
 
-    func validateKey() async throws -> Bool {
+    func validateKey() async throws(TMDbError) -> Bool {
         let request = ValidateKeyRequest()
 
-        let result: SuccessResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result.success
+        return try await apiClient.perform(request).success
     }
 
 }

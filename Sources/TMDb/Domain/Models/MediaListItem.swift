@@ -194,12 +194,15 @@ extension MediaListItem {
         self.hasVideo = try container.decodeIfPresent(Bool.self, forKey: .hasVideo)
         self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
 
-        // Handle empty release_date strings - decode as nil
+        // Handle empty release_date strings - decode as nil.
+        // Day-precision dates (e.g. "2025-04-30") are parsed at GMT midnight; an
+        // unparseable string decodes as nil, mirroring the previous behaviour.
         if let releaseDateString = try container.decodeIfPresent(String.self, forKey: .releaseDate),
            !releaseDateString.isEmpty {
-            let dateFormatter = ISO8601DateFormatter()
-            dateFormatter.formatOptions = [.withFullDate]
-            self.releaseDate = dateFormatter.date(from: releaseDateString)
+            self.releaseDate = try? Date(
+                releaseDateString,
+                strategy: .iso8601.year().month().day().dateSeparator(.dash)
+            )
         } else {
             self.releaseDate = nil
         }

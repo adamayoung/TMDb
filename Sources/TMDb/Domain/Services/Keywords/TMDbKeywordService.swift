@@ -16,31 +16,20 @@ final class TMDbKeywordService: KeywordService {
         self.apiClient = apiClient
     }
 
-    func details(forKeyword id: Keyword.ID) async throws -> Keyword {
+    func details(forKeyword id: Keyword.ID) async throws(TMDbError) -> Keyword {
         let request = KeywordRequest(id: id)
 
-        let keyword: Keyword
-        do {
-            keyword = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return keyword
+        return try await apiClient.perform(request)
     }
 
-    func movies(forKeyword keywordID: Keyword.ID, page: Int?, language: String?) async throws
-    -> MoviePageableList {
+    func movies(
+        forKeyword keywordID: Keyword.ID,
+        page: Int?,
+        language: String?
+    ) async throws(TMDbError) -> MoviePageableList {
         let request = KeywordMoviesRequest(id: keywordID, page: page, language: language)
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
 }

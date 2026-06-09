@@ -12,135 +12,76 @@ extension TMDbTVSeriesService {
 
     func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> [ShowWatchProvidersByCountry] {
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry] {
         let request = TVSeriesWatchProvidersRequest(id: tvSeriesID)
 
-        let result: ShowWatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: ShowWatchProviderResult = try await apiClient.perform(request)
 
         return result.results
             .map { ShowWatchProvidersByCountry(countryCode: $0.key, watchProviders: $0.value) }
             .sorted { $0.countryCode < $1.countryCode }
     }
 
-    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating] {
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError) -> [ContentRating] {
         let request = ContentRatingRequest(id: tvSeriesID)
 
-        let result: ContentRatingResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: ContentRatingResult = try await apiClient.perform(request)
 
         return result.results
     }
 
-    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    func externalLinks(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError)
     -> TVSeriesExternalLinksCollection {
         let request = TVSeriesExternalLinksRequest(id: tvSeriesID)
 
-        let linksCollection: TVSeriesExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return linksCollection
+        return try await apiClient.perform(request)
     }
 
-    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws -> KeywordCollection {
+    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError) -> KeywordCollection {
         let request = TVSeriesKeywordsRequest(id: tvSeriesID)
 
-        let keywordCollection: KeywordCollection
-        do {
-            keywordCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return keywordCollection
+        return try await apiClient.perform(request)
     }
 
-    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError)
     -> AlternativeTitleCollection {
         let request = TVSeriesAlternativeTitlesRequest(id: tvSeriesID)
 
-        let alternativeTitleCollection: AlternativeTitleCollection
-        do {
-            alternativeTitleCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return alternativeTitleCollection
+        return try await apiClient.perform(request)
     }
 
-    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError)
     -> TranslationCollection<TVSeriesTranslationData> {
         let request = TVSeriesTranslationsRequest(id: tvSeriesID)
 
-        let translationCollection: TranslationCollection<TVSeriesTranslationData>
-        do {
-            translationCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
+        return try await apiClient.perform(request)
     }
 
     func lists(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaListSummaryPageableList {
+    ) async throws(TMDbError) -> MediaListSummaryPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesListsRequest(id: tvSeriesID, page: page, language: languageCode)
 
-        let mediaList: MediaListSummaryPageableList
-        do {
-            mediaList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return mediaList
+        return try await apiClient.perform(request)
     }
 
     func screenedTheatrically(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> ScreenedTheatricallyCollection {
+    ) async throws(TMDbError) -> ScreenedTheatricallyCollection {
         let request = TVSeriesScreenedTheatricallyRequest(id: tvSeriesID)
 
-        let collection: ScreenedTheatricallyCollection
-        do {
-            collection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return collection
+        return try await apiClient.perform(request)
     }
 
     func episodeGroups(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVEpisodeGroupCollection {
+    ) async throws(TMDbError) -> TVEpisodeGroupCollection {
         let request = TVSeriesEpisodeGroupsRequest(id: tvSeriesID)
 
-        let collection: TVEpisodeGroupCollection
-        do {
-            collection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return collection
+        return try await apiClient.perform(request)
     }
 
 }

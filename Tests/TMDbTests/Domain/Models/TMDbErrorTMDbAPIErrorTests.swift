@@ -190,14 +190,14 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .badRequest("Invalid URL: \(url)"))
     }
 
-    @Test("init when error is a TMDbAPIError.encode returns network error")
-    func initWithEncodeTMDbAPIErrorReturnsNetworkError() {
+    @Test("init when error is a TMDbAPIError.encode returns unknown error")
+    func initWithEncodeTMDbAPIErrorReturnsUnknownError() {
         let encodeError = NSError(domain: "encode", code: -1)
         let error = TMDbAPIError.encode(encodeError)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .network(encodeError))
+        #expect(tmdbError == .unknown)
     }
 
 }

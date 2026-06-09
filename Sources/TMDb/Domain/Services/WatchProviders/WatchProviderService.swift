@@ -26,7 +26,7 @@ public protocol WatchProviderService: Sendable {
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     ///
-    func countries(language: String?) async throws -> [Country]
+    func countries(language: String?) async throws(TMDbError) -> [Country]
 
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
@@ -46,7 +46,7 @@ public protocol WatchProviderService: Sendable {
     func movieWatchProviders(
         filter: WatchProviderFilter?,
         language: String?
-    ) async throws -> [WatchProvider]
+    ) async throws(TMDbError) -> [WatchProvider]
 
     ///
     /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV series.
@@ -65,7 +65,7 @@ public protocol WatchProviderService: Sendable {
     func tvSeriesWatchProviders(
         filter: WatchProviderFilter?,
         language: String?
-    ) async throws -> [WatchProvider]
+    ) async throws(TMDbError) -> [WatchProvider]
 
 }
 
@@ -84,7 +84,7 @@ public extension WatchProviderService {
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     ///
-    func countries(language: String? = nil) async throws -> [Country] {
+    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
         try await countries(language: language)
     }
 
@@ -106,7 +106,7 @@ public extension WatchProviderService {
     func movieWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
-    ) async throws -> [WatchProvider] {
+    ) async throws(TMDbError) -> [WatchProvider] {
         try await movieWatchProviders(filter: filter, language: language)
     }
 
@@ -127,7 +127,7 @@ public extension WatchProviderService {
     func tvSeriesWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
-    ) async throws -> [WatchProvider] {
+    ) async throws(TMDbError) -> [WatchProvider] {
         try await tvSeriesWatchProviders(filter: filter, language: language)
     }
 

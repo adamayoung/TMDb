@@ -18,6 +18,13 @@ final class RetryHTTPClient: HTTPClient, Sendable {
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
+        // Only retry idempotent methods. Retrying a non-idempotent mutation
+        // (e.g. a POST that adds to a list or rates an item) risks
+        // double-applying it server-side, so perform it exactly once.
+        guard request.method.isIdempotent else {
+            return try await httpClient.perform(request: request)
+        }
+
         for attempt in 0 ..< configuration.maxRetries {
             let response: HTTPResponse
             do {
@@ -125,6 +132,25 @@ extension RetryHTTPClient {
         let jitteredSeconds = Double.random(in: 0 ... cappedSeconds)
 
         try await Task.sleep(for: .seconds(jitteredSeconds))
+    }
+
+}
+
+private extension HTTPRequest.Method {
+
+    /// Whether the HTTP method is idempotent and therefore safe to retry.
+    ///
+    /// Repeating an idempotent request has the same effect as making it once,
+    /// so failed or transient responses can be retried without risk. Mutating
+    /// methods such as `POST` are not idempotent and must never be retried.
+    var isIdempotent: Bool {
+        switch self {
+        case .get, .delete:
+            true
+
+        case .post:
+            false
+        }
     }
 
 }

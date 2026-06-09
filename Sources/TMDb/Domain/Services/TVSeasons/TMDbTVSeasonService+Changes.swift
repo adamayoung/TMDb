@@ -15,7 +15,7 @@ extension TMDbTVSeasonService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = TVSeasonChangesRequest(
             seasonID: seasonID,
             startDate: startDate,
@@ -23,16 +23,7 @@ extension TMDbTVSeasonService {
             page: page
         )
 
-        let changeCollection: ChangeCollection
-        do {
-            changeCollection = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changeCollection
+        return try await apiClient.perform(request)
     }
 
 }

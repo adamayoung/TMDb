@@ -187,7 +187,7 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        let page = try #require(ratedMoviesList.page)
+        let page = ratedMoviesList.page
         #expect(page >= 1)
         #expect(ratedMoviesList.results.isEmpty)
     }
@@ -201,7 +201,7 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        let page = try #require(ratedTVSeriesList.page)
+        let page = ratedTVSeriesList.page
         #expect(page >= 1)
         #expect(ratedTVSeriesList.results.isEmpty)
     }
@@ -215,7 +215,7 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        let page = try #require(ratedTVEpisodesList.page)
+        let page = ratedTVEpisodesList.page
         #expect(page >= 1)
         #expect(ratedTVEpisodesList.results.isEmpty)
     }
@@ -229,7 +229,7 @@ final class AccountIntegrationTests {
             session: session
         )
 
-        let page = try #require(listsList.page)
+        let page = listsList.page
         #expect(page >= 1)
         #expect(listsList.results.isEmpty)
     }

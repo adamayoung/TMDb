@@ -23,7 +23,7 @@ final class TMDbDiscoverService: DiscoverService {
         sortedBy: MovieSort? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = DiscoverMoviesRequest(
             filter: filter,
@@ -32,14 +32,7 @@ final class TMDbDiscoverService: DiscoverService {
             language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func tvSeries(
@@ -47,7 +40,7 @@ final class TMDbDiscoverService: DiscoverService {
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = DiscoverTVSeriesRequest(
             filter: filter,
@@ -56,14 +49,7 @@ final class TMDbDiscoverService: DiscoverService {
             language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
 }

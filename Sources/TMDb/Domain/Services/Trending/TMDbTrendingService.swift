@@ -22,80 +22,52 @@ final class TMDbTrendingService: TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TrendingMoviesRequest(
             timeWindow: timeWindow, page: page, language: languageCode
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func tvSeries(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TrendingTVSeriesRequest(
             timeWindow: timeWindow, page: page, language: languageCode
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func people(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> PersonPageableList {
+    ) async throws(TMDbError) -> PersonPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TrendingPeopleRequest(
             timeWindow: timeWindow, page: page, language: languageCode
         )
 
-        let peopleList: PersonPageableList
-        do {
-            peopleList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return peopleList
+        return try await apiClient.perform(request)
     }
 
     func allTrending(
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TrendingPageableList {
+    ) async throws(TMDbError) -> TrendingPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TrendingAllRequest(
             timeWindow: timeWindow, page: page, language: languageCode
         )
 
-        let trendingList: TrendingPageableList
-        do {
-            trendingList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return trendingList
+        return try await apiClient.perform(request)
     }
 
 }

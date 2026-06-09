@@ -12,19 +12,10 @@ extension TMDbPersonService {
 
     func translations(
         forPerson personID: Person.ID
-    ) async throws -> TranslationCollection<PersonTranslationData> {
+    ) async throws(TMDbError) -> TranslationCollection<PersonTranslationData> {
         let request = PersonTranslationsRequest(id: personID)
 
-        let translationCollection:
-            TranslationCollection<PersonTranslationData>
-        do {
-            translationCollection = try await apiClient
-                .perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
+        return try await apiClient.perform(request)
     }
 
 }
