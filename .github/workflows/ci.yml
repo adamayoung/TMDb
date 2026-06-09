@@ -60,6 +60,10 @@ jobs:
       }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      # Pin lint tool versions so CI matches local `make lint` exactly and does
+      # not drift when Homebrew publishes a new release.
+      SWIFTLINT_VERSION: 0.63.2
+      SWIFTFORMAT_VERSION: 0.61.1
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
@@ -71,7 +75,21 @@ jobs:
 
       - name: Install SwiftLint and SwiftFormat
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: brew install swiftlint swiftformat
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/lint-bin"
+
+          curl -fsSL "https://github.com/realm/SwiftLint/releases/download/${SWIFTLINT_VERSION}/portable_swiftlint.zip" -o "${RUNNER_TEMP}/swiftlint.zip"
+          unzip -oq "${RUNNER_TEMP}/swiftlint.zip" -d "${RUNNER_TEMP}/swiftlint"
+          install "$(find "${RUNNER_TEMP}/swiftlint" -name swiftlint -type f | head -1)" "${RUNNER_TEMP}/lint-bin/swiftlint"
+
+          curl -fsSL "https://github.com/nicklockwood/SwiftFormat/releases/download/${SWIFTFORMAT_VERSION}/swiftformat.zip" -o "${RUNNER_TEMP}/swiftformat.zip"
+          unzip -oq "${RUNNER_TEMP}/swiftformat.zip" -d "${RUNNER_TEMP}/swiftformat"
+          install "$(find "${RUNNER_TEMP}/swiftformat" -name swiftformat -type f | head -1)" "${RUNNER_TEMP}/lint-bin/swiftformat"
+
+          echo "${RUNNER_TEMP}/lint-bin" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/lint-bin/swiftlint" version
+          "${RUNNER_TEMP}/lint-bin/swiftformat" --version
 
       - name: SwiftLint
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
