@@ -13,8 +13,11 @@ default.profraw
 junit-swift-testing.xml
 
 # Claude
+.claude/settings.json
 .claude/settings.local.json
+.claude/hooks.json
 .claude/scheduled_tasks.lock
+.mcp.json
 
 # Git worktrees
 .worktrees/
