@@ -118,21 +118,27 @@ for:
 
 ## Build and Test Tooling
 
-### When Xcode MCP is Available
+### When Running Inside Xcode (via Claude Agent)
 
-**ALWAYS prefer Xcode MCP tools** (`mcp__xcode__*`) when available:
+Use **`xcode-tools` MCP server tools** — the native Xcode–Claude Agent
+integration. Do **NOT** use `mcp__xcode__*` tools; those are a separate
+server and are redundant here.
 
-- `mcp__xcode__BuildProject` for building
-- `mcp__xcode__RunAllTests` for running tests
-- `mcp__xcode__XcodeRead`, `mcp__xcode__XcodeWrite`,
-  `mcp__xcode__XcodeUpdate` for file operations
+- `mcp__xcode-tools__BuildProject` for building
+- `mcp__xcode-tools__RunAllTests` / `mcp__xcode-tools__RunSomeTests` for tests
+- `mcp__xcode-tools__XcodeRead`, `mcp__xcode-tools__XcodeWrite`,
+  `mcp__xcode-tools__XcodeUpdate` for file operations
+- `mcp__xcode-tools__XcodeGrep`, `mcp__xcode-tools__XcodeGlob`,
+  `mcp__xcode-tools__XcodeLS` for searching
+- `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` for fast diagnostics
+- `mcp__xcode-tools__RunCodeSnippet` for lightweight code evaluation
 
 **Test Plan Selection:**
 
 - **Unit tests**: Use the **TMDb** test plan (default)
 - **Integration tests**: Use the **Integration** test plan
 
-### When Xcode MCP is Not Available
+### When Not Running Inside Xcode
 
 Fall back to `make` commands:
 

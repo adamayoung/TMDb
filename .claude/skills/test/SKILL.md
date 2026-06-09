@@ -5,13 +5,12 @@ description: Run all unit tests
 
 # Run tests
 
-Use the Xcode MCP if available, otherwise fall back to Make.
+Use the `xcode-tools` MCP server when running inside Xcode, otherwise fall back to Make.
 
-## Xcode MCP (preferred)
+## xcode-tools (preferred inside Xcode)
 
-1. Run `mcp__xcode__XcodeListWindows` to get the `tabIdentifier` for the TMDb package.
-2. Run `mcp__xcode__RunAllTests` with the `tabIdentifier` and the **TMDb** test plan.
-3. If tests fail, review the output for failure details. Use `mcp__xcode__GetBuildLog` with `severity: "error"` if build errors caused the failure.
+1. Run `mcp__xcode-tools__RunAllTests` with the **TMDb** test plan.
+2. If tests fail, review the output for failure details. Use `mcp__xcode-tools__GetBuildLog` with `severity: "error"` if build errors caused the failure.
 
 ## Fallback
 
