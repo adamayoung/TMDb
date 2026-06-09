@@ -12,10 +12,7 @@ extension JSONEncoder {
     static var theMovieDatabase: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        encoder.dateEncodingStrategy = .custom { date, encoder in
-            var container = encoder.singleValueContainer()
-            try container.encode(date.formatted(Date.ISO8601FormatStyle().year().month().day()))
-        }
+        encoder.dateEncodingStrategy = .formatted(.theMovieDatabase)
         return encoder
     }
 
