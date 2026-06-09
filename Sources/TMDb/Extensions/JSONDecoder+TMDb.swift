@@ -18,6 +18,13 @@ extension JSONDecoder {
         timeZone: .autoupdatingCurrent
     )
 
+    /// Auth date parsing (e.g. "2016-02-08 14:39:36 UTC").
+    private static let theMovieDatabaseAuthDateStrategy = Date.ParseStrategy(
+        format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits) UTC",
+        locale: Locale(identifier: "en_US_POSIX"),
+        timeZone: .gmt
+    )
+
     static var theMovieDatabase: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -39,7 +46,18 @@ extension JSONDecoder {
     static var theMovieDatabaseAuth: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .formatted(.theMovieDatabaseAuth)
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            do {
+                return try Date(dateString, strategy: theMovieDatabaseAuthDateStrategy)
+            } catch {
+                throw DecodingError.dataCorruptedError(
+                    in: container,
+                    debugDescription: "Date string does not match format yyyy-MM-dd HH:mm:ss UTC: \(dateString)"
+                )
+            }
+        }
         return decoder
     }
 

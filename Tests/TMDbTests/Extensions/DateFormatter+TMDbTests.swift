@@ -11,13 +11,27 @@ import Testing
 
 struct DataFormatterTMDbTests {
 
-    @Test("formatter has correct date format")
-    func theMovieDatabaseFormatterHasCorrectDateFormat() {
-        let expectedResult = "yyyy-MM-dd"
+    @Test("theMovieDatabase decoder parses yyyy-MM-dd date strings")
+    func theMovieDatabaseDecoderParsesDateString() throws {
+        let jsonString = """
+        {
+            "date": "2025-04-30"
+        }
+        """
+        let data = Data(jsonString.utf8)
 
-        let result = DateFormatter.theMovieDatabase.dateFormat
+        let result = try JSONDecoder.theMovieDatabase.decode(DateWrapper.self, from: data)
 
-        #expect(result == expectedResult)
+        let expected = try #require(DateFormatter.theMovieDatabase.date(from: "2025-04-30"))
+        #expect(result.date == expected)
+    }
+
+}
+
+private extension DataFormatterTMDbTests {
+
+    private struct DateWrapper: Decodable {
+        let date: Date
     }
 
 }

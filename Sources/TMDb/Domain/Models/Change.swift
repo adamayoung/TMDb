@@ -124,6 +124,12 @@ extension ChangeItem {
         case originalValue
     }
 
+    private static let timeParseStrategy = Date.ParseStrategy(
+        format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits) UTC",
+        locale: Locale(identifier: "en_US_POSIX"),
+        timeZone: .gmt
+    )
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -134,17 +140,16 @@ extension ChangeItem {
         self.value = try container.decodeIfPresent(AnyCodable.self, forKey: .value)
         self.originalValue = try container.decodeIfPresent(AnyCodable.self, forKey: .originalValue)
 
-        // Decode time using the auth date formatter
         let timeString = try container.decode(String.self, forKey: .time)
-        let dateFormatter = DateFormatter.theMovieDatabaseAuth
-        guard let date = dateFormatter.date(from: timeString) else {
+        do {
+            self.time = try Date(timeString, strategy: Self.timeParseStrategy)
+        } catch {
             throw DecodingError.dataCorruptedError(
                 forKey: .time,
                 in: container,
-                debugDescription: "Date string '\(timeString)' does not match expected format '\(dateFormatter.dateFormat ?? "")'"
+                debugDescription: "Date string '\(timeString)' does not match expected format yyyy-MM-dd HH:mm:ss UTC"
             )
         }
-        self.time = date
     }
 
 }
