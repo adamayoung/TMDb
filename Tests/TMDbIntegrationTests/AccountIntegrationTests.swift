@@ -33,7 +33,7 @@ final class AccountIntegrationTests {
     deinit {
         if let thisSession = session {
             Task {
-                try await TMDbSessionHelper.shared.delete(session: thisSession)
+                try? await TMDbSessionHelper.shared.delete(session: thisSession)
             }
         }
     }
