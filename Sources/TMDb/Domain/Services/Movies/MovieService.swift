@@ -29,7 +29,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: The matching movie.
     ///
-    func details(forMovie id: Movie.ID, language: String?) async throws -> Movie
+    func details(forMovie id: Movie.ID, language: String?) async throws(TMDbError) -> Movie
 
     ///
     /// Returns the primary information about a movie with appended data.
@@ -50,7 +50,7 @@ public protocol MovieService: Sendable {
         forMovie id: Movie.ID,
         appending: MovieAppendOption,
         language: String?
-    ) async throws -> MovieDetailsResponse
+    ) async throws(TMDbError) -> MovieDetailsResponse
 
     ///
     /// Returns the cast and crew of a movie.
@@ -66,7 +66,10 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Credits for the matching movie.
     ///
-    func credits(forMovie movieID: Movie.ID, language: String?) async throws -> ShowCredits
+    func credits(
+        forMovie movieID: Movie.ID,
+        language: String?
+    ) async throws(TMDbError) -> ShowCredits
 
     ///
     /// Returns the user reviews for a movie.
@@ -89,7 +92,7 @@ public protocol MovieService: Sendable {
         forMovie movieID: Movie.ID,
         page: Int?,
         language: String?
-    ) async throws -> ReviewPageableList
+    ) async throws(TMDbError) -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a movie.
@@ -107,7 +110,7 @@ public protocol MovieService: Sendable {
     func images(
         forMovie movieID: Movie.ID,
         filter: MovieImageFilter?
-    ) async throws -> ImageCollection
+    ) async throws(TMDbError) -> ImageCollection
 
     ///
     /// Returns the videos that have been added to a movie.
@@ -125,7 +128,7 @@ public protocol MovieService: Sendable {
     func videos(
         forMovie movieID: Movie.ID,
         filter: MovieVideoFilter?
-    ) async throws -> VideoCollection
+    ) async throws(TMDbError) -> VideoCollection
 
     ///
     /// Returns a list of recommended movies for a movie.
@@ -148,7 +151,7 @@ public protocol MovieService: Sendable {
         forMovie movieID: Movie.ID,
         page: Int?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of similar movies for a movie.
@@ -173,7 +176,7 @@ public protocol MovieService: Sendable {
         toMovie movieID: Movie.ID,
         page: Int?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of currently playing movies.
@@ -196,7 +199,7 @@ public protocol MovieService: Sendable {
         page: Int?,
         country: String?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of current popular movies.
@@ -215,7 +218,11 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Current popular movies as a pageable list.
     ///
-    func popular(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
+    func popular(
+        page: Int?,
+        country: String?,
+        language: String?
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of top rated movies.
@@ -234,7 +241,11 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Top rated movies as a pageable list.
     ///
-    func topRated(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
+    func topRated(
+        page: Int?,
+        country: String?,
+        language: String?
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of upcoming movies.
@@ -253,7 +264,11 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Upcoming movies as a pageable list.
     ///
-    func upcoming(page: Int?, country: String?, language: String?) async throws -> MoviePageableList
+    func upcoming(
+        page: Int?,
+        country: String?,
+        language: String?
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns watch providers for a movie in all available countries.
@@ -268,7 +283,9 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Watch providers for the movie grouped by country.
     ///
-    func watchProviders(forMovie movieID: Movie.ID) async throws -> [ShowWatchProvidersByCountry]
+    func watchProviders(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry]
 
     ///
     /// Returns a collection of media databases and social links for a movie.
@@ -281,7 +298,9 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: A collection of external links for the specified movie.
     ///
-    func externalLinks(forMovie movieID: Movie.ID) async throws -> MovieExternalLinksCollection
+    func externalLinks(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> MovieExternalLinksCollection
 
     ///
     /// Returns the release dates and certifications for a movie by country.
@@ -294,7 +313,9 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: Release dates for the movie grouped by country.
     ///
-    func releaseDates(forMovie movieID: Movie.ID) async throws -> [MovieReleaseDatesByCountry]
+    func releaseDates(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> [MovieReleaseDatesByCountry]
 
     ///
     /// Returns the user's rating, favorite, and watchlist state for a movie.
@@ -309,7 +330,10 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: The account states for the movie.
     ///
-    func accountStates(forMovie movieID: Movie.ID, session: Session) async throws -> AccountStates
+    func accountStates(
+        forMovie movieID: Movie.ID,
+        session: Session
+    ) async throws(TMDbError) -> AccountStates
 
     ///
     /// Adds a rating for a movie.
@@ -325,7 +349,11 @@ public protocol MovieService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func addRating(_ rating: Double, toMovie movieID: Movie.ID, session: Session) async throws
+    func addRating(
+        _ rating: Double,
+        toMovie movieID: Movie.ID,
+        session: Session
+    ) async throws(TMDbError)
 
     ///
     /// Deletes the user's rating for a movie.
@@ -338,7 +366,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws
+    func deleteRating(forMovie movieID: Movie.ID, session: Session) async throws(TMDbError)
 
     ///
     /// Returns alternative titles for a movie.
@@ -359,7 +387,7 @@ public protocol MovieService: Sendable {
         forMovie movieID: Movie.ID,
         country: String?,
         language: String?
-    ) async throws -> AlternativeTitleCollection
+    ) async throws(TMDbError) -> AlternativeTitleCollection
 
     ///
     /// Returns translations for a movie.
@@ -372,7 +400,9 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: A collection of translations for the movie.
     ///
-    func translations(forMovie movieID: Movie.ID) async throws -> TranslationCollection<MovieTranslationData>
+    func translations(
+        forMovie movieID: Movie.ID
+    ) async throws(TMDbError) -> TranslationCollection<MovieTranslationData>
 
     ///
     /// Returns lists that contain the movie.
@@ -395,7 +425,7 @@ public protocol MovieService: Sendable {
         forMovie movieID: Movie.ID,
         page: Int?,
         language: String?
-    ) async throws -> MediaListSummaryPageableList
+    ) async throws(TMDbError) -> MediaListSummaryPageableList
 
     ///
     /// Returns change history for a movie.
@@ -417,7 +447,7 @@ public protocol MovieService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the latest movie added to TMDb.
@@ -428,7 +458,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: The latest movie.
     ///
-    func latest() async throws -> Movie
+    func latest() async throws(TMDbError) -> Movie
 
     ///
     /// Returns a list of movie IDs that have changed.
@@ -450,7 +480,7 @@ public protocol MovieService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
     ///
     /// Returns keywords for a movie.
@@ -463,7 +493,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: A collection of keywords for the movie.
     ///
-    func keywords(forMovie movieID: Movie.ID) async throws -> KeywordCollection
+    func keywords(forMovie movieID: Movie.ID) async throws(TMDbError) -> KeywordCollection
 
 }
 
@@ -483,7 +513,7 @@ public extension MovieService {
     ///
     /// - Returns: The matching movie.
     ///
-    func details(forMovie id: Movie.ID, language: String? = nil) async throws -> Movie {
+    func details(forMovie id: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
         try await details(forMovie: id, language: language)
     }
 
@@ -506,7 +536,7 @@ public extension MovieService {
         forMovie id: Movie.ID,
         appending: MovieAppendOption,
         language: String? = nil
-    ) async throws -> MovieDetailsResponse {
+    ) async throws(TMDbError) -> MovieDetailsResponse {
         try await details(
             forMovie: id,
             appending: appending,
@@ -531,7 +561,7 @@ public extension MovieService {
     func credits(
         forMovie movieID: Movie.ID,
         language: String? = nil
-    ) async throws -> ShowCredits {
+    ) async throws(TMDbError) -> ShowCredits {
         try await credits(forMovie: movieID, language: language)
     }
 
@@ -556,7 +586,7 @@ public extension MovieService {
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> ReviewPageableList {
+    ) async throws(TMDbError) -> ReviewPageableList {
         try await reviews(forMovie: movieID, page: page, language: language)
     }
 
@@ -576,7 +606,7 @@ public extension MovieService {
     func images(
         forMovie movieID: Movie.ID,
         filter: MovieImageFilter? = nil
-    ) async throws -> ImageCollection {
+    ) async throws(TMDbError) -> ImageCollection {
         try await images(forMovie: movieID, filter: filter)
     }
 
@@ -596,7 +626,7 @@ public extension MovieService {
     func videos(
         forMovie movieID: Movie.ID,
         filter: MovieVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         try await videos(forMovie: movieID, filter: filter)
     }
 
@@ -621,7 +651,7 @@ public extension MovieService {
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await recommendations(forMovie: movieID, page: page, language: language)
     }
 
@@ -648,7 +678,7 @@ public extension MovieService {
         toMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await similar(toMovie: movieID, page: page, language: language)
     }
 
@@ -673,7 +703,7 @@ public extension MovieService {
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await nowPlaying(page: page, country: country, language: language)
     }
 
@@ -698,7 +728,7 @@ public extension MovieService {
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await popular(page: page, country: country, language: language)
     }
 
@@ -723,7 +753,7 @@ public extension MovieService {
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await topRated(page: page, country: country, language: language)
     }
 
@@ -748,7 +778,7 @@ public extension MovieService {
         page: Int? = nil,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await upcoming(page: page, country: country, language: language)
     }
 
@@ -765,7 +795,7 @@ public extension MovieService {
     ///
     func releaseDates(
         forMovie movieID: Movie.ID
-    ) async throws -> [MovieReleaseDatesByCountry] {
+    ) async throws(TMDbError) -> [MovieReleaseDatesByCountry] {
         try await releaseDates(forMovie: movieID)
     }
 
@@ -788,7 +818,7 @@ public extension MovieService {
         forMovie movieID: Movie.ID,
         country: String? = nil,
         language: String? = nil
-    ) async throws -> AlternativeTitleCollection {
+    ) async throws(TMDbError) -> AlternativeTitleCollection {
         try await alternativeTitles(forMovie: movieID, country: country, language: language)
     }
 
@@ -813,7 +843,7 @@ public extension MovieService {
         forMovie movieID: Movie.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaListSummaryPageableList {
+    ) async throws(TMDbError) -> MediaListSummaryPageableList {
         try await lists(forMovie: movieID, page: page, language: language)
     }
 
@@ -837,7 +867,7 @@ public extension MovieService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await changes(forMovie: movieID, startDate: startDate, endDate: endDate, page: page)
     }
 
@@ -861,7 +891,7 @@ public extension MovieService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         try await changes(startDate: startDate, endDate: endDate, page: page)
     }
 

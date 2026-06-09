@@ -20,67 +20,42 @@ final class TMDbGuestSessionService: GuestSessionService {
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         let request = GuestSessionRatedMoviesRequest(
             sortedBy: sortedBy,
             page: page,
             guestSessionID: guestSessionID
         )
 
-        let movieList: MoviePageableList
-        do {
-            movieList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return movieList
+        return try await apiClient.perform(request)
     }
 
     func ratedTVSeries(
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         let request = GuestSessionRatedTVSeriesRequest(
             sortedBy: sortedBy,
             page: page,
             guestSessionID: guestSessionID
         )
 
-        let tvSeriesList: TVSeriesPageableList
-        do {
-            tvSeriesList = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeriesList
+        return try await apiClient.perform(request)
     }
 
     func ratedTVEpisodes(
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> TVEpisodePageableList {
+    ) async throws(TMDbError) -> TVEpisodePageableList {
         let request = GuestSessionRatedTVEpisodesRequest(
             sortedBy: sortedBy,
             page: page,
             guestSessionID: guestSessionID
         )
 
-        let tvEpisodeList: TVEpisodePageableList
-        do {
-            tvEpisodeList = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvEpisodeList
+        return try await apiClient.perform(request)
     }
 
 }

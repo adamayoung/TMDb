@@ -13,62 +13,38 @@ extension TMDbTVSeasonService {
     func externalLinks(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVSeasonExternalLinksCollection {
+    ) async throws(TMDbError) -> TVSeasonExternalLinksCollection {
         let request = TVSeasonExternalLinksRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID
         )
 
-        let linksCollection: TVSeasonExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return linksCollection
+        return try await apiClient.perform(request)
     }
 
     func translations(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws
+    ) async throws(TMDbError)
     -> TranslationCollection<TVSeasonTranslationData> {
         let request = TVSeasonTranslationsRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID
         )
 
-        let translationCollection:
-            TranslationCollection<TVSeasonTranslationData>
-        do {
-            translationCollection = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
+        return try await apiClient.perform(request)
     }
 
     func watchProviders(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> [ShowWatchProvidersByCountry] {
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry] {
         let request = TVSeasonWatchProvidersRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID
         )
 
-        let result: ShowWatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: ShowWatchProviderResult = try await apiClient.perform(request)
 
         return result.results
             .map {

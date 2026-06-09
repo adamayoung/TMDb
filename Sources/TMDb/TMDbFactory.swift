@@ -24,20 +24,24 @@ final class TMDbFactory {
 extension TMDbFactory {
 
     static func apiClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
-        TMDbAPIClient(
-            apiKey: apiKey,
-            baseURL: tmdbAPIBaseURL,
-            serialiser: serialiser(),
-            httpClient: httpClient
+        ErrorMappingAPIClient(
+            apiClient: TMDbAPIClient(
+                apiKey: apiKey,
+                baseURL: tmdbAPIBaseURL,
+                serialiser: serialiser(),
+                httpClient: httpClient
+            )
         )
     }
 
     static func authAPIClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
-        TMDbAPIClient(
-            apiKey: apiKey,
-            baseURL: .tmdbAPIBase,
-            serialiser: authSerialiser(),
-            httpClient: httpClient
+        ErrorMappingAPIClient(
+            apiClient: TMDbAPIClient(
+                apiKey: apiKey,
+                baseURL: .tmdbAPIBase,
+                serialiser: authSerialiser(),
+                httpClient: httpClient
+            )
         )
     }
 

@@ -24,6 +24,6 @@ public protocol ReviewService: Sendable {
     ///
     /// - Returns: Matching review.
     ///
-    func details(forReview id: Review.ID) async throws -> Review
+    func details(forReview id: Review.ID) async throws(TMDbError) -> Review
 
 }

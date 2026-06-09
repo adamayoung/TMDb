@@ -14,21 +14,14 @@ extension TMDbTVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws -> AccountStates {
+    ) async throws(TMDbError) -> AccountStates {
         let request = TVSeasonAccountStatesRequest(
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID,
             sessionID: session.sessionID
         )
 
-        let accountStates: AccountStates
-        do {
-            accountStates = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return accountStates
+        return try await apiClient.perform(request)
     }
 
 }

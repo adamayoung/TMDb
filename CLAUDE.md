@@ -14,7 +14,7 @@ with Swift 6.0+ and strict concurrency.
 ### Service-Based Design
 
 The library uses protocol-based services with dependency injection.
-`TMDbClient` is the main facade exposing 25 service properties:
+`TMDbClient` is the main facade exposing 26 service properties:
 
 ```text
 TMDbClient (main facade)
@@ -42,8 +42,13 @@ TMDbClient (main facade)
 ├── TVEpisodeGroupService
 ├── TVSeasonService
 ├── TVSeriesService
-└── WatchProviderService
+├── WatchProviderService
+└── NaturalLanguageSearchService
 ```
+
+The `naturalLanguageSearch` service is **Apple-platforms only** — it is
+defined in a `TMDbClient` extension gated by `#if canImport(NaturalLanguage)`,
+so it is unavailable on Linux and Windows.
 
 **Key files:**
 
@@ -54,11 +59,26 @@ TMDbClient (main facade)
 
 ### Networking Layer
 
+Services call into `TMDbAPIClient`, which sits **above** the `HTTPClient`.
+`TMDbAPIClient` adds the `api_key` query item, builds the request, validates
+the response status, and decodes the body. It then delegates the raw HTTP
+transport to an `HTTPClient`, which is a decorator chain: `CacheHTTPClient`
+wraps `RetryHTTPClient`, which wraps the base adapter (the user-supplied
+`HTTPClient` or the default `URLSessionHTTPClientAdapter`). Both retry and
+cache decorators are opt-in (see `TMDbFactory.httpClient(wrapping:...)`).
+
 ```text
-HTTPClient (protocol)
-└── URLSessionHTTPClientAdapter (default implementation)
-    └── TMDbAPIClient (API-specific client)
+Service (e.g. TMDbMovieService)
+└── APIClient
+    └── TMDbAPIClient            (adds api_key, validates status, decodes)
+        └── HTTPClient (protocol)
+            └── CacheHTTPClient          (opt-in; cache hits short-circuit)
+                └── RetryHTTPClient      (opt-in; exponential backoff)
+                    └── URLSessionHTTPClientAdapter  (or user-supplied client)
 ```
+
+In 18.0.0 an `ErrorMappingAPIClient` decorator wraps the `APIClient` to
+centralise mapping of `TMDbAPIError` into the public `TMDbError`.
 
 ### Test Organization
 

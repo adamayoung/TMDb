@@ -23,6 +23,19 @@ struct PageableListResultTests {
         #expect(result.totalPages == list.totalPages)
     }
 
+    @Test("JSON decoding without count fields uses default values", .tags(.decoding))
+    func decodeWithoutCountFieldsReturnsDefaults() throws {
+        let json = Data("{\"results\": [{\"id\": 1}]}".utf8)
+
+        let result = try JSONDecoder.theMovieDatabase
+            .decode(PageableListResult<SomeListItem>.self, from: json)
+
+        #expect(result.page == 1)
+        #expect(result.results == [SomeListItem(id: 1)])
+        #expect(result.totalResults == 0)
+        #expect(result.totalPages == 0)
+    }
+
     private let list = PageableListResult<SomeListItem>(
         page: 1,
         results: [

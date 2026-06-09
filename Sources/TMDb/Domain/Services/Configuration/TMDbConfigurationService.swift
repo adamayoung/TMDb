@@ -16,82 +16,40 @@ final class TMDbConfigurationService: ConfigurationService {
         self.apiClient = apiClient
     }
 
-    func apiConfiguration() async throws -> APIConfiguration {
+    func apiConfiguration() async throws(TMDbError) -> APIConfiguration {
         let request = APIConfigurationRequest()
 
-        let apiConfiguration: APIConfiguration
-        do {
-            apiConfiguration = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return apiConfiguration
+        return try await apiClient.perform(request)
     }
 
-    func countries(language: String? = nil) async throws -> [Country] {
+    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
         let request = CountriesConfigurationRequest(language: language)
 
-        let countries: [Country]
-        do {
-            countries = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return countries
+        return try await apiClient.perform(request)
     }
 
-    func jobsByDepartment() async throws -> [Department] {
+    func jobsByDepartment() async throws(TMDbError) -> [Department] {
         let request = JobsConfigurationRequest()
 
-        let departments: [Department]
-        do {
-            departments = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return departments
+        return try await apiClient.perform(request)
     }
 
-    func languages() async throws -> [Language] {
+    func languages() async throws(TMDbError) -> [Language] {
         let request = LanguaguesConfigurationRequest()
 
-        let languages: [Language]
-        do {
-            languages = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return languages
+        return try await apiClient.perform(request)
     }
 
-    func primaryTranslations() async throws -> [String] {
+    func primaryTranslations() async throws(TMDbError) -> [String] {
         let request = ConfigurationPrimaryTranslationsRequest()
 
-        let primaryTranslations: [String]
-        do {
-            primaryTranslations = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return primaryTranslations
+        return try await apiClient.perform(request)
     }
 
-    func timezones() async throws -> [Timezone] {
+    func timezones() async throws(TMDbError) -> [Timezone] {
         let request = ConfigurationTimezonesRequest()
 
-        let timezones: [Timezone]
-        do {
-            timezones = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return timezones
+        return try await apiClient.perform(request)
     }
 
 }

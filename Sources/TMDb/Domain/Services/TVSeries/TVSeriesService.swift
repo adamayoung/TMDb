@@ -29,7 +29,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: The matching TV series.
     ///
-    func details(forTVSeries id: TVSeries.ID, language: String?) async throws -> TVSeries
+    func details(forTVSeries id: TVSeries.ID, language: String?) async throws(TMDbError) -> TVSeries
 
     ///
     /// Returns the primary information about a TV series with
@@ -52,7 +52,7 @@ public protocol TVSeriesService: Sendable {
         forTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeriesAppendOption,
         language: String?
-    ) async throws -> TVSeriesDetailsResponse
+    ) async throws(TMDbError) -> TVSeriesDetailsResponse
 
     ///
     /// Returns the cast and crew of a TV series.
@@ -68,7 +68,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Show credits for the matching TV series.
     ///
-    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws -> ShowCredits
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws(TMDbError) -> ShowCredits
 
     ///
     /// Returns the aggregate cast and crew of a TV series.
@@ -92,7 +92,7 @@ public protocol TVSeriesService: Sendable {
     func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> TVSeriesAggregateCredits
+    ) async throws(TMDbError) -> TVSeriesAggregateCredits
 
     ///
     /// Returns the user reviews for a TV series.
@@ -115,7 +115,7 @@ public protocol TVSeriesService: Sendable {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int?,
         language: String?
-    ) async throws -> ReviewPageableList
+    ) async throws(TMDbError) -> ReviewPageableList
 
     ///
     /// Returns the images that belong to a TV series.
@@ -133,7 +133,7 @@ public protocol TVSeriesService: Sendable {
     func images(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesImageFilter?
-    ) async throws -> ImageCollection
+    ) async throws(TMDbError) -> ImageCollection
 
     ///
     /// Returns the videos that belong to a TV series.
@@ -151,7 +151,7 @@ public protocol TVSeriesService: Sendable {
     func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesVideoFilter?
-    ) async throws -> VideoCollection
+    ) async throws(TMDbError) -> VideoCollection
 
     ///
     /// Returns a list of recommended TV series for a TV series.
@@ -174,7 +174,7 @@ public protocol TVSeriesService: Sendable {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int?,
         language: String?
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of similar TV series for a TV series.
@@ -199,7 +199,7 @@ public protocol TVSeriesService: Sendable {
         toTVSeries tvSeriesID: TVSeries.ID,
         page: Int?,
         language: String?
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of current popular TV series.
@@ -217,7 +217,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Current popular TV series as a pageable list.
     ///
-    func popular(page: Int?, language: String?) async throws -> TVSeriesPageableList
+    func popular(page: Int?, language: String?) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of TV series that are airing today.
@@ -237,7 +237,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: TV series airing today as a pageable list.
     ///
-    func airingToday(page: Int?, timezone: String?, language: String?) async throws
+    func airingToday(page: Int?, timezone: String?, language: String?) async throws(TMDbError)
         -> TVSeriesPageableList
 
     ///
@@ -259,7 +259,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: TV series on the air as a pageable list.
     ///
-    func onTheAir(page: Int?, timezone: String?, language: String?) async throws
+    func onTheAir(page: Int?, timezone: String?, language: String?) async throws(TMDbError)
         -> TVSeriesPageableList
 
     ///
@@ -278,7 +278,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Top rated TV series as a pageable list.
     ///
-    func topRated(page: Int?, language: String?) async throws -> TVSeriesPageableList
+    func topRated(page: Int?, language: String?) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns watch providers for a TV series in all available countries.
@@ -295,7 +295,7 @@ public protocol TVSeriesService: Sendable {
     ///
     func watchProviders(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> [ShowWatchProvidersByCountry]
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry]
 
     ///
     /// Returns a collection of media databases and social links for a TV series.
@@ -310,7 +310,7 @@ public protocol TVSeriesService: Sendable {
     ///
     func externalLinks(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVSeriesExternalLinksCollection
+    ) async throws(TMDbError) -> TVSeriesExternalLinksCollection
 
     ///
     /// Returns the content ratings of a TV series for all available countries.
@@ -323,7 +323,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: Content ratings for the TV series grouped by country.
     ///
-    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws -> [ContentRating]
+    func contentRatings(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError) -> [ContentRating]
 
     ///
     /// Returns the user's rating, favorite, and watchlist state for a TV series.
@@ -338,7 +338,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: The user's account states for the TV series.
     ///
-    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws -> AccountStates
+    func accountStates(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws(TMDbError) -> AccountStates
 
     ///
     /// Adds a rating for a TV series.
@@ -354,7 +354,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func addRating(_ rating: Double, toTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+    func addRating(_ rating: Double, toTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws(TMDbError)
 
     ///
     /// Deletes the user's rating for a TV series.
@@ -367,7 +367,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
-    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws
+    func deleteRating(forTVSeries tvSeriesID: TVSeries.ID, session: Session) async throws(TMDbError)
 
     ///
     /// Returns keywords for a TV series.
@@ -380,7 +380,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of keywords for the TV series.
     ///
-    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws -> KeywordCollection
+    func keywords(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError) -> KeywordCollection
 
     ///
     /// Returns alternative titles for a TV series.
@@ -394,7 +394,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of alternative titles for the TV series.
     ///
-    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws -> AlternativeTitleCollection
+    func alternativeTitles(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError) -> AlternativeTitleCollection
 
     ///
     /// Returns translations for a TV series.
@@ -407,7 +407,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: A collection of translations for the TV series.
     ///
-    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws
+    func translations(forTVSeries tvSeriesID: TVSeries.ID) async throws(TMDbError)
         -> TranslationCollection<TVSeriesTranslationData>
 
     ///
@@ -431,7 +431,7 @@ public protocol TVSeriesService: Sendable {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int?,
         language: String?
-    ) async throws -> MediaListSummaryPageableList
+    ) async throws(TMDbError) -> MediaListSummaryPageableList
 
     ///
     /// Returns change history for a TV series.
@@ -455,7 +455,7 @@ public protocol TVSeriesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the latest TV series added to TMDb.
@@ -466,7 +466,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: The latest TV series.
     ///
-    func latest() async throws -> TVSeries
+    func latest() async throws(TMDbError) -> TVSeries
 
     ///
     /// Returns a list of TV series IDs that have changed.
@@ -488,7 +488,7 @@ public protocol TVSeriesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
     ///
     /// Returns the seasons and episodes that have been screened theatrically for a TV series.
@@ -504,7 +504,7 @@ public protocol TVSeriesService: Sendable {
     ///
     func screenedTheatrically(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> ScreenedTheatricallyCollection
+    ) async throws(TMDbError) -> ScreenedTheatricallyCollection
 
     ///
     /// Returns the episode groups for a TV series.
@@ -520,7 +520,7 @@ public protocol TVSeriesService: Sendable {
     ///
     func episodeGroups(
         forTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVEpisodeGroupCollection
+    ) async throws(TMDbError) -> TVEpisodeGroupCollection
 }
 
 public extension TVSeriesService {
@@ -542,7 +542,7 @@ public extension TVSeriesService {
     func details(
         forTVSeries id: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVSeries {
+    ) async throws(TMDbError) -> TVSeries {
         try await details(forTVSeries: id, language: language)
     }
 
@@ -567,7 +567,7 @@ public extension TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeriesAppendOption,
         language: String? = nil
-    ) async throws -> TVSeriesDetailsResponse {
+    ) async throws(TMDbError) -> TVSeriesDetailsResponse {
         try await details(
             forTVSeries: tvSeriesID,
             appending: appending,
@@ -592,7 +592,7 @@ public extension TVSeriesService {
     func credits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> ShowCredits {
+    ) async throws(TMDbError) -> ShowCredits {
         try await credits(forTVSeries: tvSeriesID, language: language)
     }
 
@@ -618,7 +618,7 @@ public extension TVSeriesService {
     func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVSeriesAggregateCredits {
+    ) async throws(TMDbError) -> TVSeriesAggregateCredits {
         try await aggregateCredits(forTVSeries: tvSeriesID, language: language)
     }
 
@@ -643,7 +643,7 @@ public extension TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> ReviewPageableList {
+    ) async throws(TMDbError) -> ReviewPageableList {
         try await reviews(forTVSeries: tvSeriesID, page: page, language: language)
     }
 
@@ -663,7 +663,7 @@ public extension TVSeriesService {
     func images(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesImageFilter? = nil
-    ) async throws -> ImageCollection {
+    ) async throws(TMDbError) -> ImageCollection {
         try await images(forTVSeries: tvSeriesID, filter: filter)
     }
 
@@ -683,7 +683,7 @@ public extension TVSeriesService {
     func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeriesVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         try await videos(forTVSeries: tvSeriesID, filter: filter)
     }
 
@@ -708,7 +708,7 @@ public extension TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await recommendations(forTVSeries: tvSeriesID, page: page, language: language)
     }
 
@@ -735,7 +735,7 @@ public extension TVSeriesService {
         toTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await similar(toTVSeries: tvSeriesID, page: page, language: language)
     }
 
@@ -758,7 +758,7 @@ public extension TVSeriesService {
     func popular(
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await popular(page: page, language: language)
     }
 
@@ -784,7 +784,7 @@ public extension TVSeriesService {
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await airingToday(page: page, timezone: timezone, language: language)
     }
 
@@ -811,7 +811,7 @@ public extension TVSeriesService {
         page: Int? = nil,
         timezone: String? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await onTheAir(page: page, timezone: timezone, language: language)
     }
 
@@ -834,7 +834,7 @@ public extension TVSeriesService {
     func topRated(
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await topRated(page: page, language: language)
     }
 
@@ -859,7 +859,7 @@ public extension TVSeriesService {
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MediaListSummaryPageableList {
+    ) async throws(TMDbError) -> MediaListSummaryPageableList {
         try await lists(forTVSeries: tvSeriesID, page: page, language: language)
     }
 
@@ -885,7 +885,7 @@ public extension TVSeriesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await changes(
             forTVSeries: tvSeriesID,
             startDate: startDate,
@@ -914,7 +914,7 @@ public extension TVSeriesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         try await changes(startDate: startDate, endDate: endDate, page: page)
     }
 

@@ -27,7 +27,10 @@ public protocol CollectionService: Sendable {
     ///
     /// - Returns: The matching collection.
     ///
-    func details(forCollection id: Collection.ID, language: String?) async throws -> Collection
+    func details(
+        forCollection id: Collection.ID,
+        language: String?
+    ) async throws(TMDbError) -> Collection
 
     ///
     /// Returns the images that belong to a collection.
@@ -45,7 +48,7 @@ public protocol CollectionService: Sendable {
     func images(
         forCollection collectionID: Collection.ID,
         languages: [String]?
-    ) async throws -> CollectionImageCollection
+    ) async throws(TMDbError) -> CollectionImageCollection
 
     ///
     /// Returns the translations that belong to a collection.
@@ -58,7 +61,7 @@ public protocol CollectionService: Sendable {
     ///
     /// - Returns: Translations for the matching collection.
     ///
-    func translations(forCollection collectionID: Collection.ID) async throws
+    func translations(forCollection collectionID: Collection.ID) async throws(TMDbError)
         -> [CollectionTranslation]
 
 }

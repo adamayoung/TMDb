@@ -130,7 +130,7 @@ struct PersonIntegrationTests {
 
     @Test("latestPerson")
     func latestPerson() async throws {
-        let person = try await personService.latestPerson()
+        let person = try await personService.latest()
 
         #expect(person.id > 0)
     }
@@ -138,7 +138,7 @@ struct PersonIntegrationTests {
     @Test("personChanges")
     func personChanges() async throws {
         let changedIDCollection = try await personService
-            .personChanges()
+            .changes()
 
         #expect(changedIDCollection.page > 0)
         #expect(changedIDCollection.totalResults > 0)

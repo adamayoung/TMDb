@@ -22,7 +22,7 @@ public extension GuestSessionService {
     ///
     func ratedMovies(
         guestSessionID: String
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await ratedMovies(
             sortedBy: nil,
             page: nil,
@@ -43,7 +43,7 @@ public extension GuestSessionService {
     ///
     func ratedTVSeries(
         guestSessionID: String
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await ratedTVSeries(
             sortedBy: nil,
             page: nil,
@@ -65,7 +65,7 @@ public extension GuestSessionService {
     ///
     func ratedTVEpisodes(
         guestSessionID: String
-    ) async throws -> TVEpisodePageableList {
+    ) async throws(TMDbError) -> TVEpisodePageableList {
         try await ratedTVEpisodes(
             sortedBy: nil,
             page: nil,

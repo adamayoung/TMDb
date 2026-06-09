@@ -18,25 +18,18 @@ final class TMDbTVSeriesService: TVSeriesService {
         self.configuration = configuration
     }
 
-    func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws -> TVSeries {
+    func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws(TMDbError) -> TVSeries {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesRequest(id: id, language: languageCode)
 
-        let tvSeries: TVSeries
-        do {
-            tvSeries = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeries
+        return try await apiClient.perform(request)
     }
 
     func details(
         forTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeriesAppendOption,
         language: String? = nil
-    ) async throws -> TVSeriesDetailsResponse {
+    ) async throws(TMDbError) -> TVSeriesDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesDetailsAppendRequest(
             id: tvSeriesID,
@@ -44,64 +37,36 @@ final class TMDbTVSeriesService: TVSeriesService {
             language: languageCode
         )
 
-        let response: TVSeriesDetailsResponse
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return response
+        return try await apiClient.perform(request)
     }
 
-    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws(TMDbError)
     -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesCreditsRequest(id: tvSeriesID, language: languageCode)
 
-        let credits: ShowCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVSeriesAggregateCredits {
+    ) async throws(TMDbError) -> TVSeriesAggregateCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: languageCode)
 
-        let credits: TVSeriesAggregateCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func reviews(
         forTVSeries tvSeriesID: TVSeries.ID,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> ReviewPageableList {
+    ) async throws(TMDbError) -> ReviewPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesReviewsRequest(id: tvSeriesID, page: page, language: languageCode)
 
-        let reviewList: ReviewPageableList
-        do {
-            reviewList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return reviewList
+        return try await apiClient.perform(request)
     }
 
 }

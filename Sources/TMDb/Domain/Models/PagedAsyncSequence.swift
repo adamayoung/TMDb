@@ -39,7 +39,7 @@ import Foundation
 /// ## Edge Cases
 ///
 /// - **Empty first page**: Returns immediately with zero items
-/// - **Nil totalPages**: Continues fetching until receiving an empty `results` array
+/// - **Unknown `totalPages` (`0`)**: Continues fetching until receiving an empty `results` array
 /// - **Task cancellation**: Throws cancellation error and stops iteration
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
@@ -137,8 +137,10 @@ public extension PagedAsyncSequence {
             currentPage += 1
             let page = try await pageFetcher(currentPage)
 
-            // Update total pages if not yet set
-            if totalPages == nil {
+            // Update total pages if not yet set. A non-positive `totalPages`
+            // means the endpoint did not report a total, so leave the cap unset
+            // and continue fetching until an empty page.
+            if totalPages == nil, page.totalPages > 0 {
                 totalPages = page.totalPages
             }
 

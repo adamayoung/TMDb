@@ -23,7 +23,10 @@ public extension PersonService {
     ///
     /// - Returns: The matching person.
     ///
-    func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+    func details(
+        forPerson id: Person.ID,
+        language: String? = nil
+    ) async throws(TMDbError) -> Person {
         try await details(forPerson: id, language: language)
     }
 
@@ -48,7 +51,7 @@ public extension PersonService {
         forPerson id: Person.ID,
         appending: PersonAppendOption,
         language: String? = nil
-    ) async throws -> PersonDetailsResponse {
+    ) async throws(TMDbError) -> PersonDetailsResponse {
         try await details(
             forPerson: id,
             appending: appending,
@@ -73,7 +76,7 @@ public extension PersonService {
     func combinedCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonCombinedCredits {
+    ) async throws(TMDbError) -> PersonCombinedCredits {
         try await combinedCredits(forPerson: personID, language: language)
     }
 
@@ -94,7 +97,7 @@ public extension PersonService {
     func movieCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonMovieCredits {
+    ) async throws(TMDbError) -> PersonMovieCredits {
         try await movieCredits(forPerson: personID, language: language)
     }
 
@@ -115,7 +118,7 @@ public extension PersonService {
     func tvSeriesCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonTVSeriesCredits {
+    ) async throws(TMDbError) -> PersonTVSeriesCredits {
         try await tvSeriesCredits(forPerson: personID, language: language)
     }
 
@@ -138,7 +141,7 @@ public extension PersonService {
     func popular(
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> PersonPageableList {
+    ) async throws(TMDbError) -> PersonPageableList {
         try await popular(page: page, language: language)
     }
 
@@ -160,7 +163,7 @@ public extension PersonService {
     func taggedImages(
         forPerson personID: Person.ID,
         page: Int? = nil
-    ) async throws -> TaggedImagePageableList {
+    ) async throws(TMDbError) -> TaggedImagePageableList {
         try await taggedImages(
             forPerson: personID, page: page
         )
@@ -186,7 +189,7 @@ public extension PersonService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await changes(
             forPerson: personID,
             startDate: startDate,
@@ -209,12 +212,49 @@ public extension PersonService {
     ///
     /// - Returns: A collection of person IDs that have changed.
     ///
+    func changes(
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        page: Int? = nil
+    ) async throws(TMDbError) -> ChangedIDCollection {
+        try await changes(
+            startDate: startDate,
+            endDate: endDate,
+            page: page
+        )
+    }
+
+    ///
+    /// Returns the latest person added to TMDb.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: The latest person.
+    ///
+    @available(*, deprecated, renamed: "latest()")
+    func latestPerson() async throws(TMDbError) -> Person {
+        try await latest()
+    }
+
+    ///
+    /// Returns a list of person IDs that have changed.
+    ///
+    /// - Parameters:
+    ///    - startDate: Filter changes after this date.
+    ///    - endDate: Filter changes before this date.
+    ///    - page: The page of results to return.
+    ///
+    /// - Throws: TMDb error ``TMDbError``.
+    ///
+    /// - Returns: A collection of person IDs that have changed.
+    ///
+    @available(*, deprecated, renamed: "changes(startDate:endDate:page:)")
     func personChanges(
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
-        try await personChanges(
+    ) async throws(TMDbError) -> ChangedIDCollection {
+        try await changes(
             startDate: startDate,
             endDate: endDate,
             page: page

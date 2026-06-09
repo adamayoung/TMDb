@@ -61,13 +61,13 @@ struct PagedAsyncSequenceTests {
         #expect(items.isEmpty)
     }
 
-    @Test("handles nil totalPages by continuing until empty page")
-    func handlesNilTotalPagesByContinuingUntilEmptyPage() async throws {
+    @Test("handles unknown totalPages by continuing until empty page")
+    func handlesUnknownTotalPagesByContinuingUntilEmptyPage() async throws {
         let pageFetcher: PagedAsyncSequence<MockItem>.PageFetcher = { page in
             if page <= 2 {
-                MockItem.mockPageableList(page: page, totalPages: nil, itemsPerPage: 2)
+                MockItem.mockPageableList(page: page, totalPages: 0, itemsPerPage: 2)
             } else {
-                MockItem.mockPageableList(page: page, totalPages: nil, itemsPerPage: 0)
+                MockItem.mockPageableList(page: page, totalPages: 0, itemsPerPage: 0)
             }
         }
 

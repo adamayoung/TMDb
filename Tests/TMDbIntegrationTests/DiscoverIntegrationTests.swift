@@ -72,8 +72,8 @@ struct DiscoverIntegrationTests {
         let orList = try await discoverService.movies(filter: orFilter)
         let andList = try await discoverService.movies(filter: andFilter)
 
-        let orTotal = try #require(orList.totalResults)
-        let andTotal = try #require(andList.totalResults)
+        let orTotal = orList.totalResults
+        let andTotal = andList.totalResults
 
         // Matching ANY of the genres can never yield fewer results than
         // matching ALL of them.
@@ -128,8 +128,8 @@ struct DiscoverIntegrationTests {
         let orList = try await discoverService.tvSeries(filter: orFilter)
         let andList = try await discoverService.tvSeries(filter: andFilter)
 
-        let orTotal = try #require(orList.totalResults)
-        let andTotal = try #require(andList.totalResults)
+        let orTotal = orList.totalResults
+        let andTotal = andList.totalResults
 
         // Matching ANY of the genres can never yield fewer results than
         // matching ALL of them.

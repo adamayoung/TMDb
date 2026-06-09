@@ -44,7 +44,7 @@ public protocol NaturalLanguageSearchService: Sendable {
     ///
     /// - Returns: The interpreted plan.
     ///
-    func plan(for prompt: String) async throws -> SearchPlan
+    func plan(for prompt: String) async throws(NaturalLanguageSearchError) -> SearchPlan
 
     ///
     /// Searches TMDb using a natural-language prompt.
@@ -55,6 +55,8 @@ public protocol NaturalLanguageSearchService: Sendable {
     ///
     /// - Returns: The matching movies, TV series, and people.
     ///
-    func search(matching prompt: String) async throws -> NaturalLanguageSearchResult
+    func search(
+        matching prompt: String
+    ) async throws(NaturalLanguageSearchError) -> NaturalLanguageSearchResult
 
 }

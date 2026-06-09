@@ -40,8 +40,8 @@ struct KeywordIntegrationTests {
         let movieList = try await keywordService.movies(forKeyword: keywordID)
 
         #expect(movieList.results.isEmpty == false)
-        #expect((movieList.page ?? 0) >= 1)
-        #expect((movieList.totalResults ?? 0) >= 1)
+        #expect(movieList.page >= 1)
+        #expect(movieList.totalResults >= 1)
     }
 
     @Test("movies with page and language")

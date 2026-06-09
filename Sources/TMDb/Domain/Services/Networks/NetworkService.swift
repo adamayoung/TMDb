@@ -24,7 +24,7 @@ public protocol NetworkService: Sendable {
     ///
     /// - Returns: The matching TV network.
     ///
-    func details(forNetwork id: Network.ID) async throws -> Network
+    func details(forNetwork id: Network.ID) async throws(TMDbError) -> Network
 
     ///
     /// Returns a TV network's alternative names.
@@ -37,7 +37,9 @@ public protocol NetworkService: Sendable {
     ///
     /// - Returns: The alternative names for the TV network.
     ///
-    func alternativeNames(forNetwork id: Network.ID) async throws -> [NetworkAlternativeName]
+    func alternativeNames(
+        forNetwork id: Network.ID
+    ) async throws(TMDbError) -> [NetworkAlternativeName]
 
     ///
     /// Returns a TV network's logos.
@@ -50,6 +52,6 @@ public protocol NetworkService: Sendable {
     ///
     /// - Returns: The logos for the TV network.
     ///
-    func images(forNetwork id: Network.ID) async throws -> [NetworkLogo]
+    func images(forNetwork id: Network.ID) async throws(TMDbError) -> [NetworkLogo]
 
 }

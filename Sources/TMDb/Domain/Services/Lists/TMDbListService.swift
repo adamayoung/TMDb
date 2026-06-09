@@ -16,31 +16,19 @@ final class TMDbListService: ListService {
         self.apiClient = apiClient
     }
 
-    func details(forList listID: Int, page: Int? = nil) async throws -> MediaList {
+    func details(forList listID: Int, page: Int? = nil) async throws(TMDbError) -> MediaList {
         let request = ListRequest(id: listID, page: page)
 
-        let list: MediaList
-        do {
-            list = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return list
+        return try await apiClient.perform(request)
     }
 
     func items(
         forList listID: Int,
         page: Int? = nil
-    ) async throws -> PageableListResult<MediaListItem> {
+    ) async throws(TMDbError) -> PageableListResult<MediaListItem> {
         let request = ListRequest(id: listID, page: page)
 
-        let response: MediaList
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let response: MediaList = try await apiClient.perform(request)
 
         return PageableListResult(
             page: response.page,
@@ -50,18 +38,11 @@ final class TMDbListService: ListService {
         )
     }
 
-    func itemStatus(forMedia mediaID: Int, inList listID: Int) async throws
+    func itemStatus(forMedia mediaID: Int, inList listID: Int) async throws(TMDbError)
     -> MediaListItemStatus {
         let request = ListItemStatusRequest(listID: listID, mediaID: mediaID)
 
-        let status: MediaListItemStatus
-        do {
-            status = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return status
+        return try await apiClient.perform(request)
     }
 
     func create(
@@ -70,7 +51,7 @@ final class TMDbListService: ListService {
         language: String? = nil,
         isPublic: Bool? = nil,
         session: Session
-    ) async throws -> CreateListResult {
+    ) async throws(TMDbError) -> CreateListResult {
         let request = CreateListRequest(
             name: name,
             description: description,
@@ -79,62 +60,39 @@ final class TMDbListService: ListService {
             sessionID: session.sessionID
         )
 
-        let result: CreateListResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return result
+        return try await apiClient.perform(request)
     }
 
-    func delete(list listID: Int, session: Session) async throws {
+    func delete(list listID: Int, session: Session) async throws(TMDbError) {
         let request = DeleteListRequest(listID: listID, sessionID: session.sessionID)
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
-    func addItem(mediaID: Int, toList listID: Int, session: Session) async throws {
+    func addItem(mediaID: Int, toList listID: Int, session: Session) async throws(TMDbError) {
         let request = AddMediaRequest(
             mediaID: mediaID,
             listID: listID,
             sessionID: session.sessionID
         )
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
-    func removeItem(mediaID: Int, fromList listID: Int, session: Session) async throws {
+    func removeItem(mediaID: Int, fromList listID: Int, session: Session) async throws(TMDbError) {
         let request = RemoveMediaRequest(
             mediaID: mediaID,
             listID: listID,
             sessionID: session.sessionID
         )
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
-    func clear(list listID: Int, session: Session) async throws {
+    func clear(list listID: Int, session: Session) async throws(TMDbError) {
         let request = ClearListRequest(listID: listID, sessionID: session.sessionID)
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
 }

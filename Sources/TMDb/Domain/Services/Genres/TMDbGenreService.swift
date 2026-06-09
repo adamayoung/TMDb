@@ -21,30 +21,20 @@ final class TMDbGenreService: GenreService {
         self.configuration = configuration
     }
 
-    func movieGenres(language: String? = nil) async throws -> [Genre] {
+    func movieGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieGenresRequest(language: languageCode)
 
-        let genreList: GenreList
-        do {
-            genreList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let genreList: GenreList = try await apiClient.perform(request)
 
         return genreList.genres
     }
 
-    func tvSeriesGenres(language: String? = nil) async throws -> [Genre] {
+    func tvSeriesGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesGenresRequest(language: languageCode)
 
-        let genreList: GenreList
-        do {
-            genreList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let genreList: GenreList = try await apiClient.perform(request)
 
         return genreList.genres
     }

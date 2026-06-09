@@ -111,11 +111,15 @@ extension VideoMetadata {
         self.size = try container.decode(VideoSize.self, forKey: .size)
         self.official = try container.decode(Bool.self, forKey: .official)
 
+        // Decode published date using ISO8601 internet date time with fractional seconds
+        // (e.g. "2024-10-15T18:59:47.000Z").
         let publishedAtString = try container.decode(String.self, forKey: .publishedAt)
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-        guard let publishedAtDate = formatter.date(from: publishedAtString) else {
+        guard
+            let publishedAtDate = try? Date(
+                publishedAtString,
+                strategy: Date.ISO8601FormatStyle(includingFractionalSeconds: true)
+            )
+        else {
             throw DecodingError.dataCorruptedError(
                 forKey: .publishedAt,
                 in: container,

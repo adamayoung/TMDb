@@ -34,7 +34,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
     ///
     /// Returns a list of TV series IDs that have been changed in the past
@@ -55,7 +55,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
     ///
     /// Returns a list of person IDs that have been changed in the past
@@ -76,7 +76,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangedIDCollection
+    ) async throws(TMDbError) -> ChangedIDCollection
 
     ///
     /// Returns the changes for a specific movie.
@@ -98,7 +98,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the changes for a specific TV series.
@@ -120,7 +120,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the changes for a specific person.
@@ -142,7 +142,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the changes for a specific TV season.
@@ -164,7 +164,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
     ///
     /// Returns the changes for a specific TV episode.
@@ -186,7 +186,7 @@ public protocol ChangesService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
 }
 
@@ -211,7 +211,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         try await movieChanges(
             startDate: startDate,
             endDate: endDate,
@@ -238,7 +238,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         try await tvSeriesChanges(
             startDate: startDate,
             endDate: endDate,
@@ -265,7 +265,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         try await personChanges(
             startDate: startDate,
             endDate: endDate,
@@ -293,7 +293,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await movieDetails(
             forMovie: id,
             startDate: startDate,
@@ -322,7 +322,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await tvSeriesDetails(
             forTVSeries: id,
             startDate: startDate,
@@ -351,7 +351,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await personDetails(
             forPerson: id,
             startDate: startDate,
@@ -380,7 +380,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await tvSeasonDetails(
             forSeason: seasonID,
             startDate: startDate,
@@ -409,7 +409,7 @@ public extension ChangesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await tvEpisodeDetails(
             forEpisode: episodeID,
             startDate: startDate,

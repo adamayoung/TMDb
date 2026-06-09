@@ -97,12 +97,15 @@ extension ReleaseDate {
         self.languageCode = try container.decodeIfPresent(String.self, forKey: .languageCode)
         self.note = try container.decodeIfPresent(String.self, forKey: .note)
 
-        // Decode release date using ISO8601DateFormatter
+        // Decode release date using ISO8601 internet date time with fractional seconds
+        // (e.g. "1999-10-15T00:00:00.000Z").
         let dateString = try container.decode(String.self, forKey: .releaseDate)
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-        guard let date = formatter.date(from: dateString) else {
+        guard
+            let date = try? Date(
+                dateString,
+                strategy: Date.ISO8601FormatStyle(includingFractionalSeconds: true)
+            )
+        else {
             throw DecodingError.dataCorruptedError(
                 forKey: .releaseDate,
                 in: container,

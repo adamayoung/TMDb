@@ -22,7 +22,7 @@ public protocol AccountService: Sendable {
     ///
     /// - Returns: The user's account details.
     ///
-    func details(session: Session) async throws -> AccountDetails
+    func details(session: Session) async throws(TMDbError) -> AccountDetails
 
     ///
     /// Returns a list of the user's favourited movies.
@@ -42,7 +42,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of the user's favourited TV series.
@@ -62,7 +62,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Adds a movie to a user's favourites.
@@ -78,7 +78,7 @@ public protocol AccountService: Sendable {
         movie movieID: Movie.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Removes a movie from a user's favourites.
@@ -94,7 +94,7 @@ public protocol AccountService: Sendable {
         movie movieID: Movie.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Adds a TV series to a user's favourites.
@@ -110,7 +110,7 @@ public protocol AccountService: Sendable {
         tvSeries tvSeriesID: TVSeries.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Removes a TV series from a user's favourites.
@@ -126,7 +126,7 @@ public protocol AccountService: Sendable {
         tvSeries tvSeriesID: TVSeries.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Returns a list of movies in the user's watchlist.
@@ -146,7 +146,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of TV series in the user's watchlist.
@@ -166,7 +166,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Adds a movie to a user's watchlist.
@@ -182,7 +182,7 @@ public protocol AccountService: Sendable {
         movie movieID: Movie.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Removes a movie from a user's watchlist.
@@ -198,7 +198,7 @@ public protocol AccountService: Sendable {
         movie movieID: Movie.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Adds a TV series to a user's watchlist.
@@ -214,7 +214,7 @@ public protocol AccountService: Sendable {
         tvSeries tvSeriesID: TVSeries.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Removes a TV series from a user's watchlist.
@@ -230,7 +230,7 @@ public protocol AccountService: Sendable {
         tvSeries tvSeriesID: TVSeries.ID,
         accountID: Int,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Returns a list of movies rated by the user.
@@ -250,7 +250,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of TV series rated by the user.
@@ -270,7 +270,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of TV episodes rated by the user.
@@ -290,7 +290,7 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> TVEpisodePageableList
+    ) async throws(TMDbError) -> TVEpisodePageableList
 
     ///
     /// Returns a list of the user's custom lists.
@@ -308,6 +308,6 @@ public protocol AccountService: Sendable {
         page: Int?,
         accountID: Int,
         session: Session
-    ) async throws -> MediaListSummaryPageableList
+    ) async throws(TMDbError) -> MediaListSummaryPageableList
 
 }

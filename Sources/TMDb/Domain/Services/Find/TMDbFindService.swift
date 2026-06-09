@@ -22,7 +22,7 @@ final class TMDbFindService: FindService {
         externalID: String,
         externalSource: ExternalSource,
         language: String? = nil
-    ) async throws -> FindResults {
+    ) async throws(TMDbError) -> FindResults {
         let languageCode = language ?? configuration.defaultLanguage
         let request = FindByIDRequest(
             externalID: externalID,
@@ -30,14 +30,7 @@ final class TMDbFindService: FindService {
             language: languageCode
         )
 
-        let results: FindResults
-        do {
-            results = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return results
+        return try await apiClient.perform(request)
     }
 
 }

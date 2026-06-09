@@ -16,12 +16,12 @@ final class MockAPIClient: APIClient, @unchecked Sendable {
         requests.last
     }
 
-    private var responses: [Result<Any, TMDbAPIError>] = []
+    private var responses: [Result<Any, TMDbError>] = []
     private var requestIndex = 0
 
     init() {}
 
-    func addResponse(_ result: Result<Any, TMDbAPIError>) {
+    func addResponse(_ result: Result<Any, TMDbError>) {
         responses.append(result)
     }
 
@@ -37,7 +37,9 @@ final class MockAPIClient: APIClient, @unchecked Sendable {
 
 extension MockAPIClient {
 
-    func perform<Request: APIRequest>(_ request: Request) async throws -> Request.Response {
+    func perform<Request: APIRequest>(
+        _ request: Request
+    ) async throws(TMDbError) -> Request.Response {
         defer {
             requestIndex += 1
         }

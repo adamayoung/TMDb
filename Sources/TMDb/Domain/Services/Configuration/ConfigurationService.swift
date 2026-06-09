@@ -22,7 +22,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: The API configuration.
     ///
-    func apiConfiguration() async throws -> APIConfiguration
+    func apiConfiguration() async throws(TMDbError) -> APIConfiguration
 
     ///
     /// Returns the list of countries used throughout TMDb.
@@ -36,7 +36,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: Countries used throughout TMDb.
     ///
-    func countries(language: String?) async throws -> [Country]
+    func countries(language: String?) async throws(TMDbError) -> [Country]
 
     ///
     /// Returns a list of the jobs and departments used on TMDb.
@@ -47,7 +47,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: Jobs and departments used on TMDb.
     ///
-    func jobsByDepartment() async throws -> [Department]
+    func jobsByDepartment() async throws(TMDbError) -> [Department]
 
     ///
     /// Returns the list of languages (ISO 639-1 tags) used throughout TMDb.
@@ -58,7 +58,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: Languages used throughout TMDb.
     ///
-    func languages() async throws -> [Language]
+    func languages() async throws(TMDbError) -> [Language]
 
     ///
     /// Returns a list of the officially supported translations on TMDb.
@@ -70,7 +70,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: Primary translations used throughout TMDb.
     ///
-    func primaryTranslations() async throws -> [String]
+    func primaryTranslations() async throws(TMDbError) -> [String]
 
     ///
     /// Returns the list of timezones used throughout TMDb.
@@ -81,7 +81,7 @@ public protocol ConfigurationService: Sendable {
     ///
     /// - Returns: Timezones used throughout TMDb.
     ///
-    func timezones() async throws -> [Timezone]
+    func timezones() async throws(TMDbError) -> [Timezone]
 
 }
 
@@ -99,7 +99,7 @@ public extension ConfigurationService {
     ///
     /// - Returns: Countries used throughout TMDb.
     ///
-    func countries(language: String? = nil) async throws -> [Country] {
+    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
         try await countries(language: language)
     }
 

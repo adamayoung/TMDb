@@ -15,7 +15,7 @@ extension TMDbTVSeriesService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         let request = TVSeriesChangesRequest(
             id: tvSeriesID,
             startDate: startDate,
@@ -23,48 +23,27 @@ extension TMDbTVSeriesService {
             page: page
         )
 
-        let changeCollection: ChangeCollection
-        do {
-            changeCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changeCollection
+        return try await apiClient.perform(request)
     }
 
-    func latest() async throws -> TVSeries {
+    func latest() async throws(TMDbError) -> TVSeries {
         let request = LatestTVSeriesRequest()
 
-        let tvSeries: TVSeries
-        do {
-            tvSeries = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return tvSeries
+        return try await apiClient.perform(request)
     }
 
     func changes(
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangedIDCollection {
+    ) async throws(TMDbError) -> ChangedIDCollection {
         let request = TVSeriesChangesListRequest(
             startDate: startDate,
             endDate: endDate,
             page: page
         )
 
-        let changedIDCollection: ChangedIDCollection
-        do {
-            changedIDCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return changedIDCollection
+        return try await apiClient.perform(request)
     }
 
 }

@@ -18,16 +18,11 @@ final class TMDbWatchProviderService: WatchProviderService {
         self.configuration = configuration
     }
 
-    func countries(language: String? = nil) async throws -> [Country] {
+    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = WatchProviderRegionsRequest(language: languageCode)
 
-        let regions: WatchProviderRegions
-        do {
-            regions = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let regions: WatchProviderRegions = try await apiClient.perform(request)
 
         return regions.results
     }
@@ -35,18 +30,13 @@ final class TMDbWatchProviderService: WatchProviderService {
     func movieWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
-    ) async throws -> [WatchProvider] {
+    ) async throws(TMDbError) -> [WatchProvider] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = WatchProvidersForMoviesRequest(
             country: filter?.country, language: languageCode
         )
 
-        let result: WatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: WatchProviderResult = try await apiClient.perform(request)
 
         return result.results
     }
@@ -54,18 +44,13 @@ final class TMDbWatchProviderService: WatchProviderService {
     func tvSeriesWatchProviders(
         filter: WatchProviderFilter? = nil,
         language: String? = nil
-    ) async throws -> [WatchProvider] {
+    ) async throws(TMDbError) -> [WatchProvider] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = WatchProvidersForTVSeriesRequest(
             country: filter?.country, language: languageCode
         )
 
-        let result: WatchProviderResult
-        do {
-            result = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        let result: WatchProviderResult = try await apiClient.perform(request)
 
         return result.results
     }

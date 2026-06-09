@@ -24,7 +24,7 @@ public protocol KeywordService: Sendable {
     ///
     /// - Returns: Matching keyword.
     ///
-    func details(forKeyword id: Keyword.ID) async throws -> Keyword
+    func details(forKeyword id: Keyword.ID) async throws(TMDbError) -> Keyword
 
     ///
     /// Returns a list of movies for a keyword.
@@ -40,8 +40,11 @@ public protocol KeywordService: Sendable {
     ///
     /// - Returns: A pageable list of movies.
     ///
-    func movies(forKeyword keywordID: Keyword.ID, page: Int?, language: String?) async throws
-        -> MoviePageableList
+    func movies(
+        forKeyword keywordID: Keyword.ID,
+        page: Int?,
+        language: String?
+    ) async throws(TMDbError) -> MoviePageableList
 
 }
 
@@ -58,7 +61,7 @@ public extension KeywordService {
     ///
     /// - Returns: A pageable list of movies.
     ///
-    func movies(forKeyword keywordID: Keyword.ID) async throws -> MoviePageableList {
+    func movies(forKeyword keywordID: Keyword.ID) async throws(TMDbError) -> MoviePageableList {
         try await movies(forKeyword: keywordID, page: nil, language: nil)
     }
 

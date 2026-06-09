@@ -32,7 +32,7 @@ public protocol GuestSessionService: Sendable {
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of TV series rated by a guest session.
@@ -52,7 +52,7 @@ public protocol GuestSessionService: Sendable {
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of TV episodes rated by a guest session.
@@ -73,6 +73,6 @@ public protocol GuestSessionService: Sendable {
         sortedBy: RatedSort?,
         page: Int?,
         guestSessionID: String
-    ) async throws -> TVEpisodePageableList
+    ) async throws(TMDbError) -> TVEpisodePageableList
 
 }

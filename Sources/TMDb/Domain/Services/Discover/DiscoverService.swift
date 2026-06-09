@@ -27,7 +27,7 @@ public protocol DiscoverService: Sendable {
         sortedBy: MovieSort?,
         page: Int?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns TV series to be discovered.
@@ -52,7 +52,7 @@ public protocol DiscoverService: Sendable {
         sortedBy: TVSeriesSort?,
         page: Int?,
         language: String?
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
 }
 
@@ -81,7 +81,7 @@ public extension DiscoverService {
         sortedBy: MovieSort? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await movies(filter: filter, sortedBy: sortedBy, page: page, language: language)
     }
 
@@ -108,7 +108,7 @@ public extension DiscoverService {
         sortedBy: TVSeriesSort? = nil,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await tvSeries(filter: filter, sortedBy: sortedBy, page: page, language: language)
     }
 

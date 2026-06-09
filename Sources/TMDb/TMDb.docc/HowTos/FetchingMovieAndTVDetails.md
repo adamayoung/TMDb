@@ -20,8 +20,10 @@ let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 let movie = try await tmdbClient.movies.details(forMovie: 550)
 print("Title: \(movie.title)")
 print("Release Date: \(movie.releaseDate?.formatted() ?? "Unknown")")
-print("Rating: \(movie.voteAverage)/10")
-print("Overview: \(movie.overview)")
+if let voteAverage = movie.voteAverage {
+    print("Rating: \(voteAverage.formatted(.voteAveragePercentage))")
+}
+print("Overview: \(movie.overview ?? "No overview available")")
 ```
 
 ## Movie Credits

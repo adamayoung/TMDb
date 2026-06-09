@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "xcode": {
+      "type": "stdio",
+      "command": "xcrun",
+      "args": [
+        "mcpbridge"
+      ],
+      "env": {}
+    },
+    "statsig": {
+      "type": "http",
+      "url": "https://api.statsig.com/v1/mcp",
+      "headers": {
+        "statsig-api-key": "${STATSIG_API_KEY}"
+      }
+    },
+    "tmdb": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@adamayoung/mcp-server-tmdb"
+      ],
+      "env": {
+        "TMDB_API_KEY": "${TMDB_API_KEY}"
+      }
+    },
+    "sosumi": {
+      "type": "http",
+      "url": "https://sosumi.ai/mcp"
+    }
+  }
+}

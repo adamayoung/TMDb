@@ -11,7 +11,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
-final class TMDbAPIClient: APIClient {
+final class TMDbAPIClient: UnmappedAPIClient {
 
     private let apiKey: String
     private let baseURL: URL

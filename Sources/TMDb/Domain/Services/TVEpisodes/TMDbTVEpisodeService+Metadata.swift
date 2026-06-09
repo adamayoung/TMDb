@@ -14,30 +14,21 @@ extension TMDbTVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVEpisodeExternalLinksCollection {
+    ) async throws(TMDbError) -> TVEpisodeExternalLinksCollection {
         let request = TVEpisodeExternalLinksRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
             tvSeriesID: tvSeriesID
         )
 
-        let linksCollection: TVEpisodeExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return linksCollection
+        return try await apiClient.perform(request)
     }
 
     func translations(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws
+    ) async throws(TMDbError)
     -> TranslationCollection<TVEpisodeTranslationData> {
         let request = TVEpisodeTranslationsRequest(
             episodeNumber: episodeNumber,
@@ -45,17 +36,7 @@ extension TMDbTVEpisodeService {
             tvSeriesID: tvSeriesID
         )
 
-        let translationCollection:
-            TranslationCollection<TVEpisodeTranslationData>
-        do {
-            translationCollection = try await apiClient.perform(
-                request
-            )
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return translationCollection
+        return try await apiClient.perform(request)
     }
 
 }

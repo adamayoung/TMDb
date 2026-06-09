@@ -18,25 +18,21 @@ final class TMDbPersonService: PersonService {
         self.configuration = configuration
     }
 
-    func details(forPerson id: Person.ID, language: String? = nil) async throws -> Person {
+    func details(
+        forPerson id: Person.ID,
+        language: String? = nil
+    ) async throws(TMDbError) -> Person {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonRequest(id: id, language: languageCode)
 
-        let person: Person
-        do {
-            person = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return person
+        return try await apiClient.perform(request)
     }
 
     func details(
         forPerson id: Person.ID,
         appending: PersonAppendOption,
         language: String? = nil
-    ) async throws -> PersonDetailsResponse {
+    ) async throws(TMDbError) -> PersonDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonDetailsAppendRequest(
             id: id,
@@ -44,107 +40,61 @@ final class TMDbPersonService: PersonService {
             language: languageCode
         )
 
-        let response: PersonDetailsResponse
-        do {
-            response = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return response
+        return try await apiClient.perform(request)
     }
 
     func combinedCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonCombinedCredits {
+    ) async throws(TMDbError) -> PersonCombinedCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonCombinedCreditsRequest(id: personID, language: languageCode)
 
-        let credits: PersonCombinedCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func movieCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonMovieCredits {
+    ) async throws(TMDbError) -> PersonMovieCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonMovieCreditsRequest(id: personID, language: languageCode)
 
-        let credits: PersonMovieCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
     func tvSeriesCredits(
         forPerson personID: Person.ID,
         language: String? = nil
-    ) async throws -> PersonTVSeriesCredits {
+    ) async throws(TMDbError) -> PersonTVSeriesCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonTVSeriesCreditsRequest(id: personID, language: languageCode)
 
-        let credits: PersonTVSeriesCredits
-        do {
-            credits = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return credits
+        return try await apiClient.perform(request)
     }
 
-    func images(forPerson personID: Person.ID) async throws -> PersonImageCollection {
+    func images(forPerson personID: Person.ID) async throws(TMDbError) -> PersonImageCollection {
         let request = PersonImagesRequest(id: personID)
 
-        let imageCollection: PersonImageCollection
-        do {
-            imageCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return imageCollection
+        return try await apiClient.perform(request)
     }
 
-    func popular(page: Int? = nil, language: String? = nil) async throws -> PersonPageableList {
+    func popular(
+        page: Int? = nil,
+        language: String? = nil
+    ) async throws(TMDbError) -> PersonPageableList {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PopularPeopleRequest(page: page, language: languageCode)
 
-        let personList: PersonPageableList
-        do {
-            personList = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return personList
+        return try await apiClient.perform(request)
     }
 
     func externalLinks(
         forPerson personID: Person.ID
-    ) async throws -> PersonExternalLinksCollection {
+    ) async throws(TMDbError) -> PersonExternalLinksCollection {
         let request = PersonExternalLinksRequest(id: personID)
 
-        let linksCollection: PersonExternalLinksCollection
-        do {
-            linksCollection = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return linksCollection
+        return try await apiClient.perform(request)
     }
 
 }

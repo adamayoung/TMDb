@@ -146,8 +146,8 @@ struct MoviePaginationIntegrationTests {
         for try await page in client.movies.allPopularPages() {
             pageCount += 1
             #expect(!page.results.isEmpty)
-            #expect(page.page != nil)
-            #expect(page.totalPages != nil)
+            #expect(page.page >= 1)
+            #expect(page.totalPages >= 1)
             if pageCount >= 2 {
                 break
             }
@@ -188,7 +188,7 @@ struct MoviePaginationIntegrationTests {
         for try await page in client.movies.allNowPlayingPages() {
             pageCount += 1
             #expect(!page.results.isEmpty)
-            #expect(page.page != nil)
+            #expect(page.page >= 1)
             if pageCount >= 2 {
                 break
             }
@@ -202,7 +202,7 @@ struct MoviePaginationIntegrationTests {
         for try await page in client.movies.allUpcomingPages() {
             pageCount += 1
             #expect(!page.results.isEmpty)
-            #expect(page.page != nil)
+            #expect(page.page >= 1)
             if pageCount >= 2 {
                 break
             }

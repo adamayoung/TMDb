@@ -34,7 +34,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> TVSeason
+    ) async throws(TMDbError) -> TVSeason
 
     ///
     /// Returns the primary information about a TV season with
@@ -59,7 +59,7 @@ public protocol TVSeasonService: Sendable {
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeasonAppendOption,
         language: String?
-    ) async throws -> TVSeasonDetailsResponse
+    ) async throws(TMDbError) -> TVSeasonDetailsResponse
 
     ///
     /// Returns the aggregate cast and crew of a TV season.
@@ -85,7 +85,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> TVSeasonAggregateCredits
+    ) async throws(TMDbError) -> TVSeasonAggregateCredits
 
     ///
     /// Returns the cast and crew of a TV season.
@@ -106,7 +106,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> ShowCredits
+    ) async throws(TMDbError) -> ShowCredits
 
     ///
     /// Returns the images that belong to a TV season.
@@ -126,7 +126,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonImageFilter?
-    ) async throws -> TVSeasonImageCollection
+    ) async throws(TMDbError) -> TVSeasonImageCollection
 
     ///
     /// Returns the videos that belong to a TV season.
@@ -146,7 +146,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonVideoFilter?
-    ) async throws -> VideoCollection
+    ) async throws(TMDbError) -> VideoCollection
 
     ///
     /// Returns the user's account states for a TV season.
@@ -167,7 +167,7 @@ public protocol TVSeasonService: Sendable {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws -> AccountStates
+    ) async throws(TMDbError) -> AccountStates
 
     ///
     /// Returns a collection of external links for a TV season.
@@ -186,7 +186,7 @@ public protocol TVSeasonService: Sendable {
     func externalLinks(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVSeasonExternalLinksCollection
+    ) async throws(TMDbError) -> TVSeasonExternalLinksCollection
 
     ///
     /// Returns translations for a TV season.
@@ -205,7 +205,7 @@ public protocol TVSeasonService: Sendable {
     func translations(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws
+    ) async throws(TMDbError)
         -> TranslationCollection<TVSeasonTranslationData>
 
     ///
@@ -228,7 +228,7 @@ public protocol TVSeasonService: Sendable {
     func watchProviders(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> [ShowWatchProvidersByCountry]
+    ) async throws(TMDbError) -> [ShowWatchProvidersByCountry]
 
     ///
     /// Returns change history for a TV season.
@@ -251,7 +251,7 @@ public protocol TVSeasonService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
 }
 
@@ -276,7 +276,7 @@ public extension TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVSeason {
+    ) async throws(TMDbError) -> TVSeason {
         try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
@@ -303,7 +303,7 @@ public extension TVSeasonService {
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeasonAppendOption,
         language: String? = nil
-    ) async throws -> TVSeasonDetailsResponse {
+    ) async throws(TMDbError) -> TVSeasonDetailsResponse {
         try await details(
             forSeason: seasonNumber,
             inTVSeries: tvSeriesID,
@@ -336,7 +336,7 @@ public extension TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVSeasonAggregateCredits {
+    ) async throws(TMDbError) -> TVSeasonAggregateCredits {
         try await aggregateCredits(
             forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language
         )
@@ -361,7 +361,7 @@ public extension TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> ShowCredits {
+    ) async throws(TMDbError) -> ShowCredits {
         try await credits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
     }
 
@@ -383,7 +383,7 @@ public extension TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonImageFilter? = nil
-    ) async throws -> TVSeasonImageCollection {
+    ) async throws(TMDbError) -> TVSeasonImageCollection {
         try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
     }
 
@@ -405,7 +405,7 @@ public extension TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVSeasonVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
     }
 
@@ -430,7 +430,7 @@ public extension TVSeasonService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await changes(
             forSeason: seasonID,
             startDate: startDate,

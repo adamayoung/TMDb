@@ -24,6 +24,6 @@ public protocol CreditService: Sendable {
     ///
     /// - Returns: Matching credit.
     ///
-    func details(forCredit id: Credit.ID) async throws -> Credit
+    func details(forCredit id: Credit.ID) async throws(TMDbError) -> Credit
 
 }

@@ -39,7 +39,7 @@ struct GuestSessionIntegrationTests {
                     guestSessionID: guestSessionID
                 )
             #expect(movieList.results.isEmpty)
-        } catch let error as TMDbError {
+        } catch {
             guard case .notFound = error else {
                 throw error
             }
@@ -64,7 +64,7 @@ struct GuestSessionIntegrationTests {
                     guestSessionID: guestSessionID
                 )
             #expect(tvSeriesList.results.isEmpty)
-        } catch let error as TMDbError {
+        } catch {
             guard case .notFound = error else {
                 throw error
             }
@@ -89,7 +89,7 @@ struct GuestSessionIntegrationTests {
                     guestSessionID: guestSessionID
                 )
             #expect(tvEpisodeList.results.isEmpty)
-        } catch let error as TMDbError {
+        } catch {
             guard case .notFound = error else {
                 throw error
             }

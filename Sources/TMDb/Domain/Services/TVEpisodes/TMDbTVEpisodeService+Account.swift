@@ -15,7 +15,7 @@ extension TMDbTVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws -> AccountStates {
+    ) async throws(TMDbError) -> AccountStates {
         let request = TVEpisodeAccountStatesRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
@@ -23,14 +23,7 @@ extension TMDbTVEpisodeService {
             sessionID: session.sessionID
         )
 
-        let accountStates: AccountStates
-        do {
-            accountStates = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return accountStates
+        return try await apiClient.perform(request)
     }
 
     func addRating(
@@ -39,7 +32,7 @@ extension TMDbTVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws {
+    ) async throws(TMDbError) {
         guard
             (0.5 ... 10.0).contains(rating),
             rating.truncatingRemainder(dividingBy: 0.5) == 0
@@ -55,11 +48,7 @@ extension TMDbTVEpisodeService {
             sessionID: session.sessionID
         )
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
     func deleteRating(
@@ -67,7 +56,7 @@ extension TMDbTVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws {
+    ) async throws(TMDbError) {
         let request = TVEpisodeDeleteRatingRequest(
             episodeNumber: episodeNumber,
             seasonNumber: seasonNumber,
@@ -75,11 +64,7 @@ extension TMDbTVEpisodeService {
             sessionID: session.sessionID
         )
 
-        do {
-            _ = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
+        _ = try await apiClient.perform(request)
     }
 
 }

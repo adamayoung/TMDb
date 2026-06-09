@@ -37,7 +37,7 @@ public protocol TrendingService: Sendable {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType,
         page: Int?,
         language: String?
-    ) async throws -> MoviePageableList
+    ) async throws(TMDbError) -> MoviePageableList
 
     ///
     /// Returns a list of the daily or weekly trending TV series.
@@ -63,7 +63,7 @@ public protocol TrendingService: Sendable {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType,
         page: Int?,
         language: String?
-    ) async throws -> TVSeriesPageableList
+    ) async throws(TMDbError) -> TVSeriesPageableList
 
     ///
     /// Returns a list of the daily or weekly trending people.
@@ -89,7 +89,7 @@ public protocol TrendingService: Sendable {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType,
         page: Int?,
         language: String?
-    ) async throws -> PersonPageableList
+    ) async throws(TMDbError) -> PersonPageableList
 
     ///
     /// Returns a list of the daily or weekly trending movies, TV series, and people.
@@ -115,7 +115,7 @@ public protocol TrendingService: Sendable {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType,
         page: Int?,
         language: String?
-    ) async throws -> TrendingPageableList
+    ) async throws(TMDbError) -> TrendingPageableList
 
 }
 
@@ -145,7 +145,7 @@ public extension TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await movies(inTimeWindow: timeWindow, page: page, language: language)
     }
 
@@ -173,7 +173,7 @@ public extension TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await tvSeries(inTimeWindow: timeWindow, page: page, language: language)
     }
 
@@ -201,7 +201,7 @@ public extension TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> PersonPageableList {
+    ) async throws(TMDbError) -> PersonPageableList {
         try await people(inTimeWindow: timeWindow, page: page, language: language)
     }
 
@@ -229,7 +229,7 @@ public extension TrendingService {
         inTimeWindow timeWindow: TrendingTimeWindowFilterType = .day,
         page: Int? = nil,
         language: String? = nil
-    ) async throws -> TrendingPageableList {
+    ) async throws(TMDbError) -> TrendingPageableList {
         try await allTrending(inTimeWindow: timeWindow, page: page, language: language)
     }
 

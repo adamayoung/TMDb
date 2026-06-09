@@ -93,7 +93,7 @@ struct TMDbPersonServiceChangesTests {
         apiClient.addResponse(.success(expectedResult))
         let expectedRequest = LatestPersonRequest()
 
-        let result = try await service.latestPerson()
+        let result = try await service.latest()
 
         #expect(result == expectedResult)
         #expect(
@@ -107,7 +107,7 @@ struct TMDbPersonServiceChangesTests {
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            _ = try await service.latestPerson()
+            _ = try await service.latest()
         }
     }
 
@@ -125,7 +125,7 @@ struct TMDbPersonServiceChangesTests {
         )
 
         let result = try await (service as PersonService)
-            .personChanges()
+            .changes()
 
         #expect(result == expectedResult)
         #expect(
@@ -150,7 +150,7 @@ struct TMDbPersonServiceChangesTests {
             page: page
         )
 
-        let result = try await service.personChanges(
+        let result = try await service.changes(
             startDate: startDate,
             endDate: endDate,
             page: page
@@ -168,7 +168,7 @@ struct TMDbPersonServiceChangesTests {
         apiClient.addResponse(.failure(.unknown))
 
         await #expect(throws: TMDbError.unknown) {
-            _ = try await service.personChanges()
+            _ = try await service.changes()
         }
     }
 

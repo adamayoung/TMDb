@@ -16,30 +16,16 @@ final class TMDbCertificationService: CertificationService {
         self.apiClient = apiClient
     }
 
-    func movieCertifications() async throws -> [String: [Certification]] {
+    func movieCertifications() async throws(TMDbError) -> [String: [Certification]] {
         let request = MovieCertificationsRequest()
 
-        let certifications: Certifications
-        do {
-            certifications = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return certifications.certifications
+        return try await apiClient.perform(request).certifications
     }
 
-    func tvSeriesCertifications() async throws -> [String: [Certification]] {
+    func tvSeriesCertifications() async throws(TMDbError) -> [String: [Certification]] {
         let request = TVSeriesCertificationsRequest()
 
-        let certifications: Certifications
-        do {
-            certifications = try await apiClient.perform(request)
-        } catch let error {
-            throw TMDbError(error: error)
-        }
-
-        return certifications.certifications
+        return try await apiClient.perform(request).certifications
     }
 
 }

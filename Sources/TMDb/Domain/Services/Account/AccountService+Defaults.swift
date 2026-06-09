@@ -27,7 +27,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await favouriteMovies(
             sortedBy: sortedBy,
             page: page,
@@ -54,7 +54,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await favouriteTVSeries(
             sortedBy: sortedBy,
             page: page,
@@ -81,7 +81,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await movieWatchlist(
             sortedBy: sortedBy,
             page: page,
@@ -108,7 +108,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await tvSeriesWatchlist(
             sortedBy: sortedBy,
             page: page,
@@ -135,7 +135,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> MoviePageableList {
+    ) async throws(TMDbError) -> MoviePageableList {
         try await ratedMovies(
             sortedBy: sortedBy,
             page: page,
@@ -162,7 +162,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> TVSeriesPageableList {
+    ) async throws(TMDbError) -> TVSeriesPageableList {
         try await ratedTVSeries(
             sortedBy: sortedBy,
             page: page,
@@ -189,7 +189,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> TVEpisodePageableList {
+    ) async throws(TMDbError) -> TVEpisodePageableList {
         try await ratedTVEpisodes(
             sortedBy: sortedBy,
             page: page,
@@ -214,7 +214,7 @@ public extension AccountService {
         page: Int? = nil,
         accountID: Int,
         session: Session
-    ) async throws -> MediaListSummaryPageableList {
+    ) async throws(TMDbError) -> MediaListSummaryPageableList {
         try await lists(
             page: page,
             accountID: accountID,

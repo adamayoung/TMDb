@@ -36,7 +36,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> TVEpisode
+    ) async throws(TMDbError) -> TVEpisode
 
     ///
     /// Returns the primary information about a TV episode with
@@ -63,7 +63,7 @@ public protocol TVEpisodeService: Sendable {
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVEpisodeAppendOption,
         language: String?
-    ) async throws -> TVEpisodeDetailsResponse
+    ) async throws(TMDbError) -> TVEpisodeDetailsResponse
 
     ///
     /// Returns the cast and crew of a TV episode.
@@ -86,7 +86,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String?
-    ) async throws -> ShowCredits
+    ) async throws(TMDbError) -> ShowCredits
 
     ///
     /// Returns the images that belong to a TV episode.
@@ -108,7 +108,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeImageFilter?
-    ) async throws -> TVEpisodeImageCollection
+    ) async throws(TMDbError) -> TVEpisodeImageCollection
 
     ///
     /// Returns the videos that belong to a TV series episode.
@@ -130,7 +130,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeVideoFilter?
-    ) async throws -> VideoCollection
+    ) async throws(TMDbError) -> VideoCollection
 
     ///
     /// Returns the user's account states for a TV episode.
@@ -153,7 +153,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws -> AccountStates
+    ) async throws(TMDbError) -> AccountStates
 
     ///
     /// Adds a rating for a TV episode.
@@ -179,7 +179,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Deletes the user's rating for a TV episode.
@@ -200,7 +200,7 @@ public protocol TVEpisodeService: Sendable {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         session: Session
-    ) async throws
+    ) async throws(TMDbError)
 
     ///
     /// Returns a collection of external links for a TV episode.
@@ -222,7 +222,7 @@ public protocol TVEpisodeService: Sendable {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws -> TVEpisodeExternalLinksCollection
+    ) async throws(TMDbError) -> TVEpisodeExternalLinksCollection
 
     ///
     /// Returns translations for a TV episode.
@@ -243,7 +243,7 @@ public protocol TVEpisodeService: Sendable {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID
-    ) async throws
+    ) async throws(TMDbError)
         -> TranslationCollection<TVEpisodeTranslationData>
 
     ///
@@ -267,7 +267,7 @@ public protocol TVEpisodeService: Sendable {
         startDate: Date?,
         endDate: Date?,
         page: Int?
-    ) async throws -> ChangeCollection
+    ) async throws(TMDbError) -> ChangeCollection
 
 }
 
@@ -294,7 +294,7 @@ public extension TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> TVEpisode {
+    ) async throws(TMDbError) -> TVEpisode {
         try await details(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
@@ -328,7 +328,7 @@ public extension TVEpisodeService {
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVEpisodeAppendOption,
         language: String? = nil
-    ) async throws -> TVEpisodeDetailsResponse {
+    ) async throws(TMDbError) -> TVEpisodeDetailsResponse {
         try await details(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
@@ -359,7 +359,7 @@ public extension TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
-    ) async throws -> ShowCredits {
+    ) async throws(TMDbError) -> ShowCredits {
         try await credits(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
@@ -388,7 +388,7 @@ public extension TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeImageFilter? = nil
-    ) async throws -> TVEpisodeImageCollection {
+    ) async throws(TMDbError) -> TVEpisodeImageCollection {
         try await images(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
@@ -417,7 +417,7 @@ public extension TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         filter: TVEpisodeVideoFilter? = nil
-    ) async throws -> VideoCollection {
+    ) async throws(TMDbError) -> VideoCollection {
         try await videos(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
@@ -447,7 +447,7 @@ public extension TVEpisodeService {
         startDate: Date? = nil,
         endDate: Date? = nil,
         page: Int? = nil
-    ) async throws -> ChangeCollection {
+    ) async throws(TMDbError) -> ChangeCollection {
         try await changes(
             forEpisode: episodeID,
             startDate: startDate,
