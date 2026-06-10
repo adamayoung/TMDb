@@ -37,5 +37,6 @@ extension Tag {
     @Tag static var retry: Self
     @Tag static var cache: Self
     @Tag static var naturalLanguageSearch: Self
+    @Tag static var languageModelTools: Self
 
 }

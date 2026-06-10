@@ -23,6 +23,7 @@
 - ``trending``
 - ``search``
 - ``naturalLanguageSearch``
+- ``languageModelTools``
 - ``find``
 - ``credits``
 - ``reviews``
