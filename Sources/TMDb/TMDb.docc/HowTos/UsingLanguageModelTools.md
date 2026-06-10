@@ -49,6 +49,16 @@ The `language` and `region` you pass to ``TMDbToolbox/init(client:language:regio
 are applied to every tool's results — `region` drives watch-provider and
 streaming-availability lookups.
 
+Each tool is also available directly on the client when you don't need a default
+language or region — for example ``TMDbClient/searchTool`` and
+``TMDbClient/watchProvidersTool``:
+
+```swift
+let session = LanguageModelSession(
+    tools: [tmdbClient.searchTool, tmdbClient.watchProvidersTool]
+)
+```
+
 ## Checking Availability
 
 The tools run wherever the framework is present, but the model you attach to a

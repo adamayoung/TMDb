@@ -319,34 +319,3 @@ public final class TMDbClient: Sendable {
 
     }
 #endif
-
-#if canImport(FoundationModels) && !os(tvOS)
-    import FoundationModels
-
-    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
-    public extension TMDbClient {
-
-        ///
-        /// FoundationModels `Tool`s that expose TMDb to a `LanguageModelSession`,
-        /// for building a conversational movie assistant.
-        ///
-        /// ```swift
-        /// let session = LanguageModelSession(tools: tmdbClient.languageModelTools)
-        /// let reply = try await session.respond(to: "What's trending this week?")
-        /// ```
-        ///
-        /// Each tool returns compact text whose every line leads with the relevant
-        /// TMDb `id`, so the model can chain calls — searching for a title, then
-        /// fetching its details or watch providers.
-        ///
-        /// - Note: This is a shorthand for `TMDbToolbox(client:).all`. For a smaller,
-        ///   task-relevant subset of tools, or to apply a default language or region,
-        ///   construct a ``TMDbToolbox`` directly. Each access builds a new toolbox,
-        ///   so store the result in a local rather than accessing the property twice.
-        ///
-        var languageModelTools: [any Tool] {
-            TMDbToolbox(client: self).all
-        }
-
-    }
-#endif

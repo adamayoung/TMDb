@@ -23,7 +23,6 @@
 - ``trending``
 - ``search``
 - ``naturalLanguageSearch``
-- ``languageModelTools``
 - ``find``
 - ``credits``
 - ``reviews``
@@ -40,3 +39,14 @@
 - ``authentication``
 - ``changes``
 - ``guestSessions``
+
+### Language Model Tools
+
+- ``languageModelTools``
+- ``searchTool``
+- ``movieDetailsTool``
+- ``tvSeriesDetailsTool``
+- ``personFilmographyTool``
+- ``trendingTool``
+- ``watchProvidersTool``
+- ``discoverMoviesTool``
