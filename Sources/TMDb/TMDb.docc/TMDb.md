@@ -58,6 +58,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/UsingAutoPagination>
 - <doc:/GeneratingImageURLs>
 - <doc:/ManagingUserAccounts>
+- <doc:/UsingLanguageModelTools>
 
 ### Movies
 
@@ -242,6 +243,10 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``SearchDegradation``
 - ``NaturalLanguageSearchAvailability``
 - ``NaturalLanguageSearchError``
+
+### Language Model Tools
+
+- ``TMDbToolbox``
 
 ### Trending
 

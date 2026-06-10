@@ -43,6 +43,10 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   Apple's Natural Language framework on every Apple platform, with
   Foundation Models handling fuzzier prompts on devices with Apple
   Intelligence
+* **Language Model Tools**: Drop-in Foundation Models `Tool`s for a
+  conversational movie assistant — add them to a `LanguageModelSession`
+  and the model searches, fetches details, and finds streaming
+  availability on its own (iOS/macOS/visionOS 26, watchOS 27)
 * **Modern Swift**: Async/await throughout, strongly-typed models,
   protocol-based architecture
 
@@ -76,6 +80,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
 | **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) |
+| **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
 for detailed usage.
