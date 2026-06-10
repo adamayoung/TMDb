@@ -78,6 +78,22 @@
         }
 
         @available(macOS 26, *)
+        @Test("clamps a negative maxCredits without crashing")
+        func clampsNegativeMaxCredits() async throws {
+            let credits = PersonCombinedCredits(
+                id: 287,
+                cast: [.movie(.mock(id: 10, popularity: 5))],
+                crew: []
+            )
+            apiClient.addResponse(.success(Person.mock(id: 287, name: "Brad Pitt")))
+            apiClient.addResponse(.success(credits))
+
+            let output = try await tool.call(arguments: .init(personID: 287, maxCredits: -3))
+
+            #expect(output.contains("No notable credits found."))
+        }
+
+        @available(macOS 26, *)
         @Test("recovers from not found with a readable message")
         func recoversFromNotFound() async throws {
             apiClient.addResponse(.failure(.notFound()))

@@ -359,6 +359,8 @@ extension ToolOutputFormatter {
 
     private static func truncate(_ text: String, limit: Int) -> String {
         let clean = sanitize(text)
+        // `count` and `index(_:offsetBy:)` both work in grapheme clusters, matching
+        // the user-visible character limit.
         guard clean.count > limit else {
             return clean
         }

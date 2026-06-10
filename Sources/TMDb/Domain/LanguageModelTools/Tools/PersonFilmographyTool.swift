@@ -57,7 +57,9 @@
                     language: language
                 )
 
-                let limit = arguments.maxCredits ?? Self.defaultMaxCredits
+                // Clamp to a non-negative value: `prefix(_:)` traps on a negative
+                // length, and a language model could generate one.
+                let limit = max(0, arguments.maxCredits ?? Self.defaultMaxCredits)
                 let shows = credits.allShows
                     .sorted(by: isMoreNotable)
                     .prefix(limit)

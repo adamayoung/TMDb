@@ -13,6 +13,8 @@
     @Suite(.tags(.languageModelTools))
     struct TVSeriesDetailsToolTests {
 
+        private struct DummyError: Error {}
+
         private let apiClient = MockAPIClient()
 
         @available(macOS 26, *)
@@ -38,6 +40,16 @@
             let output = try await tool.call(arguments: .init(tvSeriesID: 999))
 
             #expect(output == "No TMDb TV series with id 999 found.")
+        }
+
+        @available(macOS 26, *)
+        @Test("rethrows infrastructure errors")
+        func rethrowsInfrastructureErrors() async {
+            apiClient.addResponse(.failure(.network(DummyError())))
+
+            await #expect(throws: TMDbError.self) {
+                _ = try await tool.call(arguments: .init(tvSeriesID: 1))
+            }
         }
 
     }

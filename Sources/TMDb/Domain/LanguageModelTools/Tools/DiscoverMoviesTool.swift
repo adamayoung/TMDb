@@ -172,7 +172,9 @@
                     return .on(lower)
                 }
 
-                return .between(start: lower, end: upper)
+                // Tolerate an inverted range from the model rather than submitting
+                // a bound that always returns zero results.
+                return .between(start: min(lower, upper), end: max(lower, upper))
             }
         }
 

@@ -92,6 +92,9 @@
         ///
         /// Every tool in the toolbox, ready to pass to a `LanguageModelSession`.
         ///
+        /// Each access builds a new set of tool instances; store the result in a
+        /// local if you need it more than once.
+        ///
         public var all: [any Tool] {
             [
                 search,
