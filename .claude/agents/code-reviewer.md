@@ -40,7 +40,7 @@ Present me with the final report where both the review and the adversarial revie
 
 ## Architecture
 
-**Service-Based Design (25 services):**
+**Service-Based Design (26 services — 25 cross-platform + 1 Apple-only):**
 ```
 TMDbClient (main public facade)
 ├── AccountService        ├── ListService
@@ -55,17 +55,21 @@ TMDbClient (main public facade)
 ├── FindService           ├── TVSeasonService
 ├── GenreService          ├── TVSeriesService
 ├── GuestSessionService   ├── WatchProviderService
-└── KeywordService
+├── KeywordService
+└── NaturalLanguageSearchService  (Apple-only; #if canImport(NaturalLanguage))
 ```
 
 **Pattern:** Each service = public protocol + internal `TMDb`-prefixed implementation. Clean separation of concerns between layers.
 
 **Networking Layer:**
 ```
-Service → APIRequest (DecodableAPIRequest/CodableAPIRequest)
-       → APIClient (TMDbAPIClient)
-       → HTTPClient protocol (URLSessionHTTPClientAdapter)
-       → URLSession
+Service (e.g. TMDbMovieService)
+└── ErrorMappingAPIClient        (maps TMDbAPIError → public TMDbError; 18.0.0)
+    └── TMDbAPIClient            (adds api_key, validates status, decodes)
+        └── HTTPClient (protocol)
+            └── CacheHTTPClient          (opt-in; cache hits short-circuit)
+                └── RetryHTTPClient      (opt-in; exponential backoff)
+                    └── URLSessionHTTPClientAdapter  (or user-supplied client)
 ```
 
 **Dependency Injection:** `TMDbFactory` creates all services and wires dependencies.
@@ -74,8 +78,10 @@ Service → APIRequest (DecodableAPIRequest/CodableAPIRequest)
 - `Sources/TMDb/TMDbClient.swift` — Main public API entry point
 - `Sources/TMDb/TMDbFactory.swift` — DI factory
 - `Sources/TMDb/Domain/Services/` — Service protocols and implementations
-- `Sources/TMDb/Domain/Models/` — ~140 Codable data models
+- `Sources/TMDb/Domain/Models/` — ~170 Codable data models
 - `Sources/TMDb/Domain/APIClient/` — API abstraction layer
+- `Sources/TMDb/Domain/LanguageModelTools/` — `TMDbToolbox` FoundationModels
+  tools (Apple-only)
 - `Sources/TMDb/Networking/` — HTTP client, serializers
 
 ## Swift Rules
@@ -114,10 +120,10 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 
 ## Build/Tooling
 
-**Preferred (when Xcode MCP available):**
-- `mcp__xcode__BuildProject` for building
-- `mcp__xcode__RunAllTests` with **TMDb** test plan for unit tests
-- `mcp__xcode__RunAllTests` with **Integration** test plan for integration tests
+**Preferred (inside Xcode — use the `xcode-tools` MCP, NOT `mcp__xcode__*`):**
+- `mcp__xcode-tools__BuildProject` for building
+- `mcp__xcode-tools__RunAllTests` with **TMDb** test plan for unit tests
+- `mcp__xcode-tools__RunAllTests` with **Integration** test plan for integration tests
 
 **Fallback (command line):**
 - `make build` — Build with warnings-as-errors
@@ -137,6 +143,7 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - Verify new public API is exposed through `TMDbClient` and registered in `TMDbFactory`.
 - Check that DocC catalog is updated when public API changes (see DocC Catalog Sync below).
 - When reviewing model changes or fixture accuracy, verify properties against the live TMDb API (see Model Verification below).
+- For changes under `Sources/TMDb/Domain/LanguageModelTools/` (the FoundationModels-based `TMDbToolbox`), verify the `#if canImport(FoundationModels) && !os(tvOS)` gating and `@available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)` annotations are present and correct.
 - When needing to verify Apple APIs (concurrency safety, availability, behavior), use `mcp__sosumi__searchAppleDocumentation` and `mcp__sosumi__fetchAppleDocumentation` to check official documentation.
 - For deep Swift Concurrency analysis (async/await patterns, actor isolation, Sendable conformance, data races), invoke the `swift-concurrency` skill.
 - For Swift Testing review (test structure, macros, traits, parameterized tests), invoke the `swift-testing-expert` skill.

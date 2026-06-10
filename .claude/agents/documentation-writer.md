@@ -40,7 +40,7 @@ You are a Swift DocC documentation specialist for the TMDb Swift Package — a c
 
 **Key Documentation Touchpoints:**
 - `Sources/TMDb/Domain/Services/` — service protocols (documentation here defines the public API)
-- `Sources/TMDb/Domain/Models/` — ~140 Codable data models
+- `Sources/TMDb/Domain/Models/` — ~170 Codable data models
 - `Sources/TMDb/TMDb.docc/` — DocC catalog (extension files, topic sections, guides)
 
 ## Documentation Format
@@ -277,6 +277,7 @@ Sources/TMDb/TMDb.docc/
 │   ├── TMDbClient.md            # TMDbClient service property listings
 │   ├── MovieService.md          # Method groupings by category
 │   ├── TVSeriesService.md
+│   ├── TMDbToolbox.md           # FoundationModels tools (Apple-only)
 │   └── ...                      # One file per service
 ├── GettingStarted/
 ├── HowTos/

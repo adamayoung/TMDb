@@ -9,9 +9,14 @@ VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.
 
 SWIFT_CONTAINER_IMAGE = swift:6.0.3-jammy
 
+# SwiftPM scratch (build) directory — the swift-build equivalent of Xcode's
+# DerivedData. Override to isolate concurrent builds across git worktrees, e.g.
+# `make test SCRATCH_PATH=.build/agent-a` (stays under the gitignored .build).
+SCRATCH_PATH ?= .build
+
 .PHONY: clean
 clean:
-	swift package clean
+	swift package --scratch-path $(SCRATCH_PATH) clean
 	rm -rf docs
 
 .PHONY: format
@@ -31,11 +36,11 @@ lint-markdown:
 
 .PHONY: build
 build:
-	set -o pipefail && swift build -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && swift build --scratch-path $(SCRATCH_PATH) -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-tests
 build-tests:
-	set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && swift build --build-tests --scratch-path $(SCRATCH_PATH) -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-linux
 build-linux:
@@ -43,7 +48,7 @@ build-linux:
 
 .PHONY: build-release
 build-release:
-	set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && swift build -c release --scratch-path $(SCRATCH_PATH) -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
 
 .PHONY: build-linux-release
 build-linux-release:
@@ -51,16 +56,16 @@ build-linux-release:
 
 .PHONY: build-docs
 build-docs:
-	SWIFTCI_DOCC=1 swift package generate-documentation --warnings-as-errors
-	swift package resolve
+	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) generate-documentation --warnings-as-errors
+	swift package --scratch-path $(SCRATCH_PATH) resolve
 
 .PHONY: preview-docs
 preview-docs:
-	SWIFTCI_DOCC=1 swift package --disable-sandbox preview-documentation --target $(TARGET)
+	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) --disable-sandbox preview-documentation --target $(TARGET)
 
 .PHONY: generate-docs
 generate-docs:
-	SWIFTCI_DOCC=1 swift package --allow-writing-to-directory docs \
+	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) --allow-writing-to-directory docs \
 		generate-documentation --target $(TARGET) \
 		--disable-indexing \
 		--transform-for-static-hosting \
@@ -69,8 +74,8 @@ generate-docs:
 
 .PHONY: test
 test:
-	set -o pipefail && swift build --build-tests -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && swift test --skip-build --filter $(TEST_TARGET) 2>&1 | xcsift -f toon
+	set -o pipefail && swift build --build-tests --scratch-path $(SCRATCH_PATH) -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
+	set -o pipefail && swift test --skip-build --scratch-path $(SCRATCH_PATH) --filter $(TEST_TARGET) 2>&1 | xcsift -f toon
 
 .PHONY: test-linux
 test-linux:
@@ -78,8 +83,8 @@ test-linux:
 
 .PHONY: integration-test
 integration-test: .check-env-vars
-	set -o pipefail && swift build --build-tests 2>&1 | xcsift -f toon
-	set -o pipefail && swift test --skip-build --filter $(INTEGRATION_TEST_TARGET) 2>&1 | xcsift -f toon
+	set -o pipefail && swift build --build-tests --scratch-path $(SCRATCH_PATH) 2>&1 | xcsift -f toon
+	set -o pipefail && swift test --skip-build --scratch-path $(SCRATCH_PATH) --filter $(INTEGRATION_TEST_TARGET) 2>&1 | xcsift -f toon
 
 .PHONY: ci
 ci: .check-env-vars lint lint-markdown test integration-test build-release build-docs

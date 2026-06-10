@@ -48,14 +48,20 @@ TMDbClient (main facade)
 
 The `naturalLanguageSearch` service is **Apple-platforms only** — it is
 defined in a `TMDbClient` extension gated by `#if canImport(NaturalLanguage)`,
-so it is unavailable on Linux and Windows.
+so it is unavailable on Linux and Windows. It interprets free-text queries
+on-device with a deterministic planner (a rule-based intent classifier plus
+`NLTagger` person-name extraction) and, on capable devices, an optional
+`FoundationModelsSearchPlanGenerator` fallback for fuzzier prompts — degrading
+to a plain multi-search where neither is available.
 
 **Key files:**
 
 - `Sources/TMDb/TMDbClient.swift` — main public API entry point
 - `Sources/TMDb/TMDbFactory.swift` — dependency injection factory
 - `Sources/TMDb/Domain/Services/` — service protocols and implementations
-- `Sources/TMDb/Domain/Models/` — Codable data models (~140 files)
+- `Sources/TMDb/Domain/Models/` — Codable data models (~170 files)
+- `Sources/TMDb/Domain/LanguageModelTools/` — FoundationModels `Tool`s
+  exposing TMDb to a conversational assistant (Apple-only)
 
 ### Networking Layer
 
@@ -79,6 +85,22 @@ Service (e.g. TMDbMovieService)
 
 In 18.0.0 an `ErrorMappingAPIClient` decorator wraps the `APIClient` to
 centralise mapping of `TMDbAPIError` into the public `TMDbError`.
+
+### Language Model Tools (Apple-only)
+
+`TMDbToolbox` (`Sources/TMDb/Domain/LanguageModelTools/`) wraps the services
+as FoundationModels `Tool`s so TMDb can back a conversational movie assistant
+through a `LanguageModelSession`. It is gated by
+`#if canImport(FoundationModels) && !os(tvOS)` and annotated
+`@available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)`.
+
+Seven tools are exposed: `search`, `movieDetails`, `tvSeriesDetails`,
+`personFilmography`, `trending`, `watchProviders`, and `discoverMovies`. They
+are reachable from `TMDbClient` via `languageModelTools` (shorthand for
+`TMDbToolbox(client:).all`) and individual `*Tool` accessors (`searchTool`,
+`movieDetailsTool`, …). Each tool returns compact text whose every line leads
+with the relevant TMDb `id`, letting the model chain calls — search a title,
+then fetch its details or watch providers.
 
 ### Test Organization
 
@@ -160,6 +182,19 @@ token-efficient output. Linux/Docker targets do not use xcsift.
 - `set -o pipefail` ensures failures propagate through the pipe
 - `2>&1` captures stderr (where compiler diagnostics are emitted)
 
+### Build Isolation and Sequential Builds
+
+The `make` targets build with SwiftPM (`swift build`/`swift test`), not
+`xcodebuild`, so there is no `-derivedDataPath`; the equivalent is the
+scratch directory. Every target accepts an overridable `SCRATCH_PATH`
+(default `.build`):
+
+- Run builds **sequentially** within a worktree — concurrent `swift build`s
+  fight over the same `.build` and cause SwiftPM lock contention and hangs.
+- When multiple agents build at once in **separate git worktrees**, give each
+  its own scratch dir, e.g. `make test SCRATCH_PATH=.build/agent-a`. Any path
+  under `.build` is already covered by the `/.build` `.gitignore` rule.
+
 ### Shell Environment
 
 Run shell commands directly — do not prefix them with
@@ -178,12 +213,14 @@ gh pr create ...
 ```bash
 # Build
 make build                    # Build for current platform
+make build-tests              # Build the package + all test targets
 make build-release            # Release build
+make build-linux              # Build in a Swift Docker container
 
 # Test
 make test                     # Unit tests (macOS)
-make test-ios                 # iOS simulator tests
 make integration-test         # Integration tests (requires env vars)
+make test-linux               # Unit tests in a Swift Docker container
 
 # Single test (Swift Testing framework)
 swift test --filter "TestClassName"
@@ -197,10 +234,16 @@ make lint-markdown            # Lint markdown files
 # Documentation
 make preview-docs             # Preview DocC locally
 make build-docs               # Build documentation (warnings-as-errors)
+make generate-docs            # Generate static DocC site into docs/
 
 # Full CI check (run before creating a PR)
-make ci                       # All checks: lint, test, build, docs
+make ci                       # lint, lint-markdown, test, integration-test,
+                              #   build-release, build-docs
 ```
+
+There is no `make test-ios` target. Run simulator tests
+(iOS/watchOS/tvOS/visionOS) from Xcode using the **TMDb** (unit) or
+**Integration** test plans.
 
 ## Code Style
 
@@ -215,8 +258,12 @@ Enforced via `swiftlint` and `swiftformat`:
   `OptionSet` values, nil/empty strings, and other degenerate inputs
   even if callers are unlikely to pass them
 
-Tools are installed via Homebrew at `/opt/homebrew/bin/swiftlint` and
-`/opt/homebrew/bin/swiftformat`, which is already on `PATH`.
+`swiftlint` and `swiftformat` are on `PATH`. **Versions are pinned** —
+swiftlint `0.63.2` / swiftformat `0.61.1` — and CI downloads these exact
+binaries, so keep local versions matched. A `superfluous_disable_command`
+error on *unchanged* files is almost always a version-drift artifact (a
+rule's behaviour changed between versions), not a real violation — check
+`swiftlint version` against the pin before editing the flagged code.
 
 ## Testing
 
