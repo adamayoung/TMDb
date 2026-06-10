@@ -42,7 +42,7 @@
             var personID: Int
 
             /// The maximum number of credits to list.
-            @Guide(description: "Maximum number of credits to list, from 1 to 20")
+            @Guide(description: "Maximum number of credits to list, from 1 to 20", .minimum(1))
             var maxCredits: Int?
         }
 
