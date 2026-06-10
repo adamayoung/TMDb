@@ -140,6 +140,16 @@ for:
 
 ## Build and Test Tooling
 
+### Prefer the Project Skills (Delegated to Haiku)
+
+For builds and test runs, invoke the project skills rather than calling `make`
+or the Xcode MCP directly: `/build`, `/build-for-testing`, `/test`, and
+`/integration-test`. Each delegates to a Haiku subagent that runs the command,
+writes the full output to a `.build/last-*.log` file, and returns only a
+concise summary (status, counts, failures as `file:line`) — keeping this
+context lean. `/lint` and `/format` run `make` directly (they are fast and
+low-output), and `make ci` is run directly before a PR.
+
 ### When Running Inside Xcode (via Claude Agent)
 
 Use **`xcode-tools` MCP server tools** — the native Xcode–Claude Agent
@@ -423,6 +433,10 @@ After public API changes, verify all of the following are in sync:
 6. **Lint markdown**: `make lint-markdown` — required if `.md` files
    changed
 7. **Run full CI**: `make ci` — **REQUIRED before creating any PR**
+
+Run steps 3-4 (and any builds) via the `/test` and `/integration-test`
+skills — they delegate to a Haiku subagent to keep this context lean.
+`/format`, `/lint`, and `make ci` run directly.
 
 Steps 3-4 must always pass. Steps 5-6 are conditional. Steps 1-2 can
 be skipped if formatting tools are not installed. Step 7 is mandatory
