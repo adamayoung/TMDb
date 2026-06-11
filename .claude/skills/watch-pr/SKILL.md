@@ -91,27 +91,28 @@ Classify by `bucket`: `fail` = failing, `pending` = in progress, `pass` /
 While anything is pending, block efficiently with `gh pr checks --watch` rather
 than polling in a tight loop.
 
-For each **failing** check, delegate log retrieval to a **Haiku subagent** so raw
-CI logs never enter your context. Use the Agent tool with
-`subagent_type: general-purpose` and `model: haiku` and this prompt:
+For each **failing** check, delegate diagnosis to a **Haiku subagent** so raw CI
+logs never enter your context. Pick the diagnosis skill by which check failed:
+
+- The **Integration** check (live-API suite from `integration.yml`) →
+  `/diagnose-integration-failure`
+- Any **CI** check — lint, markdown, build, or unit tests from `ci.yml` →
+  `/diagnose-ci-failure`
+
+Use the Agent tool with `subagent_type: general-purpose` and `model: haiku` and
+this prompt (substitute the check name and the chosen skill):
 
 ```text
-Find why the `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`
-and report concisely.
+The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.
 
-1. Run `gh run list --branch <branch> --limit 5 --json databaseId,name,conclusion`
-   to find the failed run id.
-2. Run `gh run view <id> --log-failed`.
+Use the `<SKILL>` skill to diagnose it. The skill locates the failing run,
+reads the log, and maps it to a cause and fix.
 
-Report back ONLY:
-- The failing job/step
-- The root cause
-- The offending `file:line` and message (if any)
-
-Do not paste raw logs.
+Report back ONLY the skill's three-section result — Summary, Cause, Fix —
+including the offending `file:line`. Do not paste raw logs.
 ```
 
-Then fix the issue, verify locally with the matching delegated skill (`/lint`,
+Then apply the fix, verify locally with the matching delegated skill (`/lint`,
 `/build`, `/test`, `/integration-test`), commit (gitmoji), and `git push` — the
 push re-triggers CI. Increment that check's attempt counter.
 

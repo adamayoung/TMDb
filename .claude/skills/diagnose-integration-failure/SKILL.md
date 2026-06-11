@@ -10,6 +10,11 @@ every PR and the merge to `main`, so a failure is **unlikely to be a code
 regression** — a code bug would have been caught by the PR status check before
 reaching this point. Diagnose accordingly.
 
+> **Wrong suite?** If a **CI** check failed instead (lint, markdown, build, or
+> unit tests from `ci.yml`), use `/diagnose-ci-failure`. That one leads with the
+> opposite assumption: a CI failure is almost always caused by the change under
+> review.
+
 Produce a concise markdown analysis with exactly these three sections:
 
 **Summary:** one or two sentences on what failed — name the failing
