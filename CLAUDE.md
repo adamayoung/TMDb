@@ -279,12 +279,17 @@ rule's behaviour changed between versions), not a real violation — check
 
 ### Test-Driven Development
 
-Use a TDD approach when implementing changes or new features:
+Use a TDD approach when implementing changes or new features. **Follow the
+`canon-tdd` skill** — start every feature, endpoint, model, method, or bug
+fix by writing a test list and a failing test before any production code.
+The loop:
 
-1. **Write failing tests first** — define expected behaviour with unit
-   tests and integration tests before writing implementation code
-2. **Implement the minimum code** to make the tests pass
-3. **Refactor** while keeping tests green
+1. **Write a test list** — enumerate the behaviours and edge cases first
+2. **Write failing tests first** — define expected behaviour with unit
+   tests and integration tests before writing implementation code, one
+   test at a time
+3. **Implement the minimum code** to make the tests pass
+4. **Refactor** while keeping tests green
 
 For bug fixes, write a test that reproduces the bug before writing the
 fix.
