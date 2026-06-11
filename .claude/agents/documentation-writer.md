@@ -53,7 +53,7 @@ Use `///` comment style. Never use `/** */`. Every `public` declaration must hav
 ///
 /// Provides an interface for obtaining movies from TMDb.
 ///
-@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, visionOS 1.0, *)
 public protocol MovieService: Sendable {
 ```
 
