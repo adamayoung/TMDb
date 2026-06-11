@@ -30,6 +30,7 @@ struct MovieListItemTests {
             MovieListItem.self, fromResource: "movie-list-item-collection"
         )
 
+        #expect(result.id == 1_697_536)
         #expect(result.genreIDs == [])
     }
 

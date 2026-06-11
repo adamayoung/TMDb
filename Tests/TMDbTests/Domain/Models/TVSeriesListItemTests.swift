@@ -30,6 +30,7 @@ struct TVSeriesListItemTests {
             TVSeriesListItem.self, fromResource: "tv-series-list-item-no-genre-ids"
         )
 
+        #expect(result.id == 11366)
         #expect(result.genreIDs == [])
     }
 
