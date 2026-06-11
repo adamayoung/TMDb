@@ -29,14 +29,18 @@ NOT lead with "a code bug". Rank these:
 2. **Stale assumed data in an integration test** — the test asserts a specific
    live value (a title, count, id, date, or ordering) that the API now returns
    differently. The code is fine; the test's baseline has drifted.
-3. **A transient API error or rate limiting (HTTP 429).**
+3. **A transient API error, rate limiting (HTTP 429), or a timeout** — the
+   Integration Test job has a 30-minute `timeout-minutes`, and a cancelled
+   (timed-out) run still surfaces as a workflow `failure`. A truncated log with
+   no assertion failure, or a run that ran the full 30 minutes, points here.
 
 Cite the specific HTTP status codes, error messages, or failing assertions from
 the log that point to your conclusion.
 
 **Suggested fix:** the concrete next step — which Swift model or JSON fixture to
 update for an API change, which integration-test assertion to relax or refresh
-for drifted data, or (only for case 3) re-run the job / wait out rate limiting.
+for drifted data, or (only for case 3) re-run the job / wait out rate limiting /
+investigate the slow run if it timed out.
 
 Keep it under ~150 words.
 

@@ -140,7 +140,7 @@ jobs:
               "" \
               "---" \
               "" \
-              "This same integration suite gates every PR and the merge to main, so this is unlikely to be a code regression. The usual culprits are a **TMDb backend change** (a response field added, removed, renamed, or made nullable) or **stale assumed data** in an integration test (a hard-coded title, count, id, or date the live API now returns differently) — with transient errors / rate limiting a distant third." \
+              "This same integration suite gates every PR and the merge to main, so this is unlikely to be a code regression. The usual culprits are a **TMDb backend change** (a response field added, removed, renamed, or made nullable) or **stale assumed data** in an integration test (a hard-coded title, count, id, or date the live API now returns differently) — with transient errors, rate limiting, or a run that hit its 30-minute job timeout (a cancelled run still surfaces as a failure) a distant third." \
               "" \
               "A re-run clears the transient case. If it persists, the analysis above points at the model, fixture, or assertion to update.")
             gh issue create \
