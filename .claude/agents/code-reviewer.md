@@ -133,6 +133,12 @@ Use the `swift-concurrency` skill for detailed guidance. Key checks:
 - `make lint` — Check lint compliance
 - `make build-docs` — Build DocC with warnings-as-errors
 
+> Outside a subagent, the main agent runs these via the `/build`,
+> `/build-for-testing`, `/test`, `/integration-test`, `/lint`, and `/format`
+> skills (which delegate to a Haiku subagent and keep logs out of context). As a
+> reviewer subagent you normally just read; if you must build or test, the `make`
+> commands above are fine.
+
 **Never read or touch** `.swiftpm/` or `.build/` directories.
 
 ## Code Change Protocol

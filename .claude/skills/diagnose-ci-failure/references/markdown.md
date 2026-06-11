@@ -1,7 +1,7 @@
 # Lint Markdown job failure (markdownlint)
 
-The **Lint Markdown** job runs in the `markdownlint-cli:v0.41.0` container and
-lints:
+The **Lint Markdown** job runs in the
+`ghcr.io/igorshubovych/markdownlint-cli:v0.41.0` container and lints:
 
 ```
 markdownlint "README.md" "**/*.docc/**/*.md"
@@ -40,8 +40,8 @@ check it before assuming the default limits.
 make lint-markdown
 ```
 
-(uses the same `markdownlint-cli2`/`markdownlint` ruleset). Fix, re-run until
-clean.
+(runs the same `markdownlint` invocations as CI — `markdownlint "README.md"` and
+`markdownlint "**/*.docc/**/*.md"`). Fix, re-run until clean.
 
 ## Output
 
