@@ -1,7 +1,9 @@
 name: Integration Failure Alert
 
 # Watches the "Integration" workflow. When a *scheduled* run of it fails,
-# opens a GitHub issue and notifies Adam. Does nothing on PR / push runs.
+# Claude analyses the failing logs, then we open a GitHub issue (or comment
+# on the existing one) with that analysis and notify Adam. Does nothing on
+# PR / push runs.
 on:
   workflow_run:
     workflows: ["Integration"]
@@ -9,8 +11,10 @@ on:
       - completed
 
 permissions:
+  contents: read         # checkout, so Claude can inspect tests/fixtures
   issues: write          # to create / update the alert issue
-  actions: read          # to read the triggering run's details
+  actions: read          # to read the triggering run's logs
+  id-token: write        # for claude-code-action
 
 jobs:
   alert:
@@ -29,6 +33,49 @@ jobs:
       && github.event.workflow_run.event == 'schedule'
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download failing logs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+
+          # --log-failed prints only the failed steps' logs.
+          gh run view "$RUN_ID" --repo "$REPO" --log-failed \
+            > failure-log-full.txt 2>/dev/null || true
+
+          # Fall back to the full log if --log-failed yielded nothing.
+          if [ ! -s failure-log-full.txt ]; then
+            gh run view "$RUN_ID" --repo "$REPO" --log \
+              > failure-log-full.txt 2>/dev/null || true
+          fi
+
+          # Keep the last ~60k chars — failures surface at the end — so the
+          # analysis prompt stays within a sensible token budget.
+          tail -c 60000 failure-log-full.txt > failure-log.txt || true
+          echo "Captured $(wc -l < failure-log.txt) lines of failing log"
+
+      - name: Analyse failure with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: '--model claude-opus-4-8 --allowedTools "Read,Write,Glob,Grep,Bash(jq:*),Bash(curl:*)"'
+          # Invoke the repo skill by passing `/skill-name` as the prompt (the
+          # checkout step above is the prerequisite). Trailing text is passed to
+          # the skill as context.
+          prompt: |
+            /diagnose-integration-failure The scheduled Integration workflow
+            failed and its failing-step log is already at `failure-log.txt` in
+            the workspace root — use it directly; do not run the tests or call
+            `gh`. Write your three-section markdown result to
+            `claude-analysis.md` and nothing else — do not create issues,
+            comments, or branches.
+
       - name: Create or update failure issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,6 +90,13 @@ jobs:
           set -euo pipefail
 
           LABEL="integration-failure"
+
+          # Pull in Claude's analysis if it produced one; otherwise fall back.
+          if [ -s claude-analysis.md ]; then
+            ANALYSIS=$(cat claude-analysis.md)
+          else
+            ANALYSIS="_Automated analysis unavailable — see the run logs._"
+          fi
 
           # Make sure the label exists (ignore error if it already does).
           gh label create "$LABEL" \
@@ -66,7 +120,11 @@ jobs:
             COMMENT_BODY=$(printf '%s\n' \
               "🔁 The scheduled Integration run failed again on ${RUN_DATE}." \
               "" \
-              "Latest failing run: ${RUN_URL}")
+              "Latest failing run: ${RUN_URL}" \
+              "" \
+              "### 🤖 Claude's analysis" \
+              "" \
+              "${ANALYSIS}")
             gh issue comment "$EXISTING" --repo "$REPO" --body "$COMMENT_BODY"
             echo "Commented on existing issue #${EXISTING}"
           else
@@ -76,9 +134,15 @@ jobs:
               "- **Run:** ${RUN_URL}" \
               "- **When:** ${RUN_DATE}" \
               "" \
-              "Integration tests hit the live TMDb API, so the most likely causes are a transient API issue, rate limiting, or live data drift rather than a code change (code problems are caught by the PR status check before reaching main)." \
+              "### 🤖 Claude's analysis" \
               "" \
-              "A re-run often clears transient failures. If it persists, the logs above will show which suite failed.")
+              "${ANALYSIS}" \
+              "" \
+              "---" \
+              "" \
+              "This same integration suite gates every PR and the merge to main, so this is unlikely to be a code regression. The usual culprits are a **TMDb backend change** (a response field added, removed, renamed, or made nullable) or **stale assumed data** in an integration test (a hard-coded title, count, id, or date the live API now returns differently) — with transient errors / rate limiting a distant third." \
+              "" \
+              "A re-run clears the transient case. If it persists, the analysis above points at the model, fixture, or assertion to update.")
             gh issue create \
               --repo "$REPO" \
               --label "$LABEL" \
