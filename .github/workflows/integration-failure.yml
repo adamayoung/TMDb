@@ -1,0 +1,89 @@
+name: Integration Failure Alert
+
+# Watches the "Integration" workflow. When a *scheduled* run of it fails,
+# opens a GitHub issue and notifies Adam. Does nothing on PR / push runs.
+on:
+  workflow_run:
+    workflows: ["Integration"]
+    types:
+      - completed
+
+permissions:
+  issues: write          # to create / update the alert issue
+  actions: read          # to read the triggering run's details
+
+jobs:
+  alert:
+    name: Open issue on scheduled failure
+    runs-on: ubuntu-latest
+
+    # Only react to the *scheduled* run, and only when it actually failed.
+    # This is what stops contributor PR failures from creating issues.
+    #
+    # NOTE: `event == 'schedule'` matches ANY cron trigger on the Integration
+    # workflow. This is only equivalent to "the Sunday night run" while
+    # integration.yml has a single cron ('0 0 * * 0'). If you ever add another
+    # cron there, this will also fire for that one — revisit this guard then.
+    if: >-
+      github.event.workflow_run.conclusion == 'failure'
+      && github.event.workflow_run.event == 'schedule'
+
+    steps:
+      - name: Create or update failure issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAGER: cat
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          RUN_DATE: ${{ github.event.workflow_run.created_at }}
+          # Who to ping. Change if you ever want to notify someone else.
+          NOTIFY: adamayoung
+        run: |
+          set -euo pipefail
+
+          LABEL="integration-failure"
+
+          # Make sure the label exists (ignore error if it already does).
+          gh label create "$LABEL" \
+            --repo "$REPO" \
+            --color B60205 \
+            --description "Scheduled integration run failed" \
+            2>/dev/null || true
+
+          # Is there already an OPEN issue for this? If so, just comment on it
+          # rather than opening a duplicate every week it stays broken.
+          EXISTING=$(gh issue list \
+            --repo "$REPO" \
+            --label "$LABEL" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$EXISTING" ]; then
+            # Build the comment body with printf so no leading YAML indentation
+            # leaks into the markdown (indented lines render as a code block).
+            COMMENT_BODY=$(printf '%s\n' \
+              "🔁 The scheduled Integration run failed again on ${RUN_DATE}." \
+              "" \
+              "Latest failing run: ${RUN_URL}")
+            gh issue comment "$EXISTING" --repo "$REPO" --body "$COMMENT_BODY"
+            echo "Commented on existing issue #${EXISTING}"
+          else
+            ISSUE_BODY=$(printf '%s\n' \
+              "@${NOTIFY} the weekly scheduled **Integration** workflow failed." \
+              "" \
+              "- **Run:** ${RUN_URL}" \
+              "- **When:** ${RUN_DATE}" \
+              "" \
+              "Integration tests hit the live TMDb API, so the most likely causes are a transient API issue, rate limiting, or live data drift rather than a code change (code problems are caught by the PR status check before reaching main)." \
+              "" \
+              "A re-run often clears transient failures. If it persists, the logs above will show which suite failed.")
+            gh issue create \
+              --repo "$REPO" \
+              --label "$LABEL" \
+              --assignee "$NOTIFY" \
+              --title "Scheduled Integration run failed (#${RUN_NUMBER})" \
+              --body "$ISSUE_BODY"
+            echo "Opened new issue"
+          fi
