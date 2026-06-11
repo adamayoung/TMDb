@@ -21,6 +21,18 @@ struct MovieListItemTests {
         #expect(result == movie)
     }
 
+    @Test(
+        "JSON decoding of MovieListItem with missing genreIds defaults to empty",
+        .tags(.decoding)
+    )
+    func decodeWhenGenreIDsMissingReturnsEmptyGenreIDs() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            MovieListItem.self, fromResource: "movie-list-item-collection"
+        )
+
+        #expect(result.genreIDs == [])
+    }
+
 }
 
 extension MovieListItemTests {
