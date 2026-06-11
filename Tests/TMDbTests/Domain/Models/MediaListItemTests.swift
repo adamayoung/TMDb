@@ -144,6 +144,26 @@ struct MediaListItemTests {
         #expect(result.releaseDate == nil)
     }
 
+    @Test("JSON decoding of MediaListItem with missing genre_ids", .tags(.decoding))
+    func decodeReturnsMediaListItemWithMissingGenreIDsAsEmpty() throws {
+        let json = """
+        {
+          "id": 654321,
+          "title": "No Genres Movie",
+          "original_title": "No Genres Movie Original",
+          "overview": "A movie without a genre_ids field.",
+          "media_type": "movie",
+          "original_language": "en"
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        #expect(result.id == 654_321)
+        #expect(result.genreIDs == [])
+    }
+
     @Test("init sets all properties correctly")
     func initSetsAllProperties() throws {
         let releaseDate = Date(iso8601: "2024-06-15T00:00:00Z")

@@ -21,6 +21,19 @@ struct TVSeriesListItemTests {
         #expect(result == tvSeries)
     }
 
+    @Test(
+        "JSON decoding of TVSeriesListItem with missing genreIds defaults to empty",
+        .tags(.decoding)
+    )
+    func decodeWhenGenreIDsMissingReturnsEmptyGenreIDs() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesListItem.self, fromResource: "tv-series-list-item-no-genre-ids"
+        )
+
+        #expect(result.id == 11366)
+        #expect(result.genreIDs == [])
+    }
+
 }
 
 extension TVSeriesListItemTests {

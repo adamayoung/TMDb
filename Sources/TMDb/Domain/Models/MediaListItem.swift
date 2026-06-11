@@ -185,7 +185,9 @@ extension MediaListItem {
         self.originalTitle = try container.decode(String.self, forKey: .originalTitle)
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
         self.overview = try container.decode(String.self, forKey: .overview)
-        self.genreIDs = try container.decode([Genre.ID].self, forKey: .genreIDs)
+        // Some results omit `genre_ids` entirely; default to an empty array
+        // rather than failing to decode.
+        self.genreIDs = try container.decodeIfPresent([Genre.ID].self, forKey: .genreIDs) ?? []
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
