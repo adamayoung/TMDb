@@ -45,4 +45,11 @@ public struct RetryableErrors: OptionSet, Hashable, Sendable {
     /// (such as a proxy returning an error page with a 200 status).
     public static let serverErrors = RetryableErrors(rawValue: 1 << 1)
 
+    /// Transient network transport errors.
+    ///
+    /// Covers connection-level `URLError`s that are usually temporary, such as
+    /// a request timing out, a dropped connection, a DNS lookup failure, or a
+    /// failure to reach the host. Deliberate cancellations are never retried.
+    public static let networkErrors = RetryableErrors(rawValue: 1 << 2)
+
 }

@@ -51,8 +51,8 @@ public struct RetryConfiguration: Hashable, Sendable {
     ///
     /// The categories of errors that should trigger a retry.
     ///
-    /// Defaults to both ``RetryableErrors/rateLimit`` and
-    /// ``RetryableErrors/serverErrors``.
+    /// Defaults to ``RetryableErrors/rateLimit``,
+    /// ``RetryableErrors/serverErrors`` and ``RetryableErrors/networkErrors``.
     ///
     public let retryableErrors: RetryableErrors
 
@@ -63,13 +63,14 @@ public struct RetryConfiguration: Hashable, Sendable {
     ///   - maxRetries: The maximum number of retry attempts. Defaults to `3`.
     ///   - initialDelay: The initial delay before the first retry. Defaults to 1 second.
     ///   - maxDelay: The maximum delay between retries. Defaults to 30 seconds.
-    ///   - retryableErrors: The error categories to retry. Defaults to rate limit and server errors.
+    ///   - retryableErrors: The error categories to retry. Defaults to rate
+    ///     limit, server errors and transient network errors.
     ///
     public init(
         maxRetries: Int = 3,
         initialDelay: Duration = .seconds(1),
         maxDelay: Duration = .seconds(30),
-        retryableErrors: RetryableErrors = [.rateLimit, .serverErrors]
+        retryableErrors: RetryableErrors = [.rateLimit, .serverErrors, .networkErrors]
     ) {
         self.maxRetries = max(0, maxRetries)
         self.initialDelay = initialDelay
@@ -81,7 +82,7 @@ public struct RetryConfiguration: Hashable, Sendable {
     /// The default retry configuration.
     ///
     /// Uses 3 retries, 1 second initial delay, 30 second max delay,
-    /// and retries both rate limit and server errors.
+    /// and retries rate limit, server errors and transient network errors.
     ///
     public static let `default` = RetryConfiguration()
 

@@ -18,7 +18,7 @@ struct RetryConfigurationTests {
         #expect(config.maxRetries == 3)
         #expect(config.initialDelay == .seconds(1))
         #expect(config.maxDelay == .seconds(30))
-        #expect(config.retryableErrors == [.rateLimit, .serverErrors])
+        #expect(config.retryableErrors == [.rateLimit, .serverErrors, .networkErrors])
     }
 
     @Test("custom values are stored")
@@ -57,7 +57,7 @@ struct RetryConfigurationTests {
         #expect(config.maxRetries == 3)
         #expect(config.initialDelay == .seconds(1))
         #expect(config.maxDelay == .seconds(30))
-        #expect(config.retryableErrors == [.rateLimit, .serverErrors])
+        #expect(config.retryableErrors == [.rateLimit, .serverErrors, .networkErrors])
     }
 
     @Test("equatable returns true for equal configurations")
