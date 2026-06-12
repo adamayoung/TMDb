@@ -64,6 +64,13 @@ extension Media {
         case tvSeries = "tv"
         case person
         case collection
+        case unknown
+
+        init(from decoder: Decoder) throws {
+            self =
+                try MediaType(rawValue: decoder.singleValueContainer().decode(RawValue.self))
+                ?? .unknown
+        }
     }
 
     ///
@@ -95,6 +102,13 @@ extension Media {
 
         case .collection:
             self = try .collection(CollectionListItem(from: decoder))
+
+        case .unknown:
+            throw DecodingError.dataCorruptedError(
+                forKey: .mediaType,
+                in: container,
+                debugDescription: "Unknown media type"
+            )
         }
     }
 

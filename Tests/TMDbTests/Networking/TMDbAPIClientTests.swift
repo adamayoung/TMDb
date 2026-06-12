@@ -68,6 +68,48 @@ struct TMDbAPIClientTests {
         #expect(request.url.absoluteString.starts(with: expectedURL.absoluteString))
     }
 
+    @Test("perform builds query items sorted by name for a canonical URL")
+    @MainActor
+    func performBuildsQueryItemsSortedByNameForCanonicalURL() async throws {
+        let stubRequest = APIStubRequest<String, String>(
+            path: "/endpoint",
+            queryItems: ["zebra": "1", "alpha": "2", "mango": "3"]
+        )
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try #require(httpClient.lastRequest)
+        let components = try #require(
+            URLComponents(url: request.url, resolvingAgainstBaseURL: false)
+        )
+        let names = try #require(components.queryItems).map(\.name)
+
+        #expect(names == names.sorted())
+    }
+
+    @Test("perform builds the same URL regardless of query item insertion order")
+    @MainActor
+    func performBuildsSameURLRegardlessOfQueryItemInsertionOrder() async throws {
+        let firstRequest = APIStubRequest<String, String>(
+            path: "/endpoint",
+            queryItems: ["zebra": "1", "alpha": "2", "mango": "3"]
+        )
+        let secondRequest = APIStubRequest<String, String>(
+            path: "/endpoint",
+            queryItems: ["alpha": "2", "mango": "3", "zebra": "1"]
+        )
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(firstRequest)
+        let firstURL = try #require(httpClient.lastRequest).url
+
+        _ = try? await apiClient.perform(secondRequest)
+        let secondURL = try #require(httpClient.lastRequest).url
+
+        #expect(firstURL.absoluteString == secondURL.absoluteString)
+    }
+
     @Test("perform when GET method")
     @MainActor
     func performWhenGetMethod() async throws {

@@ -49,6 +49,13 @@ extension TaggedImageMedia {
     private enum MediaType: String, Codable, Equatable {
         case movie
         case tvEpisode = "tv_episode"
+        case unknown
+
+        init(from decoder: Decoder) throws {
+            self =
+                try MediaType(rawValue: decoder.singleValueContainer().decode(RawValue.self))
+                ?? .unknown
+        }
     }
 
     ///
@@ -69,6 +76,13 @@ extension TaggedImageMedia {
 
         case .tvEpisode:
             self = try .tvEpisode(TVEpisode(from: decoder))
+
+        case .unknown:
+            throw DecodingError.dataCorruptedError(
+                forKey: .mediaType,
+                in: container,
+                debugDescription: "Unknown media type"
+            )
         }
     }
 
