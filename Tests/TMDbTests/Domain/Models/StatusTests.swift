@@ -42,4 +42,32 @@ struct StatusTests {
         #expect(Status.cancelled.rawValue == "Canceled")
     }
 
+    @Test("JSON decoding of a known status", .tags(.decoding))
+    func decodeWhenKnownValueReturnsStatus() throws {
+        let data = Data("{\"status\": \"Released\"}".utf8)
+        let decoder = JSONDecoder()
+
+        let result = try decoder.decode(MockObject.self, from: data).status
+
+        #expect(result == .released)
+    }
+
+    @Test("JSON decoding of an unknown status returns unknown", .tags(.decoding))
+    func decodeWhenInvalidValueReturnsUnknown() throws {
+        let data = Data("{\"status\": \"some-new-status\"}".utf8)
+        let decoder = JSONDecoder()
+
+        let result = try decoder.decode(MockObject.self, from: data).status
+
+        #expect(result == .unknown)
+    }
+
+}
+
+extension StatusTests {
+
+    private struct MockObject: Decodable {
+        let status: Status
+    }
+
 }
