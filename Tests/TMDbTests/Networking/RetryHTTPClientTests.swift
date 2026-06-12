@@ -95,6 +95,63 @@ struct RetryHTTPClientTests {
         #expect(mockClient.performCount == 2)
     }
 
+    @Test("Retry-After larger than maxDelay is capped to maxDelay")
+    func retryAfterCappedToMaxDelay() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        // An untrusted server returns an unreasonably large Retry-After. The
+        // client must not block for the full duration — it caps the sleep to
+        // configuration.maxDelay.
+        mockClient.enqueue(
+            .success(HTTPResponse(statusCode: 429, headers: ["Retry-After": "100"]))
+        )
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data())))
+
+        let config = RetryConfiguration(
+            maxRetries: 1,
+            initialDelay: .milliseconds(1),
+            maxDelay: .milliseconds(10),
+            retryableErrors: [.rateLimit]
+        )
+        let retryClient = RetryHTTPClient(httpClient: mockClient, configuration: config)
+        let request = try HTTPRequest(url: #require(URL(string: "https://example.com")))
+
+        let start = ContinuousClock.now
+        let response = try await retryClient.perform(request: request)
+        let elapsed = ContinuousClock.now - start
+
+        #expect(response.statusCode == 200)
+        #expect(mockClient.performCount == 2)
+        // The 100-second Retry-After must have been capped well below itself.
+        #expect(elapsed < .seconds(5))
+    }
+
+    @Test("Retry-After smaller than maxDelay is honoured unchanged")
+    func retryAfterSmallerThanMaxDelay() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(
+            .success(HTTPResponse(statusCode: 429, headers: ["Retry-After": "0"]))
+        )
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data())))
+
+        let config = RetryConfiguration(
+            maxRetries: 1,
+            initialDelay: .milliseconds(1),
+            maxDelay: .seconds(30),
+            retryableErrors: [.rateLimit]
+        )
+        let retryClient = RetryHTTPClient(httpClient: mockClient, configuration: config)
+        let request = try HTTPRequest(url: #require(URL(string: "https://example.com")))
+
+        let start = ContinuousClock.now
+        let response = try await retryClient.perform(request: request)
+        let elapsed = ContinuousClock.now - start
+
+        #expect(response.statusCode == 200)
+        #expect(mockClient.performCount == 2)
+        // A zero-second Retry-After should not be inflated to maxDelay.
+        #expect(elapsed < .seconds(5))
+    }
+
     @Test("404 is not retried")
     func notFoundNotRetried() async throws {
         let mockClient = SequencingHTTPMockClient()
