@@ -117,4 +117,18 @@ struct SearchIntegrationTests {
         #expect(!keywordList.results.isEmpty)
     }
 
+    @Test("searchAll with empty query throws bad request")
+    func searchAllWithEmptyQueryThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.self) {
+            _ = try await searchService.searchAll(query: "")
+        }
+    }
+
+    @Test("searchMovies with whitespace query throws bad request")
+    func searchMoviesWithWhitespaceQueryThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.self) {
+            _ = try await searchService.searchMovies(query: "   ")
+        }
+    }
+
 }

@@ -18,7 +18,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Multi](https://developer.themoviedb.org/reference/search-multi)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -43,7 +44,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Movies](https://developer.themoviedb.org/reference/search-movie)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -68,7 +70,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: TV](https://developer.themoviedb.org/reference/search-tv)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -93,7 +96,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Person](https://developer.themoviedb.org/reference/search-person)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -118,7 +122,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Collection](https://developer.themoviedb.org/reference/search-collection)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -141,7 +146,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Company](https://developer.themoviedb.org/reference/search-company)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -161,7 +167,8 @@ public protocol SearchService: Sendable {
     ///
     /// [TMDb API - Search: Keyword](https://developer.themoviedb.org/reference/search-keyword)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -185,7 +192,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Multi](https://developer.themoviedb.org/reference/search-multi)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -212,7 +220,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Movies](https://developer.themoviedb.org/reference/search-movie)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -239,7 +248,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: TV](https://developer.themoviedb.org/reference/search-tv)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -266,7 +276,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Person](https://developer.themoviedb.org/reference/search-person)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -293,7 +304,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Collection](https://developer.themoviedb.org/reference/search-collection)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -320,7 +332,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Company](https://developer.themoviedb.org/reference/search-company)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
@@ -342,7 +355,8 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Keyword](https://developer.themoviedb.org/reference/search-keyword)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only. `page` can be
+    ///   between `1` and `1000`.
     ///
     /// - Parameters:
     ///    - query: A text query to search for.
