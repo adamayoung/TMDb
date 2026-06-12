@@ -118,7 +118,11 @@ extension RetryHTTPClient {
 
     private func delay(forAttempt attempt: Int, retryAfter: Duration?) async throws {
         if let retryAfter {
-            try await Task.sleep(for: retryAfter)
+            // Cap the server-supplied Retry-After to maxDelay. The header is
+            // untrusted, so an oversized value (e.g. a misbehaving proxy
+            // returning `Retry-After: 86400`) must not block the calling task
+            // unboundedly — mirror the clamp applied to exponential backoff.
+            try await Task.sleep(for: min(retryAfter, configuration.maxDelay))
             return
         }
 
