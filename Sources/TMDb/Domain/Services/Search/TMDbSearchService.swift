@@ -24,6 +24,7 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws(TMDbError) -> MediaPageableList {
+        try Self.validate(query: query)
         let languageCode = language ?? configuration.defaultLanguage
         let request = MultiSearchRequest(
             query: query,
@@ -41,6 +42,7 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws(TMDbError) -> MoviePageableList {
+        try Self.validate(query: query)
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieSearchRequest(
             query: query,
@@ -61,6 +63,7 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws(TMDbError) -> TVSeriesPageableList {
+        try Self.validate(query: query)
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesSearchRequest(
             query: query,
@@ -80,6 +83,7 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws(TMDbError) -> PersonPageableList {
+        try Self.validate(query: query)
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonSearchRequest(
             query: query,
@@ -96,6 +100,7 @@ final class TMDbSearchService: SearchService {
         page: Int? = nil,
         language: String? = nil
     ) async throws(TMDbError) -> CollectionPageableList {
+        try Self.validate(query: query)
         let languageCode = language ?? configuration.defaultLanguage
         let request = CollectionSearchRequest(
             query: query,
@@ -110,6 +115,7 @@ final class TMDbSearchService: SearchService {
         query: String,
         page: Int? = nil
     ) async throws(TMDbError) -> CompanyPageableList {
+        try Self.validate(query: query)
         let request = CompanySearchRequest(
             query: query,
             page: page
@@ -122,12 +128,24 @@ final class TMDbSearchService: SearchService {
         query: String,
         page: Int? = nil
     ) async throws(TMDbError) -> KeywordPageableList {
+        try Self.validate(query: query)
         let request = KeywordSearchRequest(
             query: query,
             page: page
         )
 
         return try await apiClient.perform(request)
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbSearchService {
+
+    private static func validate(query: String) throws(TMDbError) {
+        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("Search query must not be empty")
+        }
     }
 
 }

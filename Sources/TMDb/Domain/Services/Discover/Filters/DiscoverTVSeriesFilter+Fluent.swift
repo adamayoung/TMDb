@@ -17,13 +17,17 @@ public extension DiscoverTVSeriesFilter {
     ///   - join: The logical operator used to combine the genres. Defaults to
     ///     ``DiscoverFilterJoin/and``.
     ///
-    /// - Returns: A new filter with the genres applied.
+    /// - Returns: A new filter with the genres applied. An empty `genres`
+    ///   array is ignored and the filter is returned unchanged.
     ///
     func withGenres(
         _ genres: [Genre.ID],
         joinedBy join: DiscoverFilterJoin = .and
     ) -> Self {
-        copy(genres: genres, genresJoin: join)
+        guard !genres.isEmpty else {
+            return self
+        }
+        return copy(genres: genres, genresJoin: join)
     }
 
     ///
@@ -31,10 +35,14 @@ public extension DiscoverTVSeriesFilter {
     ///
     /// - Parameter genres: A list of genre identifiers to exclude.
     ///
-    /// - Returns: A new filter with the excluded genres applied.
+    /// - Returns: A new filter with the excluded genres applied. An empty
+    ///   `genres` array is ignored and the filter is returned unchanged.
     ///
     func withoutGenres(_ genres: [Genre.ID]) -> Self {
-        copy(withoutGenres: genres)
+        guard !genres.isEmpty else {
+            return self
+        }
+        return copy(withoutGenres: genres)
     }
 
     ///
@@ -45,13 +53,17 @@ public extension DiscoverTVSeriesFilter {
     ///   - join: The logical operator used to combine the keywords. Defaults
     ///     to ``DiscoverFilterJoin/and``.
     ///
-    /// - Returns: A new filter with the keywords applied.
+    /// - Returns: A new filter with the keywords applied. An empty `keywords`
+    ///   array is ignored and the filter is returned unchanged.
     ///
     func withKeywords(
         _ keywords: [Keyword.ID],
         joinedBy join: DiscoverFilterJoin = .and
     ) -> Self {
-        copy(keywords: keywords, keywordsJoin: join)
+        guard !keywords.isEmpty else {
+            return self
+        }
+        return copy(keywords: keywords, keywordsJoin: join)
     }
 
     ///
@@ -59,10 +71,14 @@ public extension DiscoverTVSeriesFilter {
     ///
     /// - Parameter keywords: A list of keyword identifiers to exclude.
     ///
-    /// - Returns: A new filter with the excluded keywords applied.
+    /// - Returns: A new filter with the excluded keywords applied. An empty
+    ///   `keywords` array is ignored and the filter is returned unchanged.
     ///
     func withoutKeywords(_ keywords: [Keyword.ID]) -> Self {
-        copy(withoutKeywords: keywords)
+        guard !keywords.isEmpty else {
+            return self
+        }
+        return copy(withoutKeywords: keywords)
     }
 
     ///
@@ -70,10 +86,14 @@ public extension DiscoverTVSeriesFilter {
     ///
     /// - Parameter networks: A list of network identifiers.
     ///
-    /// - Returns: A new filter with the networks applied.
+    /// - Returns: A new filter with the networks applied. An empty `networks`
+    ///   array is ignored and the filter is returned unchanged.
     ///
     func withNetworks(_ networks: [Network.ID]) -> Self {
-        copy(networks: networks)
+        guard !networks.isEmpty else {
+            return self
+        }
+        return copy(networks: networks)
     }
 
     ///
@@ -81,10 +101,14 @@ public extension DiscoverTVSeriesFilter {
     ///
     /// - Parameter companies: A list of production company identifiers.
     ///
-    /// - Returns: A new filter with the companies applied.
+    /// - Returns: A new filter with the companies applied. An empty
+    ///   `companies` array is ignored and the filter is returned unchanged.
     ///
     func withCompanies(_ companies: [Company.ID]) -> Self {
-        copy(companies: companies)
+        guard !companies.isEmpty else {
+            return self
+        }
+        return copy(companies: companies)
     }
 
     ///
@@ -92,10 +116,14 @@ public extension DiscoverTVSeriesFilter {
     ///
     /// - Parameter language: An ISO-639-1 language code.
     ///
-    /// - Returns: A new filter with the original language applied.
+    /// - Returns: A new filter with the original language applied. A blank
+    ///   `language` is ignored and the filter is returned unchanged.
     ///
     func originalLanguage(_ language: String) -> Self {
-        copy(originalLanguage: language)
+        guard !language.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return self
+        }
+        return copy(originalLanguage: language)
     }
 
     ///
@@ -161,13 +189,17 @@ public extension DiscoverTVSeriesFilter {
     ///   - providers: A list of watch provider identifiers.
     ///   - region: An ISO-3166-1 watch region code.
     ///
-    /// - Returns: A new filter with the watch providers applied.
+    /// - Returns: A new filter with the watch providers applied. An empty
+    ///   `providers` array is ignored and the filter is returned unchanged.
     ///
     func watchProviders(
         _ providers: [WatchProvider.ID],
         region: String? = nil
     ) -> Self {
-        copy(watchProviders: providers, watchRegion: region ?? watchRegion)
+        guard !providers.isEmpty else {
+            return self
+        }
+        return copy(watchProviders: providers, watchRegion: region ?? watchRegion)
     }
 
 }
