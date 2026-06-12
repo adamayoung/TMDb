@@ -75,11 +75,46 @@ struct DiscoverFilterFluentValidationTests {
         #expect(filter.genres == nil)
     }
 
+    @Test("TV series withoutGenres with empty array leaves without genres unset")
+    func tvSeriesWithoutGenresEmptyLeavesUnset() {
+        let filter = DiscoverTVSeriesFilter().withoutGenres([])
+
+        #expect(filter.withoutGenres == nil)
+    }
+
+    @Test("TV series withKeywords with empty array leaves keywords unset")
+    func tvSeriesWithKeywordsEmptyLeavesUnset() {
+        let filter = DiscoverTVSeriesFilter().withKeywords([])
+
+        #expect(filter.keywords == nil)
+    }
+
+    @Test("TV series withoutKeywords with empty array leaves without keywords unset")
+    func tvSeriesWithoutKeywordsEmptyLeavesUnset() {
+        let filter = DiscoverTVSeriesFilter().withoutKeywords([])
+
+        #expect(filter.withoutKeywords == nil)
+    }
+
     @Test("TV series withNetworks with empty array leaves networks unset")
     func tvSeriesWithNetworksEmptyLeavesUnset() {
         let filter = DiscoverTVSeriesFilter().withNetworks([])
 
         #expect(filter.networks == nil)
+    }
+
+    @Test("TV series withCompanies with empty array leaves companies unset")
+    func tvSeriesWithCompaniesEmptyLeavesUnset() {
+        let filter = DiscoverTVSeriesFilter().withCompanies([])
+
+        #expect(filter.companies == nil)
+    }
+
+    @Test("TV series watchProviders with empty array leaves watch providers unset")
+    func tvSeriesWatchProvidersEmptyLeavesUnset() {
+        let filter = DiscoverTVSeriesFilter().watchProviders([])
+
+        #expect(filter.watchProviders == nil)
     }
 
     @Test("TV series originalLanguage with empty string leaves language unset")
