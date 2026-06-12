@@ -100,7 +100,12 @@ extension TMDbAPIClient {
         urlComponents.host = baseURL.host
         urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
         var queryItems = urlComponents.queryItems ?? []
-        for requestQueryItem in requestQueryItems {
+        // Append query items in a deterministic, name-sorted order so the same
+        // logical request always serialises to an identical URL. The unordered
+        // `[String: String]` dictionary would otherwise iterate in an arbitrary
+        // order, producing a non-canonical URL and silent cache misses for
+        // identical requests in `CacheHTTPClient`.
+        for requestQueryItem in requestQueryItems.sorted(by: { $0.key < $1.key }) {
             queryItems.append(
                 URLQueryItem(name: requestQueryItem.key, value: requestQueryItem.value)
             )
