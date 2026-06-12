@@ -49,7 +49,8 @@ struct RetryHTTPClientNetworkErrorTests {
             .notConnectedToInternet,
             .dnsLookupFailed,
             .cannotFindHost,
-            .resourceUnavailable
+            .resourceUnavailable,
+            .badServerResponse
         ]
     )
     func transientNetworkErrorCodesAreRetried(code: URLError.Code) async throws {

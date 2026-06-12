@@ -108,6 +108,10 @@ extension RetryHTTPClient {
             return false
         }
 
+        // TMDbAPIError is constructed above this layer (in TMDbAPIClient) and
+        // will never arrive here in the real decorator chain. Handle it
+        // defensively in case the chain is composed differently in tests or
+        // future configurations.
         if let apiError = error as? TMDbAPIError {
             return isRetryableAPIError(apiError)
         }

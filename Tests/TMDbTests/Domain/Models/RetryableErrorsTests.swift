@@ -68,6 +68,7 @@ struct RetryableErrorsTests {
 
         #expect(!errors.contains(.rateLimit))
         #expect(!errors.contains(.serverErrors))
+        #expect(!errors.contains(.networkErrors))
     }
 
 }
