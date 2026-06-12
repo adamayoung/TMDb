@@ -21,6 +21,19 @@ struct RetryableErrorsTests {
         #expect(RetryableErrors.serverErrors.rawValue == 2)
     }
 
+    @Test("networkErrors has raw value 4")
+    func networkErrorsRawValue() {
+        #expect(RetryableErrors.networkErrors.rawValue == 4)
+    }
+
+    @Test("networkErrors only does not contain rateLimit or serverErrors")
+    func networkErrorsOnlyDoesNotContainOthers() {
+        let errors: RetryableErrors = .networkErrors
+
+        #expect(!errors.contains(.rateLimit))
+        #expect(!errors.contains(.serverErrors))
+    }
+
     @Test("contains rateLimit in combined set")
     func containsRateLimitInCombinedSet() {
         let errors: RetryableErrors = [.rateLimit, .serverErrors]
@@ -55,6 +68,7 @@ struct RetryableErrorsTests {
 
         #expect(!errors.contains(.rateLimit))
         #expect(!errors.contains(.serverErrors))
+        #expect(!errors.contains(.networkErrors))
     }
 
 }

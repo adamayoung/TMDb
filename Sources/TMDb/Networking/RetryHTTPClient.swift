@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
 final class RetryHTTPClient: HTTPClient, Sendable {
 
     private let httpClient: any HTTPClient
@@ -99,22 +103,67 @@ extension RetryHTTPClient {
     }
 
     private func isRetryableError(_ error: Error) -> Bool {
-        guard let apiError = error as? TMDbAPIError else {
+        // A deliberate cancellation must never be retried.
+        if error is CancellationError {
             return false
         }
 
+        // TMDbAPIError is constructed above this layer (in TMDbAPIClient) and
+        // will never arrive here in the real decorator chain. Handle it
+        // defensively in case the chain is composed differently in tests or
+        // future configurations.
+        if let apiError = error as? TMDbAPIError {
+            return isRetryableAPIError(apiError)
+        }
+
+        // At the retry layer the transport adapter throws raw `URLError`s for
+        // connection-level failures (timeouts, dropped connections, DNS
+        // failures). Retry the transient ones when network retries are enabled.
+        if let urlError = error as? URLError {
+            return isRetryableURLError(urlError)
+        }
+
+        return false
+    }
+
+    private func isRetryableAPIError(_ apiError: TMDbAPIError) -> Bool {
         switch apiError {
         case .tooManyRequests:
-            return configuration.retryableErrors.contains(.rateLimit)
+            configuration.retryableErrors.contains(.rateLimit)
 
         case .internalServerError, .notImplemented, .badGateway,
              .serviceUnavailable, .gatewayTimeout:
-            return configuration.retryableErrors.contains(.serverErrors)
+            configuration.retryableErrors.contains(.serverErrors)
 
         default:
-            return false
+            false
         }
     }
+
+    private func isRetryableURLError(_ urlError: URLError) -> Bool {
+        guard configuration.retryableErrors.contains(.networkErrors) else {
+            return false
+        }
+
+        // A URLError can wrap an explicit cancellation; never retry it.
+        guard urlError.code != .cancelled else {
+            return false
+        }
+
+        return Self.retryableURLErrorCodes.contains(urlError.code)
+    }
+
+    /// Transient `URLError` codes that warrant a retry.
+    private static let retryableURLErrorCodes: Set<URLError.Code> = [
+        .timedOut,
+        .cannotConnectToHost,
+        .cannotFindHost,
+        .networkConnectionLost,
+        .notConnectedToInternet,
+        .dnsLookupFailed,
+        .resourceUnavailable,
+        .badServerResponse
+    ]
 
     private func delay(forAttempt attempt: Int, retryAfter: Duration?) async throws {
         if let retryAfter {

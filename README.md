@@ -213,18 +213,20 @@ let movieInFrench = try await tmdbClient.movies.details(forMovie: 550, language:
 
 #### Automatic Retry
 
-Enable automatic retry with exponential backoff for transient errors:
+Enable automatic retry with exponential backoff for transient errors. By
+default this retries rate limits (HTTP 429), server errors (HTTP 5xx) and
+transient network failures (timeouts, dropped connections, DNS failures):
 
 ```swift
 // Use default retry (3 retries, exponential backoff)
 let configuration = TMDbConfiguration(retry: .default)
 let tmdbClient = TMDbClient(apiKey: "<your-api-key>", configuration: configuration)
 
-// Custom retry configuration
+// Custom retry configuration: retry rate limits and transient network errors
 let retryConfig = RetryConfiguration(
     maxRetries: 5,
     initialDelay: .seconds(2),
-    retryableErrors: .rateLimit  // Only retry rate limit errors
+    retryableErrors: [.rateLimit, .networkErrors]
 )
 let tmdbClient = TMDbClient(
     apiKey: "<your-api-key>",
