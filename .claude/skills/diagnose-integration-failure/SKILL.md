@@ -5,10 +5,16 @@ description: Diagnose a failing TMDb integration-test run — summarise the fail
 
 # Diagnose an integration-test failure
 
-The TMDb integration tests hit the **live** TMDb API. This same suite gates
-every PR and the merge to `main`, so a failure is **unlikely to be a code
-regression** — a code bug would have been caught by the PR status check before
-reaching this point. Diagnose accordingly.
+The TMDb integration tests hit the **live** TMDb API. The suite runs on three
+triggers — **`pull_request` / `push`** (where it *gates* the change) and
+**`schedule`** (the nightly live-API canary). **Which run failed flips the most
+likely cause, so determine the trigger first** (step 0):
+
+- **PR / push-triggered** → this run is the gate for a code change, so a
+  **regression in the diff is a real candidate** — weigh it alongside backend/data
+  drift. This is the common case when invoked from `/watch-pr` or `/fix-pr-checks`.
+- **Scheduled** → no code changed, so a regression is **unlikely**; the cause is
+  almost certainly a backend change, drifted test data, or a transient error.
 
 > **Wrong suite?** If a **CI** check failed instead (lint, markdown, build, or
 > unit tests from `ci.yml`), use `/diagnose-ci-failure`. That one leads with the
@@ -20,8 +26,17 @@ Produce a concise markdown analysis with exactly these three sections:
 **Summary:** one or two sentences on what failed — name the failing
 suite/test where visible.
 
-**Likely cause:** the most probable root cause, ranked most-likely first. DO
-NOT lead with "a code bug". Rank these:
+**Likely cause:** the most probable root cause, ranked most-likely first —
+**ranked by the trigger** (step 0):
+
+- **If PR / push-triggered**, add as a **top candidate**:
+  0. **A regression in the changed code** — read the diff (`git diff main...HEAD`).
+     A new/renamed request path or query item, a changed model/`CodingKeys`, or a
+     decoder tweak can break a live call. This run is the gate, so the diff is a
+     prime suspect — but still weigh causes 1–3 below, since the live API can drift
+     independently of your change.
+- **If scheduled**, do **NOT** lead with "a code bug" (nothing changed); go
+  straight to 1–3.
 
 1. **A TMDb backend change** — a response field was added, removed, renamed, or
    became nullable, breaking a model's `Decodable`. Confirm against the OpenAPI
@@ -45,6 +60,13 @@ investigate the slow run if it timed out.
 Keep it under ~150 words.
 
 ## Steps
+
+0. **Determine the trigger** (it sets the cause ranking above). If the caller told
+   you (e.g. `/watch-pr` / `/fix-pr-checks` diagnose a **PR** run), use that.
+   Otherwise read it from the run:
+   `gh run view <id> --json event,displayTitle` → `event` is `pull_request`,
+   `push`, or `schedule`. If you can't tell, assume **PR/push** when a local diff
+   vs `main` exists, else scheduled.
 
 1. **Locate the failure log**, in this order — use the first that exists:
    - A path the caller handed you (e.g. `failure-log.txt` in the working

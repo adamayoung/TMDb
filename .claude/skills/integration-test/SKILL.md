@@ -1,6 +1,6 @@
 ---
 name: integration-test
-description: Run integration tests against the live TMDb API
+description: Run the TMDb integration tests against the live TMDb API (the Integration test plan; requires TMDB_API_KEY/USERNAME/PASSWORD). Use before a PR, or after model/fixture changes, to validate against real API responses — delegates to a Haiku subagent and returns counts + failures, distinguishing genuine failures from transient live-API/env issues. For mocked unit tests, use /test.
 ---
 
 # Run integration tests
@@ -22,19 +22,24 @@ Run the TMDb integration tests against the live API and report concisely.
   check the exit status for pass/fail, and summarise from that log file.
 
 These require TMDB_API_KEY, TMDB_USERNAME, and TMDB_PASSWORD, which are injected
-via the env block in .claude/settings.local.json — no sourcing is needed.
+via the env block in .claude/settings.local.json — no sourcing is needed. `make
+integration-test` checks these first: if a var is missing, report that as an
+**environment/precondition** failure, not a test failure.
 
 Report back ONLY:
 - Status: passed or failed
 - Counts: total / passed / failed
 - Each failing test as `SuiteName/testName` with its `file:line` and the
   failure message (omit this list if there are none)
-- On failure, the full log path `.build/last-integration-test.log` (or, inside
-  Xcode, note that the full log is available via `mcp__xcode-tools__GetBuildLog`)
+- Whether the failures look like genuine assertion failures vs a **transient
+  live-API issue** (HTTP 429 / timeout / network) or the env/precondition failure
+  above — these are not code bugs
+- On failure, the full log path `.build/last-integration-test.log`
 
 Do not paste passing-test output or raw logs.
 ```
 
 If the report is unclear on a failure, read the log path it provides rather than
-re-running. After fixing the issues, re-invoke this skill to re-check (a fresh
-subagent will re-run the tests).
+re-running. After fixing the issues, re-invoke this skill to re-check. To
+attribute a failure (live-API/backend drift vs a regression in your change), use
+`/diagnose-integration-failure`.

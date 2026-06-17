@@ -9,6 +9,24 @@ TMDb is a Swift Package for The Movie Database API, supporting iOS 16+,
 macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, and Windows. Built
 with Swift 6.0+ and strict concurrency.
 
+## Knowledge Base
+
+Durable, project-specific learnings live in [`knowledge/`](knowledge/) — read it
+on demand; it is not loaded here to keep this file lean. (This is reference
+knowledge; `CLAUDE.md` stays imperative.)
+
+- [`knowledge/decisions/`](knowledge/decisions/) — **ADRs** (design decisions +
+  rationale).
+- [`knowledge/gotchas.md`](knowledge/gotchas.md) — quirks, tooling traps, things
+  that needed a lookup.
+- [`knowledge/tmdb-api-notes.md`](knowledge/tmdb-api-notes.md) — live-API
+  behaviours.
+
+**Before solving a non-trivial problem**, skim the relevant file. **After learning
+something durable** (a gotcha, an API quirk, a design decision), record it there —
+run `/capture-knowledge` (it runs automatically before a PR in `/deliver`). Add an
+ADR for any non-obvious design decision.
+
 ## Architecture
 
 ### Service-Based Design
@@ -137,6 +155,34 @@ for:
 4. Create models based on real data, not assumptions
 5. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
 6. Implement the feature
+
+## Development Workflow
+
+Feature work is **skill-driven**. Draft a plan with `/plan`, then run `/deliver`
+to carry it through to a ready-to-merge PR. `/deliver` orchestrates the pipeline
+and stops only at two approval gates (the revised plan, and ready-to-merge):
+
+`/review-plan` → branch → `/implement-plan` → `/review-changes` (+ fix) →
+`/capture-knowledge` → `/pr` → `/watch-pr`.
+
+Key skills (the README's *Claude Code Skills* tables list them all):
+
+- **`/deliver`** — run the whole pipeline from an approved plan.
+- **`/review-plan`** — adversarial 3-critic review of a plan; apply the consensus.
+- **`/implement-plan`** — implement test-first (`canon-tdd`) to an empty test
+  list, committing at logical checkpoints.
+- **`/review-changes`** — code review of the working-tree change (scales: one
+  reviewer, or a fan-out + adversarial verification for large diffs).
+- **`/capture-knowledge`** — record durable learnings into `knowledge/`.
+- **`/pr`**, **`/watch-pr`**, **`/review-pr-threads`**, **`/fix-pr-checks`** —
+  open and shepherd the pull request.
+- **`/document-swift`** — the canonical DocC conventions for public API.
+
+**Code review** — both the local `/review-changes` and the GitHub Actions reviewer
+follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
+**run only when the change touches Swift** (docs/config-only changes are not
+reviewed). Two subagents back the pipeline: `code-reviewer` (deep Swift/TMDb
+review) and `documentation-writer` (bulk DocC generation).
 
 ## Build and Test Tooling
 
@@ -274,6 +320,21 @@ binaries, so keep local versions matched. A `superfluous_disable_command`
 error on *unchanged* files is almost always a version-drift artifact (a
 rule's behaviour changed between versions), not a real violation — check
 `swiftlint version` against the pin before editing the flagged code.
+
+### Auto-formatting on edit (PostToolUse hooks)
+
+Two `PostToolUse` hooks (in `.claude/settings.json`) run automatically after every
+`Edit`/`Write`, so files are reshaped on disk **after** you write them:
+
+- **`.swift`** → `swiftlint --fix` then `swiftformat`.
+- **`.md` / `.markdown`** → `markdownlint --fix` (auto-fixable rules only — it
+  **cannot** fix `MD013` line-length, so still wrap long lines by hand).
+
+Consequences: the on-disk content can differ from what you wrote (imports
+reordered, blank lines collapsed, list markers normalised). **Re-`Read` a file
+before a dependent `Edit`** if the edit relies on exact surrounding text, and
+don't attribute hook reformatting to your own diff. The hooks can't fix real
+compile/lint errors — still run `/lint` and `make ci`.
 
 ## Testing
 
@@ -437,14 +498,18 @@ After public API changes, verify all of the following are in sync:
    changed
 6. **Lint markdown**: `make lint-markdown` — required if `.md` files
    changed
-7. **Run full CI**: `make ci` — **REQUIRED before creating any PR**
+7. **Capture learnings**: run `/capture-knowledge` — record durable
+   gotchas, API quirks, and design decisions (ADRs) into `knowledge/`
+   before a PR (no-op if nothing durable was learned)
+8. **Run full CI**: `make ci` — **REQUIRED before creating any PR**
 
 Run steps 3-4 (and any builds) via the `/test` and `/integration-test`
 skills — they delegate to a Haiku subagent to keep this context lean.
 `/format`, `/lint`, and `make ci` run directly.
 
-Steps 3-4 must always pass. Steps 5-6 are conditional. Steps 1-2 can
-be skipped if formatting tools are not installed. Step 7 is mandatory
+Steps 3-4 must always pass. Steps 5-7 are conditional (5-6 on what
+changed; 7 is a no-op when nothing durable was learned). Steps 1-2 can
+be skipped if formatting tools are not installed. Step 8 is mandatory
 before pushing code or creating a pull request.
 
 ### Self-Review
@@ -500,6 +565,10 @@ Use a descriptive branch name with a conventional prefix
 (`feature/`, `fix/`, `chore/`, `docs/`, etc.).
 
 ## Creating Pull Requests
+
+> The **`/pr`** skill automates this whole section (commit outstanding work →
+> `make ci` → review → push → open), and **`/deliver`** runs it as the final step
+> of the feature pipeline. The manual steps below are the fallback / reference.
 
 **CRITICAL: You MUST run `make ci` and ensure it passes before pushing
 and creating a PR.** This is a hard requirement - no exceptions.
