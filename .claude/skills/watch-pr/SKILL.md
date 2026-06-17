@@ -32,97 +32,47 @@ Repeat the pass below until the PR is **ready** (§3) or **stuck** (§2).
 
 ### 1a. Review threads
 
-Fetch unresolved threads (use the PR number from step 0):
+Delegate the thread sweep to **`/review-pr-threads`** — it resolves the
+currently-unresolved threads in one pass (assess → fix+verify / reply-only →
+reply → resolve), reusing **this run's ledger** so a topic you already fixed isn't
+re-edited, and returns a summary (fixed w/ SHAs, replied-only, left-for-user,
+counts, whether it pushed).
 
-```bash
-gh api graphql -f query='
-query($owner:String!,$name:String!,$number:Int!){
-  repository(owner:$owner,name:$name){
-    pullRequest(number:$number){
-      reviewThreads(first:100){
-        nodes{
-          id isResolved isOutdated path line
-          comments(first:50){ nodes{ author{login} body createdAt } }
-        }
-      }
-    }
-  }
-}' -f owner=adamayoung -f name=TMDb -F number=<NUMBER>
-```
-
-For each thread where `isResolved` is `false` and whose `id` is not already in
-the ledger:
-
-1. Read the comment(s) and decide whether a code change is warranted.
-2. **Needs a fix** (clear and in scope): edit the code, then verify with the
-   delegated skills — `/lint`, `/build`, `/test` (and `/integration-test` if the
-   change could affect live-API behaviour). Those run in Haiku subagents, so
-   their output stays out of your context. Commit with a gitmoji message and
-   `git push`. Note the commit SHA.
-3. **No fix warranted** (you disagree, out of scope, it's a question, or already
-   done): make no code change — you'll explain in the reply.
-4. **Reply** on the thread with your feedback: what you assessed and whether you
-   fixed it (include the commit SHA when you did):
-
-   ```bash
-   gh api graphql -f query='mutation($id:ID!,$body:String!){
-     addPullRequestReviewThreadReply(input:{pullRequestReviewThreadId:$id,body:$body}){ comment{ id } }
-   }' -f id=<THREAD_ID> -f body='<your feedback>'
-   ```
-
-5. **Resolve** the thread:
-
-   ```bash
-   gh api graphql -f query='mutation($id:ID!){
-     resolveReviewThread(input:{threadId:$id}){ thread{ isResolved } }
-   }' -f id=<THREAD_ID>
-   ```
-
-6. Record the thread ID and its topic signature in the ledger.
+It is a **single sweep** by design — the across-push convergence is *this* loop's
+job: fold its summary into the ledger, and if it pushed fixes, the next pass picks
+up any fresh threads the `claude-review` bot raises (gated to Critical/High). Do
+not duplicate its per-thread logic here.
 
 ### 1b. Status checks
 
-```bash
-gh pr checks --json name,state,bucket,link
-```
+Delegate failing-check fixing to **`/fix-pr-checks`** — it routes each failing
+check to the right diagnosis skill (`/diagnose-ci-failure` or
+`/diagnose-integration-failure`) via a Haiku subagent, applies and verifies the
+fix, commits, pushes once, and returns a summary (fixed w/ SHAs, exhausted,
+skipped, pending, whether it pushed). It shares **this run's ledger**, so the
+3-attempt cap per check is honoured across passes. Fold its summary into the
+ledger; if it pushed, the next pass re-checks.
 
-Classify by `bucket`: `fail` = failing, `pending` = in progress, `pass` /
-`skipping` = fine. `claude-review` and other neutral checks are non-blocking.
-While anything is pending, block efficiently with `gh pr checks --watch` rather
-than polling in a tight loop.
-
-For each **failing** check, delegate diagnosis to a **Haiku subagent** so raw CI
-logs never enter your context. Pick the diagnosis skill by which check failed:
-
-- The **Integration** check (live-API suite from `integration.yml`) →
-  `/diagnose-integration-failure`
-- Any **CI** check — lint, markdown, build, or unit tests from `ci.yml` →
-  `/diagnose-ci-failure`
-
-Use the Agent tool with `subagent_type: general-purpose` and `model: haiku` and
-this prompt (substitute the check name and the chosen skill):
-
-```text
-The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.
-
-Use the `<SKILL>` skill to diagnose it. The skill locates the failing run,
-reads the log, and maps it to a cause and fix.
-
-Report back ONLY the skill's three-section result — Summary, Cause, Fix —
-including the offending `file:line`. Do not paste raw logs.
-```
-
-Then apply the fix, verify locally with the matching delegated skill (`/lint`,
-`/build`, `/test`, `/integration-test`), commit (gitmoji), and `git push` — the
-push re-triggers CI. Increment that check's attempt counter.
+**Waiting stays here** (orchestration, not the fix primitive): if checks are
+`pending` and nothing is failing, block efficiently with `gh pr checks --watch`
+rather than polling, then loop. If `/fix-pr-checks` reports a check **exhausted**,
+stop and report it per the Loop Guard.
 
 ## 2. Loop guard (do not get stuck)
 
-- Never reprocess a thread already in the ledger.
-- If a **new** thread repeats a topic you already fixed this run, do **not**
-  re-edit — reply pointing to the earlier commit SHA and resolve it.
-- A failing check gets at most **3** fix→push attempts. If it still fails with
-  the same root cause, **stop** and report it to the user — never loop forever.
+- **Thread dedup is `/review-pr-threads`' job** — it shares this ledger, so it
+  won't reprocess a handled thread or re-edit a topic already fixed this run (it
+  replies with the earlier SHA and resolves). Keep passing it the same ledger.
+- **Check-fix attempts are `/fix-pr-checks`' job** — it shares this ledger and
+  caps each check at **3** fix→push attempts. When it reports a check
+  **exhausted**, **stop** and report it to the user — never loop forever.
+- The `claude-review` bot re-reviews on every push (`synchronize`), so your fixes
+  trigger fresh reviews — this is expected, not new work to fear. By policy it now
+  posts inline threads **only for Critical/High** findings (Medium/Low live in its
+  summary comment, which is advisory — do not turn summary bullets into code
+  changes). A converging PR should see each push's inline batch shrink; if the same
+  severity-gated topic reappears across pushes, treat it as noise per the rule
+  above (reply with the earlier SHA, resolve, don't re-edit).
 - End the loop when a full pass resolves no new threads and has no actionable
   check failures. Hard backstop: ~10 passes, then report and stop.
 - Waiting: use `gh pr checks --watch` for in-flight CI. When only waiting on a
