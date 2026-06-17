@@ -68,6 +68,13 @@ contain arbitrary text). Call `Workflow` with `args: { plan: "<full plan text>",
 goal: "<one–two sentence restatement of the underlying task>" }` and the script
 below. The three lenses live in the script; only `args` changes per run.
 
+> **Args may arrive stringified.** The harness sometimes delivers `args` to the
+> script as a JSON **string** rather than an object, so reading `args.plan`
+> directly yields `undefined` and the critics silently review an empty plan. The
+> script below already guards against this (`typeof args === 'string' ?
+> JSON.parse(args) : args`) — keep that guard. If a critic ever reports the plan
+> or goal is literally `"undefined"`, this is the cause: the args weren't parsed.
+
 ```javascript
 export const meta = {
   name: 'review-plan-critics',
@@ -126,8 +133,12 @@ const VERDICT_SCHEMA = {
   required: ['lens', 'stance', 'findings'],
 }
 
-const plan = args.plan
-const goal = args.goal
+// `args` can arrive as a JSON string rather than an object (a known harness
+// gotcha), in which case `args.plan` / `args.goal` would be `undefined` and the
+// critics would review an empty plan. Parse it back to an object first.
+const input = typeof args === 'string' ? JSON.parse(args) : args
+const plan = input.plan
+const goal = input.goal
 
 phase('Review')
 const verdicts = await parallel(LENSES.map((lens) => () =>
