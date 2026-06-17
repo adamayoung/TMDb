@@ -433,6 +433,81 @@ Integration tests require these environment variables:
 
 Running unit tests on Linux requires [Docker](https://www.docker.com) to be running.
 
+### Claude Code Skills
+
+This repository ships a suite of
+[Claude Code](https://claude.com/claude-code) skills (in `.claude/skills/`)
+that automate the development workflow. Invoke any of them with `/<name>`.
+
+#### Delivery pipeline
+
+| Skill | Purpose |
+| --- | --- |
+| `/deliver` | Orchestrate the full pipeline from an approved plan to a ready-to-merge PR |
+| `/review-plan` | Adversarially review the current plan with three independent critics and apply the consensus |
+| `/implement-plan` | Implement the plan test-first (Canon TDD) until the test list is empty |
+| `/review-changes` | Review the working-tree changes — one reviewer, or a parallel fan-out with adversarial verification for large diffs |
+| `/capture-knowledge` | Record durable learnings (gotchas, API quirks, ADRs) into `knowledge/` |
+| `/pr` | Create a pull request (`/format` → `make ci` → review → open) |
+| `/watch-pr` | Watch the PR: resolve review threads, fix failing checks, optionally merge |
+| `/review-pr-threads` | Resolve the PR's unresolved review threads in one sweep |
+| `/fix-pr-checks` | Fix the PR's failing CI checks in one sweep |
+
+#### Build, test & quality
+
+These delegate to a Haiku subagent to keep the main context lean.
+
+| Skill | Purpose |
+| --- | --- |
+| `/build` | Compile the package for the current platform |
+| `/build-for-testing` | Compile the package and all test targets without running them |
+| `/test` | Run the unit tests (Swift Testing) |
+| `/integration-test` | Run the live-API integration tests |
+| `/lint` | Check swiftlint + swiftformat compliance |
+| `/format` | Auto-format with swiftlint + swiftformat |
+
+#### Diagnosis, TDD & docs
+
+| Skill | Purpose |
+| --- | --- |
+| `/diagnose-ci-failure` | Diagnose a failing CI job and propose a fix |
+| `/diagnose-integration-failure` | Diagnose a failing integration-test run and propose a fix |
+| `/canon-tdd` | Drive test-first development (test list → failing test → pass → refactor) |
+| `/document-swift` | Write DocC documentation for public API per project conventions |
+
+Two subagents back the review and documentation steps: `code-reviewer`
+(deep Swift/TMDb review) and `documentation-writer` (bulk DocC generation).
+The reviewer follows the shared spec in
+[`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
+
+### Feature Workflow (`/plan` → `/deliver`)
+
+To build a feature end-to-end, draft a plan with `/plan` (Claude Code plan
+mode), then run `/deliver` to carry it all the way to a ready-to-merge pull
+request. `/deliver` sequences the skills above and stops for your approval at
+exactly two gates.
+
+```text
+/plan                    ← you draft the plan
+  │
+  ▼  /deliver orchestrates:
+  ├─ /review-plan        3 critics revise the plan      ── GATE 1: approve
+  ├─ (feature branch)
+  ├─ /implement-plan     Canon TDD → empty test list (unit + integration green)
+  ├─ /review-changes     review + fix Critical/High (test-first)
+  ├─ /capture-knowledge  record learnings into knowledge/
+  ├─ /pr reviewed        make ci gate → open the PR
+  └─ /watch-pr           resolve threads + fix checks    ── GATE 2: ready-to-merge
+```
+
+* **Gate 1** — approve the plan after the critics revise it, before any code is
+  written.
+* **Gate 2** — `/deliver` stops at a green, ready-to-merge PR; you perform the
+  final merge.
+
+Each step is also usable on its own — e.g. `/review-changes` to review local
+changes, or `/watch-pr` to babysit an existing PR.
+
 ## Acknowledgments
 
 * [The Movie Database (TMDb)](https://www.themoviedb.org) for providing
