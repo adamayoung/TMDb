@@ -29,6 +29,24 @@ out of it.
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
+## Swift concurrency
+
+### Public enums are not implicitly `Sendable` — explicit conformance needed for `@Sendable` capture
+
+*2026-06-18.* Adding auto-pagination over a service method captures that method's
+non-page arguments into `PagedAsyncSequence`'s `@Sendable (Int) async throws -> …`
+page-fetcher closure. The sort enums `FavouriteSort` / `WatchlistSort` /
+`RatedSort` conformed only to `CustomStringConvertible`, so they were **not**
+`Sendable` — implicit `Sendable` is only inferred for non-`public` types. The
+build failed with *"capture of 'sortedBy' with non-Sendable type 'FavouriteSort?'
+in a '@Sendable' closure"*.
+
+- **Fix:** add explicit `: Sendable` to the enum (additive, non-breaking — their
+  associated values, e.g. `Bool`, were already `Sendable`).
+- **Lesson:** before wrapping a service method in any `@Sendable` closure
+  (auto-pagination, `Task {}`, etc.), check that every captured **public** type is
+  `Sendable`; don't assume a simple value enum already is.
+
 ## Testing
 
 ### Integration tests need live-API env vars, and can fail transiently
