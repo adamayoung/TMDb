@@ -39,9 +39,14 @@ struct TMDbChangesServicePaginationTests {
         #expect(apiClient.lastRequest is MovieChangesListRequest)
     }
 
-    @Test("allMovieChangesPages yields page objects")
+    @Test("allMovieChangesPages yields page objects mapping every field")
     func allMovieChangesPagesYieldsPageObjects() async throws {
-        apiClient.addResponse(.success(ChangedIDCollection.mock(page: 1, totalPages: 2)))
+        // Distinct page/totalPages/totalResults so a field-swap in the
+        // ChangedIDCollection -> PageableListResult adapter can't pass.
+        let firstResult = ChangedID(id: 99, adult: false)
+        apiClient.addResponse(.success(
+            ChangedIDCollection.mock(results: [firstResult], page: 1, totalPages: 2, totalResults: 7)
+        ))
         apiClient.addResponse(.success(ChangedIDCollection.mock(page: 2, totalPages: 2)))
 
         var pages: [PageableListResult<ChangedID>] = []
@@ -53,6 +58,8 @@ struct TMDbChangesServicePaginationTests {
         let firstPage = try #require(pages.first)
         #expect(firstPage.page == 1)
         #expect(firstPage.totalPages == 2)
+        #expect(firstPage.totalResults == 7)
+        #expect(firstPage.results.first?.id == 99)
     }
 
     // MARK: - allTVSeriesChanges
