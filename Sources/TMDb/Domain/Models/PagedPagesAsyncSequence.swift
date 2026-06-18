@@ -68,6 +68,7 @@ public struct PagedPagesAsyncSequence<
     public typealias PageFetcher = @Sendable (Int) async throws -> PageableListResult<Result>
 
     private let pageFetcher: PageFetcher
+    private let prefetchEnabled: Bool
 
     ///
     /// Creates a new paged pages async sequence.
@@ -75,7 +76,31 @@ public struct PagedPagesAsyncSequence<
     /// - Parameter pageFetcher: A closure that fetches a single page of results.
     ///
     public init(pageFetcher: @escaping PageFetcher) {
+        self.init(pageFetcher: pageFetcher, prefetchEnabled: false)
+    }
+
+    private init(pageFetcher: @escaping PageFetcher, prefetchEnabled: Bool) {
         self.pageFetcher = pageFetcher
+        self.prefetchEnabled = prefetchEnabled
+    }
+
+    ///
+    /// Returns a copy of this sequence that prefetches the next page.
+    ///
+    /// With prefetch enabled, the next page begins fetching concurrently as soon as the current page
+    /// is yielded, hiding inter-page network latency on long scans. The emitted pages are identical
+    /// to the default lazy sequence.
+    ///
+    /// - Important: Prefetch is opt-in because it trades up to **one** speculative request for lower
+    /// latency. On an early `break` at most one in-flight prefetch may run to completion (the
+    /// value-type iterator has no `deinit` to cancel it on drop). The sequence must be iterated by a
+    /// **single consumer** — the standard `AsyncIteratorProtocol` contract; sharing one iterator
+    /// across tasks is not supported.
+    ///
+    /// - Returns: A sequence that prefetches one page ahead while iterating.
+    ///
+    public func prefetchingNextPage() -> Self {
+        Self(pageFetcher: pageFetcher, prefetchEnabled: true)
     }
 
     ///
@@ -84,7 +109,7 @@ public struct PagedPagesAsyncSequence<
     /// - Returns: An iterator for this sequence.
     ///
     public func makeAsyncIterator() -> Iterator {
-        Iterator(pageFetcher: pageFetcher)
+        Iterator(pageFetcher: pageFetcher, prefetchEnabled: prefetchEnabled)
     }
 
 }
@@ -98,12 +123,16 @@ public extension PagedPagesAsyncSequence {
     struct Iterator: AsyncIteratorProtocol {
 
         private let pageFetcher: PageFetcher
+        private let prefetchEnabled: Bool
         private var currentPage = 0
         private var totalPages: Int?
         private var finished = false
+        private var prefetchTask: Task<PageableListResult<Result>, Error>?
+        private var prefetchedPage: Int?
 
-        init(pageFetcher: @escaping PageFetcher) {
+        init(pageFetcher: @escaping PageFetcher, prefetchEnabled: Bool) {
             self.pageFetcher = pageFetcher
+            self.prefetchEnabled = prefetchEnabled
         }
 
         ///
@@ -127,9 +156,8 @@ public extension PagedPagesAsyncSequence {
                 return nil
             }
 
-            // Fetch the next page
-            currentPage += 1
-            let page = try await pageFetcher(currentPage)
+            // Fetch the next page (awaiting an in-flight prefetch when present)
+            let page = try await fetchNextPage()
 
             // Update total pages if not yet set. A non-positive `totalPages`
             // means the endpoint did not report a total, so leave the cap unset
@@ -144,7 +172,43 @@ public extension PagedPagesAsyncSequence {
                 return nil
             }
 
+            // Prefetch the next page as this one is yielded.
+            startPrefetchIfNeeded()
             return page
+        }
+
+        /// Fetches the next page, consuming an in-flight prefetch if one exists.
+        private mutating func fetchNextPage() async throws -> PageableListResult<Result> {
+            if let task = prefetchTask, let prefetchedPage {
+                prefetchTask = nil
+                self.prefetchedPage = nil
+                currentPage = prefetchedPage
+                // Forward consumer cancellation into the in-flight prefetch.
+                return try await withTaskCancellationHandler {
+                    try await task.value
+                } onCancel: {
+                    task.cancel()
+                }
+            }
+
+            currentPage += 1
+            return try await pageFetcher(currentPage)
+        }
+
+        /// Starts a one-page lookahead as the current page is yielded.
+        private mutating func startPrefetchIfNeeded() {
+            guard prefetchEnabled,
+                  prefetchTask == nil,
+                  !finished,
+                  shouldPrefetchNextPage(currentPage: currentPage, totalPages: totalPages)
+            else {
+                return
+            }
+
+            let nextPage = currentPage + 1
+            let fetcher = pageFetcher
+            prefetchedPage = nextPage
+            prefetchTask = Task { try await fetcher(nextPage) }
         }
 
     }
