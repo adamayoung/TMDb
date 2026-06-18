@@ -14,13 +14,22 @@ import Foundation
 actor PageFetchRecorder {
 
     private(set) var startedPages: [Int] = []
+    private(set) var cancelledPages: [Int] = []
 
     func recordStart(_ page: Int) {
         startedPages.append(page)
     }
 
+    func recordCancellation(_ page: Int) {
+        cancelledPages.append(page)
+    }
+
     var count: Int {
         startedPages.count
+    }
+
+    func wasCancelled(_ page: Int) -> Bool {
+        cancelledPages.contains(page)
     }
 
 }

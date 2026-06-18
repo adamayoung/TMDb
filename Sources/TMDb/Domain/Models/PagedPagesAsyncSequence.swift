@@ -200,7 +200,7 @@ public extension PagedPagesAsyncSequence {
             guard prefetchEnabled,
                   prefetchTask == nil,
                   !finished,
-                  shouldPrefetchNextPage(currentPage: currentPage, totalPages: totalPages)
+                  PrefetchPolicy.shouldPrefetchNext(currentPage: currentPage, totalPages: totalPages)
             else {
                 return
             }

@@ -218,7 +218,7 @@ public extension PagedAsyncSequence {
                   !finished,
                   !buffer.isEmpty,
                   bufferIndex == buffer.count,
-                  shouldPrefetchNextPage(currentPage: currentPage, totalPages: totalPages)
+                  PrefetchPolicy.shouldPrefetchNext(currentPage: currentPage, totalPages: totalPages)
             else {
                 return
             }

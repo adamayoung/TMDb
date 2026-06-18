@@ -294,13 +294,19 @@ struct PagedAsyncSequenceTests {
         #expect(caughtError != nil)
     }
 
-    @Test("prefetchingNextPage cancels an in-flight prefetch when the consumer is cancelled")
+    @Test("prefetchingNextPage cancels the in-flight prefetch when the consumer is cancelled")
     func prefetchCancellationPropagates() async throws {
+        let recorder = PageFetchRecorder()
         let (started, startedContinuation) = AsyncStream<Void>.makeStream()
         let pageFetcher: PagedAsyncSequence<MockItem>.PageFetcher = { page in
             if page == 2 {
                 startedContinuation.yield(())
-                try await Task.sleep(for: .seconds(2)) // block until cancelled
+                do {
+                    try await Task.sleep(for: .seconds(5)) // block until cancelled
+                } catch {
+                    await recorder.recordCancellation(2) // the forwarded cancel reached the prefetch
+                    throw error
+                }
             }
             return MockItem.mockPageableList(page: page, totalPages: 5, itemsPerPage: 2)
         }
@@ -315,14 +321,20 @@ struct PagedAsyncSequenceTests {
             return count
         }
 
-        // Wait until page 2's prefetch is in flight, then cancel the consumer.
+        // Wait until page 2's prefetch is in flight and the consumer is awaiting it, then cancel.
         var startedIterator = started.makeAsyncIterator()
         _ = await startedIterator.next()
+        for _ in 0 ..< 5 {
+            await Task.yield()
+        }
         task.cancel()
 
         await #expect(throws: CancellationError.self) {
             _ = try await task.value
         }
+        // The forwarding (withTaskCancellationHandler) must have cancelled the in-flight prefetch,
+        // not just thrown via the pre-await cancellation check.
+        #expect(await recorder.wasCancelled(2))
     }
 
     @Test("default item-level sequence does not prefetch the next page")
