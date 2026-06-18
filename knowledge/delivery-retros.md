@@ -10,6 +10,31 @@ Format: **Feature / PR** · date · weight · *what worked* · *friction* ·
 
 ---
 
+## 2026-06-18 — ✨ AuthenticatedSession wrapper for AccountService (#346) · full
+
+- **Worked:** the full pipeline earned its keep on the only genuinely risky change
+  of the session. `/review-plan`'s three critics **unanimously** caught three
+  blockers *before* a line was written — (1) adding methods as public-protocol
+  *requirements* would break external conformers, (2) the 16 auto-pagination
+  methods were omitted from scope, (3) deprecating the old forms would cascade
+  `--Werror` failures through the package's own internal callers — which reversed
+  the user's earlier "deprecate-and-add" choice to a clean additive design. The
+  fan-out `/review-changes` then caught real coverage gaps (9 untested pagination
+  forwards). 2,700 unit tests, ADR-0005.
+- **Friction:** local `make ci` reported lint **green**, but the PR's CI `Lint`
+  job failed on `file_length`/`type_body_length` for the two new oversized files —
+  a real local-vs-CI lint discrepancy that cost a CI round-trip. Adding the
+  `swiftlint:disable` directives (matching `AccountService+Pagination.swift`'s
+  precedent) fixed it; a fresh `make lint` then agreed with CI.
+- **Deviations:** stopped mid-Phase-1 to surface the deprecation blocker to the
+  user (legitimate per the contract — it reversed an explicit prior decision).
+- **Improvement:** the local-vs-CI lint gap is the highest-value fix. `make ci`'s
+  lint step passed locally on violations CI caught (stale SwiftLint cache, or a
+  config/path difference) — so the mandatory gate gave a false green. Recommend
+  `/pr` run a fresh `make lint` (or `swiftlint --no-cache`) as part of step 4,
+  rather than trusting `make ci`'s lint leg, so file-size violations on new files
+  surface locally.
+
 ## 2026-06-18 — 📝 Add error-handling How-To guide (#344) · lite (docs-only)
 
 - **Worked:** reading the real source first (`TMDbError+TMDbAPIError.swift` for the

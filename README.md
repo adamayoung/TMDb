@@ -354,7 +354,8 @@ with 94 auto-pagination methods.
 ### User Account Features (Authentication Required)
 
 Account features require an authenticated `Session`. Create one with the
-`AuthenticationService`, then read the account ID from the user's details:
+`AuthenticationService`, then bundle it with the account ID into an
+`AuthenticatedSession`:
 
 ```swift
 // Authenticate the user and create a session
@@ -363,15 +364,13 @@ let authURL = tmdbClient.authentication.authenticateURL(for: token)
 // Present authURL to the user to approve the token, then:
 let session = try await tmdbClient.authentication.createSession(withToken: token)
 
-// Get the account ID
-let accountDetails = try await tmdbClient.account.details(session: session)
-let accountID = accountDetails.id
+// Bundle the account ID and session into one value
+let authenticatedSession = try await tmdbClient.account.authenticatedSession(for: session)
 
 // Add a movie to favourites
 try await tmdbClient.account.addFavourite(
     movie: movieID,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Rate a movie
@@ -379,8 +378,7 @@ try await tmdbClient.movies.addRating(8.5, toMovie: movieID, session: session)
 
 // Get the movie watchlist
 let watchlist = try await tmdbClient.account.movieWatchlist(
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 ```
 

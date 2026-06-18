@@ -390,6 +390,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 ### Account
 
 - ``AccountService``
+- ``AuthenticatedSession``
 - ``AccountDetails``
 - ``AccountAvatar``
 - ``AccountAvatar/Gravatar``

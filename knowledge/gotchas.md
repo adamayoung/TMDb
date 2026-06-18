@@ -46,6 +46,23 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 
 ## Public API
 
+### Growing a public protocol additively: extension defaults, and the `--Werror` deprecation trap
+
+*2026-06-18.* Two traps when adding API to a **`public protocol`** (e.g.
+`AccountService`) — see [ADR-0005](decisions/0005-authenticated-session-additive-overloads.md):
+
+- **Adding a method as a protocol *requirement* is source-breaking** for every
+  external type that conforms to the protocol (they suddenly lack an
+  implementation). To add API non-breakingly, declare it as a **protocol-extension
+  default**, never a new requirement.
+- **Deprecating a method the package calls internally fails the build.** The build
+  runs `--Werror`, so a `@available(*, deprecated)` method that the library's own
+  code still calls (e.g. `AccountService+Pagination` calling the base account
+  methods) turns those internal call sites into deprecation-warning *errors*. To
+  deprecate such a method you must migrate every in-`Sources` caller first — or, on
+  a public protocol whose requirements can't be removed in a minor release anyway,
+  simply don't deprecate (add the new form and document it as preferred).
+
 ### Renaming a method's *internal* parameter name is source- and ABI-compatible
 
 *2026-06-18.* Renaming the **second** (internal) name in a parameter —
