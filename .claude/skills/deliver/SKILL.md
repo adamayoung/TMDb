@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take the current plan all the way to a ready-to-merge pull request — review the plan, implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have a plan (e.g. from /plan) and want the rest of the feature pipeline run end-to-end. Stops for approval only at two gates: the revised plan, and ready-to-merge.
+description: Take the current plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (e.g. from /plan) and want the rest of the feature pipeline run end-to-end. Invoking it is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -12,12 +12,16 @@ the existing skills and the `code-reviewer` agent, adds the safety gates, and
 keeps going across the long session until the PR is ready.
 
 ```text
-/plan → /review-plan → /implement-plan → code-review + fix → capture → /pr reviewed → /watch-pr
- (you)       │                │                  │              │            │            │
-         GATE 1 ▲          TDD loop        the single review  record     make ci +     GATE 2 ▲
-       approve revised     to empty        (once, or per unit) learnings  open PR       stop at
-           plan           test list        fix Critical/High  to knowledge/ (no review) ready-to-merge
+you approve the plan ─▶ /deliver ─▶ branch ─▶ [review-plan] ─▶ implement ─▶
+  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
+                                                                   ▲ the only hard stop
 ```
+
+**Invoking `/deliver` on an approved plan is itself the plan-approval gate.** From
+there it runs **autonomously** to a single hard stop — **ready-to-merge** — pausing
+mid-run only for a genuine blocker (a plan-review blocker, or a red gate it cannot
+triage). It **auto-scales** the machinery to the change's risk (see *Delivery
+weight*), and ends with a short **retrospective** so the workflow keeps improving.
 
 The plan itself is **not** part of this skill — create it first with `/plan` (or
 plan mode). `/deliver` picks up from there.
@@ -26,38 +30,65 @@ plan mode). `/deliver` picks up from there.
 
 These are non-negotiable. Do them by default, without being reminded.
 
-1. **Run the phases in order; never skip the gate.** Branch → review-plan →
-   implement → code-review/fix → capture → pr → watch-pr. Stop and wait for
-   explicit user approval at **Gate 1** (revised plan) and **Gate 2**
-   (ready-to-merge). Between gates, proceed autonomously.
+1. **Invoking `/deliver` is plan approval — then run autonomously to the one
+   gate.** Do not stop for a second "is the plan ok?" confirmation. Proceed through
+   branch → (review-plan) → implement → code-review/fix → capture → pr → watch-pr
+   to the single hard stop, **Gate: ready-to-merge** (Phase 5). The only legitimate
+   mid-run pauses are: a **blocker** raised by `/review-plan` (Phase 1), or a **red
+   gate you cannot triage** (Contract §4).
 2. **Delegate to the existing skills — don't reinvent them.** Invoke
    `/review-plan`, `/implement-plan`, `/review-changes`, `/capture-knowledge`,
-   `/pr`, and `/watch-pr` (`/review-changes` is what spawns the `code-reviewer`
-   agent or the review Workflow). This skill only sequences and gates; the
-   expertise lives in those pieces.
+   `/pr`, `/watch-pr`, and `/fix-integration-failures` (`/review-changes` is what
+   spawns the `code-reviewer` agent or the review Workflow). This skill only
+   sequences and gates; the expertise lives in those pieces.
 3. **Never work on `main`.** Branch first — before `/review-plan` or any file edit
    (see *Phase 0.5*). `CLAUDE.md` forbids editing `main`.
-4. **A red gate stops the pipeline.** If tests can't go green, `make ci` fails, or
-   the code-review/fix loop can't converge within its cap, **stop and report** —
-   do not push forward to a PR on a broken state.
+4. **A red gate triages before it stops.** If `make ci` or a check fails, first
+   classify **in-diff vs pre-existing** (Phase 4). A failure your diff caused → fix
+   test-first and re-run; only **stop** if it can't converge in the cap. A
+   **pre-existing / unrelated** failure (typically a flaky live integration test
+   not in your diff) → route it to `/fix-integration-failures` (fix off `main`,
+   merge, update this branch) and re-run — **don't** hard-stop on someone else's
+   flake. Only a genuine, in-diff, unfixable break stops the pipeline.
 5. **Test-first all the way.** Every fix in the code-review loop follows
    `canon-tdd` — reproduce with a failing test, then fix. No untested patches.
-6. **Keep a phase ledger.** This is a long session that may be summarised; record
-   which phase you're in, the branch name, the PR number, and per-phase outcomes
-   in your working notes so you can resume cleanly after compaction.
+6. **Keep a durable phase ledger.** This is a long session that may be summarised.
+   Track it in a **`TaskCreate` task list — one task per phase** (Phase 0.5 →
+   Phase 6), set `in_progress`/`completed` as you go, and record the branch name,
+   PR number, and the delivery weight on the relevant tasks. A task list survives
+   compaction better than prose working-notes, so you can resume cleanly.
 7. **Jot knowledge candidates as you go.** Keep a running **knowledge-candidates**
-   list in the ledger and append to it the *moment* a learning occurs during
+   list (in the ledger) and append to it the *moment* a learning occurs during
    Phases 2–3 — a thing you had to look up or web-search, a gotcha or dead-end, a
    surprising live-API behaviour, or a non-obvious decision. One line each
    (`<category>: <gist> [where]`). Phase 3.5 curates this list; reconstructing it
    at the end loses the best material (and may not survive compaction).
 
+## Delivery weight — auto-scale to risk (lite vs full)
+
+`/deliver` sizes its machinery to the change, automatically — no flag. Judge the
+weight from the plan up front, and re-confirm from the actual diff after Phase 2:
+
+- **Lite** — a small, mechanical, single-unit change that touches **no risky
+  surface**: no concurrency (`Task`/actor/`Sendable`), no networking/`HTTPClient`
+  layer, no model `Decodable`/`CodingKeys` changes, and no new public API beyond a
+  simple additive method; roughly **under a few hundred changed lines**. Lite ⇒
+  **skip `/review-plan`'s three-critic pass** (Phase 1) and let `/review-changes`
+  take its **single-reviewer** path (Phase 3) — it already self-scales.
+- **Full** — anything risky or large: new concurrency, networking, models/decoders,
+  a new service or public-API surface, multi-unit work, or a big diff. Full ⇒ the
+  **three-critic `/review-plan`** and the **fan-out + adversarial-verify**
+  `/review-changes`.
+
+When unsure, prefer **full** — the heavier review is cheap insurance against the
+changes that actually bite. Record the chosen weight in the ledger.
+
 ## Context & isolation (by design)
 
 `/deliver` is a **lean main-context conductor** — it should hold only the plan
-reference, the phase ledger, the two gate interactions, and a short summary
-returned from each phase. The heavy or independent-judgment work is deliberately
-isolated so it never bloats or biases the main window:
+reference, the phase ledger, the one gate interaction, and a short summary returned
+from each phase. The heavy or independent-judgment work is deliberately isolated so
+it never bloats or biases the main window:
 
 - **Already isolated — keep it that way.** `/review-plan` runs its three Opus
   critics in a separate Workflow (only verdicts return); the `code-reviewer`
@@ -69,9 +100,9 @@ isolated so it never bloats or biases the main window:
   output (test/build logs) is already delegated to Haiku, so the inline cost is
   mostly the edits themselves. **Do not** convert this phase to a silent subagent
   — that would trade away the visibility the workflow is built around.
-- **Gates must stay in the main agent.** Subagents are non-interactive; the Gate 1
-  and Gate 2 approvals require the user, so the conductor — not a subagent — owns
-  them. Phases hand off via **git / disk / the PR**, not via context.
+- **The gate stays in the main agent.** Subagents are non-interactive; the
+  ready-to-merge gate is handed to the user, so the conductor — not a subagent —
+  owns it. Phases hand off via **git / disk / the PR**, not via context.
 
 ## Phase 0 — Preconditions
 
@@ -79,6 +110,8 @@ isolated so it never bloats or biases the main window:
   plan-mode plan → most recent plan in the conversation). If there is no plan,
   stop and tell the user to run `/plan` first — do not invent one.
 - **State the goal** in a sentence so every downstream phase is anchored to it.
+- **Judge the delivery weight** (lite vs full) from the plan, and open the
+  `TaskCreate` ledger (Contract §6).
 
 ## Phase 0.5 — Ensure a feature branch (before any edit)
 
@@ -100,19 +133,30 @@ git checkout -b feature/<slug>
 ```
 
 Record the branch name in the ledger. If already on a suitable feature branch,
-keep it. (Creating the branch before Gate 1 is cheap; an abandoned branch if you
-reject the plan is a negligible cost next to editing `main`.)
+keep it.
 
-## Phase 1 — Review the plan  → GATE 1
+**Invoked from plan mode?** If you reach `/deliver` while in plan mode with an
+approved plan, that approval *is* Gate-1: exit plan mode (the plan file is your
+input), branch, and proceed — there's no separate `ExitPlanMode`-then-approve
+dance, and no second "is the plan ok?" prompt.
 
-Invoke **`/review-plan`**. It runs the three adversarial Opus critics, reconciles
-a consensus, and applies the agreed feedback to the plan.
+## Phase 1 — Harden the plan (no separate approval stop)
 
-**GATE 1 — hard stop.** Present the **revised** plan plus the change log
-(applied / rejected / open questions) and **wait for explicit user approval**
-before implementing. The point of this gate: never spend implementation time on a
-plan the reviewers just rewrote, until you've confirmed the rewrite. If the user
-wants changes, fold them in and re-confirm. Do not proceed on silence.
+The plan is already approved (Contract §1), so this phase only **hardens** it; it
+does not re-ask for approval.
+
+- **Lite change, or a plan already reviewed this session** (a recent `/review-plan`
+  that converged, or a plan approved via `ExitPlanMode`) → **skip the critics** and
+  proceed straight to Phase 2. Re-running three Opus critics on a settled or trivial
+  plan is wasted work.
+- **Full change with an unreviewed plan** → invoke **`/review-plan`** (three
+  adversarial Opus critics → consensus → applied to the plan). Then:
+  - Present the **revised** plan + a one-line change log (applied / rejected) as an
+    **FYI**, and **keep going** — do not wait for re-approval.
+  - **Exception — a `blocker`:** if a critic raises a blocker (the approach is
+    wrong, a breaking change, data-loss, etc.), **stop and surface it** before
+    implementing. A blocker means the approved plan would do harm; that's worth the
+    interruption. Improvements/`major`/`minor` are folded in and you proceed.
 
 ## Phase 2 — Implement the plan
 
@@ -129,7 +173,8 @@ main...HEAD`), so committing as you implement means the review sees the real
 change rather than an empty diff.
 
 Do not advance until `/implement-plan` reports an empty test list with `/test`
-**and** `/integration-test` passing, and the work committed.
+**and** `/integration-test` passing, and the work committed. Re-confirm the
+delivery weight from the actual diff now (a "lite" plan that ballooned is `full`).
 
 ## Phase 3 — Code review + fix loop
 
@@ -145,19 +190,17 @@ ones, so per-item review just flags churn). The per-item quality gate already
 lives in Phase 2 — the passing test, the inline docs, the lint hook, and
 refactor-on-green.
 
-**Granularity by plan size:**
+**Granularity by delivery weight:**
 
-- **Small / single-unit plan** (one method, one model) → review **once**, on the
-  full diff after Phase 2 finishes. This is the default.
-- **Large / multi-unit plan** (several new models or service methods) → review
-  **per cohesive unit** as each completes (a finished model; a service method +
-  its tests), rather than one large end-diff. Smaller diffs review more
-  accurately, and a wrong foundational pattern is caught before later units build
-  on it. Do not drop to per-test-list-item — per *unit*, not per *item*.
-
-  In this case Phases 2 and 3 **interleave**: review a unit as Phase 2 finishes
-  it (and fix per the loop below) before moving to the next unit — the phase
-  numbers describe order of concern, not a rigid barrier after all implementation.
+- **Lite / single-unit** (one method, one model) → review **once**, on the full
+  diff after Phase 2. `/review-changes` takes its single-`code-reviewer` path.
+- **Full / multi-unit** (several new models/methods, or risky concurrency/
+  networking) → review **per cohesive unit** as each completes (a finished model;
+  a service method + its tests), rather than one large end-diff. Smaller diffs
+  review more accurately, and a wrong foundational pattern is caught before later
+  units build on it. Do not drop to per-test-list-item — per *unit*, not per
+  *item*. Here Phases 2 and 3 **interleave**: review a unit as Phase 2 finishes it
+  (and fix per the loop below) before moving on.
 
 Run the review via **`/review-changes`**, which scales the machinery to the diff
 itself: a single `code-reviewer` agent for a small change, or a fan-out Workflow
@@ -197,8 +240,7 @@ learnings you'd have forgotten by now.
 Do this **before** `/pr` so the notes are committed in the **same PR** as the
 change. Capturing nothing is a valid outcome — don't manufacture entries. The
 `knowledge/` files are Markdown, so they add no review noise (the GitHub reviewer
-ignores `**/*.md`); note they are **not** in the `make lint-markdown` scope, so
-keep entries tidy by hand — there's no gate to lean on.
+ignores `**/*.md`); keep entries tidy by hand.
 
 ## Phase 4 — Create the PR
 
@@ -210,31 +252,61 @@ its stop-to-ask gate would interrupt the autonomous run). `/pr` will then: run
 full gate — lint, markdown, unit + integration tests, release build, docs build),
 then push the branch and open the PR with a gitmoji title and structured body.
 
-- If `make ci` fails, `/pr` stops — treat that as a red gate (Contract §4): fix
-  and re-run, do not force the PR. (`make ci` is the real safety net here — a
-  green CI, not a second review.)
+**If `make ci` fails, triage before you stop** (Contract §4):
+
+1. **Which check, and is it in your diff?** Read the failure. Compare the failing
+   test/file against `git diff --name-only main...HEAD`.
+2. **In-diff genuine failure** → it's yours: fix it (test-first), commit, re-run
+   `make ci`. Only **stop and report** if it can't converge.
+3. **Pre-existing / unrelated** — the failing test isn't in your diff and (for a
+   live integration test) often passes in isolation / on a re-run → it's a `main`
+   problem, not yours. Hand it to **`/fix-integration-failures`** (it fixes the
+   flake on its own branch off `main`, runs `make ci`, and merges), then bring this
+   branch up to date (`git merge main` / `gh pr update-branch`) and re-run the gate.
+   Don't patch an unrelated test onto this feature branch, and don't hard-stop on it.
 
 Record the PR number/URL in the ledger.
 
-## Phase 5 — Watch to ready  → GATE 2
+## Phase 5 — Watch to ready  → GATE: ready-to-merge
 
 Invoke **`/watch-pr`** in **watch-only** mode (do not pass `merge`). It resolves
-review threads and fixes failing checks, looping until the PR is **ready** (green
-checks, threads resolved) or **stuck**.
+review threads and fixes failing checks (its §1c routes a pre-existing/unrelated
+integration failure to `/fix-integration-failures`, per Contract §4), looping until
+the PR is **ready** (green checks, threads resolved) or **stuck**.
 
-**GATE 2 — hard stop at ready-to-merge.** When the PR is ready, **stop and hand
-it to the user for the final merge** — `/deliver` does not merge. Report the PR
-URL and its ready state. If `/watch-pr` reports the PR is stuck (e.g. a check it
-can't fix, or a human-decision review thread), stop and summarise what's blocking.
+**THE GATE — hard stop at ready-to-merge.** When the PR is ready, **stop and hand
+it to the user for the final merge** — `/deliver` does not merge by default. Report
+the PR URL and its ready state, then run Phase 6. If `/watch-pr` reports the PR is
+**stuck** (a check it can't fix, or a human-decision review thread), stop and
+summarise what's blocking.
 
 > **Opt-in auto-merge:** if the user explicitly passes `merge` to `/deliver`,
-> forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready,
-> and Gate 2 becomes "report the merge" instead of stopping. Default is
-> watch-only.
+> forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready, and
+> the gate becomes "report the merge" instead of stopping. Default is watch-only.
+
+## Phase 6 — Retrospective (continuous improvement)
+
+After the gate (PR ready, or merged in `merge` mode), run a **brief, honest
+retrospective** so the workflow keeps improving — this is mandatory, not optional.
+Reflect on *this* delivery and write a dated entry to
+[`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md):
+
+- **Feature / PR**, date, and delivery weight (lite/full).
+- **What worked** — one or two things the pipeline did well.
+- **Friction** — where it was rough, slow, or stopped unnecessarily.
+- **Deviations** — anywhere you had to depart from this skill to do the right
+  thing (a strong signal the skill has a gap).
+- **One improvement** — the single highest-value change to `/deliver` (or a
+  sub-skill) suggested by this run.
+
+Keep it to a handful of bullets — a log, not a ceremony. Then **scan recent
+entries**: if the same friction or deviation recurs across deliveries, fold the fix
+into the relevant skill (and say you're doing so). Commit the retro with the PR when
+possible (watch-only), or as a small follow-up when auto-merged.
 
 ## When the pipeline stops
 
-Whether at a gate, a red gate, or a stuck PR, always end with a concise status:
-the phase reached, the branch and PR (if any), what passed, what's blocking, and
-the single next action you need from the user. The destination is a green PR
-ready for their merge — say plainly whether you got there.
+Whether at the gate, a red gate it couldn't triage, or a stuck PR, always end with
+a concise status: the phase reached, the branch and PR (if any), what passed,
+what's blocking, and the single next action you need from the user. The destination
+is a green PR ready for their merge — say plainly whether you got there.
