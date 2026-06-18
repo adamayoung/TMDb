@@ -354,7 +354,8 @@ with 94 auto-pagination methods.
 ### User Account Features (Authentication Required)
 
 Account features require an authenticated `Session`. Create one with the
-`AuthenticationService`, then read the account ID from the user's details:
+`AuthenticationService`, then bundle it with the account ID into an
+`AuthenticatedSession`:
 
 ```swift
 // Authenticate the user and create a session

@@ -72,11 +72,17 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
     func favouriteTVSeriesForwardsAuthenticatedSession() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = FavouriteTVSeriesRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.favouriteTVSeries(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is FavouriteTVSeriesRequest)
+        #expect(apiClient.lastRequest as? FavouriteTVSeriesRequest == expectedRequest)
     }
 
     @Test("addFavourite(movie:) forwards the authenticated session")
@@ -149,22 +155,34 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
     func movieWatchlistForwardsAuthenticatedSession() async throws {
         let expectedResult = MoviePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = MovieWatchlistRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.movieWatchlist(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is MovieWatchlistRequest)
+        #expect(apiClient.lastRequest as? MovieWatchlistRequest == expectedRequest)
     }
 
     @Test("tvSeriesWatchlist forwards the authenticated session")
     func tvSeriesWatchlistForwardsAuthenticatedSession() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = TVSeriesWatchlistRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.tvSeriesWatchlist(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is TVSeriesWatchlistRequest)
+        #expect(apiClient.lastRequest as? TVSeriesWatchlistRequest == expectedRequest)
     }
 
     @Test("addToWatchlist(movie:) forwards the authenticated session")
@@ -254,22 +272,34 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
     func ratedTVSeriesForwardsAuthenticatedSession() async throws {
         let expectedResult = TVSeriesPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = RatedTVSeriesRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.ratedTVSeries(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is RatedTVSeriesRequest)
+        #expect(apiClient.lastRequest as? RatedTVSeriesRequest == expectedRequest)
     }
 
     @Test("ratedTVEpisodes forwards the authenticated session")
     func ratedTVEpisodesForwardsAuthenticatedSession() async throws {
         let expectedResult = TVEpisodePageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = RatedTVEpisodesRequest(
+            sortedBy: nil,
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.ratedTVEpisodes(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is RatedTVEpisodesRequest)
+        #expect(apiClient.lastRequest as? RatedTVEpisodesRequest == expectedRequest)
     }
 
     // MARK: - Lists
@@ -278,11 +308,16 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
     func listsForwardsAuthenticatedSession() async throws {
         let expectedResult = MediaListSummaryPageableList.mock()
         apiClient.addResponse(.success(expectedResult))
+        let expectedRequest = AccountListsRequest(
+            page: nil,
+            accountID: accountID,
+            sessionID: session.sessionID
+        )
 
         let result = try await service.lists(authenticatedSession: authenticatedSession)
 
         #expect(result == expectedResult)
-        #expect(apiClient.lastRequest is AccountListsRequest)
+        #expect(apiClient.lastRequest as? AccountListsRequest == expectedRequest)
     }
 
     // MARK: - Pagination
@@ -351,6 +386,87 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
 
         #expect(pages == 1)
         #expect(apiClient.lastRequest is AccountListsRequest)
+    }
+
+    @Test("allFavouriteTVSeries forwards the authenticated session")
+    func allFavouriteTVSeriesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allFavouriteTVSeries(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is FavouriteTVSeriesRequest)
+    }
+
+    @Test("allWatchlistTVSeries forwards the authenticated session")
+    func allWatchlistTVSeriesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allWatchlistTVSeries(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is TVSeriesWatchlistRequest)
+    }
+
+    @Test("allRatedTVSeries forwards the authenticated session")
+    func allRatedTVSeriesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allRatedTVSeries(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is RatedTVSeriesRequest)
+    }
+
+    @Test("allRatedTVEpisodes forwards the authenticated session")
+    func allRatedTVEpisodesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVEpisodePageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allRatedTVEpisodes(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is RatedTVEpisodesRequest)
+    }
+
+    @Test("allFavouriteTVSeriesPages forwards the authenticated session")
+    func allFavouriteTVSeriesPagesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allFavouriteTVSeriesPages(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is FavouriteTVSeriesRequest)
+    }
+
+    @Test("allWatchlistTVSeriesPages forwards the authenticated session")
+    func allWatchlistTVSeriesPagesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allWatchlistTVSeriesPages(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is TVSeriesWatchlistRequest)
+    }
+
+    @Test("allRatedMoviesPages forwards the authenticated session")
+    func allRatedMoviesPagesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(MoviePageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allRatedMoviesPages(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is RatedMoviesRequest)
+    }
+
+    @Test("allRatedTVSeriesPages forwards the authenticated session")
+    func allRatedTVSeriesPagesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVSeriesPageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allRatedTVSeriesPages(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is RatedTVSeriesRequest)
+    }
+
+    @Test("allRatedTVEpisodesPages forwards the authenticated session")
+    func allRatedTVEpisodesPagesForwardsAuthenticatedSession() async throws {
+        apiClient.addResponse(.success(TVEpisodePageableList.mock(page: 1, totalPages: 1)))
+
+        for try await _ in service.allRatedTVEpisodesPages(authenticatedSession: authenticatedSession) {}
+
+        #expect(apiClient.lastRequest is RatedTVEpisodesRequest)
     }
 
 }
