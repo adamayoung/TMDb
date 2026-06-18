@@ -363,15 +363,13 @@ let authURL = tmdbClient.authentication.authenticateURL(for: token)
 // Present authURL to the user to approve the token, then:
 let session = try await tmdbClient.authentication.createSession(withToken: token)
 
-// Get the account ID
-let accountDetails = try await tmdbClient.account.details(session: session)
-let accountID = accountDetails.id
+// Bundle the account ID and session into one value
+let authenticatedSession = try await tmdbClient.account.authenticatedSession(for: session)
 
 // Add a movie to favourites
 try await tmdbClient.account.addFavourite(
     movie: movieID,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Rate a movie
@@ -379,8 +377,7 @@ try await tmdbClient.movies.addRating(8.5, toMovie: movieID, session: session)
 
 // Get the movie watchlist
 let watchlist = try await tmdbClient.account.movieWatchlist(
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 ```
 

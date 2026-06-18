@@ -32,17 +32,20 @@ let session = try await tmdbClient.authentication.createSession(
 )
 ```
 
-## Getting the Account ID
+## Creating an Authenticated Session
 
-Retrieve the user's account details to get their account ID, which is
-required for favorites, watchlists, and rated item requests.
+Favorites, watchlists, and rated-item requests need both the user's account
+ID and their session. Bundle them once into an ``AuthenticatedSession`` and
+pass that single value to every account call.
 
 ```swift
-let accountDetails = try await tmdbClient.account.details(
-    session: session
-)
-let accountID = accountDetails.id
+// Performs a network request and throws TMDbError.
+let authenticatedSession = try await tmdbClient.account
+    .authenticatedSession(for: session)
 ```
+
+> If you already hold the account ID, construct one directly with
+> ``AuthenticatedSession/init(accountID:session:)`` — no network request.
 
 ## Managing Favorites
 
@@ -52,21 +55,18 @@ Add and remove movies and TV series from the user's favorites.
 // Add a movie to favorites
 try await tmdbClient.account.addFavourite(
     movie: 550,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Get favorite movies
 let favouriteMovies = try await tmdbClient.account.favouriteMovies(
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Remove from favorites
 try await tmdbClient.account.removeFavourite(
     movie: 550,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 ```
 
@@ -76,21 +76,18 @@ try await tmdbClient.account.removeFavourite(
 // Add a movie to watchlist
 try await tmdbClient.account.addToWatchlist(
     movie: 550,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Get movie watchlist
 let watchlist = try await tmdbClient.account.movieWatchlist(
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Remove from watchlist
 try await tmdbClient.account.removeFromWatchlist(
     movie: 550,
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 ```
 
@@ -106,8 +103,7 @@ try await tmdbClient.movies.addRating(
 
 // Get rated movies
 let ratedMovies = try await tmdbClient.account.ratedMovies(
-    accountID: accountID,
-    session: session
+    authenticatedSession: authenticatedSession
 )
 
 // Delete a rating
