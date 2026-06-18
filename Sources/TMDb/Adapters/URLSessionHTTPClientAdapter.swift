@@ -11,7 +11,7 @@ import Foundation
     import FoundationNetworking
 #endif
 
-final class URLSessionHTTPClientAdapter: HTTPClient {
+final class URLSessionHTTPClientAdapter: HTTPClient, Sendable {
 
     private let urlSession: URLSession
 
@@ -63,7 +63,10 @@ extension URLSessionHTTPClientAdapter {
 extension URLSessionHTTPClientAdapter {
 
     #if canImport(FoundationNetworking)
-        // Thread-safe: all access to `task` is guarded by `lock`.
+        /// `@unchecked Sendable` is safe here: `URLSessionDataTask` is itself
+        /// thread-safe, and the box's only mutable state (`task`) is fully
+        /// guarded by `lock`, so the box can be shared across the
+        /// cancellation handler and the continuation closure without a data race.
         private final class DataTaskBox: @unchecked Sendable {
             private let lock = NSLock()
             private var task: URLSessionDataTask?
