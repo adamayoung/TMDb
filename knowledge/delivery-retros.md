@@ -10,6 +10,23 @@ Format: **Feature / PR** · date · weight · *what worked* · *friction* ·
 
 ---
 
+## 2026-06-18 — ♻️ Explicit `Sendable` on `URLSessionHTTPClientAdapter` (#343) · lite
+
+- **Worked:** grounding the plan in the actual code first paid off again — reading
+  the adapter revealed it is `internal` and already enforced as `Sendable` via
+  `HTTPClient: Sendable`, so the change was correctly framed as
+  clarity/future-proofing rather than the bug fix the source review implied. The
+  `code-reviewer` confirmed all three safety claims and caught one honest Low (the
+  compile-time assertion guards Sendability "by any route", not the explicit
+  annotation) — applied the reword and moved on.
+- **Friction:** none of note. `make ci` again ran the full ~6-min gate for a
+  ~14-line change (same docs/low-risk fast-path gap noted on #340).
+- **Deviations:** none — clean lite path (skip critics, single reviewer).
+- **Improvement:** the compile-time `requireSendable(_:)` assertion is a nice
+  reusable idiom for pinning `Sendable` on concurrency-sensitive types; consider a
+  one-line note in `knowledge/gotchas.md` if it recurs (didn't capture yet — single
+  use so far).
+
 ## 2026-06-18 — ♻️ Standardize details(...) parameter names to `<entity>ID` (#341) · lite
 
 - **Worked:** scouting the *actual* scope before planning (an `Explore` sweep over
