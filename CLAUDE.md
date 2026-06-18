@@ -158,12 +158,18 @@ for:
 
 ## Development Workflow
 
-Feature work is **skill-driven**. Draft a plan with `/plan`, then run `/deliver`
-to carry it through to a ready-to-merge PR. `/deliver` orchestrates the pipeline
-and stops only at two approval gates (the revised plan, and ready-to-merge):
+Feature work is **skill-driven**. Draft and approve a plan with `/plan`, then run
+`/deliver` to carry it through to a ready-to-merge PR. **Invoking `/deliver` is
+itself the plan-approval gate** — it then runs autonomously to a single hard stop,
+**ready-to-merge**, pausing only for a plan-review blocker or a red gate it can't
+triage. It **auto-scales** its review machinery to the change's risk (lite vs
+full), **triages** an unrelated red CI gate to `/fix-integration-failures` rather
+than stalling, and ends each delivery with a short retrospective into
+[`knowledge/delivery-retros.md`](knowledge/delivery-retros.md):
 
-`/review-plan` → branch → `/implement-plan` → `/review-changes` (+ fix) →
-`/capture-knowledge` → `/pr` → `/watch-pr`.
+branch → (`/review-plan` for risky/large changes) → `/implement-plan` →
+`/review-changes` (+ fix) → `/capture-knowledge` → `/pr reviewed` → `/watch-pr` →
+retro.
 
 Key skills (the README's *Claude Code Skills* tables list them all):
 

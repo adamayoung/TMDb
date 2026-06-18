@@ -508,28 +508,33 @@ it needs.
 
 ### Feature Workflow (`/plan` → `/deliver`)
 
-To build a feature end-to-end, draft a plan with `/plan` (Claude Code plan
-mode), then run `/deliver` to carry it all the way to a ready-to-merge pull
-request. `/deliver` sequences the skills above and stops for your approval at
-exactly two gates.
+To build a feature end-to-end, draft and approve a plan with `/plan` (Claude
+Code plan mode), then run `/deliver` to carry it all the way to a ready-to-merge
+pull request. **Invoking `/deliver` is itself the plan-approval gate** — it then
+runs autonomously to a single hard stop, **ready-to-merge**, and ends with a
+short retrospective.
 
 ```text
-/plan                    ← you draft the plan
+/plan                    ← you draft AND approve the plan
   │
-  ▼  /deliver orchestrates:
-  ├─ /review-plan        3 critics revise the plan      ── GATE 1: approve
+  ▼  invoking /deliver = plan approval; it then runs autonomously:
   ├─ (feature branch)
+  ├─ /review-plan        3 critics harden the plan (risky/large changes only)
   ├─ /implement-plan     Canon TDD → empty test list (unit + integration green)
-  ├─ /review-changes     review + fix Critical/High (test-first)
+  ├─ /review-changes     review + fix Critical/High (test-first; auto lite/full)
   ├─ /capture-knowledge  record learnings into knowledge/
-  ├─ /pr reviewed        make ci gate → open the PR
-  └─ /watch-pr           resolve threads + fix checks    ── GATE 2: ready-to-merge
+  ├─ /pr reviewed        make ci gate → open the PR (red gate? triage, not stall)
+  ├─ /watch-pr           resolve threads + fix checks    ── GATE: ready-to-merge
+  └─ retrospective       append to knowledge/delivery-retros.md
 ```
 
-* **Gate 1** — approve the plan after the critics revise it, before any code is
-  written.
-* **Gate 2** — `/deliver` stops at a green, ready-to-merge PR; you perform the
-  final merge.
+* **The one gate** — `/deliver` stops at a green, ready-to-merge PR; you perform
+  the final merge (or pass `merge` to have it squash-merge once green).
+* **Auto-scaled** — mechanical changes take a *lite* path (skip the 3-critic plan
+  review, single-reviewer code review); risky/large ones get the *full* machinery.
+* **Red-gate triage** — a CI failure unrelated to your diff (e.g. a flaky live
+  integration test) is routed to `/fix-integration-failures` rather than stalling
+  the delivery.
 
 Each step is also usable on its own — e.g. `/review-changes` to review local
 changes, or `/watch-pr` to babysit an existing PR.
