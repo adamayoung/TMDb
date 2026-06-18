@@ -3,7 +3,7 @@
 The **Lint Markdown** job runs in the
 `ghcr.io/igorshubovych/markdownlint-cli:v0.41.0` container and lints:
 
-```
+```bash
 markdownlint "README.md" "**/*.docc/**/*.md"
 ```
 
@@ -36,7 +36,7 @@ check it before assuming the default limits.
 
 ## Reproduce locally
 
-```
+```bash
 make lint-markdown
 ```
 

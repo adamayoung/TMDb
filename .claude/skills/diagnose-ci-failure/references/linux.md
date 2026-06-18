@@ -2,7 +2,7 @@
 
 The **Build and Test (Linux)** job runs in the `swift:6.1-jammy` container:
 
-```
+```bash
 swift build --build-tests -Xswiftc -warnings-as-errors
 swift test  --skip-build  --filter TMDbTests
 swift build -c release    -Xswiftc -warnings-as-errors
@@ -48,7 +48,7 @@ bug — the package targets Linux and Windows alongside the Apple platforms.
 
 Run the Linux toolchain in Docker (matches CI):
 
-```
+```bash
 make build-linux     # swift build in a Swift Docker container
 make test-linux       # swift test in a Swift Docker container
 ```

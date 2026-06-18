@@ -2,7 +2,7 @@
 
 The **Build and Test** job runs the unit suite:
 
-```
+```bash
 swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml
 ```
 
