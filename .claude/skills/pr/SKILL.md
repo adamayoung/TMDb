@@ -47,6 +47,13 @@ git diff --name-only main...HEAD | grep -qE '\.swift$' || echo "no-swift → ski
         ```
 
         The PR's own CI still runs the full matrix regardless, so this only trims the **local** gate; it never lowers what actually guards `main`. When in doubt, run full `make ci`.
+    - **Re-lint new Swift files without the cache.** `make ci`'s lint leg is `swiftlint --strict .` (Makefile), and SwiftLint **caches results** (`~/Library/Caches/SwiftLint`). On **newly-added** `.swift` files this has been seen to report a **false green** locally — passing `file_length` / `type_body_length` that the PR's CI `Lint` job (a clean checkout, no cache) then fails on. So **when the diff adds any new `.swift` file** (`git diff --name-only --diff-filter=A main...HEAD | grep -q '\.swift$'`), run a cache-bypassing lint before trusting the gate:
+
+        ```bash
+        swiftlint lint --strict --no-cache .
+        ```
+
+        Fix anything it flags (oversized files: split, or add a `// swiftlint:disable` directive matching the `AccountService+Pagination.swift` precedent) and re-run. This catches file-size violations locally instead of on a CI round-trip.
 5. *(skip in `reviewed` mode or when no Swift changed)* Spawn the `code-reviewer` agent to perform a code review of all changes (pass the git diff output as context)
 6. *(skip in `reviewed` mode or when no Swift changed)* Summarize the code review findings:
     - List any critical or high-severity issues that should be addressed
