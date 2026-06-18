@@ -10,6 +10,28 @@ Format: **Feature / PR** · date · weight · *what worked* · *friction* ·
 
 ---
 
+## 2026-06-18 — 📝 Fix non-compiling watch-provider README examples (#340) · lite
+
+- **Worked:** lite path was exactly right for a docs-only fix — `/review-plan` and
+  `/review-changes` both auto-skipped (no Swift in the diff), so the pipeline went
+  branch → edit → `make ci` → PR → green with no wasted machinery. Verifying the
+  property against source (`WatchProvider.name`, JSON key `providerName`) before
+  editing confirmed the fix was real.
+- **Friction:** `make ci` runs the *full* gate (unit + live integration tests,
+  release build, docs build) even for a two-character README change — minutes of
+  CI for a typo. The hard "always `make ci`" rule has no docs-only fast path.
+- **Deviations:** none.
+- **Improvement:** consider a docs/config-only gate (lint + markdown-lint + docs
+  build, skipping the test/release-build legs) when `git diff --name-only
+  main...HEAD` touches no `*.swift` — the PR's own CI still runs the full matrix.
+- **Cross-cutting note:** the sibling finding "off-by-one retry semantics" (item 3
+  of the same review) turned out to be a **false positive** — the existing test
+  `429 exhausts retries and returns last response` (RetryHTTPClientTests.swift:38)
+  pins `performCount == 4` for `maxRetries: 3` (1 initial + 3 retries) as the
+  intended contract. `/deliver`'s test-first discipline caught it before any
+  change. Lesson: treat AI-review findings as *hypotheses* and confirm against the
+  contract/tests before delivering.
+
 ## 2026-06-18 — ⚡️ Opt-in next-page prefetch (#337) · full
 
 - **Worked:** the full pipeline shone on the riskiest change of the effort (first
