@@ -64,6 +64,39 @@ These are non-negotiable. Do them by default, without being reminded.
    (`<category>: <gist> [where]`). Phase 3.5 curates this list; reconstructing it
    at the end loses the best material (and may not survive compaction).
 
+## Auto mode (unattended)
+
+`/deliver auto` runs the **entire** pipeline with **no human interaction** — every
+mid-run decision that would normally stop and ask the user is instead resolved by
+an **adversarial panel** of three Opus subagents, and the conductor acts on their
+majority verdict and keeps going through Phase 6.
+
+**The panel.** At each decision point, convene three subagents in parallel, each
+given the same context (the decision, the evidence, the options):
+
+- **Proceed** — argues the case for continuing the pipeline.
+- **Stop** — argues the case for halting and handing back to the user.
+- **Devil's advocate** — attacks whichever way looks easiest, so the other two
+  can't converge on a comfortable answer unchallenged.
+
+Each returns a one-line verdict (`proceed` / `stop`) and its reasoning. **Majority
+wins.** The conductor records the outcome in the ledger and continues — `proceed`
+resumes the pipeline; `stop` ends the run with the usual status summary.
+
+**Audit trail.** For **every** panel convened, write a ledger entry recording: the
+**decision point**, the **three subagent verdicts**, the **majority outcome**, and
+a **one-line rationale**. The point of `auto` is autonomy *with* a full record of
+why each call was made — a run that went unattended must still be reviewable.
+
+**The one exception — never delegated.** A Phase 1 `blocker` where the plan would
+cause **data loss** or a **breaking change** is **always a hard stop**, even in
+`auto`. It is too consequential to hand to a panel: surface it to the user and
+wait. (Every other decision point — including all *other* Phase 1 blockers — goes
+to the panel.)
+
+Each decision point below marks its **Auto:** branch. In the default (attended)
+mode those branches do not apply — the pipeline stops and asks, as written.
+
 ## Delivery weight — auto-scale to risk (lite vs full)
 
 `/deliver` sizes its machinery to the change, automatically — no flag. Judge the
@@ -171,6 +204,9 @@ does not re-ask for approval.
     wrong, a breaking change, data-loss, etc.), **stop and surface it** before
     implementing. A blocker means the approved plan would do harm; that's worth the
     interruption. Improvements/`major`/`minor` are folded in and you proceed.
+    - **Auto:** a **data-loss or breaking-change** blocker is **always a hard
+      stop** (the never-delegated exception). For **any other** blocker, convene
+      the panel to decide proceed vs stop and act on the majority verdict.
 
 ## Phase 2 — Implement the plan
 
@@ -234,6 +270,8 @@ reconcile) for a large/multi-unit one. Then converge:
    Critical/High findings remain.
 4. **Cap at 3 iterations.** If Critical/High issues persist after three rounds,
    stop and surface them to the user — don't loop forever or paper over them.
+   - **Auto:** convene the panel. **Proceed** → note the unresolved Critical/High
+     findings in the PR description and continue; **stop** → surface to the user.
 
 Medium/Low findings: apply the cheap, clearly-correct ones; note the rest in the
 PR description rather than blocking on them.
@@ -276,6 +314,8 @@ then push the branch and open the PR with a gitmoji title and structured body.
    test/file against `git diff --name-only main...HEAD`.
 2. **In-diff genuine failure** → it's yours: fix it (test-first), commit, re-run
    `make ci`. Only **stop and report** if it can't converge.
+   - **Auto:** when it can't converge, convene the panel. **Proceed** → open the
+     PR with the known-failing check noted in its description; **stop** → report.
 3. **Pre-existing / unrelated** — the failing test isn't in your diff and (for a
    live integration test) often passes in isolation / on a re-run → it's a `main`
    problem, not yours. Hand it to **`/fix-integration-failures`** (it fixes the
@@ -297,6 +337,13 @@ it to the user for the final merge** — `/deliver` does not merge by default. R
 the PR URL and its ready state, then run Phase 6. If `/watch-pr` reports the PR is
 **stuck** (a check it can't fix, or a human-decision review thread), stop and
 summarise what's blocking.
+
+> **Auto:** on a stuck PR, convene the panel to decide **wait-and-retry vs stop**.
+> **Proceed** (majority to keep trying) → schedule a later re-check with
+> `ScheduleWakeup` and resume `/watch-pr` when it fires; **stop** (majority) → end
+> the run and report what's blocking. The ready-to-merge gate itself is **not** a
+> panel decision: in `auto` it behaves exactly as the `merge` opt-in below — once
+> the PR is ready, proceed to Phase 6 (and merge if `merge` was passed).
 
 > **Opt-in auto-merge:** if the user explicitly passes `merge` to `/deliver`,
 > forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready, and
@@ -355,6 +402,10 @@ what turns one-off retros into reviewed skill improvements:
    wait for **explicit approval on each one** before changing anything. If no
    *new* pattern recurs across multiple entries, **say so and stop** — emit no
    proposals.
+   - **Auto:** don't wait for the user. The panel reviews **each** proposal and
+     **applies approved ones directly** (edit the skill, commit). Rejected
+     proposals are still recorded in `skill-improvement-log.md` with the panel's
+     rationale (step 4).
 4. **Record every decision in the log.** For each proposal you presented, append
    an entry to
    [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
