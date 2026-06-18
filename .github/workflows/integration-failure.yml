@@ -1,9 +1,11 @@
 name: Integration Failure Alert
 
-# Watches the "Integration" workflow. When a *scheduled* run of it fails,
-# Claude analyses the failing logs, then we open a GitHub issue (or comment
-# on the existing one) with that analysis and notify Adam. Does nothing on
-# PR / push runs.
+# Watches the "Integration" workflow. When a *scheduled* run of it fails, Claude
+# diagnoses the failing logs and — when the cause is a fixable drift (a TMDb
+# backend/shape change or a stale test assumption) — fixes it on a branch off
+# main, verifies the targeted suite, and opens a PR **for review** (it never
+# merges). Either way we open/refresh a tracking issue that pings Adam and links
+# the fix PR. Does nothing on PR / push runs.
 on:
   workflow_run:
     workflows: ["Integration"]
@@ -11,31 +13,49 @@ on:
       - completed
 
 permissions:
-  contents: read         # checkout, so Claude can inspect tests/fixtures
-  issues: write          # to create / update the alert issue
-  actions: read          # to read the triggering run's logs
+  contents: write        # branch off main + push the fix
+  pull-requests: write   # open the fix PR
+  issues: write          # create / update the alert issue
+  actions: read          # read the triggering run's logs
   id-token: write        # for claude-code-action
 
 jobs:
-  alert:
-    name: Open issue on scheduled failure
-    runs-on: ubuntu-latest
+  autofix:
+    name: Diagnose & fix scheduled failure
+    # macOS: the fix verifies with `swift build` / `swift test` (needs Xcode).
+    runs-on: macos-26
 
-    # Only react to the *scheduled* run, and only when it actually failed.
-    # This is what stops contributor PR failures from creating issues.
+    # Only react to the *scheduled* run, and only when it actually failed — this
+    # is what stops contributor PR failures from triggering an auto-fix.
     #
     # NOTE: `event == 'schedule'` matches ANY cron trigger on the Integration
-    # workflow. This is only equivalent to "the Sunday night run" while
-    # integration.yml has a single cron ('0 0 * * 0'). If you ever add another
-    # cron there, this will also fire for that one — revisit this guard then.
+    # workflow. Equivalent to "the Sunday night run" only while integration.yml
+    # has a single cron ('0 0 * * 0'). If you add another cron there, revisit.
     if: >-
       github.event.workflow_run.conclusion == 'failure'
       && github.event.workflow_run.event == 'schedule'
 
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      # A PR opened with the default GITHUB_TOKEN does NOT trigger downstream
+      # workflows (GitHub blocks token→workflow recursion), so the fix PR's own
+      # CI/Integration checks wouldn't run. Add a fine-grained PAT with
+      # `contents: write` + `pull-requests: write` as the repo secret
+      # INTEGRATION_FIX_PR_TOKEN to get those checks. Without it we fall back to
+      # GITHUB_TOKEN: the PR still opens, but you must kick its checks manually.
+      PR_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0          # full history: branch off main and push
+          token: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Download failing logs
         env:
@@ -60,23 +80,39 @@ jobs:
           tail -c 60000 failure-log-full.txt > failure-log.txt || true
           echo "Captured $(wc -l < failure-log.txt) lines of failing log"
 
-      - name: Analyse failure with Claude
+      - name: Diagnose & fix with Claude
         uses: anthropics/claude-code-action@v1
+        env:
+          # Live-API creds for the targeted-suite verification.
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
+          TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+          # git push + `gh pr create` use this token (PAT so the PR triggers CI).
+          GH_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: '--model claude-opus-4-8 --allowedTools "Read,Write,Glob,Grep,Bash(jq:*),Bash(curl:*)"'
-          # Invoke the repo skill by passing `/skill-name` as the prompt (the
-          # checkout step above is the prerequisite). Trailing text is passed to
-          # the skill as context.
+          # Broad Bash is intentional: the fix path drives git/gh/swift via the
+          # repo's own skills on an ephemeral runner — trusted first-party
+          # automation with no access beyond the repo and the TMDb API.
+          claude_args: '--model claude-opus-4-8 --allowedTools "Read,Write,Edit,Glob,Grep,Bash"'
+          # Invoke the repo skill by passing `/skill-name` as the prompt; trailing
+          # text is context. The skill's "Running headless" section governs this.
           prompt: |
-            /diagnose-integration-failure The scheduled Integration workflow
-            failed and its failing-step log is already at `failure-log.txt` in
-            the workspace root — use it directly; do not run the tests or call
-            `gh`. Write your three-section markdown result to
-            `claude-analysis.md` and nothing else — do not create issues,
-            comments, or branches.
+            /fix-integration-failures The scheduled Integration workflow run
+            ${{ github.event.workflow_run.id }} failed. You are running HEADLESS
+            in CI — follow the skill's "Running headless" section: the failing-step
+            log is already at `failure-log.txt` in the workspace root (diagnose
+            from it; don't re-download logs), verify a fix with the targeted suite
+            (`swift build --build-tests` + `swift test --filter <Suite>/<test>`,
+            NOT the full `make ci`), and open a PR off `main` for review using
+            `git`/`gh` directly (not `/pr`). Do NOT run `/watch-pr` and do NOT
+            merge. Write your three-section diagnosis to `claude-analysis.md`, and
+            if you open a PR write its URL on a single line to `pr-url.txt`. If the
+            cause is transient (re-run territory) or a genuine regression you
+            should not auto-fix, open no PR and explain in `claude-analysis.md`.
 
       - name: Create or update failure issue
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PAGER: cat
@@ -98,6 +134,13 @@ jobs:
             ANALYSIS="_Automated analysis unavailable — see the run logs._"
           fi
 
+          # Link the fix PR if Claude opened one.
+          if [ -s pr-url.txt ]; then
+            PR_LINE="🔧 Claude opened a proposed fix for review: $(head -n1 pr-url.txt)"
+          else
+            PR_LINE="ℹ️ No automated fix PR — likely transient (re-run) or needs a human; see the analysis."
+          fi
+
           # Make sure the label exists (ignore error if it already does).
           gh label create "$LABEL" \
             --repo "$REPO" \
@@ -105,8 +148,8 @@ jobs:
             --description "Scheduled integration run failed" \
             2>/dev/null || true
 
-          # Is there already an OPEN issue for this? If so, just comment on it
-          # rather than opening a duplicate every week it stays broken.
+          # Is there already an OPEN issue for this? If so, comment rather than
+          # opening a duplicate every week it stays broken.
           EXISTING=$(gh issue list \
             --repo "$REPO" \
             --label "$LABEL" \
@@ -115,12 +158,12 @@ jobs:
             --jq '.[0].number // empty')
 
           if [ -n "$EXISTING" ]; then
-            # Build the comment body with printf so no leading YAML indentation
-            # leaks into the markdown (indented lines render as a code block).
             COMMENT_BODY=$(printf '%s\n' \
               "🔁 The scheduled Integration run failed again on ${RUN_DATE}." \
               "" \
               "Latest failing run: ${RUN_URL}" \
+              "" \
+              "${PR_LINE}" \
               "" \
               "### 🤖 Claude's analysis" \
               "" \
@@ -134,6 +177,8 @@ jobs:
               "- **Run:** ${RUN_URL}" \
               "- **When:** ${RUN_DATE}" \
               "" \
+              "${PR_LINE}" \
+              "" \
               "### 🤖 Claude's analysis" \
               "" \
               "${ANALYSIS}" \
@@ -142,7 +187,7 @@ jobs:
               "" \
               "This same integration suite gates every PR and the merge to main, so this is unlikely to be a code regression. The usual culprits are a **TMDb backend change** (a response field added, removed, renamed, or made nullable) or **stale assumed data** in an integration test (a hard-coded title, count, id, or date the live API now returns differently) — with transient errors, rate limiting, or a run that hit its 30-minute job timeout (a cancelled run still surfaces as a failure) a distant third." \
               "" \
-              "A re-run clears the transient case. If it persists, the analysis above points at the model, fixture, or assertion to update.")
+              "A re-run clears the transient case. If it persists, the analysis above points at the model, fixture, or assertion to update — and Claude may already have opened a fix PR (linked above).")
             gh issue create \
               --repo "$REPO" \
               --label "$LABEL" \
