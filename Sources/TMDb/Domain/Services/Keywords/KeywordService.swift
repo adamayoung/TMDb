@@ -18,13 +18,13 @@ public protocol KeywordService: Sendable {
     ///
     /// [TMDb API - Keywords: Details](https://developer.themoviedb.org/reference/keyword-details)
     ///
-    /// - Parameter id: The identifier of the keyword.
+    /// - Parameter keywordID: The identifier of the keyword.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Matching keyword.
     ///
-    func details(forKeyword id: Keyword.ID) async throws(TMDbError) -> Keyword
+    func details(forKeyword keywordID: Keyword.ID) async throws(TMDbError) -> Keyword
 
     ///
     /// Returns a list of movies for a keyword.

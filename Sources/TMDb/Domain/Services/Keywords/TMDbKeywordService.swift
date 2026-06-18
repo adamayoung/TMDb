@@ -16,8 +16,8 @@ final class TMDbKeywordService: KeywordService {
         self.apiClient = apiClient
     }
 
-    func details(forKeyword id: Keyword.ID) async throws(TMDbError) -> Keyword {
-        let request = KeywordRequest(id: id)
+    func details(forKeyword keywordID: Keyword.ID) async throws(TMDbError) -> Keyword {
+        let request = KeywordRequest(id: keywordID)
 
         return try await apiClient.perform(request)
     }
