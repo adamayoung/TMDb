@@ -118,6 +118,12 @@ it never bloats or biases the main window:
   mis-framed — a non-breaking change mistaken for breaking, a false-positive
   "bug", a "fix" that was really a clarity tweak.
 - **State the goal** in a sentence so every downstream phase is anchored to it.
+- **Pull relevant context from the wiki** (best-effort). If the personal `wiki`
+  MCP is available, call `get_context` on the goal to surface any of Adam's
+  durable preferences, prior decisions, or conventions that bear on the approach,
+  and let them calibrate the plan and the review emphasis. **Degrade silently** if
+  the wiki MCP is absent (a contributor's machine, a headless/cron run) — never
+  block the pipeline on it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
 
@@ -304,6 +310,10 @@ Reflect on *this* delivery and write a dated entry to
 [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md):
 
 - **Feature / PR**, date, and delivery weight (lite/full).
+- **Phases completed / Skills invoked** — a compact one-liner each (e.g. phases
+  `0–6`; skills `review-plan, implement-plan, review-changes, capture-knowledge,
+  pr, watch-pr`). This is telemetry for the recurring-pattern scan: over time it
+  shows which skills fire, which phases get skipped, and where deliveries stop.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from this skill to do the right
@@ -322,8 +332,9 @@ Once the retro entry is committed, do a structured cross-delivery scan — this 
 what turns one-off retros into reviewed skill improvements:
 
 1. **Read the whole history.** Read all of
-   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md) and
-   **every** `SKILL.md` under `.claude/skills/` (including the sub-skills those
+   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md),
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md),
+   and **every** `SKILL.md` under `.claude/skills/` (including the sub-skills those
    skills reference).
 2. **Find what recurs.** For any friction, deviation, or improvement suggestion
    that appears in **more than one** retro entry, write a numbered proposal in
@@ -336,10 +347,20 @@ what turns one-off retros into reviewed skill improvements:
    Proposed change: [exact new wording and location]
    Rationale: [one sentence on why this eliminates the pattern]
 
+   **Skip any pattern already decided in `skill-improvement-log.md`** — one
+   already **applied** (the fix is in the skill), or **deferred/rejected** (don't
+   re-propose a settled *no*; only resurface it if its recorded "reconsider when…"
+   condition now holds).
 3. **Stop and ask.** **Do not edit any skill files.** Present the proposals and
    wait for **explicit approval on each one** before changing anything. If no
-   pattern recurs across multiple entries, **say so and stop** — emit no
+   *new* pattern recurs across multiple entries, **say so and stop** — emit no
    proposals.
+4. **Record every decision in the log.** For each proposal you presented, append
+   an entry to
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
+   — **applied** (with the skill + commit it landed in), **deferred**, or
+   **rejected** (with the rationale and any "reconsider when…" condition). This is
+   what stops the scan re-proposing a settled call next time.
 
 ## When the pipeline stops
 
