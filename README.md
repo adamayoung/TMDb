@@ -331,7 +331,17 @@ for try await page in tmdbClient.movies.allPopularPages() {
         print("  - \(movie.title)")
     }
 }
+
+// Opt in to prefetching: the next page is fetched concurrently as the current
+// page is consumed, hiding inter-page latency on long scans.
+for try await movie in tmdbClient.movies.allPopular().prefetchingNextPage() {
+    print(movie.title)
+}
 ```
+
+`prefetchingNextPage()` is opt-in: it trades at most one extra (possibly wasted)
+request on an early `break` for lower latency, and the emitted items are
+identical to the default lazy sequence.
 
 Available for all paginated endpoints across 11 services: `MovieService`
 (8 endpoints), `SearchService` (7 endpoints), `TrendingService` (4 endpoints),
