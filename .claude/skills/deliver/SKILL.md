@@ -230,8 +230,12 @@ mode (Phase 4) so it won't deep-review the identical code again.
 
 ## Phase 3.5 — Capture learnings
 
-Invoke **`/capture-knowledge`**, handing it the **knowledge-candidates list** you
-kept in the ledger (Contract §7). Its job here is to **curate** that list — filter
+Invoke **`/capture-knowledge`**, **passing the knowledge-candidates list you kept
+in the ledger (Contract §7) as the skill argument** (`$ARGUMENTS`) — paste the
+list lines into the invocation rather than assuming the skill can still see the
+ledger in context. The ledger may have been summarised away by now; the argument
+travels with the call, so the candidates reach the skill even after compaction.
+Its job here is to **curate** that list — filter
 to the durable, non-obvious, reusable items, dedup against existing `knowledge/`
 entries, and write them into the right file (gotchas / API notes / a new ADR for
 decisions). Starting from the running list is the whole point — it captures the
@@ -300,9 +304,34 @@ Reflect on *this* delivery and write a dated entry to
   sub-skill) suggested by this run.
 
 Keep it to a handful of bullets — a log, not a ceremony. Then **scan recent
-entries**: if the same friction or deviation recurs across deliveries, fold the fix
-into the relevant skill (and say you're doing so). Commit the retro with the PR when
-possible (watch-only), or as a small follow-up when auto-merged.
+entries** for recurring friction or deviations — the recurring-pattern scan below
+formalizes this. Commit the retro with the PR when possible (watch-only), or as a
+small follow-up when auto-merged.
+
+### Recurring-pattern scan (after committing the retro)
+
+Once the retro entry is committed, do a structured cross-delivery scan — this is
+what turns one-off retros into reviewed skill improvements:
+
+1. **Read the whole history.** Read all of
+   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md) and
+   **every** `SKILL.md` under `.claude/skills/` (including the sub-skills those
+   skills reference).
+2. **Find what recurs.** For any friction, deviation, or improvement suggestion
+   that appears in **more than one** retro entry, write a numbered proposal in
+   this exact format:
+
+   Pattern: [what keeps happening]
+   Seen in: [retro dates / feature names]
+   Skill: [relative path to SKILL.md]
+   Current text: [exact existing wording, or "missing"]
+   Proposed change: [exact new wording and location]
+   Rationale: [one sentence on why this eliminates the pattern]
+
+3. **Stop and ask.** **Do not edit any skill files.** Present the proposals and
+   wait for **explicit approval on each one** before changing anything. If no
+   pattern recurs across multiple entries, **say so and stop** — emit no
+   proposals.
 
 ## When the pipeline stops
 
