@@ -10,3 +10,8 @@
 
 - ``movies(forKeyword:page:language:)``
 - ``movies(forKeyword:)``
+
+### Auto-Pagination
+
+- ``allMovies(forKeyword:language:)``
+- ``allMoviesPages(forKeyword:language:)``

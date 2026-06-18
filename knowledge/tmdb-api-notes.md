@@ -37,3 +37,21 @@ Newest at the top; cite the endpoint and the date observed.
   it. Confirm against a live response via `mcp__tmdb__*` and the OpenAPI schema
   before deciding — the docs aren't always accurate about which fields are
   guaranteed.
+
+## Changes endpoints
+
+### `changes/movie|tv|person` list responses are large and carry an unmodelled `softcore` field
+
+*2026-06-18, `/3/movie/changes` (and the tv/person equivalents).*
+
+- These list endpoints return many pages — `total_pages` was ~76 for the default
+  24-hour movie window — so iterate them with a bounded `.prefix(n)` rather than
+  draining the whole sequence.
+- Each result object is `{ id, adult, softcore }`. `ChangedID` models only `id`
+  and `adult`; the extra `softcore` key is silently absorbed by
+  `PageableListResult`'s tolerant `FailableDecodable` decoder, so decoding never
+  fails — but the model is incomplete if `softcore` is ever needed.
+- The change **list** endpoints return a paged shape (`page`/`total_pages`/
+  `total_results`, modelled as `ChangedIDCollection`), but the per-entity change
+  **detail** endpoints (`/movie/{id}/changes` etc.) return an unpaged
+  `{ changes: [...] }` (`ChangeCollection`) — see [ADR-0002](decisions/0002-changes-auto-pagination-adapter.md).

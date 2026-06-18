@@ -333,11 +333,13 @@ for try await page in tmdbClient.movies.allPopularPages() {
 }
 ```
 
-Available for all paginated endpoints across 7 services: `MovieService`
+Available for all paginated endpoints across 11 services: `MovieService`
 (8 endpoints), `SearchService` (7 endpoints), `TrendingService` (4 endpoints),
 `TVSeriesService` (8 endpoints), `PersonService` (2 endpoints),
-`DiscoverService` (2 endpoints), and `ListService` (1 endpoint). Total: 32
-paginated endpoints with 64 auto-pagination methods.
+`DiscoverService` (2 endpoints), `ListService` (1 endpoint), `AccountService`
+(8 endpoints), `GuestSessionService` (3 endpoints), `KeywordService`
+(1 endpoint), and `ChangesService` (3 endpoints). Total: 47 paginated endpoints
+with 94 auto-pagination methods.
 
 ### User Account Features (Authentication Required)
 

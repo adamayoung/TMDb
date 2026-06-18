@@ -45,3 +45,22 @@
 ### Custom Lists
 
 - ``lists(page:accountID:session:)``
+
+### Auto-Pagination
+
+- ``allFavouriteMovies(sortedBy:accountID:session:)``
+- ``allFavouriteTVSeries(sortedBy:accountID:session:)``
+- ``allWatchlistMovies(sortedBy:accountID:session:)``
+- ``allWatchlistTVSeries(sortedBy:accountID:session:)``
+- ``allRatedMovies(sortedBy:accountID:session:)``
+- ``allRatedTVSeries(sortedBy:accountID:session:)``
+- ``allRatedTVEpisodes(sortedBy:accountID:session:)``
+- ``allLists(accountID:session:)``
+- ``allFavouriteMoviesPages(sortedBy:accountID:session:)``
+- ``allFavouriteTVSeriesPages(sortedBy:accountID:session:)``
+- ``allWatchlistMoviesPages(sortedBy:accountID:session:)``
+- ``allWatchlistTVSeriesPages(sortedBy:accountID:session:)``
+- ``allRatedMoviesPages(sortedBy:accountID:session:)``
+- ``allRatedTVSeriesPages(sortedBy:accountID:session:)``
+- ``allRatedTVEpisodesPages(sortedBy:accountID:session:)``
+- ``allListsPages(accountID:session:)``

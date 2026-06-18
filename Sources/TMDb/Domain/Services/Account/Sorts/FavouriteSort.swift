@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A sort specifier when fetching movies.
 ///
-public enum FavouriteSort: CustomStringConvertible {
+public enum FavouriteSort: CustomStringConvertible, Sendable {
 
     ///
     /// By created at.

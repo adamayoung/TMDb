@@ -102,4 +102,26 @@ struct ChangesIntegrationTests {
         _ = result.changes
     }
 
+    @Test("allMovieChanges paginates across pages")
+    func allMovieChanges() async throws {
+        var items: [ChangedID] = []
+        for try await item in changesService.allMovieChanges().prefix(25) {
+            items.append(item)
+        }
+
+        #expect(items.isEmpty == false)
+    }
+
+    @Test("allMovieChangesPages yields pages")
+    func allMovieChangesPages() async throws {
+        var pages: [PageableListResult<ChangedID>] = []
+        for try await page in changesService.allMovieChangesPages().prefix(1) {
+            pages.append(page)
+        }
+
+        let firstPage = try #require(pages.first)
+        #expect(firstPage.page >= 1)
+        #expect(firstPage.results.isEmpty == false)
+    }
+
 }

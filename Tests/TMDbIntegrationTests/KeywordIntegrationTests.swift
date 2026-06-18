@@ -58,4 +58,16 @@ struct KeywordIntegrationTests {
         #expect(movieList.page == 1)
     }
 
+    @Test("allMovies paginates across pages")
+    func allMovies() async throws {
+        let keywordID = 378
+
+        var items: [MovieListItem] = []
+        for try await item in keywordService.allMovies(forKeyword: keywordID).prefix(25) {
+            items.append(item)
+        }
+
+        #expect(items.isEmpty == false)
+    }
+
 }

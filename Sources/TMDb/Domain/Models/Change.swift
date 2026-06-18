@@ -178,7 +178,7 @@ public struct ChangeCollection: Codable, Equatable, Hashable, Sendable {
 ///
 /// A model representing a media item that has changed.
 ///
-public struct ChangedID: Codable, Equatable, Hashable, Sendable {
+public struct ChangedID: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// The media item identifier.
