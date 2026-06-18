@@ -348,6 +348,13 @@ before a dependent `Edit`** if the edit relies on exact surrounding text, and
 don't attribute hook reformatting to your own diff. The hooks can't fix real
 compile/lint errors — still run `/lint` and `make ci`.
 
+**SourceKit `<new-diagnostics>` lag on new files.** After creating a **new**
+`.swift` file and referencing its symbols elsewhere, the editor may report
+`Cannot find 'X' in scope` or a spurious `No 'async' operations…within 'await'` —
+**indexing-lag false positives** that clear on the next build. Trust
+`make build` / `make build-tests` (they run with `--Werror`); don't chase them.
+See [`knowledge/gotchas.md`](knowledge/gotchas.md).
+
 ## Testing
 
 ### Test-Driven Development
