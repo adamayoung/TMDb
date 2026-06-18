@@ -7,6 +7,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 public extension AccountService {
 
     ///
@@ -711,3 +713,5 @@ public extension AccountService {
     }
 
 }
+
+// swiftlint:enable file_length

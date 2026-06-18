@@ -9,8 +9,10 @@ import Foundation
 import Testing
 @testable import TMDb
 
+// swiftlint:disable file_length
+
 @Suite(.tags(.services, .account))
-struct TMDbAccountServiceAuthenticatedSessionTests {
+struct TMDbAccountServiceAuthenticatedSessionTests { // swiftlint:disable:this type_body_length
 
     var service: TMDbAccountService!
     var apiClient: MockAPIClient!
@@ -470,3 +472,5 @@ struct TMDbAccountServiceAuthenticatedSessionTests {
     }
 
 }
+
+// swiftlint:enable file_length
