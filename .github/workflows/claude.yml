@@ -18,8 +18,15 @@ on:
 
 # A new push (synchronize) supersedes the in-flight review for the same PR —
 # cancel it so reviews don't stack up and double-post while watch-pr iterates.
+#
+# The group is keyed by event type as well as PR number. Without that, the
+# review's own `track_progress` tracking comment fires an `issue_comment` event
+# that lands in the same group and cancels the in-flight `claude-review` (a
+# self-inflicted cancel — the review never completes). Separating by event_name
+# keeps push-supersedes-push behaviour while stopping a comment from cancelling a
+# review (the comment-triggered run does nothing anyway — both jobs' `if` fail).
 concurrency:
-  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: claude-review-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
