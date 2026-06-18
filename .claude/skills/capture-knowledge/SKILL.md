@@ -36,11 +36,13 @@ Quality over volume: a few high-signal entries beat a long dump.
 
 ## Steps
 
-1. **Start from the candidates list, if one exists.** If the caller kept a running
-   **knowledge-candidates** list while working (e.g. `/deliver`'s ledger), use it
-   as your input — that's the reliable source, jotted while the learnings were
-   fresh. Otherwise, reconstruct candidates by reviewing the work just done — the
-   diff, the dead-ends, the things you looked up, the decisions you made.
+1. **Start from the candidates list, if one exists.** If the caller passed a
+   **knowledge-candidates** list as the argument (`$ARGUMENTS` below — `/deliver`
+   pastes its ledger list here), use that as your input — that's the reliable
+   source, jotted while the learnings were fresh, and it reaches you intact even
+   if the caller's context was compacted. Otherwise, reconstruct candidates by
+   reviewing the work just done — the diff, the dead-ends, the things you looked
+   up, the decisions you made.
 2. **Filter** against "What NOT to capture". Drop the rest.
 3. **Check for duplicates** — skim the relevant `knowledge/` file; **update** an
    existing entry rather than adding a near-duplicate.

@@ -64,6 +64,39 @@ These are non-negotiable. Do them by default, without being reminded.
    (`<category>: <gist> [where]`). Phase 3.5 curates this list; reconstructing it
    at the end loses the best material (and may not survive compaction).
 
+## Auto mode (unattended)
+
+`/deliver auto` runs the **entire** pipeline with **no human interaction** — every
+mid-run decision that would normally stop and ask the user is instead resolved by
+an **adversarial panel** of three Opus subagents, and the conductor acts on their
+majority verdict and keeps going through Phase 6.
+
+**The panel.** At each decision point, convene three subagents in parallel, each
+given the same context (the decision, the evidence, the options):
+
+- **Proceed** — argues the case for continuing the pipeline.
+- **Stop** — argues the case for halting and handing back to the user.
+- **Devil's advocate** — attacks whichever way looks easiest, so the other two
+  can't converge on a comfortable answer unchallenged.
+
+Each returns a one-line verdict (`proceed` / `stop`) and its reasoning. **Majority
+wins.** The conductor records the outcome in the ledger and continues — `proceed`
+resumes the pipeline; `stop` ends the run with the usual status summary.
+
+**Audit trail.** For **every** panel convened, write a ledger entry recording: the
+**decision point**, the **three subagent verdicts**, the **majority outcome**, and
+a **one-line rationale**. The point of `auto` is autonomy *with* a full record of
+why each call was made — a run that went unattended must still be reviewable.
+
+**The one exception — never delegated.** A Phase 1 `blocker` where the plan would
+cause **data loss** or a **breaking change** is **always a hard stop**, even in
+`auto`. It is too consequential to hand to a panel: surface it to the user and
+wait. (Every other decision point — including all *other* Phase 1 blockers — goes
+to the panel.)
+
+Each decision point below marks its **Auto:** branch. In the default (attended)
+mode those branches do not apply — the pipeline stops and asks, as written.
+
 ## Delivery weight — auto-scale to risk (lite vs full)
 
 `/deliver` sizes its machinery to the change, automatically — no flag. Judge the
@@ -109,7 +142,21 @@ it never bloats or biases the main window:
 - **A plan must exist.** Locate it the way `/review-plan` does (named target →
   plan-mode plan → most recent plan in the conversation). If there is no plan,
   stop and tell the user to run `/plan` first — do not invent one.
+- **If the plan originates from a review finding, verify it first.** When the
+  delivery comes from a code-review / source-review *finding* rather than a
+  user-authored plan, treat the finding as a **hypothesis, not an approved
+  plan**: do a quick `Explore` pass to confirm it against the actual code (Is it
+  real? Is the framing right? Breaking or not?) **before** drafting the plan or
+  asking the user any strategy questions. Review findings have repeatedly been
+  mis-framed — a non-breaking change mistaken for breaking, a false-positive
+  "bug", a "fix" that was really a clarity tweak.
 - **State the goal** in a sentence so every downstream phase is anchored to it.
+- **Pull relevant context from the wiki** (best-effort). If the personal `wiki`
+  MCP is available, call `get_context` on the goal to surface any of Adam's
+  durable preferences, prior decisions, or conventions that bear on the approach,
+  and let them calibrate the plan and the review emphasis. **Degrade silently** if
+  the wiki MCP is absent (a contributor's machine, a headless/cron run) — never
+  block the pipeline on it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
 
@@ -157,6 +204,9 @@ does not re-ask for approval.
     wrong, a breaking change, data-loss, etc.), **stop and surface it** before
     implementing. A blocker means the approved plan would do harm; that's worth the
     interruption. Improvements/`major`/`minor` are folded in and you proceed.
+    - **Auto:** a **data-loss or breaking-change** blocker is **always a hard
+      stop** (the never-delegated exception). For **any other** blocker, convene
+      the panel to decide proceed vs stop and act on the majority verdict.
 
 ## Phase 2 — Implement the plan
 
@@ -220,6 +270,8 @@ reconcile) for a large/multi-unit one. Then converge:
    Critical/High findings remain.
 4. **Cap at 3 iterations.** If Critical/High issues persist after three rounds,
    stop and surface them to the user — don't loop forever or paper over them.
+   - **Auto:** convene the panel. **Proceed** → note the unresolved Critical/High
+     findings in the PR description and continue; **stop** → surface to the user.
 
 Medium/Low findings: apply the cheap, clearly-correct ones; note the rest in the
 PR description rather than blocking on them.
@@ -230,10 +282,14 @@ mode (Phase 4) so it won't deep-review the identical code again.
 
 ## Phase 3.5 — Capture learnings
 
-Invoke **`/capture-knowledge`**, handing it the **knowledge-candidates list** you
-kept in the ledger (Contract §7). Its job here is to **curate** that list — filter
-to the durable, non-obvious, reusable items, dedup against existing `knowledge/`
-entries, and write them into the right file (gotchas / API notes / a new ADR for
+Invoke **`/capture-knowledge`**, **passing the knowledge-candidates list you kept
+in the ledger (Contract §7) as the skill argument** (`$ARGUMENTS`) — paste the
+list lines into the invocation rather than assuming the skill can still see the
+ledger in context. The ledger may have been summarised away by now; the argument
+travels with the call, so the candidates reach the skill even after compaction.
+Its job here is to **curate** that list — filter to the durable, non-obvious,
+reusable items, dedup against existing `knowledge/` entries, and write them into
+the right file (gotchas / API notes / a new ADR for
 decisions). Starting from the running list is the whole point — it captures the
 learnings you'd have forgotten by now.
 
@@ -258,6 +314,8 @@ then push the branch and open the PR with a gitmoji title and structured body.
    test/file against `git diff --name-only main...HEAD`.
 2. **In-diff genuine failure** → it's yours: fix it (test-first), commit, re-run
    `make ci`. Only **stop and report** if it can't converge.
+   - **Auto:** when it can't converge, convene the panel. **Proceed** → open the
+     PR with the known-failing check noted in its description; **stop** → report.
 3. **Pre-existing / unrelated** — the failing test isn't in your diff and (for a
    live integration test) often passes in isolation / on a re-run → it's a `main`
    problem, not yours. Hand it to **`/fix-integration-failures`** (it fixes the
@@ -280,6 +338,13 @@ the PR URL and its ready state, then run Phase 6. If `/watch-pr` reports the PR 
 **stuck** (a check it can't fix, or a human-decision review thread), stop and
 summarise what's blocking.
 
+> **Auto:** on a stuck PR, convene the panel to decide **wait-and-retry vs stop**.
+> **Proceed** (majority to keep trying) → schedule a later re-check with
+> `ScheduleWakeup` and resume `/watch-pr` when it fires; **stop** (majority) → end
+> the run and report what's blocking. The ready-to-merge gate itself is **not** a
+> panel decision: in `auto` it behaves exactly as the `merge` opt-in below — once
+> the PR is ready, proceed to Phase 6 (and merge if `merge` was passed).
+
 > **Opt-in auto-merge:** if the user explicitly passes `merge` to `/deliver`,
 > forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready, and
 > the gate becomes "report the merge" instead of stopping. Default is watch-only.
@@ -292,6 +357,10 @@ Reflect on *this* delivery and write a dated entry to
 [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md):
 
 - **Feature / PR**, date, and delivery weight (lite/full).
+- **Phases completed / Skills invoked** — a compact one-liner each (e.g. phases
+  `0–6`; skills `review-plan, implement-plan, review-changes, capture-knowledge,
+  pr, watch-pr`). This is telemetry for the recurring-pattern scan: over time it
+  shows which skills fire, which phases get skipped, and where deliveries stop.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from this skill to do the right
@@ -300,9 +369,52 @@ Reflect on *this* delivery and write a dated entry to
   sub-skill) suggested by this run.
 
 Keep it to a handful of bullets — a log, not a ceremony. Then **scan recent
-entries**: if the same friction or deviation recurs across deliveries, fold the fix
-into the relevant skill (and say you're doing so). Commit the retro with the PR when
-possible (watch-only), or as a small follow-up when auto-merged.
+entries** for recurring friction or deviations — the recurring-pattern scan below
+formalizes this. Commit the retro with the PR when possible (watch-only), or as a
+small follow-up when auto-merged.
+
+### Recurring-pattern scan (after committing the retro)
+
+Once the retro entry is committed, do a structured cross-delivery scan — this is
+what turns one-off retros into reviewed skill improvements:
+
+1. **Read the whole history.** Read all of
+   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md),
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md),
+   and **every** `SKILL.md` under `.claude/skills/` (including the sub-skills those
+   skills reference).
+2. **Find what recurs.** For any friction, deviation, or improvement suggestion
+   that appears in **more than one** retro entry, write a numbered proposal in
+   this exact format:
+
+   Pattern: [what keeps happening]
+   Seen in: [retro dates / feature names]
+   Skill: [relative path to SKILL.md]
+   Current text: [exact existing wording, or "missing"]
+   Proposed change: [exact new wording and location]
+   Rationale: [one sentence on why this eliminates the pattern]
+
+   **Skip any pattern already decided in `skill-improvement-log.md`** — one
+   already **applied** (the fix is in the skill), or **deferred/rejected** (don't
+   re-propose a settled *no*; only resurface it if its recorded "reconsider when…"
+   condition now holds).
+3. **Stop and ask.** **Do not edit any skill files.** Present the proposals and
+   wait for **explicit approval on each one** before changing anything. If no
+   *new* pattern recurs across multiple entries, **say so and stop** — emit no
+   proposals.
+   - **Auto:** don't wait for the user. The panel reviews **each** proposal and
+     **applies approved ones directly** (edit the skill, commit). Rejected
+     proposals are still recorded in `skill-improvement-log.md` with the panel's
+     rationale (step 4).
+4. **Record every decision in the log.** For each proposal you presented, append
+   an entry to
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
+   **in the five-field format documented at the top of that file** (date · title ·
+   status; Pattern / Decision / Rationale / Reconsider when) — **applied** (with
+   the skill + commit it landed in), **deferred**, or **rejected**. The **Decision**
+   (status) and **Reconsider when** fields are exactly what step 2's dedup keys on,
+   so keep them on every entry; this is what stops the scan re-proposing a settled
+   call next time.
 
 ## When the pipeline stops
 
