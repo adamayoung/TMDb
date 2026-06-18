@@ -158,4 +158,13 @@ final class URLSessionHTTPClientAdapterTests {
         #expect(result2 == header2Value)
     }
 
+    @Test("URLSessionHTTPClientAdapter conforms to Sendable")
+    func conformsToSendable() {
+        func requireSendable(_: (some Sendable).Type) {}
+
+        // Compiles only while the adapter is `Sendable`; guards the explicit
+        // conformance against accidental regression.
+        requireSendable(URLSessionHTTPClientAdapter.self)
+    }
+
 }
