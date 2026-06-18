@@ -16,3 +16,12 @@
 
 - ``ratedTVEpisodes(sortedBy:page:guestSessionID:)``
 - ``ratedTVEpisodes(guestSessionID:)``
+
+### Auto-Pagination
+
+- ``allRatedMovies(sortedBy:guestSessionID:)``
+- ``allRatedTVSeries(sortedBy:guestSessionID:)``
+- ``allRatedTVEpisodes(sortedBy:guestSessionID:)``
+- ``allRatedMoviesPages(sortedBy:guestSessionID:)``
+- ``allRatedTVSeriesPages(sortedBy:guestSessionID:)``
+- ``allRatedTVEpisodesPages(sortedBy:guestSessionID:)``
