@@ -59,6 +59,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/GeneratingImageURLs>
 - <doc:/ManagingUserAccounts>
 - <doc:/UsingLanguageModelTools>
+- <doc:/HandlingErrors>
 
 ### Movies
 
