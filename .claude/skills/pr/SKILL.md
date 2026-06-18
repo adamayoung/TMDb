@@ -35,7 +35,18 @@ git diff --name-only main...HEAD | grep -qE '\.swift$' || echo "no-swift → ski
     - If `git rebase` reports conflicts, **stop**, resolve them, then continue. Never skip or force past a conflict you don't understand.
     - The rebase rewrites the branch tip, so a branch that was **already pushed** will need `git push --force-with-lease` at the push step below.
     - Already on / branched directly off an up-to-date `main` with nothing to replay → this is a fast no-op.
-4. Run `make ci` — **MANDATORY; it must pass before going further.** This is the full gate CLAUDE.md requires before any PR: it runs lint, markdown lint, unit tests, integration tests, the release build, and the docs build. Run it directly (do not delegate). If it fails, stop and fix — **commit the fixes** — then re-run; never open a PR on a red gate.
+4. Run the pre-PR gate — **MANDATORY; it must pass before going further.** Run it directly (do not delegate). If it fails, stop and fix — **commit the fixes** — then re-run; never open a PR on a red gate. Scale the gate to the diff:
+    - **Default — full `make ci`.** The gate CLAUDE.md requires before any PR: lint, markdown lint, unit tests, integration tests, the release build, and the docs build. Use this whenever **any** code or build-affecting file changed.
+    - **Docs/config-only fast gate.** When the diff touches **no build- or test-affecting files** — i.e. no `*.swift` **and** none of `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`, or `.github/**` — the test/release-build legs of `make ci` have nothing to exercise. Run only the meaningful checks instead: `make lint && make lint-markdown && make build-docs` (drop `build-docs` if no `*.docc/**` changed). Detect this with:
+
+        ```bash
+        git diff --name-only main...HEAD \
+          | grep -qE '\.swift$|^Makefile$|^Package\.(swift|resolved)$|\.xctestplan$|^\.github/' \
+          && echo "code/build touched → full make ci" \
+          || echo "docs/config-only → fast gate"
+        ```
+
+        The PR's own CI still runs the full matrix regardless, so this only trims the **local** gate; it never lowers what actually guards `main`. When in doubt, run full `make ci`.
 5. *(skip in `reviewed` mode or when no Swift changed)* Spawn the `code-reviewer` agent to perform a code review of all changes (pass the git diff output as context)
 6. *(skip in `reviewed` mode or when no Swift changed)* Summarize the code review findings:
     - List any critical or high-severity issues that should be addressed
