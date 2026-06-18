@@ -156,6 +156,9 @@ let tmdbClient = TMDbClient(
 )
 ```
 
+Retry and caching change how and when errors reach your code — see
+<doc:HandlingErrors> for the details.
+
 ## Using TMDbClient
 
 Once created, your instance of ``TMDbClient`` can be used to interact with the
@@ -169,3 +172,7 @@ let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 let moviesToDiscover = try await tmdbClient.discover.movies().results
 let fightClub = try await tmdbClient.movies.details(forMovie: 550)
 ```
+
+## See Also
+
+- <doc:HandlingErrors>
