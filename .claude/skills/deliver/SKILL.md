@@ -249,9 +249,9 @@ in the ledger (Contract §7) as the skill argument** (`$ARGUMENTS`) — paste th
 list lines into the invocation rather than assuming the skill can still see the
 ledger in context. The ledger may have been summarised away by now; the argument
 travels with the call, so the candidates reach the skill even after compaction.
-Its job here is to **curate** that list — filter
-to the durable, non-obvious, reusable items, dedup against existing `knowledge/`
-entries, and write them into the right file (gotchas / API notes / a new ADR for
+Its job here is to **curate** that list — filter to the durable, non-obvious,
+reusable items, dedup against existing `knowledge/` entries, and write them into
+the right file (gotchas / API notes / a new ADR for
 decisions). Starting from the running list is the whole point — it captures the
 learnings you'd have forgotten by now.
 
