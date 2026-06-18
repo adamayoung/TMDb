@@ -109,6 +109,14 @@ it never bloats or biases the main window:
 - **A plan must exist.** Locate it the way `/review-plan` does (named target →
   plan-mode plan → most recent plan in the conversation). If there is no plan,
   stop and tell the user to run `/plan` first — do not invent one.
+- **If the plan originates from a review finding, verify it first.** When the
+  delivery comes from a code-review / source-review *finding* rather than a
+  user-authored plan, treat the finding as a **hypothesis, not an approved
+  plan**: do a quick `Explore` pass to confirm it against the actual code (Is it
+  real? Is the framing right? Breaking or not?) **before** drafting the plan or
+  asking the user any strategy questions. Review findings have repeatedly been
+  mis-framed — a non-breaking change mistaken for breaking, a false-positive
+  "bug", a "fix" that was really a clarity tweak.
 - **State the goal** in a sentence so every downstream phase is anchored to it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
