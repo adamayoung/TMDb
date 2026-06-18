@@ -18,9 +18,9 @@ final class TMDbTVSeriesService: TVSeriesService {
         self.configuration = configuration
     }
 
-    func details(forTVSeries id: TVSeries.ID, language: String? = nil) async throws(TMDbError) -> TVSeries {
+    func details(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws(TMDbError) -> TVSeries {
         let languageCode = language ?? configuration.defaultLanguage
-        let request = TVSeriesRequest(id: id, language: languageCode)
+        let request = TVSeriesRequest(id: tvSeriesID, language: languageCode)
 
         return try await apiClient.perform(request)
     }

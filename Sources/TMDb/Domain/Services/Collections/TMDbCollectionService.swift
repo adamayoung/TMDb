@@ -19,11 +19,11 @@ final class TMDbCollectionService: CollectionService {
     }
 
     func details(
-        forCollection id: Collection.ID,
+        forCollection collectionID: Collection.ID,
         language: String? = nil
     ) async throws(TMDbError) -> Collection {
         let languageCode = language ?? configuration.defaultLanguage
-        let request = CollectionRequest(id: id, language: languageCode)
+        let request = CollectionRequest(id: collectionID, language: languageCode)
 
         return try await apiClient.perform(request)
     }

@@ -44,6 +44,26 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
+## Public API
+
+### Renaming a method's *internal* parameter name is source- and ABI-compatible
+
+*2026-06-18.* Renaming the **second** (internal) name in a parameter —
+e.g. `func details(forMovie id: Movie.ID)` → `func details(forMovie movieID: Movie.ID)` —
+is **not** a breaking change. Only the **external argument label** (`forMovie:`)
+is part of the function's name and the protocol-conformance / override contract;
+the internal name is implementation-local.
+
+- Call sites are unchanged (`details(forMovie: 550)` either way).
+- DocC symbol links are keyed on argument labels (`details(forMovie:language:)`),
+  so they don't break.
+- Conforming types need not match the internal name.
+
+Consequence: standardising service parameter names needs **no major version bump
+and no deprecation shims** — it only changes Xcode autocomplete placeholders and
+the documented signature. (We initially mis-scoped the `<entity>ID` rename as
+breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
+
 ## Swift concurrency
 
 ### Deterministically testing that cancellation is *forwarded* into an unstructured `Task`

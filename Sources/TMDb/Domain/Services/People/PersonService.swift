@@ -19,7 +19,7 @@ public protocol PersonService: Sendable {
     /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -27,7 +27,7 @@ public protocol PersonService: Sendable {
     ///
     /// - Returns: The matching person.
     ///
-    func details(forPerson id: Person.ID, language: String?) async throws(TMDbError) -> Person
+    func details(forPerson personID: Person.ID, language: String?) async throws(TMDbError) -> Person
 
     ///
     /// Returns the primary information about a person with
@@ -36,7 +36,7 @@ public protocol PersonService: Sendable {
     /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///    - appending: The additional data to append.
     ///    - language: ISO 639-1 language code to display results
     ///     in. Defaults to the client's configured default
@@ -47,7 +47,7 @@ public protocol PersonService: Sendable {
     /// - Returns: The matching person with appended data.
     ///
     func details(
-        forPerson id: Person.ID,
+        forPerson personID: Person.ID,
         appending: PersonAppendOption,
         language: String?
     ) async throws(TMDbError) -> PersonDetailsResponse

@@ -18,21 +18,21 @@ final class TMDbMovieService: MovieService {
         self.configuration = configuration
     }
 
-    func details(forMovie id: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
+    func details(forMovie movieID: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
         let languageCode = language ?? configuration.defaultLanguage
-        let request = MovieRequest(id: id, language: languageCode)
+        let request = MovieRequest(id: movieID, language: languageCode)
 
         return try await apiClient.perform(request)
     }
 
     func details(
-        forMovie id: Movie.ID,
+        forMovie movieID: Movie.ID,
         appending: MovieAppendOption,
         language: String? = nil
     ) async throws(TMDbError) -> MovieDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieDetailsAppendRequest(
-            id: id,
+            id: movieID,
             appendToResponse: appending,
             language: languageCode
         )

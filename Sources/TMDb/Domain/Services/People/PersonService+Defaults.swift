@@ -15,7 +15,7 @@ public extension PersonService {
     /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -24,10 +24,10 @@ public extension PersonService {
     /// - Returns: The matching person.
     ///
     func details(
-        forPerson id: Person.ID,
+        forPerson personID: Person.ID,
         language: String? = nil
     ) async throws(TMDbError) -> Person {
-        try await details(forPerson: id, language: language)
+        try await details(forPerson: personID, language: language)
     }
 
     ///
@@ -37,7 +37,7 @@ public extension PersonService {
     /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the person.
+    ///    - personID: The identifier of the person.
     ///    - appending: The additional data to append.
     ///    - language: ISO 639-1 language code to display results
     ///     in. Defaults to the client's configured default
@@ -48,12 +48,12 @@ public extension PersonService {
     /// - Returns: The matching person with appended data.
     ///
     func details(
-        forPerson id: Person.ID,
+        forPerson personID: Person.ID,
         appending: PersonAppendOption,
         language: String? = nil
     ) async throws(TMDbError) -> PersonDetailsResponse {
         try await details(
-            forPerson: id,
+            forPerson: personID,
             appending: appending,
             language: language
         )

@@ -21,7 +21,7 @@ public protocol TVSeriesService: Sendable {
     /// [TMDb API - TV Series: Details](https://developer.themoviedb.org/reference/tv-series-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -29,7 +29,7 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Returns: The matching TV series.
     ///
-    func details(forTVSeries id: TVSeries.ID, language: String?) async throws(TMDbError) -> TVSeries
+    func details(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws(TMDbError) -> TVSeries
 
     ///
     /// Returns the primary information about a TV series with
@@ -531,7 +531,7 @@ public extension TVSeriesService {
     /// [TMDb API - TV Series: Details](https://developer.themoviedb.org/reference/tv-series-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the TV series.
+    ///    - tvSeriesID: The identifier of the TV series.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -540,10 +540,10 @@ public extension TVSeriesService {
     /// - Returns: The matching TV series.
     ///
     func details(
-        forTVSeries id: TVSeries.ID,
+        forTVSeries tvSeriesID: TVSeries.ID,
         language: String? = nil
     ) async throws(TMDbError) -> TVSeries {
-        try await details(forTVSeries: id, language: language)
+        try await details(forTVSeries: tvSeriesID, language: language)
     }
 
     ///

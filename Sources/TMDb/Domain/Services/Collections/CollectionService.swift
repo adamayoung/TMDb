@@ -19,7 +19,7 @@ public protocol CollectionService: Sendable {
     /// [TMDb API - Collections: Details](https://developer.themoviedb.org/reference/collection-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the collection.
+    ///    - collectionID: The identifier of the collection.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -28,7 +28,7 @@ public protocol CollectionService: Sendable {
     /// - Returns: The matching collection.
     ///
     func details(
-        forCollection id: Collection.ID,
+        forCollection collectionID: Collection.ID,
         language: String?
     ) async throws(TMDbError) -> Collection
 

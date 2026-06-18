@@ -19,23 +19,23 @@ final class TMDbPersonService: PersonService {
     }
 
     func details(
-        forPerson id: Person.ID,
+        forPerson personID: Person.ID,
         language: String? = nil
     ) async throws(TMDbError) -> Person {
         let languageCode = language ?? configuration.defaultLanguage
-        let request = PersonRequest(id: id, language: languageCode)
+        let request = PersonRequest(id: personID, language: languageCode)
 
         return try await apiClient.perform(request)
     }
 
     func details(
-        forPerson id: Person.ID,
+        forPerson personID: Person.ID,
         appending: PersonAppendOption,
         language: String? = nil
     ) async throws(TMDbError) -> PersonDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonDetailsAppendRequest(
-            id: id,
+            id: personID,
             appendToResponse: appending,
             language: languageCode
         )

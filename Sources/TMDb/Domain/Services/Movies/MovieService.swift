@@ -21,7 +21,7 @@ public protocol MovieService: Sendable {
     /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -29,7 +29,7 @@ public protocol MovieService: Sendable {
     ///
     /// - Returns: The matching movie.
     ///
-    func details(forMovie id: Movie.ID, language: String?) async throws(TMDbError) -> Movie
+    func details(forMovie movieID: Movie.ID, language: String?) async throws(TMDbError) -> Movie
 
     ///
     /// Returns the primary information about a movie with appended data.
@@ -37,7 +37,7 @@ public protocol MovieService: Sendable {
     /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///    - appending: The additional data to append to the response.
     ///    - language: ISO 639-1 language code to display results in.
     ///     Defaults to the client's configured default language.
@@ -47,7 +47,7 @@ public protocol MovieService: Sendable {
     /// - Returns: The matching movie with appended data.
     ///
     func details(
-        forMovie id: Movie.ID,
+        forMovie movieID: Movie.ID,
         appending: MovieAppendOption,
         language: String?
     ) async throws(TMDbError) -> MovieDetailsResponse
@@ -505,7 +505,7 @@ public extension MovieService {
     /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -513,8 +513,8 @@ public extension MovieService {
     ///
     /// - Returns: The matching movie.
     ///
-    func details(forMovie id: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
-        try await details(forMovie: id, language: language)
+    func details(forMovie movieID: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
+        try await details(forMovie: movieID, language: language)
     }
 
     ///
@@ -523,7 +523,7 @@ public extension MovieService {
     /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
     /// - Parameters:
-    ///    - id: The identifier of the movie.
+    ///    - movieID: The identifier of the movie.
     ///    - appending: The additional data to append to the response.
     ///    - language: ISO 639-1 language code to display results in.
     ///     Defaults to the client's configured default language.
@@ -533,12 +533,12 @@ public extension MovieService {
     /// - Returns: The matching movie with appended data.
     ///
     func details(
-        forMovie id: Movie.ID,
+        forMovie movieID: Movie.ID,
         appending: MovieAppendOption,
         language: String? = nil
     ) async throws(TMDbError) -> MovieDetailsResponse {
         try await details(
-            forMovie: id,
+            forMovie: movieID,
             appending: appending,
             language: language
         )
