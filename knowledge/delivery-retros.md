@@ -10,6 +10,31 @@ Format: **Feature / PR** · date · weight · *what worked* · *friction* ·
 
 ---
 
+## 2026-06-18 — ♻️ Standardize details(...) parameter names to `<entity>ID` (#341) · lite
+
+- **Worked:** scouting the *actual* scope before planning (an `Explore` sweep over
+  all 26 services) overturned two assumptions from the source review — the change
+  was non-breaking (internal names only) and the cheap, convention-aligned
+  direction (`<entity>ID`, 7 methods) was the **opposite** of the review's
+  recommendation (`id`, 24 methods). Re-confirming the decision with the user
+  before editing avoided a 24-method diff against the grain of the codebase.
+  Single-`code-reviewer` lite path fit the mechanical diff; build/tests/lint/review
+  all clean first time.
+- **Friction:** my raw `awk` line-length check flagged ~140 lines >100 chars and
+  briefly looked like a lint failure, but `make lint` reported 0 violations (the
+  enforced threshold ignores comment/URL lines and is higher than the documented
+  100 for code). Wasted a beat reconciling the two. Lesson: trust `make lint`, not
+  a hand-rolled length check.
+- **Deviations:** had to go back to the user mid-delivery to correct my own earlier
+  framing (I'd asked about deprecation/major-bump for a change that turned out
+  non-breaking). The right move, but a sign the *up-front* questions were asked
+  before the scope was actually understood.
+- **Improvement:** when a delivery originates from a review *finding* (not a
+  user-authored plan), scope it against the code (a quick `Explore` pass) **before**
+  asking the user any strategy questions — the finding's framing may be wrong, as
+  it was here (and for the dropped retry "fix"). Treat review findings as
+  hypotheses to verify, not approved plans.
+
 ## 2026-06-18 — ⚡️ Opt-in next-page prefetch (#337) · full
 
 - **Worked:** the full pipeline shone on the riskiest change of the effort (first
