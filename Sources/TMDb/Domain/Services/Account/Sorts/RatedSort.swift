@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A sort specifier when fetching rated content.
 ///
-public enum RatedSort: CustomStringConvertible {
+public enum RatedSort: CustomStringConvertible, Sendable {
 
     ///
     /// By created at.
