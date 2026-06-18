@@ -18,9 +18,15 @@ Format per entry:
 ### <date> — <short title> · <applied|deferred|rejected>
 - **Pattern:** what kept recurring (and the retro entries it appeared in).
 - **Decision:** what was agreed, and where it landed (skill + commit/PR) if applied.
-- **Rationale:** one or two sentences — why this call. For deferred/rejected,
-  the condition under which it should be reconsidered.
+- **Rationale:** one or two sentences — why this call.
+- **Reconsider when:** (deferred/rejected only) the condition under which the scan
+  should resurface this — or `n/a` for applied entries. The Phase 6 scan reads this
+  field to decide whether a settled *no* may be re-proposed.
 ```
+
+Keep this five-field shape on every entry so the scan can parse the log
+consistently — in particular **Decision** (status) and **Reconsider when** are the
+two fields the dedup step keys on.
 
 ---
 
@@ -33,6 +39,7 @@ Format per entry:
   entry format (`/deliver` Phase 6 + `delivery-retros.md` header).
 - **Rationale:** near-zero cost, additive, and builds the signal the scan needs
   over time.
+- **Reconsider when:** n/a (applied).
 
 ### 2026-06-18 — Wiki get_context in Phase 0 · applied
 
@@ -43,6 +50,7 @@ Format per entry:
 - **Rationale:** matches Adam's global "consult the wiki silently before
   non-trivial decisions". Worded to degrade silently off Adam's machine, since
   these skill files ship in the public repo.
+- **Reconsider when:** n/a (applied).
 
 ### 2026-06-18 — Close the loop: this improvement log · applied
 
@@ -51,6 +59,7 @@ Format per entry:
 - **Decision:** created this file; Phase 6 scan consults it first and records each
   decision after.
 - **Rationale:** makes the recurring-pattern scan converge instead of looping.
+- **Reconsider when:** n/a (applied).
 
 ### 2026-06-18 — Phase 0: verify review-originated findings against code · applied
 
@@ -62,6 +71,7 @@ Format per entry:
   as a hypothesis and confirm it against the code (a quick `Explore` pass) before
   planning or asking strategy questions. Landed in `/deliver` Phase 0 (PR #348).
 - **Rationale:** catches a mis-framed finding before it reaches the user.
+- **Reconsider when:** n/a (applied).
 
 ### 2026-06-18 — `/review-plan` critics load Adam's heuristics · deferred
 
@@ -70,9 +80,10 @@ Format per entry:
 - **Decision:** **deferred.** Not implemented.
 - **Rationale:** the critics' value is adversarial *independence*; feeding them
   "Adam prefers X" risks confirmation over challenge, exactly when a critic is
-  most useful. **Reconsider only** as "load durable *constraints*/ADRs the critics
-  may cite", never "load opinions to agree with" — and only after confirming wiki
-  MCP reachability inside the review-plan Workflow.
+  most useful.
+- **Reconsider when:** scoped narrowly to "load durable *constraints*/ADRs the
+  critics may cite" (never "load opinions to agree with"), and only after
+  confirming wiki MCP reachability inside the review-plan Workflow.
 
 ### 2026-06-18 — File-based `.claude/deliver-state.json` ledger · deferred
 
@@ -81,6 +92,6 @@ Format per entry:
 - **Decision:** **deferred.** Not implemented.
 - **Rationale:** `TaskCreate` + the checkpoint commits + git history already give
   a real recovery path; a committed JSON state file adds PR noise (or, if
-  gitignored, isn't on the branch for anyone else). **Reconsider only if**
-  interruptions actually bite — and prefer the lighter "checkpoint the ledger into
-  the PR description" over a new state machine.
+  gitignored, isn't on the branch for anyone else).
+- **Reconsider when:** interruptions actually bite — and even then prefer the
+  lighter "checkpoint the ledger into the PR description" over a new state machine.

@@ -358,9 +358,12 @@ what turns one-off retros into reviewed skill improvements:
 4. **Record every decision in the log.** For each proposal you presented, append
    an entry to
    [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
-   — **applied** (with the skill + commit it landed in), **deferred**, or
-   **rejected** (with the rationale and any "reconsider when…" condition). This is
-   what stops the scan re-proposing a settled call next time.
+   **in the five-field format documented at the top of that file** (date · title ·
+   status; Pattern / Decision / Rationale / Reconsider when) — **applied** (with
+   the skill + commit it landed in), **deferred**, or **rejected**. The **Decision**
+   (status) and **Reconsider when** fields are exactly what step 2's dedup keys on,
+   so keep them on every entry; this is what stops the scan re-proposing a settled
+   call next time.
 
 ## When the pipeline stops
 
