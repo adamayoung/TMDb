@@ -3,7 +3,7 @@
 The **Build and Test** job (macOS) has two build steps, both with
 **warnings-as-errors**:
 
-```
+```bash
 swift build --build-tests -Xswiftc -warnings-as-errors   # build + test targets
 swift build -c release      -Xswiftc -warnings-as-errors   # release build
 ```

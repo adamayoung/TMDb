@@ -1,13 +1,11 @@
 {
+  "comment": "Shared by README, DocC, and the .claude/ skills (see `make lint-markdown`).",
   "default": true,
-  "MD013": {
-    "line_length": 80,
-    "code_blocks": false,
-    "tables": false
-  },
+  "MD013": false,
   "MD024": {
     "siblings_only": true
   },
   "MD033": false,
-  "MD041": false
+  "MD041": false,
+  "MD060": false
 }

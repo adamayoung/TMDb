@@ -177,6 +177,18 @@ Key skills (the README's *Claude Code Skills* tables list them all):
 - **`/pr`**, **`/watch-pr`**, **`/review-pr-threads`**, **`/fix-pr-checks`** —
   open and shepherd the pull request.
 - **`/document-swift`** — the canonical DocC conventions for public API.
+- **`/fix-integration-failures`** — diagnose **and** fix a failing scheduled (or
+  standalone) `Integration` run: re-run a transient, or fix real drift on a branch
+  off `main` and open a PR. `/watch-pr` delegates the *pre-existing/unrelated*
+  integration failure (one not in the PR's diff) here, since it's a `main` problem.
+
+**Self-healing integration** — the weekly scheduled `Integration` run (Sunday
+00:00 UTC) is watched by [`.github/workflows/integration-failure.yml`](.github/workflows/integration-failure.yml),
+which runs `/fix-integration-failures` headless on a failure: it diagnoses, fixes
+real drift on a branch off `main`, and opens a **PR for review** (never
+auto-merges), then files/updates a tracking issue. Running headless, the skill
+verifies with the targeted suite (not full `make ci`) and opens the PR via
+`git`/`gh` (not `/pr`) — the PR's own CI is the gate.
 
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and

@@ -53,8 +53,8 @@ Returns**. No trailing whitespace on blank `///` lines.
   `/// [TMDb API - <Category>: <Endpoint>](https://developer.themoviedb.org/reference/<slug>)`
 - **Parameters** — `- Parameter name:` (singular) for exactly one parameter;
   `- Parameters:` with an indented list for two or more.
-- **Precondition** — methods with a `page` parameter add:
-  `/// - Precondition: `page` can be between `1` and `1000`.`
+- **Precondition** — methods with a `page` parameter add a
+  `/// - Precondition:` line — e.g. `page` can be between `1` and `1000`.
 - **Throws** — service methods use `/// - Throws: TMDb error ``TMDbError``.`; for
   `Decodable` inits, list the specific `DecodingError` cases.
 - **Returns** — describe what comes back, e.g. "Matching review."

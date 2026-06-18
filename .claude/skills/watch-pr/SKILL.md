@@ -58,6 +58,30 @@ ledger; if it pushed, the next pass re-checks.
 rather than polling, then loop. If `/fix-pr-checks` reports a check **exhausted**,
 stop and report it per the Loop Guard.
 
+### 1c. Failing checks not caused by this PR (usually a flaky integration test)
+
+`/fix-pr-checks` assumes the fix belongs on **this** branch. That is wrong when
+the failing check — most often a **live integration test** — is broken or flaky
+**independently of this PR's diff**. Patching it onto the feature branch would
+muddy the PR's scope and leave the test broken for everyone else. Triage before
+fixing here:
+
+1. **Is the failing test in this PR's diff?**
+   `gh pr diff <number> --name-only` — if the failing test's file is **not** in
+   that list, this PR did not cause it.
+
+2. **Transient or deterministic?** Re-run the failed jobs once
+   (`gh run rerun <run-id> --failed`) and watch. Passes on re-run → a transient
+   live-API flake; note it and continue. Fails again **and** not in this PR's diff
+   → a **pre-existing** problem (e.g. a brittle live-data assertion).
+
+3. **A pre-existing failure is a `main` problem — hand it to
+   `/fix-integration-failures`**, which fixes it on its own branch off `main`,
+   runs `make ci`, and opens/merges a PR (never on this feature branch). Tell the
+   user you're opening a **second** PR to unblock this one; if they'd rather you
+   stop, report and stop. Once that fix is on `main`, bring this PR's branch up to
+   date (`gh pr update-branch <number>`) and re-watch — the check now passes.
+
 ## 2. Loop guard (do not get stuck)
 
 - **Thread dedup is `/review-pr-threads`' job** — it shares this ledger, so it

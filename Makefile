@@ -31,8 +31,9 @@ lint:
 
 .PHONY: lint-markdown
 lint-markdown:
-	markdownlint "README.md"
+	markdownlint "README.md" "CLAUDE.md"
 	markdownlint "**/*.docc/**/*.md"
+	markdownlint ".claude/**/*.md"
 
 .PHONY: build
 build:
