@@ -162,8 +162,8 @@ final class URLSessionHTTPClientAdapterTests {
     func conformsToSendable() {
         func requireSendable(_: (some Sendable).Type) {}
 
-        // Compiles only while the adapter is `Sendable`; guards the explicit
-        // conformance against accidental regression.
+        // Compiles only while the adapter remains `Sendable`; guards against a
+        // future change that would make it non-Sendable.
         requireSendable(URLSessionHTTPClientAdapter.self)
     }
 
