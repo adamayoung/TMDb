@@ -165,7 +165,7 @@ let trendingMovies = try await tmdbClient.trending.movies(inTimeWindow: .day)
 // Get streaming providers for a movie
 let watchProviders = try await tmdbClient.movies.watchProviders(forMovie: 550)
 if let usProvider = watchProviders.first(where: { $0.countryCode == "US" }) {
-    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.providerName) ?? [])")
+    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.name) ?? [])")
 }
 
 // Generate poster image URL
@@ -301,7 +301,7 @@ let filter = DiscoverMovieFilter().withGenres([28, 12], joinedBy: .or)
 ```swift
 let providers = try await tmdbClient.movies.watchProviders(forMovie: movieId)
 if let usProvider = providers.first(where: { $0.countryCode == "US" }) {
-    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.providerName) ?? [])")
+    print("Available on: \(usProvider.watchProviders.flatRate?.map(\.name) ?? [])")
 }
 ```
 
