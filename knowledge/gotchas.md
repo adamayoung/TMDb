@@ -6,6 +6,21 @@ out of it.
 
 ## Tooling
 
+### SourceKit live diagnostics lag newly-created files — trust the build
+
+*2026-06-18.* After `Write`ing a **new** `.swift` file and referencing its
+top-level symbols from another file, the editor's `<new-diagnostics>` repeatedly
+reported `Cannot find 'X' in scope` and a spurious `No 'async' operations occur
+within 'await' expression` (it couldn't yet see a new `actor`'s cross-actor
+members). Every time, `swift build` / `make build-tests` reported **0 errors /
+0 warnings** — and those run with `--Werror`, so a real issue would fail them.
+
+- These are **indexing-lag false positives** from SourceKit-LSP; they clear once
+  the next build updates the index. There is no config fix — it's inherent.
+- **Trust `make build` / `make build-tests` as authoritative.** Do **not**
+  investigate a "cannot find in scope" or a spurious `await` warning on a file you
+  just created; rebuild instead of chasing it.
+
 ### swiftlint / swiftformat versions are pinned — drift causes false violations
 
 - CI and local are pinned to **swiftlint 0.63.2 / swiftformat 0.61.1**; CI
@@ -30,6 +45,33 @@ out of it.
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
 ## Swift concurrency
+
+### Deterministically testing that cancellation is *forwarded* into an unstructured `Task`
+
+*2026-06-18.* An unstructured `Task {}` does **not** inherit its parent's
+cancellation. To forward it, await the child inside
+`withTaskCancellationHandler { try await task.value } onCancel: { task.cancel() }`
+(see the prefetch iterators, [ADR-0003](decisions/0003-opt-in-pagination-prefetch.md)).
+
+Testing the forward is subtle: a naive test asserting the consumer throws
+`CancellationError` passes even if the forward is dropped, because the iterator's
+*pre-await* `Task.checkCancellation()` guard also throws. To prove the forward
+actually fired:
+
+- Have the awaited child fetcher **signal an `AsyncStream` before blocking** on
+  `Task.sleep`, and `await` that signal in the test — so the consumer is provably
+  parked **inside** `withTaskCancellationHandler` awaiting `task.value` (past the
+  pre-await guard) before you `cancel()`.
+- In the child's `catch` (the sleep throws only when the child itself is
+  cancelled), record into an `actor` recorder and assert `wasCancelled`. That flag
+  is reachable **only** via the forwarded `task.cancel()`, so it can't be set by
+  the pre-await guard.
+- The sleep duration is a **regression ceiling** (only reached if the forward is
+  broken), not a happy-path wait — the happy path cancels in microseconds.
+
+Drive such sequences directly via their `init(pageFetcher:)` with the `actor`
+recorder — **never** `MockAPIClient` (it is `@unchecked Sendable` with
+unsynchronised state and would data-race under concurrent fetches).
 
 ### Public enums are not implicitly `Sendable` — explicit conformance needed for `@Sendable` capture
 
