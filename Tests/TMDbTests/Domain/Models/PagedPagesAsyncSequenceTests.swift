@@ -9,6 +9,8 @@ import Foundation
 import Testing
 @testable import TMDb
 
+// swiftlint:disable type_body_length
+
 @Suite(.tags(.models))
 struct PagedPagesAsyncSequenceTests {
 
@@ -180,6 +182,175 @@ struct PagedPagesAsyncSequenceTests {
         #expect(firstPage.results.count == 3)
     }
 
+    // MARK: - Prefetch
+
+    @Test("prefetchingNextPage yields the same pages as the serial sequence")
+    func prefetchYieldsSamePagesAsSerial() async throws {
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            MockItem.mockPageableList(page: page, totalPages: 3, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+        var pages: [PageableListResult<MockItem>] = []
+
+        for try await page in sequence {
+            pages.append(page)
+        }
+
+        #expect(pages.map(\.page) == [1, 2, 3])
+    }
+
+    @Test("prefetchingNextPage fetches the next page as the current page is yielded")
+    func prefetchFetchesNextPageEarly() async throws {
+        let (stream, continuation) = AsyncStream<Int>.makeStream()
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            continuation.yield(page)
+            return MockItem.mockPageableList(page: page, totalPages: 3, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+        var iterator = sequence.makeAsyncIterator()
+
+        _ = try await iterator.next() // page 1 yielded — triggers prefetch of page 2
+
+        // Page 2 must have started fetching after a single `next()`.
+        var fetched: [Int] = []
+        var streamIterator = stream.makeAsyncIterator()
+        try fetched.append(#require(await streamIterator.next()))
+        try fetched.append(#require(await streamIterator.next()))
+
+        #expect(fetched == [1, 2])
+    }
+
+    @Test("prefetchingNextPage overshoots an early break by at most one page")
+    func prefetchEarlyBreakOvershootsByAtMostOnePage() async throws {
+        let recorder = PageFetchRecorder()
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            await recorder.recordStart(page)
+            return MockItem.mockPageableList(page: page, totalPages: 5, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+        var pages: [PageableListResult<MockItem>] = []
+
+        for try await page in sequence {
+            pages.append(page)
+            if pages.count == 1 {
+                break
+            }
+        }
+
+        await Task.yield()
+        let fetchCount = await recorder.count
+        #expect(fetchCount >= 1)
+        #expect(fetchCount <= 2)
+    }
+
+    @Test("default page-level sequence does not prefetch the next page")
+    func defaultDoesNotPrefetch() async throws {
+        let recorder = PageFetchRecorder()
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            await recorder.recordStart(page)
+            return MockItem.mockPageableList(page: page, totalPages: 3, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher) // no prefetch
+        var iterator = sequence.makeAsyncIterator()
+
+        _ = try await iterator.next() // page 1 — must NOT prefetch page 2
+
+        await Task.yield()
+        #expect(await recorder.count == 1)
+    }
+
+    @Test("prefetchingNextPage does not fetch past the terminating empty page (unknown total)")
+    func prefetchStopsAtEmptyPageWithUnknownTotal() async throws {
+        let recorder = PageFetchRecorder()
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            await recorder.recordStart(page)
+            if page <= 2 {
+                return MockItem.mockPageableList(page: page, totalPages: nil, itemsPerPage: 2)
+            }
+            return MockItem.mockPageableList(page: page, totalPages: nil, itemsPerPage: 0)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+        var pages: [PageableListResult<MockItem>] = []
+
+        for try await page in sequence {
+            pages.append(page)
+        }
+
+        #expect(pages.count == 2) // pages 1-2 are non-empty
+        #expect(await recorder.count == 3) // pages 1, 2, 3 (empty terminator) — never page 4
+        #expect(await recorder.startedPages.sorted() == [1, 2, 3])
+    }
+
+    @Test("prefetchingNextPage surfaces a prefetched page's error when it is consumed")
+    func prefetchErrorSurfacesOnConsumption() async throws {
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            if page == 2 {
+                throw TMDbError.unknown
+            }
+            return MockItem.mockPageableList(page: page, totalPages: 3, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+        var pages: [PageableListResult<MockItem>] = []
+        var caughtError: Error?
+
+        do {
+            for try await page in sequence {
+                pages.append(page)
+            }
+        } catch {
+            caughtError = error
+        }
+
+        #expect(pages.count == 1) // page 1 yielded before the prefetched error surfaces
+        #expect(caughtError != nil)
+    }
+
+    @Test("prefetchingNextPage cancels the in-flight prefetch when the consumer is cancelled")
+    func prefetchCancellationPropagates() async throws {
+        let recorder = PageFetchRecorder()
+        let (started, startedContinuation) = AsyncStream<Void>.makeStream()
+        let pageFetcher: PagedPagesAsyncSequence<MockItem>.PageFetcher = { page in
+            if page == 2 {
+                startedContinuation.yield(())
+                do {
+                    try await Task.sleep(for: .seconds(5)) // block until cancelled
+                } catch {
+                    await recorder.recordCancellation(2)
+                    throw error
+                }
+            }
+            return MockItem.mockPageableList(page: page, totalPages: 5, itemsPerPage: 2)
+        }
+
+        let sequence = PagedPagesAsyncSequence(pageFetcher: pageFetcher).prefetchingNextPage()
+
+        let task = Task {
+            var count = 0
+            for try await _ in sequence {
+                count += 1
+            }
+            return count
+        }
+
+        var startedIterator = started.makeAsyncIterator()
+        _ = await startedIterator.next()
+        for _ in 0 ..< 5 {
+            await Task.yield()
+        }
+        task.cancel()
+
+        await #expect(throws: CancellationError.self) {
+            _ = try await task.value
+        }
+        #expect(await recorder.wasCancelled(2))
+    }
+
 }
 
 // MARK: - Mock Types
@@ -210,3 +381,5 @@ extension PagedPagesAsyncSequenceTests {
     }
 
 }
+
+// swiftlint:enable type_body_length

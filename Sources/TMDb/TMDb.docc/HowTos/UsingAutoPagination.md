@@ -54,10 +54,28 @@ for try await movie in tmdbClient.movies.allTopRated() {
 }
 ```
 
+## Prefetching the Next Page
+
+By default pages are fetched lazily — the next page is requested only once the
+current page is exhausted. Call ``PagedAsyncSequence/prefetchingNextPage()`` (or
+``PagedPagesAsyncSequence/prefetchingNextPage()``) to fetch the next page
+concurrently as the current page is consumed, hiding inter-page latency on long
+scans.
+
+```swift
+for try await movie in tmdbClient.movies.allPopular().prefetchingNextPage() {
+    print(movie.title)
+}
+```
+
+Prefetch is opt-in: it trades at most one extra (possibly wasted) request on an
+early `break` for lower latency, and the emitted items are identical to the
+default lazy sequence. Iterate a prefetching sequence from a single consumer.
+
 ## Available Services
 
-Auto-pagination is available across 7 services with 32 paginated
-endpoints and 64 auto-pagination methods:
+Auto-pagination is available across 11 services with 47 paginated
+endpoints and 94 auto-pagination methods:
 
 - **Movies** — popular, top rated, now playing, upcoming,
   recommendations, similar, reviews, lists
@@ -69,3 +87,9 @@ endpoints and 64 auto-pagination methods:
 - **People** — popular, tagged images
 - **Discover** — movies, TV series
 - **Lists** — list items
+- **Account** — favourite movies, favourite TV series, movie watchlist,
+  TV series watchlist, rated movies, rated TV series, rated TV episodes,
+  lists
+- **Guest Sessions** — rated movies, rated TV series, rated TV episodes
+- **Keywords** — movies
+- **Changes** — movie, TV series, person
