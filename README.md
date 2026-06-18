@@ -474,6 +474,7 @@ These delegate to a Haiku subagent to keep the main context lean.
 | --- | --- |
 | `/diagnose-ci-failure` | Diagnose a failing CI job and propose a fix |
 | `/diagnose-integration-failure` | Diagnose a failing integration-test run and propose a fix |
+| `/fix-integration-failures` | Diagnose **and** fix a failing scheduled/standalone Integration run — re-run transients, or fix real drift on a branch off `main` and open a PR |
 | `/canon-tdd` | Drive test-first development (test list → failing test → pass → refactor) |
 | `/document-swift` | Write DocC documentation for public API per project conventions |
 
@@ -481,6 +482,19 @@ Two subagents back the review and documentation steps: `code-reviewer`
 (deep Swift/TMDb review) and `documentation-writer` (bulk DocC generation).
 The reviewer follows the shared spec in
 [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
+
+#### Self-healing weekly integration run
+
+The live-API integration suite runs on a weekly schedule
+([`.github/workflows/integration.yml`](.github/workflows/integration.yml),
+Sunday 00:00 UTC). When that scheduled run fails,
+[`.github/workflows/integration-failure.yml`](.github/workflows/integration-failure.yml)
+invokes `/fix-integration-failures` headless: it diagnoses the failure,
+re-runs a transient, or fixes real drift (a TMDb backend/shape change or a
+stale assumption) on a branch off `main` and opens a **PR for review** (it
+never auto-merges), then files/updates a tracking issue linking the fix. See
+the skill for the headless contract and the `INTEGRATION_FIX_PR_TOKEN` secret
+it needs.
 
 ### Feature Workflow (`/plan` → `/deliver`)
 
