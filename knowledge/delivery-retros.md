@@ -10,6 +10,23 @@ Format: **Feature / PR** · date · weight · *what worked* · *friction* ·
 
 ---
 
+## 2026-06-18 — 📝 Add error-handling How-To guide (#344) · lite (docs-only)
+
+- **Worked:** reading the real source first (`TMDbError+TMDbAPIError.swift` for the
+  status→case mapping, `RetryHTTPClient.swift` for retry semantics) meant the guide
+  documented *actual* behaviour — including the "error thrown only after retries are
+  exhausted" nuance from the dropped item 3 — rather than plausible-sounding
+  guesses. `make build-docs` (warnings-as-errors) was the real gate: it validated
+  every `` ``TMDbError/notFound(_:)`` `` enum-case link and `<doc:>` reference, so a
+  broken symbol link would have failed before the PR.
+- **Friction:** same recurring one — `make ci` ran the full unit+integration+release
+  matrix for a docs-only change; only `build-docs` + `lint-markdown` were meaningful.
+- **Deviations:** none — clean docs-only lite path (review auto-skipped, no Swift).
+- **Improvement:** reinforces the **docs/config-only fast gate** idea already logged
+  on #340/#343 — for a no-`.swift` diff, `make ci` could run just lint +
+  lint-markdown + build-docs. Three docs-only deliveries this session each paid the
+  full-matrix cost; worth implementing the fast gate in `/pr` step 4 now.
+
 ## 2026-06-18 — ♻️ Standardize details(...) parameter names to `<entity>ID` (#341) · lite
 
 - **Worked:** scouting the *actual* scope before planning (an `Explore` sweep over
