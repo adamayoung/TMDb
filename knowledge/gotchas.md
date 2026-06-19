@@ -44,6 +44,27 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
+## Testing
+
+### Model-decode equality tests: build the expected value directly, not from an over-populated mock
+
+*2026-06-19.* `Network` is `Equatable` over **all six** stored properties
+(`id`, `name`, `logoPath`, `originCountry`, `headquarters`, `homepage`), and both
+the `Network.mock()` helper and `Network.hbo` default `headquarters` **and**
+`homepage` to **non-nil** values. When a decode test compares a decoded value
+against an expected one built from a **minimal** JSON fixture entry (only
+`id`/`name`/`logo_path`/`origin_country`), building the expected value with the
+mock makes `#expect(decoded == expected)` **fail** on the two extra non-nil
+fields.
+
+- Construct the expected value **directly** — e.g.
+  `Network(id:name:logoPath:originCountry:)`, leaving `headquarters`/`homepage`
+  nil — so it matches exactly what the fixture decodes to. `TVSeasonTests` and
+  `TVSeriesTests` both do this for their `networks` assertions.
+- Generalises to **any** `Equatable` model whose `*+Mocks` helper over-populates
+  optional fields: a mock is for convenience construction, not for asserting
+  decode equality against a sparse fixture.
+
 ## Public API
 
 ### Growing a public protocol additively: extension defaults, and the `--Werror` deprecation trap

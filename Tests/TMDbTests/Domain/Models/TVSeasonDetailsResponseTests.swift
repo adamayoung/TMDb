@@ -71,6 +71,7 @@ struct TVSeasonDetailsResponseTests {
         #expect(result.season.id == 3624)
         #expect(result.season.name == "Season 1")
         #expect(result.season.seasonNumber == 1)
+        #expect(result.season.networks != nil)
         #expect(result.credits == nil)
         #expect(result.aggregateCredits == nil)
         #expect(result.images == nil)
