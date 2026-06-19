@@ -52,12 +52,19 @@ Quality over volume: a few high-signal entries beat a long dump.
    - Decisions: copy `decisions/0000-template.md` to
      `decisions/NNNN-<kebab-title>.md` (next free number), fill in Status / Date /
      Context / Decision / Consequences / Alternatives. Cross-link related ADRs.
-5. **Keep it tidy by hand** — blank lines around headings/lists/code fences, a
+5. **Retire what's no longer true.** The base is a **cache of current truths, not
+   an archive** (git history is the archive — see
+   [`knowledge/README.md`](../../../knowledge/README.md) → *Maintenance &
+   retention*). While you're in `gotchas.md` / `tmdb-api-notes.md`, scan the
+   neighbouring entries and **delete** any now obsolete — an upstream bug fixed, a
+   pinned version lifted, the code removed, a quirk that no longer reproduces. The
+   file should describe the present, not narrate the past.
+6. **Keep it tidy by hand** — blank lines around headings/lists/code fences, a
    language on every fence, one `#` H1 per file. Note `knowledge/` is **not** in
-   the `make lint-markdown` scope (only `README.md` + `.docc` are), so there's no
-   CI gate on these files — readability is on you. Aim for ~80-col prose; long
-   `jq`/URL lines are fine.
-6. **Update `knowledge/README.md`** only if you added a new file or category (the
+   the `make lint-markdown` scope (which covers `README.md`, `CLAUDE.md`,
+   `**/*.docc/**`, and `.claude/**`), so there's no CI gate on these files —
+   readability is on you. Aim for ~80-col prose; long `jq`/URL lines are fine.
+7. **Update `knowledge/README.md`** only if you added a new file or category (the
    per-entry index inside each file is enough otherwise).
 
 ## Return
