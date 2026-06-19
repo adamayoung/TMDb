@@ -379,16 +379,27 @@ entries** for recurring friction or deviations — the recurring-pattern scan be
 formalizes this. Commit the retro with the PR when possible (watch-only), or as a
 small follow-up when auto-merged.
 
+**Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
+more than **~12 full entries**, distil the oldest into its one-line archive table
+(`date · PR · weight · one-line outcome`) and drop the prose — per
+[`knowledge/README.md`](../../../knowledge/README.md) → *Maintenance & retention*.
+An old retro's lesson already lives in the skills and `skill-improvement-log.md`;
+the table preserves the telemetry without the bulk.
+
 ### Recurring-pattern scan (after committing the retro)
 
 Once the retro entry is committed, do a structured cross-delivery scan — this is
 what turns one-off retros into reviewed skill improvements:
 
-1. **Read the whole history.** Read all of
-   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md),
+1. **Read the recent window + the log.** Read the **~last 12** entries of
+   [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md) (the
+   rolling window — older deliveries are archived to one-liners, so this is the
+   whole live history anyway), **all** of
    [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md),
    and **every** `SKILL.md` under `.claude/skills/` (including the sub-skills those
-   skills reference).
+   skills reference). The bounded retro read keeps the scan's cost flat as history
+   grows: a recurrence worth acting on shows up in the recent window, and anything
+   already settled lives in the log.
 2. **Find what recurs.** For any friction, deviation, or improvement suggestion
    that appears in **more than one** retro entry, write a numbered proposal in
    this exact format:

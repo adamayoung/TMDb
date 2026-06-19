@@ -31,16 +31,21 @@ The base is a **cache of currently-true facts, not an archive** — git history 
 the archive. Keep it lean so a reader (or agent) finds the signal fast. The files
 age differently:
 
-- **Append-only logs** (`delivery-retros.md`, `skill-improvement-log.md`) grow one
-  entry per delivery/scan, so cap them with a **rolling window**:
-  - Keep roughly the **last ~12 entries** in full prose.
-  - Distil older ones into a compact one-line archive table
-    (`date · PR · weight · one-line outcome`) and drop the prose — the telemetry
-    (which skills fired, where deliveries stopped) survives; the bulk doesn't.
-  - A retro entry's job is to feed the Phase 6 recurring-pattern scan; once its
-    lesson is folded into a skill and recorded `applied` in
-    `skill-improvement-log.md`, the prose is spent. The scan need only read the
-    recent window plus the log — not the full history.
+- **Append-only logs** grow one entry per delivery/scan — but the two age
+  differently:
+  - **`delivery-retros.md`** — cap with a **rolling window**: keep roughly the
+    **last ~12 entries** in full prose, and distil older ones into a compact
+    one-line archive table (`date · PR · weight · one-line outcome`), dropping the
+    prose. The telemetry (which skills fired, where deliveries stopped) survives;
+    the bulk doesn't. A retro's job is to feed the Phase 6 recurring-pattern scan;
+    once its lesson is folded into a skill and recorded `applied` in
+    `skill-improvement-log.md`, the prose is spent — the scan reads only the recent
+    window plus the log, never the full history.
+  - **`skill-improvement-log.md`** is the scan's **dedup memory**, so it is *not*
+    windowed the same way: keep **every** `deferred`/`rejected` entry (their
+    "Reconsider when" is exactly what stops a settled *no* being re-proposed). Only
+    an old `applied` entry — whose fix already lives in the skill — may be condensed
+    to a one-liner. It grows slowly and each entry is load-bearing.
 - **Curated reference** (`gotchas.md`, `tmdb-api-notes.md`) should *plateau*, not
   grow forever. **Retire entries that are no longer true:** when an upstream bug is
   fixed, a pinned version is lifted, the code is removed, or a quirk no longer
