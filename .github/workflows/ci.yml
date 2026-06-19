@@ -46,7 +46,9 @@ jobs:
               - '.github/workflows/ci.yml'
             markdown:
               - 'README.md'
+              - 'CLAUDE.md'
               - '**/*.docc/**/*.md'
+              - '.claude/**/*.md'
               - '.github/workflows/ci.yml'
 
   lint:
@@ -117,7 +119,7 @@ jobs:
 
       - name: Lint Markdown
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
-        run: markdownlint "README.md" "**/*.docc/**/*.md"
+        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md"
 
   build-test:
     name: Build and Test
