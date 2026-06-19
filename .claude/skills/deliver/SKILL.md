@@ -327,10 +327,16 @@ Record the PR number/URL in the ledger.
 
 ## Phase 5 — Watch to ready  → GATE: ready-to-merge
 
-Invoke **`/watch-pr`** in **watch-only** mode (do not pass `merge`). It resolves
+Invoke **`/watch-pr`** in **watch-only** mode (do not pass `merge`), and **run it in
+the background** so the user can keep interacting while CI churns. It resolves
 review threads and fixes failing checks (its §1c routes a pre-existing/unrelated
 integration failure to `/fix-integration-failures`, per Contract §4), looping until
 the PR is **ready** (green checks, threads resolved) or **stuck**.
+
+**Ready means mergeable *now*.** Before the gate, `/watch-pr` brings the branch up
+to date with `main` (`gh pr update-branch`) and waits for the re-run, so a PR
+reported ready isn't `BEHIND` and waiting on a rebase — the user can merge straight
+away. (See `/watch-pr` §3.)
 
 **THE GATE — hard stop at ready-to-merge.** When the PR is ready, **stop and hand
 it to the user for the final merge** — `/deliver` does not merge by default. Report
