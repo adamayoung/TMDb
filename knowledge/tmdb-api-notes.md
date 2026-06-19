@@ -20,6 +20,23 @@ Newest at the top; cite the endpoint and the date observed.
   its response schema. Don't look for shared model definitions — read the
   endpoint's own schema.
 
+## TV seasons
+
+### `tv-season-details` returns top-level `networks` and `_id`
+
+*2026-06-19, `/3/tv/{series_id}/season/{season_number}`.*
+
+- The season-details response carries a **top-level `networks`** array (the
+  networks that aired the season — e.g. Game of Thrones S1 → HBO, id 49), mapped
+  onto `TVSeason.networks` as `[Network]?`. It arrives on the **base** endpoint —
+  no append-to-response option is needed.
+- The response also has a top-level **`_id`** string (TMDb's internal
+  Mongo-style document id). It is **intentionally unmapped**, consistent with how
+  other models ignore `_id`.
+- `TVSeason`'s decoder is reused by `TVSeasonDetailsResponse.init(from:)` (via
+  `try TVSeason(from: decoder)`), so `networks` also surfaces on the appended
+  details response for free.
+
 ## Decoding resilience
 
 ### Unknown enum-like string values should decode resiliently

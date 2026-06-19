@@ -37,6 +37,17 @@ struct TVSeasonTests {
         #expect(result.voteAverage == tvSeason.voteAverage)
         #expect(result.episodeCount == tvSeason.episodeCount)
         #expect(result.episodes == tvSeason.episodes)
+        #expect(result.networks == tvSeason.networks)
+        #expect(result.networks?.first?.id == 49)
+    }
+
+    @Test("JSON decoding of TVSeason without networks returns nil networks", .tags(.decoding))
+    func decodeWithoutNetworksReturnsNilNetworks() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeason.self, fromResource: "tv-season-empty-air-date"
+        )
+
+        #expect(result.networks == nil)
     }
 
     private let tvSeason = TVSeason(
@@ -50,7 +61,15 @@ struct TVSeasonTests {
         posterPath: URL(string: "/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg"),
         voteAverage: 8.3,
         episodeCount: 10,
-        episodes: nil
+        episodes: nil,
+        networks: [
+            Network(
+                id: 49,
+                name: "HBO",
+                logoPath: URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png"),
+                originCountry: "US"
+            )
+        ]
     )
 
 }

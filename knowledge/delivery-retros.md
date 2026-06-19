@@ -10,6 +10,33 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-19 — ✨ Add `networks` property to TVSeason (#349) · full
+
+- **Phases / skills:** phases 0–6; `review-plan, implement-plan, build-for-testing,
+  test, integration-test, lint, review-changes, capture-knowledge, pr, watch-pr`.
+- **Worked:** the work originated from a schema-diff scan (8 models vs the live
+  OpenAPI spec) that found exactly one field-level gap — a precise, pre-verified
+  target. `/review-plan`'s critics caught a real test trap *before* any code (the
+  `Network`-Equatable / over-populated-mock pitfall) and surfaced a free extra
+  assertion (networks surfacing through the shared `TVSeasonDetailsResponse`
+  decoder); both folded into the plan, so implementation hit zero surprises and
+  `/review-changes` came back 0/0/0 + one advisory Low.
+- **Friction:** local `make ci` went red on `lint-markdown` over an **unrelated,
+  pre-existing** `.claude/skills/deliver/SKILL.md:347` MD028 — a file not in the
+  diff. Root cause: the **local** `make lint-markdown` lints `.claude/**`, but the
+  **CI** job (`ci.yml:120`) lints only `README.md` + `**/*.docc/**` — so the local
+  gate can fail on `.claude/` markdown that the authoritative gate never checks.
+  Cost a triage detour to prove it was non-blocking.
+- **Deviations:** user changed `merge` → watch-only mid-run (honoured: stopped at
+  the gate). Did **not** route the markdown red to `/fix-integration-failures`
+  (that's for integration flakes); triaged it as local-gate-only and proceeded,
+  verifying the real legs (build-docs, build-release, unit, TVSeason integration)
+  passed individually.
+- **Improvement:** reconcile the **local `make lint-markdown` scope with CI's** —
+  either narrow the Makefile target to match `ci.yml` (`README.md` + docc), or add
+  `.claude/**` to the CI job so the two gates agree. Today a green CI can sit behind
+  a red local `make ci`, which repeatedly mis-signals "your change broke the gate."
+
 ## 2026-06-18 — ✨ AuthenticatedSession wrapper for AccountService (#346) · full
 
 - **Worked:** the full pipeline earned its keep on the only genuinely risky change

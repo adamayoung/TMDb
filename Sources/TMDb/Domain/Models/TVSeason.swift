@@ -60,6 +60,11 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let episodes: [TVEpisode]?
 
     ///
+    /// Networks that aired this TV season.
+    ///
+    public let networks: [Network]?
+
+    ///
     /// Creates a TV season object.
     ///
     /// - Parameters:
@@ -72,6 +77,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - voteAverage: Average vote score.
     ///    - episodeCount: Number of episodes in this TV season.
     ///    - episodes: Episodes in this TV season.
+    ///    - networks: Networks that aired this TV season.
     ///
     public init(
         id: Int,
@@ -82,7 +88,8 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         posterPath: URL? = nil,
         voteAverage: Double? = nil,
         episodeCount: Int? = nil,
-        episodes: [TVEpisode]? = nil
+        episodes: [TVEpisode]? = nil,
+        networks: [Network]? = nil
     ) {
         self.id = id
         self.name = name
@@ -93,6 +100,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.voteAverage = voteAverage
         self.episodeCount = episodeCount
         self.episodes = episodes
+        self.networks = networks
     }
 
 }
@@ -109,6 +117,7 @@ extension TVSeason {
         case voteAverage
         case episodeCount
         case episodes
+        case networks
     }
 
     /// Creates a new instance by decoding from the given decoder.
@@ -147,6 +156,7 @@ extension TVSeason {
             Int.self, forKey: .episodeCount
         )
         self.episodes = try container.decodeIfPresent([TVEpisode].self, forKey: .episodes)
+        self.networks = try container.decodeIfPresent([Network].self, forKey: .networks)
     }
 
 }

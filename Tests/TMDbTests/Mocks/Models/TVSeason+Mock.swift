@@ -19,7 +19,8 @@ extension TVSeason {
         posterPath: URL? = nil,
         voteAverage: Double? = nil,
         episodeCount: Int? = 10,
-        episodes: [TVEpisode]? = .mocks
+        episodes: [TVEpisode]? = .mocks,
+        networks: [Network]? = nil
     ) -> TVSeason {
         TVSeason(
             id: id,
@@ -30,7 +31,8 @@ extension TVSeason {
             posterPath: posterPath,
             voteAverage: voteAverage,
             episodeCount: episodeCount,
-            episodes: episodes
+            episodes: episodes,
+            networks: networks
         )
     }
 
