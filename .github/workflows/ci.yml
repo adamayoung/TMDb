@@ -46,7 +46,9 @@ jobs:
               - '.github/workflows/ci.yml'
             markdown:
               - 'README.md'
+              - 'CLAUDE.md'
               - '**/*.docc/**/*.md'
+              - '.claude/**/*.md'
               - '.github/workflows/ci.yml'
 
   lint:
@@ -105,7 +107,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     container:
-      image: docker://ghcr.io/igorshubovych/markdownlint-cli:v0.41.0
+      image: docker://ghcr.io/igorshubovych/markdownlint-cli:v0.48.0
     steps:
       - name: No changes detected
         if: needs.changes.outputs.markdown != 'true' && github.event_name != 'workflow_dispatch'
@@ -117,7 +119,7 @@ jobs:
 
       - name: Lint Markdown
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
-        run: markdownlint "README.md" "**/*.docc/**/*.md"
+        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md"
 
   build-test:
     name: Build and Test

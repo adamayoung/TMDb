@@ -344,7 +344,7 @@ summarise what's blocking.
 > the run and report what's blocking. The ready-to-merge gate itself is **not** a
 > panel decision: in `auto` it behaves exactly as the `merge` opt-in below — once
 > the PR is ready, proceed to Phase 6 (and merge if `merge` was passed).
-
+>
 > **Opt-in auto-merge:** if the user explicitly passes `merge` to `/deliver`,
 > forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready, and
 > the gate becomes "report the merge" instead of stopping. Default is watch-only.
