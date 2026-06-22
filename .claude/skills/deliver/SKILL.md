@@ -13,14 +13,18 @@ keeps going across the long session until the PR is ready.
 
 ```text
 you approve the plan ─▶ /deliver ─▶ worktree ─▶ [review-plan] ─▶ implement ─▶
-  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro ─▶ teardown
-                                                                   ▲ the only hard stop          ▲ on merge
+  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
+                                                                   ▲ the only hard stop
+  … then, when the PR actually merges (maybe a later session): teardown (Phase 7)
 ```
 
-Every `/deliver` runs in its **own git worktree** (Phase 0.5), so your main
-checkout stays free — you can keep working (or run a second `/deliver`) on another
-branch concurrently without fighting over the working tree or `.build`. The
-worktree and its `.build` are **torn down on merge** (Phase 6 teardown).
+Every `/deliver` runs in its **own git worktree** (Phase 0.5), so your **main
+checkout on disk stays free** — a second Claude session, Xcode, or a manual build
+can use it while this delivery runs (and you can launch a second `/deliver` in
+another session), with no fighting over the working tree or `.build`. (This very
+session is busy delivering; what's freed is the checkout, for *other* tools and
+sessions.) The worktree and its `.build` are **torn down on merge** (Phase 7
+teardown).
 
 **Invoking `/deliver` on an approved plan is itself the plan-approval gate.** From
 there it runs **autonomously** to a single hard stop — **ready-to-merge** — pausing
@@ -50,7 +54,7 @@ These are non-negotiable. Do them by default, without being reminded.
    dedicated git worktree (a new branch off `origin/main`) **before** `/review-plan`
    or any file edit, and all work happens there — so the user's main checkout is
    never touched and stays free for concurrent work. `CLAUDE.md` forbids editing
-   `main`; the worktree guarantees it. On merge, tear the worktree down (Phase 6).
+   `main`; the worktree guarantees it. On merge, tear the worktree down (Phase 7).
 4. **A red gate triages before it stops.** If `make ci` or a check fails, first
    classify **in-diff vs pre-existing** (Phase 4). A failure your diff caused → fix
    test-first and re-run; only **stop** if it can't converge in the cap. A
@@ -188,35 +192,64 @@ user's main checkout (`CLAUDE.md` forbids editing `main`; Contract §3). **Every
 `/deliver` runs in its own git worktree** so the user's checkout stays free for
 concurrent work.
 
+**First, GC any stale worktree from a prior delivery** (this run is the garbage
+collector for the *previous* one's deferred merge — Phase 7 only fires on an
+in-session merge, and the common path is "merged later, elsewhere"). Sweep the
+worktree dirs and reclaim any whose PR has since merged:
+
+```bash
+for wt in .claude/worktrees/*/; do
+  br=$(git -C "$wt" rev-parse --abbrev-ref HEAD 2>/dev/null) || continue
+  state=$(gh pr view "$br" --json state --jq .state 2>/dev/null)
+  if [ "$state" = "MERGED" ]; then
+    git worktree remove --force "$wt" && git branch -D "$br" 2>/dev/null
+  fi
+done
+```
+
+This keeps `.claude/worktrees/` (each carrying a multi-GB `.build`) from
+accumulating across deliveries the user merged in the GitHub UI or a later session.
+
 **Enter the worktree** with the harness's `EnterWorktree` tool, naming it from the
 plan with a conventional prefix — `feature/<slug>` for new work, `fix/<slug>` for a
 bug fix, etc.:
 
 - `EnterWorktree(name: "feature/<slug>")` creates `.claude/worktrees/feature/<slug>/`
-  on a **new branch off `origin/main`** (the default `fresh` base) and switches the
-  session into it. This is the sanctioned auto-use of `EnterWorktree` for `/deliver`
-  (Contract §3 + memory) — do it without asking.
+  and switches the session into it. By default (`worktree.baseRef: fresh`) the branch
+  is cut from **`origin/main`**; if the user has set `worktree.baseRef: head`, it's
+  cut from local HEAD instead — so don't assume `origin/main` unconditionally. This
+  is the sanctioned auto-use of `EnterWorktree` for `/deliver` (Contract §3 +
+  memory) — do it without asking. **Note the `fresh` consequence:** the worktree is
+  cut from `origin/main`, so any **uncommitted or local-only** state (including the
+  on-disk plan file, if it isn't committed) is **absent** — which is why Phase 0
+  reads the plan's content into the conversation first.
 - **Already in a worktree?** (e.g. the user entered one manually.) Don't nest — use
   the current worktree and just create the branch in it (`git checkout -b
   feature/<slug>`). `EnterWorktree` refuses to nest anyway.
 
-**Propagate local credentials into the worktree.** `.claude/settings.local.json` is
-**gitignored**, so a fresh worktree won't have it — and it holds the
-`TMDB_API_KEY` / `TMDB_USERNAME` / `TMDB_PASSWORD` that `make integration-test` /
-`make ci` need (and the permission allowlist). Copy it from the main checkout
-immediately after entering:
+**Restore the local permission allowlist in the worktree.** Credentials are **not**
+the concern — `TMDB_API_KEY` / `USERNAME` / `PASSWORD` are injected into the
+session's **process environment** at startup (CWD-independent), and `make ci` /
+`make integration-test` read them straight from the environment, so a subshell in
+the worktree inherits them regardless. What a fresh worktree lacks is the
+**gitignored `.claude/settings.local.json`**, which also holds the **permission
+allowlist** — and whether the harness re-reads it from the new CWD is unverified, so
+without it an autonomous run could stall on permission prompts. Copy it in as cheap
+insurance:
 
 ```bash
-# CWD is now the worktree root; --git-common-dir resolves the main checkout.
-cp "$(dirname "$(git rev-parse --git-common-dir)")/.claude/settings.local.json" \
-   .claude/settings.local.json 2>/dev/null || true
+# CWD is the worktree; the main checkout is the first entry of `git worktree list`.
+main_root=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
+mkdir -p .claude
+cp "$main_root/.claude/settings.local.json" .claude/settings.local.json 2>/dev/null || true
 ```
 
-It stays gitignored in the worktree, so it won't be committed. If the integration
-leg later fails with missing credentials, this copy is the first thing to check.
+It stays gitignored in the worktree, so it won't be committed. If `make ci`'s
+integration leg fails on **credentials**, the cause is the *env* not being inherited
+by whatever spawned the subshell — **not** this file; check the environment first.
 
 Record the worktree path and branch name in the ledger. The branch is what the PR
-and all later phases (`git diff main...HEAD`, `/pr`, `/watch-pr`) operate on.
+and all later phases (`git diff origin/main...HEAD`, `/pr`, `/watch-pr`) operate on.
 
 **Invoked from plan mode?** If you reach `/deliver` while in plan mode with an
 approved plan, that approval *is* Gate-1: exit plan mode (the plan file is your
@@ -256,7 +289,7 @@ the lint/format PostToolUse hook to reshape files after writes.
 It also **commits at logical checkpoints** as it goes — each commit a coherent,
 green, lint-clean increment (`/implement-plan`'s *Commit at logical points*). This
 matters for the pipeline: Phase 3 reviews **committed** history (`git diff
-main...HEAD`), so committing as you implement means the review sees the real
+origin/main...HEAD`), so committing as you implement means the review sees the real
 change rather than an empty diff.
 
 Do not advance until `/implement-plan` reports an empty test list with `/test`
@@ -266,7 +299,7 @@ delivery weight from the actual diff now (a "lite" plan that ballooned is `full`
 ## Phase 3 — Code review + fix loop
 
 **Skip this phase entirely if the change has no Swift source.** `/review-changes`
-self-gates (it returns immediately when `git diff main...HEAD` touches no
+self-gates (it returns immediately when `git diff origin/main...HEAD` touches no
 `*.swift`), so a docs-only / config-only delivery sails straight to Phase 3.5
 with no review. Code review is for Swift.
 
@@ -301,7 +334,7 @@ reconcile) for a large/multi-unit one. Then converge:
    `canon-tdd` — failing test that captures the defect, then the fix — then re-run
    `/test` (+ `/integration-test` if behaviour changed) and **commit the fix**.
    The commit is required: `/review-changes` diffs **committed** history
-   (`main...HEAD`), so an uncommitted fix would re-review as still-broken and never
+   (`origin/main...HEAD`), so an uncommitted fix would re-review as still-broken and never
    converge.
 3. **Re-invoke `/review-changes`** on the updated (committed) diff. Repeat until no
    Critical/High findings remain.
@@ -348,7 +381,7 @@ then push the branch and open the PR with a gitmoji title and structured body.
 **If `make ci` fails, triage before you stop** (Contract §4):
 
 1. **Which check, and is it in your diff?** Read the failure. Compare the failing
-   test/file against `git diff --name-only main...HEAD`.
+   test/file against `git diff --name-only origin/main...HEAD`.
 2. **In-diff genuine failure** → it's yours: fix it (test-first), commit, re-run
    `make ci`. Only **stop and report** if it can't converge.
    - **Auto:** when it can't converge, convene the panel. **Proceed** → open the
@@ -416,8 +449,19 @@ Reflect on *this* delivery and write a dated entry to
 
 Keep it to a handful of bullets — a log, not a ceremony. Then **scan recent
 entries** for recurring friction or deviations — the recurring-pattern scan below
-formalizes this. Commit the retro with the PR when possible (watch-only), or as a
-small follow-up when auto-merged.
+formalizes this.
+
+**Commit *and push* the retro before teardown — never leave it as a worktree-only
+commit.** Phase 7's teardown discards the worktree, so an unpushed retro commit is
+lost. Two cases:
+
+- **Watch-only (PR still open)** — commit the retro on the PR branch and **push it**
+  (`git push`), so it rides the open PR. (This is the common path.)
+- **`merge`/auto mode (branch already merged + deleted in Phase 5)** — the PR branch
+  is gone, so commit the retro on a **fresh branch off `origin/main`** and open a
+  small follow-up PR (or push straight if policy allows); the same applies to any
+  skill edits the auto recurring-pattern scan commits. Do this **before** Phase 7,
+  and confirm it's pushed — otherwise teardown's `discard_changes` drops it.
 
 **Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
 more than **~12 full entries**, distil the oldest into its one-line archive table
@@ -487,13 +531,33 @@ worktree down once the PR is merged** — this reclaims both the worktree **and*
 - **Watch-only (default)** — the worktree **stays** at the gate (Phase 5). When the
   merge happens *within this session* (the user says "merge" and you do it, or a
   later turn confirms the PR is `MERGED`), tear down **then**. If the session ends
-  with the PR still open, **leave the worktree** — the harness prompts keep/remove
-  at session exit, and the work must survive until it's merged.
+  with the PR still open, **leave the worktree** — the work must survive until it's
+  merged. Interactive sessions get a harness keep/remove prompt at exit; **headless /
+  `auto` runs have no one to answer it**, so a merged-later worktree is reclaimed not
+  here but by the **Phase 0.5 GC sweep at the start of the *next* delivery** (it
+  removes any worktree whose PR has since merged). That sweep is the backstop that
+  keeps unattended runs from leaking disk.
 - **Stuck / blocked / abandoned** — **never** tear down. Keep the worktree so the
   work can be resumed.
 
-**How to tear down** — only after confirming the PR is actually merged
-(`gh pr view <n> --json state --jq .state` → `MERGED`):
+**How to tear down** — two preconditions, both required:
+
+1. **The PR is actually merged** — `gh pr view <n> --json state --jq .state` → `MERGED`.
+2. **The worktree has no unsaved work beyond what's merged** — `MERGED` only
+   guarantees the *pushed* feature commits are on `main`; it says nothing about a
+   commit made (or a file edited) **after** the last push, e.g. the retro. Verify
+   the tree is clean **and** fully pushed before discarding:
+
+   ```bash
+   git status --porcelain                                  # must be empty (no uncommitted work)
+   test "$(git rev-parse HEAD)" = "$(git rev-parse @{u})"  # HEAD must equal its pushed upstream
+   ```
+
+   If either check fails, there is worktree-only work not yet on `main` — **stop**,
+   land it (push it / move it to a follow-up off `origin/main`, per Phase 6), and
+   only then tear down. Do **not** discard it.
+
+Then:
 
 ```text
 ExitWorktree(action: "remove", discard_changes: true)
@@ -501,15 +565,19 @@ ExitWorktree(action: "remove", discard_changes: true)
 
 - `remove` deletes the worktree directory (which **is** its `.build` — the multi-GB
   reclaim) and the local branch, then returns the session to the main checkout.
-- `discard_changes: true` is required here: a **squash**-merge lands the work as a
-  *new* commit on `main`, so the worktree branch's own commits aren't literally on
-  `main` and `ExitWorktree` would otherwise refuse. Discarding them is safe **only
-  because** you confirmed `MERGED` — the change is preserved on `main`. Never pass
-  it before confirming the merge.
+- `discard_changes: true` is needed only because a **squash**-merge lands the work
+  as a *new* commit on `main`, so the branch's pushed-and-merged commits aren't
+  *literally* on `main` and `ExitWorktree` would otherwise refuse. It is safe
+  **only because** precondition 2 proved there's nothing un-merged left to lose —
+  not merely because the PR is `MERGED`. Never pass it on an unverified tree.
 
-After teardown, optionally fast-forward the user's main checkout so it reflects the
-merge (`git fetch origin && git merge --ff-only origin/main`). Report the reclaimed
-worktree in the final summary.
+After teardown, the session is back in the main checkout — **leave it as you found
+it**. Do *not* auto-`merge --ff-only` it: the user may be actively working there
+(the whole point of the worktree) with uncommitted or diverged state, and the FF
+would fail noisily or fight their work. Only if it is **clean and on `main`**
+(`git status --porcelain` empty) may you fast-forward it (`git fetch origin &&
+git merge --ff-only origin/main`); otherwise just note "main checkout left as-is
+(N commits behind)". Report the reclaimed worktree in the final summary.
 
 ## When the pipeline stops
 
