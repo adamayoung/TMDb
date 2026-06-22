@@ -12,10 +12,15 @@ the existing skills and the `code-reviewer` agent, adds the safety gates, and
 keeps going across the long session until the PR is ready.
 
 ```text
-you approve the plan ─▶ /deliver ─▶ branch ─▶ [review-plan] ─▶ implement ─▶
-  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
-                                                                   ▲ the only hard stop
+you approve the plan ─▶ /deliver ─▶ worktree ─▶ [review-plan] ─▶ implement ─▶
+  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro ─▶ teardown
+                                                                   ▲ the only hard stop          ▲ on merge
 ```
+
+Every `/deliver` runs in its **own git worktree** (Phase 0.5), so your main
+checkout stays free — you can keep working (or run a second `/deliver`) on another
+branch concurrently without fighting over the working tree or `.build`. The
+worktree and its `.build` are **torn down on merge** (Phase 6 teardown).
 
 **Invoking `/deliver` on an approved plan is itself the plan-approval gate.** From
 there it runs **autonomously** to a single hard stop — **ready-to-merge** — pausing
@@ -41,8 +46,11 @@ These are non-negotiable. Do them by default, without being reminded.
    `/pr`, `/watch-pr`, and `/fix-integration-failures` (`/review-changes` is what
    spawns the `code-reviewer` agent or the review Workflow). This skill only
    sequences and gates; the expertise lives in those pieces.
-3. **Never work on `main`.** Branch first — before `/review-plan` or any file edit
-   (see *Phase 0.5*). `CLAUDE.md` forbids editing `main`.
+3. **Never work on `main` — always in a fresh worktree.** Phase 0.5 enters a
+   dedicated git worktree (a new branch off `origin/main`) **before** `/review-plan`
+   or any file edit, and all work happens there — so the user's main checkout is
+   never touched and stays free for concurrent work. `CLAUDE.md` forbids editing
+   `main`; the worktree guarantees it. On merge, tear the worktree down (Phase 6).
 4. **A red gate triages before it stops.** If `make ci` or a check fails, first
    classify **in-diff vs pre-existing** (Phase 4). A failure your diff caused → fix
    test-first and re-run; only **stop** if it can't converge in the cap. A
@@ -136,6 +144,13 @@ it never bloats or biases the main window:
 - **The gate stays in the main agent.** Subagents are non-interactive; the
   ready-to-merge gate is handed to the user, so the conductor — not a subagent —
   owns it. Phases hand off via **git / disk / the PR**, not via context.
+- **The work happens in a worktree, the session stays put.** The conductor
+  `EnterWorktree`s in Phase 0.5 so the delivery's branch and its multi-GB `.build`
+  live in `.claude/worktrees/<branch>/`, isolated from the user's main checkout.
+  This is what lets a second `/deliver` (or hand work) run concurrently — separate
+  worktrees get separate `.build` directories automatically (the scratch path is
+  CWD-relative), so their builds don't collide. No `SCRATCH_PATH` override is needed
+  for this; that flag is only for *multiple agents sharing one* working directory.
 
 ## Phase 0 — Preconditions
 
@@ -159,33 +174,55 @@ it never bloats or biases the main window:
   block the pipeline on it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
+- **Read the plan's content into context now — before the worktree.** Phase 0.5's
+  `EnterWorktree` switches the working directory and **clears the CWD-scoped plans
+  cache**, so the active plan reference can be lost after the switch. Locate and
+  **read the plan file fully here** (its content travels with the conversation),
+  so Phase 1+ can work from it inside the worktree without re-finding it.
 
-## Phase 0.5 — Ensure a feature branch (before any edit)
+## Phase 0.5 — Enter an isolated worktree (before any edit)
 
 Do this **before** Phase 1 — `/review-plan` applies its consensus by editing the
-plan, and if the plan is a **tracked file** that edit must not land on `main`
-(`CLAUDE.md` forbids editing `main`; Contract §3). Branch first, then nothing
-downstream can touch `main`.
+plan, and all of implementation happens next; none of it may touch `main` or the
+user's main checkout (`CLAUDE.md` forbids editing `main`; Contract §3). **Every
+`/deliver` runs in its own git worktree** so the user's checkout stays free for
+concurrent work.
+
+**Enter the worktree** with the harness's `EnterWorktree` tool, naming it from the
+plan with a conventional prefix — `feature/<slug>` for new work, `fix/<slug>` for a
+bug fix, etc.:
+
+- `EnterWorktree(name: "feature/<slug>")` creates `.claude/worktrees/feature/<slug>/`
+  on a **new branch off `origin/main`** (the default `fresh` base) and switches the
+  session into it. This is the sanctioned auto-use of `EnterWorktree` for `/deliver`
+  (Contract §3 + memory) — do it without asking.
+- **Already in a worktree?** (e.g. the user entered one manually.) Don't nest — use
+  the current worktree and just create the branch in it (`git checkout -b
+  feature/<slug>`). `EnterWorktree` refuses to nest anyway.
+
+**Propagate local credentials into the worktree.** `.claude/settings.local.json` is
+**gitignored**, so a fresh worktree won't have it — and it holds the
+`TMDB_API_KEY` / `TMDB_USERNAME` / `TMDB_PASSWORD` that `make integration-test` /
+`make ci` need (and the permission allowlist). Copy it from the main checkout
+immediately after entering:
 
 ```bash
-git branch --show-current
+# CWD is now the worktree root; --git-common-dir resolves the main checkout.
+cp "$(dirname "$(git rev-parse --git-common-dir)")/.claude/settings.local.json" \
+   .claude/settings.local.json 2>/dev/null || true
 ```
 
-If on `main` (or any protected base), create a branch off `main` with a
-conventional prefix derived from the plan — `feature/<slug>` for new work,
-`fix/<slug>` for a bug fix, etc.:
+It stays gitignored in the worktree, so it won't be committed. If the integration
+leg later fails with missing credentials, this copy is the first thing to check.
 
-```bash
-git checkout -b feature/<slug>
-```
-
-Record the branch name in the ledger. If already on a suitable feature branch,
-keep it.
+Record the worktree path and branch name in the ledger. The branch is what the PR
+and all later phases (`git diff main...HEAD`, `/pr`, `/watch-pr`) operate on.
 
 **Invoked from plan mode?** If you reach `/deliver` while in plan mode with an
 approved plan, that approval *is* Gate-1: exit plan mode (the plan file is your
-input), branch, and proceed — there's no separate `ExitPlanMode`-then-approve
-dance, and no second "is the plan ok?" prompt.
+input — already read into context in Phase 0), enter the worktree, and proceed —
+there's no separate `ExitPlanMode`-then-approve dance, and no second "is the plan
+ok?" prompt.
 
 ## Phase 1 — Harden the plan (no separate approval stop)
 
@@ -340,9 +377,11 @@ away. (See `/watch-pr` §3.)
 
 **THE GATE — hard stop at ready-to-merge.** When the PR is ready, **stop and hand
 it to the user for the final merge** — `/deliver` does not merge by default. Report
-the PR URL and its ready state, then run Phase 6. If `/watch-pr` reports the PR is
-**stuck** (a check it can't fix, or a human-decision review thread), stop and
-summarise what's blocking.
+the PR URL and its ready state, then run Phase 6. The **worktree stays in place**
+at the gate (the PR branch lives there); it's torn down only on merge (Phase 7). If
+`/watch-pr` reports the PR is **stuck** (a check it can't fix, or a human-decision
+review thread), stop and summarise what's blocking — **keep the worktree** so the
+work can be resumed.
 
 > **Auto:** on a stuck PR, convene the panel to decide **wait-and-retry vs stop**.
 > **Proceed** (majority to keep trying) → schedule a later re-check with
@@ -354,6 +393,7 @@ summarise what's blocking.
 > **Opt-in auto-merge:** if the user explicitly passes `merge` to `/deliver`,
 > forward it to `/watch-pr` (`/watch-pr merge`) so it squash-merges once ready, and
 > the gate becomes "report the merge" instead of stopping. Default is watch-only.
+> Either way, a confirmed merge triggers **Phase 7 teardown**.
 
 ## Phase 6 — Retrospective (continuous improvement)
 
@@ -432,6 +472,44 @@ what turns one-off retros into reviewed skill improvements:
    (status) and **Reconsider when** fields are exactly what step 2's dedup keys on,
    so keep them on every entry; this is what stops the scan re-proposing a settled
    call next time.
+
+## Phase 7 — Teardown on merge (reclaim the worktree)
+
+A delivery's worktree carries a full `.build` (here **~3 GB** after the CI gate, on
+top of the source). Leaving one per delivery accumulates fast, so **tear the
+worktree down once the PR is merged** — this reclaims both the worktree **and** its
+`.build` in one step.
+
+**The trigger is the merge, and only the merge:**
+
+- **`merge` mode** — `/watch-pr merge` squash-merged the PR. Tear down immediately
+  after.
+- **Watch-only (default)** — the worktree **stays** at the gate (Phase 5). When the
+  merge happens *within this session* (the user says "merge" and you do it, or a
+  later turn confirms the PR is `MERGED`), tear down **then**. If the session ends
+  with the PR still open, **leave the worktree** — the harness prompts keep/remove
+  at session exit, and the work must survive until it's merged.
+- **Stuck / blocked / abandoned** — **never** tear down. Keep the worktree so the
+  work can be resumed.
+
+**How to tear down** — only after confirming the PR is actually merged
+(`gh pr view <n> --json state --jq .state` → `MERGED`):
+
+```text
+ExitWorktree(action: "remove", discard_changes: true)
+```
+
+- `remove` deletes the worktree directory (which **is** its `.build` — the multi-GB
+  reclaim) and the local branch, then returns the session to the main checkout.
+- `discard_changes: true` is required here: a **squash**-merge lands the work as a
+  *new* commit on `main`, so the worktree branch's own commits aren't literally on
+  `main` and `ExitWorktree` would otherwise refuse. Discarding them is safe **only
+  because** you confirmed `MERGED` — the change is preserved on `main`. Never pass
+  it before confirming the merge.
+
+After teardown, optionally fast-forward the user's main checkout so it reflects the
+merge (`git fetch origin && git merge --ff-only origin/main`). Report the reclaimed
+worktree in the final summary.
 
 ## When the pipeline stops
 
