@@ -99,6 +99,7 @@
             [
                 search,
                 movieDetails,
+                movieCredits,
                 tvSeriesDetails,
                 personFilmography,
                 trending,
@@ -119,6 +120,14 @@
         ///
         public var movieDetails: any Tool {
             MovieDetailsTool(movieService: movieService, language: language)
+        }
+
+        ///
+        /// A tool that fetches the principal cast and crew for a movie by its TMDb
+        /// id.
+        ///
+        public var movieCredits: any Tool {
+            MovieCreditsTool(movieService: movieService, language: language)
         }
 
         ///

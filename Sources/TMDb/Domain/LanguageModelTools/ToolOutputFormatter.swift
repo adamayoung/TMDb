@@ -347,7 +347,7 @@ extension ToolOutputFormatter {
 
     /// Replaces the field delimiter and newlines so they cannot corrupt a line's
     /// `kind | id | …` structure, and collapses runs of whitespace.
-    private static func sanitize(_ text: String) -> String {
+    static func sanitize(_ text: String) -> String {
         let replaced = text
             .replacingOccurrences(of: "|", with: "/")
             .replacingOccurrences(of: "\n", with: " ")

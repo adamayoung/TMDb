@@ -17,9 +17,9 @@
         private let client = TMDbClient(apiKey: "test-api-key")
 
         @available(macOS 26, *)
-        @Test("languageModelTools exposes the seven tools")
+        @Test("languageModelTools exposes the eight tools")
         func languageModelToolsCount() {
-            #expect(client.languageModelTools.count == 7)
+            #expect(client.languageModelTools.count == 8)
         }
 
         @available(macOS 26, *)
@@ -27,6 +27,7 @@
         func individualToolProperties() {
             #expect(client.searchTool.name == "search")
             #expect(client.movieDetailsTool.name == "movieDetails")
+            #expect(client.movieCreditsTool.name == "movieCredits")
             #expect(client.tvSeriesDetailsTool.name == "tvSeriesDetails")
             #expect(client.personFilmographyTool.name == "personFilmography")
             #expect(client.trendingTool.name == "trending")

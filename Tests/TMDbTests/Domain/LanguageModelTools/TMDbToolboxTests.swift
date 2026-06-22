@@ -31,9 +31,9 @@
         }
 
         @available(macOS 26, *)
-        @Test("all exposes the seven tools")
-        func allHasSevenTools() {
-            #expect(makeToolbox().all.count == 7)
+        @Test("all exposes the eight tools")
+        func allHasEightTools() {
+            #expect(makeToolbox().all.count == 8)
         }
 
         @available(macOS 26, *)
@@ -43,6 +43,7 @@
             #expect(
                 names == [
                     "discoverMovies",
+                    "movieCredits",
                     "movieDetails",
                     "personFilmography",
                     "search",
@@ -76,6 +77,7 @@
             let toolbox = makeToolbox()
             #expect(toolbox.search.name == "search")
             #expect(toolbox.movieDetails.name == "movieDetails")
+            #expect(toolbox.movieCredits.name == "movieCredits")
             #expect(toolbox.tvSeriesDetails.name == "tvSeriesDetails")
             #expect(toolbox.personFilmography.name == "personFilmography")
             #expect(toolbox.trending.name == "trending")
