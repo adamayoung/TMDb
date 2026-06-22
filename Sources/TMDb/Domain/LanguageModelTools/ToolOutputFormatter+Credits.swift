@@ -74,7 +74,7 @@ extension ToolOutputFormatter {
             return ["no crew listed"]
         }
 
-        return limited.map { "crew | \($0.id) | \(sanitize($0.name)) — \($0.job)" }
+        return limited.map { "crew | \($0.id) | \(sanitize($0.name)) — \(sanitize($0.job))" }
     }
 
     private static func jobPriority(_ job: String) -> Int {

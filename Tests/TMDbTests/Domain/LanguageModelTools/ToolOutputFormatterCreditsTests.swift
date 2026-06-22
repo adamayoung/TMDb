@@ -140,4 +140,21 @@ struct ToolOutputFormatterCreditsTests {
         #expect(block.contains("cast | 5 | A / B as Hero Villain"))
     }
 
+    @Test("credits sanitizes pipe characters in a crew name so they cannot corrupt a line")
+    func creditsSanitizesCrewName() throws {
+        let credits = ShowCredits.mock(
+            id: 1,
+            cast: [],
+            crew: [.mock(id: 9, name: "Nolan | Jr", job: "Director")]
+        )
+
+        let crewLine = try #require(
+            ToolOutputFormatter.block(for: credits)
+                .components(separatedBy: "\n")
+                .first { $0.hasPrefix("crew |") }
+        )
+
+        #expect(crewLine == "crew | 9 | Nolan / Jr — Director")
+    }
+
 }
