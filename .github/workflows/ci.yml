@@ -30,7 +30,7 @@ jobs:
       markdown: ${{ steps.filter.outputs.markdown }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Detect file changes
         id: filter
@@ -73,7 +73,7 @@ jobs:
 
       - name: Checkout
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install SwiftLint and SwiftFormat
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
@@ -115,7 +115,7 @@ jobs:
 
       - name: Checkout
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Lint Markdown
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
@@ -139,7 +139,7 @@ jobs:
 
       - name: Checkout
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache Swift packages
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
@@ -212,7 +212,7 @@ jobs:
 
       - name: Checkout
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
