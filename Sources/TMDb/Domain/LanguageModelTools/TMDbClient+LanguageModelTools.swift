@@ -52,6 +52,14 @@
         }
 
         ///
+        /// A FoundationModels tool that fetches the principal cast and crew for a
+        /// movie by its TMDb id.
+        ///
+        var movieCreditsTool: any Tool {
+            TMDbToolbox(client: self).movieCredits
+        }
+
+        ///
         /// A FoundationModels tool that fetches full details for a TV series by its
         /// TMDb id.
         ///

@@ -14,6 +14,7 @@
 
 - ``search``
 - ``movieDetails``
+- ``movieCredits``
 - ``tvSeriesDetails``
 - ``personFilmography``
 - ``trending``

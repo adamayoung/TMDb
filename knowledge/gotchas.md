@@ -6,6 +6,24 @@ out of it.
 
 ## Tooling
 
+### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
+
+*2026-06-22.* Adding a new `block(for:)` formatter plus its helpers to
+`ToolOutputFormatter.swift` (and the matching cases to `ToolOutputFormatterTests.swift`)
+tipped both over swiftlint limits: **`file_length` is 400 lines**, and
+**`type_body_length` is 250** (excluding comments/whitespace). The fix is the
+pattern the codebase already uses for large types — move the new code into a
+dedicated `Type+Feature.swift` extension file (e.g. `ToolOutputFormatter+Credits.swift`)
+and put new tests in a **separate `@Suite struct`** file.
+
+- **Gotcha when splitting an extension across files:** `private` members are
+  visible only within the **same file's** extensions. A helper shared by the new
+  file (here `sanitize(_:)`) must be promoted from `private static` to internal
+  `static` — `fileprivate` won't reach across files either. `internal` carries no
+  `///`-doc requirement (only `public` does), so promoting it is cheap.
+- Worth checking the line count before piling onto any already-large
+  formatter/aggregator file.
+
 ### SourceKit live diagnostics lag newly-created files — trust the build
 
 *2026-06-18.* After `Write`ing a **new** `.swift` file and referencing its
