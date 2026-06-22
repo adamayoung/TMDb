@@ -50,6 +50,17 @@
         }
 
         @available(macOS 26, *)
+        @Test("movie credits returns an id-bearing credits block for a known movie")
+        func movieCredits() async throws {
+            let tool = MovieCreditsTool(movieService: client.movies)
+            let output = try await tool.call(arguments: .init(movieID: fightClubID))
+
+            #expect(output.hasPrefix("credits | \(fightClubID)"))
+            #expect(output.contains("cast | "))
+            #expect(output.localizedCaseInsensitiveContains("Brad Pitt"))
+        }
+
+        @available(macOS 26, *)
         @Test("tv series details returns a block for a known series")
         func tvSeriesDetails() async throws {
             let tool = TVSeriesDetailsTool(tvSeriesService: client.tvSeries)
