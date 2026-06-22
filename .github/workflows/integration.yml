@@ -75,7 +75,10 @@ jobs:
           needs.changes.outputs.swift == 'true'
           || github.event_name == 'workflow_dispatch'
           || github.event_name == 'schedule'
-        run: brew install xcsift
+        run: |
+          # Drop runner-preinstalled taps Homebrew's trust policy warns about.
+          brew untap aws/tap azure/bicep 2>/dev/null || true
+          brew install xcsift
 
       - name: Build
         if: >-
