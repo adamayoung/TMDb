@@ -16,7 +16,8 @@ public extension CompanyImageCollection {
             id: 1,
             logos: [
                 ImageMetadata(
-                    filePath: URL(fileURLWithPath: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+                    filePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+                        ?? URL(fileURLWithPath: "/"),
                     width: 1000,
                     height: 1000,
                     aspectRatio: 1.0,
