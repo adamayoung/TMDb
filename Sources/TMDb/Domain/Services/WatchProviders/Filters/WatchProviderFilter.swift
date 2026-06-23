@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for fetching watch providers.
 ///
-public struct WatchProviderFilter {
+public struct WatchProviderFilter: Sendable {
 
     ///
     /// ISO-3166-1 country code to filter results for.
