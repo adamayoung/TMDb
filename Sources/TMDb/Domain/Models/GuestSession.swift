@@ -27,6 +27,20 @@ public struct GuestSession: Codable, Equatable, Hashable, Sendable {
     ///
     public let expiresAt: Date
 
+    ///
+    /// Creates a guest session object.
+    ///
+    /// - Parameters:
+    ///    - success: Was session creation successful.
+    ///    - guestSessionID: The identifier of this session.
+    ///    - expiresAt: Date of session expiry.
+    ///
+    public init(success: Bool, guestSessionID: String, expiresAt: Date) {
+        self.success = success
+        self.guestSessionID = guestSessionID
+        self.expiresAt = expiresAt
+    }
+
 }
 
 extension GuestSession {

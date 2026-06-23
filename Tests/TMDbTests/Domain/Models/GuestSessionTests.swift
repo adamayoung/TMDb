@@ -29,4 +29,19 @@ struct GuestSessionTests {
         #expect(result.expiresAt == expectedResult.expiresAt)
     }
 
+    @Test("init assigns all properties")
+    func initAssignsAllProperties() {
+        let expiresAt = Date(timeIntervalSince1970: 1_705_956_596)
+
+        let session = GuestSession(
+            success: true,
+            guestSessionID: "abc123",
+            expiresAt: expiresAt
+        )
+
+        #expect(session.success == true)
+        #expect(session.guestSessionID == "abc123")
+        #expect(session.expiresAt == expiresAt)
+    }
+
 }

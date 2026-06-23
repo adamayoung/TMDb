@@ -50,4 +50,8 @@ extension Tag {
     @Tag static var changes: Self
     @Tag static var languageModelTools: Self
 
+    @Tag static var testingSupport: Self
+    @Tag static var samples: Self
+    @Tag static var mocks: Self
+
 }
