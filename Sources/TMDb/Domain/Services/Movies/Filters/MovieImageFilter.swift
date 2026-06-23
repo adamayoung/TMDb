@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for fetching movie images.
 ///
-public struct MovieImageFilter {
+public struct MovieImageFilter: Sendable {
 
     ///
     /// A list of ISO 639-1 language codes to filter images by.

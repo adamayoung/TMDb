@@ -17,6 +17,11 @@ comment:
 
 ignore:
   - 'Tests'
+  # Public test-support library: spy/stub mocks and real-data sample factories.
+  # It is test infrastructure (used by downstream test targets), not product
+  # logic, so line-coverage of its generated boilerplate is low-signal and would
+  # only drag the project/patch numbers down.
+  - 'Sources/TMDbTesting'
   # On-device Foundation Models code that cannot run in CI (no Apple
   # Intelligence model available) or is macro-generated schema. The live
   # data-source adapter is validated by the integration tests instead.

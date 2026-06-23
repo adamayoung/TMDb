@@ -165,7 +165,7 @@ jobs:
 
       - name: Test
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: set -o pipefail && swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml 2>&1 | xcsift -f github-actions
+        run: set -o pipefail && swift test --filter "TMDbTests|TMDbTestingTests" --enable-code-coverage --xunit-output junit.xml 2>&1 | xcsift -f github-actions
 
       - name: Prepare Code Coverage
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
@@ -220,7 +220,7 @@ jobs:
 
       - name: Test
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
-        run: swift test --skip-build --filter TMDbTests
+        run: swift test --skip-build --filter "TMDbTests|TMDbTestingTests"
 
       - name: Build for Release
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'

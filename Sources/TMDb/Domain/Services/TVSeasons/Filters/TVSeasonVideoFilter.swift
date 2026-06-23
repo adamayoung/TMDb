@@ -10,7 +10,7 @@ import Foundation
 ///
 /// A filter for fetching TV season videos.
 ///
-public struct TVSeasonVideoFilter {
+public struct TVSeasonVideoFilter: Sendable {
 
     ///
     /// A list of ISO 639-1 language codes to filter videos by.

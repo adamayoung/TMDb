@@ -6,6 +6,41 @@ out of it.
 
 ## Tooling
 
+### DocC symbol links don't resolve across modules — use code spans in a second target
+
+*2026-06-23.* The `TMDbTesting` target depends on `TMDb`, and its doc comments
+initially used DocC symbol links to `TMDb`/stdlib types (`` ``GenreService`` ``,
+`` ``TMDbError`` ``, `` ``Result`` ``). `make build-docs` failed: those links
+resolve against the *current* module's symbol graph, so a cross-module symbol
+isn't found (`'GenreService' doesn't exist at '/TMDbTesting'`). Module-qualifying
+them (`` ``TMDb/GenreService`` ``) also fails when DocC builds that target's graph
+in isolation.
+
+- **Fix:** reference cross-module and stdlib types with **inline code spans**
+  (single backticks) — `` `GenreService` ``, `` `TMDbError` ``. Reserve DocC
+  `` ``links`` `` for **same-module** symbols (a type's own members).
+- **Why it bites CI:** `make build-docs` runs
+  `generate-documentation --warnings-as-errors` **without `--target`**, i.e.
+  across *all* targets, so a second target's doc-link errors fail the build.
+
+### `make ci` skips the Linux build — CI has a separate `build-test-linux` job
+
+*2026-06-23.* `make ci` does **not** run `make build-linux` (it's lint,
+lint-markdown, test, integration-test, build-release, build-docs). Linux/Windows
+portability is instead gated by `.github/workflows/ci.yml`'s **`build-test-linux`**
+job (container `swift:6.1-jammy`, runs `swift build --build-tests`). So when Docker
+isn't available locally to run `make build-linux`, the PR's CI is the authoritative
+off-Apple check — don't treat a missing local Linux build as a blocker.
+
+### Workflow file-generation agents can write to the wrong worktree
+
+*2026-06-23.* When fanning out file-writing subagents from inside a git worktree,
+some wrote files to the **main checkout** path (`…/TMDb/Sources/…`) instead of the
+active worktree, despite the worktree path being given as their working directory.
+Give such agents **absolute worktree paths** for every file they create, and
+**verify output landed in the worktree** (and the main checkout stayed clean)
+before building.
+
 ### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
 
 *2026-06-22.* Adding a new `block(for:)` formatter plus its helpers to
@@ -23,6 +58,15 @@ and put new tests in a **separate `@Suite struct`** file.
   `///`-doc requirement (only `public` does), so promoting it is cheap.
 - Worth checking the line count before piling onto any already-large
   formatter/aggregator file.
+- **When splitting isn't practical** (e.g. a generated `Mock<Name>Service` whose
+  length is inherent to a large protocol), disable the rule per-file as the big
+  source files already do (`// swiftlint:disable file_length`). But the
+  **`blanket_disable_command`** rule treats the two rules differently: a
+  never-re-enabled `file_length` disable is allowed, while `type_body_length`
+  **must** be paired with a matching `// swiftlint:enable type_body_length` (or
+  scoped `:next`/`:this`) — a blanket `type_body_length` disable is itself a
+  violation. Disable only the rule a file actually trips, to avoid
+  `superfluous_disable_command`.
 
 ### SourceKit live diagnostics lag newly-created files — trust the build
 
@@ -84,6 +128,20 @@ fields.
   decode equality against a sparse fixture.
 
 ## Public API
+
+### `NaturalLanguageSearchService` is not platform-gated — only its `TMDbClient` accessor is
+
+*2026-06-23.* `CLAUDE.md` describes natural-language search as "Apple-platforms
+only", which is easy to over-apply. In fact the **protocol** and all its types
+(`SearchPlan`, `NaturalLanguageSearchResult`, `NaturalLanguageSearchError`,
+`NaturalLanguageSearchAvailability`) only `import Foundation` — **no
+`#if canImport(NaturalLanguage)` and no `@available`**. The gating lives solely on
+the `TMDbClient.naturalLanguageSearch` *accessor* (and the on-device planner
+implementation, e.g. `PersonNameExtracting`, `FoundationModelsSearchPlanGenerator`).
+So code that merely conforms to or references the protocol/types (e.g. a mock)
+compiles on Linux/Windows and must **not** be wrapped in `#if canImport(...)` —
+over-gating would needlessly remove it off-Apple. Gate only the specific symbol
+that actually imports `NaturalLanguage`/`FoundationModels`.
 
 ### Growing a public protocol additively: extension defaults, and the `--Werror` deprecation trap
 

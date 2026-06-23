@@ -30,6 +30,28 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-23 — Hard checkpoint to consult swift-concurrency / swift-testing-expert · applied
+
+- **Pattern:** in #359 the concurrency-sensitive work (an `NSLock`/`@unchecked
+  Sendable` mock design, making 9 types `Sendable`) and the test authoring were
+  hand-rolled, and `swift-concurrency` was only consulted when the **user**
+  prompted — at which point it validated the design *and* caught a missing
+  `@unchecked Sendable` removal-plan. `/implement-plan` §4 already mandated this,
+  but the soft wording was easy to skip under delivery momentum, and `/deliver`
+  only mentioned the skills passively ("as the work demands").
+- **Decision:** **applied** (user-directed, so no Phase-6 approval gate needed).
+  Strengthened `/deliver` Phase 2 into a **mandatory topic-triggered checkpoint**:
+  invoke `swift-concurrency` the moment the change touches actors/`@MainActor`/
+  `Sendable`/locks/`Task`/data-races (to *design*, not just debug), and
+  `swift-testing-expert` when writing/structuring tests — including when the work
+  is fanned out to subagents/Workflows. Extended to Phase 3 (run concurrency-
+  sensitive findings through `swift-concurrency`). Landed in
+  `.claude/skills/deliver/SKILL.md` Phase 2, PR #359.
+- **Rationale:** the instruction existed but wasn't load-bearing; tying it to the
+  *topic* (not "when stuck") and repeating it at the orchestrator level makes it a
+  gate that's hard to skip, and explicitly covers the fan-out case this run missed.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-19 — Reconcile local `make ci` lint scope with CI · deferred
 
 - **Pattern:** the local `make ci` lint gate and the authoritative GitHub CI lint

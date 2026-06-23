@@ -18,12 +18,17 @@ let package = Package(
     ],
 
     products: [
-        .library(name: "TMDb", targets: ["TMDb"])
+        .library(name: "TMDb", targets: ["TMDb"]),
+        .library(name: "TMDbTesting", targets: ["TMDbTesting"])
     ],
 
     targets: [
         .target(
             name: "TMDb"
+        ),
+        .target(
+            name: "TMDbTesting",
+            dependencies: ["TMDb"]
         ),
         .testTarget(
             name: "TMDbTests",
@@ -31,6 +36,10 @@ let package = Package(
             resources: [
                 .process("Resources")
             ]
+        ),
+        .testTarget(
+            name: "TMDbTestingTests",
+            dependencies: ["TMDb", "TMDbTesting"]
         ),
         .testTarget(
             name: "TMDbIntegrationTests",
