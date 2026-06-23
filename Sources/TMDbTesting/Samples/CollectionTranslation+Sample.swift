@@ -21,7 +21,9 @@ public extension CollectionTranslation {
                 title: "Star Wars Filmreihe",
                 overview: """
                 "Star Wars™" ist die größte Science-Fiction-Saga aller Zeiten, die mit ihren bislang \
-                neun filmischen Episoden alle Dimensionen der Unterhaltungskultur gesprengt hat.
+                neun filmischen Episoden und den unüberschaubaren Verzweigungen alle Dimensionen der \
+                Unterhaltungskultur gesprengt hat. Die Abenteuer von Luke Skywalker, Han Solo und der \
+                schönen Prinzessin Leia fesseln die Kinozuschauer und die Leser in aller Welt.
                 """,
                 homepageURL: URL(string: "http://www.starwars-union.de")
             )

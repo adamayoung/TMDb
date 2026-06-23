@@ -13,14 +13,14 @@ public extension Person {
     /// A sample `Person` for use in previews and tests.
     static var sample: Person {
         Person(
-            id: 500,
-            name: "Tom Cruise",
-            alsoKnownAs: ["Tom Cruise"],
-            birthday: Date(timeIntervalSince1970: 1_384_510_800),
+            id: 287,
+            name: "Brad Pitt",
+            alsoKnownAs: ["William Bradley Pitt"],
+            birthday: Date(timeIntervalSince1970: -190_598_400),
             gender: .male,
-            profilePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-            popularity: 6.8,
-            homepageURL: URL(string: "https://www.person.com"),
+            profilePath: URL(string: "/m09Y1YfPPeNYYUSHnnVqahkrC1o.jpg"),
+            popularity: 8.7551,
+            homepageURL: nil,
             isAdultOnly: false
         )
     }

@@ -13,45 +13,45 @@ public extension TVSeriesAggregateCredits {
     /// A sample `TVSeriesAggregateCredits` for use in tests and previews.
     static var sample: TVSeriesAggregateCredits {
         TVSeriesAggregateCredits(
-            id: 1,
+            id: 1399,
             cast: [
                 AggregateCastMember(
-                    id: 74568,
-                    name: "Chris Hemsworth",
-                    originalName: "Chris Hemsworth",
+                    id: 22970,
+                    name: "Peter Dinklage",
+                    originalName: "Peter Dinklage",
                     gender: .male,
-                    profilePath: URL(string: "/jpurJ9jAcLCYjgHHfYF32m3zJYm.jpg"),
+                    profilePath: URL(string: "/9CAd7wr8QZyIN0E7nm8v1B6WkGn.jpg"),
                     roles: [
                         CastRole(
-                            creditID: "62c8c25290b87e00f53973fb",
-                            character: "Thor Odinson",
-                            episodeCount: 8
+                            creditID: "5256c8b219c2956ff6047cd8",
+                            character: "Tyrion 'The Halfman' Lannister",
+                            episodeCount: 73
                         )
                     ],
                     knownForDepartment: "Acting",
                     isAdultOnly: false,
-                    totalEpisodeCount: 8,
-                    popularity: 10.5
+                    totalEpisodeCount: 73,
+                    popularity: 3.6178
                 )
             ],
             crew: [
                 AggregateCrewMember(
-                    id: 1,
-                    name: "Crew Name",
-                    originalName: "Crew Original Name",
-                    gender: .male,
-                    profilePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+                    id: 6411,
+                    name: "Deborah Riley",
+                    originalName: "Deborah Riley",
+                    gender: .female,
+                    profilePath: URL(string: "/cjhADpqdrnwB1PdDUKaBnWrIj2Q.jpg"),
                     jobs: [
                         CrewJob(
-                            creditID: "62c8c27f3d4d96004c9f1996",
-                            job: "Executive Producer",
-                            episodeCount: 8
+                            creditID: "54eee9e5c3a3686d5800584e",
+                            job: "Production Design",
+                            episodeCount: 43
                         )
                     ],
-                    knownForDepartment: "Production",
+                    knownForDepartment: "Art",
                     isAdultOnly: false,
-                    totalEpisodeCount: 8,
-                    popularity: 5.2
+                    totalEpisodeCount: 43,
+                    popularity: 0.1683
                 )
             ]
         )

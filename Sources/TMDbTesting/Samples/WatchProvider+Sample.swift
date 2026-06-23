@@ -15,7 +15,7 @@ public extension WatchProvider {
         WatchProvider(
             id: 8,
             name: "Netflix",
-            logoPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
+            logoPath: URL(string: "/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg"),
             displayPriority: 0
         )
     }

@@ -14,39 +14,43 @@ public extension TVSeasonAggregateCredits {
     /// A sample TV season aggregate credits, for use in tests and previews.
     ///
     static var sample: TVSeasonAggregateCredits {
-        let profilePath = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+        let profilePath = URL(string: "/9CAd7wr8QZyIN0E7nm8v1B6WkGn.jpg")
 
         let castMember = AggregateCastMember(
-            id: 1,
-            name: "Cast Member",
-            originalName: "Cast Member",
-            gender: .female,
+            id: 22970,
+            name: "Peter Dinklage",
+            originalName: "Peter Dinklage",
+            gender: .male,
             profilePath: profilePath,
             roles: [
-                CastRole(creditID: "credit123", character: "Character Name", episodeCount: 10)
+                CastRole(
+                    creditID: "5256c8b219c2956ff6047cd8",
+                    character: "Tyrion 'The Halfman' Lannister",
+                    episodeCount: 10
+                )
             ],
             knownForDepartment: "Acting",
             isAdultOnly: false,
             totalEpisodeCount: 10,
-            popularity: 5
+            popularity: 3.6178
         )
 
         let crewMember = AggregateCrewMember(
-            id: 2,
-            name: "Crew Member",
-            originalName: "Crew Member",
+            id: 8410,
+            name: "Richard Roberts",
+            originalName: "Richard Roberts",
             gender: .male,
             profilePath: profilePath,
             jobs: [
-                CrewJob(creditID: "credit456", job: "Executive Producer", episodeCount: 8)
+                CrewJob(creditID: "5c6d16640e0a262c999fc3c9", job: "Set Decoration", episodeCount: 10)
             ],
-            knownForDepartment: "Production",
+            knownForDepartment: "Art",
             isAdultOnly: false,
-            totalEpisodeCount: 8,
-            popularity: 4
+            totalEpisodeCount: 10,
+            popularity: 0.2767
         )
 
-        return TVSeasonAggregateCredits(id: 1, cast: [castMember], crew: [crewMember])
+        return TVSeasonAggregateCredits(id: 3624, cast: [castMember], crew: [crewMember])
     }
 
 }

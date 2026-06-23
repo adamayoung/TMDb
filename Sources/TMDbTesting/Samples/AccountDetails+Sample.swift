@@ -13,20 +13,20 @@ public extension AccountDetails {
     /// A sample `AccountDetails` populated with representative data.
     static var sample: AccountDetails {
         AccountDetails(
-            id: 1,
-            username: "test",
-            name: "Testy McTestface",
+            id: 548,
+            username: "travisbell",
+            name: "Travis Bell",
             avatar: AccountAvatar(
                 gravatar: AccountAvatar.Gravatar(
-                    hash: "qwertyuiopasdfghjklzxcvbnm"
+                    hash: "c9e9fc152ee756a900db85757c29815d"
                 ),
                 tmdb: AccountAvatar.TMDb(
-                    avatarPath: "/some/path/image.jpg"
+                    avatarPath: "/xy44UvpbTgzs9kWmp4C3fEaCl5h.png"
                 )
             ),
             languageCode: "en",
-            countryCode: "GB",
-            includeAdult: false
+            countryCode: "CA",
+            includeAdult: true
         )
     }
 

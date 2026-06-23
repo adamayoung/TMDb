@@ -19,13 +19,13 @@ public extension MediaList {
                 + "comic book movies from within the Marvel franchise.",
             createdBy: "Travis Bell",
             iso6391: "en",
-            itemCount: 69,
+            itemCount: 68,
             favoriteCount: 0,
             posterPath: URL(string: "/coJVIUEOToAEGViuhclM7pXC75R.jpg"),
             items: [],
             page: 1,
             totalPages: 4,
-            totalResults: 69
+            totalResults: 68
         )
     }
 

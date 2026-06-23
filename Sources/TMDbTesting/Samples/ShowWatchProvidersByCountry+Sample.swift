@@ -12,22 +12,22 @@ public extension ShowWatchProvidersByCountry {
 
     /// A sample `ShowWatchProvidersByCountry` for use in tests and previews.
     static var sample: ShowWatchProvidersByCountry {
-        let netflix = WatchProvider(
-            id: 8,
-            name: "Netflix",
-            logoPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-            displayPriority: 0
+        let amazonVideo = WatchProvider(
+            id: 10,
+            name: "Amazon Video",
+            logoPath: URL(string: "/qR6FKvnPBx2O37FDg8PNM7efwF3.jpg"),
+            displayPriority: 7
         )
 
         return ShowWatchProvidersByCountry(
             countryCode: "US",
             watchProviders: ShowWatchProvider(
                 link: nil,
-                free: [netflix],
-                flatRate: [netflix],
-                buy: [netflix],
-                rent: [netflix],
-                ads: [netflix]
+                free: [amazonVideo],
+                flatRate: [amazonVideo],
+                buy: [amazonVideo],
+                rent: [amazonVideo],
+                ads: [amazonVideo]
             )
         )
     }

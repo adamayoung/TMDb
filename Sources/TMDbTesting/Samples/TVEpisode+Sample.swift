@@ -15,12 +15,16 @@ public extension TVEpisode {
     ///
     static var sample: TVEpisode {
         TVEpisode(
-            id: 1,
-            name: "TV Episode Name",
-            episodeNumber: 3,
-            seasonNumber: 2,
-            overview: "Overview for TV Episode",
-            airDate: Date(timeIntervalSince1970: 1_384_510_800)
+            id: 63056,
+            name: "Winter Is Coming",
+            episodeNumber: 1,
+            seasonNumber: 1,
+            overview: """
+            Jon Arryn, the Hand of the King, is dead. King Robert Baratheon plans to ask his \
+            oldest friend, Eddard Stark, to take Jon's place. Across the sea, Viserys Targaryen \
+            plans to wed his sister to a nomadic warlord in exchange for an army.
+            """,
+            airDate: Date(timeIntervalSince1970: 1_302_998_400)
         )
     }
 

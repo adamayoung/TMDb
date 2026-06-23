@@ -5,6 +5,8 @@
 //  Copyright © 2026 Adam Young.
 //
 
+// swiftlint:disable file_length
+
 import Foundation
 import TMDb
 
@@ -18,13 +20,19 @@ public extension PageableListResult where Result == CollectionListItem {
             page: 1,
             results: [
                 CollectionListItem(
-                    id: 10,
+                    id: 86311,
                     title: "The Avengers Collection",
                     originalTitle: "The Avengers Collection",
                     originalLanguage: "en",
-                    overview: "A collection of films featuring Earth's Mightiest Heroes.",
-                    posterPath: URL(string: "/8sYdZSdgquS1iO4XzsGy9dN3DJ3.jpg"),
-                    backdropPath: nil,
+                    overview: """
+                    A superhero film series produced by Marvel Studios based on the Marvel Comics \
+                    superhero team of the same name, and part of the Marvel Cinematic Universe (MCU). \
+                    The series features an ensemble cast from the Marvel Cinematic Universe series \
+                    films, as they join forces for the peacekeeping organization S.H.I.E.L.D. led by \
+                    Nick Fury.
+                    """,
+                    posterPath: URL(string: "/yFSIUVTCvgYrpalUktulvk3Gi5Y.jpg"),
+                    backdropPath: URL(string: "/2UNUv4NJdC36E5myDHACBJ99EwL.jpg"),
                     isAdultOnly: false
                 )
             ],
@@ -86,15 +94,15 @@ public extension PageableListResult where Result == MediaListSummary {
             page: 1,
             results: [
                 MediaListSummary(
-                    id: 1,
-                    name: "My Watchlist",
-                    description: "A list of films to watch.",
-                    itemCount: 10,
-                    favoriteCount: 5,
+                    id: 8_175_729,
+                    name: "Marvel Cinematic Universe",
+                    description: "Every film in the Marvel Cinematic Universe, in release order.",
+                    itemCount: 35,
+                    favoriteCount: 0,
                     iso6391: "en",
                     iso31661: "US",
                     listType: "movie",
-                    posterPath: URL(string: "/poster.jpg")
+                    posterPath: URL(string: "/yFSIUVTCvgYrpalUktulvk3Gi5Y.jpg")
                 )
             ],
             totalResults: 1,
@@ -115,19 +123,23 @@ public extension PageableListResult where Result == Media {
             results: [
                 .movie(
                     MovieListItem(
-                        id: 1,
-                        title: "Movie",
-                        originalTitle: "Movie",
+                        id: 1_084_244,
+                        title: "Toy Story 5",
+                        originalTitle: "Toy Story 5",
                         originalLanguage: "en",
                         originCountry: ["US"],
-                        overview: "Movie overview.",
-                        genreIDs: [28],
+                        overview: """
+                        When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, \
+                        Woody, Jessie and the rest of the gang's jobs become exponentially harder when \
+                        they have to go head to head with the all-new threat to playtime.
+                        """,
+                        genreIDs: [16, 10751, 35, 12],
                         releaseDate: nil,
-                        posterPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                        backdropPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                        popularity: 5.6,
-                        voteAverage: 7.3,
-                        voteCount: 321,
+                        posterPath: URL(string: "/a6H2U7pjibMia41TwyFVd1PVQw3.jpg"),
+                        backdropPath: URL(string: "/qjTqY5coNiz6sVtPng40IzltsoN.jpg"),
+                        popularity: 345.7913,
+                        voteAverage: 7.5,
+                        voteCount: 227,
                         hasVideo: false,
                         isAdultOnly: false
                     )
@@ -150,19 +162,23 @@ public extension PageableListResult where Result == MovieListItem {
             page: 1,
             results: [
                 MovieListItem(
-                    id: 1,
-                    title: "Movie",
-                    originalTitle: "Movie",
+                    id: 1_084_244,
+                    title: "Toy Story 5",
+                    originalTitle: "Toy Story 5",
                     originalLanguage: "en",
                     originCountry: ["US"],
-                    overview: "Movie overview.",
-                    genreIDs: [28],
+                    overview: """
+                    When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, \
+                    Jessie and the rest of the gang's jobs become exponentially harder when they have \
+                    to go head to head with the all-new threat to playtime.
+                    """,
+                    genreIDs: [16, 10751, 35, 12],
                     releaseDate: nil,
-                    posterPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    backdropPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    popularity: 5.6,
-                    voteAverage: 7.3,
-                    voteCount: 321,
+                    posterPath: URL(string: "/a6H2U7pjibMia41TwyFVd1PVQw3.jpg"),
+                    backdropPath: URL(string: "/qjTqY5coNiz6sVtPng40IzltsoN.jpg"),
+                    popularity: 345.7913,
+                    voteAverage: 7.5,
+                    voteCount: 227,
                     hasVideo: false,
                     isAdultOnly: false
                 )
@@ -184,19 +200,23 @@ public extension PageableListResult where Result == MediaListItem {
             page: 1,
             results: [
                 MediaListItem(
-                    id: 1,
+                    id: 1_084_244,
                     mediaType: .movie,
-                    title: "Movie",
-                    originalTitle: "Movie",
+                    title: "Toy Story 5",
+                    originalTitle: "Toy Story 5",
                     originalLanguage: "en",
-                    overview: "Movie overview.",
-                    genreIDs: [28],
+                    overview: """
+                    When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, \
+                    Jessie and the rest of the gang's jobs become exponentially harder when they have \
+                    to go head to head with the all-new threat to playtime.
+                    """,
+                    genreIDs: [16, 10751, 35, 12],
                     releaseDate: nil,
-                    posterPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    backdropPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    popularity: 5.6,
-                    voteAverage: 7.3,
-                    voteCount: 321,
+                    posterPath: URL(string: "/a6H2U7pjibMia41TwyFVd1PVQw3.jpg"),
+                    backdropPath: URL(string: "/qjTqY5coNiz6sVtPng40IzltsoN.jpg"),
+                    popularity: 345.7913,
+                    voteAverage: 7.5,
+                    voteCount: 227,
                     hasVideo: false,
                     isAdultOnly: false
                 )
@@ -246,9 +266,13 @@ public extension PageableListResult where Result == Review {
             page: 1,
             results: [
                 Review(
-                    id: "1",
-                    author: "Author Name",
-                    content: "Some review content."
+                    id: "5b1c13b9c3a36848f2026384",
+                    author: "Goddard",
+                    content: """
+                    Pretty awesome movie.  It shows what one crazy person can convince other crazy \
+                    people to do.  Everyone needs something to believe in.  I recommend Jesus Christ, \
+                    but they want Tyler Durden.
+                    """
                 )
             ],
             totalResults: 1,
@@ -268,11 +292,15 @@ public extension PageableListResult where Result == TVEpisode {
             page: 1,
             results: [
                 TVEpisode(
-                    id: 1,
-                    name: "TV Episode Name",
-                    episodeNumber: 3,
-                    seasonNumber: 2,
-                    overview: "Overview for TV episode."
+                    id: 63056,
+                    name: "Winter Is Coming",
+                    episodeNumber: 1,
+                    seasonNumber: 1,
+                    overview: """
+                    Jon Arryn, the Hand of the King, is dead. King Robert Baratheon plans to ask his \
+                    oldest friend, Eddard Stark, to take Jon's place. Across the sea, Viserys \
+                    Targaryen plans to wed his sister to a nomadic warlord in exchange for an army.
+                    """
                 )
             ],
             totalResults: 1,
@@ -292,19 +320,25 @@ public extension PageableListResult where Result == TVSeriesListItem {
             page: 1,
             results: [
                 TVSeriesListItem(
-                    id: 1,
-                    name: "TV Series",
-                    originalName: "TV Series",
+                    id: 1399,
+                    name: "Game of Thrones",
+                    originalName: "Game of Thrones",
                     originalLanguage: "en",
-                    overview: "TV series overview.",
-                    genreIDs: [18],
+                    overview: """
+                    Seven noble families fight for control of the mythical land of Westeros. Friction \
+                    between the houses leads to full-scale war. All while a very ancient evil awakens \
+                    in the farthest north. Amidst the war, a neglected military order of misfits, the \
+                    Night's Watch, is all that stands between the realms of men and icy horrors \
+                    beyond.
+                    """,
+                    genreIDs: [10765, 18, 10759],
                     firstAirDate: nil,
-                    originCountries: ["GB"],
-                    posterPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    backdropPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    popularity: 5,
-                    voteAverage: 5,
-                    voteCount: 100,
+                    originCountries: ["US"],
+                    posterPath: URL(string: "/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg"),
+                    backdropPath: URL(string: "/2OMB0ynKlyIenMJWI2Dy9IWT4c.jpg"),
+                    popularity: 214.3149,
+                    voteAverage: 8.463,
+                    voteCount: 27072,
                     isAdultOnly: false
                 )
             ],
@@ -321,16 +355,20 @@ public extension PageableListResult where Result == TaggedImage {
     /// A sample pageable list of tagged images, for use in tests and previews.
     ///
     static var sample: PageableListResult<TaggedImage> {
-        let filePath = URL(string: "/iOpi3ut5DhQIbrVVjlnmfy2U7dI.jpg")
+        let filePath = URL(string: "/a6H2U7pjibMia41TwyFVd1PVQw3.jpg")
             ?? URL(fileURLWithPath: "/")
         let movie = MovieListItem(
-            id: 1,
-            title: "Movie",
-            originalTitle: "Movie",
+            id: 1_084_244,
+            title: "Toy Story 5",
+            originalTitle: "Toy Story 5",
             originalLanguage: "en",
             originCountry: ["US"],
-            overview: "Movie overview.",
-            genreIDs: [28]
+            overview: """
+            When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, Jessie \
+            and the rest of the gang's jobs become exponentially harder when they have to go head to \
+            head with the all-new threat to playtime.
+            """,
+            genreIDs: [16, 10751, 35, 12]
         )
 
         return PageableListResult(
@@ -364,19 +402,23 @@ public extension PageableListResult where Result == TrendingItem {
     ///
     static var sample: PageableListResult<TrendingItem> {
         let movie = MovieListItem(
-            id: 1,
-            title: "Movie",
-            originalTitle: "Movie",
+            id: 1_084_244,
+            title: "Toy Story 5",
+            originalTitle: "Toy Story 5",
             originalLanguage: "en",
             originCountry: ["US"],
-            overview: "Movie overview.",
-            genreIDs: [28],
+            overview: """
+            When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, Jessie \
+            and the rest of the gang's jobs become exponentially harder when they have to go head to \
+            head with the all-new threat to playtime.
+            """,
+            genreIDs: [16, 10751, 35, 12],
             releaseDate: nil,
-            posterPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-            backdropPath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-            popularity: 5.6,
-            voteAverage: 7.3,
-            voteCount: 321,
+            posterPath: URL(string: "/a6H2U7pjibMia41TwyFVd1PVQw3.jpg"),
+            backdropPath: URL(string: "/qjTqY5coNiz6sVtPng40IzltsoN.jpg"),
+            popularity: 345.7913,
+            voteAverage: 7.5,
+            voteCount: 227,
             hasVideo: false,
             isAdultOnly: false
         )

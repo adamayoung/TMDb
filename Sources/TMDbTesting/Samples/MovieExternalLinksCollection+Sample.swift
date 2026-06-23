@@ -13,12 +13,12 @@ public extension MovieExternalLinksCollection {
     /// A sample `MovieExternalLinksCollection` for use in previews and tests.
     static var sample: MovieExternalLinksCollection {
         MovieExternalLinksCollection(
-            id: 346_698,
-            imdb: IMDbLink(imdbTitleID: "tt1517268"),
-            wikiData: WikiDataLink(wikiDataID: "Q55436290"),
-            facebook: FacebookLink(facebookID: "BarbieTheMovie"),
-            instagram: InstagramLink(instagramID: "barbiethemovie"),
-            twitter: TwitterLink(twitterID: "barbiethemovie")
+            id: 550,
+            imdb: IMDbLink(imdbTitleID: "tt0137523"),
+            wikiData: WikiDataLink(wikiDataID: "Q190050"),
+            facebook: FacebookLink(facebookID: "FightClub"),
+            instagram: InstagramLink(instagramID: nil),
+            twitter: TwitterLink(twitterID: nil)
         )
     }
 

@@ -17,7 +17,7 @@ public extension ContentRating {
         ContentRating(
             descriptors: [],
             countryCode: "GB",
-            rating: "15"
+            rating: "18"
         )
     }
 
@@ -30,8 +30,8 @@ public extension [ContentRating] {
     ///
     static var samples: [ContentRating] {
         [
-            ContentRating(descriptors: [], countryCode: "GB", rating: "15"),
-            ContentRating(descriptors: [], countryCode: "US", rating: "TV-14")
+            ContentRating(descriptors: [], countryCode: "GB", rating: "18"),
+            ContentRating(descriptors: [], countryCode: "US", rating: "TV-MA")
         ]
     }
 

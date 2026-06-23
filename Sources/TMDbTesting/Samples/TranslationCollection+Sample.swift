@@ -23,9 +23,13 @@ public extension TranslationCollection where DataType == MovieTranslationData {
                     name: "English",
                     englishName: "English",
                     data: MovieTranslationData(
-                        title: "Fight Club",
-                        overview: "An insomniac office worker forms an underground club.",
-                        homepage: "https://www.foxmovies.com/movies/fight-club",
+                        title: "",
+                        overview: "A ticking-time-bomb insomniac and a slippery soap salesman "
+                            + "channel primal male aggression into a shocking new form of "
+                            + "therapy. Their concept catches on, with underground \"fight "
+                            + "clubs\" forming in every town, until an eccentric gets in the "
+                            + "way and ignites an out-of-control spiral toward oblivion.",
+                        homepage: "https://www.20thcenturystudios.com/movies/fight-club",
                         tagline: "Mischief. Mayhem. Soap."
                     )
                 )
@@ -50,7 +54,10 @@ public extension TranslationCollection where DataType == PersonTranslationData {
                     name: "English",
                     englishName: "English",
                     data: PersonTranslationData(
-                        biography: "An American actor and film producer."
+                        biography: "William Bradley Pitt (born December 18, 1963) is an "
+                            + "American actor and film producer. In a film career spanning "
+                            + "more than thirty years, Pitt has received numerous accolades, "
+                            + "including two Academy Awards."
                     )
                 )
             ]
@@ -66,7 +73,7 @@ public extension TranslationCollection where DataType == TVEpisodeTranslationDat
     ///
     static var sample: TranslationCollection<TVEpisodeTranslationData> {
         TranslationCollection(
-            id: 62085,
+            id: 63056,
             translations: [
                 Translation(
                     countryCode: "US",
@@ -74,8 +81,11 @@ public extension TranslationCollection where DataType == TVEpisodeTranslationDat
                     name: "English",
                     englishName: "English",
                     data: TVEpisodeTranslationData(
-                        name: "Pilot",
-                        overview: "The first episode of the series."
+                        name: "Winter Is Coming",
+                        overview: "Jon Arryn, the Hand of the King, is dead. King Robert "
+                            + "Baratheon plans to ask his oldest friend, Eddard Stark, to take "
+                            + "Jon's place. Across the sea, Viserys Targaryen plans to wed his "
+                            + "sister to a nomadic warlord in exchange for an army."
                     )
                 )
             ]
@@ -99,8 +109,11 @@ public extension TranslationCollection where DataType == TVSeasonTranslationData
                     name: "English",
                     englishName: "English",
                     data: TVSeasonTranslationData(
-                        name: "Season 1",
-                        overview: "The first season of the series."
+                        name: "",
+                        overview: "Trouble is brewing in the Seven Kingdoms of Westeros. For "
+                            + "the driven inhabitants of this visionary world, control of "
+                            + "Westeros' Iron Throne holds the lure of great power. But in a "
+                            + "land where the seasons can last a lifetime, winter is coming..."
                     )
                 )
             ]
@@ -124,9 +137,12 @@ public extension TranslationCollection where DataType == TVSeriesTranslationData
                     name: "English",
                     englishName: "English",
                     data: TVSeriesTranslationData(
-                        name: "Game of Thrones",
-                        overview: "Seven noble families fight for control of the land of Westeros.",
-                        homepage: "https://www.hbo.com/game-of-thrones",
+                        name: "",
+                        overview: "Seven noble families fight for control of the mythical land "
+                            + "of Westeros. Friction between the houses leads to full-scale "
+                            + "war. All while a very ancient evil awakens in the farthest "
+                            + "north.",
+                        homepage: "",
                         tagline: "Winter is coming."
                     )
                 )

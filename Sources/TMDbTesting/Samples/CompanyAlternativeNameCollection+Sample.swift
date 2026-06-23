@@ -16,8 +16,8 @@ public extension CompanyAlternativeNameCollection {
             id: 1,
             results: [
                 CompanyAlternativeName(
-                    name: "Some Alternative Name",
-                    type: "doing business as"
+                    name: "Lucasfilm Ltd. LLC",
+                    type: ""
                 )
             ]
         )

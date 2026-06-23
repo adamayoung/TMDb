@@ -13,10 +13,10 @@ public extension KeywordCollection {
     /// A sample `KeywordCollection` populated with representative data.
     static var sample: KeywordCollection {
         KeywordCollection(
-            id: 1,
+            id: 550,
             keywords: [
-                Keyword(id: 1, name: "Keyword 1"),
-                Keyword(id: 2, name: "Keyword 2")
+                Keyword(id: 851, name: "dual identity"),
+                Keyword(id: 818, name: "based on novel or book")
             ]
         )
     }

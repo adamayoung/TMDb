@@ -13,10 +13,10 @@ public extension ScreenedTheatricallyCollection {
     /// A sample `ScreenedTheatricallyCollection` populated with representative data.
     static var sample: ScreenedTheatricallyCollection {
         ScreenedTheatricallyCollection(
-            id: 1,
+            id: 1399,
             results: [
-                ScreenedTheatricallyResult(id: 1, episodeNumber: 1, seasonNumber: 1),
-                ScreenedTheatricallyResult(id: 2, episodeNumber: 2, seasonNumber: 1)
+                ScreenedTheatricallyResult(id: 63103, episodeNumber: 10, seasonNumber: 4),
+                ScreenedTheatricallyResult(id: 63080, episodeNumber: 9, seasonNumber: 3)
             ]
         )
     }

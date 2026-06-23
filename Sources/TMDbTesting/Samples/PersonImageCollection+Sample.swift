@@ -13,17 +13,17 @@ public extension PersonImageCollection {
     /// A sample `PersonImageCollection` for use in tests and previews.
     static var sample: PersonImageCollection {
         PersonImageCollection(
-            id: 1,
+            id: 287,
             profiles: [
                 ImageMetadata(
-                    filePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+                    filePath: URL(string: "/m09Y1YfPPeNYYUSHnnVqahkrC1o.jpg")
                         ?? URL(fileURLWithPath: "/"),
-                    width: 100,
-                    height: 100,
-                    aspectRatio: 1,
-                    voteAverage: 5,
-                    voteCount: 100,
-                    languageCode: "en"
+                    width: 1684,
+                    height: 2528,
+                    aspectRatio: 0.666,
+                    voteAverage: 8.362,
+                    voteCount: 6,
+                    languageCode: nil
                 )
             ]
         )

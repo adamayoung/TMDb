@@ -13,17 +13,17 @@ public extension AlternativeTitleCollection {
     /// A sample `AlternativeTitleCollection` populated with representative data.
     static var sample: AlternativeTitleCollection {
         AlternativeTitleCollection(
-            id: 1,
+            id: 550,
             titles: [
                 AlternativeTitle(
-                    countryCode: "US",
-                    title: "Alternative Title 1",
-                    type: "Alternative Title"
+                    countryCode: "RU",
+                    title: "Boytsovskiy klub",
+                    type: "romanization"
                 ),
                 AlternativeTitle(
-                    countryCode: "GB",
-                    title: "Alternative Title 2",
-                    type: "Working Title"
+                    countryCode: "CN",
+                    title: "搏击会",
+                    type: ""
                 )
             ]
         )

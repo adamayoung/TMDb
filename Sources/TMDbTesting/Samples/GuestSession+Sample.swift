@@ -14,8 +14,8 @@ public extension GuestSession {
     static var sample: GuestSession {
         GuestSession(
             success: true,
-            guestSessionID: "jdbqej40d9b562zk42ma8u4tp1saup5q",
-            expiresAt: Date(timeIntervalSince1970: 1_705_956_596)
+            guestSessionID: "12b10e0b13045a3e3a8c2def2dc94d28",
+            expiresAt: Date(timeIntervalSince1970: 1_782_337_840)
         )
     }
 

@@ -23,13 +23,14 @@ public extension Credit {
                     id: 1396,
                     name: "Breaking Bad",
                     originalName: "Breaking Bad",
-                    overview: "Walter White, a New Mexico chemistry teacher.",
+                    overview: "Walter White, a New Mexico chemistry teacher, is diagnosed with "
+                        + "Stage III cancer and given a prognosis of only two years left to live.",
                     posterPath: nil,
                     backdropPath: nil,
-                    popularity: 108.6266,
+                    popularity: 134.0744,
                     firstAirDate: nil,
-                    voteAverage: 8.937,
-                    voteCount: 17020,
+                    voteAverage: 8.947,
+                    voteCount: 17965,
                     character: "Walter White"
                 )
             ),
@@ -39,8 +40,8 @@ public extension Credit {
                 originalName: "Bryan Cranston",
                 gender: .male,
                 knownForDepartment: "Acting",
-                profilePath: URL(string: "/npIIZJGSrcJIJ6yHdmbqO6Jzo5I.jpg"),
-                popularity: 7.1326
+                profilePath: URL(string: "/7Jahy5LZX2Fo8fGJltMreAI49hC.jpg"),
+                popularity: 3.9034
             )
         )
     }

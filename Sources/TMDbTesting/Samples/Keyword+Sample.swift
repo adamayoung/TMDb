@@ -13,8 +13,8 @@ public extension Keyword {
     /// A sample `Keyword` for use in previews and tests.
     static var sample: Keyword {
         Keyword(
-            id: 378,
-            name: "prison"
+            id: 3417,
+            name: "wormhole"
         )
     }
 

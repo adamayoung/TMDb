@@ -13,35 +13,35 @@ public extension ShowCredits {
     /// A sample `ShowCredits` for use in tests and previews.
     static var sample: ShowCredits {
         ShowCredits(
-            id: 1,
+            id: 550,
             cast: [
                 CastMember(
-                    id: 74568,
-                    castID: 85,
-                    creditID: "62c8c25290b87e00f53973fb",
-                    name: "Chris Hemsworth",
-                    originalName: "Chris Hemsworth",
-                    character: "Thor Odinson",
+                    id: 819,
+                    castID: 4,
+                    creditID: "52fe4250c3a36847f80149f3",
+                    name: "Edward Norton",
+                    originalName: "Edward Norton",
+                    character: "Narrator",
                     knownForDepartment: "Acting",
                     gender: .male,
-                    profilePath: URL(string: "/jpurJ9jAcLCYjgHHfYF32m3zJYm.jpg"),
-                    popularity: 10.5,
+                    profilePath: URL(string: "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg"),
+                    popularity: 3.9038,
                     order: 0,
                     isAdultOnly: false
                 )
             ],
             crew: [
                 CrewMember(
-                    id: 1,
-                    creditID: "2",
-                    name: "Crew Name",
-                    originalName: "Crew Original Name",
-                    job: "Job Name",
-                    department: "Department Name",
-                    knownForDepartment: "Department Name",
+                    id: 7467,
+                    creditID: "631f0289568463007bbe28a5",
+                    name: "David Fincher",
+                    originalName: "David Fincher",
+                    job: "Director",
+                    department: "Directing",
+                    knownForDepartment: "Directing",
                     gender: .male,
-                    profilePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),
-                    popularity: 5.2,
+                    profilePath: URL(string: "/tpEczFclQZeKAiCeKZZ0adRvtfz.jpg"),
+                    popularity: 2.4671,
                     isAdultOnly: false
                 )
             ]

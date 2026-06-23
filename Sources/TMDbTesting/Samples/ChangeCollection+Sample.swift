@@ -15,16 +15,16 @@ public extension ChangeCollection {
         ChangeCollection(
             changes: [
                 Change(
-                    key: "title",
+                    key: "images",
                     items: [
                         ChangeItem(
-                            id: "1",
+                            id: "6a391743dbad65b03d24d3d2",
                             action: "updated",
-                            time: Date(timeIntervalSince1970: 1_704_067_200),
+                            time: Date(timeIntervalSince1970: 1_782_212_803),
                             languageCode: "en",
                             countryCode: "US",
-                            value: .string("New Title"),
-                            originalValue: .string("Old Title")
+                            value: .string("/uzRY3Rs3mGItB3X40Vo6inBejNf.jpg"),
+                            originalValue: .string("/uzRY3Rs3mGItB3X40Vo6inBejNf.jpg")
                         )
                     ]
                 )

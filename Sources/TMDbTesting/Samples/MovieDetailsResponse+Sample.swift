@@ -14,47 +14,73 @@ public extension MovieDetailsResponse {
     /// A sample movie details response, for use in tests and previews.
     ///
     static var sample: MovieDetailsResponse {
-        let posterPath = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+        let posterPath = URL(string: "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg")
+        let backdropPath = URL(string: "/c6OLXfKAk5BKeR6broC8pYiCquX.jpg")
 
         let movie = Movie(
-            id: 718_930,
-            title: "Bullet Train",
-            tagline: "Movie Tag Line",
+            id: 550,
+            title: "Fight Club",
+            tagline: "Mischief. Mayhem. Soap.",
             originalLanguage: "en",
             originCountry: ["US"],
-            overview: "Movie Overview",
-            runtime: 120,
-            genres: [Genre(id: 28, name: "Action")],
-            releaseDate: Date(timeIntervalSince1970: 1_384_510_800),
+            overview: """
+            A ticking-time-bomb insomniac and a slippery soap salesman channel primal male \
+            aggression into a shocking new form of therapy. Their concept catches on, with \
+            underground "fight clubs" forming in every town, until an eccentric gets in the \
+            way and ignites an out-of-control spiral toward oblivion.
+            """,
+            runtime: 139,
+            genres: [Genre(id: 18, name: "Drama")],
+            releaseDate: Date(timeIntervalSince1970: 939_945_600),
             posterPath: posterPath,
-            backdropPath: posterPath,
-            budget: 1_000_000,
-            revenue: 5_000_000,
-            homepageURL: URL(string: "https://www.movie.com"),
-            imdbID: "12345",
+            backdropPath: backdropPath,
+            budget: 63_000_000,
+            revenue: 100_853_753,
+            homepageURL: URL(string: "https://www.20thcenturystudios.com/movies/fight-club"),
+            imdbID: "tt0137523",
             status: .released,
-            popularity: 5,
-            voteAverage: 6,
-            voteCount: 120,
+            popularity: 25.5667,
+            voteAverage: 8.438,
+            voteCount: 32197,
             hasVideo: false,
             isAdultOnly: false
         )
 
-        let image = ImageMetadata(
-            filePath: posterPath ?? URL(fileURLWithPath: "/"),
-            width: 100,
-            height: 100,
-            aspectRatio: 1,
-            voteAverage: 5,
-            voteCount: 100,
+        let poster = ImageMetadata(
+            filePath: URL(string: "/nu7FEmC4zBaZ7c3QYmVpDlZa2H0.jpg") ?? URL(fileURLWithPath: "/"),
+            width: 2000,
+            height: 3000,
+            aspectRatio: 0.667,
+            voteAverage: 5.928,
+            voteCount: 21,
+            languageCode: "pt"
+        )
+
+        let backdrop = ImageMetadata(
+            filePath: backdropPath ?? URL(fileURLWithPath: "/"),
+            width: 2560,
+            height: 1440,
+            aspectRatio: 1.778,
+            voteAverage: 6.14,
+            voteCount: 32,
+            languageCode: nil
+        )
+
+        let logo = ImageMetadata(
+            filePath: URL(string: "/7Uqhv24pGJs4Ns31NoOPWFJGWNG.png") ?? URL(fileURLWithPath: "/"),
+            width: 1804,
+            height: 389,
+            aspectRatio: 4.638,
+            voteAverage: 8.034,
+            voteCount: 5,
             languageCode: "en"
         )
 
         let images = ImageCollection(
             id: movie.id,
-            posters: [image],
-            logos: [image],
-            backdrops: [image]
+            posters: [poster],
+            logos: [logo],
+            backdrops: [backdrop]
         )
 
         return MovieDetailsResponse(movie: movie, images: images)

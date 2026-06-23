@@ -13,8 +13,8 @@ public extension TVSeasonExternalLinksCollection {
     /// A sample `TVSeasonExternalLinksCollection` populated with representative data.
     static var sample: TVSeasonExternalLinksCollection {
         TVSeasonExternalLinksCollection(
-            id: 1,
-            wikiData: WikiDataLink(wikiDataID: "Q18027861")
+            id: 3624,
+            wikiData: WikiDataLink(wikiDataID: "Q1658029")
         )
     }
 

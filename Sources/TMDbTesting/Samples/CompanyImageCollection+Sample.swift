@@ -16,14 +16,14 @@ public extension CompanyImageCollection {
             id: 1,
             logos: [
                 ImageMetadata(
-                    filePath: URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg")
+                    filePath: URL(string: "/tlVSws0RvvtPBwViUyOFAO0vcQS.png")
                         ?? URL(fileURLWithPath: "/"),
                     width: 1000,
-                    height: 1000,
-                    aspectRatio: 1.0,
-                    voteAverage: 5.0,
+                    height: 329,
+                    aspectRatio: 3.0395136778115504,
+                    voteAverage: 3.334,
                     voteCount: 1,
-                    languageCode: "en"
+                    languageCode: nil
                 )
             ]
         )

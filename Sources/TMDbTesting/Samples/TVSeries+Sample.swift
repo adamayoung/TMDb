@@ -13,11 +13,15 @@ public extension TVSeries {
     /// A sample `TVSeries` populated with representative data.
     static var sample: TVSeries {
         TVSeries(
-            id: 92783,
-            name: "She-Hulk: Attorney at Law",
-            overview: "TV Series Overview",
-            firstAirDate: Date(timeIntervalSince1970: 1_384_510_800),
-            posterPath: URL(string: "/hJfI6AGrmr4uSHRccfJuSsapvOb.jpg")
+            id: 1399,
+            name: "Game of Thrones",
+            overview: "Seven noble families fight for control of the mythical land of "
+                + "Westeros. Friction between the houses leads to full-scale war. All while a "
+                + "very ancient evil awakens in the farthest north. Amidst the war, a neglected "
+                + "military order of misfits, the Night's Watch, is all that stands between the "
+                + "realms of men and icy horrors beyond.",
+            firstAirDate: Date(timeIntervalSince1970: 1_302_998_400),
+            posterPath: URL(string: "/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg")
         )
     }
 

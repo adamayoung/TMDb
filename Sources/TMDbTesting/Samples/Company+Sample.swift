@@ -15,10 +15,10 @@ public extension Company {
         Company(
             id: 1,
             name: "Lucasfilm Ltd.",
-            description: "Some description",
+            description: "",
             headquarters: "San Francisco, California",
             homepageURL: URL(string: "https://www.lucasfilm.com"),
-            logoPath: URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")
+            logoPath: URL(string: "/tlVSws0RvvtPBwViUyOFAO0vcQS.png")
                 ?? URL(fileURLWithPath: "/"),
             originCountry: "US",
             parentCompany: nil

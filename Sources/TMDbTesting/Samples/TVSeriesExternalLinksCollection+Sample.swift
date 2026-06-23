@@ -15,12 +15,12 @@ public extension TVSeriesExternalLinksCollection {
     ///
     static var sample: TVSeriesExternalLinksCollection {
         TVSeriesExternalLinksCollection(
-            id: 86423,
-            imdb: IMDbLink(imdbTitleID: "tt3007572"),
-            wikiData: nil,
-            facebook: FacebookLink(facebookID: "lockeandkeynetflix"),
-            instagram: InstagramLink(instagramID: "lockeandkeynetflix"),
-            twitter: TwitterLink(twitterID: "lockekeynetflix")
+            id: 1399,
+            imdb: IMDbLink(imdbTitleID: "tt0944947"),
+            wikiData: WikiDataLink(wikiDataID: "Q23572"),
+            facebook: FacebookLink(facebookID: "GameOfThrones"),
+            instagram: InstagramLink(instagramID: "gameofthrones"),
+            twitter: TwitterLink(twitterID: "GameOfThrones")
         )
     }
 

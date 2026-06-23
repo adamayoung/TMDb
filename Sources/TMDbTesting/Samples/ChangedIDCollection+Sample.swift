@@ -16,8 +16,8 @@ public extension ChangedIDCollection {
     static var sample: ChangedIDCollection {
         ChangedIDCollection(
             results: [
-                ChangedID(id: 1, adult: false),
-                ChangedID(id: 2, adult: false)
+                ChangedID(id: 106_463, adult: false),
+                ChangedID(id: 182_774, adult: false)
             ],
             page: 1,
             totalPages: 1,

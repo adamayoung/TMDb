@@ -13,14 +13,14 @@ public extension TVEpisodeGroupCollection {
     /// A sample `TVEpisodeGroupCollection` populated with representative data.
     static var sample: TVEpisodeGroupCollection {
         TVEpisodeGroupCollection(
-            id: 1,
+            id: 1399,
             episodeGroups: [
                 TVEpisodeGroup(
-                    id: "5acf93e60e0a26346c00000b",
+                    id: "5e9077d2e640d600151f32bd",
                     name: "Aired Order",
                     description: "",
-                    episodeCount: 73,
-                    groupCount: 8,
+                    episodeCount: 102,
+                    groupCount: 9,
                     type: 1
                 )
             ]
