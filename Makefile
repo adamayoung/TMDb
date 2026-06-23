@@ -1,5 +1,5 @@
 TARGET = TMDb
-TEST_TARGET = TMDbTests
+TEST_TARGET = TMDbTests|TMDbTestingTests
 INTEGRATION_TEST_TARGET = TMDbIntegrationTests
 
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 17,OS=26.2'
@@ -76,11 +76,11 @@ generate-docs:
 .PHONY: test
 test:
 	set -o pipefail && swift build --build-tests --scratch-path $(SCRATCH_PATH) -Xswiftc -warnings-as-errors 2>&1 | xcsift -f toon --Werror
-	set -o pipefail && swift test --skip-build --scratch-path $(SCRATCH_PATH) --filter $(TEST_TARGET) 2>&1 | xcsift -f toon
+	set -o pipefail && swift test --skip-build --scratch-path $(SCRATCH_PATH) --filter "$(TEST_TARGET)" 2>&1 | xcsift -f toon
 
 .PHONY: test-linux
 test-linux:
-	docker run -i --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build --build-tests -Xswiftc -warnings-as-errors && swift test --skip-build --filter $(TEST_TARGET)"
+	docker run -i --rm -v "$${PWD}:/workspace" -w /workspace $(SWIFT_CONTAINER_IMAGE) /bin/bash -cl "swift build --build-tests -Xswiftc -warnings-as-errors && swift test --skip-build --filter '$(TEST_TARGET)'"
 
 .PHONY: integration-test
 integration-test: .check-env-vars

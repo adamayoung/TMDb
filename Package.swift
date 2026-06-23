@@ -32,10 +32,14 @@ let package = Package(
         ),
         .testTarget(
             name: "TMDbTests",
-            dependencies: ["TMDb", "TMDbTesting"],
+            dependencies: ["TMDb"],
             resources: [
                 .process("Resources")
             ]
+        ),
+        .testTarget(
+            name: "TMDbTestingTests",
+            dependencies: ["TMDb", "TMDbTesting"]
         ),
         .testTarget(
             name: "TMDbIntegrationTests",
