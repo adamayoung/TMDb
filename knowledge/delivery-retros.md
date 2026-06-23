@@ -42,6 +42,20 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   args-stringification, yet it bit again — worth a **standard `args` parse-guard
   preamble** baked into any `/deliver` generation-Workflow snippet (or a lint of
   the script before launch), so the guard isn't re-derived from memory each time.
+- **Specialist skills under-used (`swift-concurrency`, `swift-testing-expert`):**
+  `/implement-plan`'s contract says to route anything touching actors/`Sendable`/
+  data races through `swift-concurrency`, and test structuring through
+  `swift-testing-expert`. I did neither — the `NSLock`/`@unchecked Sendable` mock
+  design and the 9-filter-types `Sendable` change were hand-rolled, and tests
+  followed the reference pattern via general-purpose agents. It compiled and
+  passed, but the user had to prompt me to consult `swift-concurrency` on the
+  actor-vs-lock question. When finally invoked, the skill *validated* the lock
+  choice **and** surfaced a real gap: `@unchecked Sendable` needs a documented
+  safety invariant **and a removal plan** (migrate to `Mutex` once the floor
+  reaches iOS 18/macOS 15) — which I'd omitted from the ADR. **Lesson:** invoke
+  the specialist skill *at the moment its domain appears* (lock/`Sendable`/actor
+  design, test structure), not only when asked — that's the difference between
+  "it passed" and "it's right, and the rationale is recorded."
 - **Gate-driven refinements (post-PR, pre-merge):** the human gate caught two
   things the autonomous run had shipped sub-optimally, both fixed before merge:
   (a) **sample data wasn't from the live MCP** — I'd relaxed the locked "real MCP
