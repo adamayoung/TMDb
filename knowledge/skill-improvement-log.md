@@ -30,6 +30,25 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-23 — Add a "update the personal wiki" step after the retro · applied
+
+- **Pattern:** `/deliver` Phase 6 captured durable learnings into the
+  project-specific `knowledge/` base and `skill-improvement-log`, but never fed
+  the **personal `wiki`** (Adam's cross-project engineering knowledge) — so
+  generalizable opinions/heuristics from a delivery weren't being kept where they
+  carry to the next project. Surfaced when Adam asked, post-merge, "anything to
+  update in my wiki?" and then "updating my wiki should be a step after the retro."
+- **Decision:** **applied** (user-directed). Added an "Update the personal wiki
+  (after the retro)" subsection to `/deliver` Phase 6: search first, propose via
+  `propose_entry` (review-gated — never autonomous `add_entry`/`update_entry`),
+  be selective (generalizable only; project-specific stays in `knowledge/`), and
+  degrade silently if the `wiki` MCP is absent. Landed in
+  `.claude/skills/deliver/SKILL.md` Phase 6.
+- **Rationale:** the retro already distils the delivery's learnings, so it's the
+  cheapest moment to lift the *generalizable* ones into the durable, cross-project
+  store; gating on `propose_entry` respects the wiki tooling's approval model.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-23 — Hard checkpoint to consult swift-concurrency / swift-testing-expert · applied
 
 - **Pattern:** in #359 the concurrency-sensitive work (an `NSLock`/`@unchecked
