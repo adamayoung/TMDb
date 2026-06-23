@@ -489,6 +489,27 @@ more than **~12 full entries**, distil the oldest into its one-line archive tabl
 An old retro's lesson already lives in the skills and `skill-improvement-log.md`;
 the table preserves the telemetry without the bulk.
 
+### Update the personal wiki (after the retro)
+
+The retro distils this delivery's durable learnings, so it is the natural moment
+to feed the **personal `wiki`** (Adam's cross-project engineering knowledge, via
+the `wiki` MCP). The retro/`knowledge/` base is *project-specific*; the wiki is
+for **generalizable, reusable opinions, heuristics, and patterns** — the things
+that would apply on the next project too (a design stance, a concurrency or
+testing heuristic, a tooling gotcha that isn't TMDb-specific).
+
+- **Degrade silently if the `wiki` MCP is absent** (a contributor's machine, a
+  headless/cron run) — never block on it.
+- **Search first** (`search_wiki`/`search_entries`) and prefer **updating** a
+  near-match over creating a duplicate.
+- **Propose, don't autonomously save.** The wiki tooling reserves `add_entry`/
+  `update_entry` for Adam's explicit approval — use **`propose_entry`** to render
+  each candidate for review, and only `add_entry`/`update_entry` once Adam
+  approves. Cite the wiki when an answer later draws on it.
+- **Be selective** — one or two high-signal entries beat a dump; skip anything
+  that's only project-specific (that already lives in `knowledge/`) or already in
+  the wiki. Capturing nothing is a valid outcome.
+
 ### Recurring-pattern scan (after committing the retro)
 
 Once the retro entry is committed, do a structured cross-delivery scan — this is
