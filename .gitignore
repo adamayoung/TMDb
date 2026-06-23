@@ -15,6 +15,7 @@ junit-swift-testing.xml
 # Claude
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+.claude/worktrees/
 
 # Git worktrees
 .worktrees/

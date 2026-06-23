@@ -10,6 +10,37 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-23 — ✨ Add `movieCredits` language-model tool to TMDbToolbox (#357) · lite
+
+- **Phases / skills:** phases 0–6; `implement-plan, build-for-testing, test,
+  integration-test, lint, review-changes, capture-knowledge, pr, watch-pr`
+  (skipped `review-plan` — lite).
+- **Worked:** lite path fit a mechanical mirror of `MovieDetailsTool`; reading the
+  sibling source first meant a faithful copy with zero implementation surprises
+  (2714 unit tests green first try). The **`swiftlint --no-cache` step in `/pr`
+  step 4** (the #346 improvement) earned its keep: adding the credits block tipped
+  the formatter file/test over `file_length`/`type_body_length`, caught **locally**
+  and fixed by splitting into a `+Credits` extension file + separate `@Suite`
+  before any CI round-trip.
+- **Friction — the standout:** the local `code-reviewer`'s adversarial pass
+  **dropped a real High** — "missing integration test for `movieCredits`" — with
+  the false reasoning *"no sibling toolbox tool has a per-tool integration test."*
+  In fact `Tests/TMDbIntegrationTests/LanguageModelToolsIntegrationTests.swift` has
+  one per tool; the reviewer only inspected the per-tool **unit** tests and never
+  listed the integration dir. The `claude-review` bot on the PR caught it
+  correctly, costing a post-PR fix + a second full CI run. Phase 3 is supposed to
+  converge Critical/High *before* the PR; a fabricated "siblings don't either"
+  dismissal defeated that.
+- **Deviations:** the integration-test gap was fixed in **Phase 5 (watch-pr)**, not
+  Phase 3, because the local review wrongly cleared it.
+- **Improvement:** when a reviewer is about to drop a "missing integration test"
+  (or any "siblings don't do this either") finding, it must **verify the
+  sibling-convention claim by listing the actual directory** (here
+  `Tests/TMDbIntegrationTests/`) — not assume from the unit-test dir. Worth a line
+  in `.github/CODE_REVIEW.md` / the `code-reviewer` adversarial-pass guidance:
+  *an adversarial drop that rests on a factual claim about sibling code must check
+  that claim against the tree.*
+
 ## 2026-06-19 — ✨ Add `networks` property to TVSeason (#349) · full
 
 - **Phases / skills:** phases 0–6; `review-plan, implement-plan, build-for-testing,

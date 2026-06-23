@@ -45,6 +45,7 @@
 - ``languageModelTools``
 - ``searchTool``
 - ``movieDetailsTool``
+- ``movieCreditsTool``
 - ``tvSeriesDetailsTool``
 - ``personFilmographyTool``
 - ``trendingTool``

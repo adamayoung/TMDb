@@ -31,7 +31,7 @@ Code review exists to review **Swift**. If the diff touches no Swift source,
 there is nothing to review — return immediately, don't spawn any reviewer.
 
 ```bash
-git diff --name-only main...HEAD | grep -qE '\.swift$' || echo "no-swift"
+git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift"
 ```
 
 If that prints `no-swift` (no `*.swift` files changed — e.g. a docs-only,
@@ -43,7 +43,7 @@ code review skipped." Do not run §1–§3. (JSON fixtures under
 ## 1. Scope the change
 
 ```bash
-git diff --stat main...HEAD
+git diff --stat origin/main...HEAD
 ```
 
 Judge size (heuristic, not a rigid count):
@@ -58,13 +58,13 @@ genuinely broad.
 
 ## 2a. Small change → single agent
 
-Spawn the **`code-reviewer`** agent on `git diff main...HEAD`. It follows
+Spawn the **`code-reviewer`** agent on `git diff origin/main...HEAD`. It follows
 `.github/CODE_REVIEW.md` including its own adversarial self-pass, and returns the
 full severity-graded report. Pass that report back to the caller. Done.
 
 ## 2b. Large change → fan-out + verify Workflow
 
-Invoke the **`Workflow`** tool with the script below and `args: { base: "main" }`.
+Invoke the **`Workflow`** tool with the script below and `args: { base: "origin/main" }`.
 It fans out one reviewer per dimension (each following the spec, focused on a
 single lens), dedups, **adversarially verifies every Critical/High** finding with
 an independent skeptic (dropping any that don't survive), and returns the
@@ -81,7 +81,7 @@ export const meta = {
   model: 'opus',
 }
 
-const BASE = (args && args.base) || 'main'
+const BASE = (args && args.base) || 'origin/main'
 const SPEC = '.github/CODE_REVIEW.md'
 
 const DIMENSIONS = [
