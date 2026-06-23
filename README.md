@@ -126,6 +126,33 @@ let package = Package(
 
 Add the TMDb package to your Project's Package dependencies.
 
+### Testing support
+
+The package also vends a `TMDbTesting` library for use in **test targets**. It
+provides a spy + stub mock for every service protocol (each records its calls
+and returns an injectable result, defaulting to believable sample data) and
+`.sample` / `.samples` factories for every service return type — so you can test
+code that depends on TMDb without hitting the live API. Add it to your test
+target only:
+
+```swift
+.testTarget(
+  name: "MyProjectTests",
+  dependencies: ["MyProject", "TMDbTesting"]
+)
+```
+
+```swift
+import TMDb
+import TMDbTesting
+
+let movieService = MockMovieService()
+movieService.detailsResult = .success(.sample)
+
+let movie = try await movieService.details(forMovie: 550)
+#expect(movieService.detailsCalls.first?.movieID == 550)
+```
+
 ## Setup
 
 ### Get an API Key
