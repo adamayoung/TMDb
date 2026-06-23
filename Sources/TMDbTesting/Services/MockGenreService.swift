@@ -9,11 +9,11 @@ import Foundation
 import TMDb
 
 ///
-/// A mock ``GenreService`` for use in tests.
+/// A mock `GenreService` for use in tests.
 ///
 /// Each method records the calls it receives and returns an injectable stubbed
 /// result. By default a freshly-constructed mock returns sample data, so it can
-/// be used with zero setup; inject a ``Result`` into the matching `*Result`
+/// be used with zero setup; inject a `Result` into the matching `*Result`
 /// property to control the outcome of a method — assert on the value you
 /// injected, not on the believable defaults.
 ///
@@ -76,7 +76,7 @@ public final class MockGenreService: GenreService, @unchecked Sendable {
     ///
     /// - Parameter language: ISO 639-1 language code to display results in.
     ///
-    /// - Throws: TMDb error ``TMDbError``.
+    /// - Throws: TMDb error `TMDbError`.
     ///
     /// - Returns: The stubbed list of genres.
     ///
@@ -121,7 +121,7 @@ public final class MockGenreService: GenreService, @unchecked Sendable {
     ///
     /// - Parameter language: ISO 639-1 language code to display results in.
     ///
-    /// - Throws: TMDb error ``TMDbError``.
+    /// - Throws: TMDb error `TMDbError`.
     ///
     /// - Returns: The stubbed list of genres.
     ///
