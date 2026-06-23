@@ -282,9 +282,28 @@ does not re-ask for approval.
 
 Invoke **`/implement-plan`**. It derives the Canon TDD test list (shown before any
 code), drives the Red-Green-Refactor loop one test at a time, and finishes only
-when the **test list is empty** and the suites are green. It will pull in
-`swift-testing-expert` and `swift-concurrency` as the work demands, and expects
-the lint/format PostToolUse hook to reshape files after writes.
+when the **test list is empty** and the suites are green, and expects the
+lint/format PostToolUse hook to reshape files after writes.
+
+> **Consult the specialist skills — don't hand-roll their domains (mandatory).**
+> `/implement-plan`'s contract §4 already requires this, but it is easy to skip
+> under delivery momentum, so treat it as a hard checkpoint here too — including
+> when implementation work is fanned out to subagents/Workflows (give them the
+> same instruction). The trigger is the *topic*, not whether you feel stuck:
+>
+> - **`swift-concurrency`** — invoke the moment the change touches `actor`s,
+>   `@MainActor`, `Sendable`/`@unchecked Sendable`, locks (`NSLock`/`Mutex`),
+>   `Task`/`async let`/task groups, or any data-race/isolation question. Use it to
+>   *design* the approach, not just to debug a diagnostic. (This run hand-rolled an
+>   `NSLock`/`@unchecked Sendable` mock design and only consulted the skill when the
+>   user prompted — at which point it both validated the choice and caught a missing
+>   `@unchecked Sendable` removal-plan. See `delivery-retros.md` 2026-06-23 #359.)
+> - **`swift-testing-expert`** — invoke when writing or structuring tests
+>   (`@Test`/`#expect`/`#require`, suites, traits/tags, parameterised tests, async
+>   waiting), not after hand-writing them.
+>
+> The same applies in **Phase 3**: when the diff is concurrency-sensitive, run the
+> finding through `swift-concurrency` before accepting or dismissing it.
 
 It also **commits at logical checkpoints** as it goes — each commit a coherent,
 green, lint-clean increment (`/implement-plan`'s *Commit at logical points*). This
