@@ -32,11 +32,35 @@ Supporting decisions:
   mocks return believable sample data by default. The audiences differ: a shipped
   testing library should be usable with zero setup, not crash a consumer's suite.
   Documented caveat: assert on stubbed values, not the defaults.
-- **Thread-safe mocks.** Each mock is `@unchecked Sendable` with all mutable
-  spy/stub state behind an `NSLock` (not `Mutex`/Synchronization, which needs
-  iOS 18/macOS 15 — above the iOS 16/macOS 13 floor). Production fans service
-  calls out concurrently (`async let`), so a mock shared across that must be
-  race-free.
+- **Thread-safe mocks via `NSLock` + `@unchecked Sendable` (not an actor).** Each
+  mock is `@unchecked Sendable` with all mutable spy/stub state in a private
+  `Storage` struct behind a single `NSLock`. Production fans service calls out
+  concurrently (`async let`), so a mock shared across that must be race-free.
+  - **Safety invariant (justifies `@unchecked Sendable`):** every access to
+    `storage` goes through `withLock`, which takes a **synchronous, non-escaping**
+    closure — so there is never an `await` while the lock is held (no
+    suspension/reentrancy/deadlock path), and `Result.get()` runs *after* the lock
+    is released, on a local copy. The class has no other mutable state. A
+    `TaskGroup` concurrency test exercises this.
+  - **Why not an `actor` (instance or global):** two protocol requirements are
+    **synchronous** — `AuthenticationService.authenticateURL(for:redirectURL:)
+    -> URL` and `NaturalLanguageSearchService.availability` (a sync `{ get }`). An
+    actor can only satisfy a synchronous, non-isolated requirement via a
+    `nonisolated` member, which **cannot touch isolated state** — yet these members
+    must mutate the spy state, forcing a `nonisolated` member + its own lock (an
+    actor+lock hybrid). An actor also makes the synchronous stub/spy API
+    (`mock.fooResult = …`, `mock.fooCalls`) impossible from outside without `await`
+    - setter methods (cross-actor property writes are disallowed), a real
+    ergonomic regression for a test double. A **global** actor is strictly worse:
+    same sync-requirement wall, plus process-wide contention across all mocks and a
+    requirement that downstream test code adopt the library's global actor. So the
+    locked `final class` (mirroring the existing internal `MockAPIClient`) is the
+    deliberate choice. (Validated via the `swift-concurrency` skill.)
+  - **Removal plan:** `Mutex` (Synchronization) — which is `Sendable` without
+    `@unchecked` — needs iOS 18/macOS 15, above the current iOS 16/macOS 13 floor.
+    When the package floor rises to iOS 18/macOS 15, migrate `NSLock` → `Mutex` and
+    **drop `@unchecked Sendable`** (the `Storage`-behind-a-lock shape ports
+    directly).
 - **`GuestSession` gains a public memberwise init** — the one return-type model
   that lacked one. Purely additive (no manual `init(from:)`, so synthesised
   `Codable` is unaffected); mirrors `Session.init(success:sessionID:)`.
