@@ -589,6 +589,12 @@ git checkout -b <branch-name>
 Use a descriptive branch name with a conventional prefix
 (`feature/`, `fix/`, `chore/`, `docs/`, etc.).
 
+> **`/deliver` goes further** — it runs the whole delivery in its own **git
+> worktree** (under `.claude/worktrees/`, branched off `origin/main`) so the main
+> checkout stays free for concurrent work, and tears the worktree down on merge.
+> The branch-off-`main` rule above is the floor; the worktree is how `/deliver`
+> meets it. See `.claude/skills/deliver/SKILL.md` (Phases 0.5 + 7).
+
 ## Creating Pull Requests
 
 > The **`/pr`** skill automates this whole section (commit outstanding work →
