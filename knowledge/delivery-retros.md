@@ -42,6 +42,18 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   args-stringification, yet it bit again — worth a **standard `args` parse-guard
   preamble** baked into any `/deliver` generation-Workflow snippet (or a lint of
   the script before launch), so the guard isn't re-derived from memory each time.
+- **Gate-driven refinements (post-PR, pre-merge):** the human gate caught two
+  things the autonomous run had shipped sub-optimally, both fixed before merge:
+  (a) **sample data wasn't from the live MCP** — I'd relaxed the locked "real MCP
+  data" decision in Phase 1 to "reuse existing fixtures", and agents fabricated
+  placeholders (`"Cast Member"`, `"Movie Overview"`) for the ~12 fixture-less
+  types; re-sourced all 67 API-backed samples from real `mcp__tmdb__*` responses.
+  (b) **`TMDbTesting` tests lived inside `TMDbTests`** (per the plan) rather than a
+  dedicated target; split them into `TMDbTestingTests` with public-only imports so
+  the consumer story is compiler-enforced. **Lesson:** when I relax a *locked*
+  user decision during plan-hardening (here "samples from real MCP"), that's a
+  choice to flag back to the user at the gate, not absorb silently — both fixes
+  were cheap pre-merge but would have been debt post-merge.
 
 ## 2026-06-23 — ✨ Add `movieCredits` language-model tool to TMDbToolbox (#357) · lite
 
