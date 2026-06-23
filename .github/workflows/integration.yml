@@ -32,7 +32,7 @@ jobs:
       swift: ${{ steps.filter.outputs.swift }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Detect file changes
         id: filter
@@ -68,7 +68,7 @@ jobs:
           needs.changes.outputs.swift == 'true'
           || github.event_name == 'workflow_dispatch'
           || github.event_name == 'schedule'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install xcsift
         if: >-

@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0          # full history: branch off main and push
           token: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
