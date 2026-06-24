@@ -13,8 +13,9 @@ keeps going across the long session until the PR is ready.
 
 ```text
 you approve the plan ─▶ /deliver ─▶ worktree ─▶ [review-plan] ─▶ implement ─▶
-  code-review + fix ─▶ capture ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
-                                                                   ▲ the only hard stop
+  code-review + fix ─▶ security-review + fix ─▶ capture ─▶ /pr reviewed ─▶
+  /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
+               ▲ the only hard stop
   … then, when the PR actually merges (maybe a later session): teardown (Phase 7)
 ```
 
@@ -46,10 +47,11 @@ These are non-negotiable. Do them by default, without being reminded.
    mid-run pauses are: a **blocker** raised by `/review-plan` (Phase 1), or a **red
    gate you cannot triage** (Contract §4).
 2. **Delegate to the existing skills — don't reinvent them.** Invoke
-   `/review-plan`, `/implement-plan`, `/review-changes`, `/capture-knowledge`,
-   `/pr`, `/watch-pr`, and `/fix-integration-failures` (`/review-changes` is what
-   spawns the `code-reviewer` agent or the review Workflow). This skill only
-   sequences and gates; the expertise lives in those pieces.
+   `/review-plan`, `/implement-plan`, `/review-changes`, `/security-review`,
+   `/capture-knowledge`, `/pr`, `/watch-pr`, and `/fix-integration-failures`
+   (`/review-changes` is what spawns the `code-reviewer` agent or the review
+   Workflow). This skill only sequences and gates; the expertise lives in those
+   pieces.
 3. **Never work on `main` — always in a fresh worktree.** Phase 0.5 enters a
    dedicated git worktree (a new branch off `origin/main`) **before** `/review-plan`
    or any file edit, and all work happens there — so the user's main checkout is
@@ -369,6 +371,57 @@ This is the **single substantive review** of the change — it converges Critica
 High here so the pipeline doesn't stall. `/pr` is therefore invoked in `reviewed`
 mode (Phase 4) so it won't deep-review the identical code again.
 
+## Phase 3.4 — Security review + fix loop
+
+Once code review has converged (Phase 3), run a **security-focused** pass over the
+same committed diff. Code review and security review are different lenses —
+correctness / concurrency / architecture versus **attack surface** — and an
+unattended `/deliver` (especially `auto`) opens PRs without a human reading every
+line, so the security lens earns its place before the PR.
+
+**Skip this phase entirely if the change has no security-relevant surface.** Run it
+when `git diff --name-only origin/main...HEAD` touches **Swift source**,
+**dependency manifests** (`Package.swift` / `Package.resolved`), **CI / workflow**
+(`.github/workflows/`), or **permission / credential config** (`.claude/settings*`).
+A pure docs / markdown delivery has no attack surface — sail straight to Phase 3.5.
+This phase does **not** scale down on a `lite` change: if the surface is touched, it
+runs (a `lite` change is a single pass anyway).
+
+Run the review via **`/security-review`** — it reviews the pending changes on the
+branch and returns findings graded **High / Medium / Low** (no "Critical" tier; it
+filters out anything below confidence 8 and excludes documentation files, so a
+docs-only diff returns nothing). It produces findings; it does **not** fix — the
+conductor applies fixes, symmetric with Phase 3. For this library the
+surfaces that actually bite: the `HTTPClient` / networking layer, `api_key` and
+session / credential handling, URL and query construction, `Decodable` paths over
+untrusted API data, anything that logs, and dependency / permission changes. Then
+converge with the same loop as Phase 3:
+
+1. Read the severity-graded findings.
+2. **For each High finding** (and any Medium with a concrete attack path), fix it —
+   **test-first via `canon-tdd` where the defect is reproducible** (input validation
+   at a public boundary, a decoding guard), or by the minimal direct change where it
+   is not (removing a secret-leaking log line, tightening a permission). Re-run
+   `/test` (+ `/integration-test` if behaviour changed) and **commit the fix** — the
+   commit is required so the re-review diffs committed history and converges (as in
+   Phase 3).
+3. **Re-invoke `/security-review`** on the updated (committed) diff. Repeat until no
+   High findings remain.
+4. **Cap at 3 iterations.** If High findings persist after three rounds,
+   stop and surface them to the user — never loop forever or ship a known
+   vulnerability silently.
+   - **Auto:** convene the panel. **Proceed** → note the unresolved finding in the
+     PR description and continue; **stop** → surface to the user. A finding that
+     **leaks credentials or opens a clear exploit** is the security analogue of the
+     never-delegated data-loss blocker — treat it as a **hard stop even in `auto`**.
+
+Medium/Low findings: apply the cheap, clearly-correct ones; note the rest in the PR
+description rather than blocking on them.
+
+Phase 4's `make ci` is a **correctness** gate (lint, tests, build, docs) — there is
+no SAST step in CI — so this phase is the pipeline's **only** security gate. Don't
+skip it on a change that touches the surfaces above.
+
 ## Phase 3.5 — Capture learnings
 
 Invoke **`/capture-knowledge`**, **passing the knowledge-candidates list you kept
@@ -456,9 +509,10 @@ Reflect on *this* delivery and write a dated entry to
 
 - **Feature / PR**, date, and delivery weight (lite/full).
 - **Phases completed / Skills invoked** — a compact one-liner each (e.g. phases
-  `0–6`; skills `review-plan, implement-plan, review-changes, capture-knowledge,
-  pr, watch-pr`). This is telemetry for the recurring-pattern scan: over time it
-  shows which skills fire, which phases get skipped, and where deliveries stop.
+  `0–6`; skills `review-plan, implement-plan, review-changes, security-review,
+  capture-knowledge, pr, watch-pr`). This is telemetry for the recurring-pattern
+  scan: over time it shows which skills fire, which phases get skipped, and where
+  deliveries stop.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from this skill to do the right
