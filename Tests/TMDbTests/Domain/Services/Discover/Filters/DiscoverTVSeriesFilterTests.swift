@@ -44,6 +44,26 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.watchMonetizationTypes == nil)
         #expect(filter.screenedTheatrically == nil)
         #expect(filter.withPeople == nil)
+        #expect(filter.withoutWatchProviders == nil)
+        #expect(filter.includeNullFirstAirDates == nil)
+    }
+
+    @Test("init with without watch providers sets property")
+    func initWithWithoutWatchProvidersSetsProperty() {
+        let withoutWatchProviders = [8, 9]
+
+        let filter = DiscoverTVSeriesFilter(
+            withoutWatchProviders: withoutWatchProviders
+        )
+
+        #expect(filter.withoutWatchProviders == withoutWatchProviders)
+    }
+
+    @Test("init with include null first air dates sets property")
+    func initWithIncludeNullFirstAirDatesSetsProperty() {
+        let filter = DiscoverTVSeriesFilter(includeNullFirstAirDates: true)
+
+        #expect(filter.includeNullFirstAirDates == true)
     }
 
     @Test("init with original language sets original language property")
@@ -301,7 +321,9 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
             withoutCompanies: [999],
             watchMonetizationTypes: monetizationTypes,
             screenedTheatrically: true,
-            withPeople: [287]
+            withPeople: [287],
+            withoutWatchProviders: [11, 12],
+            includeNullFirstAirDates: true
         )
 
         #expect(filter.originalLanguage == "en")
@@ -332,6 +354,8 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.watchMonetizationTypes == monetizationTypes)
         #expect(filter.screenedTheatrically == true)
         #expect(filter.withPeople == [287])
+        #expect(filter.withoutWatchProviders == [11, 12])
+        #expect(filter.includeNullFirstAirDates == true)
     }
 
 }

@@ -256,6 +256,8 @@ extension DiscoverTVSeriesFilter {
             watchMonetizationTypes: watchMonetizationTypes,
             screenedTheatrically: screenedTheatrically,
             withPeople: withPeople,
+            withoutWatchProviders: withoutWatchProviders,
+            includeNullFirstAirDates: includeNullFirstAirDates,
             genresJoin: genresJoin ?? self.genresJoin,
             keywordsJoin: keywordsJoin ?? self.keywordsJoin
         )

@@ -146,8 +146,18 @@ private extension APIRequestQueryItems {
             )
         }
 
+        if let withoutWatchProviders = filter.withoutWatchProviders {
+            self[.withoutWatchProviders] = Self.idsQueryItemValue(
+                for: withoutWatchProviders
+            )
+        }
+
         if let watchRegion = filter.watchRegion {
             self[.watchRegion] = watchRegion
+        }
+
+        if let includeNullFirstAirDates = filter.includeNullFirstAirDates {
+            self[.includeNullFirstAirDates] = includeNullFirstAirDates
         }
 
         applyExtendedFilters(from: filter)

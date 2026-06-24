@@ -71,6 +71,14 @@ private extension APIRequestQueryItems {
             }
         }
 
+        if let releaseDateMin = filter.releaseDateMin {
+            self[.releaseDateGreaterThan] = Self.dateString(from: releaseDateMin)
+        }
+
+        if let releaseDateMax = filter.releaseDateMax {
+            self[.releaseDateLessThan] = Self.dateString(from: releaseDateMax)
+        }
+
         applyVoteAndRuntimeFilters(from: filter)
         applyContentAndProviderFilters(from: filter)
     }
@@ -135,6 +143,12 @@ private extension APIRequestQueryItems {
             )
         }
 
+        if let withoutWatchProviders = filter.withoutWatchProviders {
+            self[.withoutWatchProviders] = Self.idsQueryItemValue(
+                for: withoutWatchProviders
+            )
+        }
+
         if let watchRegion = filter.watchRegion {
             self[.watchRegion] = watchRegion
         }
@@ -190,6 +204,10 @@ private extension APIRequestQueryItems {
                 .map(\.rawValue)
                 .joined(separator: "|")
         }
+    }
+
+    static func dateString(from date: Date) -> String {
+        DateFormatter.theMovieDatabase.string(from: date)
     }
 
 }

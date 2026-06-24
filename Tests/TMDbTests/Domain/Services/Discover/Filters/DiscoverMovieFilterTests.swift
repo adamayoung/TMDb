@@ -9,6 +9,8 @@ import Foundation
 import Testing
 @testable import TMDb
 
+// swiftlint:disable file_length
+
 @Suite(.tags(.filters, .discover))
 struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
 
@@ -44,6 +46,34 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.withOriginCountry == nil)
         #expect(filter.withoutCompanies == nil)
         #expect(filter.watchMonetizationTypes == nil)
+        #expect(filter.releaseDateMin == nil)
+        #expect(filter.releaseDateMax == nil)
+        #expect(filter.withoutWatchProviders == nil)
+    }
+
+    @Test("init with release date range sets release date properties")
+    func initWithReleaseDateRangeSetsReleaseDateProperties() {
+        let releaseDateMin = Date(iso8601: "2024-01-01T00:00:00Z")
+        let releaseDateMax = Date(iso8601: "2024-12-31T00:00:00Z")
+
+        let filter = DiscoverMovieFilter(
+            releaseDateMin: releaseDateMin,
+            releaseDateMax: releaseDateMax
+        )
+
+        #expect(filter.releaseDateMin == releaseDateMin)
+        #expect(filter.releaseDateMax == releaseDateMax)
+    }
+
+    @Test("init with without watch providers sets property")
+    func initWithWithoutWatchProvidersSetsProperty() {
+        let withoutWatchProviders = [8, 9]
+
+        let filter = DiscoverMovieFilter(
+            withoutWatchProviders: withoutWatchProviders
+        )
+
+        #expect(filter.withoutWatchProviders == withoutWatchProviders)
     }
 
     @Test("init with people sets people property")
@@ -308,7 +338,10 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
             withCrew: [1223],
             withOriginCountry: "US",
             withoutCompanies: withoutCompanies,
-            watchMonetizationTypes: monetizationTypes
+            watchMonetizationTypes: monetizationTypes,
+            releaseDateMin: Date(iso8601: "2024-01-01T00:00:00Z"),
+            releaseDateMax: Date(iso8601: "2024-12-31T00:00:00Z"),
+            withoutWatchProviders: [11, 12]
         )
 
         #expect(filter.people == people)
@@ -339,6 +372,9 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.withOriginCountry == "US")
         #expect(filter.withoutCompanies == withoutCompanies)
         #expect(filter.watchMonetizationTypes == monetizationTypes)
+        #expect(filter.releaseDateMin == Date(iso8601: "2024-01-01T00:00:00Z"))
+        #expect(filter.releaseDateMax == Date(iso8601: "2024-12-31T00:00:00Z"))
+        #expect(filter.withoutWatchProviders == [11, 12])
     }
 
     @Test("primary release year filter on returns correct date bounds")

@@ -265,6 +265,9 @@ extension DiscoverMovieFilter {
             withOriginCountry: withOriginCountry,
             withoutCompanies: withoutCompanies,
             watchMonetizationTypes: watchMonetizationTypes,
+            releaseDateMin: releaseDateMin,
+            releaseDateMax: releaseDateMax,
+            withoutWatchProviders: withoutWatchProviders,
             genresJoin: genresJoin ?? self.genresJoin,
             keywordsJoin: keywordsJoin ?? self.keywordsJoin
         )
