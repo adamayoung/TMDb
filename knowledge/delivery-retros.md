@@ -39,7 +39,15 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   and the `main` merge each re-ran `claude-review`, which posted that thread **after**
   my one-time thread check. The thread also **blocked the merge** (the `main`
   ruleset requires `required_review_thread_resolution`), so "ready" was wrong on two
-  counts.
+  counts. (4) **Misread `BLOCKED` as code-owner review when a required check was
+  still running.** A filtered rollup query (`select(.conclusion!="SUCCESS")`) hid a
+  still-`IN_PROGRESS` "Build and Test" (no conclusion yet ⇒ absent from the filter),
+  compounded by a stale passed copy of the same check from an earlier tip — so I
+  reported "all green" and pinned the merge block on the un-satisfiable code-owner
+  self-review. The user caught it. Lesson: confirm **every required check is
+  `COMPLETED`+`SUCCESS` on the current tip** (assert nothing is `status!=COMPLETED`),
+  and when `BLOCKED`, rule out a **pending required check** before blaming a review
+  rule.
 - **Deviations:** an unplanned mid-Phase-2 stash-rescue to move the change off
   `main` into the worktree; and a post-gate fix loop (add the missing TV
   `withoutWatchProviders` integration test, resolve the bot thread) before the merge

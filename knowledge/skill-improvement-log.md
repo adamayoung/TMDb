@@ -30,6 +30,25 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-24 — Verify checks positively (COMPLETED+SUCCESS on current tip), not "no failures" · applied
+
+- **Pattern:** misreading a still-running required check as green. In #361 a
+  filtered rollup (`select(.conclusion!="SUCCESS")`) omitted an `IN_PROGRESS`
+  "Build and Test" (no conclusion yet ⇒ not a "failure"), and a stale passed copy of
+  the same check from an earlier tip reinforced the false green — so `mergeStateStatus:
+  BLOCKED` was wrongly attributed to the un-satisfiable code-owner self-review rather
+  than the pending check. User caught it. Single occurrence, user-directed.
+- **Decision:** **applied** (user-directed). `/watch-pr` §3: added "Verify check
+  completeness explicitly — a running check is not a pass": assert nothing is
+  `status!=COMPLETED`, require `conclusion==SUCCESS` per required check on the current
+  tip, dedup stale per-tip duplicates, don't infer green from a `--watch` exit, and
+  when `BLOCKED` rule out a pending required check before blaming a review/policy
+  rule. Landed in PR #361.
+- **Rationale:** "no failures" ≠ "all passed" — a pending check has no conclusion and
+  slips through failure-filters; a false-green merge readiness call wastes a round
+  trip and (here) produced a wrong root-cause diagnosis.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-24 — Post-gate pushes re-open the gate: re-sweep threads/checks after the last push · applied
 
 - **Pattern:** declaring a PR "ready, 0 unresolved threads" off a snapshot taken

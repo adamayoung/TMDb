@@ -123,6 +123,22 @@ The PR is **ready** when every review thread is resolved, no check is failing or
 pending, AND the branch is **up to date with `main`** (the `main` ruleset requires
 it before merge).
 
+**Verify check completeness explicitly — a running check is not a pass.** "No check
+failing" is **not** the same as "all checks passed": a check still `IN_PROGRESS` /
+`QUEUED` has **no conclusion yet**, so a filter like `select(.conclusion!="SUCCESS")`
+or "are there any failures?" reports it as *absent*, not *pending* — reading as green
+when it isn't. Confirm readiness positively: **every required check has
+`status == COMPLETED` and `conclusion == SUCCESS` on the current tip.** Concretely,
+assert `[.statusCheckRollup[] | select(.status!="COMPLETED")]` is **empty** before
+calling it green, and **dedup stale duplicate entries** (the rollup keeps a row per
+run, so an earlier tip's passed "Build and Test" can sit alongside the current tip's
+`IN_PROGRESS` one — key on the latest run per check name). Do **not** infer green
+from a `gh pr checks --watch` exit alone; re-read the rollup. And when
+`mergeStateStatus` is `BLOCKED`, **rule out a pending required check first** (it is
+the common cause) before attributing the block to a review/policy rule like
+code-owner review. (Bit #361: a still-running "Build and Test" was misread as green
+and `BLOCKED` was wrongly pinned on code-owner review.)
+
 **Rebase before declaring ready, never after.** `main` advances while you watch
 (other PRs merge), leaving the branch `BEHIND`. The moment the PR is otherwise
 green, bring it up to date — `gh pr update-branch <number>` (a merge of `main`; no
