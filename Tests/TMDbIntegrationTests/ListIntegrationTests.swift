@@ -130,4 +130,19 @@ struct ListIntegrationTests {
         try await listService.delete(list: listID, session: session)
     }
 
+    @Test("create with empty name throws bad request")
+    func createWithEmptyNameThrowsBadRequest() async throws {
+        let session = Session(success: true, sessionID: "test-session")
+
+        await #expect(throws: TMDbError.self) {
+            _ = try await listService.create(
+                name: "",
+                description: nil,
+                language: nil,
+                isPublic: nil,
+                session: session
+            )
+        }
+    }
+
 }

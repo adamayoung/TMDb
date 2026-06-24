@@ -30,6 +30,30 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-24 — "Fix every instance of X" deliveries: enumerate all sites up front · applied
+
+- **Pattern:** for a delivery whose goal is "apply change C to every occurrence of
+  pattern X", the sites get found **piecemeal across review passes** rather than
+  enumerated up front. In #364 (encode every String-into-path interpolation + validate
+  every public String input), the plan grep and `/security-review` each missed a
+  *different* subset: Phase 3 code review found a 4th encode site (`ReviewRequest`),
+  then the `claude-review` bot flagged three more unvalidated `String`-ID service
+  methods. Each pass caught a subset; none enumerated the whole class. Echoes #361's
+  coverage gap (one of N parallel cases — TV `withoutWatchProviders` — had only unit
+  coverage), the same "incomplete enumeration of N parallel instances" shape.
+- **Decision:** **applied** (user-approved in the Phase 6 scan). `/deliver` Phase 2:
+  added a blockquote — when the plan's goal is "fix every instance of pattern X", do a
+  single **type-driven sweep first** and list all sites in the test list before
+  implementing; sweep by type (e.g. `grep 'path = "/.*\('` for String-into-path
+  interpolations *and* scan public service signatures for `String`/`*.ID` params; `Int`
+  IDs are safe) rather than eyeballing. Landed in `.claude/skills/deliver/SKILL.md`
+  Phase 2 (PR #364).
+- **Rationale:** piecemeal discovery means a grep keyed on the wrong signal silently
+  finds a subset and the stragglers surface one at a time across code/security review —
+  late, scattered, and easy to ship incomplete. One type-driven enumeration up front
+  makes "did I get them all?" a single answerable question.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-24 — Verify checks positively (COMPLETED+SUCCESS on current tip), not "no failures" · applied
 
 - **Pattern:** misreading a still-running required check as green. In #361 a

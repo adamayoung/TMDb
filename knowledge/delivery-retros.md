@@ -10,6 +10,37 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-24 — 🔒 Harden URL path interpolation & validate inputs (#364) · lite
+
+- **Phases / skills:** phases 0–6; `test, integration-test, review-changes,
+  security-review, capture-knowledge, pr, watch-pr`. Skipped `/review-plan` (lite;
+  plan built from a careful Explore sweep + the originating security review).
+- **Worked:** the **Phase 3.4 security review earned its place** — it traced the
+  encoding *end-to-end* through `TMDbAPIClient.urlFromPath`'s `URLComponents`
+  round-trip and confirmed query/fragment injection is genuinely blocked (not just
+  at the string layer), while surfacing the subtle `%2F`→`/` decode and correctly
+  bounding it as path-only on a locked host. That trace is what made the fix
+  trustworthy and produced ADR-0008 + the gotcha. Reusing the existing
+  `TMDbSearchService.validate` pattern kept validation uniform and review-clean.
+- **Friction — a repeated blind spot for `String`-typed IDs.** The *same class* of
+  site kept being found later than it should: my planning grep **and** the initial
+  `/security-review` both missed sites; Phase 3 code review found a 4th
+  String-into-path builder (`ReviewRequest`); then `claude-review` flagged **three
+  more** public service methods taking `String` IDs with no empty guard
+  (`CreditService`/`ReviewService`/`TVEpisodeGroupService` `.details(for…:)`). Each
+  pass found a subset. A type-driven sweep up front (grep `path = "/…\(` for
+  String interpolations **and** scan public service signatures for `String`/`*.ID`
+  params) would have enumerated all of them in one shot.
+- **Deviations:** none material — heeded the worktree edit-path gotcha (re-`Read`
+  via worktree paths after the pre-`EnterWorktree` reads; no main-checkout edits).
+  Minor: the `TaskCreate` ledger is CWD-scoped, so it was lost on `EnterWorktree`
+  and had to be recreated inside the worktree. The retro commit also hit a
+  same-day ADR-number collision with #363 (both claimed 0007) — renumbered to
+  0008 during the rebase.
+- **One improvement:** when a delivery's goal is "fix every instance of pattern X",
+  do one **type-driven enumeration of all sites up front** and list them in the
+  plan, rather than discovering them incrementally across review passes.
+
 ## 2026-06-24 — 📝 Document existing response caching (#363) · lite (docs-led)
 
 - **Phases / skills:** phases 0–6; `review-changes, capture-knowledge, pr,

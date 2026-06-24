@@ -28,6 +28,13 @@ struct ReviewRequestTests {
         )
     }
 
+    @Test("path percent-encodes an ID containing unsafe characters")
+    func pathPercentEncodesUnsafeID() {
+        let request = ReviewRequest(id: "abc/def?x=y")
+
+        #expect(request.path == "/review/abc%2Fdef%3Fx%3Dy")
+    }
+
     @Test("queryItems is empty")
     func queryItemsIsEmpty() {
         #expect(request.queryItems.isEmpty)

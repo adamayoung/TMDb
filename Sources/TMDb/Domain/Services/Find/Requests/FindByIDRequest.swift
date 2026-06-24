@@ -14,7 +14,7 @@ final class FindByIDRequest: DecodableAPIRequest<FindResults> {
         externalSource: ExternalSource,
         language: String? = nil
     ) {
-        let path = "/find/\(externalID)"
+        let path = "/find/\(externalID.urlPathSegmentEncoded)"
         let queryItems = APIRequestQueryItems(
             externalSource: externalSource,
             language: language

@@ -17,9 +17,21 @@ final class TMDbCreditService: CreditService {
     }
 
     func details(forCredit id: Credit.ID) async throws(TMDbError) -> Credit {
+        try Self.validate(id: id)
         let request = CreditRequest(id: id)
 
         return try await apiClient.perform(request)
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbCreditService {
+
+    private static func validate(id: Credit.ID) throws(TMDbError) {
+        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("Credit ID must not be empty")
+        }
     }
 
 }

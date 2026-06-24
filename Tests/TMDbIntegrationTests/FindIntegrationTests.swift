@@ -58,4 +58,11 @@ struct FindIntegrationTests {
         #expect(results.personResults.isEmpty)
     }
 
+    @Test("find with empty external ID throws bad request")
+    func findWithEmptyExternalIDThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.self) {
+            _ = try await findService.find(externalID: "", externalSource: .imdbID)
+        }
+    }
+
 }

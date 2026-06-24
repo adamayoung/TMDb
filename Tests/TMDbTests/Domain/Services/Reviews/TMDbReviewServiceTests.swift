@@ -53,4 +53,22 @@ struct TMDbReviewServiceTests {
         }
     }
 
+    @Test("details with empty ID throws bad request and performs no request")
+    func detailsWithEmptyIDThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.badRequest("Review ID must not be empty")) {
+            _ = try await service.details(forReview: "")
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("details with whitespace ID throws bad request and performs no request")
+    func detailsWithWhitespaceIDThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.badRequest("Review ID must not be empty")) {
+            _ = try await service.details(forReview: "  \n ")
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
 }

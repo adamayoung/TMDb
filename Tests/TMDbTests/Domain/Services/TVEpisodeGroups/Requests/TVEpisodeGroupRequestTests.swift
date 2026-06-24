@@ -28,6 +28,13 @@ struct TVEpisodeGroupRequestTests {
         )
     }
 
+    @Test("path percent-encodes an ID containing unsafe characters")
+    func pathPercentEncodesUnsafeID() {
+        let request = TVEpisodeGroupRequest(id: "abc/def?x=y")
+
+        #expect(request.path == "/tv/episode_group/abc%2Fdef%3Fx%3Dy")
+    }
+
     @Test("queryItems is empty")
     func queryItemsIsEmpty() {
         #expect(request.queryItems.isEmpty)

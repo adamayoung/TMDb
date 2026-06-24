@@ -46,6 +46,7 @@ final class TMDbAuthenticationService: AuthenticationService {
     }
 
     func createSession(withV4AccessToken v4AccessToken: String) async throws(TMDbError) -> Session {
+        try Self.validate(accessToken: v4AccessToken)
         let request = CreateSessionFromV4AccessTokenRequest(
             accessToken: v4AccessToken
         )
@@ -54,6 +55,7 @@ final class TMDbAuthenticationService: AuthenticationService {
     }
 
     func createSession(withCredential credential: Credential) async throws(TMDbError) -> Session {
+        try Self.validate(credential: credential)
         let token = try await requestToken()
 
         let request = ValidateTokenWithLoginRequest(
@@ -78,6 +80,27 @@ final class TMDbAuthenticationService: AuthenticationService {
         let request = ValidateKeyRequest()
 
         return try await apiClient.perform(request).success
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbAuthenticationService {
+
+    private static func validate(accessToken: String) throws(TMDbError) {
+        guard !accessToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("Access token must not be empty")
+        }
+    }
+
+    private static func validate(credential: Credential) throws(TMDbError) {
+        guard !credential.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("Username must not be empty")
+        }
+
+        guard !credential.password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("Password must not be empty")
+        }
     }
 
 }

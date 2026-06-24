@@ -10,7 +10,7 @@ import Foundation
 final class ReviewRequest: DecodableAPIRequest<Review> {
 
     init(id: Review.ID) {
-        let path = "/review/\(id)"
+        let path = "/review/\(id.urlPathSegmentEncoded)"
 
         super.init(path: path)
     }

@@ -52,6 +52,7 @@ final class TMDbListService: ListService {
         isPublic: Bool? = nil,
         session: Session
     ) async throws(TMDbError) -> CreateListResult {
+        try Self.validate(name: name)
         let request = CreateListRequest(
             name: name,
             description: description,
@@ -93,6 +94,17 @@ final class TMDbListService: ListService {
         let request = ClearListRequest(listID: listID, sessionID: session.sessionID)
 
         _ = try await apiClient.perform(request)
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbListService {
+
+    private static func validate(name: String) throws(TMDbError) {
+        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("List name must not be empty")
+        }
     }
 
 }

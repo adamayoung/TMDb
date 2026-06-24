@@ -300,6 +300,22 @@ code), drives the Red-Green-Refactor loop one test at a time, and finishes only
 when the **test list is empty** and the suites are green, and expects the
 lint/format PostToolUse hook to reshape files after writes.
 
+> **"Fix every instance of pattern X" → enumerate ALL sites up front.** When the
+> plan's goal is to apply one change across every occurrence of a pattern (encode
+> every path interpolation, validate every public String input, rename every call
+> site), do a single **type-driven sweep first** and list the sites in the test
+> list before implementing — don't discover them piecemeal. Piecemeal discovery is
+> a recurring miss: a grep keyed on the wrong signal finds a subset, and the
+> stragglers surface one at a time across code review / security review / the
+> `claude-review` bot (PR #364 found a 4th encode site in review and three more
+> unvalidated methods from the bot, after both the plan sweep and `/security-review`
+> had each missed a different subset). Sweep by **type**, not by eyeballing: e.g.
+> `grep 'path = "/.*\('` for String-into-path interpolations *and* scan public
+> service signatures for `String`/`*.ID` params — `Int` IDs are injection-safe and
+> need nothing. Confirm the full list, then implement against it.
+>
+> ---
+>
 > **Consult the specialist skills — don't hand-roll their domains (mandatory).**
 > `/implement-plan`'s contract §4 already requires this, but it is easy to skip
 > under delivery momentum, so treat it as a hard checkpoint here too — including
