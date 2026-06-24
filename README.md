@@ -36,8 +36,9 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   visionOS 1+, Linux, Windows
 * **Automatic Retry**: Opt-in retry with exponential backoff for rate
   limits (HTTP 429) and server errors (HTTP 5xx)
-* **Response Caching**: Opt-in in-memory HTTP response cache with
-  configurable TTL and entry limits
+* **Response Caching**: On-disk HTTP caching by default on Apple platforms
+  (via `URLCache`, honouring TMDb's `Cache-Control` headers), plus an opt-in
+  in-memory cache with configurable TTL and entry limits
 * **Natural-Language Search**: On-device "super search" — type a prompt,
   get movies, TV series, and people. Deterministic interpretation via
   Apple's Natural Language framework on every Apple platform, with
@@ -263,7 +264,14 @@ let tmdbClient = TMDbClient(
 
 #### Response Caching
 
-Enable in-memory response caching to reduce redundant network requests:
+On Apple platforms the default client already caches responses **on disk** via
+`URLCache`, honouring TMDb's `Cache-Control` and `ETag` headers — so repeated
+requests are served from disk (and persist across launches) with no
+configuration. To tune or disable it, supply your own `HTTPClient` backed by a
+`URLSession` you configure.
+
+For an additional in-memory layer (or for caching on Linux/Windows, where
+`URLCache` is not installed), enable in-memory response caching:
 
 ```swift
 // Use default caching (1-hour TTL, 100 entries)

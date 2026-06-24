@@ -4,6 +4,20 @@ Behaviours of the **live** TMDb API discovered while implementing — the things
 docs don't say, or say wrongly. This is an API-client library, so these recur.
 Newest at the top; cite the endpoint and the date observed.
 
+## HTTP caching
+
+### Every GET response is HTTP-cacheable — `Cache-Control: public, max-age` + `ETag`
+
+*2026-06-24.* TMDb serves standard caching headers on every GET endpoint:
+`Cache-Control: public, max-age=<seconds>` plus a weak `ETag` (and an `age`
+header — responses are CDN-fronted). The `max-age` varies sensibly by resource:
+`movie/{id}` ~18909s (~5h), `search/movie` ~15340s (~4h), `configuration` and
+`person/{id}` several hours, `trending/*` ~36–395s (minutes). So responses are
+fully cacheable *and* conditionally revalidatable (a stale entry's `ETag` yields
+a `304 Not Modified`). This is why the default `URLSession` adapter's `URLCache`
+gives real on-disk caching for free on Apple platforms — see
+[ADR-0007](decisions/0007-document-existing-response-caching.md).
+
 ## Discover
 
 ### `discover/movie` has *two* distinct release-date filters

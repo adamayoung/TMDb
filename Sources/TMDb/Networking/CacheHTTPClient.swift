@@ -67,6 +67,14 @@ private actor ResponseCache {
 
 }
 
+///
+/// An `HTTPClient` decorator that caches successful `GET` responses in memory.
+///
+/// Cache hits short-circuit the wrapped client. User-specific requests (those
+/// carrying a `session_id` or a guest session) bypass the cache, and any
+/// successful `POST` or `DELETE` invalidates the entire cache. This layer sits
+/// above the underlying transport's own on-disk `URLCache`.
+///
 final class CacheHTTPClient: HTTPClient, Sendable {
 
     private let httpClient: any HTTPClient
