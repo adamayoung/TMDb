@@ -12,10 +12,10 @@ the existing skills and the `code-reviewer` agent, adds the safety gates, and
 keeps going across the long session until the PR is ready.
 
 ```text
-you approve the plan ─▶ /deliver ─▶ worktree ─▶ [review-plan] ─▶ implement ─▶
-  code-review + fix ─▶ security-review + fix ─▶ capture ─▶ /pr reviewed ─▶
-  /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
-               ▲ the only hard stop
+you approve the plan ─▶ /deliver ─▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
+  implement ─▶ code-review + fix ─▶ security-review + fix ─▶ capture ─▶
+  rubric check (ACs met?) ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
+                                                            ▲ the only hard stop
   … then, when the PR actually merges (maybe a later session): teardown (Phase 7)
 ```
 
@@ -77,6 +77,12 @@ These are non-negotiable. Do them by default, without being reminded.
    surprising live-API behaviour, or a non-obvious decision. One line each
    (`<category>: <gist> [where]`). Phase 3.5 curates this list; reconstructing it
    at the end loses the best material (and may not survive compaction).
+8. **Auto-start after plan-mode approval.** When a plan has just been approved via
+   `ExitPlanMode` in this session, invoke `/deliver` immediately — **do not ask
+   "shall I start?" or "ready to proceed?"**. The plan-mode approval IS the start
+   signal. The only legitimate reason to pause before starting is if Phase 0's
+   entry gate fires (missing acceptance criteria) — that is a plan problem, not a
+   confirmation prompt.
 
 ## Auto mode (unattended)
 
@@ -180,6 +186,23 @@ it never bloats or biases the main window:
   block the pipeline on it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
+- **Entry gate — acceptance criteria required.** Plans are expected in the form
+  *"As a \<user-type\> I want \<feature\> so that \<reason\>"* followed by
+  acceptance criteria and any elaboration. Locate the acceptance criteria in the
+  plan:
+  - **If acceptance criteria are present:** extract them verbatim as the **delivery
+    rubric** and record them in the ledger. Proceed silently.
+  - **If acceptance criteria are absent:** stop and ask the user to add them before
+    proceeding — do not enter the worktree or begin implementation. Be specific:
+    *"The plan has no acceptance criteria. Please add them so there is a clear
+    definition of done (e.g. 'Given X, when Y, then Z')."*
+  - **Auto:** convene the panel on a missing-AC stop. **Proceed** majority → note
+    the gap in the ledger, continue without a rubric (Phase 3.6 becomes a no-op).
+    **Stop** majority → surface to the user.
+
+  The delivery rubric (extracted ACs) travels through the run and is consumed in
+  Phase 3.6.
+
 - **Read the plan's content into context now — before the worktree.** Phase 0.5's
   `EnterWorktree` switches the working directory and **clears the CWD-scoped plans
   cache**, so the active plan reference can be lost after the switch. Locate and
@@ -468,6 +491,36 @@ Do this **before** `/pr` so the notes are committed in the **same PR** as the
 change. Capturing nothing is a valid outcome — don't manufacture entries. The
 `knowledge/` files are Markdown, so they add no review noise (the GitHub reviewer
 ignores `**/*.md`); keep entries tidy by hand.
+
+## Phase 3.6 — Rubric verification (exit gate)
+
+Retrieve the delivery rubric (the acceptance criteria extracted in Phase 0) from
+the ledger. If none were extracted — the plan lacked ACs and the auto panel chose
+to proceed — **skip this phase entirely**.
+
+For each AC, verify the committed diff satisfies it:
+
+- **A behaviour criterion** (decoding, error handling, an API call shape) → scan
+  the diff (`git diff origin/main...HEAD`) for the relevant code path, or run a
+  targeted test (`swift test --filter …`) if one covers it directly.
+- **A test-coverage criterion** → confirm the test file and assertion exist in
+  the diff.
+- **An integration criterion** → confirm the integration test exists; the live
+  run already passed in Phase 2, so no re-run is needed.
+
+**For each criterion:**
+
+- **Satisfied** → mark it off in the ledger, no action.
+- **Not satisfied** → fix it test-first (`canon-tdd`), commit, and re-verify. If
+  a gap cannot be closed without a plan change, note it in the PR description with
+  the reason.
+
+This check is lightweight — reading a diff against a short list, not a full review.
+Do it inline (no subagent needed). If every item passes in a quick scan, this phase
+takes seconds. Only gaps trigger work.
+
+The rubric answers a different question than CI: *"did we build what the plan
+said?"* not *"did the build pass?"*
 
 ## Phase 4 — Create the PR
 
