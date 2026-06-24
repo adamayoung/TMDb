@@ -56,4 +56,22 @@ struct TMDbTVEpisodeGroupServiceTests {
         }
     }
 
+    @Test("details with empty ID throws bad request and performs no request")
+    func detailsWithEmptyIDThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.badRequest("TV episode group ID must not be empty")) {
+            _ = try await service.details(forTVEpisodeGroup: "")
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("details with whitespace ID throws bad request and performs no request")
+    func detailsWithWhitespaceIDThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.badRequest("TV episode group ID must not be empty")) {
+            _ = try await service.details(forTVEpisodeGroup: "  \n ")
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
 }

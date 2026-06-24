@@ -19,9 +19,21 @@ final class TMDbTVEpisodeGroupService: TVEpisodeGroupService {
     func details(
         forTVEpisodeGroup id: TVEpisodeGroup.ID
     ) async throws(TMDbError) -> TVEpisodeGroup {
+        try Self.validate(id: id)
         let request = TVEpisodeGroupRequest(id: id)
 
         return try await apiClient.perform(request)
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbTVEpisodeGroupService {
+
+    private static func validate(id: TVEpisodeGroup.ID) throws(TMDbError) {
+        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("TV episode group ID must not be empty")
+        }
     }
 
 }
