@@ -201,6 +201,30 @@ and no deprecation shims** — it only changes Xcode autocomplete placeholders a
 the documented signature. (We initially mis-scoped the `<entity>ID` rename as
 breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
 
+## Networking
+
+### `URLComponents` path round-trip in `TMDbAPIClient.urlFromPath` decodes `%2F`
+
+*2026-06-24.* `TMDbAPIClient.urlFromPath` rebuilds the request URL by reading and
+re-assigning `URLComponents.path` (to prefix the API base path). Two non-obvious
+Foundation behaviours interact here:
+
+- The `URLComponents.path` **getter percent-decodes** (`%3F` → `?`), and the
+  **setter re-encodes** characters invalid in a path component when serialising
+  via `.url` (`?` → `%3F`, `#` → `%23`).
+- But `/` is a *valid* path separator, so an encoded `%2F` decodes to a literal
+  `/` on the getter and is **not** re-encoded — it round-trips into extra path
+  segments.
+
+Consequence for the `urlPathSegmentEncoded` hardening
+([ADR-0007](decisions/0007-percent-encode-url-path-segments.md)): percent-encoding
+a user string before interpolating it into a request path **does** prevent
+query/fragment injection end-to-end, but an injected `/` still becomes a real
+separator. That residual is path-only — `urlFromPath` force-overrides
+`scheme`/`host` to `https://api.themoviedb.org`, so it cannot redirect off-host
+(no SSRF). If you ever need to neutralise `/` too, encode after the round-trip
+(set `percentEncodedPath`) rather than relying on the segment encoder alone.
+
 ## Swift concurrency
 
 ### Deterministically testing that cancellation is *forwarded* into an unstructured `Task`
