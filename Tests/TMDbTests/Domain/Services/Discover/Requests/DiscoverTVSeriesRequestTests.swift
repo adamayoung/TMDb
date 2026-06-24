@@ -275,6 +275,24 @@ struct DiscoverTVSeriesRequestTests { // swiftlint:disable:this type_body_length
         )
     }
 
+    @Test("queryItems with without watch providers")
+    func queryItemsWithWithoutWatchProviders() {
+        let filter = DiscoverTVSeriesFilter(withoutWatchProviders: [8, 9])
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(request.queryItems == ["without_watch_providers": "8,9"])
+    }
+
+    @Test("queryItems with include null first air dates")
+    func queryItemsWithIncludeNullFirstAirDates() {
+        let filter = DiscoverTVSeriesFilter(includeNullFirstAirDates: true)
+        let request = DiscoverTVSeriesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == ["include_null_first_air_dates": "true"]
+        )
+    }
+
     @Test("queryItems with screened theatrically")
     func queryItemsWithScreenedTheatrically() {
         let filter = DiscoverTVSeriesFilter(

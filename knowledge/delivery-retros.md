@@ -10,6 +10,56 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-24 — ✨ Add missing discover filter parameters (#361) · lite
+
+- **Phases / skills:** phases 0–6; `build-for-testing, test, integration-test,
+  lint, review-changes, capture-knowledge, pr, watch-pr`. Skipped `/review-plan`
+  (lite + the plan was already adversarially reviewed earlier this session by the
+  3-agent finding-verification pass).
+- **Worked:** lite-weight scoping was correct — single-`code-reviewer` review
+  converged **round 1 with 0 critical/high/medium**. The codebase's existing
+  *"no-op mutation preserves every other populated field"* guard test made the
+  real risk (new fields silently dropped by the ~30-arg fluent `copy()` helpers)
+  trivial to cover: extend `fullyPopulatedFilter`, and a missing pass-through
+  fails loudly. Verifying the finding against the live API up front caught the
+  `release_date.*` vs `primary_release_date.*` semantic distinction before coding.
+- **Friction:** (1) **The big one — edits landed in the main checkout, not the
+  worktree.** I `Read` the source files in Phase 0 *before* `EnterWorktree`, so
+  their absolute paths pointed at `main`; continuing to `Edit` those paths after
+  entering wrote to `main`. Worse, the build/test then ran against the *pristine*
+  worktree and returned **baseline** counts (2792/282), masking that nothing had
+  landed — only an empty `git status` in the worktree exposed it. Recovered via a
+  shared stash (`git -C main stash` → `git -C worktree stash pop`). (2) The
+  `Date(iso8601:)` test helper is `TMDbTests`-only, so an integration test using
+  it failed to compile — but only once the integration target actually built.
+  (3) **Asymmetric integration coverage, then a stale "ready" call.** Three of the
+  four new params got a live integration test but TV `withoutWatchProviders` got
+  only unit coverage — `claude-review` flagged it **High**. Worse, I'd declared the
+  PR "ready, 0 unresolved threads" *before* re-checking: the retro/skill-fix pushes
+  and the `main` merge each re-ran `claude-review`, which posted that thread **after**
+  my one-time thread check. The thread also **blocked the merge** (the `main`
+  ruleset requires `required_review_thread_resolution`), so "ready" was wrong on two
+  counts. (4) **Misread `BLOCKED` as code-owner review when a required check was
+  still running.** A filtered rollup query (`select(.conclusion!="SUCCESS")`) hid a
+  still-`IN_PROGRESS` "Build and Test" (no conclusion yet ⇒ absent from the filter),
+  compounded by a stale passed copy of the same check from an earlier tip — so I
+  reported "all green" and pinned the merge block on the un-satisfiable code-owner
+  self-review. The user caught it. Lesson: confirm **every required check is
+  `COMPLETED`+`SUCCESS` on the current tip** (assert nothing is `status!=COMPLETED`),
+  and when `BLOCKED`, rule out a **pending required check** before blaming a review
+  rule.
+- **Deviations:** an unplanned mid-Phase-2 stash-rescue to move the change off
+  `main` into the worktree; and a post-gate fix loop (add the missing TV
+  `withoutWatchProviders` integration test, resolve the bot thread) before the merge
+  could proceed — i.e. the `/watch-pr` thread sweep had to actually run per-push,
+  not once.
+- **One improvement:** `/deliver` Phase 0 already reads the *plan* into context
+  before the worktree, but reading *source* files there is a trap — their paths
+  become stale on `EnterWorktree`. Phase 0.5 should add a hard checkpoint: after
+  entering, **verify `git status` shows the diff in the worktree before trusting
+  the first green build**. (This is the **second** delivery to hit main-vs-worktree
+  path confusion — see #359 — so it's now a recurring pattern worth a skill edit.)
+
 ## 2026-06-23 — ✨ Add `TMDbTesting` public mocks & sample-data library (#359) · full
 
 - **Phases / skills:** phases 0–6; `review-plan, implement-plan, build-for-testing,

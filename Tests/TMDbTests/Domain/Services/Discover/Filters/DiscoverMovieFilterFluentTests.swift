@@ -205,6 +205,9 @@ struct DiscoverMovieFilterFluentTests {
             withOriginCountry: "GB",
             withoutCompanies: [6],
             watchMonetizationTypes: [.flatrate],
+            releaseDateMin: Date(timeIntervalSince1970: 1_000_000),
+            releaseDateMax: Date(timeIntervalSince1970: 2_000_000),
+            withoutWatchProviders: [9],
             genresJoin: .or,
             keywordsJoin: .or
         )

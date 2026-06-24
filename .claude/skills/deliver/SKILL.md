@@ -253,6 +253,19 @@ by whatever spawned the subshell — **not** this file; check the environment fi
 Record the worktree path and branch name in the ledger. The branch is what the PR
 and all later phases (`git diff origin/main...HEAD`, `/pr`, `/watch-pr`) operate on.
 
+**Edit via worktree paths, and verify your diff landed there — not on `main`.** A
+file `Read` *before* `EnterWorktree` (e.g. source you scoped in Phase 0) yields a
+**main-checkout** absolute path; continuing to `Edit` that exact path after entering
+writes to **`main`**, not the worktree (they share `.git` but have **separate
+working dirs**). The trap is self-concealing: the build/test then runs against the
+still-pristine worktree and returns **baseline** counts, so a green run "confirms"
+work that never landed. So: after entering, **re-`Read` source files before editing
+them**, and **before trusting the first green build, verify `git status` shows your
+diff in the worktree** (an empty diff + baseline test counts = edits went to `main`).
+Rescue stranded edits with a shared stash: `git -C <main-checkout> stash` then
+`git stash pop` in the worktree. (Same root cause as the fanned-out-subagent variant
+in `knowledge/gotchas.md` → *Edits can land in the main checkout*.)
+
 **Invoked from plan mode?** If you reach `/deliver` while in plan mode with an
 approved plan, that approval *is* Gate-1: exit plan mode (the plan file is your
 input — already read into context in Phase 0), enter the worktree, and proceed —
@@ -535,6 +548,17 @@ lost. Two cases:
   small follow-up PR (or push straight if policy allows); the same applies to any
   skill edits the auto recurring-pattern scan commits. Do this **before** Phase 7,
   and confirm it's pushed — otherwise teardown's `discard_changes` drops it.
+
+**Pushing the retro re-opens the gate — re-watch before merge.** In watch-only mode
+the retro / knowledge / skill commits are pushed to the **PR branch after** the
+ready gate, and **every push re-triggers `claude-review` and the CI matrix** — which
+can post a **new blocking thread** (the `main` ruleset requires thread resolution)
+or restart checks. So after the **last** post-gate push, **return to the `/watch-pr`
+loop once more**: re-sweep unresolved threads and re-confirm checks green before
+treating the PR as merge-ready or merging. "Ready" is only ever true of the *current*
+branch tip — never a tip you have since pushed past. (Bit `/deliver` on #361: a
+"ready, 0 threads" call made before the retro+skill pushes, whose re-reviews then
+raised a High thread that blocked the merge.)
 
 **Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
 more than **~12 full entries**, distil the oldest into its one-line archive table

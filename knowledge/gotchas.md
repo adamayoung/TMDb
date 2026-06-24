@@ -32,14 +32,26 @@ job (container `swift:6.1-jammy`, runs `swift build --build-tests`). So when Doc
 isn't available locally to run `make build-linux`, the PR's CI is the authoritative
 off-Apple check — don't treat a missing local Linux build as a blocker.
 
-### Workflow file-generation agents can write to the wrong worktree
+### Edits can land in the main checkout instead of the active worktree
 
-*2026-06-23.* When fanning out file-writing subagents from inside a git worktree,
-some wrote files to the **main checkout** path (`…/TMDb/Sources/…`) instead of the
-active worktree, despite the worktree path being given as their working directory.
-Give such agents **absolute worktree paths** for every file they create, and
-**verify output landed in the worktree** (and the main checkout stayed clean)
-before building.
+*2026-06-23 / updated 2026-06-24.* Two variants of the same trap when working in a
+git worktree (e.g. `/deliver`):
+
+- **Fanned-out subagents** — file-writing subagents sometimes wrote to the **main
+  checkout** path (`…/TMDb/Sources/…`) instead of the active worktree, despite the
+  worktree path being their working directory. Give them **absolute worktree
+  paths** for every file.
+- **The conductor's own edits** — files `Read` *before* `EnterWorktree` yield
+  **main-checkout absolute paths**; continuing to `Edit` those exact paths after
+  entering the worktree writes to `main`, not the worktree (they share `.git` but
+  have **separate working dirs**). The build/test then runs against the *pristine*
+  worktree and returns **baseline** counts (e.g. unchanged total), masking that the
+  edits never landed. After `EnterWorktree`, re-`Read`/edit via worktree paths.
+
+Either way: **verify `git status` shows your diff *in the worktree*** (and the main
+checkout stayed clean) before trusting a green run. To rescue edits already made on
+`main`: `git -C <main> stash` then `git -C <worktree> stash pop` (stash is shared
+across worktrees).
 
 ### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
 
@@ -239,3 +251,16 @@ in a '@Sendable' closure"*.
 - A custom `Decodable` with per-property branches (e.g. `append_to_response`
   optionals) needs a fixture covering **all** branches, plus a "without appended
   data" test asserting the optionals are `nil`. Untested branches hide bugs.
+
+### `Date(iso8601:)` test helper exists only in the `TMDbTests` target
+
+*2026-06-24.* The `Date(iso8601: "…")` convenience initialiser is defined in
+`Tests/TMDbTests/TestUtils/Date+ISO8601.swift`, which belongs to the **`TMDbTests`**
+(unit) target only — it is **not** visible to **`TMDbIntegrationTests`**. Using it
+in an integration test fails to compile with a misleading *"argument passed to call
+that takes no arguments"* (Swift resolves `Date(...)` to the argument-less
+`Date()`). The integration target has no date-from-string helper; build dates there
+with `Date(timeIntervalSince1970:)` (the existing convention, e.g. the `video.publishedAt`
+assertions). This only surfaces when the **integration** target compiles, so a
+`make test` that builds all targets — or `/integration-test` — catches it; a
+unit-only check may not.

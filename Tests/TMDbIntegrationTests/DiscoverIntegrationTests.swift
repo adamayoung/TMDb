@@ -80,6 +80,27 @@ struct DiscoverIntegrationTests {
         #expect(orTotal >= andTotal)
     }
 
+    @Test("movies with release date range")
+    func moviesWithReleaseDateRange() async throws {
+        let filter = DiscoverMovieFilter(
+            releaseDateMin: Date(timeIntervalSince1970: 1_704_067_200), // 2024-01-01
+            releaseDateMax: Date(timeIntervalSince1970: 1_735_603_200) // 2024-12-31
+        )
+
+        let movieList = try await discoverService.movies(filter: filter)
+
+        #expect(!movieList.results.isEmpty)
+    }
+
+    @Test("movies without watch providers")
+    func moviesWithoutWatchProviders() async throws {
+        let filter = DiscoverMovieFilter(withoutWatchProviders: [8])
+
+        let movieList = try await discoverService.movies(filter: filter)
+
+        #expect(!movieList.results.isEmpty)
+    }
+
     @Test("TV series")
     func tvSeries() async throws {
         let tvSeriesList = try await discoverService.tvSeries()
@@ -94,6 +115,24 @@ struct DiscoverIntegrationTests {
         let tvSeriesList = try await discoverService.tvSeries(
             filter: filter
         )
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
+    @Test("TV series including null first air dates")
+    func tvSeriesIncludingNullFirstAirDates() async throws {
+        let filter = DiscoverTVSeriesFilter(includeNullFirstAirDates: true)
+
+        let tvSeriesList = try await discoverService.tvSeries(filter: filter)
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
+    @Test("TV series without watch providers")
+    func tvSeriesWithoutWatchProviders() async throws {
+        let filter = DiscoverTVSeriesFilter(withoutWatchProviders: [8])
+
+        let tvSeriesList = try await discoverService.tvSeries(filter: filter)
 
         #expect(!tvSeriesList.results.isEmpty)
     }

@@ -198,6 +198,8 @@ struct DiscoverTVSeriesFilterFluentTests {
             watchMonetizationTypes: [.flatrate],
             screenedTheatrically: true,
             withPeople: [2],
+            withoutWatchProviders: [9],
+            includeNullFirstAirDates: true,
             genresJoin: .or,
             keywordsJoin: .or
         )

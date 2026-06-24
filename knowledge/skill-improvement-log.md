@@ -30,6 +30,64 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-24 — Verify checks positively (COMPLETED+SUCCESS on current tip), not "no failures" · applied
+
+- **Pattern:** misreading a still-running required check as green. In #361 a
+  filtered rollup (`select(.conclusion!="SUCCESS")`) omitted an `IN_PROGRESS`
+  "Build and Test" (no conclusion yet ⇒ not a "failure"), and a stale passed copy of
+  the same check from an earlier tip reinforced the false green — so `mergeStateStatus:
+  BLOCKED` was wrongly attributed to the un-satisfiable code-owner self-review rather
+  than the pending check. User caught it. Single occurrence, user-directed.
+- **Decision:** **applied** (user-directed). `/watch-pr` §3: added "Verify check
+  completeness explicitly — a running check is not a pass": assert nothing is
+  `status!=COMPLETED`, require `conclusion==SUCCESS` per required check on the current
+  tip, dedup stale per-tip duplicates, don't infer green from a `--watch` exit, and
+  when `BLOCKED` rule out a pending required check before blaming a review/policy
+  rule. Landed in PR #361.
+- **Rationale:** "no failures" ≠ "all passed" — a pending check has no conclusion and
+  slips through failure-filters; a false-green merge readiness call wastes a round
+  trip and (here) produced a wrong root-cause diagnosis.
+- **Reconsider when:** n/a (applied).
+
+### 2026-06-24 — Post-gate pushes re-open the gate: re-sweep threads/checks after the last push · applied
+
+- **Pattern:** declaring a PR "ready, 0 unresolved threads" off a snapshot taken
+  *before* later pushes. In #361 the ready call was made in Phase 5, then Phase 6
+  pushed the retro + a skill edit and the branch was updated with `main` — each push
+  re-ran `claude-review`, which posted a **High** thread *after* the snapshot. The
+  unresolved thread then **blocked the merge** (`required_review_thread_resolution`).
+  Single occurrence (below the recurring-scan bar), but user-directed.
+- **Decision:** **applied** (user-directed). `/deliver` Phase 6: added "Pushing the
+  retro re-opens the gate — re-watch before merge" (return to the `/watch-pr` loop
+  after the last post-gate push; "ready" is only true of the current tip).
+  `/watch-pr` §2 Loop guard: added "Re-sweep after every push" making the per-push
+  thread+check re-confirm explicit. Both landed in PR #361; logged here.
+- **Rationale:** every push re-triggers the review bot and CI, so a pre-push "ready"
+  is stale; cheap to re-sweep, and a missed Critical/High thread is a hard merge
+  blocker, not advisory.
+- **Reconsider when:** n/a (applied).
+
+### 2026-06-24 — Phase 0.5 checkpoint: edit via worktree paths, verify the diff landed · applied
+
+- **Pattern:** edits landing in the **main checkout** instead of the active
+  worktree, masked by a green build/test that merely re-ran the *pristine* worktree
+  and returned baseline counts. Recurred across two deliveries: **#359** (fanned-out
+  generation subagents wrote to the main-checkout path) and **#361** (the conductor
+  `Read` source files in Phase 0 *before* `EnterWorktree`, then `Edit`ed those
+  now-stale main-checkout absolute paths). #359 was captured only as a `gotchas.md`
+  note, never as a skill change — so it recurred.
+- **Decision:** **applied** (user-approved in the Phase 6 scan). Added a bolded
+  checkpoint at the end of `/deliver` Phase 0.5: after `EnterWorktree`, re-`Read`
+  source before editing, and **verify `git status` shows the diff in the worktree
+  before trusting the first green build** (empty diff + baseline counts = edits went
+  to `main`); rescue via shared stash. Landed in `.claude/skills/deliver/SKILL.md`
+  Phase 0.5 (PR #361). Also generalized the `gotchas.md` entry to cover the conductor
+  variant and proposed+saved a cross-project wiki entry.
+- **Rationale:** a green run that silently validated nothing is the most dangerous
+  failure mode in an autonomous pipeline; a cheap `git status` check converts it from
+  a late, confusing discovery into an immediate one.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-23 — Add a "update the personal wiki" step after the retro · applied
 
 - **Pattern:** `/deliver` Phase 6 captured durable learnings into the

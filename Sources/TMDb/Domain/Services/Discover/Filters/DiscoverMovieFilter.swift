@@ -153,6 +153,21 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
     public let watchMonetizationTypes: [WatchMonetizationType]?
 
     ///
+    /// Minimum movie release date (any release type).
+    ///
+    public let releaseDateMin: Date?
+
+    ///
+    /// Maximum movie release date (any release type).
+    ///
+    public let releaseDateMax: Date?
+
+    ///
+    /// A list of watch provider identifiers to exclude.
+    ///
+    public let withoutWatchProviders: [WatchProvider.ID]?
+
+    ///
     /// The logical operator used to join ``genres``.
     ///
     /// When `nil`, genres are combined using a logical AND (comma), matching
@@ -202,6 +217,9 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
     ///   - withOriginCountry: Filter by origin country.
     ///   - withoutCompanies: Production company identifiers to exclude.
     ///   - watchMonetizationTypes: Filter by monetization type.
+    ///   - releaseDateMin: Minimum movie release date (any release type).
+    ///   - releaseDateMax: Maximum movie release date (any release type).
+    ///   - withoutWatchProviders: Watch provider identifiers to exclude.
     ///   - genresJoin: The logical operator used to join ``genres``.
     ///   - keywordsJoin: The logical operator used to join ``keywords``.
     ///
@@ -234,6 +252,9 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
         withOriginCountry: String? = nil,
         withoutCompanies: [Company.ID]? = nil,
         watchMonetizationTypes: [WatchMonetizationType]? = nil,
+        releaseDateMin: Date? = nil,
+        releaseDateMax: Date? = nil,
+        withoutWatchProviders: [WatchProvider.ID]? = nil,
         genresJoin: DiscoverFilterJoin? = nil,
         keywordsJoin: DiscoverFilterJoin? = nil
     ) {
@@ -265,6 +286,9 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
         self.withOriginCountry = withOriginCountry
         self.withoutCompanies = withoutCompanies
         self.watchMonetizationTypes = watchMonetizationTypes
+        self.releaseDateMin = releaseDateMin
+        self.releaseDateMax = releaseDateMax
+        self.withoutWatchProviders = withoutWatchProviders
         self.genresJoin = genresJoin
         self.keywordsJoin = keywordsJoin
     }

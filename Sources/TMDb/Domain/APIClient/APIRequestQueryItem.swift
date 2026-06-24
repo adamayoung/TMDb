@@ -56,6 +56,7 @@ extension APIRequestQueryItem.Name {
     static let withoutKeywords = APIRequestQueryItem.Name("without_keywords")
     static let withNetworks = APIRequestQueryItem.Name("with_networks")
     static let withWatchProviders = APIRequestQueryItem.Name("with_watch_providers")
+    static let withoutWatchProviders = APIRequestQueryItem.Name("without_watch_providers")
     static let withRuntimeGreaterThan = APIRequestQueryItem.Name("with_runtime.gte")
     static let withRuntimeLessThan = APIRequestQueryItem.Name("with_runtime.lte")
     static let voteAverageGreaterThan = APIRequestQueryItem.Name("vote_average.gte")
@@ -65,8 +66,12 @@ extension APIRequestQueryItem.Name {
     static let includeVideo = APIRequestQueryItem.Name("include_video")
     static let primaryReleaseDateGreaterThan = APIRequestQueryItem.Name("primary_release_date.gte")
     static let primaryReleaseDateLessThan = APIRequestQueryItem.Name("primary_release_date.lte")
+    static let releaseDateGreaterThan = APIRequestQueryItem.Name("release_date.gte")
+    static let releaseDateLessThan = APIRequestQueryItem.Name("release_date.lte")
     static let firstAirDateGreaterThan = APIRequestQueryItem.Name("first_air_date.gte")
     static let firstAirDateLessThan = APIRequestQueryItem.Name("first_air_date.lte")
+    static let includeNullFirstAirDates =
+        APIRequestQueryItem.Name("include_null_first_air_dates")
     static let airDateGreaterThan = APIRequestQueryItem.Name("air_date.gte")
     static let airDateLessThan = APIRequestQueryItem.Name("air_date.lte")
 

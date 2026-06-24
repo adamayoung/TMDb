@@ -9,6 +9,8 @@ import Foundation
 import Testing
 @testable import TMDb
 
+// swiftlint:disable file_length
+
 @Suite(.tags(.requests, .discover))
 struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
 
@@ -104,6 +106,40 @@ struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
                 "primary_release_date.lte": "2025-12-31"
             ]
         )
+    }
+
+    @Test("queryItems with release date range")
+    func queryItemsWithReleaseDateRange() {
+        let filter = DiscoverMovieFilter(
+            releaseDateMin: Date(iso8601: "2024-01-01T00:00:00Z"),
+            releaseDateMax: Date(iso8601: "2024-12-31T00:00:00Z")
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(
+            request.queryItems == [
+                "release_date.gte": "2024-01-01",
+                "release_date.lte": "2024-12-31"
+            ]
+        )
+    }
+
+    @Test("queryItems with release date min only")
+    func queryItemsWithReleaseDateMinOnly() {
+        let filter = DiscoverMovieFilter(
+            releaseDateMin: Date(iso8601: "2024-01-01T00:00:00Z")
+        )
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(request.queryItems == ["release_date.gte": "2024-01-01"])
+    }
+
+    @Test("queryItems with without watch providers")
+    func queryItemsWithWithoutWatchProviders() {
+        let filter = DiscoverMovieFilter(withoutWatchProviders: [8, 9])
+        let request = DiscoverMoviesRequest(filter: filter)
+
+        #expect(request.queryItems == ["without_watch_providers": "8,9"])
     }
 
     @Test("queryItems with vote average range")

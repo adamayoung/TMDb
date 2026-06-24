@@ -153,6 +153,16 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     public let withPeople: [Person.ID]?
 
     ///
+    /// A list of watch provider identifiers to exclude.
+    ///
+    public let withoutWatchProviders: [WatchProvider.ID]?
+
+    ///
+    /// Include TV series that have a null first air date.
+    ///
+    public let includeNullFirstAirDates: Bool?
+
+    ///
     /// The logical operator used to join ``genres``.
     ///
     /// When `nil`, genres are combined using a logical AND (comma), matching
@@ -202,6 +212,9 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     ///   - screenedTheatrically: Filter for theatrically screened
     ///     series.
     ///   - withPeople: A list of Person identifiers to filter by.
+    ///   - withoutWatchProviders: Watch provider identifiers to exclude.
+    ///   - includeNullFirstAirDates: Include TV series that have a null
+    ///     first air date.
     ///   - genresJoin: The logical operator used to join ``genres``.
     ///   - keywordsJoin: The logical operator used to join ``keywords``.
     ///
@@ -234,6 +247,8 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
         watchMonetizationTypes: [WatchMonetizationType]? = nil,
         screenedTheatrically: Bool? = nil,
         withPeople: [Person.ID]? = nil,
+        withoutWatchProviders: [WatchProvider.ID]? = nil,
+        includeNullFirstAirDates: Bool? = nil,
         genresJoin: DiscoverFilterJoin? = nil,
         keywordsJoin: DiscoverFilterJoin? = nil
     ) {
@@ -265,6 +280,8 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
         self.watchMonetizationTypes = watchMonetizationTypes
         self.screenedTheatrically = screenedTheatrically
         self.withPeople = withPeople
+        self.withoutWatchProviders = withoutWatchProviders
+        self.includeNullFirstAirDates = includeNullFirstAirDates
         self.genresJoin = genresJoin
         self.keywordsJoin = keywordsJoin
     }
