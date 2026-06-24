@@ -64,7 +64,7 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
 8. **Ensure a clean working tree before pushing.** Re-run `git status`; commit anything still outstanding (e.g. review fixes from steps 5–7, or `make ci` fixes) so the push includes **everything**. The tree must be clean before proceeding. Then run `git diff origin/main...HEAD` to understand all changes going into the PR.
 9. Analyze the commits and changes to generate an appropriate title and summary
 10. Push the current branch to remote (`git push -u origin <branch>` if not yet pushed; otherwise `git push` — use `git push --force-with-lease` if you rebased in step 3)
-11. Create a PR using `gh pr create` with:
+11. Create a PR with the **GitHub MCP** — `mcp__github__create_pull_request` (owner/repo from the `origin` remote, `base: main`, `head: <branch>`, plus `title`/`body`). The branch must already be pushed (step 10). If the call fails with **401/403** (PAT expired or missing scope), fall back to `gh pr create` with the same title/body. Provide:
     - **IMPORTANT: Title MUST start with a gitmoji prefix** (e.g., "✨ Add new feature", "🐛 Fix bug", "📝 Improve documentation")
         - Refer to <https://gitmoji.dev> to use the correct emoji
         - Common: ✨ feature, 🐛 bugfix, ♻️ refactor, ✅ tests, 📝 docs, 🔧 config, 🎨 style

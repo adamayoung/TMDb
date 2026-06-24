@@ -12,7 +12,11 @@ threads that are unresolved *right now* — it does not wait for new reviews to
 arrive. The caller (you, or `/watch-pr`) decides whether to run it again after a
 push triggers a fresh review.
 
-Repo is `adamayoung/TMDb`; `gh` is authenticated.
+Repo is `adamayoung/TMDb`. GitHub reads (find the PR, fetch threads) and the
+**resolve** use the **GitHub MCP** (`mcp__github__*`); the thread **reply** stays on
+`gh api graphql` — the MCP reply tool needs a numeric REST comment id that the thread
+read doesn't expose, whereas the GraphQL reply takes the thread node id we already
+have. `gh` is authenticated.
 
 ## Principles
 
@@ -37,33 +41,24 @@ Repo is `adamayoung/TMDb`; `gh` is authenticated.
 
 ## 0. Find the PR
 
-```bash
-gh pr view --json number,url,state,headRefName
-```
+Find the open PR for the current branch with `mcp__github__list_pull_requests`
+(owner/repo from the `origin` remote, `head: <owner>:<branch>`, `state: open`), or
+read a specific one with `mcp__github__pull_request_read` method `get`
+(`pullNumber: <n>`). Take `number`/`html_url`/`state`/`head.ref` from the result.
 
 - An explicit PR number in the skill arguments overrides the current branch.
 - No PR for the current branch → stop and tell the user (suggest `/pr`).
-- State not `OPEN` → stop and report.
+- State not `open` → stop and report.
 
 ## 1. Fetch unresolved threads
 
-```bash
-gh api graphql -f query='
-query($owner:String!,$name:String!,$number:Int!){
-  repository(owner:$owner,name:$name){
-    pullRequest(number:$number){
-      reviewThreads(first:100){
-        nodes{
-          id isResolved isOutdated path line
-          comments(first:50){ nodes{ author{login} body createdAt } }
-        }
-      }
-    }
-  }
-}' -f owner=adamayoung -f name=TMDb -F number=<NUMBER>
-```
+Use `mcp__github__pull_request_read` method `get_review_comments` (owner/repo from
+`origin`, `pullNumber: <n>`). It returns review **threads**, each with metadata
+(`isResolved`, `isOutdated`, `isCollapsed`), the thread **node id** (`PRRT_…`, used to
+resolve in §2), `path`/`line`, and the grouped comments. Paginate with
+`perPage`/`after` (the `endCursor` from the previous page's `pageInfo`) if needed.
 
-Process each thread where `isResolved` is `false` and whose `id` is not already
+Process each thread where `isResolved` is `false` and whose thread id is not already
 in the ledger.
 
 ## 2. Handle each thread
@@ -81,7 +76,10 @@ For each unresolved thread:
 3. **No fix warranted** (disagree / out of scope / a question / already done) →
    make no code change; you'll say why in the reply.
 4. **Reply** on the thread — what you assessed and whether you fixed it (include
-   the commit SHA when you did):
+   the commit SHA when you did). This step stays on `gh api graphql`: the GraphQL
+   reply takes the thread **node id** (`PRRT_…`) we already have from §1, whereas the
+   MCP `add_reply_to_pull_request_comment` needs a numeric REST comment id that
+   `get_review_comments` doesn't return.
 
    ```bash
    gh api graphql -f query='mutation($id:ID!,$body:String!){
@@ -89,13 +87,9 @@ For each unresolved thread:
    }' -f id=<THREAD_ID> -f body='<your feedback>'
    ```
 
-5. **Resolve** the thread:
-
-   ```bash
-   gh api graphql -f query='mutation($id:ID!){
-     resolveReviewThread(input:{threadId:$id}){ thread{ isResolved } }
-   }' -f id=<THREAD_ID>
-   ```
+5. **Resolve** the thread with `mcp__github__pull_request_review_write` method
+   `resolve_thread` (`threadId: <PRRT_… node id>`; `owner`/`repo`/`pullNumber` are
+   ignored for this method). Resolving an already-resolved thread is a no-op.
 
 6. Record the thread ID and topic signature in the ledger.
 

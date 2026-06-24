@@ -7,7 +7,11 @@ description: Watch the current branch's PR — reply to and resolve review threa
 
 Watch the open pull request for the current branch: handle review conversations,
 fix failing status checks, and — when asked — merge once everything is green.
-Repo is `adamayoung/TMDb`; `gh` is authenticated.
+Repo is `adamayoung/TMDb`. GitHub reads/writes (PR state, checks, branch update,
+merge) use the **GitHub MCP** (`mcp__github__*`, owner/repo from the `origin` remote);
+`gh` is kept for the **blocking CI wait** (`gh pr checks --watch`, which the MCP has
+no equivalent for). If an MCP write fails with **401/403** (PAT expired or missing
+scope), fall back to the equivalent `gh` command.
 
 **Mode** — check the arguments passed to this skill (shown at the end). If they
 include `merge` (e.g. `/watch-pr merge` or "merge when ready"), enable
@@ -20,16 +24,20 @@ wait loop.
 
 ## 0. Find the PR
 
-```bash
-gh pr view --json number,url,state,headRefName,mergeStateStatus,statusCheckRollup,reviewDecision
-```
+Find the open PR for the current branch with `mcp__github__list_pull_requests`
+(owner/repo from the `origin` remote, `head: <owner>:<branch>`, `state: open`), then
+read its details with `mcp__github__pull_request_read` method `get` — `number`,
+`html_url`, `state`,
+`head.ref`, and **`mergeable_state`** (the REST merge state: lowercase
+`clean`/`blocked`/`behind`/`unstable`/`dirty`/`unknown`/`draft` — **not** `gh`'s
+uppercase `mergeStateStatus`). Read the check runs separately with method
+`get_check_runs` (§3).
 
 - No PR for the current branch → stop and tell the user (suggest `/pr`).
-- State not `OPEN` → stop and report.
-- **`reviewThreads` is not a valid `gh pr view --json` field** — adding it causes
-  `gh` to error silently (empty stdout), which breaks any JSON parsing downstream.
-  Thread data must come from `gh api graphql`; delegate to `/review-pr-threads`
-  which already does this correctly.
+- State not `open` → stop and report.
+- **Thread data is a separate call** — `pull_request_read` method `get` does not
+  return review threads. Fetch them with method `get_review_comments` (delegated to
+  `/review-pr-threads`); never expect thread data on the PR `get`.
 
 Keep a **run ledger** in your working notes: resolved thread IDs, a topic
 signature per handled thread (`path:line` + short gist), and a fix-attempt
@@ -75,21 +83,23 @@ the failing check — most often a **live integration test** — is broken or fl
 muddy the PR's scope and leave the test broken for everyone else. Triage before
 fixing here:
 
-1. **Is the failing test in this PR's diff?**
-   `gh pr diff <number> --name-only` — if the failing test's file is **not** in
+1. **Is the failing test in this PR's diff?** `mcp__github__pull_request_read`
+   method `get_files` (`pullNumber: <n>`) — if the failing test's file is **not** in
    that list, this PR did not cause it.
 
-2. **Transient or deterministic?** Re-run the failed jobs once
-   (`gh run rerun <run-id> --failed`) and watch. Passes on re-run → a transient
-   live-API flake; note it and continue. Fails again **and** not in this PR's diff
-   → a **pre-existing** problem (e.g. a brittle live-data assertion).
+2. **Transient or deterministic?** Re-run the failed jobs once with
+   `mcp__github__actions_run_trigger` method `rerun_failed_jobs` (`run_id: <id>`),
+   then watch the re-run (the loop's `gh pr checks --watch`, §1b). Passes on re-run →
+   a transient live-API flake; note it and continue. Fails again **and** not in this
+   PR's diff → a **pre-existing** problem (e.g. a brittle live-data assertion).
 
 3. **A pre-existing failure is a `main` problem — hand it to
    `/fix-integration-failures`**, which fixes it on its own branch off `main`,
    runs `make ci`, and opens/merges a PR (never on this feature branch). Tell the
    user you're opening a **second** PR to unblock this one; if they'd rather you
    stop, report and stop. Once that fix is on `main`, bring this PR's branch up to
-   date (`gh pr update-branch <number>`) and re-watch — the check now passes.
+   date (`mcp__github__update_pull_request_branch`, `pullNumber: <n>`) and re-watch —
+   the check now passes.
 
 ## 2. Loop guard (do not get stuck)
 
@@ -127,26 +137,26 @@ The PR is **ready** when every review thread is resolved, no check is failing or
 pending, AND the branch is **up to date with `main`** (the `main` ruleset requires
 it before merge).
 
-**Verify check completeness explicitly — a running check is not a pass.** "No check
-failing" is **not** the same as "all checks passed": a check still `IN_PROGRESS` /
-`QUEUED` has **no conclusion yet**, so a filter like `select(.conclusion!="SUCCESS")`
-or "are there any failures?" reports it as *absent*, not *pending* — reading as green
-when it isn't. Confirm readiness positively: **every required check has
-`status == COMPLETED` and `conclusion == SUCCESS` on the current tip.** Concretely,
-assert `[.statusCheckRollup[] | select(.status!="COMPLETED")]` is **empty** before
-calling it green, and **dedup stale duplicate entries** (the rollup keeps a row per
-run, so an earlier tip's passed "Build and Test" can sit alongside the current tip's
-`IN_PROGRESS` one — key on the latest run per check name). Do **not** infer green
-from a `gh pr checks --watch` exit alone; re-read the rollup. And when
-`mergeStateStatus` is `BLOCKED`, **rule out a pending required check first** (it is
-the common cause) before attributing the block to a review/policy rule like
-code-owner review. (Bit #361: a still-running "Build and Test" was misread as green
-and `BLOCKED` was wrongly pinned on code-owner review.)
+**Verify check completeness explicitly — a running check is not a pass.** Read the
+checks with `mcp__github__pull_request_read` method `get_check_runs` (owner/repo from
+`origin`, `pullNumber: <n>`). "No check failing" is **not** the same as "all checks
+passed": a run still `in_progress` / `queued` has **no `conclusion` yet**, so a filter
+like "any conclusion != success?" reports it as *absent*, not *pending* — reading as
+green when it isn't. Confirm readiness **positively**: every check run has
+`status == "completed"` **and** `conclusion == "success"` on the current head commit.
+`get_check_runs` is scoped to the head commit, but a re-run can still leave duplicate
+rows for a check name — key on the latest run per name. Do **not** infer green from a
+`gh pr checks --watch` exit alone; re-read the check runs. And when `mergeable_state`
+is `blocked`, **rule out a pending required check first** (it is the common cause)
+before attributing the block to a review/policy rule like code-owner review.
+(Bit #361: a still-running "Build and Test" was misread as green and the block was
+wrongly pinned on code-owner review.)
 
 **Rebase before declaring ready, never after.** `main` advances while you watch
 (other PRs merge), leaving the branch `BEHIND`. The moment the PR is otherwise
-green, bring it up to date — `gh pr update-branch <number>` (a merge of `main`; no
-force-push) — and wait for the re-triggered CI to go green again *before* you call
+green, bring it up to date — `mcp__github__update_pull_request_branch`
+(`pullNumber: <n>`; a merge of `main`, no force-push) — and wait for the re-triggered
+CI to go green again *before* you call
 it ready. "Ready" must mean "mergeable right now": never surface a `BEHIND` PR as
 ready and leave the user waiting on a rebase + re-run. Update **once** at the ready
 point, not eagerly on every `main` advance — each update re-runs the full ~4–7 min
@@ -155,11 +165,17 @@ CI matrix.
 - **Watch-only**: report "PR is ready" with a short summary (threads handled,
   checks green, branch up to date) and stop — wait for the user's explicit
   go-ahead before merging.
-- **Merge-when-ready**: on ready, merge and clean up, then report the result:
+- **Merge-when-ready**: on ready, **capture the head branch name first** (you need it
+  to delete the remote branch — `merge_pull_request` has no delete-branch option),
+  merge with `mcp__github__merge_pull_request` (owner/repo from `origin`,
+  `pullNumber: <n>`, `merge_method: squash`), **then** delete the remote branch, and
+  report the result:
 
   ```bash
-  gh pr merge --squash --delete-branch
+  git push origin --delete <branch>   # only after the squash-merge has landed
   ```
+
+  On a 401/403, fall back to `gh pr merge --squash --delete-branch`.
 
 **Several PRs queued?** Merge in dependency order. Stack one on another (base the
 later PR on the earlier branch) **only** when they genuinely depend on each other

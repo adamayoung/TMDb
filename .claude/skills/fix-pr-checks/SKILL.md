@@ -11,7 +11,9 @@ over the checks failing *right now* — it diagnoses and fixes them, pushes once
 and returns. Waiting on pending checks and deciding whether to sweep again belong
 to the caller (you, or `/watch-pr`).
 
-Repo is `adamayoung/TMDb`; `gh` is authenticated.
+Repo is `adamayoung/TMDb`. GitHub reads use the **GitHub MCP** (`mcp__github__*`);
+`gh` is authenticated and used for the blocking CI wait. If an MCP call fails with
+**401/403** (PAT expired or missing scope), fall back to the equivalent `gh` command.
 
 ## It stands on the diagnosis skills
 
@@ -45,22 +47,28 @@ This skill is the **act-on-it** layer: route → fix → verify → commit → p
 
 ## 0. Find the PR
 
-```bash
-gh pr view --json number,url,state,headRefName
-```
+Find the open PR for the current branch with `mcp__github__list_pull_requests`
+(owner/repo from the `origin` remote, `head: <owner>:<branch>`, `state: open`), or
+read a specific one with `mcp__github__pull_request_read` method `get`. Take
+`number`/`html_url`/`state`/`head.ref` from the result.
 
 - An explicit PR number in the arguments overrides the current branch.
 - No PR for the current branch → stop and tell the user (suggest `/pr`).
-- State not `OPEN` → stop and report.
+- State not `open` → stop and report.
 
 ## 1. List the checks
 
-```bash
-gh pr checks --json name,state,bucket,link
-```
+Use `mcp__github__pull_request_read` method `get_check_runs` (owner/repo from
+`origin`, `pullNumber: <n>`) — the individual CI/CD check runs for the head
+commit. Classify each by `status` + `conclusion`:
 
-Classify by `bucket`: `fail` = fix it (below); `pending` = report and leave for
-the caller to wait on; `pass` / `skipping` / neutral (`claude-review`) = ignore.
+- **fix it** (below): `conclusion` is `failure` / `timed_out` / `cancelled` /
+  `action_required`.
+- **pending** (report, leave for the caller to wait on): `status` is not
+  `completed` (`queued` / `in_progress`).
+- **ignore**: `conclusion` is `success` / `skipped` / `neutral` (e.g.
+  `claude-review`).
+
 If nothing is failing, return immediately (note any pending checks).
 
 ## 2. Diagnose each failing check (Haiku)

@@ -63,10 +63,11 @@ Keep it under ~150 words.
 
 0. **Determine the trigger** (it sets the cause ranking above). If the caller told
    you (e.g. `/watch-pr` / `/fix-pr-checks` diagnose a **PR** run), use that.
-   Otherwise read it from the run:
-   `gh run view <id> --json event,displayTitle` → `event` is `pull_request`,
-   `push`, or `schedule`. If you can't tell, assume **PR/push** when a local diff
-   vs `main` exists, else scheduled.
+   Otherwise read it from the run with `mcp__github__actions_get` method
+   `get_workflow_run` (owner/repo from the `origin` remote, `resource_id: <id>`) →
+   `event` is `pull_request`, `push`, or `schedule` (headless / no MCP:
+   `gh run view <id> --json event,displayTitle`). If you can't tell, assume
+   **PR/push** when a local diff vs `main` exists, else scheduled.
 
 1. **Locate the failure log**, in this order — use the first that exists:
    - A path the caller handed you (e.g. `failure-log.txt` in the working
@@ -74,7 +75,12 @@ Keep it under ~150 words.
    - `.build/last-integration-test.log` — written by the `/integration-test`
      skill. If you (or the user) haven't run the tests yet locally, run
      `/integration-test` first, then read this log.
-   - Otherwise, find the failing run with the `gh` CLI:
+   - Otherwise, find the failing run with the **GitHub MCP** (owner/repo from
+     `origin`): `mcp__github__actions_list` method `list_workflow_runs`
+     (`resource_id: integration.yml`, `workflow_runs_filter: { status: completed }`,
+     then filter to `conclusion == "failure"`), and read its log with
+     `mcp__github__get_job_logs` (`run_id: <id>`, `failed_only: true`,
+     `return_content: true`). Headless / no MCP:
      `gh run list --workflow Integration --status failure --limit 1` then
      `gh run view <id> --log-failed`.
 

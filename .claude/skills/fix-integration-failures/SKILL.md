@@ -41,19 +41,27 @@ once green. Otherwise stop at **ready-to-merge** and hand off (default).
 
 ## 0. Find the failing run
 
-```bash
-gh run list --workflow Integration --status failure --limit 5 \
-  --json databaseId,event,headBranch,conclusion,createdAt,displayTitle
-```
+> **Interactive vs headless.** The steps below use the **GitHub MCP**
+> (`mcp__github__*`, owner/repo from the `origin` remote). When this skill runs
+> **headless** from `integration-failure.yml` — a CI runner, where the user-scoped
+> MCP is **not** mounted — use the `gh` equivalents instead (given inline at each
+> step and in *Running headless* below); that path stays 100% `gh`/`git`.
+
+Find the failing run with `mcp__github__actions_list` method `list_workflow_runs`
+(owner/repo from `origin`, `resource_id: integration.yml`,
+`workflow_runs_filter: { event: schedule, status: completed }`). The `status` enum has
+no `failure` value, so filter the results to `conclusion == "failure"` yourself.
 
 - Prefer the most recent **`schedule`** (or `workflow_dispatch`) run on `main`.
-- Note its `databaseId` (the run id) and `event` (sets the cause ranking).
+- Note its run `id` and `event` (sets the cause ranking).
 - No failing run → report "Integration is green, nothing to fix" and stop.
+- **Headless:** `gh run list --workflow Integration --status failure --limit 5 --json databaseId,event,headBranch,conclusion,createdAt,displayTitle`.
 
 ## 1. Diagnose
 
-Invoke **`/diagnose-integration-failure`**, handing it the run id (it will
-`gh run view <id> --log-failed`). It returns the three-section analysis — Summary,
+Invoke **`/diagnose-integration-failure`**, handing it the run id (it fetches the
+failed-job logs — via `mcp__github__get_job_logs`, or `gh run view --log-failed` when
+headless). It returns the three-section analysis — Summary,
 Likely cause (ranked; for a scheduled run it leads with backend/data drift, **not**
 a code regression), and Suggested fix. Use that ranking to choose the path below.
 
@@ -62,13 +70,19 @@ a code regression), and Suggested fix. Use that ranking to choose the path below
 If the diagnosis points to **case 3** (HTTP 429 / rate-limit, a timeout near the
 30-min cap, or a truncated log with no assertion failure):
 
+Re-run the failed jobs with `mcp__github__actions_run_trigger` method
+`rerun_failed_jobs` (owner/repo from `origin`, `run_id: <id>`), then block on the
+re-run with `gh run watch <run-id>` (the MCP has no blocking-wait equivalent). After
+it returns, re-read the conclusion with `mcp__github__actions_get` method
+`get_workflow_run` (`resource_id: <id>`) — don't trust the rerun call to surface it.
+
 ```bash
-gh run rerun <run-id> --failed
-gh run watch <run-id>
+gh run watch <run-id>   # blocking wait — kept on gh
 ```
 
 - **Green on re-run** → it was transient. Report and stop; no PR needed.
 - **Fails the same way again** → treat as deterministic; go to §3.
+- **Headless:** `gh run rerun <run-id> --failed` then `gh run watch <run-id>`.
 
 (The integration client already retries 429/5xx with backoff, so a true transient
 that survives a re-run is uncommon — a repeat failure is usually real drift.)
