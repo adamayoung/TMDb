@@ -4,6 +4,26 @@ Behaviours of the **live** TMDb API discovered while implementing — the things
 docs don't say, or say wrongly. This is an API-client library, so these recur.
 Newest at the top; cite the endpoint and the date observed.
 
+## Discover
+
+### `discover/movie` has *two* distinct release-date filters
+
+*2026-06-24.* `release_date.gte`/`.lte` and `primary_release_date.gte`/`.lte` are
+**not** the same parameter. `primary_release_date.*` bounds only a movie's
+**primary** release; `release_date.*` bounds **any** release type (and pairs with
+`with_release_type` + `region`). They return different result sets — so a client
+needs both. In this package: the year-granular `primaryReleaseYear` filter maps to
+`primary_release_date.*`, and the `Date`-granular `releaseDateMin`/`releaseDateMax`
+maps to `release_date.*`.
+
+### TMDb silently ignores unknown query parameters (returns 200)
+
+*2026-06-24.* `discover/movie` and `discover/tv` return **HTTP 200** for a bogus
+query key rather than erroring, so a misspelled or unsupported parameter looks like
+it "works" but is a no-op. To confirm a parameter is real and effective, compare
+**result counts** with vs without it (a bogus key yields the *unfiltered* count) —
+status code alone proves nothing.
+
 ## OpenAPI spec
 
 ### The spec is ~3 MB minified JSON on a single line
