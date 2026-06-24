@@ -10,6 +10,42 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-24 — 📝 Document existing response caching (#363) · lite (docs-led)
+
+- **Phases / skills:** phases 0–6; `review-changes, capture-knowledge, pr,
+  watch-pr`. Skipped `/review-plan` (lite + `/deliver` invocation was the
+  approval); skipped `/security-review` (no executable surface — doc comments +
+  markdown only); did **not** run `/implement-plan` (docs-only — no Canon TDD
+  test list to drive).
+- **Worked:** the standout was **challenging the premise before building.** The
+  user asked "evaluate whether this feature is needed — there's already an HTTP
+  cache" mid-plan; a quick `curl -D-` of real TMDb endpoints (every GET returns
+  `Cache-Control: public, max-age` + `ETag`) plus reading `TMDbFactory` showed the
+  requested opt-in on-disk cache **already exists** via the default `URLCache`
+  (Apple platforms) — and a hand-rolled one would be *inferior* (fixed TTL, no 304
+  revalidation). `AskUserQuestion` → "document, build nothing" turned a feature
+  build into a docs PR + ADR-0007. `make build-docs` (warnings-as-errors) was the
+  real gate for the `<doc:>`/symbol links.
+- **Friction:** (1) The single `code-reviewer` caught a genuine **High** that
+  *both* `make build-docs` and `markdownlint` missed — stray `</content>`/
+  `</invoke>` tags the `Write` tool leaked into the article tail (DocC renders
+  them as prose; `MD013` is off). Strong evidence that code review earns its keep
+  even on a "docs-only" change, and now a captured gotcha. (2) The recurring
+  full-`make ci` cost: the diff is doc-comments + markdown, yet ran the entire
+  unit+integration+release matrix.
+- **Deviations:** (a) The plan-file `Write` was rejected and `/deliver` invoked
+  directly, so the plan lived only in conversation — Phase 0's "read plan content
+  into context" covered it cleanly. (b) Wrote docs directly instead of via
+  `/implement-plan` (no test list for prose); build-docs + lint-markdown were the
+  gates.
+- **One improvement:** the **docs/config-only fast gate** is now logged on #340,
+  #343, #344 and here — four deliveries paying the full ~6-min matrix for
+  no-logic changes. Refinement this run exposes: the existing fast-gate detector
+  keys on the `.swift` *extension*, so a **comment/doc-only `.swift` diff** (like
+  this one) still trips the full gate. Worth finally implementing the fast gate
+  **and** widening its trigger to "no semantic Swift change" (e.g. diff is only
+  within `///`/`//` lines), so doc-comment touch-ups qualify too.
+
 ## 2026-06-24 — ✨ Add missing discover filter parameters (#361) · lite
 
 - **Phases / skills:** phases 0–6; `build-for-testing, test, integration-test,
