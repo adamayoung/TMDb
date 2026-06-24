@@ -251,6 +251,19 @@ by whatever spawned the subshell — **not** this file; check the environment fi
 Record the worktree path and branch name in the ledger. The branch is what the PR
 and all later phases (`git diff origin/main...HEAD`, `/pr`, `/watch-pr`) operate on.
 
+**Edit via worktree paths, and verify your diff landed there — not on `main`.** A
+file `Read` *before* `EnterWorktree` (e.g. source you scoped in Phase 0) yields a
+**main-checkout** absolute path; continuing to `Edit` that exact path after entering
+writes to **`main`**, not the worktree (they share `.git` but have **separate
+working dirs**). The trap is self-concealing: the build/test then runs against the
+still-pristine worktree and returns **baseline** counts, so a green run "confirms"
+work that never landed. So: after entering, **re-`Read` source files before editing
+them**, and **before trusting the first green build, verify `git status` shows your
+diff in the worktree** (an empty diff + baseline test counts = edits went to `main`).
+Rescue stranded edits with a shared stash: `git -C <main-checkout> stash` then
+`git stash pop` in the worktree. (Same root cause as the fanned-out-subagent variant
+in `knowledge/gotchas.md` → *Edits can land in the main checkout*.)
+
 **Invoked from plan mode?** If you reach `/deliver` while in plan mode with an
 approved plan, that approval *is* Gate-1: exit plan mode (the plan file is your
 input — already read into context in Phase 0), enter the worktree, and proceed —

@@ -30,6 +30,27 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-24 — Phase 0.5 checkpoint: edit via worktree paths, verify the diff landed · applied
+
+- **Pattern:** edits landing in the **main checkout** instead of the active
+  worktree, masked by a green build/test that merely re-ran the *pristine* worktree
+  and returned baseline counts. Recurred across two deliveries: **#359** (fanned-out
+  generation subagents wrote to the main-checkout path) and **#361** (the conductor
+  `Read` source files in Phase 0 *before* `EnterWorktree`, then `Edit`ed those
+  now-stale main-checkout absolute paths). #359 was captured only as a `gotchas.md`
+  note, never as a skill change — so it recurred.
+- **Decision:** **applied** (user-approved in the Phase 6 scan). Added a bolded
+  checkpoint at the end of `/deliver` Phase 0.5: after `EnterWorktree`, re-`Read`
+  source before editing, and **verify `git status` shows the diff in the worktree
+  before trusting the first green build** (empty diff + baseline counts = edits went
+  to `main`); rescue via shared stash. Landed in `.claude/skills/deliver/SKILL.md`
+  Phase 0.5 (PR #361). Also generalized the `gotchas.md` entry to cover the conductor
+  variant and proposed+saved a cross-project wiki entry.
+- **Rationale:** a green run that silently validated nothing is the most dangerous
+  failure mode in an autonomous pipeline; a cheap `git status` check converts it from
+  a late, confusing discovery into an immediate one.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-23 — Add a "update the personal wiki" step after the retro · applied
 
 - **Pattern:** `/deliver` Phase 6 captured durable learnings into the
