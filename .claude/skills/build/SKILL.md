@@ -5,34 +5,11 @@ description: Compile the TMDb Swift package for the current platform to check it
 
 # Build project
 
-Delegate the build to a **Haiku subagent** so the (potentially verbose) build
-output stays out of your context. Use the Agent tool with
-`subagent_type: general-purpose` and `model: haiku`, give it the prompt below,
-then relay its report. Do **not** run the build yourself.
-
-Subagent prompt:
-
-```text
-Build the TMDb Swift package and report the result concisely.
-
-- If the xcode-tools MCP is available (running inside Xcode), run
-  `mcp__xcode-tools__BuildProject`. On failure, get per-file error detail with
-  `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on each flagged file.
-- Otherwise run `mkdir -p .build && make build > .build/last-build.log 2>&1`,
-  check the exit status for pass/fail (the Makefile sets `pipefail`, so a compile
-  failure propagates through the xcsift pipe), and summarise from that log file.
-
-Report back ONLY:
-- Status: succeeded or failed
-- Error and warning counts
-- Each error/warning as `file:line — message` (omit this list if there are none)
-- On failure, the full log path `.build/last-build.log` (or, inside Xcode, the
-  flagged files so the caller can refresh their diagnostics)
-
-Do not paste raw build logs or successful-compilation output.
-```
+Spawn the **`swift-builder`** agent (Agent tool, `subagent_type: swift-builder`)
+and relay its report. The agent is Haiku-pinned and keeps the verbose build
+output out of your context. Do **not** run the build yourself.
 
 If the report is unclear on a failure, read the log path it provides (or, inside
 Xcode, refresh diagnostics on the flagged files) rather than re-running. After
-fixing the issues, re-invoke this skill to re-check (a fresh subagent will
+fixing the issues, re-invoke this skill to re-check (a fresh agent will
 rebuild).
