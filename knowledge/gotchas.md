@@ -217,7 +217,7 @@ Foundation behaviours interact here:
   segments.
 
 Consequence for the `urlPathSegmentEncoded` hardening
-([ADR-0007](decisions/0007-percent-encode-url-path-segments.md)): percent-encoding
+([ADR-0008](decisions/0008-percent-encode-url-path-segments.md)): percent-encoding
 a user string before interpolating it into a request path **does** prevent
 query/fragment injection end-to-end, but an injected `/` still becomes a real
 separator. That residual is path-only — `urlFromPath` force-overrides

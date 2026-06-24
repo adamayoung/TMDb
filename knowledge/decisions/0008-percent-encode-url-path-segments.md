@@ -1,4 +1,4 @@
-# ADR-0007: Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set
+# ADR-0008: Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set
 
 - **Status:** Accepted
 - **Date:** 2026-06-24
