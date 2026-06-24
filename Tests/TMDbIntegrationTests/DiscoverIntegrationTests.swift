@@ -128,6 +128,15 @@ struct DiscoverIntegrationTests {
         #expect(!tvSeriesList.results.isEmpty)
     }
 
+    @Test("TV series without watch providers")
+    func tvSeriesWithoutWatchProviders() async throws {
+        let filter = DiscoverTVSeriesFilter(withoutWatchProviders: [8])
+
+        let tvSeriesList = try await discoverService.tvSeries(filter: filter)
+
+        #expect(!tvSeriesList.results.isEmpty)
+    }
+
     @Test("TV series with genres joined by OR")
     func tvSeriesWithGenresJoinedByOr() async throws {
         let filter = DiscoverTVSeriesFilter()

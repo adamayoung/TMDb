@@ -32,8 +32,19 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   shared stash (`git -C main stash` → `git -C worktree stash pop`). (2) The
   `Date(iso8601:)` test helper is `TMDbTests`-only, so an integration test using
   it failed to compile — but only once the integration target actually built.
+  (3) **Asymmetric integration coverage, then a stale "ready" call.** Three of the
+  four new params got a live integration test but TV `withoutWatchProviders` got
+  only unit coverage — `claude-review` flagged it **High**. Worse, I'd declared the
+  PR "ready, 0 unresolved threads" *before* re-checking: the retro/skill-fix pushes
+  and the `main` merge each re-ran `claude-review`, which posted that thread **after**
+  my one-time thread check. The thread also **blocked the merge** (the `main`
+  ruleset requires `required_review_thread_resolution`), so "ready" was wrong on two
+  counts.
 - **Deviations:** an unplanned mid-Phase-2 stash-rescue to move the change off
-  `main` into the worktree; otherwise the pipeline ran as written.
+  `main` into the worktree; and a post-gate fix loop (add the missing TV
+  `withoutWatchProviders` integration test, resolve the bot thread) before the merge
+  could proceed — i.e. the `/watch-pr` thread sweep had to actually run per-push,
+  not once.
 - **One improvement:** `/deliver` Phase 0 already reads the *plan* into context
   before the worktree, but reading *source* files there is a trap — their paths
   become stale on `EnterWorktree`. Phase 0.5 should add a hard checkpoint: after
