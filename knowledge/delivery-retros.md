@@ -10,6 +10,42 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-25 — 🔧 Use the GitHub MCP instead of the gh CLI in the skills (#366) · lite
+
+- **Phases / skills:** phases 0–6; `pr, watch-pr` (both dogfooded the new MCP path).
+  Skipped `/review-plan` as a *skill* (the plan already got a 3-critic adversarial
+  pass earlier in the session, pre-`/deliver`); skipped `/implement-plan` (markdown
+  only — no TDD list); skipped code review (no Swift) and the automated
+  `/security-review` (diff is 100% markdown — `.md` is excluded; the only
+  security-relevant artifact, the `mcp__github__*` permission, is gitignored and out
+  of the PR — reviewed by reasoning instead, parity with `Bash(gh:*)`, ADR-0009).
+- **Worked:** the migration was **dogfooded end-to-end** — PR opened via
+  `mcp__github__create_pull_request`, readiness verified positively via
+  `get`/`get_check_runs`/`get_review_comments`, and the blocking wait used the
+  *retained* `gh pr checks --watch`. The pre-implementation 3-critic plan review paid
+  off: it caught two **BLOCKERs** before any edit — the review-reply mapping gap
+  (`add_reply_to_pull_request_comment` needs a REST comment id `get_review_comments`
+  doesn't expose → reply stays on `gh`) and the wrong method name (`rerun_failed_jobs`,
+  not "rerun-failed"). Path-aware CI resolved the docs-only PR in ~1 min.
+- **Friction — the MCP registration detour cost real time.** Enabling the `actions`
+  toolset, the user repointed the single `github` server to `…/mcp/x/actions`, whose
+  **exclusive** path silently dropped the default PR toolset — `pull_request_read`
+  etc. vanished mid-implementation, needing diagnosis + two reconnect cycles before
+  `…/mcp/x/all` fixed it. Now an ADR + `gotchas.md` entry.
+- **Deviations:** (1) the owner/repo "single source" decision surfaced *mid-edit*
+  from a user question, not in the plan — it should have been a planned design point
+  (it forced re-touching four already-edited files). (2) Captured knowledge **inline**
+  (ADR-0009 + gotchas) rather than invoking `/capture-knowledge`, since the ADR was
+  written during implementation. (3) This PR **supersedes** #365's
+  `reviewThreads`/`gh pr view --json` gotcha — watch-pr §0 no longer calls
+  `gh pr view` at all, so that guard was adapted to the MCP (`get_review_comments`).
+- **One improvement:** when a delivery edits the *very skills the pipeline runs*
+  (`/pr`, `/watch-pr`, `/deliver`), `/deliver` should note up front that the skill
+  **registry loads from the main checkout**, so the in-session skills keep the *old*
+  behaviour until merge — the change can only be dogfooded by the conductor acting
+  manually, not by the sub-skills. Flagging this avoids confusion when `/pr` visibly
+  runs `gh pr create` while the diff says otherwise.
+
 ## 2026-06-24 — 🔧 Add entry/exit criteria and auto-start to /deliver (#365) · lite
 
 - **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (lite +

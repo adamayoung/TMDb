@@ -1,7 +1,9 @@
 # CI failure diagnosis — reference index
 
 Each CI job has its own failure signature and reference file. Identify the
-failing job (`gh pr checks`, or `gh run view <id> --log-failed`), then open the
+failing job (`mcp__github__pull_request_read` method `get_check_runs`, or
+`mcp__github__get_job_logs` with `failed_only` — `gh pr checks` /
+`gh run view <id> --log-failed` when headless without the MCP), then open the
 matching file.
 
 | Failing job (`name:` in ci.yml) | Reference | When to use |

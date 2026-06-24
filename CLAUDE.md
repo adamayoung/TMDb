@@ -601,6 +601,42 @@ Use a descriptive branch name with a conventional prefix
 > `make ci` → review → push → open), and **`/deliver`** runs it as the final step
 > of the feature pipeline. The manual steps below are the fallback / reference.
 
+### GitHub access — MCP first
+
+The PR/CI skills (`/pr`, `/watch-pr`, `/review-pr-threads`, `/fix-pr-checks`,
+`/fix-integration-failures`, the `/diagnose-*` skills) drive GitHub through the
+**GitHub MCP** (`mcp__github__*`) rather than the `gh` CLI. `gh` is kept only where
+the MCP has no equivalent:
+
+- the **blocking CI wait** — `gh pr checks --watch` / `gh run watch`;
+- the review-thread **reply** — `gh api graphql addPullRequestReviewThreadReply`
+  (the MCP reply tool needs a numeric REST comment id that the thread read doesn't
+  expose; resolving threads *is* on the MCP);
+- **headless GitHub Actions workflows** (`claude.yml`, `integration-failure.yml`),
+  where the user-scoped MCP isn't mounted — those stay on `git`/`gh`.
+
+So `gh` **remains a prerequisite**. The MCP is a **user-scoped** server, registered
+once per contributor (it is intentionally *not* in `.mcp.json`, to avoid
+double-registration and committing a token):
+
+```bash
+claude mcp add -s user --transport http github \
+  https://api.githubcopilot.com/mcp/x/all -H "Authorization: Bearer <PAT>"
+```
+
+The `/x/all` path mounts the default toolsets **and** the opt-in `actions` toolset
+(workflow runs/logs/rerun); the bare `/mcp` or a single `/x/<toolset>` path would
+drop the others. The PAT needs `repo` + `actions:write` (rerun is a write op). See
+[ADR-0009](knowledge/decisions/0009-github-mcp-over-gh-cli.md).
+
+**Owner/repo derive from the `origin` remote** — one source, fork-safe — and are
+passed to every MCP/`gh` call:
+
+```bash
+read -r OWNER REPO < <(git remote get-url origin \
+  | sed -E 's#\.git$##; s#.*[:/]([^/]+)/([^/]+)$#\1 \2#')   # adamayoung TMDb
+```
+
 **CRITICAL: You MUST run `make ci` and ensure it passes before pushing
 and creating a PR.** This is a hard requirement - no exceptions.
 
@@ -626,7 +662,12 @@ git log --oneline main..HEAD
 git push -u origin <branch-name>
 ```
 
-### 4. Create PR with gh CLI
+### 4. Create the PR (GitHub MCP)
+
+Open the PR with the **GitHub MCP** — `mcp__github__create_pull_request`
+(owner/repo from the `origin` remote — see *GitHub access* above — `base: main`,
+`head: <branch-name>`, `title`, `body`). `gh pr create` is the fallback when the MCP
+is unavailable (or returns 401/403):
 
 ```bash
 gh pr create --base main --head <branch-name> \
@@ -677,6 +718,9 @@ Use appropriate **gitmoji** from [gitmoji.dev](https://gitmoji.dev):
 ```
 
 ### 7. Example
+
+The `gh` form below shows the title/body shape; the primary path is
+`mcp__github__create_pull_request` with the same `title`/`body` (§4).
 
 ```bash
 gh pr create --base main --head feature/my-feature \

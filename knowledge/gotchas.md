@@ -6,6 +6,26 @@ out of it.
 
 ## Tooling
 
+### GitHub MCP: `/x/<toolset>` paths are exclusive, and `mergeable_state` ≠ `mergeStateStatus`
+
+*2026-06-25.* When wiring the skills to the GitHub MCP ([ADR-0009](decisions/0009-github-mcp-over-gh-cli.md)):
+
+- The hosted endpoint's `/x/<toolset>` paths are **exclusive, not additive**.
+  Registering `https://api.githubcopilot.com/mcp/x/actions` mounts *only* the
+  `actions` toolset and **drops** the default PR/issue toolset — so
+  `pull_request_read`, `create_pull_request`, etc. silently disappear while
+  `actions_*` work. Use `…/mcp/x/all` to get the defaults **plus** `actions` under
+  one `mcp__github__*` namespace. (`/mcp` alone = defaults only, no `actions`.)
+- `pull_request_read` method `get` returns the **REST** `mergeable_state`
+  (lowercase `clean`/`blocked`/`behind`/`unstable`/`dirty`/`unknown`/`draft`), **not**
+  `gh`'s GraphQL `mergeStateStatus` (uppercase `CLEAN`/`BLOCKED`/…). Any logic ported
+  from `gh pr view --json mergeStateStatus` (e.g. `/watch-pr` merge-readiness, the
+  BLOCKED→CLEAN lag) must key off the REST field and lowercase values.
+- The MCP reply tool (`add_reply_to_pull_request_comment`) needs a numeric REST
+  comment id, but `get_review_comments` returns only GraphQL node ids — so posting a
+  thread **reply** stays on `gh api graphql` even though resolving threads is on the
+  MCP.
+
 ### A `Write` of a Markdown/DocC file can leak `</content>`/`</invoke>` into the file tail
 
 *2026-06-24.* When creating a `.md` file with the `Write` tool, trailing

@@ -42,10 +42,14 @@ fixes, and local-reproduction command.
 Use the first that applies:
 
 - A path or run id the caller handed you.
-- The current branch's run via the `gh` CLI:
+- The current branch's run via the **GitHub MCP** (owner/repo from the `origin`
+  remote): `mcp__github__actions_list` method `list_workflow_runs`
+  (`resource_id: ci.yml`, `workflow_runs_filter: { branch: <branch> }`), then
+  `mcp__github__get_job_logs` (`run_id: <id>`, `failed_only: true`,
+  `return_content: true`). (`mcp__github__pull_request_read` method
+  `get_check_runs` also shows which job is red.) **Headless / no MCP:**
   `gh run list --workflow CI --branch "$(git branch --show-current)" --limit 1`,
-  then `gh run view <id> --log-failed`. (`gh pr checks` also shows which job is
-  red.)
+  then `gh run view <id> --log-failed`.
 - CI pipes build/test output through **xcsift** in `github-actions` format, so
   the failing lines are GitHub `::error::` annotations carrying `file:line` —
   read those first.

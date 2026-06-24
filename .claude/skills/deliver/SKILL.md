@@ -220,17 +220,20 @@ concurrent work.
 **First, GC any stale worktree from a prior delivery** (this run is the garbage
 collector for the *previous* one's deferred merge — Phase 7 only fires on an
 in-session merge, and the common path is "merged later, elsewhere"). Sweep the
-worktree dirs and reclaim any whose PR has since merged:
+worktree dirs and reclaim any whose PR has since merged. Get every PR's state in
+**one** call — `mcp__github__list_pull_requests` (owner/repo from the `origin` remote,
+`state: all`, `perPage: 100`) — and build a `head.ref → merged?` map (a merged PR
+reports `state: closed` + `merged: true`). Then, for each worktree branch the map
+marks **merged**, remove it:
 
 ```bash
-for wt in .claude/worktrees/*/; do
-  br=$(git -C "$wt" rev-parse --abbrev-ref HEAD 2>/dev/null) || continue
-  state=$(gh pr view "$br" --json state --jq .state 2>/dev/null)
-  if [ "$state" = "MERGED" ]; then
-    git worktree remove --force "$wt" && git branch -D "$br" 2>/dev/null
-  fi
-done
+# For each $wt under .claude/worktrees/ whose branch ($br) the map marks merged:
+git worktree remove --force "$wt" && git branch -D "$br" 2>/dev/null
 ```
+
+(The branch→merged map comes from the MCP call above; the shell step only does the
+removal — tool calls can't run inside a bash loop. Get branches with
+`git -C "$wt" rev-parse --abbrev-ref HEAD`.)
 
 This keeps `.claude/worktrees/` (each carrying a multi-GB `.build`) from
 accumulating across deliveries the user merged in the GitHub UI or a later session.
@@ -544,7 +547,8 @@ then push the branch and open the PR with a gitmoji title and structured body.
    live integration test) often passes in isolation / on a re-run → it's a `main`
    problem, not yours. Hand it to **`/fix-integration-failures`** (it fixes the
    flake on its own branch off `main`, runs `make ci`, and merges), then bring this
-   branch up to date (`git merge main` / `gh pr update-branch`) and re-run the gate.
+   branch up to date (`git merge main` / `mcp__github__update_pull_request_branch`)
+   and re-run the gate.
    Don't patch an unrelated test onto this feature branch, and don't hard-stop on it.
 
 Record the PR number/URL in the ledger.
@@ -558,7 +562,8 @@ integration failure to `/fix-integration-failures`, per Contract §4), looping u
 the PR is **ready** (green checks, threads resolved) or **stuck**.
 
 **Ready means mergeable *now*.** Before the gate, `/watch-pr` brings the branch up
-to date with `main` (`gh pr update-branch`) and waits for the re-run, so a PR
+to date with `main` (`mcp__github__update_pull_request_branch`) and waits for the
+re-run, so a PR
 reported ready isn't `BEHIND` and waiting on a rebase — the user can merge straight
 away. (See `/watch-pr` §3.)
 
@@ -729,7 +734,8 @@ worktree down once the PR is merged** — this reclaims both the worktree **and*
 
 **How to tear down** — two preconditions, both required:
 
-1. **The PR is actually merged** — `gh pr view <n> --json state --jq .state` → `MERGED`.
+1. **The PR is actually merged** — `mcp__github__pull_request_read` method `get`
+   (owner/repo from the `origin` remote, `pullNumber: <n>`) → `merged: true`.
 2. **The worktree has no unsaved work beyond what's merged** — `MERGED` only
    guarantees the *pushed* feature commits are on `main`; it says nothing about a
    commit made (or a file edited) **after** the last push, e.g. the retro. Verify
