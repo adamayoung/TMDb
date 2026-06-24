@@ -23,6 +23,7 @@ final class TMDbFindService: FindService {
         externalSource: ExternalSource,
         language: String? = nil
     ) async throws(TMDbError) -> FindResults {
+        try Self.validate(externalID: externalID)
         let languageCode = language ?? configuration.defaultLanguage
         let request = FindByIDRequest(
             externalID: externalID,
@@ -31,6 +32,17 @@ final class TMDbFindService: FindService {
         )
 
         return try await apiClient.perform(request)
+    }
+
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+extension TMDbFindService {
+
+    private static func validate(externalID: String) throws(TMDbError) {
+        guard !externalID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw .badRequest("External ID must not be empty")
+        }
     }
 
 }

@@ -282,4 +282,35 @@ struct TMDbAuthenticationServiceTests {
         }
     }
 
+    @Test("createSession with empty v4 access token throws bad request and performs no request")
+    func createSessionWithEmptyV4AccessTokenThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.badRequest("Access token must not be empty")) {
+            _ = try await service.createSession(withV4AccessToken: "   ")
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("createSession with empty username throws bad request and performs no request")
+    func createSessionWithEmptyUsernameThrowsBadRequest() async throws {
+        let credential = Credential(username: " ", password: "pass123")
+
+        await #expect(throws: TMDbError.badRequest("Username must not be empty")) {
+            _ = try await service.createSession(withCredential: credential)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("createSession with empty password throws bad request and performs no request")
+    func createSessionWithEmptyPasswordThrowsBadRequest() async throws {
+        let credential = Credential(username: "test", password: "")
+
+        await #expect(throws: TMDbError.badRequest("Password must not be empty")) {
+            _ = try await service.createSession(withCredential: credential)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
 }
