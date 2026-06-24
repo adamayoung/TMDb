@@ -26,6 +26,14 @@ struct FindByIDRequestTests {
         #expect(request.path == "/find/81189")
     }
 
+    @Test("path percent-encodes an external ID containing query-injection characters")
+    func pathPercentEncodesUnsafeExternalID() {
+        let request = FindByIDRequest(externalID: "tt0111161?injected=x", externalSource: .imdbID)
+
+        #expect(request.path == "/find/tt0111161%3Finjected%3Dx")
+        #expect(!request.path.contains("?"))
+    }
+
     @Test("queryItems with IMDb external source")
     func queryItemsWithIMDbExternalSource() {
         let request = FindByIDRequest(externalID: "tt0111161", externalSource: .imdbID)

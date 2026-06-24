@@ -11,7 +11,7 @@ final class TVEpisodeGroupRequest:
 DecodableAPIRequest<TVEpisodeGroup> {
 
     init(id: TVEpisodeGroup.ID) {
-        let path = "/tv/episode_group/\(id)"
+        let path = "/tv/episode_group/\(id.urlPathSegmentEncoded)"
 
         super.init(path: path)
     }
