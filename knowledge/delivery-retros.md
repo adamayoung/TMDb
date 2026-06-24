@@ -10,6 +10,33 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-24 — 🔧 Add entry/exit criteria and auto-start to /deliver (#365) · lite
+
+- **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (lite +
+  plan approved via ExitPlanMode this session); skipped `/implement-plan`
+  (markdown-only — no TDD test list); skipped code review + security review (no
+  Swift changed).
+- **Worked:** the fast-gate detector caught this as docs/config-only correctly —
+  only `make lint-markdown` ran locally, CI resolved in under 2 minutes. Deriving
+  the changes directly from the conversation (Looper article → gap analysis →
+  plan) kept the plan tight and the edits focused. The three changes (entry gate,
+  Phase 3.6, Contract §8) landed cleanly in one commit with no review friction.
+- **Friction:** the auto-start behaviour (Contract §8) can only be captured in the
+  skill itself and memory — there's no harness hook that fires on ExitPlanMode
+  approval, so it relies on the model reading the contract. That's a soft guarantee.
+- **Deviations:** Plan had no formal acceptance criteria (the first delivery under
+  the new entry gate!) — the circular dependency was noted and the Verification
+  section stood in. Phase 3.6 was accordingly a no-op for this run.
+- **One improvement:** the entry gate prompts for ACs but doesn't suggest a format
+  or example in context — the prompt could include a one-line example inline
+  ("e.g. 'Given X, when Y, then Z'") to reduce back-and-forth.
+- **Gotcha — `reviewThreads` is not a valid `gh pr view --json` field.** Adding it
+  causes `gh` to error with empty stdout; any JSON parsing then fails with
+  `JSONDecodeError: Expecting value: line 1 column 1`. Thread data must be fetched
+  via `gh api graphql` — `/review-pr-threads` already does this correctly. Added a
+  guard note to `watch-pr/SKILL.md §0`. Do not add `reviewThreads` (or `comments`)
+  to `gh pr view --json` calls.
+
 ## 2026-06-24 — 🔒 Harden URL path interpolation & validate inputs (#364) · lite
 
 - **Phases / skills:** phases 0–6; `test, integration-test, review-changes,

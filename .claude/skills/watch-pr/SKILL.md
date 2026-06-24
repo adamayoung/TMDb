@@ -26,6 +26,10 @@ gh pr view --json number,url,state,headRefName,mergeStateStatus,statusCheckRollu
 
 - No PR for the current branch → stop and tell the user (suggest `/pr`).
 - State not `OPEN` → stop and report.
+- **`reviewThreads` is not a valid `gh pr view --json` field** — adding it causes
+  `gh` to error silently (empty stdout), which breaks any JSON parsing downstream.
+  Thread data must come from `gh api graphql`; delegate to `/review-pr-threads`
+  which already does this correctly.
 
 Keep a **run ledger** in your working notes: resolved thread IDs, a topic
 signature per handled thread (`path:line` + short gist), and a fix-attempt
