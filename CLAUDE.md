@@ -168,8 +168,8 @@ than stalling, and ends each delivery with a short retrospective into
 [`knowledge/delivery-retros.md`](knowledge/delivery-retros.md):
 
 branch → (`/review-plan` for risky/large changes) → `/implement-plan` →
-`/review-changes` (+ fix) → `/capture-knowledge` → `/pr reviewed` → `/watch-pr` →
-retro.
+`/review-changes` (+ fix) → `/security-review` (+ fix) → `/capture-knowledge` →
+`/pr reviewed` → `/watch-pr` → retro.
 
 Key skills (the README's *Claude Code Skills* tables list them all):
 
