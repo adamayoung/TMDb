@@ -30,6 +30,12 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 - **One improvement:** the entry gate prompts for ACs but doesn't suggest a format
   or example in context — the prompt could include a one-line example inline
   ("e.g. 'Given X, when Y, then Z'") to reduce back-and-forth.
+- **Gotcha — `reviewThreads` is not a valid `gh pr view --json` field.** Adding it
+  causes `gh` to error with empty stdout; any JSON parsing then fails with
+  `JSONDecodeError: Expecting value: line 1 column 1`. Thread data must be fetched
+  via `gh api graphql` — `/review-pr-threads` already does this correctly. Added a
+  guard note to `watch-pr/SKILL.md §0`. Do not add `reviewThreads` (or `comments`)
+  to `gh pr view --json` calls.
 
 ## 2026-06-24 — 🔒 Harden URL path interpolation & validate inputs (#364) · lite
 
