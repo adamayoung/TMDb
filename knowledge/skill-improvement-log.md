@@ -30,6 +30,24 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-24 — Post-gate pushes re-open the gate: re-sweep threads/checks after the last push · applied
+
+- **Pattern:** declaring a PR "ready, 0 unresolved threads" off a snapshot taken
+  *before* later pushes. In #361 the ready call was made in Phase 5, then Phase 6
+  pushed the retro + a skill edit and the branch was updated with `main` — each push
+  re-ran `claude-review`, which posted a **High** thread *after* the snapshot. The
+  unresolved thread then **blocked the merge** (`required_review_thread_resolution`).
+  Single occurrence (below the recurring-scan bar), but user-directed.
+- **Decision:** **applied** (user-directed). `/deliver` Phase 6: added "Pushing the
+  retro re-opens the gate — re-watch before merge" (return to the `/watch-pr` loop
+  after the last post-gate push; "ready" is only true of the current tip).
+  `/watch-pr` §2 Loop guard: added "Re-sweep after every push" making the per-push
+  thread+check re-confirm explicit. Both landed in PR #361; logged here.
+- **Rationale:** every push re-triggers the review bot and CI, so a pre-push "ready"
+  is stale; cheap to re-sweep, and a missed Critical/High thread is a hard merge
+  blocker, not advisory.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-24 — Phase 0.5 checkpoint: edit via worktree paths, verify the diff landed · applied
 
 - **Pattern:** edits landing in the **main checkout** instead of the active

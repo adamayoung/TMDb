@@ -102,6 +102,14 @@ fixing here:
   changes). A converging PR should see each push's inline batch shrink; if the same
   severity-gated topic reappears across pushes, treat it as noise per the rule
   above (reply with the earlier SHA, resolve, don't re-edit).
+- **Re-sweep after every push — "ready" is only true of the current tip.** Any push
+  to the branch (a check fix, *and* a caller's post-gate commit such as a `/deliver`
+  retro or skill edit) re-triggers `claude-review`, which can post a fresh
+  Critical/High thread that **blocks the merge** (`required_review_thread_resolution`).
+  Never declare ready off a thread/check snapshot taken *before* the latest push:
+  after the last push settles, run one more full pass (thread sweep + check
+  re-confirm) before §3. A single early "0 unresolved" check is not a standing
+  guarantee.
 - End the loop when a full pass resolves no new threads and has no actionable
   check failures. Hard backstop: ~10 passes, then report and stop.
 - Waiting: use `gh pr checks --watch` for in-flight CI. When only waiting on a

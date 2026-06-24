@@ -549,6 +549,17 @@ lost. Two cases:
   skill edits the auto recurring-pattern scan commits. Do this **before** Phase 7,
   and confirm it's pushed — otherwise teardown's `discard_changes` drops it.
 
+**Pushing the retro re-opens the gate — re-watch before merge.** In watch-only mode
+the retro / knowledge / skill commits are pushed to the **PR branch after** the
+ready gate, and **every push re-triggers `claude-review` and the CI matrix** — which
+can post a **new blocking thread** (the `main` ruleset requires thread resolution)
+or restart checks. So after the **last** post-gate push, **return to the `/watch-pr`
+loop once more**: re-sweep unresolved threads and re-confirm checks green before
+treating the PR as merge-ready or merging. "Ready" is only ever true of the *current*
+branch tip — never a tip you have since pushed past. (Bit `/deliver` on #361: a
+"ready, 0 threads" call made before the retro+skill pushes, whose re-reviews then
+raised a High thread that blocked the merge.)
+
 **Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
 more than **~12 full entries**, distil the oldest into its one-line archive table
 (`date · PR · weight · one-line outcome`) and drop the prose — per
