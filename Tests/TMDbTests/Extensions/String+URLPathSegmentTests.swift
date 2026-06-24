@@ -11,6 +11,11 @@ import Testing
 
 struct StringURLPathSegmentTests {
 
+    @Test("empty string encodes to empty string")
+    func emptyStringUnchanged() {
+        #expect("".urlPathSegmentEncoded == "")
+    }
+
     @Test("plain alphanumeric identifier is unchanged")
     func plainIdentifierUnchanged() {
         #expect("tt0111161".urlPathSegmentEncoded == "tt0111161")

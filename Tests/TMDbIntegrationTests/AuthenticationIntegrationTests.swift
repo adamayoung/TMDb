@@ -87,4 +87,11 @@ struct AuthenticationIntegrationTests {
         #expect(url.absoluteString.contains("redirect_to") == true)
     }
 
+    @Test("createSession with empty v4 access token throws bad request")
+    func createSessionWithEmptyV4AccessTokenThrowsBadRequest() async throws {
+        await #expect(throws: TMDbError.self) {
+            _ = try await authenticationService.createSession(withV4AccessToken: "   ")
+        }
+    }
+
 }
