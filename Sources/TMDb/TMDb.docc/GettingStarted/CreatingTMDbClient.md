@@ -110,10 +110,13 @@ let tmdbClient = TMDbClient(
 
 ### Configuration with Response Caching
 
-Enable in-memory response caching to reduce redundant network requests.
-All successful GET responses are cached automatically. User-specific
-requests (with session IDs) bypass the cache, and any successful POST or
-DELETE invalidates the entire cache.
+On Apple platforms the default client already caches responses on disk via
+`URLCache`, so repeated requests are served without hitting the network. You can
+additionally enable an in-memory cache to reduce redundant requests. All
+successful GET responses are cached automatically. User-specific requests (with
+session IDs) bypass the cache, and any successful POST or DELETE invalidates the
+entire cache. See <doc:CachingResponses> for the full picture, including how to
+tune or disable the on-disk cache.
 
 ```swift
 let configuration = TMDbConfiguration(

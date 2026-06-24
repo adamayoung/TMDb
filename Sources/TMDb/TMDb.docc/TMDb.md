@@ -60,6 +60,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/ManagingUserAccounts>
 - <doc:/UsingLanguageModelTools>
 - <doc:/HandlingErrors>
+- <doc:/CachingResponses>
 
 ### Movies
 

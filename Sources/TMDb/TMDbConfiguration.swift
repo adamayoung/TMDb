@@ -70,7 +70,10 @@ public struct TMDbConfiguration: Sendable, Equatable {
     /// User-specific requests (with session IDs) bypass the cache. Any
     /// successful POST or DELETE request invalidates the entire cache.
     ///
-    /// When `nil` (the default), no response caching is performed.
+    /// When `nil` (the default), no in-memory response caching is performed.
+    /// Note that on Apple platforms the default `URLSession` adapter already
+    /// caches responses on disk via `URLCache`, independently of this setting;
+    /// see <doc:CachingResponses>.
     ///
     /// ```swift
     /// let configuration = TMDbConfiguration(

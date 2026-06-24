@@ -15,6 +15,12 @@ import Foundation
 /// excluded. Any successful POST or DELETE request invalidates the entire
 /// cache.
 ///
+/// This is an optional in-memory layer that sits above the default on-disk
+/// `URLCache` (enabled automatically on Apple platforms). It is cleared when
+/// the process ends and uses a single fixed time-to-live rather than the
+/// per-response `max-age` honoured by `URLCache`. See <doc:CachingResponses>
+/// for how the two layers interact.
+///
 /// ```swift
 /// let cacheConfig = CacheConfiguration(
 ///     defaultTTL: .seconds(1800),
