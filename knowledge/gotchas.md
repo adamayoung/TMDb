@@ -6,6 +6,17 @@ out of it.
 
 ## Tooling
 
+### A `Write` of a Markdown/DocC file can leak `</content>`/`</invoke>` into the file tail
+
+*2026-06-24.* When creating a `.md` file with the `Write` tool, trailing
+tool-call closing tags (`</content>`, `</invoke>`) can end up appended to the
+file content. Neither gate catches it: `make build-docs` renders the unknown
+inline text as ordinary prose (no warning), and `markdownlint` doesn't flag it
+(`MD013` line-length is off in `.markdownlintrc`, and the tags aren't a lint
+violation). Code review caught it in the published article. After a `Write` of a
+docs/markdown file, verify the tail — e.g. `tail -3 <file>` or
+`grep -nE '</content>|</invoke>' <file>`.
+
 ### DocC symbol links don't resolve across modules — use code spans in a second target
 
 *2026-06-23.* The `TMDbTesting` target depends on `TMDb`, and its doc comments
