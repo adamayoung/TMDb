@@ -362,6 +362,12 @@ by whatever spawned the subshell — **not** this file; check the environment fi
 Record the worktree path and branch name in the ledger. The branch is what the PR
 and all later phases (`git diff origin/main...HEAD`, `/pr`, `/watch-pr`) operate on.
 
+**(Re-)create the ledger here, inside the worktree.** The `TaskCreate` ledger is
+**CWD-scoped and cleared by `EnterWorktree`** (and can be reset mid-run by an MCP
+reconnect or a plan-mode exit), so open the Contract §6 ledger *after* entering
+the worktree — and if a later phase finds it empty, **re-create it from the phase
+list** rather than treating it as lost work. (Bit #364 and #368.)
+
 **Edit via worktree paths, and verify your diff landed there — not on `main`.** A
 file `Read` *before* `EnterWorktree` (e.g. source you scoped in Phase 0) yields a
 **main-checkout** absolute path; continuing to `Edit` that exact path after entering

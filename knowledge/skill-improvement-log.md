@@ -30,6 +30,58 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-30 — Ledger fragility recurred (#364, #368): re-create it inside the worktree · applied
+
+- **Pattern:** the `TaskCreate` phase ledger (Contract §6) is CWD-scoped and is
+  cleared by `EnterWorktree` (and, in #368, reset again mid-run by an MCP
+  reconnect / plan-mode exit), so the durable phase ledger keeps getting lost —
+  #364 (lost on EnterWorktree) and #368 (lost twice).
+- **Decision:** **applied** (user-approved, from the #368 Phase 6 scan). Took the
+  **lightweight** path the deferred *2026-06-18 file-based ledger* entry called
+  for, not a new state machine: `/deliver` Phase 0.5 now says to (re-)create the
+  ledger *inside* the worktree after entering, and to re-create it from the phase
+  list if a later phase finds it empty. Landed in `.claude/skills/deliver/SKILL.md`
+  Phase 0.5.
+- **Rationale:** matches that entry's "reconsider when interruptions actually bite
+  — prefer the lighter fix"; a re-create instruction costs nothing and stops a
+  reset ledger being mistaken for lost work. The heavy committed-JSON option stays
+  rejected.
+- **Reconsider when:** the re-create instruction proves insufficient (resets lose
+  in-flight decisions not reconstructable from the phase list) — then revisit
+  "checkpoint the ledger into the PR description".
+
+### 2026-06-30 — Fast-gate over-matched `.github/`: narrow to `.github/workflows/` · applied
+
+- **Pattern:** the `/pr` docs/config fast-gate detector treated **any** `.github/`
+  change as build/CI-affecting (`^\.github/`), so a pure docs change under
+  `.github/` — e.g. `.github/CODE_REVIEW.md` in #368 — forced the **full** `make
+  ci` (live integration suite included) for a markdown-only diff. The "full gate
+  for a no-logic change" friction recurred across #340/#343/#344/#363 and #368.
+- **Decision:** **applied** (user-approved). Narrowed the detector's `^\.github/`
+  → `^\.github/workflows/` (and the prose `.github/**` → `.github/workflows/**`)
+  in `.claude/skills/pr/SKILL.md` step 4 — only workflow files affect CI. Safe
+  because the PR's own CI always runs the full matrix regardless; the fast gate
+  only trims the *local* run.
+- **Rationale:** `.github/CODE_REVIEW.md` and issue/PR templates don't affect
+  `swift build`/`test`/docs, so they shouldn't trip the full gate; an obscure
+  CI-affecting change is still caught by the PR's own CI.
+- **Reconsider when:** the repo adds composite actions under `.github/actions/`
+  the local gate should exercise — then widen the pattern to include them.
+
+### 2026-06-30 — `/pr` "skip steps 4–6" off-by-one would skip the mandatory gate · applied
+
+- **Pattern:** `/pr`'s mode preamble said `reviewed`/no-Swift should "**skip steps
+  4–6**", but **step 4 is the mandatory `make ci` gate**; the skippable review
+  steps are 5–7 (and are correctly annotated as such per-step). Taken literally
+  the preamble would skip the gate CLAUDE.md mandates before every PR. Found during
+  #368 — a single occurrence, but a correctness bug, so logged despite being below
+  the recurring-scan ≥2 bar.
+- **Decision:** **applied** (user-approved). Changed both "skip steps 4–6"
+  occurrences to "skip steps 5–7" in `.claude/skills/pr/SKILL.md`.
+- **Rationale:** the gate is never optional; the preamble must agree with the
+  per-step annotations so a future literal reading can't skip `make ci`.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-30 — Phase 3 per-unit review: replace the blanket rule with a template→replicate reference-unit gate · applied
 
 - **Pattern:** Phase 3's "Full / multi-unit → review per cohesive unit,

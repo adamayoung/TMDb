@@ -10,10 +10,10 @@ I'll create a pull request for the current branch by following these steps. If a
 **Mode** — check the arguments passed to this skill (shown at the end). If they
 include `reviewed` (or `skip-review`), an upstream step already ran the
 `code-reviewer` and fixed its findings (e.g. `/deliver`'s code-review phase), so
-**skip steps 4–6** to avoid reviewing identical code twice. Otherwise (standalone
+**skip steps 5–7** to avoid reviewing identical code twice. Otherwise (standalone
 `/pr`), run the internal review as normal.
 
-**Also skip steps 4–6 when the branch changes no Swift** — code review is for
+**Also skip steps 5–7 when the branch changes no Swift** — code review is for
 Swift, so a docs-only / config-only PR needs none:
 
 ```bash
@@ -35,11 +35,11 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
     - Already branched off an up-to-date `origin/main` with nothing to replay → this is a fast no-op.
 4. Run the pre-PR gate — **MANDATORY; it must pass before going further.** Run it directly (do not delegate). If it fails, stop and fix — **commit the fixes** — then re-run; never open a PR on a red gate. Scale the gate to the diff:
     - **Default — full `make ci`.** The gate CLAUDE.md requires before any PR: lint, markdown lint, unit tests, integration tests, the release build, and the docs build. Use this whenever **any** code or build-affecting file changed.
-    - **Docs/config-only fast gate.** When the diff touches **no build- or test-affecting files** — i.e. no `*.swift` **and** none of `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`, or `.github/**` — the test/release-build legs of `make ci` have nothing to exercise. Run only the meaningful checks instead: `make lint && make lint-markdown && make build-docs` (drop `build-docs` if no `*.docc/**` changed). Detect this with:
+    - **Docs/config-only fast gate.** When the diff touches **no build- or test-affecting files** — i.e. no `*.swift` **and** none of `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`, or `.github/workflows/**` — the test/release-build legs of `make ci` have nothing to exercise. Run only the meaningful checks instead: `make lint && make lint-markdown && make build-docs` (drop `build-docs` if no `*.docc/**` changed). Detect this with:
 
         ```bash
         git diff --name-only origin/main...HEAD \
-          | grep -qE '\.swift$|^Makefile$|^Package\.(swift|resolved)$|\.xctestplan$|^\.github/' \
+          | grep -qE '\.swift$|^Makefile$|^Package\.(swift|resolved)$|\.xctestplan$|^\.github/workflows/' \
           && echo "code/build touched → full make ci" \
           || echo "docs/config-only → fast gate"
         ```
