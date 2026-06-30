@@ -31,9 +31,7 @@ final class TMDbReviewService: ReviewService {
 extension TMDbReviewService {
 
     private static func validate(id: Review.ID) throws(TMDbError) {
-        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Review ID must not be empty")
-        }
+        try id.validateNotEmpty(message: "Review ID must not be empty")
     }
 
 }
