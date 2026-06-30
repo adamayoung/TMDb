@@ -159,7 +159,18 @@ property documentation.
 ## Keep the DocC catalog in sync
 
 When public API changes, update `Sources/TMDb/TMDb.docc/` so `make build-docs`
-(warnings-as-errors) stays green:
+(warnings-as-errors) stays green. Catalog layout:
+
+```text
+Sources/TMDb/TMDb.docc/
+├── TMDb.md                      # Main catalog with topic sections
+├── Extensions/
+│   ├── TMDbClient.md            # TMDbClient properties
+│   └── <ServiceName>Service.md  # Service method groupings
+├── GettingStarted/
+├── HowTos/
+└── Resources/
+```
 
 - **New service** → create `Extensions/<ServiceName>Service.md`; add the service
   and its return types to `TMDb.md`; add the property to `TMDbClient.md`.
@@ -201,9 +212,11 @@ grows — update it in the same change, then run `make lint-markdown`:
   formatting conformance, etc.), not for routine endpoint additions.
 - **Code examples** (`## Setup`, `## Common Use Cases`) → if the change alters a
   usage pattern shown in an example, update the example; these aren't compiled, so
-  verify types, property names, and `try`/`await` by hand.
+  verify types, property names, and `try`/`await` by hand. Example blocks must show
+  the `swift-tools-version` that matches `Package.swift`.
 - **Requirements / Installation** → only if platform support or
-  `swift-tools-version` changed.
+  `swift-tools-version` changed, or a new tool/dependency is required (bump
+  **Prerequisites**).
 
 Rule of thumb: the README is the at-a-glance map of the API — if a user reading
 only the Features list and the service table would now have a wrong or incomplete

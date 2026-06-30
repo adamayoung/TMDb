@@ -140,12 +140,21 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 - macOS targets pipe compiler/test output through `xcsift`; the Makefile sets
   `set -o pipefail`, so a non-zero exit from `swift build`/`swift test` propagates
   through the pipe. A subagent checking exit status can trust it.
+- Install with `brew install xcsift`. Local builds use `xcsift -f toon` (TOON
+  format); CI builds use `xcsift -f github-actions` (GitHub annotations).
+- Build targets pass `--Werror` (warnings-as-errors) and `2>&1` (compiler
+  diagnostics are emitted on stderr). **Linux/Docker targets do not use xcsift.**
 
 ### The `xcode-tools` MCP only exists inside Xcode
 
 - The `mcp__xcode-tools__*` tools are the native Xcode–Claude Agent integration;
   they are **not available** in a terminal Claude Code session. Fall back to
   `make` there.
+- Inside Xcode use the `mcp__xcode-tools__*` tools (`BuildProject`,
+  `RunAllTests`/`RunSomeTests`, `XcodeRead`/`XcodeWrite`/`XcodeUpdate`,
+  `XcodeGrep`/`XcodeGlob`/`XcodeLS`) — **do not** use `mcp__xcode__*`, a separate,
+  redundant server. Select the **TMDb** test plan for unit tests, the
+  **Integration** plan for integration tests.
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
