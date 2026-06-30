@@ -10,6 +10,42 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-06-30 — 🔧 Harden & extend the /deliver pipeline (audit P1–P5) (#368) · lite
+
+- **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (the
+  proposals came from an adversarial audit earlier this session; `/deliver`
+  invocation was approval); skipped `/implement-plan` (markdown-only — no Canon
+  TDD list); skipped code review + `/security-review` (no Swift, and the diff
+  touches none of the security triggers — `.github/CODE_REVIEW.md` and
+  `.claude/skills/**` are not `.github/workflows/` or `.claude/settings*`).
+  Knowledge captured **inline** (skill-improvement-log + tmdb-api-notes), not via
+  a separate `/capture-knowledge`.
+- **Worked:** the audit→plan→deliver chain held end-to-end for a *meta* change
+  (editing the pipeline's own skills). Full `make ci` clean first try (unit 2824,
+  integration 289 — no flake); the PR's path-aware CI resolved in ~1 min. Scoping
+  the run to **Part 1** (skills) up front and deferring codebase fixes A/B/C to
+  follow-on runs kept it cohesive. Absorbed two mid-run asks (P5 multi-PR; the
+  durable `Company.logoPath` note) without losing the thread.
+- **Friction:** (1) **the `TaskCreate` ledger reset twice** mid-run (after the MCP
+  reconnect / plan-mode exit) — phases tracked inline instead. **Second** delivery
+  to lose the ledger (cf. #364 "CWD-scoped, lost on EnterWorktree"). (2) **The
+  markdownlint `--fix` hook corrupted a paragraph** — an inline `#A` token was
+  rewritten into a real `# A")` H1 (MD025), caught by `make lint-markdown`; fixed
+  by rewording to "PR A/B/C". (3) **Docs fast-gate over-matched** — a review-spec
+  doc (`.github/CODE_REVIEW.md`) trips `^\.github/` → full `make ci` though it's
+  not build/test-affecting.
+- **Deviations:** none material — knowledge captured inline (as in #366) since it
+  was authored during implementation. The retro file is over its ~12 window;
+  archive-distil deferred to next cycle.
+- **Bug found in `/pr`:** the mode preamble says reviewed mode should "**skip steps
+  4–6**", but **step 4 is the mandatory `make ci` gate** — the per-step
+  annotations correctly mark 5–7 as the skippable review steps. Taken literally it
+  would skip the gate; I ran it regardless. Candidate fix (separate PR).
+- **One improvement:** ledger fragility now has **two** occurrences — resurface
+  the deferred `2026-06-18 file-based ledger` decision (its "reconsider when
+  interruptions actually bite" condition now holds), or have `/deliver` re-create
+  the ledger after an `EnterWorktree`/reconnect.
+
 ## 2026-06-25 — 🔧 Use the GitHub MCP instead of the gh CLI in the skills (#366) · lite
 
 - **Phases / skills:** phases 0–6; `pr, watch-pr` (both dogfooded the new MCP path).
