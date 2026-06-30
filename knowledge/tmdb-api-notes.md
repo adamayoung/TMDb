@@ -89,6 +89,23 @@ status code alone proves nothing.
   before deciding — the docs aren't always accurate about which fields are
   guaranteed.
 
+### `Company.logoPath` is a required decode — latent throw if `logo_path` is absent
+
+*2026-06-30, `/3/company/{company_id}`.* `Company.logoPath` is non-optional
+(`public let logoPath: URL`) and decoded with a **required**
+`try container.decode(URL.self, forKey: .logoPath)`
+(`Sources/TMDb/Domain/Models/Company.swift`), so an absent, `null`, or empty
+`logo_path` makes the **whole `Company` decode throw**. TMDb does return
+logo-less production companies, so this is a real latent failure, not theoretical.
+Note the asymmetry in the *same* decoder: `homepageURL` **is** guarded (empty
+string → `nil`, with the comment "URL decoding will fail with an empty string"),
+and the sibling `Network.logoPath` is correctly `URL?` — only `Company.logoPath`
+is unguarded. **Fixing it means making `logoPath` optional (`URL?`), a breaking
+public-API change** (property type + `init` parameter), so it is deferred to a
+deliberate major version rather than patched ad hoc. Until then, treat a company
+with no logo as a known decode-failure risk. (Surfaced in the 2026-06-30
+standardization audit.)
+
 ## Changes endpoints
 
 ### `changes/movie|tv|person` list responses are large and carry an unmodelled `softcore` field
