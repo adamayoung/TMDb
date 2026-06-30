@@ -98,8 +98,16 @@ inflate nitpicks to Critical.
   optionality, and types match the TMDb API; `CodingKeys` map correctly; fixtures
   match real responses. Verify via `mcp__tmdb__*` and the OpenAPI spec; **skip if
   you lack those tools.**
-- **Consistency of repeated fixes** — a textual fix applied in one place (e.g. a
-  protocol doc) is applied to all (its `public extension` twin, sibling methods).
+- **Consistency with siblings** — two checks: (1) a textual fix applied in one
+  place (e.g. a protocol doc) is applied to all (its `public extension` twin,
+  sibling methods); and (2) a **newly-added** member of an existing family — a
+  service method, a model, an `addRating`-style guarded method, a test `@Suite` —
+  **matches the conventions of its siblings**: the same input validation, the
+  same error case (`.badRequest` vs a dedicated `TMDbError` case), the same model
+  conformance set / decode strategy, the same test-suite tag. Flag a silent
+  divergence (a sibling validates but the new one doesn't; a new model drops
+  `Sendable`; a service suite tagged `.requests` not `.services`) — it is how
+  standardization debt enters.
 
 ## Out of scope / ignore
 
@@ -123,6 +131,13 @@ reporting it. This is the filter that keeps the review honest and quiet:
    there context that invalidates it?
 4. **Confirm scope** — does it relate to code changed in this diff, not a
    pre-existing concern?
+5. **Verify any sibling-claim before dropping on it.** If you downgrade or drop a
+   finding on a factual claim about *other* code — "siblings don't do this
+   either", "handled elsewhere", "the convention is X" — **check that claim
+   against the tree first** (list the directory, read the sibling). An unverified
+   sibling-claim is **not** grounds to drop: a real "missing integration test"
+   High was once dropped because "no sibling has one" when the integration dir
+   was never opened. Verify, then drop.
 
 **Only findings that survive this pass are reported.** Drop the rest silently.
 

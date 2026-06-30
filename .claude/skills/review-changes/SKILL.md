@@ -87,8 +87,8 @@ const SPEC = '.github/CODE_REVIEW.md'
 const DIMENSIONS = [
   { key: 'correctness', focus: 'correctness & safety — logic bugs, behavioural regressions, force unwraps / try!, and input validation at system boundaries' },
   { key: 'concurrency', focus: 'Swift 6 concurrency — async/await, actor isolation, Sendable conformance, no blanket @MainActor, and justified @preconcurrency / @unchecked Sendable' },
-  { key: 'architecture', focus: 'architecture — protocol + TMDb-prefixed implementation, service-layer boundaries, new API exposed on TMDbClient and wired in TMDbFactory, required model conformances' },
-  { key: 'testing', focus: 'tests — both unit and integration present, fixtures exercise EVERY decoder branch, edge cases (boundaries / empty / nil), request-pattern correctness, and #require over force-unwrap' },
+  { key: 'architecture', focus: 'architecture — protocol + TMDb-prefixed implementation, service-layer boundaries, new API exposed on TMDbClient and wired in TMDbFactory, required model conformances, AND sibling-convention conformance: a newly-added member of an existing family (service method, model, guarded method) must match its siblings — same input validation, same error case, same conformance set / decode strategy — or the divergence is flagged' },
+  { key: 'testing', focus: 'tests — both unit and integration present, fixtures exercise EVERY decoder branch, edge cases (boundaries / empty / nil), request-pattern correctness, #require over force-unwrap, AND test-suite convention conformance: a new @Suite matches its siblings (same tags / construction pattern) or the divergence is flagged' },
   { key: 'api-docs', focus: 'model<->API alignment (verify properties/optionality/types/CodingKeys via mcp__tmdb__* and the OpenAPI spec) and public-API docs + DocC catalog + README sync' },
 ]
 

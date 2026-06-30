@@ -70,7 +70,12 @@ These are non-negotiable. Do them by default, without being reminded.
    Track it in a **`TaskCreate` task list — one task per phase** (Phase 0.5 →
    Phase 6), set `in_progress`/`completed` as you go, and record the branch name,
    PR number, and the delivery weight on the relevant tasks. A task list survives
-   compaction better than prose working-notes, so you can resume cleanly.
+   compaction better than prose working-notes, so you can resume cleanly. For a
+   **template→replicate** full delivery, the ledger also carries the
+   **`Phase 3a — reference-unit review`** gate task (Phase 3), which **blocks
+   Phase 4** until the reference unit has been reviewed and converged. For a
+   **multi-deliverable** plan, keep **one ledger sub-tree per deliverable** (its
+   own branch / PR / weight) — see *Multi-deliverable plans*.
 7. **Jot knowledge candidates as you go.** Keep a running **knowledge-candidates**
    list (in the ledger) and append to it the *moment* a learning occurs during
    Phases 2–3 — a thing you had to look up or web-search, a gotcha or dead-end, a
@@ -117,6 +122,34 @@ to the panel.)
 Each decision point below marks its **Auto:** branch. In the default (attended)
 mode those branches do not apply — the pipeline stops and asks, as written.
 
+## Async / queued invocation
+
+`/deliver` can be **queued to run unattended**, not just driven from an
+interactive session — the worktree isolation, the `TaskCreate` ledger, the
+Phase 0.5 GC sweep, and `auto` mode (the panel) are exactly what an unattended run
+needs. Two existing entry points already do this: a **CCR trigger**
+(`create_trigger` with `create_new_session_on_fire`, or the `/schedule` skill)
+fires a fresh session whose prompt is `/deliver auto …`, and
+`integration-failure.yml` runs a skill **headless** on a runner.
+
+If you queue a `/deliver`, mind two things:
+
+- **Inline the whole plan + acceptance criteria in the trigger prompt.** A fresh
+  session has no conversation history, and Phase 0's entry gate **requires ACs** —
+  so the plan text and its ACs must travel *in* the prompt, or the run stops at
+  the gate immediately.
+- **User-scoped MCP may be absent** (`mcp__github__*`, `wiki`). The `gh` fallbacks
+  in `/pr` and `/watch-pr` cover GitHub; the wiki step degrades silently. A
+  headless GitHub-Actions run has no user MCP at all (it uses `git`/`gh`); a
+  CCR-spawned session in your own environment usually keeps them.
+
+**Recommendation — don't routinise async *feature* delivery here.** This is a
+single-maintainer package with public API surface, where the **ready-to-merge
+human gate is deliberate** — every change is a compatibility call worth a human's
+eyes. Async earns its place for the *occasional* away-from-keyboard run and for
+the **self-healing integration cron** (which already opens a PR for review, never
+merges) — not as the default path.
+
 ## Delivery weight — auto-scale to risk (lite vs full)
 
 `/deliver` sizes its machinery to the change, automatically — no flag. Judge the
@@ -135,6 +168,52 @@ weight from the plan up front, and re-confirm from the actual diff after Phase 2
 
 When unsure, prefer **full** — the heavier review is cheap insurance against the
 changes that actually bite. Record the chosen weight in the ledger.
+
+## Multi-deliverable plans — one run, several PRs
+
+A plan is sometimes a **program of independent deliverables**, not one change
+(e.g. "extract a shared validation helper" + "fix the mis-applied test tags" +
+"harden a decoder" — three cohesive changes that don't touch each other). Forcing
+those into one PR couples unrelated review and risk; running them as wholly
+separate invocations loses the shared plan context. So `/deliver` **decomposes a
+multi-deliverable plan into one PR per deliverable**, runs the independent ones in
+the same session, and **only serialises the ones that are obviously dependent**.
+
+**Decompose up front (Phase 0).** List the deliverables and build a **dependency
+graph**:
+
+- **Dependent** = one deliverable consumes a type, API, helper, or file that
+  another *introduces or substantially changes* (e.g. "B calls the shared helper A
+  extracts"). Dependent deliverables are **sequenced** — the dependent one
+  branches off its dependency (or waits for it to merge).
+- **Independent** = no such coupling → each gets its **own worktree + branch +
+  PR**.
+- **When unsure, treat as dependent and sequence** — the safe default. Split into
+  concurrent PRs only when independence is *obvious*.
+
+**Execution — serial implement, concurrent watch.** A single conductor can only
+drive one inline `/implement-plan` loop at a time (the implement phase is
+deliberately visible — *Context & isolation*), so each deliverable's
+**implementation runs serially**, one worktree at a time, through Phases 0.5 → 4
+(its own worktree, code review, security review, rubric, PR). What runs
+**concurrently is Phase 5**: once a deliverable's PR is open, start its
+`/watch-pr` **in the background** and move on to implement the next independent
+deliverable — so CI churns on the open PRs while the conductor keeps building.
+
+> The honest win is **N PRs from one run + their CI watched in parallel**, not
+> parallel compilation — builds stay serial within the single-threaded conductor
+> (cross-worktree `.build` dirs are separate, but the conductor is not). For
+> genuinely parallel *implementation*, launch a separate `/deliver` per
+> deliverable in its own session (see *Async / queued invocation*).
+
+**The gate becomes a batch.** Phase 5's ready-to-merge gate reports **all** the
+deliverables' PRs and their states together (PR A ready · PR B ready · PR C
+waiting on PR A) and hands the batch to the user. Each worktree is torn down
+(Phase 7) as **its** PR merges, independently; a stuck PR in the batch never
+blocks reporting the others as ready. Per-deliverable, nothing else changes —
+each PR still runs the full single-deliverable pipeline (weight scaling, review,
+security, capture, rubric); multi-deliverable mode only adds the decomposition,
+the dependency ordering, and the batched gate.
 
 ## Context & isolation (by design)
 
@@ -186,6 +265,10 @@ it never bloats or biases the main window:
   block the pipeline on it.
 - **Judge the delivery weight** (lite vs full) from the plan, and open the
   `TaskCreate` ledger (Contract §6).
+- **Decompose a multi-deliverable plan.** If the plan is a *program* of more than
+  one cohesive deliverable, decompose it now and build the **dependency graph**
+  (see *Multi-deliverable plans*) — this decides whether the run opens **one PR or
+  several**, and in what order. A single-deliverable plan skips this.
 - **Entry gate — acceptance criteria required.** Plans are expected in the form
   *"As a \<user-type\> I want \<feature\> so that \<reason\>"* followed by
   acceptance criteria and any elaboration. Locate the acceptance criteria in the
@@ -390,13 +473,26 @@ refactor-on-green.
 
 - **Lite / single-unit** (one method, one model) → review **once**, on the full
   diff after Phase 2. `/review-changes` takes its single-`code-reviewer` path.
-- **Full / multi-unit** (several new models/methods, or risky concurrency/
-  networking) → review **per cohesive unit** as each completes (a finished model;
-  a service method + its tests), rather than one large end-diff. Smaller diffs
-  review more accurately, and a wrong foundational pattern is caught before later
-  units build on it. Do not drop to per-test-list-item — per *unit*, not per
-  *item*. Here Phases 2 and 3 **interleave**: review a unit as Phase 2 finishes it
-  (and fix per the loop below) before moving on.
+- **Full, template→replicate** (one pattern applied across **N≥3 cohesive
+  units** — e.g. 25 sibling mocks, "validate every public String input", one
+  method mirrored across services; the shape Phase 2's *"enumerate ALL sites up
+  front"* blockquote already flags) → **review the reference unit before the rest
+  are generated.** This is a **hard ledger gate**, not advice: add a
+  `Phase 3a — reference-unit review @ <sha>` task to the ledger, have
+  `/implement-plan` commit the first unit on its own, run `/review-changes` scoped
+  to that commit (`git diff origin/main...<sha>`), converge its Critical/High per
+  the loop below, and only then let Phase 2 replicate the pattern across the
+  remaining units. **Phase 4 must not start while this task is open.** A wrong
+  foundational pattern caught here is one *not* baked into all N units (the #359
+  "reference-first" win: a cross-module DocC break caught in `MockGenreService`
+  before it replicated into 25 mocks).
+- **Full, otherwise** (multi-unit but *not* template-replicate — several distinct
+  models/methods, parallel-similar work, risky concurrency/networking) → review
+  **once**, on the full diff after Phase 2, via the fan-out + adversarial-verify
+  `/review-changes`. A single end-diff fan-out is the right tool here; do **not**
+  interleave per unit — the units don't build on each other, so per-unit review
+  only adds churn, and the fan-out's per-dimension adversarial pass already covers
+  the whole diff.
 
 Run the review via **`/review-changes`**, which scales the machinery to the diff
 itself: a single `code-reviewer` agent for a small change, or a fan-out Workflow
@@ -526,6 +622,12 @@ The rubric answers a different question than CI: *"did we build what the plan
 said?"* not *"did the build pass?"*
 
 ## Phase 4 — Create the PR
+
+**Gate check (template→replicate deliveries):** before anything else, confirm the
+ledger's `Phase 3a — reference-unit review` task is **`completed`**. If it is
+still open, the reference unit was never reviewed — **go back to Phase 3** and run
+it before opening the PR. (Other deliveries have no Phase 3a task; this is a
+no-op for them.)
 
 Invoke **`/pr reviewed`** — the `reviewed` argument tells `/pr` to **skip its
 internal `code-reviewer` pass**, because Phase 3 already reviewed and converged
