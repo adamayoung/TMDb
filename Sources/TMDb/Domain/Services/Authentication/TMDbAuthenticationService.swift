@@ -88,19 +88,12 @@ final class TMDbAuthenticationService: AuthenticationService {
 extension TMDbAuthenticationService {
 
     private static func validate(accessToken: String) throws(TMDbError) {
-        guard !accessToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Access token must not be empty")
-        }
+        try accessToken.validateNotEmpty(message: "Access token must not be empty")
     }
 
     private static func validate(credential: Credential) throws(TMDbError) {
-        guard !credential.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Username must not be empty")
-        }
-
-        guard !credential.password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Password must not be empty")
-        }
+        try credential.username.validateNotEmpty(message: "Username must not be empty")
+        try credential.password.validateNotEmpty(message: "Password must not be empty")
     }
 
 }

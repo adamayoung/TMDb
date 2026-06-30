@@ -29,9 +29,7 @@ final class TMDbCreditService: CreditService {
 extension TMDbCreditService {
 
     private static func validate(id: Credit.ID) throws(TMDbError) {
-        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Credit ID must not be empty")
-        }
+        try id.validateNotEmpty(message: "Credit ID must not be empty")
     }
 
 }

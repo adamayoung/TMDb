@@ -22,9 +22,7 @@ extension TMDbTVSeriesService {
         toTVSeries tvSeriesID: TVSeries.ID,
         session: Session
     ) async throws(TMDbError) {
-        guard (0.5 ... 10.0).contains(rating), rating.truncatingRemainder(dividingBy: 0.5) == 0 else {
-            throw TMDbError.invalidRating
-        }
+        try rating.validateAsRating()
 
         let request = TVSeriesAddRatingRequest(
             rating: rating,

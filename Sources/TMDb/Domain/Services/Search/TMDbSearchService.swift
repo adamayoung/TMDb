@@ -143,9 +143,7 @@ final class TMDbSearchService: SearchService {
 extension TMDbSearchService {
 
     private static func validate(query: String) throws(TMDbError) {
-        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("Search query must not be empty")
-        }
+        try query.validateNotEmpty(message: "Search query must not be empty")
     }
 
 }

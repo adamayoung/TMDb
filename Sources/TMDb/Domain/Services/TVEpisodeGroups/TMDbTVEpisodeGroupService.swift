@@ -31,9 +31,7 @@ final class TMDbTVEpisodeGroupService: TVEpisodeGroupService {
 extension TMDbTVEpisodeGroupService {
 
     private static func validate(id: TVEpisodeGroup.ID) throws(TMDbError) {
-        guard !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("TV episode group ID must not be empty")
-        }
+        try id.validateNotEmpty(message: "TV episode group ID must not be empty")
     }
 
 }

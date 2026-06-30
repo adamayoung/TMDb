@@ -102,9 +102,7 @@ final class TMDbListService: ListService {
 extension TMDbListService {
 
     private static func validate(name: String) throws(TMDbError) {
-        guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("List name must not be empty")
-        }
+        try name.validateNotEmpty(message: "List name must not be empty")
     }
 
 }

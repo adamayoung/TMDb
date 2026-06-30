@@ -40,9 +40,7 @@ final class TMDbFindService: FindService {
 extension TMDbFindService {
 
     private static func validate(externalID: String) throws(TMDbError) {
-        guard !externalID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest("External ID must not be empty")
-        }
+        try externalID.validateNotEmpty(message: "External ID must not be empty")
     }
 
 }
