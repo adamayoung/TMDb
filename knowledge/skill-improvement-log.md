@@ -30,6 +30,157 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-06-30 — Phase 3 per-unit review: replace the blanket rule with a template→replicate reference-unit gate · applied
+
+- **Pattern:** Phase 3's "Full / multi-unit → review per cohesive unit,
+  interleaving Phases 2 and 3" rule was **never executed as written** across any
+  full delivery (#335, #337, #346, #349, #359) and flagged as a deviation in none
+  — it structurally fights `/implement-plan`'s drive-to-empty-test-list loop. Its
+  valuable core (catch a wrong foundational pattern before it replicates) was
+  followed only in the one template→replicate case (#359's informal
+  "reference-first" review of `MockGenreService`); parallel-similar fulls used a
+  single end-diff fan-out, which worked.
+- **Decision:** **applied** (2026-06-30 standardization audit, user-approved).
+  `/deliver` Phase 3 now splits the full case: **template→replicate** (one pattern
+  across N≥3 units) gets a **hard ledger gate** — a `Phase 3a — reference-unit
+  review` task that reviews the first unit's commit before the rest are generated
+  and **blocks Phase 4** until done (Contract §6 records the task);
+  **full-otherwise** explicitly uses the single end-diff fan-out, with the
+  per-unit interleave language removed. Landed in `.claude/skills/deliver/SKILL.md`
+  Phase 3 + Contract §6.
+- **Rationale:** narrows the gate to the only shape where a foundational defect
+  actually fans out (and makes it enforceable via the ledger), instead of
+  demanding a per-unit interleave that doesn't happen and isn't worth forcing on
+  parallel-similar work.
+- **Reconsider when:** a *non-template* multi-unit delivery ships a foundational
+  defect an earlier per-unit review would have caught — then widen the trigger.
+
+### 2026-06-30 — Sibling-convention conformance: Phase 2 prevent-probe + review-time detect-lens · applied
+
+- **Pattern:** new code diverges from its existing family because conventions are
+  implicit/copy-paste, not enforced — verified in the audit: the empty-input guard
+  copy-pasted across 7+ services with no shared helper (the #364 straggler root
+  cause); `Movie.addRating` missing the rating guard its TV siblings have;
+  `Company` vs `Network` decoding the same field oppositely; service test suites
+  mis-tagged `.requests` vs `.services` within a folder.
+- **Decision:** **applied** (audit, user-approved). **Prevent:** `/implement-plan`
+  Step 1 now says — when an item adds a sibling to an existing family, read the
+  1–2 nearest siblings first and capture their shared conventions (validation,
+  error case, conformance set, decode strategy, suite tag) as explicit test-list
+  items. **Detect:** `.github/CODE_REVIEW.md`'s "Consistency of repeated fixes"
+  broadened to "Consistency with siblings" (a new family member must match its
+  siblings or the divergence is flagged), with matching cues added to the
+  `architecture`/`testing` dimensions in `review-changes`. Shared spec → the
+  GitHub bot inherits the lens.
+- **Rationale:** the "standardization is the substrate" lesson at this scale —
+  prevent divergence at authoring time and catch it pre-PR, closing the class
+  instead of finding stragglers one review pass at a time.
+- **Reconsider when:** the underlying conventions are unified in code (e.g. a
+  shared validation helper lands) so the lens can point at the helper rather than
+  "the nearest sibling".
+
+### 2026-06-30 — Adversarial-drop hardening: verify any sibling-claim before dropping a finding · applied
+
+- **Pattern:** the local reviewer's *trustworthiness* has failed by dropping a
+  **real** finding on a false premise about siblings — #357 dropped a real
+  "missing integration test" High reasoning "no sibling toolbox tool has one" (it
+  only checked the unit-test dir), and the PR bot caught it after the local review
+  had cleared it. The #357 retro proposed the fix but, as a single occurrence
+  below the recurring-scan ≥2 bar, it was never logged or applied — it fell
+  through the crack.
+- **Decision:** **applied** (audit, user-approved despite being single-occurrence).
+  Added rule 5 to `.github/CODE_REVIEW.md`'s adversarial re-evaluation: a finding
+  may not be downgraded/dropped on a factual claim about other code ("siblings
+  don't", "handled elsewhere", "the convention is X") without **verifying that
+  claim against the tree** (list the dir, read the sibling) first. Applies to both
+  reviewers.
+- **Rationale:** a verifier that confidently drops real findings on unchecked
+  assumptions is the failure mode that keeps unsupervised success low; cheapest
+  high-leverage reliability fix, and shares a root cause with the
+  sibling-convention work above.
+- **Reconsider when:** n/a (applied; additive and low-cost).
+
+### 2026-06-30 — Document /deliver's async/queued capability; recommend against routinising it · applied
+
+- **Pattern:** queued/headless `/deliver` is ~90% built (`auto` panel, worktree
+  isolation, Phase 0.5 GC, the `TaskCreate` ledger, the CCR `create_trigger` +
+  `integration-failure.yml` precedent) but undocumented; a naive fresh-session
+  trigger would die at Phase 0's AC gate (no conversation history) or stall on an
+  absent user-scoped MCP.
+- **Decision:** **applied** (audit, user-approved). Added an "Async / queued
+  invocation" section to `/deliver`: possible via `/deliver auto` from a CCR
+  trigger / `/schedule`; the **full plan + ACs must be inlined in the trigger
+  prompt**; user-scoped MCP (`github`/`wiki`) may be absent (the `gh` fallbacks
+  cover GitHub, wiki degrades silently); and **routine async feature delivery is
+  explicitly not recommended** for this single-maintainer public-API package — the
+  human merge gate is deliberate.
+- **Rationale:** captures the real capability and its sharp edges in one place
+  while recording the deliberate decision *not* to chase a fully-autonomous-to-PR
+  model that's fleet-survival elsewhere and merely convenience here.
+- **Reconsider when:** the contributor count grows beyond one, or repetitive
+  cross-cutting migrations become common — then build a real async entry point.
+
+### 2026-06-30 — Multi-deliverable plans: one /deliver run, several PRs (serial impl, concurrent watch) · applied
+
+- **Pattern:** `/deliver` assumed one plan → one PR, so a plan that's a *program*
+  of independent deliverables had to be force-fit into one PR (coupling unrelated
+  review/risk) or split into separate manual invocations (losing shared plan
+  context). Surfaced this session: the standardization-audit plan decomposed into
+  one pipeline-hardening PR + three independent codebase fixes.
+- **Decision:** **applied** (user-requested this session). Added a
+  "Multi-deliverable plans — one run, several PRs" section + a Phase 0
+  decomposition bullet: decompose into deliverables + a dependency graph (dependent
+  = consumes a type/API/helper/file another introduces → sequenced; independent →
+  own worktree/branch/PR; **unsure → sequence**). Execution is **serial implement**
+  (one inline `/implement-plan` at a time), **concurrent watch** (background
+  `/watch-pr` per open PR); the ready-to-merge gate reports the **batch**.
+  Per-deliverable pipeline unchanged. Landed in `.claude/skills/deliver/SKILL.md`.
+- **Rationale:** respects the single-threaded-conductor reality and the "implement
+  is inline/visible" principle (so it doesn't fan out to silent subagents) while
+  still giving N PRs per run + parallel CI — the honest win without pretending to
+  parallelise compilation. Dependency-aware so it never opens a PR that can't stand
+  alone.
+- **Reconsider when:** the serial-implement bottleneck actually bites (many
+  independent deliverables per run) — then revisit a "fan out to background
+  `/deliver` sub-sessions" model (true parallel implementation, at the cost of
+  inline visibility).
+
+### 2026-06-30 — Error-idiom unification (`.invalidRating` → `.badRequest`) · rejected
+
+- **Pattern:** the audit flagged two idioms for "caller passed an invalid
+  argument" — string validators throw `.badRequest("…")`, rating validators throw
+  the dedicated `.invalidRating` — and considered unifying them.
+- **Decision:** **rejected** (audit). `.invalidRating` is a **public**,
+  non-`@frozen` `TMDbError` case (documented in `HandlingErrors.md`, mapped in
+  `ToolErrorMapper`, asserted in 6 test sites); merging it into
+  `.badRequest(String? = nil)` is a **breaking** public-API change **and** trades a
+  precise typed case for a stringly-typed one — net-negative. The cosmetic
+  `throw TMDbError.X` vs `throw .X` style is left to SwiftFormat.
+- **Rationale:** a breaking change that makes the API *worse* is not worth doing;
+  the dedicated case is arguably the better pattern, so the "debt" framing was
+  wrong.
+- **Reconsider when:** a deliberate major-version bump is on the table for other
+  reasons — then reconsider as part of a broader `TMDbError` review, never alone.
+
+### 2026-06-30 — Align `Network` to `Company` (rename `homepage`, force `logoPath` non-optional) · rejected
+
+- **Pattern:** the audit flagged `Company` and `Network` decoding the same
+  homepage-URL / logo-path fields differently and considered making them identical.
+- **Decision:** **rejected** for the *aligning* direction; the **non-breaking
+  robustness subset is kept** as a separate codebase delivery. Renaming
+  `Network.homepage`→`homepageURL` and forcing `Network.logoPath` non-optional are
+  both **breaking**, and the `logoPath` change is **wrong-directional** —
+  `Network.logoPath` is correctly `URL?` because the API omits it; forcing
+  non-optional would make decoding throw. The valuable, non-breaking piece (give
+  `Network.homepage` the empty-string→nil guard `Company` already has) is split
+  into its own delivery. The opposite latent issue — `Company.logoPath` is a
+  *required* decode that throws if `logo_path` is absent — is captured in
+  `knowledge/tmdb-api-notes.md` and deferred (fixing it is breaking).
+- **Rationale:** "make them consistent" would break public API and degrade decode
+  resilience; only the non-breaking robustness improvement is worth doing now.
+- **Reconsider when:** a major-version bump lets `Company.logoPath` become optional
+  and the two models can be aligned deliberately.
+
 ### 2026-06-24 — "Fix every instance of X" deliveries: enumerate all sites up front · applied
 
 - **Pattern:** for a delivery whose goal is "apply change C to every occurrence of

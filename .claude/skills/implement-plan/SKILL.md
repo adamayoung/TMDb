@@ -94,6 +94,18 @@ Test list — <plan goal>
 It is a living list — you will add cases as implementation reveals them. Confirm
 it with the user (or state it explicitly) before proceeding.
 
+**Mirror the family — probe the nearest siblings first.** When an item adds a
+*sibling* to an existing family (another service method, another model, another
+`addRating`-style guarded method, another `@Suite` test), **read the 1–2 closest
+existing siblings before writing the test**, and capture the conventions they
+share as explicit test-list items: input validation (does the sibling guard
+empty/degenerate input?), the error case it throws (`.badRequest` vs a dedicated
+`TMDbError` case), the model conformance set and decode strategy (synthesised vs
+custom `init(from:)`), and the test-suite tag/structure. New code should match
+its family's pattern by default; a deliberate divergence is fine, but it should
+be a *choice*, not an accident. This is the prevent-half of the
+convention-conformance check `.github/CODE_REVIEW.md` enforces at review time.
+
 ## Step 2 — Set the finishing goal
 
 The completion condition for this whole effort is: **the test list is empty** —
