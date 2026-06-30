@@ -9,7 +9,7 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.requests, .search))
+@Suite(.tags(.services, .search))
 struct TMDbSearchServiceTests {
 
     var service: TMDbSearchService!

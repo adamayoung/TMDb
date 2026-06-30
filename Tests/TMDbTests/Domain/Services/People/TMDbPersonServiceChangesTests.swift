@@ -9,7 +9,7 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.requests, .people))
+@Suite(.tags(.services, .people))
 struct TMDbPersonServiceChangesTests {
 
     var service: TMDbPersonService!
