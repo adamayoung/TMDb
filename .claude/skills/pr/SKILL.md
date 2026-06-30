@@ -64,13 +64,49 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
 8. **Ensure a clean working tree before pushing.** Re-run `git status`; commit anything still outstanding (e.g. review fixes from steps 5–7, or `make ci` fixes) so the push includes **everything**. The tree must be clean before proceeding. Then run `git diff origin/main...HEAD` to understand all changes going into the PR.
 9. Analyze the commits and changes to generate an appropriate title and summary
 10. Push the current branch to remote (`git push -u origin <branch>` if not yet pushed; otherwise `git push` — use `git push --force-with-lease` if you rebased in step 3)
-11. Create a PR with the **GitHub MCP** — `mcp__github__create_pull_request` (owner/repo from the `origin` remote, `base: main`, `head: <branch>`, plus `title`/`body`). The branch must already be pushed (step 10). If the call fails with **401/403** (PAT expired or missing scope), fall back to `gh pr create` with the same title/body. Provide:
-    - **IMPORTANT: Title MUST start with a gitmoji prefix** (e.g., "✨ Add new feature", "🐛 Fix bug", "📝 Improve documentation")
-        - Refer to <https://gitmoji.dev> to use the correct emoji
-        - Common: ✨ feature, 🐛 bugfix, ♻️ refactor, ✅ tests, 📝 docs, 🔧 config, 🎨 style
-    - A comprehensive summary with bullet points
-    - Proper formatting with sections (Summary, Changes, Benefits, etc.)
+11. Create a PR with the **GitHub MCP** — `mcp__github__create_pull_request` (owner/repo from the `origin` remote, `base: main`, `head: <branch>`, plus `title`/`body`). The branch must already be pushed (step 10). If the call fails with **401/403** (PAT expired or missing scope), fall back to `gh pr create` with the same title/body.
 
-The PR will include the Claude Code attribution footer.
+    **Title** — MUST start with a [gitmoji](https://gitmoji.dev) prefix matching the change:
+
+    | Emoji | Code | Use for |
+    |-------|------|---------|
+    | ✨ | `:sparkles:` | New features |
+    | 🐛 | `:bug:` | Bug fixes |
+    | 📝 | `:memo:` | Documentation updates |
+    | ♻️ | `:recycle:` | Refactoring |
+    | ✅ | `:white_check_mark:` | Adding/updating tests |
+    | 🔧 | `:wrench:` | Configuration changes |
+    | ⚡️ | `:zap:` | Performance improvements |
+    | 🎨 | `:art:` | Code style/formatting |
+
+    Example: `✨ Add createdBy property to TVSeries`.
+
+    **Body** — fill this skeleton, keeping only the sections that apply, and end with the attribution line exactly as shown:
+
+    ```markdown
+    ## Summary
+
+    [Brief description of what this PR does and why]
+
+    ## Changes
+
+    **New Model/Feature/Component:**
+    - ✨ [Description]
+
+    **Existing Files:**
+    - 📝 [Description]
+
+    **Tests:**
+    - ✅ [Description of test coverage]
+
+    **Documentation:**
+    - 📚 [Description]
+
+    ## Benefits
+
+    - **[Benefit Category]**: [Description]
+
+    🤖 Generated with [Claude Code](https://claude.com/claude-code)
+    ```
 
 $ARGUMENTS

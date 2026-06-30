@@ -214,47 +214,15 @@ concise summary (status, counts, failures as `file:line`) — keeping this
 context lean. `/lint` and `/format` run `make` directly (they are fast and
 low-output), and `make ci` is run directly before a PR.
 
-### When Running Inside Xcode (via Claude Agent)
+### Inside Xcode vs. terminal
 
-Use **`xcode-tools` MCP server tools** — the native Xcode–Claude Agent
-integration. Do **NOT** use `mcp__xcode__*` tools; those are a separate
-server and are redundant here.
-
-- `mcp__xcode-tools__BuildProject` for building
-- `mcp__xcode-tools__RunAllTests` / `mcp__xcode-tools__RunSomeTests` for tests
-- `mcp__xcode-tools__XcodeRead`, `mcp__xcode-tools__XcodeWrite`,
-  `mcp__xcode-tools__XcodeUpdate` for file operations
-- `mcp__xcode-tools__XcodeGrep`, `mcp__xcode-tools__XcodeGlob`,
-  `mcp__xcode-tools__XcodeLS` for searching
-- `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` for fast diagnostics
-- `mcp__xcode-tools__RunCodeSnippet` for lightweight code evaluation
-
-**Test Plan Selection:**
-
-- **Unit tests**: Use the **TMDb** test plan (default)
-- **Integration tests**: Use the **Integration** test plan
-
-### When Not Running Inside Xcode
-
-Fall back to `make` commands:
-
-- `make build` for building
-- `make test` for unit tests
-- `make integration-test` for integration tests
-
-### xcsift Output Formatting
-
-All macOS `make` build and test targets pipe output through
-[xcsift](https://github.com/ldomaradzki/xcsift) for structured,
-token-efficient output. Linux/Docker targets do not use xcsift.
-
-**Install:** `brew install xcsift`
-
-- Local builds use `xcsift -f toon` (TOON format)
-- CI builds use `xcsift -f github-actions` (GitHub annotations)
-- Build targets include `--Werror` to treat warnings as errors
-- `set -o pipefail` ensures failures propagate through the pipe
-- `2>&1` captures stderr (where compiler diagnostics are emitted)
+Outside Xcode (terminal Claude Code), the skills fall back to `make`
+(`make build` / `make test` / `make integration-test`). Inside Xcode (the native
+Claude Agent integration) use the `mcp__xcode-tools__*` tools — **not**
+`mcp__xcode__*` (a separate, redundant server). The full tool list, test-plan
+selection (**TMDb** unit / **Integration**), and the xcsift output-formatting
+details (`-f toon` local vs `-f github-actions` CI, `--Werror`, `pipefail`) are in
+[`knowledge/gotchas.md`](knowledge/gotchas.md) under **Tooling**.
 
 ### Build Isolation and Sequential Builds
 
@@ -284,36 +252,10 @@ gh pr create ...
 
 ## Common Commands
 
-```bash
-# Build
-make build                    # Build for current platform
-make build-tests              # Build the package + all test targets
-make build-release            # Release build
-make build-linux              # Build in a Swift Docker container
-
-# Test
-make test                     # Unit tests (macOS)
-make integration-test         # Integration tests (requires env vars)
-make test-linux               # Unit tests in a Swift Docker container
-
-# Single test (Swift Testing framework)
-swift test --filter "TestClassName"
-swift test --filter "TestClassName/testMethodName"
-
-# Code Quality
-make format                   # Auto-format code
-make lint                     # Check swiftlint and swiftformat compliance
-make lint-markdown            # Lint markdown files
-
-# Documentation
-make preview-docs             # Preview DocC locally
-make build-docs               # Build documentation (warnings-as-errors)
-make generate-docs            # Generate static DocC site into docs/
-
-# Full CI check (run before creating a PR)
-make ci                       # lint, lint-markdown, test, integration-test,
-                              #   build-release, build-docs
-```
+The full command set lives in the `Makefile`; prefer the skills above (`/build`,
+`/test`, `/lint`, `/format`) over raw `make`. The mandatory pre-PR gate is
+`make ci` (lint, lint-markdown, test, integration-test, build-release,
+build-docs); a single test runs via `swift test --filter "Suite/test"`.
 
 There is no `make test-ios` target. Run simulator tests
 (iOS/watchOS/tvOS/visionOS) from Xcode using the **TMDb** (unit) or
@@ -365,20 +307,10 @@ See [`knowledge/gotchas.md`](knowledge/gotchas.md).
 
 ### Test-Driven Development
 
-Use a TDD approach when implementing changes or new features. **Follow the
-`canon-tdd` skill** — start every feature, endpoint, model, method, or bug
-fix by writing a test list and a failing test before any production code.
-The loop:
-
-1. **Write a test list** — enumerate the behaviours and edge cases first
-2. **Write failing tests first** — define expected behaviour with unit
-   tests and integration tests before writing implementation code, one
-   test at a time
-3. **Implement the minimum code** to make the tests pass
-4. **Refactor** while keeping tests green
-
-For bug fixes, write a test that reproduces the bug before writing the
-fix.
+Use a TDD approach — **follow the `canon-tdd` skill**: write a test list, then a
+failing test (unit **and** integration) before any production code, implement the
+minimum to pass, then refactor green. For bug fixes, write a reproducing test
+first.
 
 ### Always Run Both Unit Tests AND Integration Tests
 
@@ -426,147 +358,43 @@ let item = try #require(result.items.first { $0.id == 42 })
 
 ## Adding New Features
 
-1. Define protocol in `Domain/Services/<ServiceName>/`
-2. Add implementation prefixed with `TMDb` (e.g., `TMDbMovieService`)
-3. Add models to `Domain/Models/` — conform to `Codable`, `Equatable`,
-   `Hashable`, `Sendable`
-4. Register in `TMDbFactory.swift`
-5. Expose via `TMDbClient.swift`
-6. Add unit tests with JSON fixtures in `Tests/TMDbTests/Resources/`
-7. Add integration tests in `Tests/TMDbIntegrationTests/`
-8. Update documentation (see Documentation section)
-9. Run the completion checklist
+Structural pattern for a new service:
 
-### Adding New Methods to Existing Services
+1. Protocol in `Domain/Services/<ServiceName>/`; implementation prefixed `TMDb`
+   (e.g. `TMDbMovieService`).
+2. Models in `Domain/Models/` conform to `Codable`, `Equatable`, `Hashable`,
+   `Sendable`.
+3. Register in `TMDbFactory.swift`; expose via `TMDbClient.swift`.
+4. Unit tests with JSON fixtures (`Tests/TMDbTests/Resources/`) **and** integration
+   tests (`Tests/TMDbIntegrationTests/`).
 
-1. Add `///` doc comment with parameters, throws, and returns
-2. Add method reference to `TMDb.docc/Extensions/<Service>Service.md`
-3. Add any new return types to `TMDb.docc/TMDb.md` topic section
-4. Update `README.md` if the method adds a notable capability
-5. Run `make build-docs` and `make lint-markdown`
+Drive it test-first with `canon-tdd`; keep DocC + `README.md` in sync via
+`/document-swift`. A new method on an existing service follows the same testing and
+documentation rules.
 
 ## Documentation
 
-Update DocC documentation whenever the public API changes.
-
-### Structure
-
-```text
-Sources/TMDb/TMDb.docc/
-├── TMDb.md                      # Main catalog with topic sections
-├── Extensions/
-│   ├── TMDbClient.md            # TMDbClient properties
-│   ├── <ServiceName>Service.md  # Service method groupings
-│   └── ...
-├── GettingStarted/
-├── HowTos/
-└── Resources/
-```
-
-### What to Update
-
-- **New services**: create extension file in `TMDb.docc/Extensions/`,
-  add to `TMDb.docc/TMDb.md`, add to
-  `TMDb.docc/Extensions/TMDbClient.md`, update `README.md` service
-  table and count
-- **New public models**: add to appropriate topic section in
-  `TMDb.docc/TMDb.md`
-- **New service methods**: update the service's extension file
-- **Renamed or removed API**: update all affected documentation files
-
-### Consistency Checklist
-
-After public API changes, verify all of the following are in sync:
-
-1. **Service extension files**
-   (`TMDb.docc/Extensions/<Service>Service.md`) reference **every**
-   method in the corresponding service protocol
-2. **DocC catalog** (`TMDb.docc/TMDb.md`) includes all return types in
-   the appropriate topic section
-3. **TMDbClient extension** (`TMDb.docc/Extensions/TMDbClient.md`)
-   lists all public properties on `TMDbClient`
-4. **README.md** service table has accurate descriptions and correct
-   service count
-5. **README.md** examples use the correct `swift-tools-version`
-   matching `Package.swift`
-6. **Inline doc comments** (`///`) use correct DocC syntax
-   (`- Parameter name:` singular, `- Parameters:` plural for multiple)
-
-### Common Mistakes
-
-- Missing methods from extension files (e.g., `credits()` when both
-  `credits()` and `aggregateCredits()` exist)
-- Missing return types from `TMDb.md` topic sections
-- Stale service count in README after adding services
-- `- Parameters name:` (plural) instead of `- Parameter name:`
-  (singular)
-- Copy-paste errors in doc comments when creating similar models
-  (e.g., "movie" instead of "person", wrong parameter descriptions)
-- Initializer parameter types not matching property types (e.g.,
-  `Movie.ID` instead of `Person.ID`) — compiles when both resolve to
-  `Int` but is semantically wrong
-- Missing `///` doc comments on custom `init(from:)` and
-  `encode(to:)` methods in `public extension` blocks
-- Placeholder or incomplete doc comments (e.g., `/// ?`,
-  `Array of....`) — always write complete descriptions
+DocC documentation is **required** on every public declaration — `make build-docs`
+runs warnings-as-errors, so a missing `///` breaks the build. The canonical
+conventions (style, summary patterns, the `TMDb.docc/` catalog-sync rules, the
+consistency checklist, and the README sync) live in the **`/document-swift`**
+skill — applied inline as you write — and the `documentation-writer` agent handles
+bulk sweeps. Keep `Sources/TMDb/TMDb.docc/`, `README.md`, and inline `///`
+comments in sync with every public-API change.
 
 ## Completion Checklist
 
-**Before considering ANY task complete, run these steps in order:**
+Before a task is complete: `/format`, `/lint`, then run **both** unit and
+integration tests (`/test`, `/integration-test`) — both must pass. If the public
+API changed, build docs (`make build-docs`) and keep `README.md` in sync (see
+`/document-swift`). Lint markdown (`make lint-markdown`) if any `.md` changed.
+Record durable learnings with `/capture-knowledge`. **`make ci` is the mandatory
+gate before pushing or opening a PR — no exceptions.**
 
-1. **Format code** (if tools available): `make format`
-2. **Check lint** (if tools available): `make lint`
-3. **Run unit tests**: `make test` — **REQUIRED**, must pass
-4. **Run integration tests**: `make integration-test` — **REQUIRED**,
-   must pass
-5. **Build documentation**: `make build-docs` — required if public API
-   changed
-6. **Lint markdown**: `make lint-markdown` — required if `.md` files
-   changed
-7. **Capture learnings**: run `/capture-knowledge` — record durable
-   gotchas, API quirks, and design decisions (ADRs) into `knowledge/`
-   before a PR (no-op if nothing durable was learned)
-8. **Run full CI**: `make ci` — **REQUIRED before creating any PR**
-
-Run steps 3-4 (and any builds) via the `/test` and `/integration-test`
-skills — they delegate to a Haiku subagent to keep this context lean.
-`/format`, `/lint`, and `make ci` run directly.
-
-Steps 3-4 must always pass. Steps 5-7 are conditional (5-6 on what
-changed; 7 is a no-op when nothing durable was learned). Steps 1-2 can
-be skipped if formatting tools are not installed. Step 8 is mandatory
-before pushing code or creating a pull request.
-
-### Self-Review
-
-After all checks pass, review your own changes before considering the
-task complete:
-
-- Read through every modified file
-- Remove unnecessary changes, leftover debugging code, or dead
-  comments
-- Check every public declaration has an accurate `///` doc comment
-- Look for opportunities to simplify the implementation
-- Verify consistency with existing patterns in the codebase
-- Confirm DocC extension files, `TMDb.docc/TMDb.md`, `TMDbClient.md`,
-  and `README.md` are all in sync with any API changes (see
-  Documentation Consistency Checklist above)
-- Run `make build-docs` if any documentation was updated
-
-Make improvements where you find them.
-
-### Update README.md
-
-Before creating a PR, review `README.md` and update it to reflect your
-changes:
-
-- Service table and count if services were added, removed, or renamed
-- Feature list if new capabilities were introduced
-- Prerequisites if new tools or dependencies are required
-- Code examples if usage patterns changed
-- Requirements if platform support changed
-
-Run `make lint-markdown` after any README changes.
+`/deliver` runs this checklist, the self-review (`/review-changes`), and the PR
+end-to-end; the individual skills are the manual fallback. Self-review still
+applies — read every modified file, remove dead/debug code, confirm each public
+declaration has an accurate `///`, and simplify where you can.
 
 ## Branching
 
@@ -597,161 +425,15 @@ Use a descriptive branch name with a conventional prefix
 
 ## Creating Pull Requests
 
-> The **`/pr`** skill automates this whole section (commit outstanding work →
-> `make ci` → review → push → open), and **`/deliver`** runs it as the final step
-> of the feature pipeline. The manual steps below are the fallback / reference.
+Opening a PR is the **`/pr`** skill (commit → rebase onto `origin/main` →
+`make ci` → review → push → open via the GitHub MCP), and **`/deliver`** runs it as
+the final pipeline step. The gitmoji title convention and the PR body template live
+in that skill.
 
-### GitHub access — MCP first
-
-The PR/CI skills (`/pr`, `/watch-pr`, `/review-pr-threads`, `/fix-pr-checks`,
-`/fix-integration-failures`, the `/diagnose-*` skills) drive GitHub through the
-**GitHub MCP** (`mcp__github__*`) rather than the `gh` CLI. `gh` is kept only where
-the MCP has no equivalent:
-
-- the **blocking CI wait** — `gh pr checks --watch` / `gh run watch`;
-- the review-thread **reply** — `gh api graphql addPullRequestReviewThreadReply`
-  (the MCP reply tool needs a numeric REST comment id that the thread read doesn't
-  expose; resolving threads *is* on the MCP);
-- **headless GitHub Actions workflows** (`claude.yml`, `integration-failure.yml`),
-  where the user-scoped MCP isn't mounted — those stay on `git`/`gh`.
-
-So `gh` **remains a prerequisite**. The MCP is a **user-scoped** server, registered
-once per contributor (it is intentionally *not* in `.mcp.json`, to avoid
-double-registration and committing a token):
-
-```bash
-claude mcp add -s user --transport http github \
-  https://api.githubcopilot.com/mcp/x/all -H "Authorization: Bearer <PAT>"
-```
-
-The `/x/all` path mounts the default toolsets **and** the opt-in `actions` toolset
-(workflow runs/logs/rerun); the bare `/mcp` or a single `/x/<toolset>` path would
-drop the others. The PAT needs `repo` + `actions:write` (rerun is a write op). See
+GitHub access goes through the **GitHub MCP** (`mcp__github__*`), with `gh` as the
+fallback and for the few things the MCP can't do (the blocking CI wait, the
+review-thread reply, headless Actions). The MCP registration command, the `/x/all`
+path rationale, the owner/repo derivation, and the full `gh`-only exceptions are in
 [ADR-0009](knowledge/decisions/0009-github-mcp-over-gh-cli.md).
 
-**Owner/repo derive from the `origin` remote** — one source, fork-safe — and are
-passed to every MCP/`gh` call:
-
-```bash
-read -r OWNER REPO < <(git remote get-url origin \
-  | sed -E 's#\.git$##; s#.*[:/]([^/]+)/([^/]+)$#\1 \2#')   # adamayoung TMDb
-```
-
-**CRITICAL: You MUST run `make ci` and ensure it passes before pushing
-and creating a PR.** This is a hard requirement - no exceptions.
-
-### 1. Run Full CI Check (MANDATORY)
-
-```bash
-make ci
-```
-
-**All checks must pass before proceeding.** Do not skip this step. Do not
-push code or create PRs if CI is failing.
-
-### 2. Determine Changes
-
-```bash
-git diff --stat main...HEAD
-git log --oneline main..HEAD
-```
-
-### 3. Push the Branch
-
-```bash
-git push -u origin <branch-name>
-```
-
-### 4. Create the PR (GitHub MCP)
-
-Open the PR with the **GitHub MCP** — `mcp__github__create_pull_request`
-(owner/repo from the `origin` remote — see *GitHub access* above — `base: main`,
-`head: <branch-name>`, `title`, `body`). `gh pr create` is the fallback when the MCP
-is unavailable (or returns 401/403):
-
-```bash
-gh pr create --base main --head <branch-name> \
-  --title "<title>" --body "<body>"
-```
-
-### 5. PR Title Format
-
-Use appropriate **gitmoji** from [gitmoji.dev](https://gitmoji.dev):
-
-- ✨ `:sparkles:` — New features
-- 🐛 `:bug:` — Bug fixes
-- 📝 `:memo:` — Documentation updates
-- ♻️ `:recycle:` — Refactoring
-- ✅ `:white_check_mark:` — Adding/updating tests
-- 🔧 `:wrench:` — Configuration changes
-- ⚡️ `:zap:` — Performance improvements
-- 🎨 `:art:` — Code style/formatting
-
-**Example:** `✨ Add createdBy property to TVSeries`
-
-### 6. PR Body Structure
-
-```markdown
-## Summary
-
-[Brief description of what this PR does and why]
-
-## Changes
-
-**New Model/Feature/Component:**
-- ✨ [Description]
-
-**Existing Files:**
-- 📝 [Description]
-
-**Tests:**
-- ✅ [Description of test coverage]
-
-**Documentation:**
-- 📚 [Description]
-
-## Benefits
-
-- **[Benefit Category]**: [Description]
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
-### 7. Example
-
-The `gh` form below shows the title/body shape; the primary path is
-`mcp__github__create_pull_request` with the same `title`/`body` (§4).
-
-```bash
-gh pr create --base main --head feature/my-feature \
-  --title "✨ Add new feature" \
-  --body "$(cat <<'EOF'
-## Summary
-
-Brief description of the feature.
-
-## Changes
-
-**New Model:**
-- ✨ Created `MyModel` with properties X, Y, Z
-
-**Tests:**
-- ✅ Added comprehensive unit tests
-- ✅ All tests passing
-
-## Benefits
-
-- **Complete Coverage**: Users can now access feature X
-- **Type Safety**: Strongly-typed models provide better IDE support
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
-```
-
-### Important Notes
-
-- Reference [gitmoji.dev](https://gitmoji.dev) for the correct emoji
-- Include test results in the Changes section
-- Only include sections that are relevant
-- Always end with the Claude Code attribution
+**`make ci` must pass before pushing or opening a PR — no exceptions.**
