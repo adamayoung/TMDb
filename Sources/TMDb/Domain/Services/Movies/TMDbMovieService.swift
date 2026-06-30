@@ -195,6 +195,8 @@ final class TMDbMovieService: MovieService {
         toMovie movieID: Movie.ID,
         session: Session
     ) async throws(TMDbError) {
+        try rating.validateAsRating()
+
         let request = AddMovieRatingRequest(rating: rating, movieID: movieID, sessionID: session.sessionID)
 
         _ = try await apiClient.perform(request)
