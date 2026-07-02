@@ -49,5 +49,6 @@ extension Tag {
     @Tag static var watchProvider: Self
     @Tag static var changes: Self
     @Tag static var languageModelTools: Self
+    @Tag static var naturalLanguageSearch: Self
 
 }
