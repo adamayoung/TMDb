@@ -5,8 +5,6 @@
 //  Copyright © 2026 Adam Young.
 //
 
-// swiftlint:disable file_length
-
 import Foundation
 
 ///
@@ -337,9 +335,8 @@ extension TVSeries {
     /// type.
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
-    public init(from decoder: Decoder) throws { // swiftlint:disable:this function_body_length
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
@@ -355,43 +352,14 @@ extension TVSeries {
         self.seasons = try container.decodeIfPresent([TVSeason].self, forKey: .seasons)
         self.createdBy = try container.decodeIfPresent([Creator].self, forKey: .createdBy)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let firstAirDateString = try container.decodeIfPresent(String.self, forKey: .firstAirDate)
-        self.firstAirDate = try {
-            guard let firstAirDateString, !firstAirDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .firstAirDate)
-        }()
-
+        self.firstAirDate = try container.decodeNonEmptyDateIfPresent(forKey: .firstAirDate)
         self.originCountry = try container.decodeIfPresent([String].self, forKey: .originCountry)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
-
-        // Need to deal with empty strings - URL decoding will fail with an empty string
-        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
-        self.homepageURL = try {
-            guard let homepageURLString, !homepageURLString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
-        }()
-
+        self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
         self.isInProduction = try container.decodeIfPresent(Bool.self, forKey: .isInProduction)
         self.languages = try container.decodeIfPresent([String].self, forKey: .languages)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let lastAirDateString = try container.decodeIfPresent(String.self, forKey: .lastAirDate)
-        self.lastAirDate = try {
-            guard let lastAirDateString, !lastAirDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .lastAirDate)
-        }()
+        self.lastAirDate = try container.decodeNonEmptyDateIfPresent(forKey: .lastAirDate)
         self.lastEpisodeToAir = try container.decodeIfPresent(
             TVEpisodeAirDate.self, forKey: .lastEpisodeToAir
         )

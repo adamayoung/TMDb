@@ -99,23 +99,13 @@ extension Network {
     ///
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.logoPath = try container.decodeIfPresent(URL.self, forKey: .logoPath)
         self.originCountry = try container.decodeIfPresent(String.self, forKey: .originCountry)
         self.headquarters = try container.decodeIfPresent(String.self, forKey: .headquarters)
-
-        // Need to deal with empty strings - URL decoding will fail with an empty string
-        let homepageString = try container.decodeIfPresent(String.self, forKey: .homepage)
-        self.homepage = try {
-            guard let homepageString, !homepageString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(URL.self, forKey: .homepage)
-        }()
+        self.homepage = try container.decodeNonEmptyURLIfPresent(forKey: .homepage)
     }
 
 }

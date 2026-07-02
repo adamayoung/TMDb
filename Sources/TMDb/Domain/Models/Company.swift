@@ -117,21 +117,12 @@ extension Company {
     ///
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.description = try container.decode(String.self, forKey: .description)
         self.headquarters = try container.decode(String.self, forKey: .headquarters)
-        // Need to deal with empty strings - URL decoding will fail with an empty string
-        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
-        self.homepageURL = try {
-            guard let homepageURLString, !homepageURLString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
-        }()
+        self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
         self.logoPath = try container.decode(URL.self, forKey: .logoPath)
         self.originCountry = try container.decode(String.self, forKey: .originCountry)
         self.parentCompany = try container.decodeIfPresent(Parent.self, forKey: .parentCompany)

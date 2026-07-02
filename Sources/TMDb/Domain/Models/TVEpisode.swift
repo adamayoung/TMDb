@@ -178,24 +178,13 @@ extension TVEpisode {
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.episodeNumber = try container.decode(Int.self, forKey: .episodeNumber)
         self.seasonNumber = try container.decode(Int.self, forKey: .seasonNumber)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let airDateString = try container.decodeIfPresent(String.self, forKey: .airDate)
-        self.airDate = try {
-            guard let airDateString, !airDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .airDate)
-        }()
-
+        self.airDate = try container.decodeNonEmptyDateIfPresent(forKey: .airDate)
         self.episodeType = try container.decodeIfPresent(String.self, forKey: .episodeType)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
         self.showID = try container.decodeIfPresent(Int.self, forKey: .showID)

@@ -205,7 +205,6 @@ extension MovieCrewCredit {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
@@ -213,17 +212,7 @@ extension MovieCrewCredit {
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
         self.overview = try container.decode(String.self, forKey: .overview)
         self.genreIDs = try container.decode([Genre.ID].self, forKey: .genreIDs)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let releaseDateString = try container.decodeIfPresent(String.self, forKey: .releaseDate)
-        self.releaseDate = try {
-            guard let releaseDateString, !releaseDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .releaseDate)
-        }()
-
+        self.releaseDate = try container.decodeNonEmptyDateIfPresent(forKey: .releaseDate)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)

@@ -205,7 +205,6 @@ extension TVSeriesCastCredit {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
@@ -213,17 +212,7 @@ extension TVSeriesCastCredit {
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
         self.overview = try container.decode(String.self, forKey: .overview)
         self.genreIDs = try container.decode([Genre.ID].self, forKey: .genreIDs)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let firstAirDateString = try container.decodeIfPresent(String.self, forKey: .firstAirDate)
-        self.firstAirDate = try {
-            guard let firstAirDateString, !firstAirDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .firstAirDate)
-        }()
-
+        self.firstAirDate = try container.decodeNonEmptyDateIfPresent(forKey: .firstAirDate)
         self.originCountries = try container.decode([String].self, forKey: .originCountries)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)

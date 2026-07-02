@@ -279,9 +279,8 @@ extension Movie {
     /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
     /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
     ///
-    public init(from decoder: Decoder) throws { // swiftlint:disable:this function_body_length
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.title = try container.decode(String.self, forKey: .title)
@@ -296,32 +295,12 @@ extension Movie {
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
-
-        // Need to deal with empty strings - date decoding will fail with an empty string
-        let releaseDateString = try container.decodeIfPresent(String.self, forKey: .releaseDate)
-        self.releaseDate = try {
-            guard let releaseDateString, !releaseDateString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(Date.self, forKey: .releaseDate)
-        }()
-
+        self.releaseDate = try container.decodeNonEmptyDateIfPresent(forKey: .releaseDate)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
         self.budget = try container.decodeIfPresent(Double.self, forKey: .budget)
         self.revenue = try container.decodeIfPresent(Double.self, forKey: .revenue)
-
-        // Need to deal with empty strings - URL decoding will fail with an empty string
-        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
-        self.homepageURL = try {
-            guard let homepageURLString, !homepageURLString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
-        }()
-
+        self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
         self.imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
         self.status = try container.decodeIfPresent(Status.self, forKey: .status)
         self.productionCompanies = try container.decodeIfPresent(
