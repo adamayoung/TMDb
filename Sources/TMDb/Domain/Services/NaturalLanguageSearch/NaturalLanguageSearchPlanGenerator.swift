@@ -21,13 +21,26 @@ struct NaturalLanguageSearchPlanGenerator: DeterministicSearchPlanning {
 
     private let classifier: any IntentClassifying
     private let personExtractor: any PersonNameExtracting
+    private let languageDetector: any PromptLanguageDetecting
 
-    init(classifier: some IntentClassifying, personExtractor: some PersonNameExtracting) {
+    init(
+        classifier: some IntentClassifying,
+        personExtractor: some PersonNameExtracting,
+        languageDetector: some PromptLanguageDetecting
+    ) {
         self.classifier = classifier
         self.personExtractor = personExtractor
+        self.languageDetector = languageDetector
     }
 
     func confidentPlan(for prompt: String) -> SearchPlan? {
+        // The classifier and lexicon are English-only. A confidently non-English
+        // prompt would be mis-parsed and silently emitted as a literal `find`, so
+        // abstain and let the multilingual fallback (or a plain search) handle it.
+        guard !languageDetector.isConfidentlyNonEnglish(prompt) else {
+            return nil
+        }
+
         let normalized = SearchPlanLexicon.normalize(prompt)
         guard let intent = classifier.classify(normalized) else {
             return nil

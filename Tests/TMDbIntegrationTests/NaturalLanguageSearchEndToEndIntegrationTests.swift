@@ -76,5 +76,17 @@
             #expect(!result.movies.isEmpty)
         }
 
+        @Test("a non-English prompt degrades gracefully instead of throwing")
+        func nonEnglishPrompt() async throws {
+            // CI runners have no Apple Intelligence, so the multilingual language-model
+            // fallback is unavailable. A confidently non-English prompt must therefore
+            // abstain to a plain literal search — not be mis-parsed by the English
+            // planner, and not throw `.unsupportedLanguage`. (The FM-backed multilingual
+            // interpretation only runs on capable devices, which CI cannot exercise.)
+            await #expect(throws: Never.self) {
+                _ = try await search.search(matching: "films policiers français des années quatre-vingt-dix")
+            }
+        }
+
     }
 #endif
