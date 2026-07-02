@@ -27,13 +27,9 @@ private extension APIRequestQueryItems {
     init(page: Int?, language: String?) {
         self.init()
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

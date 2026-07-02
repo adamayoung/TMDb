@@ -101,6 +101,22 @@ extension APIRequestQueryItem.Name {
 
 extension APIRequestQueryItems {
 
+    /// Sets the query item for `key` to `newValue`, treating `nil` as a no-op.
+    ///
+    /// Unlike the raw `Dictionary` subscript — where assigning `nil` removes the key —
+    /// assigning `nil` here leaves the collection unchanged. This lets an optional value
+    /// be applied in a single line without an `if let` guard, and without an incoming
+    /// `nil` clearing a value that was set earlier.
+    subscript(ifPresent key: Key) -> Value? {
+        get { self[key] }
+        set {
+            guard let newValue else {
+                return
+            }
+            self[key] = newValue
+        }
+    }
+
     static func idsQueryItemValue(for ids: [Int]) -> String {
         ids.map(\.description).joined(separator: ",")
     }

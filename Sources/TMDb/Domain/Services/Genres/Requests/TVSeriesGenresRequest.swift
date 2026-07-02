@@ -23,9 +23,7 @@ private extension APIRequestQueryItems {
     init(language: String?) {
         self.init()
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

@@ -31,9 +31,7 @@ private extension APIRequestQueryItems {
 
         self[.query] = query
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
     }
 
 }

@@ -23,17 +23,11 @@ private extension APIRequestQueryItems {
     init(page: Int?, country: String?, language: String?) {
         self.init()
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
 
-        if let country {
-            self[.region] = country
-        }
+        self[ifPresent: .region] = country
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

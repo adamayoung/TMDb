@@ -22,17 +22,9 @@ final class DiscoverMoviesRequest: DecodableAPIRequest<MoviePageableList> {
             queryItems.apply(filter)
         }
 
-        if let sortedBy {
-            queryItems[.sortBy] = sortedBy
-        }
-
-        if let page {
-            queryItems[.page] = page
-        }
-
-        if let language {
-            queryItems[.language] = language
-        }
+        queryItems[ifPresent: .sortBy] = sortedBy
+        queryItems[ifPresent: .page] = page
+        queryItems[ifPresent: .language] = language
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -46,9 +38,7 @@ private extension APIRequestQueryItems {
             self[.withPeople] = Self.idsQueryItemValue(for: people)
         }
 
-        if let originalLanguage = filter.originalLanguage {
-            self[.withOriginalLanguage] = originalLanguage
-        }
+        self[ifPresent: .withOriginalLanguage] = filter.originalLanguage
 
         if let genres = filter.genres {
             self[.withGenres] = (filter.genresJoin ?? .and)
@@ -63,12 +53,8 @@ private extension APIRequestQueryItems {
 
         if let primaryReleaseYear = filter.primaryReleaseYear {
             let bounds = primaryReleaseYear.dateBounds()
-            if let lte = bounds.lte {
-                self[.primaryReleaseDateLessThan] = lte
-            }
-            if let gte = bounds.gte {
-                self[.primaryReleaseDateGreaterThan] = gte
-            }
+            self[ifPresent: .primaryReleaseDateLessThan] = bounds.lte
+            self[ifPresent: .primaryReleaseDateGreaterThan] = bounds.gte
         }
 
         if let releaseDateMin = filter.releaseDateMin {
@@ -86,21 +72,10 @@ private extension APIRequestQueryItems {
     mutating func applyVoteAndRuntimeFilters(
         from filter: DiscoverMovieFilter
     ) {
-        if let voteAverageMin = filter.voteAverageMin {
-            self[.voteAverageGreaterThan] = voteAverageMin
-        }
-
-        if let voteAverageMax = filter.voteAverageMax {
-            self[.voteAverageLessThan] = voteAverageMax
-        }
-
-        if let voteCountMin = filter.voteCountMin {
-            self[.voteCountGreaterThan] = voteCountMin
-        }
-
-        if let voteCountMax = filter.voteCountMax {
-            self[.voteCountLessThan] = voteCountMax
-        }
+        self[ifPresent: .voteAverageGreaterThan] = filter.voteAverageMin
+        self[ifPresent: .voteAverageLessThan] = filter.voteAverageMax
+        self[ifPresent: .voteCountGreaterThan] = filter.voteCountMin
+        self[ifPresent: .voteCountLessThan] = filter.voteCountMax
 
         if let companies = filter.companies {
             self[.withCompanies] = Self.idsQueryItemValue(for: companies)
@@ -117,25 +92,15 @@ private extension APIRequestQueryItems {
             )
         }
 
-        if let runtimeMin = filter.runtimeMin {
-            self[.withRuntimeGreaterThan] = runtimeMin
-        }
-
-        if let runtimeMax = filter.runtimeMax {
-            self[.withRuntimeLessThan] = runtimeMax
-        }
+        self[ifPresent: .withRuntimeGreaterThan] = filter.runtimeMin
+        self[ifPresent: .withRuntimeLessThan] = filter.runtimeMax
     }
 
     mutating func applyContentAndProviderFilters(
         from filter: DiscoverMovieFilter
     ) {
-        if let includeAdult = filter.includeAdult {
-            self[.includeAdult] = includeAdult
-        }
-
-        if let includeVideo = filter.includeVideo {
-            self[.includeVideo] = includeVideo
-        }
+        self[ifPresent: .includeAdult] = filter.includeAdult
+        self[ifPresent: .includeVideo] = filter.includeVideo
 
         if let watchProviders = filter.watchProviders {
             self[.withWatchProviders] = Self.idsQueryItemValue(
@@ -149,9 +114,7 @@ private extension APIRequestQueryItems {
             )
         }
 
-        if let watchRegion = filter.watchRegion {
-            self[.watchRegion] = watchRegion
-        }
+        self[ifPresent: .watchRegion] = filter.watchRegion
 
         applyCertificationAndExtendedFilters(from: filter)
     }
@@ -159,21 +122,10 @@ private extension APIRequestQueryItems {
     mutating func applyCertificationAndExtendedFilters(
         from filter: DiscoverMovieFilter
     ) {
-        if let certification = filter.certification {
-            self[.certification] = certification
-        }
-
-        if let certificationMin = filter.certificationMin {
-            self[.certificationMin] = certificationMin
-        }
-
-        if let certificationMax = filter.certificationMax {
-            self[.certificationMax] = certificationMax
-        }
-
-        if let certificationCountry = filter.certificationCountry {
-            self[.certificationCountry] = certificationCountry
-        }
+        self[ifPresent: .certification] = filter.certification
+        self[ifPresent: .certificationMin] = filter.certificationMin
+        self[ifPresent: .certificationMax] = filter.certificationMax
+        self[ifPresent: .certificationCountry] = filter.certificationCountry
 
         if let releaseTypes = filter.releaseTypes {
             self[.withReleaseType] = releaseTypes
@@ -189,9 +141,7 @@ private extension APIRequestQueryItems {
             self[.withCrew] = Self.idsQueryItemValue(for: withCrew)
         }
 
-        if let withOriginCountry = filter.withOriginCountry {
-            self[.withOriginCountry] = withOriginCountry
-        }
+        self[ifPresent: .withOriginCountry] = filter.withOriginCountry
 
         if let withoutCompanies = filter.withoutCompanies {
             self[.withoutCompanies] = Self.idsQueryItemValue(

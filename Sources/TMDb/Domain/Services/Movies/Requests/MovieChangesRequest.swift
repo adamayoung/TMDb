@@ -23,17 +23,11 @@ private extension APIRequestQueryItems {
     init(startDate: Date?, endDate: Date?, page: Int?) {
         self.init()
 
-        if let startDate {
-            self[.startDate] = startDate
-        }
+        self[ifPresent: .startDate] = startDate
 
-        if let endDate {
-            self[.endDate] = endDate
-        }
+        self[ifPresent: .endDate] = endDate
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
     }
 
 }
