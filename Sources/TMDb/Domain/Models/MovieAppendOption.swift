@@ -72,9 +72,9 @@ public struct MovieAppendOption: OptionSet, Hashable, Sendable {
 
 }
 
-extension MovieAppendOption {
+extension MovieAppendOption: AppendToResponseOption {
 
-    private static let mapping: [(MovieAppendOption, String)] = [
+    static let mapping: [(MovieAppendOption, String)] = [
         (.credits, "credits"),
         (.images, "images"),
         (.videos, "videos"),
@@ -90,12 +90,5 @@ extension MovieAppendOption {
         (.lists, "lists"),
         (.changes, "changes")
     ]
-
-    var queryValue: String {
-        Self.mapping
-            .filter { contains($0.0) }
-            .map(\.1)
-            .joined(separator: ",")
-    }
 
 }

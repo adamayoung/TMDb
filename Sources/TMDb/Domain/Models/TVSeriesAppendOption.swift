@@ -82,9 +82,9 @@ public struct TVSeriesAppendOption: OptionSet, Hashable, Sendable {
 
 }
 
-extension TVSeriesAppendOption {
+extension TVSeriesAppendOption: AppendToResponseOption {
 
-    private static let mapping: [(TVSeriesAppendOption, String)] = [
+    static let mapping: [(TVSeriesAppendOption, String)] = [
         (.credits, "credits"),
         (.aggregateCredits, "aggregate_credits"),
         (.images, "images"),
@@ -103,12 +103,5 @@ extension TVSeriesAppendOption {
         (.lists, "lists"),
         (.changes, "changes")
     ]
-
-    var queryValue: String {
-        Self.mapping
-            .filter { contains($0.0) }
-            .map(\.1)
-            .joined(separator: ",")
-    }
 
 }

@@ -54,9 +54,9 @@ public struct PersonAppendOption: OptionSet, Hashable, Sendable {
 
 }
 
-extension PersonAppendOption {
+extension PersonAppendOption: AppendToResponseOption {
 
-    private static let mapping: [(PersonAppendOption, String)] = [
+    static let mapping: [(PersonAppendOption, String)] = [
         (.movieCredits, "movie_credits"),
         (.tvCredits, "tv_credits"),
         (.combinedCredits, "combined_credits"),
@@ -66,12 +66,5 @@ extension PersonAppendOption {
         (.externalIDs, "external_ids"),
         (.changes, "changes")
     ]
-
-    var queryValue: String {
-        Self.mapping
-            .filter { contains($0.0) }
-            .map(\.1)
-            .joined(separator: ",")
-    }
 
 }

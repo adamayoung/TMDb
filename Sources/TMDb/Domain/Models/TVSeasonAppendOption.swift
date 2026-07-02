@@ -53,9 +53,9 @@ public struct TVSeasonAppendOption: OptionSet, Hashable, Sendable {
 
 }
 
-extension TVSeasonAppendOption {
+extension TVSeasonAppendOption: AppendToResponseOption {
 
-    private static let mapping: [(TVSeasonAppendOption, String)] = [
+    static let mapping: [(TVSeasonAppendOption, String)] = [
         (.credits, "credits"),
         (.aggregateCredits, "aggregate_credits"),
         (.images, "images"),
@@ -64,12 +64,5 @@ extension TVSeasonAppendOption {
         (.watchProviders, "watch/providers"),
         (.externalIDs, "external_ids")
     ]
-
-    var queryValue: String {
-        Self.mapping
-            .filter { contains($0.0) }
-            .map(\.1)
-            .joined(separator: ",")
-    }
 
 }
