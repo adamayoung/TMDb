@@ -13,18 +13,18 @@ import Foundation
 
 final class TMDbAPIClient: UnmappedAPIClient {
 
-    private let apiKey: String
+    private let credential: APICredential
     private let baseURL: URL
     private let serialiser: any Serialiser
     private let httpClient: any HTTPClient
 
     init(
-        apiKey: String,
+        credential: APICredential,
         baseURL: URL,
         serialiser: some Serialiser,
         httpClient: some HTTPClient
     ) {
-        self.apiKey = apiKey
+        self.credential = credential
         self.baseURL = baseURL
         self.serialiser = serialiser
         self.httpClient = httpClient
@@ -66,13 +66,19 @@ extension TMDbAPIClient {
         }
 
         var queryItems = request.queryItems
-        queryItems["api_key"] = apiKey
+        var headers = request.headers
+
+        switch credential {
+        case .apiKey(let apiKey):
+            queryItems["api_key"] = apiKey
+        case .bearerToken(let token):
+            headers["Authorization"] = "Bearer \(token)"
+        }
 
         let url = urlFromPath(path, queryItems: queryItems)
 
         let method = Self.method(from: request.method)
 
-        var headers = request.headers
         headers["Accept"] = serialiser.mimeType
 
         var data: Data?

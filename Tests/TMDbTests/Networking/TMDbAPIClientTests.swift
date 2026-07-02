@@ -30,7 +30,7 @@ struct TMDbAPIClientTests {
         configuration.protocolClasses = [MockURLProtocol.self]
         self.httpClient = await HTTPMockClient()
         self.apiClient = TMDbAPIClient(
-            apiKey: apiKey,
+            credential: .apiKey(apiKey),
             baseURL: baseURL,
             serialiser: serialiser,
             httpClient: httpClient

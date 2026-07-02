@@ -23,10 +23,10 @@ final class TMDbFactory {
 
 extension TMDbFactory {
 
-    static func apiClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
+    static func apiClient(credential: APICredential, httpClient: some HTTPClient) -> some APIClient {
         ErrorMappingAPIClient(
             apiClient: TMDbAPIClient(
-                apiKey: apiKey,
+                credential: credential,
                 baseURL: tmdbAPIBaseURL,
                 serialiser: serialiser(),
                 httpClient: httpClient
@@ -34,10 +34,10 @@ extension TMDbFactory {
         )
     }
 
-    static func authAPIClient(apiKey: String, httpClient: some HTTPClient) -> some APIClient {
+    static func authAPIClient(credential: APICredential, httpClient: some HTTPClient) -> some APIClient {
         ErrorMappingAPIClient(
             apiClient: TMDbAPIClient(
-                apiKey: apiKey,
+                credential: credential,
                 baseURL: .tmdbAPIBase,
                 serialiser: authSerialiser(),
                 httpClient: httpClient
@@ -50,7 +50,7 @@ extension TMDbFactory {
     }
 
     static func makeServiceDependencies(
-        apiKey: String,
+        credential: APICredential,
         httpClient: some HTTPClient,
         configuration: TMDbConfiguration
     ) -> TMDbServiceDependencies {
@@ -61,8 +61,8 @@ extension TMDbFactory {
         )
 
         return TMDbServiceDependencies(
-            apiClient: apiClient(apiKey: apiKey, httpClient: wrappedHTTPClient),
-            authAPIClient: authAPIClient(apiKey: apiKey, httpClient: wrappedHTTPClient),
+            apiClient: apiClient(credential: credential, httpClient: wrappedHTTPClient),
+            authAPIClient: authAPIClient(credential: credential, httpClient: wrappedHTTPClient),
             authenticateURLBuilder: authenticateURLBuilder()
         )
     }
