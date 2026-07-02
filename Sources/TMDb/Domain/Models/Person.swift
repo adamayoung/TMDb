@@ -171,7 +171,6 @@ extension Person {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let container2 = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
@@ -187,17 +186,7 @@ extension Person {
         self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
         self.imdbID = try container.decodeIfPresent(String.self, forKey: .imdbID)
-
-        // Need to deal with empty strings - URL decoding will fail with an empty string
-        let homepageURLString = try container.decodeIfPresent(String.self, forKey: .homepageURL)
-        self.homepageURL = try {
-            guard let homepageURLString, !homepageURLString.isEmpty else {
-                return nil
-            }
-
-            return try container2.decodeIfPresent(URL.self, forKey: .homepageURL)
-        }()
-
+        self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
         self.isAdultOnly = try container.decodeIfPresent(
             Bool.self, forKey: .isAdultOnly
         )
