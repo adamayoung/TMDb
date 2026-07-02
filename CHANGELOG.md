@@ -5,7 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [18.0.0] - Unreleased
+## [18.1.0] - 2026-06-18
+
+### Added
+
+- `AuthenticatedSession` wrapper for `AccountService`, simplifying calls
+  that operate on an authenticated user session.
+- Auto-pagination for the Account, GuestSession, Keyword, and Changes
+  services.
+- Opt-in next-page prefetch for auto-pagination.
+
+### Changed
+
+- `URLSessionHTTPClientAdapter` now declares explicit `Sendable`
+  conformance.
+- Standardised `details(...)` parameter labels to `<entity>ID` across
+  services for consistency.
+
+### Fixed
+
+- `Retry-After` sleep is now capped to `maxDelay`.
+- `RetryHTTPClient` now retries transient transport errors.
+- Search queries and degenerate `Discover` filter inputs are now
+  validated.
+- Query items are sorted by name to produce a canonical cache key.
+- Unknown `Status` and `media_type` values now decode resiliently
+  instead of failing.
+
+## [18.0.1] - 2026-06-11
+
+### Fixed
+
+- Missing `genre_ids` in search list items now decode as an empty array
+  instead of failing.
+
+## [18.0.0] - 2026-06-10
 
 ### Breaking
 
@@ -49,4 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PersonService.personChanges(startDate:endDate:page:)` — use
   `PersonService.changes(startDate:endDate:page:)` instead.
 
+[18.1.0]: https://github.com/adamayoung/TMDb/releases/tag/18.1.0
+[18.0.1]: https://github.com/adamayoung/TMDb/releases/tag/18.0.1
 [18.0.0]: https://github.com/adamayoung/TMDb/releases/tag/18.0.0

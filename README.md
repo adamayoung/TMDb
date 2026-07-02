@@ -6,7 +6,7 @@
 [![Documentation](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml/badge.svg)](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml)
 [![codecov](https://codecov.io/gh/adamayoung/TMDb/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
 [![Swift 6.0+](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
-[![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS%20|%20Linux%20|%20Windows-blue.svg)](https://github.com/adamayoung/TMDb)
+[![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS%20|%20Linux-blue.svg)](https://github.com/adamayoung/TMDb)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
@@ -33,7 +33,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   and vote averages as percentages (e.g. `"85%"` in English locales)
 * **Swift 6 Ready**: Full strict concurrency support with Sendable types
 * **Cross-Platform**: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+,
-  visionOS 1+, Linux, Windows
+  visionOS 1+, Linux
 * **Automatic Retry**: Opt-in retry with exponential backoff for rate
   limits (HTTP 429) and server errors (HTTP 5xx)
 * **Response Caching**: On-disk HTTP caching by default on Apple platforms
@@ -95,7 +95,6 @@ for detailed usage.
   * watchOS 9+
   * tvOS 16+
   * visionOS 1+
-  * Windows
   * Linux
 
 ## Installation
@@ -270,7 +269,7 @@ requests are served from disk (and persist across launches) with no
 configuration. To tune or disable it, supply your own `HTTPClient` backed by a
 `URLSession` you configure.
 
-For an additional in-memory layer (or for caching on Linux/Windows, where
+For an additional in-memory layer (or for caching on Linux, where
 `URLCache` is not installed), enable in-memory response caching:
 
 ```swift

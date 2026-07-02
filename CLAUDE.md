@@ -112,8 +112,9 @@ through a `LanguageModelSession`. It is gated by
 `#if canImport(FoundationModels) && !os(tvOS)` and annotated
 `@available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)`.
 
-Seven tools are exposed: `search`, `movieDetails`, `tvSeriesDetails`,
-`personFilmography`, `trending`, `watchProviders`, and `discoverMovies`. They
+Eight tools are exposed: `search`, `movieDetails`, `movieCredits`,
+`tvSeriesDetails`, `personFilmography`, `trending`, `watchProviders`, and
+`discoverMovies`. They
 are reachable from `TMDbClient` via `languageModelTools` (shorthand for
 `TMDbToolbox(client:).all`) and individual `*Tool` accessors (`searchTool`,
 `movieDetailsTool`, …). Each tool returns compact text whose every line leads

@@ -7,7 +7,7 @@ WATCHOS_DESTINATION = 'platform=watchOS Simulator,name=Apple Watch Series 11 (46
 TVOS_DESTINATION = 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=26.2'
 VISIONOS_DESTINATION = 'platform=visionOS Simulator,name=Apple Vision Pro,OS=26.2'
 
-SWIFT_CONTAINER_IMAGE = swift:6.0.3-jammy
+SWIFT_CONTAINER_IMAGE = swift:6.1-jammy
 
 # SwiftPM scratch (build) directory — the swift-build equivalent of Xcode's
 # DerivedData. Override to isolate concurrent builds across git worktrees, e.g.
