@@ -211,7 +211,58 @@ public final class TMDbClient: Sendable {
         configuration: TMDbConfiguration = .system
     ) {
         let dependencies = TMDbFactory.makeServiceDependencies(
-            apiKey: apiKey,
+            credential: .apiKey(apiKey),
+            httpClient: httpClient,
+            configuration: configuration
+        )
+
+        self.init(dependencies: dependencies, configuration: configuration)
+    }
+
+    ///
+    /// Creates a TMDb client authenticated with a v4 access token, using
+    /// `URLSession` as the `HTTPClient`.
+    ///
+    /// The token is sent as an `Authorization: Bearer` header rather than an
+    /// `api_key` query item, keeping the credential out of request URLs (and
+    /// therefore out of logs, proxies, and cache keys). Use the **API Read
+    /// Access Token** from your TMDb account's API settings.
+    ///
+    /// - Parameters:
+    ///   - bearerToken: The TMDb v4 access token to authenticate requests with.
+    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
+    ///
+    public convenience init(
+        bearerToken: String,
+        configuration: TMDbConfiguration = .system
+    ) {
+        self.init(
+            bearerToken: bearerToken,
+            httpClient: TMDbFactory.defaultHTTPClientAdapter(),
+            configuration: configuration
+        )
+    }
+
+    ///
+    /// Creates a TMDb client authenticated with a v4 access token.
+    ///
+    /// The token is sent as an `Authorization: Bearer` header rather than an
+    /// `api_key` query item, keeping the credential out of request URLs (and
+    /// therefore out of logs, proxies, and cache keys). Use the **API Read
+    /// Access Token** from your TMDb account's API settings.
+    ///
+    /// - Parameters:
+    ///   - bearerToken: The TMDb v4 access token to authenticate requests with.
+    ///   - httpClient: A custom HTTP client adapter for making HTTP requests.
+    ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
+    ///
+    public convenience init(
+        bearerToken: String,
+        httpClient: some HTTPClient,
+        configuration: TMDbConfiguration = .system
+    ) {
+        let dependencies = TMDbFactory.makeServiceDependencies(
+            credential: .bearerToken(bearerToken),
             httpClient: httpClient,
             configuration: configuration
         )

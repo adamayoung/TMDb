@@ -24,6 +24,13 @@ struct TMDbClientTests {
         #expect(client.account is TMDbAccountService)
     }
 
+    @Test("init with bearer token creates account service")
+    func initWithBearerTokenCreatesAccountService() {
+        let client = TMDbClient(bearerToken: "v4-access-token")
+
+        #expect(client.account is TMDbAccountService)
+    }
+
     @Test("init with API key creates authentication service")
     func initWithAPIKeyCreatesAuthenticationService() {
         let client = TMDbClient(apiKey: apiKey)
