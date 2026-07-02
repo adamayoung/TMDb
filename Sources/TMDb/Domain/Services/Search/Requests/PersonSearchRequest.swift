@@ -40,17 +40,11 @@ private extension APIRequestQueryItems {
 
         self[.query] = query
 
-        if let includeAdult {
-            self[.includeAdult] = includeAdult
-        }
+        self[ifPresent: .includeAdult] = includeAdult
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

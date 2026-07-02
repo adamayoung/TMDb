@@ -22,17 +22,9 @@ final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
             queryItems.apply(filter)
         }
 
-        if let sortedBy {
-            queryItems[.sortBy] = sortedBy
-        }
-
-        if let page {
-            queryItems[.page] = page
-        }
-
-        if let language {
-            queryItems[.language] = language
-        }
+        queryItems[ifPresent: .sortBy] = sortedBy
+        queryItems[ifPresent: .page] = page
+        queryItems[ifPresent: .language] = language
 
         super.init(path: path, queryItems: queryItems)
     }
@@ -42,9 +34,7 @@ final class DiscoverTVSeriesRequest: DecodableAPIRequest<TVSeriesPageableList> {
 private extension APIRequestQueryItems {
 
     mutating func apply(_ filter: DiscoverTVSeriesFilter) {
-        if let originalLanguage = filter.originalLanguage {
-            self[.withOriginalLanguage] = originalLanguage
-        }
+        self[ifPresent: .withOriginalLanguage] = filter.originalLanguage
 
         if let genres = filter.genres {
             self[.withGenres] = (filter.genresJoin ?? .and)
@@ -55,9 +45,7 @@ private extension APIRequestQueryItems {
             self[.withoutGenres] = Self.idsQueryItemValue(for: withoutGenres)
         }
 
-        if let firstAirDateYear = filter.firstAirDateYear {
-            self[.firstAirDateYear] = firstAirDateYear
-        }
+        self[ifPresent: .firstAirDateYear] = filter.firstAirDateYear
 
         applyDateFilters(from: filter)
         applyVoteAndEntityFilters(from: filter)
@@ -89,21 +77,10 @@ private extension APIRequestQueryItems {
     mutating func applyVoteAndEntityFilters(
         from filter: DiscoverTVSeriesFilter
     ) {
-        if let voteAverageMin = filter.voteAverageMin {
-            self[.voteAverageGreaterThan] = voteAverageMin
-        }
-
-        if let voteAverageMax = filter.voteAverageMax {
-            self[.voteAverageLessThan] = voteAverageMax
-        }
-
-        if let voteCountMin = filter.voteCountMin {
-            self[.voteCountGreaterThan] = voteCountMin
-        }
-
-        if let voteCountMax = filter.voteCountMax {
-            self[.voteCountLessThan] = voteCountMax
-        }
+        self[ifPresent: .voteAverageGreaterThan] = filter.voteAverageMin
+        self[ifPresent: .voteAverageLessThan] = filter.voteAverageMax
+        self[ifPresent: .voteCountGreaterThan] = filter.voteCountMin
+        self[ifPresent: .voteCountLessThan] = filter.voteCountMax
 
         if let networks = filter.networks {
             self[.withNetworks] = Self.idsQueryItemValue(for: networks)
@@ -128,17 +105,9 @@ private extension APIRequestQueryItems {
     mutating func applyContentAndProviderFilters(
         from filter: DiscoverTVSeriesFilter
     ) {
-        if let runtimeMin = filter.runtimeMin {
-            self[.withRuntimeGreaterThan] = runtimeMin
-        }
-
-        if let runtimeMax = filter.runtimeMax {
-            self[.withRuntimeLessThan] = runtimeMax
-        }
-
-        if let includeAdult = filter.includeAdult {
-            self[.includeAdult] = includeAdult
-        }
+        self[ifPresent: .withRuntimeGreaterThan] = filter.runtimeMin
+        self[ifPresent: .withRuntimeLessThan] = filter.runtimeMax
+        self[ifPresent: .includeAdult] = filter.includeAdult
 
         if let watchProviders = filter.watchProviders {
             self[.withWatchProviders] = Self.idsQueryItemValue(
@@ -152,13 +121,8 @@ private extension APIRequestQueryItems {
             )
         }
 
-        if let watchRegion = filter.watchRegion {
-            self[.watchRegion] = watchRegion
-        }
-
-        if let includeNullFirstAirDates = filter.includeNullFirstAirDates {
-            self[.includeNullFirstAirDates] = includeNullFirstAirDates
-        }
+        self[ifPresent: .watchRegion] = filter.watchRegion
+        self[ifPresent: .includeNullFirstAirDates] = filter.includeNullFirstAirDates
 
         applyExtendedFilters(from: filter)
     }
@@ -166,9 +130,7 @@ private extension APIRequestQueryItems {
     mutating func applyExtendedFilters(
         from filter: DiscoverTVSeriesFilter
     ) {
-        if let withOriginCountry = filter.withOriginCountry {
-            self[.withOriginCountry] = withOriginCountry
-        }
+        self[ifPresent: .withOriginCountry] = filter.withOriginCountry
 
         if let withStatus = filter.withStatus {
             self[.withStatus] = withStatus
@@ -194,9 +156,7 @@ private extension APIRequestQueryItems {
                 .joined(separator: "|")
         }
 
-        if let screenedTheatrically = filter.screenedTheatrically {
-            self[.screenedTheatrically] = screenedTheatrically
-        }
+        self[ifPresent: .screenedTheatrically] = filter.screenedTheatrically
 
         if let withPeople = filter.withPeople {
             self[.withPeople] = Self.idsQueryItemValue(

@@ -35,9 +35,7 @@ private extension APIRequestQueryItems {
 
         self[.externalSource] = externalSource.rawValue
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

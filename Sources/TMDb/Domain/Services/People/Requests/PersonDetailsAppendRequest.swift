@@ -38,9 +38,7 @@ private extension APIRequestQueryItems {
             self[.appendToResponse] = appendToResponse.queryValue
         }
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }

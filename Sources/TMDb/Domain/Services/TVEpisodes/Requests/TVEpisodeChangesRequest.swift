@@ -44,9 +44,7 @@ private extension APIRequestQueryItems {
             self[Self.endDate] = DateFormatter.theMovieDatabase.string(from: endDate)
         }
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
     }
 
 }

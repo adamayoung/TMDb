@@ -23,9 +23,7 @@ private extension APIRequestQueryItems {
     init(page: Int?) {
         self.init()
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
     }
 
 }

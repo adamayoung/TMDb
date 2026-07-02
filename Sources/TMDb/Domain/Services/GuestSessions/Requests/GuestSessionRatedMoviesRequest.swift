@@ -31,13 +31,9 @@ private extension APIRequestQueryItems {
     init(sortedBy: RatedSort?, page: Int?) {
         self.init()
 
-        if let sortedBy {
-            self[.sortBy] = sortedBy
-        }
+        self[ifPresent: .sortBy] = sortedBy
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
     }
 
 }

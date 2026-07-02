@@ -23,9 +23,7 @@ private extension APIRequestQueryItems {
     init(page: Int?, sessionID: String) {
         self.init()
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
 
         self[.sessionID] = sessionID
     }

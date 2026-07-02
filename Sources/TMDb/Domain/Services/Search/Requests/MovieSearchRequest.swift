@@ -50,29 +50,17 @@ private extension APIRequestQueryItems {
 
         self[.query] = query
 
-        if let primaryReleaseYear {
-            self[.primaryReleaseYear] = primaryReleaseYear
-        }
+        self[ifPresent: .primaryReleaseYear] = primaryReleaseYear
 
-        if let year {
-            self[.year] = year
-        }
+        self[ifPresent: .year] = year
 
-        if let country {
-            self[.region] = country
-        }
+        self[ifPresent: .region] = country
 
-        if let includeAdult {
-            self[.includeAdult] = includeAdult
-        }
+        self[ifPresent: .includeAdult] = includeAdult
 
-        if let page {
-            self[.page] = page
-        }
+        self[ifPresent: .page] = page
 
-        if let language {
-            self[.language] = language
-        }
+        self[ifPresent: .language] = language
     }
 
 }
