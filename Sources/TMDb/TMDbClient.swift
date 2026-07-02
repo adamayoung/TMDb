@@ -303,7 +303,7 @@ public final class TMDbClient: Sendable {
             // capable OS versions. The NaturalLanguage planner is always the default.
             var fallback: (any SearchPlanGenerating)?
             #if canImport(FoundationModels)
-                if #available(iOS 26, macOS 26, visionOS 26, *) {
+                if #available(iOS 26, macOS 26, visionOS 26, watchOS 27, *) {
                     fallback = FoundationModelsSearchPlanGenerator()
                 }
             #endif

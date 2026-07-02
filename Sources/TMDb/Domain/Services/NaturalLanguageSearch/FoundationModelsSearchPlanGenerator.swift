@@ -15,7 +15,7 @@
     /// A fresh ``LanguageModelSession`` is created for each request, so the session
     /// never needs to be stored or shared across isolation boundaries.
     ///
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     struct FoundationModelsSearchPlanGenerator: SearchPlanGenerating {
 
         private let model: SystemLanguageModel
@@ -76,7 +76,7 @@
 
     }
 
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     extension FoundationModelsSearchPlanGenerator {
 
         // swiftlint:disable:next function_body_length

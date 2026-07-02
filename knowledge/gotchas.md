@@ -169,6 +169,26 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
+### FoundationModels can't build for watchOS under Xcode 27 beta 2 (CoreImage)
+
+- Building the package for a **watchOS** destination
+  (`xcodebuild -scheme TMDb -destination 'generic/platform=watchOS Simulator'`)
+  fails during module resolution:
+  `error: Unable to resolve module dependency: 'CoreImage'` inside the watchOS
+  SDK's own `FoundationModels.swiftinterface`. It is an **SDK/toolchain bug**
+  (Xcode 27.0 beta 2 / watchOS 27 beta), not a problem in this code — it fires for
+  **any** `import FoundationModels` on watchOS, including the existing
+  `LanguageModelTools`.
+- Consequence: you **cannot build- or availability-verify** watchOS-gated
+  FoundationModels code locally yet. The error aborts before type-checking, so it
+  even **masks** genuine `@available` violations (a watchOS availability bug and a
+  clean build look identical — both fail on CoreImage). Verify such changes by
+  reasoning + Apple's documented availability instead, and note the gap.
+- Apple **does** document `SystemLanguageModel` / `LanguageModelSession` as
+  `watchOS 27.0+ (Beta)`, so `watchOS 27` is the correct availability floor; the
+  build failure is transient beta breakage, expected to clear in a later toolchain.
+- `make ci` is unaffected — it builds the macOS host only, never watchOS.
+
 ## Testing
 
 ### Model-decode equality tests: build the expected value directly, not from an over-populated mock

@@ -14,7 +14,7 @@
     /// The mapping is pure and deterministic, so it can be unit tested without the
     /// model.
     ///
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     enum SearchPlanMapper {
 
         static func map(_ generated: GeneratedSearchPlan) -> SearchPlan {
