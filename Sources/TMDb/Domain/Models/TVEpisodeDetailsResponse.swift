@@ -87,119 +87,38 @@ extension TVEpisodeDetailsResponse: Decodable {
         case externalIDs = "externalIds"
     }
 
-    private enum CreditsCodingKeys: String, CodingKey {
-        case cast
-        case crew
-    }
-
-    private enum StillsCodingKeys: String, CodingKey {
-        case stills
-    }
-
-    private enum VideosCodingKeys: String, CodingKey {
-        case results
-    }
-
-    private enum TranslationsCodingKeys: String, CodingKey {
-        case translations
-    }
-
-    private enum ExternalIDsCodingKeys: String, CodingKey {
-        case imdbID = "imdbId"
-        case wikiDataID = "wikidataId"
-    }
-
-    // swiftlint:disable function_body_length
     public init(from decoder: Decoder) throws {
         self.episode = try TVEpisode(from: decoder)
+        let id = episode.id
 
-        let container = try decoder.container(
-            keyedBy: CodingKeys.self
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.credits = try container
+            .decodeCastAndCrewIfPresent(CastMember.self, CrewMember.self, forKey: .credits)
+            .map { ShowCredits(id: id, cast: $0.cast, crew: $0.crew) }
+
+        self.images = try container
+            .decodeNestedArrayIfPresent(ImageMetadata.self, forKey: .images, nestedKey: "stills")
+            .map { TVEpisodeImageCollection(id: id, stills: $0) }
+
+        self.videos = try container
+            .decodeNestedArrayIfPresent(VideoMetadata.self, forKey: .videos, nestedKey: "results")
+            .map { VideoCollection(id: id, results: $0) }
+
+        self.translations = try container.decodeNestedIfPresent(
+            [Translation<TVEpisodeTranslationData>].self,
+            forKey: .translations,
+            nestedKey: "translations"
         )
 
-        if container.contains(.credits) {
-            let nested = try container.nestedContainer(
-                keyedBy: CreditsCodingKeys.self,
-                forKey: .credits
-            )
-            let cast = try nested.decodeIfPresent(
-                [CastMember].self, forKey: .cast
-            ) ?? []
-            let crew = try nested.decodeIfPresent(
-                [CrewMember].self, forKey: .crew
-            ) ?? []
-            self.credits = ShowCredits(
-                id: episode.id, cast: cast, crew: crew
-            )
-        } else {
-            self.credits = nil
-        }
-
-        if container.contains(.images) {
-            let nested = try container.nestedContainer(
-                keyedBy: StillsCodingKeys.self,
-                forKey: .images
-            )
-            let stills = try nested.decodeIfPresent(
-                [ImageMetadata].self, forKey: .stills
-            ) ?? []
-            self.images = TVEpisodeImageCollection(
-                id: episode.id, stills: stills
-            )
-        } else {
-            self.images = nil
-        }
-
-        if container.contains(.videos) {
-            let nested = try container.nestedContainer(
-                keyedBy: VideosCodingKeys.self,
-                forKey: .videos
-            )
-            let results = try nested.decodeIfPresent(
-                [VideoMetadata].self, forKey: .results
-            ) ?? []
-            self.videos = VideoCollection(
-                id: episode.id, results: results
-            )
-        } else {
-            self.videos = nil
-        }
-
-        if container.contains(.translations) {
-            let nested = try container.nestedContainer(
-                keyedBy: TranslationsCodingKeys.self,
-                forKey: .translations
-            )
-            self.translations = try nested.decodeIfPresent(
-                [Translation<TVEpisodeTranslationData>].self,
-                forKey: .translations
-            )
-        } else {
-            self.translations = nil
-        }
-
-        if container.contains(.externalIDs) {
-            let nested = try container.nestedContainer(
-                keyedBy: ExternalIDsCodingKeys.self,
-                forKey: .externalIDs
-            )
-            let imdbID = try nested.decodeIfPresent(
-                String.self, forKey: .imdbID
-            )
-            let wikiDataID = try nested.decodeIfPresent(
-                String.self, forKey: .wikiDataID
-            )
-            self.externalIDs = TVEpisodeExternalLinksCollection(
-                id: episode.id,
-                imdb: IMDbLink(imdbTitleID: imdbID),
-                wikiData: WikiDataLink(
-                    wikiDataID: wikiDataID
+        self.externalIDs = try SocialLinkIDs(from: container, forKey: .externalIDs)
+            .map {
+                TVEpisodeExternalLinksCollection(
+                    id: id,
+                    imdb: IMDbLink(imdbTitleID: $0.imdbID),
+                    wikiData: WikiDataLink(wikiDataID: $0.wikiDataID)
                 )
-            )
-        } else {
-            self.externalIDs = nil
-        }
+            }
     }
-    // swiftlint:enable function_body_length
 
 }
