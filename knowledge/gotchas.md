@@ -144,6 +144,17 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   format); CI builds use `xcsift -f github-actions` (GitHub annotations).
 - Build targets pass `--Werror` (warnings-as-errors) and `2>&1` (compiler
   diagnostics are emitted on stderr). **Linux/Docker targets do not use xcsift.**
+- **The `.docc` "unhandled file" warning is a false alarm — trust the exit code,
+  not the toon `errors[]` array.** `swift build`/`make build-tests` emit
+  `'<pkg>': found 1 file(s) which are unhandled … Sources/TMDb/TMDb.docc` (and the
+  `TMDbTesting.docc` twin) because the DocC plugin only loads under
+  `SWIFTCI_DOCC=1` (see `Package.swift`), so outside a docs build SwiftPM sees the
+  catalogs as unhandled. It is a **package-load warning, not a compile error**, so
+  `--Werror` does **not** promote it and the build **exits 0** ("Build complete!").
+  But xcsift's `-f toon` output lists it under `errors[…]{file,line,message}` with
+  `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
+  that array (instead of the exit status) will wrongly report the build as
+  **failed**. Re-check the actual exit code before believing it.
 
 ### The `xcode-tools` MCP only exists inside Xcode
 

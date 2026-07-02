@@ -56,7 +56,7 @@ inflate nitpicks to Critical.
 
 - A **library** (not an app) — no UI frameworks. Swift 6.0+ strict concurrency.
   No external dependencies (stdlib + Foundation only).
-- Platforms: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, Windows.
+- Platforms: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux.
 - **26 services** behind `TMDbClient`, each a public `protocol` + an internal
   `TMDb`-prefixed implementation; the `naturalLanguageSearch` service is Apple-only.
 - **Networking decorator chain:**
