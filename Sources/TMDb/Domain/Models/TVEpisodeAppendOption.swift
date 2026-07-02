@@ -48,21 +48,14 @@ public struct TVEpisodeAppendOption: OptionSet, Hashable, Sendable {
 
 }
 
-extension TVEpisodeAppendOption {
+extension TVEpisodeAppendOption: AppendToResponseOption {
 
-    private static let mapping: [(TVEpisodeAppendOption, String)] = [
+    static let mapping: [(TVEpisodeAppendOption, String)] = [
         (.credits, "credits"),
         (.images, "images"),
         (.videos, "videos"),
         (.translations, "translations"),
         (.externalIDs, "external_ids")
     ]
-
-    var queryValue: String {
-        Self.mapping
-            .filter { contains($0.0) }
-            .map(\.1)
-            .joined(separator: ",")
-    }
 
 }
