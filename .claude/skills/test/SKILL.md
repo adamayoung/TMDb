@@ -22,6 +22,12 @@ Run the TMDb unit tests and report concisely.
 - Otherwise run `mkdir -p .build && make test > .build/last-test.log 2>&1`,
   check the exit status for pass/fail (the Makefile sets `pipefail`), and
   summarise from that log file.
+  **Trust the exit status and `failed_tests` count, not xcsift's `status:`
+  field.** Outside a docs build, SwiftPM emits a benign `found N file(s) which
+  are unhandled … *.docc` warning that xcsift lists under `errors[]` (with
+  `null,null` coordinates) and that can make it print `status: failed` even when
+  the run succeeded and `failed_tests: 0`. Treat a 0 exit with `failed_tests: 0`
+  as **passed** regardless of that `.docc` entry.
 
 Report back ONLY:
 - Status: passed or failed

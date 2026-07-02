@@ -10,6 +10,54 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-02 — 📝 Reconcile docs/config honesty gaps from external reviews (#374) · lite
+
+- **Phases / skills:** phases 0.5–6; `review-changes, security-review,
+  build-for-testing, pr`. Skipped `/review-plan` (lite + the worklist was approved
+  via `ExitPlanMode` this session, and its findings were already adversarially
+  *verified* by an 18-agent read-only workflow beforehand); skipped
+  `/implement-plan` (no Canon TDD list — docs/config edits + a dead-code deletion).
+  Knowledge captured **inline** (a gotcha + the skill-improvement-log entry), not
+  via a separate `/capture-knowledge`.
+- **Worked:** the standout was **verifying the reviews before acting on them.** Two
+  external reviews (Fable + Codex) were turned into a de-risked worklist by an
+  18-agent workflow that opened/grepped/counted every claim in-repo — which caught
+  real overstatements before any edit (tool count is *eight* not "seven"; the
+  `*DetailsResponse` decoders are 90–225 lines not "~180"; 84 request files not
+  "~95"; `.unsupportedLanguage` is actually reachable, not dead). Only the
+  **verified, softened** Tier-1 subset was delivered. `make ci` green first try
+  (2838 unit + 289 integration); the single `code-reviewer` returned **0 findings**
+  and independently re-checked the docs claims (tool count, CHANGELOG dates vs the
+  actual tags).
+- **Friction — the standout:** the Haiku `/build-for-testing` subagent reported the
+  build **failed** when `swift build` had **exited 0**. Cause: the benign DocC
+  `.docc` "unhandled file" package-load warning lands in xcsift's toon `errors[]`
+  array (with `null,null` coords) and flips its `status:` field to `failed`; the
+  agent trusted that field over the exit code. The same artifact reappeared in
+  `make ci`'s toon (`status: failed` with `failed_tests: 0`). Cost a diagnostic
+  cycle to prove it benign. **Fixed this run** (user-requested): a gotcha in
+  `gotchas.md` + a "trust the exit status, not xcsift's toon summary" caveat added
+  to all four build/test skill prompts (`/build`, `/build-for-testing`, `/test`,
+  `/integration-test`).
+- **Deviations:** (1) the delivery is **one tier of a 5-batch verified worklist**
+  (user green-lit Tiers 1–4 + F7 via `AskUserQuestion`), so the "plan" is the
+  worklist doc, not a single-feature plan. (2) **Bundled** the build/test
+  skill-prompt fix + its gotcha + skill-improvement-log entry into this honesty PR
+  rather than a separate one — the diagnosis gotcha was already committed here, so
+  splitting diagnosis from remediation would be worse; a mild scope-broadening,
+  flagged to the user. (3) Ran `/security-review` on a zero-attack-surface change
+  (docs + a version string + a dead-code deletion) because the Swift-touched gate
+  triggered — returned clean, as expected.
+- **One improvement:** the DocC-warning false-failure is patched at the prompt
+  level, but the deeper fix is to give the Haiku build subagents an **unambiguous**
+  pass/fail signal instead of asking them to interpret xcsift's toon fields — e.g.
+  have the `make build*/test*` targets append the real exit code to the log
+  (`echo "EXIT=$?"`) so the subagent parses one authoritative line. Worth a
+  follow-up if the toon-interpretation ambiguity bites again.
+- **Housekeeping:** this file is ~2 cycles over its ~12-entry window (archive-distil
+  of the 2026-06-18 cluster was deferred in #368 too) — an archive pass is overdue
+  next cycle.
+
 ## 2026-06-30 — 🔧 Harden & extend the /deliver pipeline (audit P1–P5) (#368) · lite
 
 - **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (the

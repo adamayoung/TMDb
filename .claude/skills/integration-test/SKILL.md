@@ -20,6 +20,12 @@ Run the TMDb integration tests against the live API and report concisely.
 - Otherwise run
   `mkdir -p .build && make integration-test > .build/last-integration-test.log 2>&1`,
   check the exit status for pass/fail, and summarise from that log file.
+  **Trust the exit status and `failed_tests` count, not xcsift's `status:`
+  field.** Outside a docs build, SwiftPM emits a benign `found N file(s) which
+  are unhandled … *.docc` warning that xcsift lists under `errors[]` (with
+  `null,null` coordinates) and that can make it print `status: failed` even when
+  the run succeeded and `failed_tests: 0`. Treat a 0 exit with `failed_tests: 0`
+  as **passed** regardless of that `.docc` entry.
 
 These require TMDB_API_KEY, TMDB_USERNAME, and TMDB_PASSWORD, which are injected
 via the env block in .claude/settings.local.json — no sourcing is needed. `make

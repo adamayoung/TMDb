@@ -30,6 +30,27 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-02 — Haiku build/test subagents misread xcsift toon `errors[]` as failure (#374) · applied
+
+- **Pattern:** the DocC `.docc` "unhandled file" package-load warning lands in
+  xcsift's toon `errors[]` array (with `null,null` coordinates) and makes it print
+  `status: failed`, even though `swift build`/`swift test` **exit 0** (the DocC
+  plugin only loads under `SWIFTCI_DOCC=1`). During the #374 delivery a Haiku
+  `/build-for-testing` subagent keyed off that array and reported the build
+  **failed** — a false negative that cost a diagnostic cycle. First occurrence,
+  surfaced and fixed the same run at the user's direct request (not via the
+  recurring-pattern scan).
+- **Decision:** **applied** — added a "trust the exit status, not xcsift's toon
+  summary / `status:` field" caveat to all four build/test skill prompts
+  (`/build`, `/build-for-testing`, `/test`, `/integration-test`) in #374, naming
+  the benign `.docc` unhandled-file entry explicitly. Root cause also captured as a
+  gotcha (`knowledge/gotchas.md`, same PR).
+- **Rationale:** the prompts already said "check the exit status" but never warned
+  that xcsift's structured error list can carry a benign package-load warning, so
+  the agent trusted the list over the exit code. Naming the specific false-alarm
+  removes the ambiguity without weakening real-failure detection.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-06-30 — Ledger fragility recurred (#364, #368): re-create it inside the worktree · applied
 
 - **Pattern:** the `TaskCreate` phase ledger (Contract §6) is CWD-scoped and is

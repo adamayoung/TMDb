@@ -24,6 +24,13 @@ Build the TMDb Swift package and all test targets, then report concisely.
   `mkdir -p .build && make build-tests > .build/last-build-tests.log 2>&1`,
   check the exit status for pass/fail (the Makefile sets `pipefail`), and
   summarise from that log file.
+  **Trust the exit status, not xcsift's toon summary.** Outside a docs build,
+  SwiftPM emits a benign `found N file(s) which are unhandled … *.docc` warning
+  (the DocC plugin loads only under `SWIFTCI_DOCC=1`); xcsift lists it under
+  `errors[]` with `null,null` coordinates and may print `status: failed`, yet the
+  build still **exits 0**. A 0 exit whose only errors are these `.docc`
+  unhandled-file entries is a **PASS** — report succeeded and exclude them from
+  the error count.
 
 Report back ONLY:
 - Status: succeeded or failed
