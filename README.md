@@ -160,6 +160,14 @@ let movie = try await movieService.details(forMovie: 550)
 Create an API key from The Movie Database web site
 [https://www.themoviedb.org/documentation/api](https://www.themoviedb.org/documentation/api).
 
+Alternatively, use the v4 **API Read Access Token** from the same settings
+page. It is sent as an `Authorization: Bearer` header rather than in the URL,
+keeping the credential out of logs, proxies, and cache keys:
+
+```swift
+let tmdbClient = TMDbClient(bearerToken: "<your-access-token>")
+```
+
 ### Quick Start
 
 ```swift

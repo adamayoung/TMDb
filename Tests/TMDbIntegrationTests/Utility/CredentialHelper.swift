@@ -14,6 +14,7 @@ final class CredentialHelper: Sendable {
 
     let tmdbCredential: Credential
     let tmdbAPIKey: String
+    let tmdbAccessToken: String
 
     var hasCredential: Bool {
         !tmdbCredential.username.isEmpty && !tmdbCredential.password.isEmpty
@@ -21,6 +22,10 @@ final class CredentialHelper: Sendable {
 
     var hasAPIKey: Bool {
         !tmdbAPIKey.isEmpty
+    }
+
+    var hasAccessToken: Bool {
+        !tmdbAccessToken.isEmpty
     }
 
     /// Returns a `TMDbClient` configured with the integration-test API key
@@ -41,6 +46,7 @@ final class CredentialHelper: Sendable {
         self.tmdbCredential = Credential(username: username, password: password)
 
         self.tmdbAPIKey = processInfo.environment["TMDB_API_KEY"] ?? ""
+        self.tmdbAccessToken = processInfo.environment["TMDB_ACCESS_TOKEN"] ?? ""
     }
 
 }

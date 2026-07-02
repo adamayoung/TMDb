@@ -263,6 +263,22 @@ breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-conven
 
 ## Networking
 
+### Bearer-token clients share one credential-free `URLCache` key space
+
+- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
+  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
+  **not** in the request URL. That's the point (keys stay out of logs/proxies),
+  but it means the process-wide default `URLCache` (and the opt-in
+  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
+  partitions cache entries by credential. Two bearer clients with **different**
+  tokens in one process can therefore serve each other cache hits.
+- This is **benign today**: the affected v3 `GET` endpoints return app-level
+  public data identical across tokens, and user-specific requests carry
+  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
+  session requests entirely). It would only matter if TMDb started returning
+  token-specific data on an otherwise-public GET — worth remembering before
+  relying on per-token cache isolation.
+
 ### `URLComponents` path round-trip in `TMDbAPIClient.urlFromPath` decodes `%2F`
 
 *2026-06-24.* `TMDbAPIClient.urlFromPath` rebuilds the request URL by reading and

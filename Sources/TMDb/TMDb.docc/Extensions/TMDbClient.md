@@ -6,6 +6,8 @@
 
 - ``init(apiKey:configuration:)``
 - ``init(apiKey:httpClient:configuration:)``
+- ``init(bearerToken:configuration:)``
+- ``init(bearerToken:httpClient:configuration:)``
 
 ### Configuration
 
