@@ -296,7 +296,8 @@ public final class TMDbClient: Sendable {
 
             let deterministic = NaturalLanguageSearchPlanGenerator(
                 classifier: RuleBasedIntentClassifier(),
-                personExtractor: NLTaggerPersonNameExtractor()
+                personExtractor: NLTaggerPersonNameExtractor(),
+                languageDetector: NLLanguageRecognizerPromptDetector()
             )
 
             // Foundation Models is an optional fallback for the fuzzy tail, only on

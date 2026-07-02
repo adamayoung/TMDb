@@ -13,11 +13,13 @@ import Testing
 struct NaturalLanguageSearchPlanGeneratorTests {
 
     private let people = MockPersonNameExtractor()
+    private let language = MockPromptLanguageDetector()
 
     private func make() -> NaturalLanguageSearchPlanGenerator {
         NaturalLanguageSearchPlanGenerator(
             classifier: RuleBasedIntentClassifier(),
-            personExtractor: people
+            personExtractor: people,
+            languageDetector: language
         )
     }
 
@@ -28,6 +30,21 @@ struct NaturalLanguageSearchPlanGeneratorTests {
         #expect(plan?.title == "Fight Club")
         #expect(plan?.people.isEmpty == true)
         #expect(plan?.isInScope == true)
+    }
+
+    @Test("abstains on a confidently non-English prompt")
+    func nonEnglishPromptAbstains() {
+        language.isNonEnglish = true
+        // Without the language gate this would classify as a literal `find`.
+        let plan = make().confidentPlan(for: "un bon film avec de grands acteurs")
+        #expect(plan == nil)
+        #expect(language.calls == ["un bon film avec de grands acteurs"])
+    }
+
+    @Test("does not abstain when the prompt is English")
+    func englishPromptDoesNotAbstain() {
+        language.isNonEnglish = false
+        #expect(make().confidentPlan(for: "trending shows")?.intent == .list)
     }
 
     @Test("list extracts kind and media type")
