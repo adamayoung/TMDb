@@ -16,7 +16,7 @@
     /// It is mapped to the un-gated ``SearchPlan`` immediately, keeping
     /// Foundation Models out of the rest of the feature.
     ///
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     @Generable
     struct GeneratedSearchPlan {
 
@@ -74,25 +74,25 @@
 
     }
 
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     @Generable
     enum GeneratedIntent {
         case find, browse, filmography, castOf, crewRole, similar, list, mood
     }
 
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     @Generable
     enum GeneratedMediaType {
         case movie, tv, person
     }
 
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     @Generable
     enum GeneratedListKind {
         case trending, popular, topRated, nowPlaying, upcoming, airingToday
     }
 
-    @available(iOS 26, macOS 26, visionOS 26, *)
+    @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)
     @Generable
     enum GeneratedDatePhrase {
         case thisYear, recent, lastFiveYears, lastTenYears
