@@ -56,3 +56,42 @@ public struct ImageCollection: Identifiable, Codable, Equatable, Hashable, Senda
     }
 
 }
+
+extension ImageCollection {
+
+    ///
+    /// Decodes an image collection from the wrapper object at `key`.
+    ///
+    /// The image append section wraps up to three arrays — `posters`, `logos`, and
+    /// `backdrops` — each defaulting to empty when absent, so a wrapper carrying only
+    /// some of them decodes into a collection with the rest empty.
+    ///
+    /// - Parameters:
+    ///   - container: The container holding the `images` wrapper.
+    ///   - key: The wrapper key. When absent, the initializer returns `nil`.
+    ///   - id: The identifier of the owning entity.
+    ///
+    init?<Key: CodingKey>(
+        from container: KeyedDecodingContainer<Key>,
+        forKey key: Key,
+        id: Int
+    ) throws {
+        guard container.contains(key) else {
+            return nil
+        }
+
+        let nested = try container.nestedContainer(keyedBy: StringCodingKey.self, forKey: key)
+
+        func images(_ name: String) throws -> [ImageMetadata] {
+            try nested.decodeIfPresent([ImageMetadata].self, forKey: StringCodingKey(name)) ?? []
+        }
+
+        try self.init(
+            id: id,
+            posters: images("posters"),
+            logos: images("logos"),
+            backdrops: images("backdrops")
+        )
+    }
+
+}
