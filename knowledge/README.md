@@ -13,8 +13,8 @@ this directory; the detail lives here and is read on demand.
 | [`decisions/`](decisions/) | **ADRs** — Architecture Decision Records, one per decision, numbered + dated. Use for any non-obvious design choice and its rationale. |
 | [`gotchas.md`](gotchas.md) | Implementation quirks, things that bit us, tooling traps, and anything that needed a web search / lookup to resolve. |
 | [`tmdb-api-notes.md`](tmdb-api-notes.md) | Behaviours of the **live TMDb API** discovered while implementing (nullable/absent fields, undocumented quirks, response-shape surprises). |
-| [`delivery-retros.md`](delivery-retros.md) | A short retrospective per feature delivered via `/deliver` (its Phase 3.7, written pre-PR so it rides the delivery's own PR) — what worked, friction, deviations, one improvement. |
-| [`skill-improvement-log.md`](skill-improvement-log.md) | Decisions on every skill-improvement proposal from `/deliver`'s Phase 6 recurring-pattern scan (applied / deferred / rejected), so the scan doesn't re-propose settled calls. |
+| [`delivery-retros.md`](delivery-retros.md) | A short retrospective per feature delivered via `/deliver` (written pre-PR so it rides the delivery's own PR) — what worked, friction, deviations, one improvement. |
+| [`skill-improvement-log.md`](skill-improvement-log.md) | Decisions on every skill-improvement proposal from `/deliver`'s wrap-up recurring-pattern scan (applied / deferred / rejected), so the scan doesn't re-propose settled calls. |
 
 ## How to use it
 
@@ -37,7 +37,7 @@ age differently:
     **last ~12 entries** in full prose, and distil older ones into a compact
     one-line archive table (`date · PR · weight · one-line outcome`), dropping the
     prose. The telemetry (which skills fired, where deliveries stopped) survives;
-    the bulk doesn't. A retro's job is to feed the Phase 6 recurring-pattern scan;
+    the bulk doesn't. A retro's job is to feed the wrap-up recurring-pattern scan;
     once its lesson is folded into a skill and recorded `applied` in
     `skill-improvement-log.md`, the prose is spent — the scan reads only the recent
     window plus the log, never the full history.

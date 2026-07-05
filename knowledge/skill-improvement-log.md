@@ -1,9 +1,9 @@
 # Skill-Improvement Log
 
 A durable record of every skill-improvement proposal raised by `/deliver`'s
-**Phase 6 recurring-pattern scan**, and the decision on it. Newest at the top.
+**wrap-up recurring-pattern scan**, and the decision on it. Newest at the top.
 
-**Why this exists:** the Phase 6 scan surfaces proposals and waits for approval.
+**Why this exists:** the scan surfaces proposals and waits for approval.
 Without a memory of past decisions, it would re-propose ideas already **applied**
 or deliberately **deferred/rejected** — wasting attention and re-litigating
 settled calls. The scan **consults this log before proposing** and skips any
@@ -20,7 +20,7 @@ Format per entry:
 - **Decision:** what was agreed, and where it landed (skill + commit/PR) if applied.
 - **Rationale:** one or two sentences — why this call.
 - **Reconsider when:** (deferred/rejected only) the condition under which the scan
-  should resurface this — or `n/a` for applied entries. The Phase 6 scan reads this
+  should resurface this — or `n/a` for applied entries. The scan reads this
   field to decide whether a settled *no* may be re-proposed.
 ```
 
@@ -29,6 +29,24 @@ consistently — in particular **Decision** (status) and **Reconsider when** are
 two fields the dedup step keys on.
 
 ---
+
+### 2026-07-05 — Legitimize inline knowledge capture for small in-flight entries · applied
+
+- **Pattern:** five consecutive deliveries (#366, #368, #374, #382, #383)
+  captured knowledge **inline** instead of invoking `/capture-knowledge`,
+  each time flagged as a benign deviation — small entries (a gotcha, a log
+  entry) authored *during* implementation gain nothing from the full skill
+  pass.
+- **Decision:** **applied** (user-approved at the #382/#383 gate). The
+  capture phase of `/deliver` now allows: one or two small entries already
+  authored during implementation may be committed inline, noted in the
+  retro. Landed in `.claude/skills/deliver/SKILL.md` (PR #383).
+- **Rationale:** the deviation was the de-facto convention and consistently
+  harmless; legitimizing it stops every retro re-flagging it, while the full
+  skill pass stays the default for real candidate lists.
+- **Reconsider when:** inline captures start skipping the dedup/curation the
+  skill provides (duplicate or low-signal `knowledge/` entries traced back to
+  inline capture).
 
 ### 2026-07-05 — Retro moved pre-PR: routine post-gate push loop eliminated · applied
 
