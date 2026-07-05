@@ -30,6 +30,26 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-05 — Knowledge consult at entry + independent rubric grader · applied
+
+- **Pattern:** an external article-driven review of the pipeline (not the
+  wrap-up scan) found two gaps: (a) a **consult gap** — `knowledge/` is
+  written every delivery (Phase 6) but never read at entry, leaving the
+  advisory CLAUDE.md "skim the relevant file" rule silently skipped; and
+  (b) the Phase 7 rubric was graded by the **conductor that implemented the
+  work** — the one gate without the independent-verifier discipline the rest
+  of the pipeline is built on.
+- **Decision:** **applied** (user-directed, 2026-07-05, PR #TBD). Phase 0
+  gains a ledger-checkable knowledge-consult step (`consulted:` line);
+  Phase 7 splits by weight — full-weight grading is delegated to one
+  independent subagent given only the rubric + committed work (lite stays
+  inline; grader failure falls back inline and is noted — a dead grader is
+  not a pass).
+- **Rationale:** memory that isn't read at entry doesn't compound; a maker
+  grading its own rubric is the self-critique failure mode the pipeline's
+  critics/skeptics already design against.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-07-05 — Legitimize inline knowledge capture for small in-flight entries · applied
 
 - **Pattern:** five consecutive deliveries (#366, #368, #374, #382, #383)

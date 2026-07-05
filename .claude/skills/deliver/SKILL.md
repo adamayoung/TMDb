@@ -121,6 +121,13 @@ implementation = separate `/deliver` sessions.)
 - **State the goal** in a sentence; **judge the weight**; open the ledger.
 - **Pull wiki context** best-effort (`get_context` on the goal); degrade
   silently if the `wiki` MCP is absent.
+- **Consult the knowledge base** — skim the entry headings of
+  [`knowledge/gotchas.md`](../../../knowledge/gotchas.md) and
+  [`knowledge/tmdb-api-notes.md`](../../../knowledge/tmdb-api-notes.md), read
+  the entries (and any `knowledge/decisions/` ADR) relevant to the goal's
+  area, and record one `consulted: <entries | none relevant>` line in the
+  ledger. Captured knowledge only compounds if it is read at entry — the
+  ledger line is what makes this step checkable.
 - **Decompose a multi-deliverable plan** (rules above); single-deliverable
   plans skip this.
 - **Entry gate — acceptance criteria required.** Plans are expected as
@@ -238,14 +245,28 @@ the retro.
 
 ## Phase 7 — Rubric verification (exit gate)
 
-Take the rubric (Phase 0 ACs) from the ledger; none extracted → skip. Verify
-each AC against the committed diff — behaviour by diff-scan or a targeted
-test (`swift test --filter …`), coverage by the test + assertion existing,
-integration by the integration test existing (the live run already passed in
-Phase 3 — no re-run needed). Satisfied → mark off. Not →
-fix test-first, commit, re-verify; a gap needing a plan change is noted in
-the PR description. Lightweight, inline — *"did we build what the plan
-said?"*, not *"did the build pass?"*.
+Take the rubric (Phase 0 ACs) from the ledger; none extracted → skip. How it
+is graded depends on weight:
+
+- **Lite** → verify inline: each AC against the committed diff — behaviour
+  by diff-scan or a targeted test (`swift test --filter …`), coverage by the
+  test + assertion existing, integration by the integration test existing
+  (the live run already passed in Phase 3 — no re-run needed).
+- **Full** → **an independent grader, not the conductor** — the maker does
+  not grade its own homework. Spawn ONE subagent (general-purpose; inherit
+  the model) given ONLY the rubric verbatim and the instruction to judge the
+  committed work (`git diff origin/main...HEAD`, reading files and running
+  targeted `swift test --filter …` as needed) — no conversation context, no
+  implementation narrative. It returns per-AC `met`/`not met` + one-line
+  evidence (file:line or test name). Run it **synchronously** — it may
+  build/test, and builds are sequential within a worktree. Grader dies or
+  returns unusable output → fall back to the inline path and note it in the
+  ledger — **a dead grader is not a pass**.
+
+Satisfied → mark off. Not → fix test-first, commit, re-verify (full weight:
+re-run the grader); a gap needing a plan change is noted in the PR
+description. *"Did we build what the plan said?"*, not *"did the build
+pass?"*.
 
 ## Phase 8 — Write the retrospective (pre-PR)
 
