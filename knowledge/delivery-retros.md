@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-05 — ♻️ Restructure /deliver for progressive disclosure (chore/deliver-skill-restructure) · lite
+## 2026-07-05 — ♻️ Restructure /deliver for progressive disclosure (#383) · lite
 
 - **Phases / skills:** phases 0–9 (new numbering); markdown-only so the Swift
   review gates self-skipped — but the plan's **rule-inventory mapping check**
