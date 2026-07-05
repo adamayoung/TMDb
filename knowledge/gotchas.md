@@ -6,6 +6,17 @@ out of it.
 
 ## Tooling
 
+### `EnterWorktree` no longer uses the requested name as the branch name
+
+*2026-07-05.* `EnterWorktree(name: "chore/deliver-retro-before-pr")` created the
+worktree directory as `.claude/worktrees/chore+deliver-retro-before-pr/` (the
+`/` becomes `+`) but named the **branch** `worktree-chore+deliver-retro-before-pr`
+— not the requested name, as earlier deliveries observed. Since the branch is
+what the PR and the conventional-prefix rule care about, rename it right after
+entering: `git branch -m chore/deliver-retro-before-pr` (safe — nothing is
+pushed yet). Check `git branch --show-current` after every `EnterWorktree`
+rather than assuming the tool honoured the name.
+
 ### GitHub MCP: `/x/<toolset>` paths are exclusive, and `mergeable_state` ≠ `mergeStateStatus`
 
 *2026-06-25.* When wiring the skills to the GitHub MCP ([ADR-0009](decisions/0009-github-mcp-over-gh-cli.md)):
