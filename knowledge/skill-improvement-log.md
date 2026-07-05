@@ -39,7 +39,7 @@ two fields the dedup step keys on.
   (b) the Phase 7 rubric was graded by the **conductor that implemented the
   work** — the one gate without the independent-verifier discipline the rest
   of the pipeline is built on.
-- **Decision:** **applied** (user-directed, 2026-07-05, PR #TBD). Phase 0
+- **Decision:** **applied** (user-directed, 2026-07-05, PR #384). Phase 0
   gains a ledger-checkable knowledge-consult step (`consulted:` line);
   Phase 7 splits by weight — full-weight grading is delegated to one
   independent subagent given only the rubric + committed work (lite stays

@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (chore/deliver-consult-and-independent-grader) · lite
+## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (#384) · lite
 
 - **Phases / skills:** phases 0–10; markdown-only, so `review-plan` skipped
   (lite + `ExitPlanMode` approval), `review-changes` and `security-review`
