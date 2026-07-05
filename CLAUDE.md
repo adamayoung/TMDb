@@ -423,7 +423,8 @@ Use a descriptive branch name with a conventional prefix
 > worktree** (under `.claude/worktrees/`, branched off `origin/main`) so the main
 > checkout stays free for concurrent work, and tears the worktree down on merge.
 > The branch-off-`main` rule above is the floor; the worktree is how `/deliver`
-> meets it. See `.claude/skills/deliver/SKILL.md` (Phases 0.5 + 7).
+> meets it. See `.claude/skills/deliver/SKILL.md` (its worktree-entry and
+> teardown phases).
 
 ## Creating Pull Requests
 

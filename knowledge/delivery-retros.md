@@ -1,7 +1,7 @@
 # Delivery Retrospectives
 
-A short, honest entry per feature delivered via `/deliver` (its Phase 3.7 —
-written **pre-PR** so the entry rides the delivery's own PR; the PR number is
+A short, honest entry per feature delivered via `/deliver` — written
+**pre-PR** so the entry rides the delivery's own PR (the PR number is
 backfilled once the PR opens), newest at the top. A noteworthy watch-phase event
 is appended post-gate as an optional *watch:* line — an uneventful watch adds
 nothing. The point is **continuous improvement**: when the same friction or

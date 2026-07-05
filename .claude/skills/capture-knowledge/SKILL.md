@@ -7,7 +7,7 @@ description: Capture durable, project-specific learnings from the work just done
 
 Fold what you just learned into the committed knowledge base at `knowledge/`, so a
 future session (or contributor) doesn't have to re-learn or re-discover it. Run
-this **before a PR** — in `/deliver` it runs automatically as Phase 3.5, so the
+this **before a PR** — in `/deliver` it runs automatically pre-PR, so the
 notes land in the same PR as the change.
 
 ## What to capture (be selective)
