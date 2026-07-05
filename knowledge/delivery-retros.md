@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-05 — 🔧 Write the /deliver retro pre-PR (chore/deliver-retro-before-pr) · lite
+## 2026-07-05 — 🔧 Write the /deliver retro pre-PR (#382) · lite
 
 - **Phases / skills:** phases 0–4; no sub-skills fired (markdown-only: code +
   security review self-skipped, `/implement-plan` N/A with no Canon TDD list,
