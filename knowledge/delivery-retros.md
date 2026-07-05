@@ -14,6 +14,31 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-05 — ♻️ Restructure /deliver for progressive disclosure (chore/deliver-skill-restructure) · lite
+
+- **Phases / skills:** phases 0–9 (new numbering); markdown-only so the Swift
+  review gates self-skipped — but the plan's **rule-inventory mapping check**
+  ran as a dedicated adversarial `code-reviewer` pass instead (the diff's real
+  risk was rule loss, not code). Stacked dependent PR: branched off
+  `chore/deliver-retro-before-pr` (#382), base retargets on its merge.
+- **Worked:** the **inventory-first** method — extract every load-bearing rule
+  with a destination *before* rewriting, then have an independent reviewer
+  diff old-vs-new against it. The reviewer confirmed all ten known
+  load-bearing rules survived in the core and caught **8 real text drops**
+  (1 Medium, 7 Low — e.g. the merge/auto-mode routing for scan-applied skill
+  edits), all restored. 915 → 343 core lines + four on-demand reference
+  files.
+- **Friction:** the ≤~350-line AC needed a second compression pass (first
+  rewrite landed at 401) — line budgets are easy to overshoot while
+  preserving every rule.
+- **Deviations:** `/pr`'s rebase-onto-`origin/main` step doesn't apply to a
+  stacked PR (it would fold the dependency's diff into this one) — based on
+  the dependency branch instead, per `/watch-pr`'s stacking guidance.
+- **One improvement:** the mapping-check-in-lieu-of-code-review worked well
+  for a docs-structure diff; if meta-changes to `.claude/skills/**` recur,
+  consider making "no-Swift but skill-structure diff → run a rule-loss
+  review" an explicit branch in the review phase.
+
 ## 2026-07-05 — 🔧 Write the /deliver retro pre-PR (#382) · lite
 
 - **Phases / skills:** phases 0–4; no sub-skills fired (markdown-only: code +
