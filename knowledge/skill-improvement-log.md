@@ -30,6 +30,32 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-05 — Retro moved pre-PR: routine post-gate push loop eliminated · applied
+
+- **Pattern:** every delivery pushed the retro to the PR branch **after** the
+  ready-to-merge gate, re-triggering `claude-review` + the full CI matrix and
+  mandating a re-watch pass — ~5–7 min of CI plus a re-review per run to land a
+  markdown file. Bit hard on #361 (a post-gate push raised a High thread that
+  blocked the merge); paid silently on every delivery since. The applied
+  2026-06-24 "re-sweep after every push" rule treated the symptom, not the
+  sequencing.
+- **Decision:** **applied** (user-approved plan, this delivery). `/deliver` now
+  writes the retro in a new **Phase 3.7 (pre-PR)** so it rides the delivery's
+  own PR (entry headed with the branch name; the PR number is backfilled at
+  Phase 4 creation, pre-gate). Phase 6 became **wrap-up** (wiki +
+  recurring-pattern scan), with the retro **amended post-gate only for a
+  noteworthy watch-phase event** (optional `watch:` line). The re-watch rule
+  remains for the exceptions (amendments, approved skill edits). Landed in
+  `.claude/skills/deliver/SKILL.md`, `CLAUDE.md`,
+  `knowledge/delivery-retros.md` (header), `knowledge/README.md`, and
+  `.claude/skills/watch-pr/SKILL.md` §2.
+- **Rationale:** the root cause was ordering, not the re-watch rule — with the
+  retro committed pre-PR, the default path has **zero** post-gate pushes, so
+  the gate is never re-opened by the pipeline's own bookkeeping.
+- **Reconsider when:** watch-phase learnings routinely turn out noteworthy
+  enough that the amendment path fires on most deliveries — then revisit
+  deferring watch-phase learnings to the *next* delivery's retro instead.
+
 ### 2026-07-02 — Haiku build/test subagents misread xcsift toon `errors[]` as failure (#374) · applied
 
 - **Pattern:** the DocC `.docc` "unhandled file" package-load warning lands in

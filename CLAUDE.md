@@ -165,12 +165,13 @@ itself the plan-approval gate** — it then runs autonomously to a single hard s
 **ready-to-merge**, pausing only for a plan-review blocker or a red gate it can't
 triage. It **auto-scales** its review machinery to the change's risk (lite vs
 full), **triages** an unrelated red CI gate to `/fix-integration-failures` rather
-than stalling, and ends each delivery with a short retrospective into
-[`knowledge/delivery-retros.md`](knowledge/delivery-retros.md):
+than stalling, and records each delivery's short retrospective into
+[`knowledge/delivery-retros.md`](knowledge/delivery-retros.md) **before the PR
+opens**, so it rides the delivery's own PR:
 
 branch → (`/review-plan` for risky/large changes) → `/implement-plan` →
 `/review-changes` (+ fix) → `/security-review` (+ fix) → `/capture-knowledge` →
-`/pr reviewed` → `/watch-pr` → retro.
+retro → `/pr reviewed` → `/watch-pr`.
 
 Key skills (the README's *Claude Code Skills* tables list them all):
 

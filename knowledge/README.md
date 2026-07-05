@@ -13,7 +13,7 @@ this directory; the detail lives here and is read on demand.
 | [`decisions/`](decisions/) | **ADRs** — Architecture Decision Records, one per decision, numbered + dated. Use for any non-obvious design choice and its rationale. |
 | [`gotchas.md`](gotchas.md) | Implementation quirks, things that bit us, tooling traps, and anything that needed a web search / lookup to resolve. |
 | [`tmdb-api-notes.md`](tmdb-api-notes.md) | Behaviours of the **live TMDb API** discovered while implementing (nullable/absent fields, undocumented quirks, response-shape surprises). |
-| [`delivery-retros.md`](delivery-retros.md) | A short retrospective per feature delivered via `/deliver` (its Phase 6) — what worked, friction, deviations, one improvement. |
+| [`delivery-retros.md`](delivery-retros.md) | A short retrospective per feature delivered via `/deliver` (its Phase 3.7, written pre-PR so it rides the delivery's own PR) — what worked, friction, deviations, one improvement. |
 | [`skill-improvement-log.md`](skill-improvement-log.md) | Decisions on every skill-improvement proposal from `/deliver`'s Phase 6 recurring-pattern scan (applied / deferred / rejected), so the scan doesn't re-propose settled calls. |
 
 ## How to use it
