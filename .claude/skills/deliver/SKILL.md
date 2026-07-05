@@ -232,7 +232,9 @@ list as the skill argument (`$ARGUMENTS` — it travels with the call even
 after compaction). It curates: durable, non-obvious, reusable items only,
 deduped against `knowledge/`, written to the right file (gotchas / API notes
 / an ADR). Before `/pr`, so the notes ride the same PR. Capturing nothing is
-a valid outcome.
+a valid outcome. Exception: one or two small entries already authored during
+implementation may be committed inline instead — note the inline capture in
+the retro.
 
 ## Phase 7 — Rubric verification (exit gate)
 
