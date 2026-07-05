@@ -14,6 +14,27 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (#384) · lite
+
+- **Phases / skills:** phases 0–10; markdown-only, so `review-plan` skipped
+  (lite + `ExitPlanMode` approval), `review-changes` and `security-review`
+  self-skipped; capture was inline (the `skill-improvement-log.md` entry *is*
+  part of the delivery, per the 2026-07-05 inline-capture decision).
+- **Worked:** the plan arrived with the user story + ACs already in
+  Given/When/Then form, so the Phase 0 entry gate extracted the rubric with
+  zero friction; the diff-by-eye rule-loss check was proportionate for a
+  two-section edit (the full inventory method stayed shelved, correctly).
+- **Friction:** none material — smallest delivery to date (2 files at
+  implement, +49/−8).
+- **Deviations:** the change originated from an external article review
+  rather than a repo-native trigger; the knowledge-consult it adds was done
+  implicitly this run (the design phase had already read the relevant
+  gotchas/wiki material) — the new `consulted:` ledger line is what makes it
+  explicit from the next run on.
+- **One improvement:** extend the consult step to `/implement-plan`
+  standalone invocations (deliberately out of scope this run; noted in the
+  plan).
+
 ## 2026-07-05 — ♻️ Restructure /deliver for progressive disclosure (#383) · lite
 
 - **Phases / skills:** phases 0–9 (new numbering); markdown-only so the Swift
@@ -415,33 +436,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   *an adversarial drop that rests on a factual claim about sibling code must check
   that claim against the tree.*
 
-## 2026-06-19 — ✨ Add `networks` property to TVSeason (#349) · full
-
-- **Phases / skills:** phases 0–6; `review-plan, implement-plan, build-for-testing,
-  test, integration-test, lint, review-changes, capture-knowledge, pr, watch-pr`.
-- **Worked:** the work originated from a schema-diff scan (8 models vs the live
-  OpenAPI spec) that found exactly one field-level gap — a precise, pre-verified
-  target. `/review-plan`'s critics caught a real test trap *before* any code (the
-  `Network`-Equatable / over-populated-mock pitfall) and surfaced a free extra
-  assertion (networks surfacing through the shared `TVSeasonDetailsResponse`
-  decoder); both folded into the plan, so implementation hit zero surprises and
-  `/review-changes` came back 0/0/0 + one advisory Low.
-- **Friction:** local `make ci` went red on `lint-markdown` over an **unrelated,
-  pre-existing** `.claude/skills/deliver/SKILL.md:347` MD028 — a file not in the
-  diff. Root cause: the **local** `make lint-markdown` lints `.claude/**`, but the
-  **CI** job (`ci.yml:120`) lints only `README.md` + `**/*.docc/**` — so the local
-  gate can fail on `.claude/` markdown that the authoritative gate never checks.
-  Cost a triage detour to prove it was non-blocking.
-- **Deviations:** user changed `merge` → watch-only mid-run (honoured: stopped at
-  the gate). Did **not** route the markdown red to `/fix-integration-failures`
-  (that's for integration flakes); triaged it as local-gate-only and proceeded,
-  verifying the real legs (build-docs, build-release, unit, TVSeason integration)
-  passed individually.
-- **Improvement:** reconcile the **local `make lint-markdown` scope with CI's** —
-  either narrow the Makefile target to match `ci.yml` (`README.md` + docc), or add
-  `.claude/**` to the CI job so the two gates agree. Today a green CI can sit behind
-  a red local `make ci`, which repeatedly mis-signals "your change broke the gate."
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -449,6 +443,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-19 | #349 | full | `networks` on TVSeason from a schema-diff scan; critics pre-caught the Equatable/over-populated-mock trap → 0/0/0 review; exposed the local-vs-CI `lint-markdown` scope mismatch. |
 | 2026-06-18 | #346 | full | AuthenticatedSession wrapper; 3 critics unanimously reversed deprecate-and-add to additive; local-vs-CI lint cache gap → `/pr` `--no-cache` step. |
 | 2026-06-18 | #344 | lite | Error-handling How-To guide; `make build-docs` was the real gate; reinforced the docs-only fast-gate need. |
 | 2026-06-18 | #343 | lite | Explicit `Sendable` on `URLSessionHTTPClientAdapter`; premise re-framed from bug fix to clarity. |
