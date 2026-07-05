@@ -117,8 +117,9 @@ fixing here:
   severity-gated topic reappears across pushes, treat it as noise per the rule
   above (reply with the earlier SHA, resolve, don't re-edit).
 - **Re-sweep after every push — "ready" is only true of the current tip.** Any push
-  to the branch (a check fix, *and* a caller's post-gate commit such as a `/deliver`
-  retro or skill edit) re-triggers `claude-review`, which can post a fresh
+  to the branch (a check fix, *and* a caller's exceptional post-gate commit such as
+  an approved skill edit or a `/deliver` retro amendment) re-triggers
+  `claude-review`, which can post a fresh
   Critical/High thread that **blocks the merge** (`required_review_thread_resolution`).
   Never declare ready off a thread/check snapshot taken *before* the latest push:
   after the last push settles, run one more full pass (thread sweep + check

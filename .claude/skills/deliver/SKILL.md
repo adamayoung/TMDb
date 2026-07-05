@@ -14,8 +14,9 @@ keeps going across the long session until the PR is ready.
 ```text
 you approve the plan ─▶ /deliver ─▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
   implement ─▶ code-review + fix ─▶ security-review + fix ─▶ capture ─▶
-  rubric check (ACs met?) ─▶ /pr reviewed ─▶ /watch-pr ─▶ GATE: ready-to-merge ─▶ retro
-                                                            ▲ the only hard stop
+  rubric check (ACs met?) ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
+  GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
+  ▲ the only hard stop
   … then, when the PR actually merges (maybe a later session): teardown (Phase 7)
 ```
 
@@ -31,7 +32,8 @@ teardown).
 there it runs **autonomously** to a single hard stop — **ready-to-merge** — pausing
 mid-run only for a genuine blocker (a plan-review blocker, or a red gate it cannot
 triage). It **auto-scales** the machinery to the change's risk (see *Delivery
-weight*), and ends with a short **retrospective** so the workflow keeps improving.
+weight*), and writes a short **retrospective** that rides the delivery's own PR
+(Phase 3.7) so the workflow keeps improving.
 
 The plan itself is **not** part of this skill — create it first with `/plan` (or
 plan mode). `/deliver` picks up from there.
@@ -42,8 +44,8 @@ These are non-negotiable. Do them by default, without being reminded.
 
 1. **Invoking `/deliver` is plan approval — then run autonomously to the one
    gate.** Do not stop for a second "is the plan ok?" confirmation. Proceed through
-   branch → (review-plan) → implement → code-review/fix → capture → pr → watch-pr
-   to the single hard stop, **Gate: ready-to-merge** (Phase 5). The only legitimate
+   branch → (review-plan) → implement → code-review/fix → capture → retro →
+   pr → watch-pr to the single hard stop, **Gate: ready-to-merge** (Phase 5). The only legitimate
    mid-run pauses are: a **blocker** raised by `/review-plan` (Phase 1), or a **red
    gate you cannot triage** (Contract §4).
 2. **Delegate to the existing skills — don't reinvent them.** Invoke
@@ -627,6 +629,44 @@ takes seconds. Only gaps trigger work.
 The rubric answers a different question than CI: *"did we build what the plan
 said?"* not *"did the build pass?"*
 
+## Phase 3.7 — Write the retrospective (pre-PR)
+
+Write the delivery's retrospective **now — before the PR opens — so it rides the
+PR itself** and the ready-to-merge gate is never re-opened by a routine retro
+push (every post-gate push re-triggers `claude-review` and the CI matrix; see
+Phase 6). This is mandatory, not optional. Reflect on the delivery so far
+(Phases 0–4) and write a dated entry to
+[`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md):
+
+- **Feature / branch**, date, and delivery weight (lite/full). The PR number
+  doesn't exist yet — head the entry with the branch name; Phase 4 backfills
+  the number right after the PR is created.
+- **Phases completed / Skills invoked** — a compact one-liner each (e.g. phases
+  `0–4`; skills `review-plan, implement-plan, review-changes, security-review,
+  capture-knowledge`). This is telemetry for the recurring-pattern scan: over
+  time it shows which skills fire, which phases get skipped, and where
+  deliveries stop.
+- **What worked** — one or two things the pipeline did well.
+- **Friction** — where it was rough, slow, or stopped unnecessarily.
+- **Deviations** — anywhere you had to depart from this skill to do the right
+  thing (a strong signal the skill has a gap).
+- **One improvement** — the single highest-value change to `/deliver` (or a
+  sub-skill) suggested by this run.
+- **`watch:`** — omit it now. This optional line is added only as a
+  **post-gate amendment** when Phase 5 produces a noteworthy event (see
+  Phase 6); an uneventful watch adds nothing.
+
+Keep it to a handful of bullets — a log, not a ceremony. **Commit the entry on
+the PR branch** so it travels with the delivery (the GitHub reviewer ignores
+`**/*.md`, so it adds no review noise).
+
+**Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
+more than **~12 full entries**, distil the oldest into its one-line archive table
+(`date · PR · weight · one-line outcome`) and drop the prose — per
+[`knowledge/README.md`](../../../knowledge/README.md) → *Maintenance & retention*.
+An old retro's lesson already lives in the skills and `skill-improvement-log.md`;
+the table preserves the telemetry without the bulk.
+
 ## Phase 4 — Create the PR
 
 **Gate check (template→replicate deliveries):** before anything else, confirm the
@@ -660,6 +700,12 @@ then push the branch and open the PR with a gitmoji title and structured body.
    Don't patch an unrelated test onto this feature branch, and don't hard-stop on it.
 
 Record the PR number/URL in the ledger.
+
+**Backfill the retro heading.** Phase 3.7 headed the fresh `delivery-retros.md`
+entry with the branch name (no PR number existed yet). Now that the PR is open,
+replace it with the PR number, commit, and push immediately. This is
+**pre-gate** — CI has only just started on the opening push, and the superseded
+run is cancelled by the workflow's concurrency group — so nothing is re-opened.
 
 ## Phase 5 — Watch to ready  → GATE: ready-to-merge
 
@@ -695,64 +741,44 @@ work can be resumed.
 > the gate becomes "report the merge" instead of stopping. Default is watch-only.
 > Either way, a confirmed merge triggers **Phase 7 teardown**.
 
-## Phase 6 — Retrospective (continuous improvement)
+## Phase 6 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 
-After the gate (PR ready, or merged in `merge` mode), run a **brief, honest
-retrospective** so the workflow keeps improving — this is mandatory, not optional.
-Reflect on *this* delivery and write a dated entry to
-[`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md):
+The retrospective is already on the PR (Phase 3.7). After the gate (PR ready, or
+merged in `merge` mode), finish with the wrap-up below — **the default path
+pushes nothing after the gate**; that is the point of writing the retro pre-PR.
+Then **scan recent entries** for recurring friction or deviations — the
+recurring-pattern scan below formalizes this.
 
-- **Feature / PR**, date, and delivery weight (lite/full).
-- **Phases completed / Skills invoked** — a compact one-liner each (e.g. phases
-  `0–6`; skills `review-plan, implement-plan, review-changes, security-review,
-  capture-knowledge, pr, watch-pr`). This is telemetry for the recurring-pattern
-  scan: over time it shows which skills fire, which phases get skipped, and where
-  deliveries stop.
-- **What worked** — one or two things the pipeline did well.
-- **Friction** — where it was rough, slow, or stopped unnecessarily.
-- **Deviations** — anywhere you had to depart from this skill to do the right
-  thing (a strong signal the skill has a gap).
-- **One improvement** — the single highest-value change to `/deliver` (or a
-  sub-skill) suggested by this run.
+**Amend the retro only for a noteworthy watch phase.** If Phase 5 was uneventful
+(checks went green, threads resolved without surprises), the retro is complete —
+do not touch it. If the watch phase produced something the next
+recurring-pattern scan should see — a stuck check, a new Critical/High review
+thread, a flake routed to `/fix-integration-failures`, a wrong readiness call —
+append a one-line **`watch:`** bullet to the entry, commit, and push. Two cases:
 
-Keep it to a handful of bullets — a log, not a ceremony. Then **scan recent
-entries** for recurring friction or deviations — the recurring-pattern scan below
-formalizes this.
+- **Watch-only (PR still open)** — commit the amendment on the PR branch and
+  push it, so it rides the open PR.
+- **`merge`/auto mode (branch already merged + deleted in Phase 5)** — the PR
+  branch is gone, so commit it on a **fresh branch off `origin/main`** and open
+  a small follow-up PR; the same applies to any skill edits the auto
+  recurring-pattern scan commits. Do this **before** Phase 7 teardown, and
+  confirm it's pushed — otherwise teardown's `discard_changes` drops it.
 
-**Commit *and push* the retro before teardown — never leave it as a worktree-only
-commit.** Phase 7's teardown discards the worktree, so an unpushed retro commit is
-lost. Two cases:
-
-- **Watch-only (PR still open)** — commit the retro on the PR branch and **push it**
-  (`git push`), so it rides the open PR. (This is the common path.)
-- **`merge`/auto mode (branch already merged + deleted in Phase 5)** — the PR branch
-  is gone, so commit the retro on a **fresh branch off `origin/main`** and open a
-  small follow-up PR (or push straight if policy allows); the same applies to any
-  skill edits the auto recurring-pattern scan commits. Do this **before** Phase 7,
-  and confirm it's pushed — otherwise teardown's `discard_changes` drops it.
-
-**Pushing the retro re-opens the gate — re-watch before merge.** In watch-only mode
-the retro / knowledge / skill commits are pushed to the **PR branch after** the
-ready gate, and **every push re-triggers `claude-review` and the CI matrix** — which
-can post a **new blocking thread** (the `main` ruleset requires thread resolution)
-or restart checks. So after the **last** post-gate push, **return to the `/watch-pr`
+**Any post-gate push re-opens the gate — re-watch before merge.** This governs
+the *exceptions* above (a retro amendment, an approved skill edit from the
+scan): every push re-triggers `claude-review` and the CI matrix, which can post
+a **new blocking thread** (the `main` ruleset requires thread resolution) or
+restart checks. After the **last** post-gate push, **return to the `/watch-pr`
 loop once more**: re-sweep unresolved threads and re-confirm checks green before
-treating the PR as merge-ready or merging. "Ready" is only ever true of the *current*
-branch tip — never a tip you have since pushed past. (Bit `/deliver` on #361: a
-"ready, 0 threads" call made before the retro+skill pushes, whose re-reviews then
-raised a High thread that blocked the merge.)
+treating the PR as merge-ready or merging. "Ready" is only ever true of the
+*current* branch tip — never a tip you have since pushed past. (Bit `/deliver`
+on #361, back when the retro itself was a routine post-gate push — the
+sequencing Phase 3.7 now avoids.)
 
-**Keep the file windowed.** After adding the entry, if `delivery-retros.md` holds
-more than **~12 full entries**, distil the oldest into its one-line archive table
-(`date · PR · weight · one-line outcome`) and drop the prose — per
-[`knowledge/README.md`](../../../knowledge/README.md) → *Maintenance & retention*.
-An old retro's lesson already lives in the skills and `skill-improvement-log.md`;
-the table preserves the telemetry without the bulk.
+### Update the personal wiki (at wrap-up)
 
-### Update the personal wiki (after the retro)
-
-The retro distils this delivery's durable learnings, so it is the natural moment
-to feed the **personal `wiki`** (Adam's cross-project engineering knowledge, via
+The retro (Phase 3.7) distils this delivery's durable learnings, so wrap-up is
+the natural moment to feed the **personal `wiki`** (Adam's cross-project engineering knowledge, via
 the `wiki` MCP). The retro/`knowledge/` base is *project-specific*; the wiki is
 for **generalizable, reusable opinions, heuristics, and patterns** — the things
 that would apply on the next project too (a design stance, a concurrency or
@@ -770,10 +796,10 @@ testing heuristic, a tooling gotcha that isn't TMDb-specific).
   that's only project-specific (that already lives in `knowledge/`) or already in
   the wiki. Capturing nothing is a valid outcome.
 
-### Recurring-pattern scan (after committing the retro)
+### Recurring-pattern scan (at wrap-up)
 
-Once the retro entry is committed, do a structured cross-delivery scan — this is
-what turns one-off retros into reviewed skill improvements:
+With the retro already on the PR (Phase 3.7), do a structured cross-delivery
+scan — this is what turns one-off retros into reviewed skill improvements:
 
 1. **Read the recent window + the log.** Read the **~last 12** entries of
    [`knowledge/delivery-retros.md`](../../../knowledge/delivery-retros.md) (the
@@ -846,7 +872,8 @@ worktree down once the PR is merged** — this reclaims both the worktree **and*
    (owner/repo from the `origin` remote, `pullNumber: <n>`) → `merged: true`.
 2. **The worktree has no unsaved work beyond what's merged** — `MERGED` only
    guarantees the *pushed* feature commits are on `main`; it says nothing about a
-   commit made (or a file edited) **after** the last push, e.g. the retro. Verify
+   commit made (or a file edited) **after** the last push, e.g. an exceptional
+   retro amendment (Phase 6). Verify
    the tree is clean **and** fully pushed before discarding:
 
    ```bash

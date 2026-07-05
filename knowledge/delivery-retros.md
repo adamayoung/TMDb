@@ -1,12 +1,16 @@
 # Delivery Retrospectives
 
-A short, honest entry per feature delivered via `/deliver` (its Phase 6), newest
-at the top. The point is **continuous improvement**: when the same friction or
+A short, honest entry per feature delivered via `/deliver` (its Phase 3.7 —
+written **pre-PR** so the entry rides the delivery's own PR; the PR number is
+backfilled once the PR opens), newest at the top. A noteworthy watch-phase event
+is appended post-gate as an optional *watch:* line — an uneventful watch adds
+nothing. The point is **continuous improvement**: when the same friction or
 deviation recurs across entries, fold the fix into the relevant skill. Keep each
 entry to a handful of bullets — a log, not a ceremony.
 
 Format: **Feature / PR** · date · weight · *phases completed / skills invoked* ·
-*what worked* · *friction* · *deviations* · *one improvement*.
+*what worked* · *friction* · *deviations* · *one improvement* · *watch:*
+(optional, amended post-gate).
 
 ---
 
