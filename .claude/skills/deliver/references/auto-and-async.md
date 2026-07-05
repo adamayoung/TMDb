@@ -48,7 +48,9 @@ unattended run must still be reviewable.
   ready, proceed to wrap-up (and merge if `merge` was passed).
 - Phase 11 — recurring-pattern-scan proposals: the panel reviews **each**
   proposal and applies approved ones directly (edit the skill, commit — an
-  exceptional post-gate push, so the re-watch rule applies); rejected
+  exceptional post-gate push, so the re-watch rule applies; if the PR branch
+  is already merged and deleted, commit on a fresh branch off `origin/main`
+  as a small follow-up PR, before teardown); rejected
   proposals are still recorded in `skill-improvement-log.md` with the panel's
   rationale.
 

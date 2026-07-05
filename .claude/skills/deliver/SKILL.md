@@ -55,9 +55,9 @@ Non-negotiable. Do these by default, without being reminded.
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
    keeps one ledger sub-tree per deliverable.
 7. **Jot knowledge candidates the moment a learning occurs** (a lookup, a
-   gotcha, a live-API surprise, a non-obvious decision) — one line each, in
-   the ledger. Phase 6 curates them; reconstruction later loses the best
-   material.
+   gotcha, a live-API surprise, a non-obvious decision) — one line each
+   (`<category>: <gist> [where]`), in the ledger. Phase 6 curates them;
+   reconstruction later loses the best material.
 8. **Auto-start after plan-mode approval.** `ExitPlanMode` approval IS the
    start signal — invoke `/deliver` immediately; pause first only if
    Phase 0's entry gate fires.
@@ -88,7 +88,8 @@ single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 
 A plan that is a *program* of cohesive deliverables becomes **one PR per
 deliverable**. Decompose in Phase 0 with a dependency graph: **dependent**
-(consumes a type/API/helper/file another introduces) → **sequence** it
+(consumes a type/API/helper/file another introduces *or substantially
+changes*) → **sequence** it
 (branch off its dependency, or wait for its merge); **independent** → own
 worktree + branch + PR; **unsure → treat as dependent**. Execution is
 **serial implement, concurrent watch**: one deliverable at a time through
@@ -108,7 +109,8 @@ implementation = separate `/deliver` sessions.)
 - **The gate stays in the main agent**; phases hand off via git / disk / the
   PR, not context.
 - Separate worktrees get separate `.build` dirs; run builds sequentially
-  *within* one worktree.
+  *within* one worktree. No `SCRATCH_PATH` override is needed — that flag is
+  only for multiple agents sharing one working directory.
 
 ## Phase 0 — Preconditions
 
@@ -121,7 +123,9 @@ implementation = separate `/deliver` sessions.)
   silently if the `wiki` MCP is absent.
 - **Decompose a multi-deliverable plan** (rules above); single-deliverable
   plans skip this.
-- **Entry gate — acceptance criteria required.** Extract the ACs verbatim as
+- **Entry gate — acceptance criteria required.** Plans are expected as
+  *"As a \<user-type\> I want \<feature\> so that \<reason\>"* + acceptance
+  criteria. Extract the ACs verbatim as
   the **delivery rubric** (consumed in Phase 7) into the ledger. Absent →
   stop and ask for them ("Given X, when Y, then Z") — don't enter the
   worktree. **Auto:** panel — proceed rubric-less (Phase 7 no-ops) vs stop.
@@ -144,8 +148,9 @@ Procedures and traps:
 3. **Copy `.claude/settings.local.json` in** from the main checkout (the
    permission allowlist; credentials come from the process env).
 4. **Record worktree + branch in the ledger, and (re-)create the ledger
-   here** — it is CWD-scoped and cleared by `EnterWorktree`/MCP reconnects;
-   found empty later → re-create from the phase list, it isn't lost work.
+   here** — it is CWD-scoped and cleared by `EnterWorktree`, an MCP
+   reconnect, or a plan-mode exit; found empty later → re-create from the
+   phase list, it isn't lost work.
 5. **Edit via worktree paths**: re-`Read` anything read before entering, and
    **verify `git status` shows your diff in the worktree before trusting the
    first green build** (empty diff + baseline counts = edits went to `main`).
@@ -157,7 +162,8 @@ enter, proceed.
 
 **Lite, or already reviewed this session** (a converged `/review-plan`, or
 `ExitPlanMode` approval) → skip the critics. **Full with an unreviewed plan**
-→ invoke `/review-plan`, present the revised plan as an **FYI**, keep going —
+→ invoke `/review-plan`, present the revised plan + a one-line change log
+(applied / rejected) as an **FYI**, keep going —
 except a **blocker** (wrong approach, breaking, data-loss), which stops the
 run. **Auto:** data-loss/breaking = hard stop (never delegated); other
 blockers → panel.
@@ -233,7 +239,8 @@ a valid outcome.
 Take the rubric (Phase 0 ACs) from the ledger; none extracted → skip. Verify
 each AC against the committed diff — behaviour by diff-scan or a targeted
 test (`swift test --filter …`), coverage by the test + assertion existing,
-integration by the integration test existing. Satisfied → mark off. Not →
+integration by the integration test existing (the live run already passed in
+Phase 3 — no re-run needed). Satisfied → mark off. Not →
 fix test-first, commit, re-verify; a gap needing a plan change is noted in
 the PR description. Lightweight, inline — *"did we build what the plan
 said?"*, not *"did the build pass?"*.
@@ -294,7 +301,8 @@ after the gate**. Guidance:
   Critical/High thread, routed flake, wrong readiness call): append a
   one-line `watch:` bullet, commit, push — on the PR branch (watch-only), or
   a fresh branch off `origin/main` as a small follow-up PR (`merge`/auto
-  mode, before teardown). Uneventful watch → don't touch it.
+  mode, before teardown; the same routing applies to any skill edits the auto
+  scan commits). Uneventful watch → don't touch it.
 - **Any post-gate push re-opens the gate** — after the last exceptional push
   (amendment or approved skill edit), run the `/watch-pr` loop once more on
   the new tip before merge.
