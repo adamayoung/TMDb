@@ -1,7 +1,7 @@
 ---
 name: documentation-writer
 description: Swift DocC subagent for BULK documentation work — documenting many public declarations across multiple files (e.g. a whole new service, or every undocumented symbol in a diff) in an isolated context. For documenting a single symbol as you write it, apply the `document-swift` skill inline instead.
-model: inherit
+model: sonnet
 permissionMode: restricted
 skills:
   - swift-concurrency
