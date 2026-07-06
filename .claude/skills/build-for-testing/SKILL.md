@@ -1,48 +1,21 @@
 ---
 name: build-for-testing
-description: Compile the TMDb package AND all test targets (without running the tests) to catch test-code compile errors. Use after changing tests or shared code to check everything still builds — delegates to a Haiku subagent and returns a concise pass/fail + errors-as-file:line summary. Differs from /build, which compiles only the library; to run the tests, use /test.
+description: Compile the TMDb package AND all test targets (without running the tests) to catch test-code compile errors. Use after changing tests or shared code to check everything still builds — delegates to the tooling-runner agent (Haiku) and returns a concise pass/fail + errors-as-file:line summary. Differs from /build, which compiles only the library; to run the tests, use /test.
 ---
 
 # Build for testing
 
-Delegate this to a **Haiku subagent** so the build output stays out of your
-context. Use the Agent tool with `subagent_type: general-purpose` and
-`model: haiku`, give it the prompt below, then relay its report. Do **not** run
-the build yourself.
+Spawn the **`tooling-runner`** agent (Agent tool,
+`subagent_type: tooling-runner` — its Haiku pin, command recipes, and
+reporting contract live in `.claude/agents/tooling-runner.md`) with the
+one-line task:
 
-Subagent prompt:
+> Run the `build-for-testing` target: compile the TMDb package and all test
+> targets.
 
-```text
-Build the TMDb Swift package and all test targets, then report concisely.
+Relay its report. Do **not** run the build yourself.
 
-- If the xcode-tools MCP is available (inside Xcode), run
-  `mcp__xcode-tools__BuildProject` so it builds the test targets (pass
-  `buildForTesting: true` if the tool supports it). On failure, get per-file
-  error detail with `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on each
-  flagged file.
-- Otherwise run
-  `mkdir -p .build && make build-tests > .build/last-build-tests.log 2>&1`,
-  check the exit status for pass/fail (the Makefile sets `pipefail`), and
-  summarise from that log file.
-  **Trust the exit status, not xcsift's toon summary.** Outside a docs build,
-  SwiftPM emits a benign `found N file(s) which are unhandled … *.docc` warning
-  (the DocC plugin loads only under `SWIFTCI_DOCC=1`); xcsift lists it under
-  `errors[]` with `null,null` coordinates and may print `status: failed`, yet the
-  build still **exits 0**. A 0 exit whose only errors are these `.docc`
-  unhandled-file entries is a **PASS** — report succeeded and exclude them from
-  the error count.
-
-Report back ONLY:
-- Status: succeeded or failed
-- Error and warning counts
-- Each error/warning as `file:line — message` (omit this list if there are none)
-- On failure, the full log path `.build/last-build-tests.log` (or, inside Xcode,
-  the flagged files so the caller can refresh their diagnostics)
-
-Do not paste raw build logs or successful-compilation output.
-```
-
-If the report is unclear on a failure, read the log path it provides (or, inside
-Xcode, refresh diagnostics on the flagged files) rather than re-running. After
-fixing the issues, re-invoke this skill to re-check (a fresh subagent will
-rebuild).
+If the report is unclear on a failure, read the log path it reports
+(`.build/last-build-tests.log`) — or, inside Xcode, refresh diagnostics on
+the flagged files — rather than re-running. After fixing the issues,
+re-invoke this skill to re-check (a fresh subagent will rebuild).

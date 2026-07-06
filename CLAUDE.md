@@ -201,8 +201,9 @@ verifies with the targeted suite (not full `make ci`) and opens the PR via
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
 **run only when the change touches Swift** (docs/config-only changes are not
-reviewed). Two subagents back the pipeline: `code-reviewer` (deep Swift/TMDb
-review) and `documentation-writer` (bulk DocC generation).
+reviewed). Three subagents back the pipeline: `code-reviewer` (deep Swift/TMDb
+review, pinned to Opus), `documentation-writer` (bulk DocC generation, pinned
+to Sonnet), and `tooling-runner` (build/test execution, pinned to Haiku).
 
 ## Build and Test Tooling
 
@@ -210,7 +211,8 @@ review) and `documentation-writer` (bulk DocC generation).
 
 For builds and test runs, invoke the project skills rather than calling `make`
 or the Xcode MCP directly: `/build`, `/build-for-testing`, `/test`, and
-`/integration-test`. Each delegates to a Haiku subagent that runs the command,
+`/integration-test`. Each spawns the shared `tooling-runner` agent
+(`.claude/agents/tooling-runner.md`, pinned to Haiku), which runs the command,
 writes the full output to a `.build/last-*.log` file, and returns only a
 concise summary (status, counts, failures as `file:line`) — keeping this
 context lean. `/lint` and `/format` run `make` directly (they are fast and
