@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-06 — ♻️ Consolidate build/test runners into a tooling-runner agent (chore/tooling-runner-agent) · lite
+## 2026-07-06 — ♻️ Consolidate build/test runners into a tooling-runner agent (#385) · lite
 
 - **Phases / skills:** phases 0–10; markdown/config-only, so `review-plan`
   skipped (lite + `ExitPlanMode` approval — the two open design choices were
