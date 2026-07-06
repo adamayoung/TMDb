@@ -507,7 +507,9 @@ that automate the development workflow. Invoke any of them with `/<name>`.
 
 #### Build, test & quality
 
-These delegate to a Haiku subagent to keep the main context lean.
+The build/test rows delegate to the shared `tooling-runner` agent (pinned to
+Haiku) to keep the main context lean; `/lint` and `/format` run `make`
+directly.
 
 | Skill | Purpose |
 | --- | --- |
@@ -528,9 +530,10 @@ These delegate to a Haiku subagent to keep the main context lean.
 | `/canon-tdd` | Drive test-first development (test list → failing test → pass → refactor) |
 | `/document-swift` | Write DocC documentation for public API per project conventions |
 
-Two subagents back the review and documentation steps: `code-reviewer`
-(deep Swift/TMDb review) and `documentation-writer` (bulk DocC generation).
-The reviewer follows the shared spec in
+Three subagents back the pipeline: `code-reviewer` (deep Swift/TMDb review,
+pinned to Opus), `documentation-writer` (bulk DocC generation, pinned to
+Sonnet), and `tooling-runner` (build/test execution, pinned to Haiku). The
+reviewer follows the shared spec in
 [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
 
 #### Self-healing weekly integration run

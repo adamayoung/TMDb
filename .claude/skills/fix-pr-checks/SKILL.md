@@ -1,6 +1,6 @@
 ---
 name: fix-pr-checks
-description: Fix the currently-failing status checks on the current branch's PR in one sweep — route each failing check to the right diagnosis skill (via a Haiku subagent), apply and verify the fix, commit, and push once — then return a summary. Use standalone when CI is red, or as the check-fixing step invoked by /watch-pr. Repo is adamayoung/TMDb.
+description: Fix the currently-failing status checks on the current branch's PR in one sweep — route each failing check to the right diagnosis skill (via a Haiku subagent, escalating to Opus on a repeat failure), apply and verify the fix, commit, and push once — then return a summary. Use standalone when CI is red, or as the check-fixing step invoked by /watch-pr. Repo is adamayoung/TMDb.
 ---
 
 # Fix PR Checks
@@ -18,8 +18,9 @@ Repo is `adamayoung/TMDb`. GitHub reads use the **GitHub MCP** (`mcp__github__*`
 ## It stands on the diagnosis skills
 
 Don't read CI logs yourself. The analysis is already a capability — delegate it to
-a **Haiku subagent** running the matching diagnosis skill, so raw logs never enter
-your context and you get back a `file:line` cause and a concrete fix:
+a **Haiku subagent** running the matching diagnosis skill (a repeat failure
+re-diagnoses on **Opus** — see §2), so raw logs never enter your context and you
+get back a `file:line` cause and a concrete fix:
 
 - The **Integration** check (live-API suite from `integration.yml`) →
   `/diagnose-integration-failure`
@@ -33,9 +34,10 @@ This skill is the **act-on-it** layer: route → fix → verify → commit → p
 1. **One sweep, then return.** Handle every check failing at invocation, push
    once, report. Don't loop waiting for the re-run — that convergence is the
    caller's job.
-2. **Diagnose via Haiku, fix locally.** Get Cause/Fix from the diagnosis skill,
-   then apply it and **verify before claiming it fixed** with the delegated build/
-   test skills.
+2. **Diagnose via Haiku, escalate a repeat to Opus, fix locally.** Get Cause/Fix
+   from the diagnosis skill, then apply it and **verify before claiming it
+   fixed** with the delegated build/test skills. First diagnosis of a check runs
+   on Haiku; a check that comes back after a fix re-diagnoses on Opus (§2).
 3. **Respect the attempt cap.** A check gets at most **3** fix→push attempts
    (tracked in the run ledger). If it still fails on the same root cause, stop
    touching it and report it exhausted — never loop forever.
@@ -71,11 +73,18 @@ commit. Classify each by `status` + `conclusion`:
 
 If nothing is failing, return immediately (note any pending checks).
 
-## 2. Diagnose each failing check (Haiku)
+## 2. Diagnose each failing check (Haiku first, Opus on a repeat)
 
 For each `fail` check under its attempt cap, spawn a diagnosis subagent — Agent
-tool, `subagent_type: general-purpose`, `model: haiku` — substituting the check
-name and the routed skill:
+tool, `subagent_type: general-purpose` — substituting the check name and the
+routed skill. Pick the model from the check's ledger history:
+
+- **First attempt** → `model: haiku`.
+- **Repeat** (the ledger shows a prior attempt for this check — a fix that
+  didn't verify, or the check failed again after the push) → `model: opus`,
+  prepending one line of prior-attempt context to the prompt: the previous
+  Cause/Fix and why it didn't stick. A misdiagnosis costs a full
+  fix→push→CI round trip; don't pay it twice on the same model tier.
 
 ```text
 The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.

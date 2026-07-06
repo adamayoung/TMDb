@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Code reviewer subagent to be used to review code changes when asked, or at appropriate points when implementing new features
-model: inherit
+model: opus
 permissionMode: auto
 skills:
   - swift-concurrency
