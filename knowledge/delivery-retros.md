@@ -14,6 +14,31 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-06 — ♻️ Consolidate build/test runners into a tooling-runner agent (chore/tooling-runner-agent) · lite
+
+- **Phases / skills:** phases 0–10; markdown/config-only, so `review-plan`
+  skipped (lite + `ExitPlanMode` approval — the two open design choices were
+  settled pre-plan via `AskUserQuestion`), `review-changes` and
+  `security-review` self-skipped, `/capture-knowledge` returned nothing (the
+  sole candidate was already documented inside the `capture-knowledge` skill
+  itself); ADR-0010 (model tiers) authored inline in Phase 3.
+- **Worked:** the plan-time Explore cross-reference sweep pre-scoped the prose
+  blast radius — spotting that "delegates to a Haiku subagent" prose stays
+  *true* after the refactor (the runner agent **is** Haiku) cut the edit list
+  to 11 files, only 4 of them prose spots. Phase 0's gotcha consult paid off
+  twice within minutes (branch rename after `EnterWorktree`; `.md` tail check
+  after every `Write`).
+- **Friction:** none material.
+- **Deviations:** `canon-tdd` not applicable — no test surface on a pure
+  skills/agents/docs change; the plan's Changes list served as the checklist,
+  and the rubric came from its Changes + Verification sections rather than
+  Given/When/Then ACs (chore plan, no user story).
+- **One improvement:** a freshly added `.claude/agents/*.md` may not register
+  as a spawnable `subagent_type` until a new session, so the consolidation
+  can't be smoke-tested end-to-end inside the delivering session — the first
+  post-merge `/build` is the real verification; if it surprises, that's a
+  `gotchas.md` entry.
+
 ## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (#384) · lite
 
 - **Phases / skills:** phases 0–10; markdown-only, so `review-plan` skipped
@@ -346,96 +371,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   the first green build**. (This is the **second** delivery to hit main-vs-worktree
   path confusion — see #359 — so it's now a recurring pattern worth a skill edit.)
 
-## 2026-06-23 — ✨ Add `TMDbTesting` public mocks & sample-data library (#359) · full
-
-- **Phases / skills:** phases 0–6; `review-plan, implement-plan, build-for-testing,
-  test, integration-test, lint, review-changes, capture-knowledge, pr, watch-pr`,
-  plus three bespoke Workflows (mock/sample generation, test generation, the
-  review fan-out).
-- **Worked:** the **reference-first** discipline paid off massively — building and
-  *reviewing* `MockGenreService` before replicating caught a cross-module DocC
-  break that would otherwise have been baked into all 26 mocks. Fanning the bulk
-  generation out to 14 sonnet agents over a precise pre-computed spec (signatures,
-  return-type ownership, batch partitions) turned a ~16k-line mechanical job into
-  a handful of build-and-fix passes; the final 5-dimension review found **0
-  critical / 0 high** across it. `/review-plan`'s three critics were genuinely
-  load-bearing (they killed the plan's false "gate the NL mock" premise up front).
-- **Friction:** (1) some generation subagents wrote files to the **main checkout**
-  path instead of the worktree — had to detect and consolidate (now a captured
-  gotcha). (2) The generation Workflow failed on the **args-stringification**
-  gotcha despite it being in memory — I forgot the `JSON.parse` guard and lost one
-  run. (3) `codecov/patch`/`project` go red on a 15k-line mock library (inherently
-  low line-coverage of trivial record-return boilerplate) — non-blocking here, but
-  noise. (4) couldn't run `make build-linux` locally (Docker down) — leaned on CI's
-  `build-test-linux` job.
-- **Deviations:** for the bulk (25 mocks + 87 samples) I inverted strict
-  test-first — generated production from the reviewed template, then added
-  representative + smoke tests — rather than red-green per method. Defensible for
-  mechanical replication of an already-test-driven reference, but a deviation from
-  `/implement-plan`'s one-test-at-a-time contract. Also expanded the main-target
-  change beyond the planned `GuestSession` init (9 filter types → `Sendable`).
-- **Improvement:** the Workflow tool's own description warns about
-  args-stringification, yet it bit again — worth a **standard `args` parse-guard
-  preamble** baked into any `/deliver` generation-Workflow snippet (or a lint of
-  the script before launch), so the guard isn't re-derived from memory each time.
-- **Specialist skills under-used (`swift-concurrency`, `swift-testing-expert`):**
-  `/implement-plan`'s contract says to route anything touching actors/`Sendable`/
-  data races through `swift-concurrency`, and test structuring through
-  `swift-testing-expert`. I did neither — the `NSLock`/`@unchecked Sendable` mock
-  design and the 9-filter-types `Sendable` change were hand-rolled, and tests
-  followed the reference pattern via general-purpose agents. It compiled and
-  passed, but the user had to prompt me to consult `swift-concurrency` on the
-  actor-vs-lock question. When finally invoked, the skill *validated* the lock
-  choice **and** surfaced a real gap: `@unchecked Sendable` needs a documented
-  safety invariant **and a removal plan** (migrate to `Mutex` once the floor
-  reaches iOS 18/macOS 15) — which I'd omitted from the ADR. **Lesson:** invoke
-  the specialist skill *at the moment its domain appears* (lock/`Sendable`/actor
-  design, test structure), not only when asked — that's the difference between
-  "it passed" and "it's right, and the rationale is recorded."
-- **Gate-driven refinements (post-PR, pre-merge):** the human gate caught two
-  things the autonomous run had shipped sub-optimally, both fixed before merge:
-  (a) **sample data wasn't from the live MCP** — I'd relaxed the locked "real MCP
-  data" decision in Phase 1 to "reuse existing fixtures", and agents fabricated
-  placeholders (`"Cast Member"`, `"Movie Overview"`) for the ~12 fixture-less
-  types; re-sourced all 67 API-backed samples from real `mcp__tmdb__*` responses.
-  (b) **`TMDbTesting` tests lived inside `TMDbTests`** (per the plan) rather than a
-  dedicated target; split them into `TMDbTestingTests` with public-only imports so
-  the consumer story is compiler-enforced. **Lesson:** when I relax a *locked*
-  user decision during plan-hardening (here "samples from real MCP"), that's a
-  choice to flag back to the user at the gate, not absorb silently — both fixes
-  were cheap pre-merge but would have been debt post-merge.
-
-## 2026-06-23 — ✨ Add `movieCredits` language-model tool to TMDbToolbox (#357) · lite
-
-- **Phases / skills:** phases 0–6; `implement-plan, build-for-testing, test,
-  integration-test, lint, review-changes, capture-knowledge, pr, watch-pr`
-  (skipped `review-plan` — lite).
-- **Worked:** lite path fit a mechanical mirror of `MovieDetailsTool`; reading the
-  sibling source first meant a faithful copy with zero implementation surprises
-  (2714 unit tests green first try). The **`swiftlint --no-cache` step in `/pr`
-  step 4** (the #346 improvement) earned its keep: adding the credits block tipped
-  the formatter file/test over `file_length`/`type_body_length`, caught **locally**
-  and fixed by splitting into a `+Credits` extension file + separate `@Suite`
-  before any CI round-trip.
-- **Friction — the standout:** the local `code-reviewer`'s adversarial pass
-  **dropped a real High** — "missing integration test for `movieCredits`" — with
-  the false reasoning *"no sibling toolbox tool has a per-tool integration test."*
-  In fact `Tests/TMDbIntegrationTests/LanguageModelToolsIntegrationTests.swift` has
-  one per tool; the reviewer only inspected the per-tool **unit** tests and never
-  listed the integration dir. The `claude-review` bot on the PR caught it
-  correctly, costing a post-PR fix + a second full CI run. Phase 3 is supposed to
-  converge Critical/High *before* the PR; a fabricated "siblings don't either"
-  dismissal defeated that.
-- **Deviations:** the integration-test gap was fixed in **Phase 5 (watch-pr)**, not
-  Phase 3, because the local review wrongly cleared it.
-- **Improvement:** when a reviewer is about to drop a "missing integration test"
-  (or any "siblings don't do this either") finding, it must **verify the
-  sibling-convention claim by listing the actual directory** (here
-  `Tests/TMDbIntegrationTests/`) — not assume from the unit-test dir. Worth a line
-  in `.github/CODE_REVIEW.md` / the `code-reviewer` adversarial-pass guidance:
-  *an adversarial drop that rests on a factual claim about sibling code must check
-  that claim against the tree.*
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -443,6 +378,8 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-23 | #359 | full | `TMDbTesting` mocks + samples (~16k lines, 14-agent fan-out); reference-first review caught a cross-module DocC break pre-replication; gate re-sourced samples from live MCP + split `TMDbTestingTests`; lessons: invoke specialist skills when their domain appears, never silently relax a locked user decision. |
+| 2026-06-23 | #357 | lite | `movieCredits` toolbox tool; local reviewer's adversarial pass dropped a real High on a fabricated "no sibling has one" claim → adversarial drops must verify sibling-convention claims against the tree. |
 | 2026-06-19 | #349 | full | `networks` on TVSeason from a schema-diff scan; critics pre-caught the Equatable/over-populated-mock trap → 0/0/0 review; exposed the local-vs-CI `lint-markdown` scope mismatch. |
 | 2026-06-18 | #346 | full | AuthenticatedSession wrapper; 3 critics unanimously reversed deprecate-and-add to additive; local-vs-CI lint cache gap → `/pr` `--no-cache` step. |
 | 2026-06-18 | #344 | lite | Error-handling How-To guide; `make build-docs` was the real gate; reinforced the docs-only fast-gate need. |
