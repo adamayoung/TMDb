@@ -24,7 +24,14 @@ wait loop.
 
 ## 0. Find the PR
 
-Find the open PR for the current branch with `mcp__github__list_pull_requests`
+**A PR number in the arguments wins.** If the arguments include a PR number
+(e.g. `/watch-pr 123` or `/watch-pr merge 123`), watch that PR and skip branch
+discovery entirely. A caller that launches this skill **in the background**
+(e.g. `/deliver` Phase 10, which may move the session to another deliverable's
+worktree while the watch runs) must pass the number — the watch must never
+depend on "current branch" staying stable for its lifetime.
+
+Otherwise, find the open PR for the current branch with `mcp__github__list_pull_requests`
 (owner/repo from the `origin` remote, `head: <owner>:<branch>`, `state: open`), then
 read its details with `mcp__github__pull_request_read` method `get` — `number`,
 `html_url`, `state`,

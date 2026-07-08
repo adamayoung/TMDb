@@ -175,7 +175,7 @@ const confirmed = verified.filter(Boolean)
 return {
   critical: confirmed.filter((f) => f.severity === 'critical'),
   high: confirmed.filter((f) => f.severity === 'high'),
-  medium: advisory,
+  medium: advisory.filter((f) => f.severity === 'medium'),
   low: advisory.filter((f) => f.severity === 'low'),
   droppedByVerification: blocking.length - confirmed.length,
   dimensionsCovered: DIMENSIONS.map((d) => d.key),
