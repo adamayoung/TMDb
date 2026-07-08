@@ -14,6 +14,32 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-08 — 👷 Bump CI workflows to Xcode 26.6 (#387) · lite
+
+- **Phases / skills:** phases 0–10; config-only (`.github/workflows/`), so
+  `review-plan` skipped (lite + `ExitPlanMode` approval) and `review-changes`
+  self-skipped (no Swift). `security-review` **ran** — workflows are a
+  security-relevant surface — and returned 0 findings (a trusted-literal token
+  swap with no untrusted-input path). `/capture-knowledge` returned nothing:
+  the only fact (macos-26 ships Xcode 26.6, build 17F113) is transient
+  runner-image state, already recorded in the commit message.
+- **Worked:** a plan-time `WebFetch` of the `macos-26` runner-image README
+  confirmed `/Applications/Xcode_26.6.app` exists (build 17F113) **before**
+  pinning it — retiring the one real risk of a version-pin bump (pinning a
+  toolchain the runner doesn't ship) at plan time. Explore's exact-line
+  inventory made Phase 3 a mechanical 6-line swap; grep + `actionlint` (exit 0)
+  double-checked the result.
+- **Friction:** none material.
+- **Deviations:** `implement-plan`/`canon-tdd` not applicable — a YAML
+  version-string swap has no code under test; edited directly, verified with
+  grep (zero `26.5`, six `26.6`). Rubric came from the plan's Verification
+  section (chore plan, no Given/When/Then user story).
+- **Housekeeping:** distilled the oldest full entry (#361) into the archive
+  table, clearing the archive-distil deferred in #368/#374 and keeping the file
+  at its ~12-entry window.
+- **One improvement:** none — the pre-pin runner-image README check is the right
+  guard for any toolchain bump; reuse it verbatim next time the pin moves.
+
 ## 2026-07-06 — ♻️ Consolidate build/test runners into a tooling-runner agent (#385) · lite
 
 - **Phases / skills:** phases 0–10; markdown/config-only, so `review-plan`
@@ -321,56 +347,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   **and** widening its trigger to "no semantic Swift change" (e.g. diff is only
   within `///`/`//` lines), so doc-comment touch-ups qualify too.
 
-## 2026-06-24 — ✨ Add missing discover filter parameters (#361) · lite
-
-- **Phases / skills:** phases 0–6; `build-for-testing, test, integration-test,
-  lint, review-changes, capture-knowledge, pr, watch-pr`. Skipped `/review-plan`
-  (lite + the plan was already adversarially reviewed earlier this session by the
-  3-agent finding-verification pass).
-- **Worked:** lite-weight scoping was correct — single-`code-reviewer` review
-  converged **round 1 with 0 critical/high/medium**. The codebase's existing
-  *"no-op mutation preserves every other populated field"* guard test made the
-  real risk (new fields silently dropped by the ~30-arg fluent `copy()` helpers)
-  trivial to cover: extend `fullyPopulatedFilter`, and a missing pass-through
-  fails loudly. Verifying the finding against the live API up front caught the
-  `release_date.*` vs `primary_release_date.*` semantic distinction before coding.
-- **Friction:** (1) **The big one — edits landed in the main checkout, not the
-  worktree.** I `Read` the source files in Phase 0 *before* `EnterWorktree`, so
-  their absolute paths pointed at `main`; continuing to `Edit` those paths after
-  entering wrote to `main`. Worse, the build/test then ran against the *pristine*
-  worktree and returned **baseline** counts (2792/282), masking that nothing had
-  landed — only an empty `git status` in the worktree exposed it. Recovered via a
-  shared stash (`git -C main stash` → `git -C worktree stash pop`). (2) The
-  `Date(iso8601:)` test helper is `TMDbTests`-only, so an integration test using
-  it failed to compile — but only once the integration target actually built.
-  (3) **Asymmetric integration coverage, then a stale "ready" call.** Three of the
-  four new params got a live integration test but TV `withoutWatchProviders` got
-  only unit coverage — `claude-review` flagged it **High**. Worse, I'd declared the
-  PR "ready, 0 unresolved threads" *before* re-checking: the retro/skill-fix pushes
-  and the `main` merge each re-ran `claude-review`, which posted that thread **after**
-  my one-time thread check. The thread also **blocked the merge** (the `main`
-  ruleset requires `required_review_thread_resolution`), so "ready" was wrong on two
-  counts. (4) **Misread `BLOCKED` as code-owner review when a required check was
-  still running.** A filtered rollup query (`select(.conclusion!="SUCCESS")`) hid a
-  still-`IN_PROGRESS` "Build and Test" (no conclusion yet ⇒ absent from the filter),
-  compounded by a stale passed copy of the same check from an earlier tip — so I
-  reported "all green" and pinned the merge block on the un-satisfiable code-owner
-  self-review. The user caught it. Lesson: confirm **every required check is
-  `COMPLETED`+`SUCCESS` on the current tip** (assert nothing is `status!=COMPLETED`),
-  and when `BLOCKED`, rule out a **pending required check** before blaming a review
-  rule.
-- **Deviations:** an unplanned mid-Phase-2 stash-rescue to move the change off
-  `main` into the worktree; and a post-gate fix loop (add the missing TV
-  `withoutWatchProviders` integration test, resolve the bot thread) before the merge
-  could proceed — i.e. the `/watch-pr` thread sweep had to actually run per-push,
-  not once.
-- **One improvement:** `/deliver` Phase 0 already reads the *plan* into context
-  before the worktree, but reading *source* files there is a trap — their paths
-  become stale on `EnterWorktree`. Phase 0.5 should add a hard checkpoint: after
-  entering, **verify `git status` shows the diff in the worktree before trusting
-  the first green build**. (This is the **second** delivery to hit main-vs-worktree
-  path confusion — see #359 — so it's now a recurring pattern worth a skill edit.)
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -378,6 +354,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-24 | #361 | lite | Missing discover filter params; single-`code-reviewer` converged 0/0/0 (existing no-op-mutation guard test made the dropped-field risk in the ~30-arg `copy()` helpers trivial to cover). Two recurring traps: edits landing in `main` not the worktree (source `Read` pre-`EnterWorktree` → stale paths; now the Phase 1 `git status` checkpoint), and a stale "ready" call — verify every required check is `COMPLETED`+`SUCCESS` on the current tip, and rule out a pending required check before blaming a review rule on `BLOCKED`. |
 | 2026-06-23 | #359 | full | `TMDbTesting` mocks + samples (~16k lines, 14-agent fan-out); reference-first review caught a cross-module DocC break pre-replication; gate re-sourced samples from live MCP + split `TMDbTestingTests`; lessons: invoke specialist skills when their domain appears, never silently relax a locked user decision. |
 | 2026-06-23 | #357 | lite | `movieCredits` toolbox tool; local reviewer's adversarial pass dropped a real High on a fabricated "no sibling has one" claim → adversarial drops must verify sibling-convention claims against the tree. |
 | 2026-06-19 | #349 | full | `networks` on TVSeason from a schema-diff scan; critics pre-caught the Equatable/over-populated-mock trap → 0/0/0 review; exposed the local-vs-CI `lint-markdown` scope mismatch. |
