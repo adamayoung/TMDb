@@ -30,6 +30,37 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-08 — External-review fixes: worktree-safe flake fixing, PR-pinned watch, severity filter · applied
+
+- **Pattern:** an external model review of the `/deliver` pipeline (not the
+  wrap-up scan) surfaced three verified gaps: (a)
+  `/fix-integration-failures` §3 said `git checkout main`, which fails from
+  a `/deliver` worktree (`fatal: 'main' is already used by worktree …`) —
+  the exact trap `/pr` already documents for its rebase, learned in one
+  skill but not its sibling; (b) `/watch-pr` discovered "the current
+  branch's PR", so a background watch could misresolve after the conductor
+  moved to another deliverable's worktree; (c) `/review-changes`' fan-out
+  script returned `medium: advisory` where `advisory` held medium **and**
+  low findings, double-counting every low.
+- **Decision:** **applied** (user-approved, 2026-07-08, this branch).
+  `/fix-integration-failures` §3 branches off `origin/main` without
+  checking out `main`, and mid-`/deliver` gives the fix its own worktree;
+  `/watch-pr` §0 accepts a PR number argument that beats branch discovery,
+  and `/deliver` Phase 10 passes it from the ledger; the `/review-changes`
+  script filters `medium` by severity.
+- **Rationale:** the orchestrator must not be more rigorous than the paths
+  it calls — a routed flake fix that dies on `git checkout main`, or a
+  watch bound to a branch the session has left, stalls an unattended run.
+  Three other findings from the same review were assessed and not applied:
+  a "missing `/security-review`" claim (false positive — it is a built-in
+  Claude Code skill, and log entry 2026-06-24 shows it running), `/pr`'s
+  post-review `/format` mutating Swift (defused by the PostToolUse
+  format-on-edit hooks + `make ci`), and Phase 11 "undermining the one hard
+  stop" (post-gate proposals don't block the deliverable).
+- **Reconsider when:** n/a (applied); for the two rejected code-path
+  findings — if a `reviewed`-mode `/pr` ever produces a non-formatting
+  Swift diff, or a run genuinely blocks on a Phase 11 approval, revisit.
+
 ### 2026-07-05 — Knowledge consult at entry + independent rubric grader · applied
 
 - **Pattern:** an external article-driven review of the pipeline (not the

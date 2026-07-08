@@ -301,7 +301,10 @@ cancelled by the concurrency group).
 
 ## Phase 10 — Watch to ready → GATE: ready-to-merge
 
-Invoke **`/watch-pr`** in **watch-only** mode, **in the background** — it
+Invoke **`/watch-pr`** in **watch-only** mode, **in the background**,
+**passing the PR number from the ledger** (`/watch-pr <number>`) — a
+background watch must be pinned to its PR, not to "current branch", which
+changes when the conductor moves to the next deliverable's worktree. It
 resolves threads, fixes failing checks (routing unrelated integration
 failures per §4), and loops until **ready** or **stuck**. Ready means
 **mergeable now** (branch brought up to date with `main`, re-run green).
@@ -312,7 +315,7 @@ merge, Phase 12). Stuck → stop, summarise what's blocking, **keep the
 worktree**. **Auto:** stuck → panel (retry via `ScheduleWakeup` vs stop); the
 gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
-(`/watch-pr merge`) — the gate becomes "report the merge" → Phase 12.
+(`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
 ## Phase 11 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 

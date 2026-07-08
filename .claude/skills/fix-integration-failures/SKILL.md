@@ -89,11 +89,25 @@ that survives a re-run is uncommon — a repeat failure is usually real drift.)
 
 ## 3. Fix the real cause on a branch off `main`
 
-Reproduce locally first to confirm and to get a fast edit loop:
+Reproduce locally first to confirm and to get a fast edit loop. Branch **off
+`origin/main` directly — never `git checkout main` first**. This is
+**worktree-safe**: when this skill is invoked from a `/deliver` worktree (via
+`/watch-pr` §1c), `main` is usually checked out in the main working copy, so
+`git checkout main` fails with `fatal: 'main' is already used by worktree …` —
+the same trap `/pr` documents for its rebase step:
 
 ```bash
-git checkout main && git pull --ff-only
-git checkout -b fix/<slug>          # e.g. fix/<service>-integration-drift
+git fetch origin
+git checkout -b fix/<slug> origin/main   # e.g. fix/<service>-integration-drift
+```
+
+**Invoked mid-`/deliver` (from `/watch-pr`)?** Don't create the fix branch in
+the deliverable's worktree — that switches its checkout away from the feature
+branch being watched. Give the fix its own worktree instead and work there,
+removing it once the fix PR merges:
+
+```bash
+git worktree add .claude/worktrees/fix-<slug> -b fix/<slug> origin/main
 ```
 
 Run the failing suite locally to reproduce — `/integration-test` (or
