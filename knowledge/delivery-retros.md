@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-08 — 👷 Bump CI workflows to Xcode 26.6 (`chore/bump-ci-xcode-26.6`) · lite
+## 2026-07-08 — 👷 Bump CI workflows to Xcode 26.6 (#387) · lite
 
 - **Phases / skills:** phases 0–10; config-only (`.github/workflows/`), so
   `review-plan` skipped (lite + `ExitPlanMode` approval) and `review-changes`
