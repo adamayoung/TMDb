@@ -23,7 +23,7 @@ jobs:
   autofix:
     name: Diagnose & fix scheduled failure
     # macOS: the fix verifies with `swift build` / `swift test` (needs Xcode).
-    runs-on: macos-26
+    runs-on: xcode-27
 
     # Only react to the *scheduled* run, and only when it actually failed — this
     # is what stops contributor PR failures from triggering an auto-fix.
@@ -36,7 +36,7 @@ jobs:
       && github.event.workflow_run.event == 'schedule'
 
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
       # A PR opened with the default GITHUB_TOKEN does NOT trigger downstream
       # workflows (GitHub blocks token→workflow recursion), so the fix PR's own
       # CI/Integration checks wouldn't run. Add a fine-grained PAT with

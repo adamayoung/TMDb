@@ -58,10 +58,10 @@ jobs:
     runs-on: >-
       ${{
         (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
-        && 'macos-26' || 'ubuntu-latest'
+        && 'xcode-27' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
       # Pin lint tool versions so CI matches local `make lint` exactly and does
       # not drift when Homebrew publishes a new release.
       SWIFTLINT_VERSION: 0.63.2
@@ -128,10 +128,10 @@ jobs:
     runs-on: >-
       ${{
         (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
-        && 'macos-26' || 'ubuntu-latest'
+        && 'xcode-27' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
