@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.0.0] - 2026-07-24
+
+### Changed
+
+- **Breaking:** Model runtimes are now Swift `Duration` values instead of
+  `Int` minutes — `Movie.runtime`, `TVEpisode.runtime`,
+  `TVEpisodeAirDate.runtime` (`Duration?`) and `TVSeries.episodeRunTime`
+  (`[Duration]?`). The JSON wire format is unchanged (integer minutes).
+- **Breaking:** `DiscoverMovieFilter` and `DiscoverTVSeriesFilter`
+  `runtimeMin` / `runtimeMax`, and the fluent `runtime(in:)`, now take
+  `Duration` (a `ClosedRange<Duration>`) rather than `Int` minutes.
+- **Breaking:** `RuntimeFormatStyle` now formats a `Duration` rather than an
+  `Int`; `.runtimeStyle(...)` composes on `Duration.formatted(_:)`.
+
 ## [18.1.0] - 2026-06-18
 
 ### Added
