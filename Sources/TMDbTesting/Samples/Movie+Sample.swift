@@ -23,7 +23,7 @@ public extension Movie {
                 + "primal male aggression into a shocking new form of therapy. Their concept "
                 + "catches on, with underground \"fight clubs\" forming in every town, until an "
                 + "eccentric gets in the way and ignites an out-of-control spiral toward oblivion.",
-            runtime: 139,
+            runtime: .seconds(139 * 60),
             genres: [
                 Genre(id: 18, name: "Drama"),
                 Genre(id: 53, name: "Thriller")

@@ -16,7 +16,7 @@ extension TVSeries {
         originalName: String? = nil,
         originalLanguage: String? = nil,
         overview: String? = "TV Series Overview",
-        episodeRunTime: [Int]? = nil,
+        episodeRunTime: [Duration]? = nil,
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
         seasons: [TVSeason]? = nil,

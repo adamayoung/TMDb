@@ -200,7 +200,7 @@ struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
 
     @Test("queryItems with runtime range")
     func queryItemsWithRuntimeRange() {
-        let filter = DiscoverMovieFilter(runtimeMin: 90, runtimeMax: 180)
+        let filter = DiscoverMovieFilter(runtimeMin: .seconds(90 * 60), runtimeMax: .seconds(180 * 60))
         let request = DiscoverMoviesRequest(filter: filter)
 
         #expect(
@@ -386,8 +386,8 @@ struct DiscoverMoviesRequestTests { // swiftlint:disable:this type_body_length
             voteAverageMax: 9.0,
             companies: [420, 7505],
             keywords: [9715, 180_547],
-            runtimeMin: 90,
-            runtimeMax: 180
+            runtimeMin: .seconds(90 * 60),
+            runtimeMax: .seconds(180 * 60)
         )
         let request = DiscoverMoviesRequest(filter: filter)
 

@@ -48,9 +48,16 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let episodeType: String?
 
     ///
-    /// Episode runtime in minutes.
+    /// Episode runtime.
     ///
-    public let runtime: Int?
+    /// Runtimes have whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
+    public var runtime: Duration? {
+        runtimeInMinutes.map { RuntimeMinutes.duration(fromMinutes: $0) }
+    }
+
+    private let runtimeInMinutes: Int?
 
     ///
     /// Identifier of the parent TV series.
@@ -100,7 +107,7 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - overview: TV episode overview.
     ///    - airDate: TV episode air date.
     ///    - episodeType: Type of episode.
-    ///    - runtime: Episode runtime in minutes.
+    ///    - runtime: Episode runtime.
     ///    - showID: Identifier of the parent TV series.
     ///    - productionCode: TV episode production code.
     ///    - stillPath: TV episode still image path.
@@ -117,7 +124,7 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
         overview: String? = nil,
         airDate: Date? = nil,
         episodeType: String? = nil,
-        runtime: Int? = nil,
+        runtime: Duration? = nil,
         showID: Int? = nil,
         productionCode: String? = nil,
         stillPath: URL? = nil,
@@ -133,7 +140,7 @@ public struct TVEpisode: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.overview = overview
         self.airDate = airDate
         self.episodeType = episodeType
-        self.runtime = runtime
+        self.runtimeInMinutes = runtime.map { RuntimeMinutes.minutes(from: $0) }
         self.showID = showID
         self.productionCode = productionCode
         self.stillPath = stillPath
@@ -155,7 +162,7 @@ extension TVEpisode {
         case overview
         case airDate
         case episodeType
-        case runtime
+        case runtimeInMinutes = "runtime"
         case showID = "showId"
         case productionCode
         case stillPath
@@ -186,7 +193,7 @@ extension TVEpisode {
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.airDate = try container.decodeNonEmptyDateIfPresent(forKey: .airDate)
         self.episodeType = try container.decodeIfPresent(String.self, forKey: .episodeType)
-        self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
+        self.runtimeInMinutes = try container.decodeIfPresent(Int.self, forKey: .runtimeInMinutes)
         self.showID = try container.decodeIfPresent(Int.self, forKey: .showID)
         self.productionCode = try container.decodeIfPresent(String.self, forKey: .productionCode)
         self.stillPath = try container.decodeIfPresent(URL.self, forKey: .stillPath)

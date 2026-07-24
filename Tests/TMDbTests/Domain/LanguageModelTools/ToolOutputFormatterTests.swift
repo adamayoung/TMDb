@@ -192,7 +192,7 @@ struct ToolOutputFormatterTests {
             title: "Inception",
             tagline: "Your mind is the scene of the crime.",
             overview: "A thief enters dreams.",
-            runtime: 148,
+            runtime: .seconds(148 * 60),
             genres: [Genre(id: 28, name: "Action"), Genre(id: 878, name: "Science Fiction")],
             releaseDate: Date(iso8601: "2010-07-16T00:00:00Z"),
             status: .released,

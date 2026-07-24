@@ -14,6 +14,40 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-24 — ♻️ Represent model runtimes as `Duration` instead of `Int` (#390) · full
+
+- **Phases / skills:** phases 0–8 pre-PR; full weight (breaking public API,
+  `Codable`/`CodingKeys`). `review-plan` skipped (`ExitPlanMode` approval this
+  session). `implement-plan`/`canon-tdd`: TDD'd the `RuntimeMinutes` converter,
+  then did the type migration as one **atomic** increment (a breaking type
+  change doesn't compile in partial states). `review-changes` fan-out (5 dims +
+  adversarial verify) → 0 Critical/High/Medium, 2 Low (both fixed).
+  `security-review` → 0 findings. `capture-knowledge` → 3 tooling gotchas +
+  ADR-0011 (inline). Independent grader: 6/6 ACs MET.
+- **Worked:** the stored-minutes / computed-`Duration` design keeps `encode`
+  synthesized, so the integer-minute wire format can't silently drift — no
+  hand-written 30-property encode to maintain — and per-model encode
+  round-trip tests lock it. Two plan-time Explore agents pre-mapped the whole
+  consume/format + test surface, making the migration mechanical. The
+  `.convertFromSnakeCase` → camelCase-`CodingKeys` check (wiki/gotcha) caught
+  the `episodeRunTime` rawValue trap before it silently broke decode.
+- **Friction (environmental, not the change):** the beta Swift 6.4 / macOS 27
+  toolchain makes `-Werror` promote the `.docc` "unhandled file" false alarm to
+  a **fatal** error, so `make test` / `make build-tests` / `make ci` fail
+  locally — and the tooling-runner (Haiku, running in the **main** checkout)
+  misreported the very first build as a failure. Homebrew had also drifted
+  swiftformat to 0.62.1 vs the 0.61.1 pin, flagging unchanged files and
+  reshaping edits. Both cost real diagnosis time.
+- **Deviations:** ran every build/test **directly via `Bash`** in the worktree
+  (the tooling-runner runs in `main` and never saw the worktree diff); built
+  tests without `-Werror` to run them, with `-Werror` + a grep-filter to catch
+  real warnings; reinstalled pinned swiftformat 0.61.1 to `~/.local/bin`.
+- **One improvement:** the tooling-runner / `/deliver` skills should run the
+  tooling-runner **in the active worktree** (or explicitly require builds to go
+  direct-via-`Bash` there) — the CWD mismatch silently builds/reviews the wrong
+  tree. Captured as a gotcha this delivery; a skill fix would stop the next
+  worktree run hitting it cold.
+
 ## 2026-07-08 — 👷 Bump CI workflows to Xcode 26.6 (#387) · lite
 
 - **Phases / skills:** phases 0–10; config-only (`.github/workflows/`), so

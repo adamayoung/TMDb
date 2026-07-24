@@ -169,8 +169,8 @@ extension ToolOutputFormatter {
         var lines = ["movie | \(movie.id) | \(titleWithYear(movie.title, movie.releaseDate))"]
 
         var facts: [String] = []
-        if let runtime = movie.runtime, runtime > 0 {
-            facts.append("\(runtime) min")
+        if let runtime = movie.runtime, runtime > .zero {
+            facts.append("\(RuntimeMinutes.minutes(from: runtime)) min")
         }
         if let genres = genreNames(movie.genres) {
             facts.append("genres: \(genres)")

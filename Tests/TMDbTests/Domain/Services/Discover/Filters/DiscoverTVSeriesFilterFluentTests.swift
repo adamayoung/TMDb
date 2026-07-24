@@ -122,10 +122,10 @@ struct DiscoverTVSeriesFilterFluentTests {
 
     @Test("runtime with closed range maps to min and max")
     func runtimeWithClosedRangeMapsToMinAndMax() {
-        let filter = DiscoverTVSeriesFilter().runtime(in: 30 ... 60)
+        let filter = DiscoverTVSeriesFilter().runtime(in: .seconds(30 * 60) ... .seconds(60 * 60))
 
-        #expect(filter.runtimeMin == 30)
-        #expect(filter.runtimeMax == 60)
+        #expect(filter.runtimeMin == .seconds(30 * 60))
+        #expect(filter.runtimeMax == .seconds(60 * 60))
     }
 
     @Test("chaining composes multiple fields without mutating the base")
@@ -186,8 +186,8 @@ struct DiscoverTVSeriesFilterFluentTests {
             companies: [5],
             keywords: [10],
             withoutKeywords: [11],
-            runtimeMin: 30,
-            runtimeMax: 60,
+            runtimeMin: .seconds(30 * 60),
+            runtimeMax: .seconds(60 * 60),
             includeAdult: includeAdult,
             watchProviders: [8],
             watchRegion: "US",

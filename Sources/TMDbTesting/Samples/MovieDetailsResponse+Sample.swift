@@ -29,7 +29,7 @@ public extension MovieDetailsResponse {
             underground "fight clubs" forming in every town, until an eccentric gets in the \
             way and ignites an out-of-control spiral toward oblivion.
             """,
-            runtime: 139,
+            runtime: .seconds(139 * 60),
             genres: [Genre(id: 18, name: "Drama")],
             releaseDate: Date(timeIntervalSince1970: 939_945_600),
             posterPath: posterPath,

@@ -8,27 +8,27 @@
 import Foundation
 
 ///
-/// A format style that renders a runtime, given in whole minutes, as a
-/// human-readable string.
+/// A format style that renders a runtime `Duration` as a human-readable string.
 ///
-/// TMDb exposes movie and television episode runtimes as an integer number of
-/// minutes (for example ``Movie/runtime`` and ``TVEpisode/runtime``). This
-/// format style turns that integer into a display-ready string. Numeric
-/// components are formatted using the provided `locale`, while the unit labels
-/// (such as `"h"`, `"m"`, `"min"`, `"hour"`, and `"minute"`) are in English.
+/// TMDb exposes movie and television episode runtimes as durations (for example
+/// ``Movie/runtime`` and ``TVEpisode/runtime``). This format style turns a
+/// `Duration` into a display-ready string, rounded down to whole minutes.
+/// Numeric components are formatted using the provided `locale`, while the unit
+/// labels (such as `"h"`, `"m"`, `"min"`, `"hour"`, and `"minute"`) are in
+/// English.
 ///
 /// Use it directly:
 ///
 /// ```swift
 /// let style = RuntimeFormatStyle(style: .abbreviated, displayUnit: .hourMinute)
-/// style.format(135)
+/// style.format(.seconds(135 * 60))
 /// // "2h 15m"
 /// ```
 ///
-/// Or via the `FormatStyle` convenience on `Int`:
+/// Or via the `FormatStyle` convenience on `Duration`:
 ///
 /// ```swift
-/// let runtime = 135
+/// let runtime = Duration.seconds(135 * 60)
 ///
 /// runtime.formatted(.runtimeStyle(.full, displayUnit: .hourMinute))
 /// // "2 hours, 15 minutes"
@@ -40,9 +40,9 @@ import Foundation
 public struct RuntimeFormatStyle: FormatStyle, Codable, Equatable, Hashable, Sendable {
 
     ///
-    /// The runtime, in minutes, to be formatted.
+    /// The runtime to be formatted.
     ///
-    public typealias FormatInput = Int
+    public typealias FormatInput = Duration
 
     ///
     /// The formatted, human-readable runtime string.
@@ -123,17 +123,18 @@ public struct RuntimeFormatStyle: FormatStyle, Codable, Equatable, Hashable, Sen
     }
 
     ///
-    /// Formats a runtime, given in minutes, into a human-readable string.
+    /// Formats a runtime into a human-readable string.
     ///
-    /// Negative values are treated as zero.
+    /// The duration is rounded down to whole minutes; negative values are
+    /// treated as zero.
     ///
-    /// - Parameter value: The runtime, in minutes.
+    /// - Parameter value: The runtime to format.
     ///
     /// - Returns: A human-readable runtime string. Numeric components use the
     ///   format style's `locale`; unit labels are in English.
     ///
-    public func format(_ value: Int) -> String {
-        let totalMinutes = max(0, value)
+    public func format(_ value: Duration) -> String {
+        let totalMinutes = max(0, RuntimeMinutes.minutes(from: value))
 
         switch displayUnit {
         case .minutesOnly:
@@ -210,7 +211,7 @@ extension RuntimeFormatStyle {
 public extension FormatStyle where Self == RuntimeFormatStyle {
 
     ///
-    /// A runtime format style for use with `Int.formatted(_:)`.
+    /// A runtime format style for use with `Duration.formatted(_:)`.
     ///
     /// ```swift
     /// movie.runtime?.formatted(.runtimeStyle(.full, displayUnit: .hourMinute))

@@ -48,9 +48,16 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let overview: String?
 
     ///
-    /// Movie runtime, in minutes.
+    /// Movie runtime.
     ///
-    public let runtime: Int?
+    /// Runtimes have whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
+    public var runtime: Duration? {
+        runtimeInMinutes.map { RuntimeMinutes.duration(fromMinutes: $0) }
+    }
+
+    private let runtimeInMinutes: Int?
 
     ///
     /// Movie genres.
@@ -157,7 +164,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - originalLanguage: Original language of the movie.
     ///    - originCountry: Origin countries of the movie.
     ///    - overview: Movie overview.
-    ///    - runtime: Movie runtime, in minutes.
+    ///    - runtime: Movie runtime.
     ///    - genres: Movie genres.
     ///    - releaseDate: Movie release date.
     ///    - posterPath: Movie poster path.
@@ -185,7 +192,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         originalLanguage: String? = nil,
         originCountry: [String]? = nil,
         overview: String? = nil,
-        runtime: Int? = nil,
+        runtime: Duration? = nil,
         genres: [Genre]? = nil,
         releaseDate: Date? = nil,
         posterPath: URL? = nil,
@@ -212,7 +219,7 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.originalLanguage = originalLanguage
         self.originCountry = originCountry
         self.overview = overview
-        self.runtime = runtime
+        self.runtimeInMinutes = runtime.map { RuntimeMinutes.minutes(from: $0) }
         self.genres = genres
         self.releaseDate = releaseDate
         self.posterPath = posterPath
@@ -245,7 +252,7 @@ extension Movie {
         case originalLanguage
         case originCountry
         case overview
-        case runtime
+        case runtimeInMinutes = "runtime"
         case genres
         case releaseDate
         case posterPath
@@ -293,7 +300,7 @@ extension Movie {
             [String].self, forKey: .originCountry
         )
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
-        self.runtime = try container.decodeIfPresent(Int.self, forKey: .runtime)
+        self.runtimeInMinutes = try container.decodeIfPresent(Int.self, forKey: .runtimeInMinutes)
         self.genres = try container.decodeIfPresent([Genre].self, forKey: .genres)
         self.releaseDate = try container.decodeNonEmptyDateIfPresent(forKey: .releaseDate)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)

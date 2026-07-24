@@ -43,9 +43,16 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let overview: String?
 
     ///
-    /// TV series episode run times, in minutes.
+    /// TV series episode run times.
     ///
-    public let episodeRunTime: [Int]?
+    /// Each run time has whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
+    public var episodeRunTime: [Duration]? {
+        episodeRunTimeInMinutes?.map { RuntimeMinutes.duration(fromMinutes: $0) }
+    }
+
+    private let episodeRunTimeInMinutes: [Int]?
 
     ///
     /// Number of seasons in the TV series.
@@ -190,7 +197,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - originalName: Original TV series name.
     ///    - originalLanguage: Original language of the TV series.
     ///    - overview: TV series overview.
-    ///    - episodeRunTime: TV series episode run times, in minutes.
+    ///    - episodeRunTime: TV series episode run times.
     ///    - numberOfSeasons: Number of seasons in the TV series.
     ///    - numberOfEpisodes: Total number of episodes in the TV series.
     ///    - seasons: Seasons in the TV series.
@@ -224,7 +231,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         originalName: String? = nil,
         originalLanguage: String? = nil,
         overview: String? = nil,
-        episodeRunTime: [Int]? = nil,
+        episodeRunTime: [Duration]? = nil,
         numberOfSeasons: Int? = nil,
         numberOfEpisodes: Int? = nil,
         seasons: [TVSeason]? = nil,
@@ -257,7 +264,7 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.originalName = originalName
         self.originalLanguage = originalLanguage
         self.overview = overview
-        self.episodeRunTime = episodeRunTime
+        self.episodeRunTimeInMinutes = episodeRunTime?.map { RuntimeMinutes.minutes(from: $0) }
         self.numberOfSeasons = numberOfSeasons
         self.numberOfEpisodes = numberOfEpisodes
         self.seasons = seasons
@@ -296,7 +303,7 @@ extension TVSeries {
         case originalName
         case originalLanguage
         case overview
-        case episodeRunTime
+        case episodeRunTimeInMinutes = "episodeRunTime"
         case numberOfSeasons
         case numberOfEpisodes
         case seasons
@@ -346,7 +353,9 @@ extension TVSeries {
             String.self, forKey: .originalLanguage
         )
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
-        self.episodeRunTime = try container.decodeIfPresent([Int].self, forKey: .episodeRunTime)
+        self.episodeRunTimeInMinutes = try container.decodeIfPresent(
+            [Int].self, forKey: .episodeRunTimeInMinutes
+        )
         self.numberOfSeasons = try container.decodeIfPresent(Int.self, forKey: .numberOfSeasons)
         self.numberOfEpisodes = try container.decodeIfPresent(Int.self, forKey: .numberOfEpisodes)
         self.seasons = try container.decodeIfPresent([TVSeason].self, forKey: .seasons)

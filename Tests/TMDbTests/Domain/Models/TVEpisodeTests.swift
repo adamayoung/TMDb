@@ -45,6 +45,27 @@ struct TVEpisodeTests {
         #expect(result.voteCount == tvEpisode.voteCount)
     }
 
+    @Test("runtime is nil when absent from the response", .tags(.decoding))
+    func decodeWhenRuntimeAbsentReturnsNilRuntime() throws {
+        let json = Data(#"{"id": 1, "name": "Ep", "episode_number": 1, "season_number": 1}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(TVEpisode.self, from: json)
+
+        #expect(result.runtime == nil)
+    }
+
+    @Test("encoding represents runtime as integer minutes")
+    func encodeRepresentsRuntimeAsIntegerMinutes() throws {
+        let episode = TVEpisode(
+            id: 1, name: "Ep", episodeNumber: 1, seasonNumber: 1, runtime: .seconds(62 * 60)
+        )
+
+        let data = try JSONEncoder().encode(episode)
+        let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+        #expect(json["runtime"] as? Int == 62)
+    }
+
     private let tvEpisode = TVEpisode(
         id: 63056,
         name: "Winter Is Coming",
@@ -55,7 +76,7 @@ struct TVEpisodeTests {
         "Jon Arryn, the Hand of the King, is dead. King Robert Baratheon plans to ask his oldest friend, Eddard Stark, to take Jon's place. Across the sea, Viserys Targaryen plans to wed his sister to a nomadic warlord in exchange for an army.",
         airDate: DateFormatter.theMovieDatabase.date(from: "2011-04-17"),
         episodeType: "standard",
-        runtime: 62,
+        runtime: .seconds(62 * 60),
         showID: 1399,
         productionCode: "101",
         stillPath: URL(string: "/wrGWeW4WKxnaeA8sxJb2T9O6ryo.jpg"),

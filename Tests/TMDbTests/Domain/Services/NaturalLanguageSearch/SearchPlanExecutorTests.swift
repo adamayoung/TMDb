@@ -80,7 +80,7 @@ struct SearchPlanExecutorTests {
 
         let filter = try #require(dataSource.lastMovieFilter)
         #expect(filter.primaryReleaseYear == .on(2019))
-        #expect(filter.runtimeMax == 120)
+        #expect(filter.runtimeMax == .seconds(120 * 60))
         #expect(filter.voteAverageMin == 7)
     }
 

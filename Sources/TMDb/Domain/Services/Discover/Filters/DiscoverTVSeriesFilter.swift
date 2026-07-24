@@ -93,14 +93,14 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     public let withoutKeywords: [Keyword.ID]?
 
     ///
-    /// Minimum runtime in minutes.
+    /// Minimum runtime.
     ///
-    public let runtimeMin: Int?
+    public let runtimeMin: Duration?
 
     ///
-    /// Maximum runtime in minutes.
+    /// Maximum runtime.
     ///
-    public let runtimeMax: Int?
+    public let runtimeMax: Duration?
 
     ///
     /// Include adult content.
@@ -199,8 +199,8 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     ///   - companies: A list of production company identifiers.
     ///   - keywords: A list of keyword identifiers to include.
     ///   - withoutKeywords: A list of keyword identifiers to exclude.
-    ///   - runtimeMin: Minimum runtime in minutes.
-    ///   - runtimeMax: Maximum runtime in minutes.
+    ///   - runtimeMin: Minimum runtime.
+    ///   - runtimeMax: Maximum runtime.
     ///   - includeAdult: Include adult content.
     ///   - watchProviders: A list of watch provider identifiers.
     ///   - watchRegion: ISO-3166-1 watch region code.
@@ -235,8 +235,8 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
         companies: [Company.ID]? = nil,
         keywords: [Keyword.ID]? = nil,
         withoutKeywords: [Keyword.ID]? = nil,
-        runtimeMin: Int? = nil,
-        runtimeMax: Int? = nil,
+        runtimeMin: Duration? = nil,
+        runtimeMax: Duration? = nil,
         includeAdult: Bool? = nil,
         watchProviders: [WatchProvider.ID]? = nil,
         watchRegion: String? = nil,

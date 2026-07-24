@@ -106,7 +106,9 @@ private extension APIRequestQueryItems {
         from filter: DiscoverTVSeriesFilter
     ) {
         self[ifPresent: .withRuntimeGreaterThan] = filter.runtimeMin
+            .map { RuntimeMinutes.minutes(from: $0) }
         self[ifPresent: .withRuntimeLessThan] = filter.runtimeMax
+            .map { RuntimeMinutes.minutes(from: $0) }
         self[ifPresent: .includeAdult] = filter.includeAdult
 
         if let watchProviders = filter.watchProviders {

@@ -160,11 +160,11 @@ public extension DiscoverMovieFilter {
     ///
     /// Returns a copy of the filter restricted to the given runtime range.
     ///
-    /// - Parameter range: The inclusive runtime range, in minutes.
+    /// - Parameter range: The inclusive runtime range.
     ///
     /// - Returns: A new filter with the runtime range applied.
     ///
-    func runtime(in range: ClosedRange<Int>) -> Self {
+    func runtime(in range: ClosedRange<Duration>) -> Self {
         copy(runtimeMin: range.lowerBound, runtimeMax: range.upperBound)
     }
 
@@ -227,8 +227,8 @@ extension DiscoverMovieFilter {
         companies: [Company.ID]? = nil,
         keywords: [Keyword.ID]? = nil,
         withoutKeywords: [Keyword.ID]? = nil,
-        runtimeMin: Int? = nil,
-        runtimeMax: Int? = nil,
+        runtimeMin: Duration? = nil,
+        runtimeMax: Duration? = nil,
         includeAdult: Bool? = nil,
         includeVideo: Bool? = nil,
         watchProviders: [WatchProvider.ID]? = nil,

@@ -173,10 +173,10 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with runtime range sets runtime properties")
     func initWithRuntimeRangeSetsRuntimeProperties() {
-        let filter = DiscoverMovieFilter(runtimeMin: 90, runtimeMax: 180)
+        let filter = DiscoverMovieFilter(runtimeMin: .seconds(90 * 60), runtimeMax: .seconds(180 * 60))
 
-        #expect(filter.runtimeMin == 90)
-        #expect(filter.runtimeMax == 180)
+        #expect(filter.runtimeMin == .seconds(90 * 60))
+        #expect(filter.runtimeMax == .seconds(180 * 60))
     }
 
     @Test("init with include adult sets include adult property")
@@ -323,8 +323,8 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
             companies: companies,
             keywords: keywords,
             withoutKeywords: withoutKeywords,
-            runtimeMin: 90,
-            runtimeMax: 180,
+            runtimeMin: .seconds(90 * 60),
+            runtimeMax: .seconds(180 * 60),
             includeAdult: false,
             includeVideo: true,
             watchProviders: watchProviders,
@@ -356,8 +356,8 @@ struct DiscoverMovieFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.companies == companies)
         #expect(filter.keywords == keywords)
         #expect(filter.withoutKeywords == withoutKeywords)
-        #expect(filter.runtimeMin == 90)
-        #expect(filter.runtimeMax == 180)
+        #expect(filter.runtimeMin == .seconds(90 * 60))
+        #expect(filter.runtimeMax == .seconds(180 * 60))
         #expect(filter.includeAdult == false)
         #expect(filter.includeVideo == true)
         #expect(filter.watchProviders == watchProviders)

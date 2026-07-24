@@ -43,7 +43,7 @@ extension FindResultsTests {
                     overview:
                     // swiftlint:disable:next line_length
                     "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
-                    runtime: 139,
+                    runtime: .seconds(139 * 60),
                     genres: [
                         Genre(id: 18, name: "Drama")
                     ],

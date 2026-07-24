@@ -52,6 +52,32 @@ struct MovieTests {
         #expect(result.releaseDate == nil)
     }
 
+    @Test("runtime decodes from integer minutes into a Duration", .tags(.decoding))
+    func decodeRepresentsRuntimeAsDuration() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(Movie.self, fromResource: "movie")
+
+        #expect(result.runtime == .seconds(139 * 60))
+    }
+
+    @Test("runtime is nil when absent from the response", .tags(.decoding))
+    func decodeWhenRuntimeAbsentReturnsNilRuntime() throws {
+        let json = Data(#"{"id": 550, "title": "Fight Club"}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(Movie.self, from: json)
+
+        #expect(result.runtime == nil)
+    }
+
+    @Test("encoding represents runtime as integer minutes")
+    func encodeRepresentsRuntimeAsIntegerMinutes() throws {
+        let movie = Movie(id: 550, title: "Fight Club", runtime: .seconds(139 * 60))
+
+        let data = try JSONEncoder().encode(movie)
+        let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+        #expect(json["runtime"] as? Int == 139)
+    }
+
 }
 
 extension MovieTests {
@@ -67,7 +93,7 @@ extension MovieTests {
             overview:
             // swiftlint:disable:next line_length
             "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground \"fight clubs\" forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion.",
-            runtime: 139,
+            runtime: .seconds(139 * 60),
             genres: [
                 Genre(id: 18, name: "Drama")
             ],

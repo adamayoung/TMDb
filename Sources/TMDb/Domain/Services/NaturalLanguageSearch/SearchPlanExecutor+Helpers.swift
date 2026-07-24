@@ -145,7 +145,7 @@ extension SearchPlanExecutor {
             primaryReleaseYear: inputs.bounds.map(primaryReleaseYear(for:)),
             voteAverageMin: Self.sanitizedRating(inputs.minRating),
             companies: inputs.companyIDs.isEmpty ? nil : inputs.companyIDs,
-            runtimeMax: inputs.runtimeMax,
+            runtimeMax: inputs.runtimeMax.map { RuntimeMinutes.duration(fromMinutes: $0) },
             includeAdult: false,
             withCast: (!usesCrew && !inputs.personIDs.isEmpty) ? inputs.personIDs : nil,
             withCrew: (usesCrew && !inputs.personIDs.isEmpty) ? inputs.personIDs : nil
@@ -172,7 +172,7 @@ extension SearchPlanExecutor {
             firstAirDateMax: firstAirDateMax,
             voteAverageMin: Self.sanitizedRating(inputs.minRating),
             companies: inputs.companyIDs.isEmpty ? nil : inputs.companyIDs,
-            runtimeMax: inputs.runtimeMax,
+            runtimeMax: inputs.runtimeMax.map { RuntimeMinutes.duration(fromMinutes: $0) },
             includeAdult: false,
             withPeople: inputs.personIDs.isEmpty ? nil : inputs.personIDs
         )
