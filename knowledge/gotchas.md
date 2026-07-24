@@ -6,6 +6,43 @@ out of it.
 
 ## Tooling
 
+### A non-test target can never `@testable import` — it breaks `swift build -c release` only
+
+*2026-07-24 (#395).* Sharing test fixtures between two test targets needs a
+**regular** `.target` (SwiftPM does not let a `.testTarget` depend on another
+`.testTarget`). But a regular target is in the **default build graph**, and
+`@testable import TMDb` requires `TMDb` to be compiled with `-enable-testing`,
+which only happens in **debug**. So `Tests/TMDbTestFixtures` compiled fine for
+`swift build`, `swift build --build-tests`, and the whole test suite, and failed
+only under `swift build -c release`:
+
+```text
+error: module 'TMDb' was not compiled for testing
+```
+
+That is `make build-release` — i.e. `make ci` and both CI *Build for Release*
+jobs. **Debug-green proves nothing here; run the release build.**
+
+- **Whole-module-optimization hides the culprit.** Release builds use WMO, so
+  *one* offending file fails the *whole module* and the error is reported
+  against whichever file the compiler reached first — in our case a file that
+  had already been converted to a plain `import`. Don't trust the reported
+  filename; grep the target for `@testable`.
+- **Fix:** make the shared target build on public + `package` API only. Promote
+  the few internals it genuinely needs (here `APIClient`, `APIRequest`,
+  `APIRequestMethod`, and `DateFormatter.theMovieDatabase`) to `package`, which
+  is package-wide but **not** visible to consumers, so the public API is
+  unchanged. Converting all 27 `@testable` imports surfaced that exactly *one*
+  internal symbol was actually needed.
+- **`package` on a protocol's requirements is an error** — "protocol
+  requirements implicitly have the same access as the protocol itself". Put
+  `package` on the `protocol` declaration only.
+- **What must stay behind:** a fixture for an *internal* type can't live in the
+  shared target at all (an extension can't be more visible than its type), so it
+  belongs in whichever test target `@testable`-imports it. Promoting such a type
+  cascades into member-level access (memberwise inits, nested types) — usually
+  not worth it.
+
 ### `EnterWorktree` no longer uses the requested name as the branch name
 
 *2026-07-05.* `EnterWorktree(name: "chore/deliver-retro-before-pr")` created the
@@ -64,6 +101,16 @@ in isolation.
 - **Why it bites CI:** `make build-docs` runs
   `generate-documentation --warnings-as-errors` **without `--target`**, i.e.
   across *all* targets, so a second target's doc-link errors fail the build.
+
+> **Update (2026-07-24, PR for #395):** this is **conditional on how the docs
+> are built**. Once the build passes `--enable-experimental-combined-documentation`
+> with every doc-bearing target listed (as `documentation.yml` and
+> `make generate-docs` now do), the module-qualified form **does** resolve:
+> `` ``TMDb/TMDbClient/languageModelTools`` `` builds clean under
+> `--warnings-as-errors` and produces a real link. Prefer it over a code span
+> when you want navigation — a code span silently loses the link. The
+> **unqualified** form (`` ``TMDbClient`` `` from another module) still fails
+> either way, and stdlib types still want code spans.
 
 ### `make ci` skips the Linux build — CI has a separate `build-test-linux` job
 
@@ -233,6 +280,14 @@ Consequences and how to read it:
   `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
   that array (instead of the exit status) will wrongly report the build as
   **failed**. Re-check the actual exit code before believing it.
+- **Resolved in #396 — and it needs maintaining.** `Package.swift` now
+  `exclude`s each `.docc` catalog when `SWIFTCI_DOCC != 1` (the "real fix"
+  suggested above), so `make ci` passes again on Xcode 27. **That list is
+  enumerated per target: adding a new target with a DocC catalog means adding it
+  to the `exclude` block, or the failure comes straight back for every `make`
+  build/test/release target.** Hit during #395, which added
+  `TMDbIntelligence.docc` and `TMDbIntelligenceTesting.docc` — the rebase onto
+  #396 compiled fine and only `make ci` caught the omission.
 
   **Beta-toolchain caveat (Swift 6.4 / macOS 27, Xcode 27):** on this toolchain
   `swift build --build-tests -Xswiftc -warnings-as-errors` now **exits 1** on the

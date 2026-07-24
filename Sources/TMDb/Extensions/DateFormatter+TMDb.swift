@@ -9,7 +9,7 @@ import Foundation
 
 extension DateFormatter {
 
-    static var theMovieDatabase: DateFormatter {
+    package static var theMovieDatabase: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy-MM-dd"

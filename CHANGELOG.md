@@ -26,6 +26,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `catch .notFound(let message)` with `catch .notFound(let context)` and read
   `context.statusMessage`; the context also exposes the HTTP status, TMDb status
   code, endpoint, and `Retry-After`.
+- **Breaking:** On-device intelligence moved into a new `TMDbIntelligence`
+  library product. Natural-language search
+  (`TMDbClient.naturalLanguageSearch`, `NaturalLanguageSearchService`,
+  `SearchPlan`, `NaturalLanguageSearchResult`,
+  `NaturalLanguageSearchAvailability`, `NaturalLanguageSearchError`,
+  `SearchDegradation`) and the Foundation Models tools
+  (`TMDbClient.languageModelTools`, `TMDbToolbox` and the individual
+  `*Tool` accessors) are no longer part of the core `TMDb` module.
+
+  **Migrating:** add the `TMDbIntelligence` product to your target's
+  dependencies and `import TMDbIntelligence` alongside `import TMDb`. No
+  other code changes are required — the API is unchanged. The mock and
+  samples move correspondingly from `TMDbTesting` to a new
+  `TMDbIntelligenceTesting` product.
+
+  This keeps the core `TMDb` product exactly cross-platform: every public
+  symbol it vends now functions on Linux and Windows as well as Apple
+  platforms. See
+  [ADR-0010](knowledge/decisions/0010-tmdb-intelligence-product.md).
 - **Breaking:** Model runtimes are now Swift `Duration` values instead of
   `Int` minutes — `Movie.runtime`, `TVEpisode.runtime`,
   `TVEpisodeAirDate.runtime` (`Duration?`) and `TVSeries.episodeRunTime`

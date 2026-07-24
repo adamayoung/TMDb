@@ -39,15 +39,15 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 * **Response Caching**: On-disk HTTP caching by default on Apple platforms
   (via `URLCache`, honouring TMDb's `Cache-Control` headers), plus an opt-in
   in-memory cache with configurable TTL and entry limits
-* **Natural-Language Search**: On-device "super search" — type a prompt,
-  get movies, TV series, and people. Deterministic interpretation via
-  Apple's Natural Language framework on every Apple platform, with
-  Foundation Models handling fuzzier prompts on devices with Apple
-  Intelligence
-* **Language Model Tools**: Drop-in Foundation Models `Tool`s for a
-  conversational movie assistant — add them to a `LanguageModelSession`
-  and the model searches, fetches details, and finds streaming
-  availability on its own (iOS/macOS/visionOS 26, watchOS 27)
+* **Natural-Language Search** (`TMDbIntelligence`): On-device "super
+  search" — type a prompt, get movies, TV series, and people.
+  Deterministic interpretation via Apple's Natural Language framework on
+  every Apple platform, with Foundation Models handling fuzzier prompts on
+  devices with Apple Intelligence
+* **Language Model Tools** (`TMDbIntelligence`): Drop-in Foundation Models
+  `Tool`s for a conversational movie assistant — add them to a
+  `LanguageModelSession` and the model searches, fetches details, and finds
+  streaming availability on its own (iOS/macOS/visionOS 26, watchOS 27)
 * **Modern Swift**: Async/await throughout, strongly-typed models,
   protocol-based architecture
 
@@ -80,8 +80,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **reviews** | Review details with author and media information |
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
-| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) |
-| **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) |
+| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) — requires `import TMDbIntelligence` |
+| **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) — requires `import TMDbIntelligence` |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)
 for detailed usage.
@@ -125,6 +125,33 @@ let package = Package(
 ### Xcode project
 
 Add the TMDb package to your Project's Package dependencies.
+
+### On-device intelligence
+
+Natural-language search and the Foundation Models tools ship in a separate
+`TMDbIntelligence` library, so the core `TMDb` product stays purely
+cross-platform. Add the product and import it alongside `TMDb`:
+
+```swift
+.target(
+  name: "MyProject",
+  dependencies: [
+    .product(name: "TMDb", package: "TMDb"),
+    .product(name: "TMDbIntelligence", package: "TMDb")
+  ]
+)
+```
+
+```swift
+import TMDb
+import TMDbIntelligence
+
+let results = try await tmdbClient.naturalLanguageSearch.search("movies with Tom Hanks")
+```
+
+`TMDbIntelligence` is an Apple-platforms library — it builds on Apple's
+Natural Language and Foundation Models frameworks. A matching
+`TMDbIntelligenceTesting` library vends its mock and samples.
 
 ### Testing support
 

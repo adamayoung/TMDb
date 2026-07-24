@@ -1,5 +1,5 @@
 TARGET = TMDb
-TEST_TARGET = TMDbTests|TMDbTestingTests
+TEST_TARGET = TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests
 INTEGRATION_TEST_TARGET = TMDbIntegrationTests
 
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=27.0'
@@ -67,7 +67,12 @@ preview-docs:
 .PHONY: generate-docs
 generate-docs:
 	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) --allow-writing-to-directory docs \
-		generate-documentation --target $(TARGET) \
+		generate-documentation \
+		--target TMDb \
+		--target TMDbIntelligence \
+		--target TMDbTesting \
+		--target TMDbIntelligenceTesting \
+		--enable-experimental-combined-documentation \
 		--disable-indexing \
 		--transform-for-static-hosting \
 		--hosting-base-path $(TARGET) \

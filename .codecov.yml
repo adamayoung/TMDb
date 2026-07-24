@@ -22,9 +22,10 @@ ignore:
   # logic, so line-coverage of its generated boilerplate is low-signal and would
   # only drag the project/patch numbers down.
   - 'Sources/TMDbTesting'
+  - 'Sources/TMDbIntelligenceTesting'
   # On-device Foundation Models code that cannot run in CI (no Apple
   # Intelligence model available) or is macro-generated schema. The live
   # data-source adapter is validated by the integration tests instead.
-  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/FoundationModelsSearchPlanGenerator.swift'
-  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/GeneratedSearchPlan.swift'
-  - 'Sources/TMDb/Domain/Services/NaturalLanguageSearch/LiveNaturalLanguageSearchDataSource.swift'
+  - 'Sources/TMDbIntelligence/NaturalLanguageSearch/FoundationModelsSearchPlanGenerator.swift'
+  - 'Sources/TMDbIntelligence/NaturalLanguageSearch/GeneratedSearchPlan.swift'
+  - 'Sources/TMDbIntelligence/NaturalLanguageSearch/LiveNaturalLanguageSearchDataSource.swift'

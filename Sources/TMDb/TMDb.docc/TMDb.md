@@ -60,7 +60,6 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/UsingAutoPagination>
 - <doc:/GeneratingImageURLs>
 - <doc:/ManagingUserAccounts>
-- <doc:/UsingLanguageModelTools>
 - <doc:/HandlingErrors>
 - <doc:/CachingResponses>
 
@@ -238,19 +237,6 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``MovieReleaseType``
 - ``TVSeriesStatus``
 - ``TVSeriesType``
-
-### Natural-Language Search
-
-- ``NaturalLanguageSearchService``
-- ``SearchPlan``
-- ``NaturalLanguageSearchResult``
-- ``SearchDegradation``
-- ``NaturalLanguageSearchAvailability``
-- ``NaturalLanguageSearchError``
-
-### Language Model Tools
-
-- ``TMDbToolbox``
 
 ### Trending
 

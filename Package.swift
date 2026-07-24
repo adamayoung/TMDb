@@ -19,7 +19,9 @@ let package = Package(
 
     products: [
         .library(name: "TMDb", targets: ["TMDb"]),
-        .library(name: "TMDbTesting", targets: ["TMDbTesting"])
+        .library(name: "TMDbTesting", targets: ["TMDbTesting"]),
+        .library(name: "TMDbIntelligence", targets: ["TMDbIntelligence"]),
+        .library(name: "TMDbIntelligenceTesting", targets: ["TMDbIntelligenceTesting"])
     ],
 
     targets: [
@@ -30,9 +32,22 @@ let package = Package(
             name: "TMDbTesting",
             dependencies: ["TMDb"]
         ),
+        .target(
+            name: "TMDbIntelligence",
+            dependencies: ["TMDb"]
+        ),
+        .target(
+            name: "TMDbIntelligenceTesting",
+            dependencies: ["TMDb", "TMDbIntelligence"]
+        ),
+        .target(
+            name: "TMDbTestFixtures",
+            dependencies: ["TMDb"],
+            path: "Tests/TMDbTestFixtures"
+        ),
         .testTarget(
             name: "TMDbTests",
-            dependencies: ["TMDb"],
+            dependencies: ["TMDb", "TMDbTestFixtures"],
             resources: [
                 .process("Resources")
             ]
@@ -42,8 +57,16 @@ let package = Package(
             dependencies: ["TMDb", "TMDbTesting"]
         ),
         .testTarget(
+            name: "TMDbIntelligenceTests",
+            dependencies: ["TMDb", "TMDbIntelligence", "TMDbTestFixtures"]
+        ),
+        .testTarget(
+            name: "TMDbIntelligenceTestingTests",
+            dependencies: ["TMDb", "TMDbIntelligence", "TMDbIntelligenceTesting"]
+        ),
+        .testTarget(
             name: "TMDbIntegrationTests",
-            dependencies: ["TMDb"]
+            dependencies: ["TMDb", "TMDbIntelligence"]
         )
     ]
 )
@@ -61,4 +84,8 @@ if ProcessInfo.processInfo.environment["SWIFTCI_DOCC"] == "1" {
     // built keeps those targets clean; the documentation build still sees them.
     package.targets.first { $0.name == "TMDb" }?.exclude = ["TMDb.docc"]
     package.targets.first { $0.name == "TMDbTesting" }?.exclude = ["TMDbTesting.docc"]
+    package.targets.first { $0.name == "TMDbIntelligence" }?
+        .exclude = ["TMDbIntelligence.docc"]
+    package.targets.first { $0.name == "TMDbIntelligenceTesting" }?
+        .exclude = ["TMDbIntelligenceTesting.docc"]
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol APIClient: Sendable {
+package protocol APIClient: Sendable {
 
     func perform<Request: APIRequest>(
         _ request: Request

@@ -11,6 +11,7 @@
     import Foundation
     import Testing
     @testable import TMDb
+    @testable import TMDbIntelligence
 
     @Suite(
         .integrationGate,
