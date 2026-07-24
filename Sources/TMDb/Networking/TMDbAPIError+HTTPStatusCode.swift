@@ -9,46 +9,68 @@ import Foundation
 
 extension TMDbAPIError {
 
-    init(statusCode: Int, message: String?) {
+    ///
+    /// Creates an API error from response context, choosing the case from the
+    /// context's HTTP status code.
+    ///
+    /// A status code without a dedicated case falls back by range so the context
+    /// is never lost: any other `4xx` becomes ``badRequest(_:)`` and any other
+    /// `5xx` becomes ``internalServerError(_:)``. A missing or non-`4xx`/`5xx`
+    /// status becomes ``unknown``.
+    ///
+    /// - Parameter context: The context describing the failed response.
+    ///
+    init(context: TMDbErrorContext) {
+        guard let statusCode = context.httpStatusCode else {
+            self = .unknown
+            return
+        }
+
         switch statusCode {
         case 400:
-            self = .badRequest(message)
+            self = .badRequest(context)
 
         case 401:
-            self = .unauthorised(message)
+            self = .unauthorised(context)
 
         case 403:
-            self = .forbidden(message)
+            self = .forbidden(context)
 
         case 404:
-            self = .notFound(message)
+            self = .notFound(context)
 
         case 405:
-            self = .methodNotAllowed(message)
+            self = .methodNotAllowed(context)
 
         case 406:
-            self = .notAcceptable(message)
+            self = .notAcceptable(context)
 
         case 422:
-            self = .unprocessableContent(message)
+            self = .unprocessableContent(context)
 
         case 429:
-            self = .tooManyRequests(message)
+            self = .tooManyRequests(context)
 
         case 500:
-            self = .internalServerError(message)
+            self = .internalServerError(context)
 
         case 501:
-            self = .notImplemented(message)
+            self = .notImplemented(context)
 
         case 502:
-            self = .badGateway(message)
+            self = .badGateway(context)
 
         case 503:
-            self = .serviceUnavailable(message)
+            self = .serviceUnavailable(context)
 
         case 504:
-            self = .gatewayTimeout(message)
+            self = .gatewayTimeout(context)
+
+        case 400 ... 499:
+            self = .badRequest(context)
+
+        case 500 ... 599:
+            self = .internalServerError(context)
 
         default:
             self = .unknown

@@ -182,7 +182,7 @@ struct TMDbListServiceManagementTests {
 
     @Test("create with empty name throws bad request and performs no request")
     func createWithEmptyNameThrowsBadRequest() async throws {
-        await #expect(throws: TMDbError.badRequest("List name must not be empty")) {
+        await #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "List name must not be empty"))) {
             _ = try await service.create(name: "", session: session)
         }
 
@@ -191,7 +191,7 @@ struct TMDbListServiceManagementTests {
 
     @Test("create with whitespace name throws bad request and performs no request")
     func createWithWhitespaceNameThrowsBadRequest() async throws {
-        await #expect(throws: TMDbError.badRequest("List name must not be empty")) {
+        await #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "List name must not be empty"))) {
             _ = try await service.create(name: " \t\n ", session: session)
         }
 

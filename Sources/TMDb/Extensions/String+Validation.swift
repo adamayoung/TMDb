@@ -24,7 +24,7 @@ extension String {
     ///
     func validateNotEmpty(message: String) throws(TMDbError) {
         guard !trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .badRequest(message)
+            throw .badRequest(TMDbErrorContext(statusMessage: message))
         }
     }
 

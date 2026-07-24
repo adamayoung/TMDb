@@ -21,104 +21,115 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .unknown)
     }
 
-    @Test("init when error is a TMDbAPIError.badRequest returns badRequest error")
+    @Test("init when error is a TMDbAPIError.badRequest preserves the context")
     func initWithBadRequestTMDbAPIErrorReturnsBadRequestError() {
-        let message = "Bad request message"
-        let error = TMDbAPIError.badRequest(message)
+        let context = TMDbErrorContext(httpStatusCode: 400, statusMessage: "Bad request message")
+        let error = TMDbAPIError.badRequest(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .badRequest(message))
+        #expect(tmdbError == .badRequest(context))
     }
 
-    @Test("init when error is a TMDbAPIError.unauthorised returns unauthorised error")
+    @Test("init when error is a TMDbAPIError.unauthorised preserves the context")
     func initWithUnauthorisedTMDbAPIErrorReturnsUnauthorisedError() {
-        let message = "Unauthorised message"
-        let error = TMDbAPIError.unauthorised(message)
+        let context = TMDbErrorContext(httpStatusCode: 401, statusMessage: "Unauthorised message")
+        let error = TMDbAPIError.unauthorised(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .unauthorised(message))
+        #expect(tmdbError == .unauthorised(context))
     }
 
-    @Test("init when error is a TMDbAPIError.forbidden returns forbidden error")
+    @Test("init when error is a TMDbAPIError.forbidden preserves the context")
     func initWithForbiddenTMDbAPIErrorReturnsForbiddenError() {
-        let message = "Forbidden message"
-        let error = TMDbAPIError.forbidden(message)
+        let context = TMDbErrorContext(httpStatusCode: 403, statusMessage: "Forbidden message")
+        let error = TMDbAPIError.forbidden(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .forbidden(message))
+        #expect(tmdbError == .forbidden(context))
     }
 
-    @Test("init when error is a TMDbAPIError.notFound returns notFound error")
+    @Test("init when error is a TMDbAPIError.notFound preserves the context")
     func initWithNotFoundTMDbAPIErrorReturnsNotFoundError() {
-        let message = "Not found message"
-        let error = TMDbAPIError.notFound(message)
+        let context = TMDbErrorContext(httpStatusCode: 404, statusMessage: "Not found message")
+        let error = TMDbAPIError.notFound(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .notFound(message))
+        #expect(tmdbError == .notFound(context))
     }
 
-    @Test("init when error is a TMDbAPIError.tooManyRequests returns tooManyRequests error")
+    @Test("init when error is a TMDbAPIError.tooManyRequests preserves the context")
     func initWithTooManyRequestsTMDbAPIErrorReturnsTooManyRequestsError() {
-        let message = "Too many requests message"
-        let error = TMDbAPIError.tooManyRequests(message)
+        let context = TMDbErrorContext(httpStatusCode: 429, retryAfter: .seconds(5))
+        let error = TMDbAPIError.tooManyRequests(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .tooManyRequests(message))
+        #expect(tmdbError == .tooManyRequests(context))
     }
 
-    @Test("init when error is a TMDbAPIError.internalServerError returns serverError error")
+    @Test("init when error is a TMDbAPIError.internalServerError returns serverError with context")
     func initWithInternalServerErrorTMDbAPIErrorReturnsServerError() {
-        let message = "Internal server error message"
-        let error = TMDbAPIError.internalServerError(message)
+        let context = TMDbErrorContext(httpStatusCode: 500, statusMessage: "Internal server error")
+        let error = TMDbAPIError.internalServerError(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .serverError(message))
+        #expect(tmdbError == .serverError(context))
     }
 
-    @Test("init when error is a TMDbAPIError.notImplemented returns serverError error")
-    func initWithNotImplementedTMDbAPIErrorReturnsServerError() {
-        let message = "Not implemented message"
-        let error = TMDbAPIError.notImplemented(message)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .serverError(message))
-    }
-
-    @Test("init when error is a TMDbAPIError.badGateway returns serverError error")
+    @Test("init when error is a TMDbAPIError.badGateway returns serverError with 502 context")
     func initWithBadGatewayTMDbAPIErrorReturnsServerError() {
-        let message = "Bad gateway message"
-        let error = TMDbAPIError.badGateway(message)
+        let context = TMDbErrorContext(httpStatusCode: 502, statusMessage: "Bad gateway message")
+        let error = TMDbAPIError.badGateway(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .serverError(message))
+        #expect(tmdbError == .serverError(context))
+        #expect(tmdbError == .serverError(TMDbErrorContext(httpStatusCode: 502, statusMessage: "Bad gateway message")))
     }
 
-    @Test("init when error is a TMDbAPIError.serviceUnavailable returns serverError error")
-    func initWithServiceUnavailableTMDbAPIErrorReturnsServerError() {
-        let message = "Service unavailable message"
-        let error = TMDbAPIError.serviceUnavailable(message)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .serverError(message))
-    }
-
-    @Test("init when error is a TMDbAPIError.gatewayTimeout returns serverError error")
+    @Test("init when error is a TMDbAPIError.gatewayTimeout returns serverError with context")
     func initWithGatewayTimeoutTMDbAPIErrorReturnsServerError() {
-        let message = "Gateway timeout message"
-        let error = TMDbAPIError.gatewayTimeout(message)
+        let context = TMDbErrorContext(httpStatusCode: 504, statusMessage: "Gateway timeout message")
+        let error = TMDbAPIError.gatewayTimeout(context)
 
         let tmdbError = TMDbError(error: error)
 
-        #expect(tmdbError == .serverError(message))
+        #expect(tmdbError == .serverError(context))
+    }
+
+    @Test("init when error is a TMDbAPIError.methodNotAllowed returns badRequest with context")
+    func initWithMethodNotAllowedTMDbAPIErrorReturnsBadRequestError() {
+        let context = TMDbErrorContext(httpStatusCode: 405, statusMessage: "Method not allowed")
+        let error = TMDbAPIError.methodNotAllowed(context)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(context))
+    }
+
+    @Test("init when error is a TMDbAPIError.unprocessableContent returns badRequest with context")
+    func initWithUnprocessableContentTMDbAPIErrorReturnsBadRequestError() {
+        let context = TMDbErrorContext(httpStatusCode: 422, statusMessage: "Unprocessable content")
+        let error = TMDbAPIError.unprocessableContent(context)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(context))
+    }
+
+    @Test("init when error is a TMDbAPIError.invalidURL returns invalidURL error")
+    func initWithInvalidURLTMDbAPIErrorReturnsInvalidURLError() {
+        let url = "https://invalid-url.example.com"
+        let error = TMDbAPIError.invalidURL(url)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .invalidURL(url))
     }
 
     @Test("init when error is a TMDbAPIError.network returns network error")
@@ -141,59 +152,19 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .decode(decodeError))
     }
 
+    @Test("init when error is a TMDbAPIError.encode returns encode error")
+    func initWithEncodeTMDbAPIErrorReturnsEncodeError() {
+        let encodeError = NSError(domain: "encode", code: -1)
+        let error = TMDbAPIError.encode(encodeError)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .encode(encodeError))
+    }
+
     @Test("init when error is a TMDbAPIError.unknown returns unknown error")
     func initWithUnknownTMDbAPIErrorReturnsUnknownError() {
         let error = TMDbAPIError.unknown
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .unknown)
-    }
-
-    @Test("init when error is a TMDbAPIError.methodNotAllowed returns badRequest error")
-    func initWithMethodNotAllowedTMDbAPIErrorReturnsBadRequestError() {
-        let message = "Method not allowed message"
-        let error = TMDbAPIError.methodNotAllowed(message)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .badRequest(message))
-    }
-
-    @Test("init when error is a TMDbAPIError.notAcceptable returns badRequest error")
-    func initWithNotAcceptableTMDbAPIErrorReturnsBadRequestError() {
-        let message = "Not acceptable message"
-        let error = TMDbAPIError.notAcceptable(message)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .badRequest(message))
-    }
-
-    @Test("init when error is a TMDbAPIError.unprocessableContent returns badRequest error")
-    func initWithUnprocessableContentTMDbAPIErrorReturnsBadRequestError() {
-        let message = "Unprocessable content message"
-        let error = TMDbAPIError.unprocessableContent(message)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .badRequest(message))
-    }
-
-    @Test("init when error is a TMDbAPIError.invalidURL returns badRequest error")
-    func initWithInvalidURLTMDbAPIErrorReturnsBadRequestError() {
-        let url = "https://invalid-url.example.com"
-        let error = TMDbAPIError.invalidURL(url)
-
-        let tmdbError = TMDbError(error: error)
-
-        #expect(tmdbError == .badRequest("Invalid URL: \(url)"))
-    }
-
-    @Test("init when error is a TMDbAPIError.encode returns unknown error")
-    func initWithEncodeTMDbAPIErrorReturnsUnknownError() {
-        let encodeError = NSError(domain: "encode", code: -1)
-        let error = TMDbAPIError.encode(encodeError)
 
         let tmdbError = TMDbError(error: error)
 
