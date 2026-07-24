@@ -181,7 +181,19 @@ Invoke **`/implement-plan`** (Canon TDD: list shown first, one failing test
 at a time, done only when the list is empty and both suites green). It
 commits at logical checkpoints — required: Phase 4 reviews **committed**
 history. Don't advance until `/test` **and** `/integration-test` pass and the
-work is committed; re-confirm the weight from the diff. Two hard checkpoints:
+work is committed; re-confirm the weight from the diff. Three hard checkpoints:
+
+- **Run `swift build -c release` before declaring implementation done** —
+  debug-green is not evidence the release gate passes. `swift build`,
+  `--build-tests` and both suites all compile the package with
+  `-enable-testing`; the release build does not, so **access-level and
+  `@testable` mistakes fail there and nowhere else** — precisely what target
+  extractions, new non-test targets, and visibility changes are made of. It is
+  a ~30s check that guards `make build-release`, `make ci`, and both CI *Build
+  for Release* jobs. (Incident: PR #398 shipped a `@testable import` inside a
+  new non-test fixtures target; debug, `--build-tests`, 2869 unit and 291
+  integration tests all passed while release was red — caught only in code
+  review. See `knowledge/gotchas.md`.)
 
 - **"Fix every instance of pattern X" → enumerate ALL sites up front** with a
   single **type-driven sweep**, listed in the test list before implementing —
