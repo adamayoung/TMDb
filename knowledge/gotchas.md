@@ -95,6 +95,21 @@ checkout stayed clean) before trusting a green run. To rescue edits already made
 `main`: `git -C <main> stash` then `git -C <worktree> stash pop` (stash is shared
 across worktrees).
 
+### The build/test tooling-runner runs in the main checkout, not the active worktree
+
+*2026-07-24.* During a `/deliver` in a worktree, the `tooling-runner` (Haiku)
+subagent behind `/build` / `/build-for-testing` / `/test` / `/integration-test` —
+and Agent-tool subagents generally — execute in the **main checkout**, not the
+worktree the conductor switched into. So `make test` spawned that way builds
+`main`'s pristine sources, **misses the worktree's committed changes**, and
+(compounded by the toon `errors[]` quirk below) misreports. **Detect it:** the
+run's `.build/last-*.log` lands under the **main checkout** and the worktree's
+`.build/` has none. **Work around it for the duration of a worktree delivery:**
+run builds/tests **directly via `Bash`** (which does run in the worktree CWD) —
+`swift build --build-tests` then `swift test --skip-build --scratch-path .build
+--filter "TMDbTests|TMDbTestingTests"` (see the `Makefile` `test` target for the
+exact incantation) — instead of delegating to the tooling-runner.
+
 ### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
 
 *2026-06-22.* Adding a new `block(for:)` formatter plus its helpers to
@@ -145,6 +160,13 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   a version-drift artifact (a rule's behaviour changed between versions), **not**
   a real violation. Check `swiftlint version` against the pin before editing
   code — don't "fix" a non-issue.
+- Homebrew silently drifts `swiftformat` (seen: 0.62.1 vs the 0.61.1 pin), which
+  then flags **`wrapIfStatementBodies`** on unchanged files *and*, worse, makes
+  the PostToolUse format hook reshape edited files away from CI's output.
+  Reinstall the pin to `~/.local/bin` (which precedes Homebrew on `PATH`, like
+  the swiftlint pin) from the same URL CI uses:
+  `curl -fsSL https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip`,
+  unzip, and `install` the binary to `~/.local/bin/swiftformat`.
 
 ### `make` build/test targets pipe through xcsift with `pipefail`
 
@@ -166,6 +188,16 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
   that array (instead of the exit status) will wrongly report the build as
   **failed**. Re-check the actual exit code before believing it.
+
+  **Beta-toolchain caveat (Swift 6.4 / macOS 27, Xcode 27):** on this toolchain
+  `swift build --build-tests -Xswiftc -warnings-as-errors` now **exits 1** on the
+  same `.docc` diagnostic, so `make build-tests` / `make test` / `make ci` fail
+  locally even though the code is clean (plain `swift build` — no `--build-tests`,
+  no `-Werror` — still exits 0). Workaround while on the beta: build tests
+  **without** `-Werror` (`swift build --build-tests`) and run them via `swift test
+  --skip-build`; to still catch real warnings, build with `-Werror` and require
+  `… 2>&1 | grep 'error:' | grep -v unhandled` to be empty. `make build-docs` is
+  unaffected — it sets `SWIFTCI_DOCC=1`, so the plugin handles the catalogs.
 
 ### The `xcode-tools` MCP only exists inside Xcode
 
