@@ -147,10 +147,17 @@ then fetch its details or watch providers.
 - Uses **Swift Testing** framework (`@Test`, `#expect`, `#require`) — not
   XCTest
 
-**Adding a test target?** The `swift test --filter` string is hardcoded in
-**three** places — `Makefile` (`TEST_TARGET`) and `.github/workflows/ci.yml`
-(the macOS **and** Linux `Test` steps). Miss one and the new suite silently
-never runs.
+**Adding a test target?** Test-target names are hardcoded in **four** places —
+miss one and the failure is silent:
+
+1. `Makefile` — `TEST_TARGET`.
+2. `.github/workflows/ci.yml` — the macOS `Test` step's `--filter`.
+3. `.github/workflows/ci.yml` — the Linux `Test` step's `--filter`.
+4. `.github/workflows/ci.yml` — the **`Prepare Code Coverage`** loop
+   (`for target in …`), which enumerates one `.xctest` bundle per target.
+
+Miss 1–3 and the suite never runs; miss 4 and it runs but its coverage is
+never exported, so the code it covers reads as uncovered on codecov.
 
 ## Understanding the TMDb API
 

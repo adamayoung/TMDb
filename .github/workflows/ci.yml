@@ -179,7 +179,7 @@ jobs:
           PROFDATA="$(dirname "$(swift test --show-codecov-path)")/default.profdata"
 
           OBJECTS=()
-          for target in TMDbTests TMDbTestingTests; do
+          for target in TMDbTests TMDbTestingTests TMDbIntelligenceTests TMDbIntelligenceTestingTests; do
             binary="${BIN_PATH}/${target}.xctest/Contents/MacOS/${target}"
             if [ ! -f "${binary}" ]; then
               echo "::error::Test binary not found: ${binary}"
