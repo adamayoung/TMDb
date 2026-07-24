@@ -38,7 +38,7 @@ let package = Package(
         ),
         .target(
             name: "TMDbIntelligenceTesting",
-            dependencies: ["TMDbIntelligence"]
+            dependencies: ["TMDb", "TMDbIntelligence"]
         ),
         .target(
             name: "TMDbTestFixtures",

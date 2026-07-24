@@ -35,7 +35,7 @@ let results = try await tmdbClient.naturalLanguageSearch.search("movies with Tom
 
 ### Natural-language search
 
-`TMDbClient/naturalLanguageSearch` interprets a prompt on device and executes
+``TMDb/TMDbClient/naturalLanguageSearch`` interprets a prompt on device and executes
 the resulting plan against TMDb. Interpretation is deterministic — a rule-based
 intent classifier plus `NLTagger` person-name extraction. On devices with Apple
 Intelligence, Foundation Models additionally handles fuzzier, compositional
@@ -66,6 +66,7 @@ See <doc:/UsingLanguageModelTools> for the full walkthrough.
 
 ### Natural-Language Search
 
+- ``TMDb/TMDbClient/naturalLanguageSearch``
 - ``NaturalLanguageSearchService``
 - ``SearchPlan``
 - ``NaturalLanguageSearchResult``
@@ -76,3 +77,15 @@ See <doc:/UsingLanguageModelTools> for the full walkthrough.
 ### Language Model Tools
 
 - ``TMDbToolbox``
+- ``TMDb/TMDbClient/languageModelTools``
+
+### Individual Language Model Tools
+
+- ``TMDb/TMDbClient/searchTool``
+- ``TMDb/TMDbClient/movieDetailsTool``
+- ``TMDb/TMDbClient/movieCreditsTool``
+- ``TMDb/TMDbClient/tvSeriesDetailsTool``
+- ``TMDb/TMDbClient/personFilmographyTool``
+- ``TMDb/TMDbClient/trendingTool``
+- ``TMDb/TMDbClient/watchProvidersTool``
+- ``TMDb/TMDbClient/discoverMoviesTool``

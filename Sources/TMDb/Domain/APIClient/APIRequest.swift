@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol APIRequest: Identifiable, Equatable {
+package protocol APIRequest: Identifiable, Equatable {
 
     associatedtype Body: Encodable & Equatable
     associatedtype Response: Decodable

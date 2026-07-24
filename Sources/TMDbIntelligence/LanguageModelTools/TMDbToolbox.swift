@@ -28,7 +28,7 @@
     /// `id`, so the model can chain calls — searching for a title, then fetching its
     /// details or watch providers.
     ///
-    /// - Note: `TMDbClient.languageModelTools` is a shorthand for
+    /// - Note: ``TMDb/TMDbClient/languageModelTools`` is a shorthand for
     ///   `TMDbToolbox(client:).all`.
     ///
     @available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)

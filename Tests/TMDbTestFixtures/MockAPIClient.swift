@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import TMDb
+import TMDb
 
 package final class MockAPIClient: APIClient, @unchecked Sendable {
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum APIRequestMethod {
+package enum APIRequestMethod {
 
     case get
     case post
