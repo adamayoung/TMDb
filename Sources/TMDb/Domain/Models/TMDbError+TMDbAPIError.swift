@@ -16,35 +16,35 @@ extension TMDbError {
         }
 
         switch apiError {
-        case .badRequest(let message):
-            self = .badRequest(message)
+        case .badRequest(let context):
+            self = .badRequest(context)
 
-        case .unauthorised(let message):
-            self = .unauthorised(message)
+        case .unauthorised(let context):
+            self = .unauthorised(context)
 
-        case .forbidden(let message):
-            self = .forbidden(message)
+        case .forbidden(let context):
+            self = .forbidden(context)
 
-        case .notFound(let message):
-            self = .notFound(message)
+        case .notFound(let context):
+            self = .notFound(context)
 
-        case .tooManyRequests(let message):
-            self = .tooManyRequests(message)
+        case .tooManyRequests(let context):
+            self = .tooManyRequests(context)
 
-        case .internalServerError(let message),
-             .notImplemented(let message),
-             .badGateway(let message),
-             .serviceUnavailable(let message),
-             .gatewayTimeout(let message):
-            self = .serverError(message)
+        case .internalServerError(let context),
+             .notImplemented(let context),
+             .badGateway(let context),
+             .serviceUnavailable(let context),
+             .gatewayTimeout(let context):
+            self = .serverError(context)
 
-        case .methodNotAllowed(let message),
-             .notAcceptable(let message),
-             .unprocessableContent(let message):
-            self = .badRequest(message)
+        case .methodNotAllowed(let context),
+             .notAcceptable(let context),
+             .unprocessableContent(let context):
+            self = .badRequest(context)
 
         case .invalidURL(let url):
-            self = .badRequest("Invalid URL: \(url)")
+            self = .invalidURL(url)
 
         case .network(let error):
             self = .network(error)
@@ -52,8 +52,8 @@ extension TMDbError {
         case .decode(let error):
             self = .decode(error)
 
-        case .encode:
-            self = .unknown
+        case .encode(let error):
+            self = .encode(error)
 
         case .unknown:
             self = .unknown

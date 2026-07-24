@@ -28,8 +28,15 @@ struct ToolErrorMapperTests {
 
     @Test("bad request maps to a message including the underlying detail")
     func badRequest() {
-        let message = ToolErrorMapper.message(for: .badRequest("invalid country"))
+        let context = TMDbErrorContext(statusMessage: "invalid country")
+        let message = ToolErrorMapper.message(for: .badRequest(context))
         #expect(message?.contains("Invalid request: invalid country") == true)
+    }
+
+    @Test("bad request without a status message falls back to a generic detail")
+    func badRequestWithoutStatusMessage() {
+        let message = ToolErrorMapper.message(for: .badRequest())
+        #expect(message?.contains("Invalid request: bad request") == true)
     }
 
     @Test("too many requests maps to a rate-limit message")
@@ -49,6 +56,8 @@ struct ToolErrorMapperTests {
         #expect(ToolErrorMapper.message(for: .network(DummyError())) == nil)
         #expect(ToolErrorMapper.message(for: .serverError()) == nil)
         #expect(ToolErrorMapper.message(for: .decode(DummyError())) == nil)
+        #expect(ToolErrorMapper.message(for: .encode(DummyError())) == nil)
+        #expect(ToolErrorMapper.message(for: .invalidURL("/movie/1")) == nil)
         #expect(ToolErrorMapper.message(for: .invalidRating) == nil)
         #expect(ToolErrorMapper.message(for: .unknown) == nil)
     }

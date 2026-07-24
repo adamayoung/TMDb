@@ -14,6 +14,53 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (#397) · full
+
+- **Phases / skills:** phases 0–8 pre-PR; full weight (reshapes the package's
+  most load-bearing public enum + networking + new public API). `review-plan`
+  (3 critics) → **1 blocker**, 3 majors, 4 minors; all applied, none rejected.
+  `implement-plan`/`canon-tdd` in 4 committed increments (additive types →
+  atomic reshape + 15-file test migration → fixtures/integration → docs/ADR).
+  `review-changes` fan-out (5 dims + adversarial verify) → 0 Critical/High, 2
+  Medium, 3 Low; fixed 4, rejected 1 (`Codable` on the new value types —
+  speculative, `TMDbError` itself isn't `Codable`). `security-review` → 0
+  vulnerabilities, 1 consistency hardening applied. `capture-knowledge` → 2
+  API notes + 3 gotchas + ADR-0012. Independent grader: **5/5 ACs met**.
+- **Worked:** the plan review paid for the whole delivery — a critic caught that
+  `endpointPath` would carry `guest_session_id` (a bearer-like credential) and
+  `account_id` (PII) into a **public, loggable** field, before a line was
+  written; the redactor and its tests came from that finding, and the security
+  review later confirmed the control covers all 137 request-path templates.
+  Capturing **real** error bodies from the live API during planning (`curl -D-`)
+  beat the plan's guesses: the fixtures became 400/code 22 and 422/code 20 as
+  the API actually returns them, not the invented 422/code 5. Keeping the six
+  cases semantic and putting transport detail in context (wiki: *semantic
+  errors, not transport codes*) un-collapsed the fidelity without exporting 13
+  HTTP-shaped public cases.
+- **Friction (environmental):** the Xcode 27 / Swift 6.4 `.docc` trap that #390
+  logged as annoying became **blocking** — `make ci` cannot run at all. My first
+  attribution (xcsift `--Werror`) was **wrong**; `pipestatus` showed `swift
+  build` exiting 1 and xcsift 0, and the failure reproduced on a pristine
+  `origin/main` worktree, proving toolchain drift rather than a branch defect.
+  The tooling-runner CWD trap recurred with a new symptom: a delegated
+  `swift test` ran in the **main** checkout and reported "no matching test cases
+  found" for suites that plainly exist. Web tools hit a session rate limit
+  mid-task; the GitHub API (`runner-images` README + announcement issue) served
+  as the substitute source.
+- **Deviations:** ran every build/test **directly via `Bash`** in the worktree
+  again; verified the delivery against CI's own commands rather than `make ci`.
+  Mid-delivery the user asked for Xcode 27 adoption, so that work went to its
+  own worktree/branch (**#396**) to keep this PR scoped — its CI then caught a
+  real regression (Swift 6.4 moved build products and split the test bundle per
+  target, so the hardcoded coverage export silently uploaded 0%).
+- **One improvement:** the tooling-runner CWD fix was **already** this file's
+  "one improvement" for #390 and it recurred verbatim one delivery later — two
+  consecutive full deliveries lost time to it. It should stop being a retro line
+  and become a skill change: either pin the tooling-runner's CWD to the active
+  worktree, or have `/build`/`/test` refuse to run when their CWD isn't the
+  conductor's. Second candidate: `Package.swift` should declare the `.docc`
+  catalogs so `-warnings-as-errors` can't fatally trip on them (shipped in #396).
+
 ## 2026-07-24 — ♻️ Represent model runtimes as `Duration` instead of `Int` (#390) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (breaking public API,
@@ -345,42 +392,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   do one **type-driven enumeration of all sites up front** and list them in the
   plan, rather than discovering them incrementally across review passes.
 
-## 2026-06-24 — 📝 Document existing response caching (#363) · lite (docs-led)
-
-- **Phases / skills:** phases 0–6; `review-changes, capture-knowledge, pr,
-  watch-pr`. Skipped `/review-plan` (lite + `/deliver` invocation was the
-  approval); skipped `/security-review` (no executable surface — doc comments +
-  markdown only); did **not** run `/implement-plan` (docs-only — no Canon TDD
-  test list to drive).
-- **Worked:** the standout was **challenging the premise before building.** The
-  user asked "evaluate whether this feature is needed — there's already an HTTP
-  cache" mid-plan; a quick `curl -D-` of real TMDb endpoints (every GET returns
-  `Cache-Control: public, max-age` + `ETag`) plus reading `TMDbFactory` showed the
-  requested opt-in on-disk cache **already exists** via the default `URLCache`
-  (Apple platforms) — and a hand-rolled one would be *inferior* (fixed TTL, no 304
-  revalidation). `AskUserQuestion` → "document, build nothing" turned a feature
-  build into a docs PR + ADR-0007. `make build-docs` (warnings-as-errors) was the
-  real gate for the `<doc:>`/symbol links.
-- **Friction:** (1) The single `code-reviewer` caught a genuine **High** that
-  *both* `make build-docs` and `markdownlint` missed — stray `</content>`/
-  `</invoke>` tags the `Write` tool leaked into the article tail (DocC renders
-  them as prose; `MD013` is off). Strong evidence that code review earns its keep
-  even on a "docs-only" change, and now a captured gotcha. (2) The recurring
-  full-`make ci` cost: the diff is doc-comments + markdown, yet ran the entire
-  unit+integration+release matrix.
-- **Deviations:** (a) The plan-file `Write` was rejected and `/deliver` invoked
-  directly, so the plan lived only in conversation — Phase 0's "read plan content
-  into context" covered it cleanly. (b) Wrote docs directly instead of via
-  `/implement-plan` (no test list for prose); build-docs + lint-markdown were the
-  gates.
-- **One improvement:** the **docs/config-only fast gate** is now logged on #340,
-  #343, #344 and here — four deliveries paying the full ~6-min matrix for
-  no-logic changes. Refinement this run exposes: the existing fast-gate detector
-  keys on the `.swift` *extension*, so a **comment/doc-only `.swift` diff** (like
-  this one) still trips the full gate. Worth finally implementing the fast gate
-  **and** widening its trigger to "no semantic Swift change" (e.g. diff is only
-  within `///`/`//` lines), so doc-comment touch-ups qualify too.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -388,6 +399,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-24 | #363 | lite (docs-led) | Documented the existing response caching instead of building it: challenging the premise mid-plan (`curl -D-` showed every GET returns `Cache-Control`/`ETag`, so the default `URLCache` already provides — and beats — the requested opt-in cache) turned a feature build into a docs PR + ADR-0007. A single `code-reviewer` caught a High that both `make build-docs` and `markdownlint` missed: stray `</content>`/`</invoke>` tags the `Write` tool leaked into the article tail. Fourth entry asking for a docs/config-only fast gate, widened here to "no semantic Swift change" so doc-comment-only `.swift` diffs qualify. |
 | 2026-06-24 | #361 | lite | Missing discover filter params; single-`code-reviewer` converged 0/0/0 (existing no-op-mutation guard test made the dropped-field risk in the ~30-arg `copy()` helpers trivial to cover). Two recurring traps: edits landing in `main` not the worktree (source `Read` pre-`EnterWorktree` → stale paths; now the Phase 1 `git status` checkpoint), and a stale "ready" call — verify every required check is `COMPLETED`+`SUCCESS` on the current tip, and rule out a pending required check before blaming a review rule on `BLOCKED`. |
 | 2026-06-23 | #359 | full | `TMDbTesting` mocks + samples (~16k lines, 14-agent fan-out); reference-first review caught a cross-module DocC break pre-replication; gate re-sourced samples from live MCP + split `TMDbTestingTests`; lessons: invoke specialist skills when their domain appears, never silently relax a locked user decision. |
 | 2026-06-23 | #357 | lite | `movieCredits` toolbox tool; local reviewer's adversarial pass dropped a real High on a fabricated "no sibling has one" claim → adversarial drops must verify sibling-convention claims against the tree. |

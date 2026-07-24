@@ -18,6 +18,46 @@ a `304 Not Modified`). This is why the default `URLSession` adapter's `URLCache`
 gives real on-disk caching for free on Apple platforms — see
 [ADR-0007](decisions/0007-document-existing-response-caching.md).
 
+## Errors
+
+### Error bodies are `{success, status_code, status_message}` — and `status_code` ≠ HTTP status
+
+*2026-07-24.* Every GET error response carries the same flat JSON body, e.g.
+
+```json
+{"success":false,"status_code":34,"status_message":"The resource you requested could not be found."}
+```
+
+Verified live: **400** → code 22 (bad `page`), **401** → code 7 (invalid API key),
+**404** → code 34 (`movie/{bogus id}`), **422** → code 20 (a `changes` date range
+longer than 14 days).
+
+- TMDb's numeric `status_code` is **not** the HTTP status and is **many-to-one**
+  against it: a 404 can be code 6, 34 or 37; a 401 spans 14 different codes. Keep
+  both — the HTTP status for coarse handling, the TMDb code for the exact cause.
+  The full table is at <https://developer.themoviedb.org/docs/errors> (47 codes).
+- **Key order varies** between endpoints (`success` sometimes first, sometimes
+  last), which is harmless for keyed `Decodable` but will break any byte-compare
+  of fixtures.
+- POST body-validation can instead return an `{"errors":[…]}` array with no
+  `status_code`, so a decoder for the shape above must degrade gracefully
+  (the client decodes it with `try?` and keeps the HTTP status).
+
+### Credentials and PII live in the URL *path*, not just the query
+
+*2026-07-24.* Where a secret appears differs by kind, which matters for anything
+that logs or surfaces a request path:
+
+- **Path segments:** `guest_session_id` (`/guest_session/{id}/rated/…`, a
+  bearer-like credential) and `account_id` (`/account/{id}/…`, personal data).
+- **Query items:** `api_key`, `session_id`.
+- **Request bodies:** `username`, `password`, `request_token`.
+
+So a path is *not* automatically safe to expose. This is why `TMDbErrorContext`
+runs its `endpointPath` through `EndpointPathRedactor` (see
+[ADR-0012](decisions/0012-structured-tmdberror-context.md)); redaction keys off
+the **first** path component so `/authentication/guest_session/new` is untouched.
+
 ## Discover
 
 ### `discover/movie` has *two* distinct release-date filters

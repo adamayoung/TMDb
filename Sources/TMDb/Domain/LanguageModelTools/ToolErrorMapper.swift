@@ -37,8 +37,9 @@ enum ToolErrorMapper {
             let suffix = id.map { " with id \($0)" } ?? ""
             return "No TMDb \(entity ?? "result")\(suffix) found."
 
-        case .badRequest(let message):
-            return "Invalid request: \(message ?? "bad request"). Check the id or country code."
+        case .badRequest(let context):
+            let message = context.statusMessage ?? "bad request"
+            return "Invalid request: \(message). Check the id or country code."
 
         case .tooManyRequests:
             return "TMDb is rate limiting requests right now; please retry shortly."
@@ -46,7 +47,7 @@ enum ToolErrorMapper {
         case .unauthorised, .forbidden:
             return "TMDb access was denied (check the API key)."
 
-        case .network, .serverError, .decode, .invalidRating, .unknown:
+        case .network, .serverError, .decode, .encode, .invalidURL, .invalidRating, .unknown:
             // Infrastructure or programmer errors the model cannot recover from by
             // re-prompting — rethrow so the host app handles them.
             return nil

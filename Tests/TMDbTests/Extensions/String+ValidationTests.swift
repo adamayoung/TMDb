@@ -23,14 +23,14 @@ struct StringValidationTests {
 
     @Test("empty string throws badRequest with the message")
     func emptyStringThrowsBadRequest() {
-        #expect(throws: TMDbError.badRequest("must not be empty")) {
+        #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "must not be empty"))) {
             try "".validateNotEmpty(message: "must not be empty")
         }
     }
 
     @Test("whitespace-only string throws badRequest with the message")
     func whitespaceStringThrowsBadRequest() {
-        #expect(throws: TMDbError.badRequest("must not be empty")) {
+        #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "must not be empty"))) {
             try "  \t\n ".validateNotEmpty(message: "must not be empty")
         }
     }
