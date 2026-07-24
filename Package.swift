@@ -52,4 +52,13 @@ if ProcessInfo.processInfo.environment["SWIFTCI_DOCC"] == "1" {
     package.dependencies += [
         .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.4.6")
     ]
+} else {
+    // Outside a documentation build the DocC plugin is not loaded, so no build
+    // rule claims the `.docc` catalogs and SwiftPM reports them as unhandled
+    // files. From Swift 6.4 (Xcode 27) `-Xswiftc -warnings-as-errors` promotes
+    // that package-load warning to an error, which fails every `make` build,
+    // test and release target. Excluding the catalogs when they are not being
+    // built keeps those targets clean; the documentation build still sees them.
+    package.targets.first { $0.name == "TMDb" }?.exclude = ["TMDb.docc"]
+    package.targets.first { $0.name == "TMDbTesting" }?.exclude = ["TMDbTesting.docc"]
 }
