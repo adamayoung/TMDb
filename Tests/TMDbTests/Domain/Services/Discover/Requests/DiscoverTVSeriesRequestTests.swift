@@ -182,8 +182,8 @@ struct DiscoverTVSeriesRequestTests { // swiftlint:disable:this type_body_length
     @Test("queryItems with runtime range")
     func queryItemsWithRuntimeRange() {
         let filter = DiscoverTVSeriesFilter(
-            runtimeMin: 30,
-            runtimeMax: 60
+            runtimeMin: .seconds(30 * 60),
+            runtimeMax: .seconds(60 * 60)
         )
         let request = DiscoverTVSeriesRequest(filter: filter)
 

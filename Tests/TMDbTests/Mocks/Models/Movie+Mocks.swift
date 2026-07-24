@@ -18,7 +18,7 @@ extension Movie {
         originalLanguage: String? = "en",
         originCountry: [String]? = ["US"],
         overview: String? = "Movie Overview",
-        runtime: Int? = 120,
+        runtime: Duration? = .seconds(120 * 60),
         genres: [Genre]? = [.action, .drama],
         releaseDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         posterPath: URL? = URL(string: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg"),

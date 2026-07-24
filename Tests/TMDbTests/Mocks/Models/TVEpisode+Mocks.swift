@@ -18,7 +18,7 @@ extension TVEpisode {
         overview: String? = "Overview for TV Episode",
         airDate: Date? = Date(iso8601: "2013-11-15T10:20:00Z"),
         episodeType: String? = nil,
-        runtime: Int? = nil,
+        runtime: Duration? = nil,
         showID: Int? = nil,
         productionCode: String? = nil,
         stillPath: URL? = nil,

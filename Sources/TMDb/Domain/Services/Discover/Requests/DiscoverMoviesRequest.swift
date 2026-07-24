@@ -93,7 +93,9 @@ private extension APIRequestQueryItems {
         }
 
         self[ifPresent: .withRuntimeGreaterThan] = filter.runtimeMin
+            .map { RuntimeMinutes.minutes(from: $0) }
         self[ifPresent: .withRuntimeLessThan] = filter.runtimeMax
+            .map { RuntimeMinutes.minutes(from: $0) }
     }
 
     mutating func applyContentAndProviderFilters(

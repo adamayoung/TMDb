@@ -54,7 +54,7 @@ struct TVEpisodeServiceTests {
         )
 
         let runtime = try #require(episode.runtime)
-        #expect(runtime > 0)
+        #expect(runtime > .zero)
         let episodeType = try #require(episode.episodeType)
         #expect(!episodeType.isEmpty)
     }

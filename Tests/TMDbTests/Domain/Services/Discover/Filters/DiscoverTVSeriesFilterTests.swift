@@ -188,10 +188,10 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
 
     @Test("init with runtime range sets runtime properties")
     func initWithRuntimeRangeSetsRuntimeProperties() {
-        let filter = DiscoverTVSeriesFilter(runtimeMin: 30, runtimeMax: 60)
+        let filter = DiscoverTVSeriesFilter(runtimeMin: .seconds(30 * 60), runtimeMax: .seconds(60 * 60))
 
-        #expect(filter.runtimeMin == 30)
-        #expect(filter.runtimeMax == 60)
+        #expect(filter.runtimeMin == .seconds(30 * 60))
+        #expect(filter.runtimeMax == .seconds(60 * 60))
     }
 
     @Test("init with include adult sets include adult property")
@@ -310,8 +310,8 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
             companies: [100, 200],
             keywords: [10, 20],
             withoutKeywords: [30, 40],
-            runtimeMin: 30,
-            runtimeMax: 60,
+            runtimeMin: .seconds(30 * 60),
+            runtimeMax: .seconds(60 * 60),
             includeAdult: false,
             watchProviders: [8, 9],
             watchRegion: "US",
@@ -342,8 +342,8 @@ struct DiscoverTVSeriesFilterTests { // swiftlint:disable:this type_body_length
         #expect(filter.companies == [100, 200])
         #expect(filter.keywords == [10, 20])
         #expect(filter.withoutKeywords == [30, 40])
-        #expect(filter.runtimeMin == 30)
-        #expect(filter.runtimeMax == 60)
+        #expect(filter.runtimeMin == .seconds(30 * 60))
+        #expect(filter.runtimeMax == .seconds(60 * 60))
         #expect(filter.includeAdult == false)
         #expect(filter.watchProviders == [8, 9])
         #expect(filter.watchRegion == "US")

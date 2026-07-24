@@ -120,10 +120,10 @@ struct DiscoverMovieFilterFluentTests {
 
     @Test("runtime with closed range maps to min and max")
     func runtimeWithClosedRangeMapsToMinAndMax() {
-        let filter = DiscoverMovieFilter().runtime(in: 90 ... 180)
+        let filter = DiscoverMovieFilter().runtime(in: .seconds(90 * 60) ... .seconds(180 * 60))
 
-        #expect(filter.runtimeMin == 90)
-        #expect(filter.runtimeMax == 180)
+        #expect(filter.runtimeMin == .seconds(90 * 60))
+        #expect(filter.runtimeMax == .seconds(180 * 60))
     }
 
     @Test("includeAdult sets include adult")
@@ -189,8 +189,8 @@ struct DiscoverMovieFilterFluentTests {
             companies: [5],
             keywords: [10],
             withoutKeywords: [11],
-            runtimeMin: 90,
-            runtimeMax: 180,
+            runtimeMin: .seconds(90 * 60),
+            runtimeMax: .seconds(180 * 60),
             includeAdult: includeAdult,
             includeVideo: true,
             watchProviders: [8],

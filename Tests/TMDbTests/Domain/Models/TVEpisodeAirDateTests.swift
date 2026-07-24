@@ -28,7 +28,7 @@ struct TVEpisodeAirDateTests {
         )
 
         #expect(result.episodeType == "finale")
-        #expect(result.runtime == 56)
+        #expect(result.runtime == .seconds(56 * 60))
         #expect(result.overview != nil)
     }
 
@@ -44,6 +44,18 @@ struct TVEpisodeAirDateTests {
         #expect(result.showID == nil)
     }
 
+    @Test("encoding represents runtime as integer minutes")
+    func encodeRepresentsRuntimeAsIntegerMinutes() throws {
+        let airDate = TVEpisodeAirDate(
+            id: 1, name: "Ep", episodeNumber: 1, seasonNumber: 1, runtime: .seconds(56 * 60)
+        )
+
+        let data = try JSONEncoder().encode(airDate)
+        let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+        #expect(json["runtime"] as? Int == 56)
+    }
+
 }
 
 extension TVEpisodeAirDateTests {
@@ -57,7 +69,7 @@ extension TVEpisodeAirDateTests {
             overview: "All bad things must come to an end.",
             airDate: DateFormatter.theMovieDatabase.date(from: "2013-09-29"),
             episodeType: "finale",
-            runtime: 56,
+            runtime: .seconds(56 * 60),
             showID: 1396,
             productionCode: "",
             stillPath: URL(string: "/pA0YwyhvdDXP3BEGL2grrIhq8aM.jpg"),

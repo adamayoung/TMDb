@@ -21,6 +21,41 @@ struct TVSeriesTests {
         #expect(result == tvSeries)
     }
 
+    @Test("episodeRunTime decodes integer minutes into Durations", .tags(.decoding))
+    func decodeRepresentsEpisodeRunTimeAsDurations() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(TVSeries.self, fromResource: "tv-series")
+
+        #expect(result.episodeRunTime == [.seconds(60 * 60)])
+    }
+
+    @Test("episodeRunTime is empty when the response array is empty", .tags(.decoding))
+    func decodeWhenEpisodeRunTimeEmptyReturnsEmptyArray() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeries.self, fromResource: "tv-series-blank-homepage-first-air-date"
+        )
+
+        #expect(result.episodeRunTime?.isEmpty == true)
+    }
+
+    @Test("episodeRunTime is nil when absent from the response", .tags(.decoding))
+    func decodeWhenEpisodeRunTimeAbsentReturnsNil() throws {
+        let json = Data(#"{"id": 1, "name": "Show"}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(TVSeries.self, from: json)
+
+        #expect(result.episodeRunTime == nil)
+    }
+
+    @Test("encoding represents episodeRunTime as integer minutes")
+    func encodeRepresentsEpisodeRunTimeAsIntegerMinutes() throws {
+        let series = TVSeries(id: 1, name: "Show", episodeRunTime: [.seconds(60 * 60)])
+
+        let data = try JSONEncoder().encode(series)
+        let json = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+
+        #expect(json["episodeRunTime"] as? [Int] == [60])
+    }
+
     @Test("JSON decoding of TVSeries with blank homepage and first air date")
     func decodeWhenHomepageIsEmptyStringReturnsTVSeries() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(
@@ -122,7 +157,7 @@ extension TVSeriesTests {
             originalLanguage: "en",
             // swiftlint:disable:next line_length
             overview: "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond.",
-            episodeRunTime: [60],
+            episodeRunTime: [.seconds(60 * 60)],
             numberOfSeasons: 7,
             numberOfEpisodes: 67,
             seasons: [
