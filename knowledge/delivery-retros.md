@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-24 — ♻️ Represent model runtimes as `Duration` instead of `Int` (branch refactor/runtime-as-duration) · full
+## 2026-07-24 — ♻️ Represent model runtimes as `Duration` instead of `Int` (#390) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (breaking public API,
   `Codable`/`CodingKeys`). `review-plan` skipped (`ExitPlanMode` approval this
