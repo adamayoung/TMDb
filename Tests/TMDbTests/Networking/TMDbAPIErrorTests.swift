@@ -12,12 +12,11 @@ import Testing
 @Suite(.tags(.networking))
 struct TMDbAPIErrorTests {
 
+    private let context = TMDbErrorContext(statusMessage: "message")
+
     @Test("invalidURL errors equal")
     func invalidURLErrorsEqual() {
-        let error1 = TMDbAPIError.invalidURL("message")
-        let error2 = TMDbAPIError.invalidURL("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.invalidURL("message") == TMDbAPIError.invalidURL("message"))
     }
 
     @Test("network errors equal")
@@ -28,108 +27,77 @@ struct TMDbAPIErrorTests {
         #expect(error1 == error2)
     }
 
-    @Test("badRequest errors equal")
+    @Test("badRequest errors with equal context equal")
     func badRequestErrorsEqual() {
-        let error1 = TMDbAPIError.badRequest("message")
-        let error2 = TMDbAPIError.badRequest("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.badRequest(context) == TMDbAPIError.badRequest(context))
     }
 
-    @Test("unauthorised errors equal")
+    @Test("unauthorised errors with equal context equal")
     func unauthorisedErrorsEqual() {
-        let error1 = TMDbAPIError.unauthorised("message")
-        let error2 = TMDbAPIError.unauthorised("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.unauthorised(context) == TMDbAPIError.unauthorised(context))
     }
 
-    @Test("forbidden errors equal")
+    @Test("forbidden errors with equal context equal")
     func forbiddenErrorsEqual() {
-        let error1 = TMDbAPIError.forbidden("message")
-        let error2 = TMDbAPIError.forbidden("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.forbidden(context) == TMDbAPIError.forbidden(context))
     }
 
-    @Test("notFound errors equal")
+    @Test("notFound errors with equal context equal")
     func notFoundErrorsEqual() {
-        let error1 = TMDbAPIError.notFound("message")
-        let error2 = TMDbAPIError.notFound("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.notFound(context) == TMDbAPIError.notFound(context))
     }
 
-    @Test("methodNotAllowed errors equal")
+    @Test("methodNotAllowed errors with equal context equal")
     func methodNotAllowedErrorsEqual() {
-        let error1 = TMDbAPIError.methodNotAllowed("message")
-        let error2 = TMDbAPIError.methodNotAllowed("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.methodNotAllowed(context) == TMDbAPIError.methodNotAllowed(context))
     }
 
-    @Test("notAcceptable errors equal")
+    @Test("notAcceptable errors with equal context equal")
     func notAcceptableErrorsEqual() {
-        let error1 = TMDbAPIError.notAcceptable("message")
-        let error2 = TMDbAPIError.notAcceptable("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.notAcceptable(context) == TMDbAPIError.notAcceptable(context))
     }
 
-    @Test("unprocessableContent errors equal")
+    @Test("unprocessableContent errors with equal context equal")
     func unprocessableContentErrorsEqual() {
-        let error1 = TMDbAPIError.unprocessableContent("message")
-        let error2 = TMDbAPIError.unprocessableContent("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.unprocessableContent(context) == TMDbAPIError.unprocessableContent(context))
     }
 
-    @Test("tooManyRequests errors equal")
+    @Test("tooManyRequests errors with equal context equal")
     func tooManyRequestsErrorsEqual() {
-        let error1 = TMDbAPIError.tooManyRequests("message")
-        let error2 = TMDbAPIError.tooManyRequests("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.tooManyRequests(context) == TMDbAPIError.tooManyRequests(context))
     }
 
-    @Test("internalServerError errors equal")
+    @Test("internalServerError errors with equal context equal")
     func internalServerErrorErrorsEqual() {
-        let error1 = TMDbAPIError.internalServerError("message")
-        let error2 = TMDbAPIError.internalServerError("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.internalServerError(context) == TMDbAPIError.internalServerError(context))
     }
 
-    @Test("notImplemented errors equal")
+    @Test("notImplemented errors with equal context equal")
     func notImplementedErrorsEqual() {
-        let error1 = TMDbAPIError.notImplemented("message")
-        let error2 = TMDbAPIError.notImplemented("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.notImplemented(context) == TMDbAPIError.notImplemented(context))
     }
 
-    @Test("badGateway errors equal")
+    @Test("badGateway errors with equal context equal")
     func badGatewayErrorsEqual() {
-        let error1 = TMDbAPIError.badGateway("message")
-        let error2 = TMDbAPIError.badGateway("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.badGateway(context) == TMDbAPIError.badGateway(context))
     }
 
-    @Test("serviceUnavailable errors equal")
+    @Test("serviceUnavailable errors with equal context equal")
     func serviceUnavailableErrorsEqual() {
-        let error1 = TMDbAPIError.serviceUnavailable("message")
-        let error2 = TMDbAPIError.serviceUnavailable("message")
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.serviceUnavailable(context) == TMDbAPIError.serviceUnavailable(context))
     }
 
-    @Test("gatewayTimeout errors equal")
+    @Test("gatewayTimeout errors with equal context equal")
     func gatewayTimeoutErrorsEqual() {
-        let error1 = TMDbAPIError.gatewayTimeout("message")
-        let error2 = TMDbAPIError.gatewayTimeout("message")
+        #expect(TMDbAPIError.gatewayTimeout(context) == TMDbAPIError.gatewayTimeout(context))
+    }
 
-        #expect(error1 == error2)
+    @Test("errors with different context do not equal")
+    func errorsWithDifferentContextDoNotEqual() {
+        let lhs = TMDbAPIError.notFound(TMDbErrorContext(httpStatusCode: 404))
+        let rhs = TMDbAPIError.notFound(TMDbErrorContext(httpStatusCode: 400))
+
+        #expect(lhs != rhs)
     }
 
     @Test("encode errors equal")
@@ -150,10 +118,7 @@ struct TMDbAPIErrorTests {
 
     @Test("unknown errors equal")
     func unknownErrorsEqual() {
-        let error1 = TMDbAPIError.unknown
-        let error2 = TMDbAPIError.unknown
-
-        #expect(error1 == error2)
+        #expect(TMDbAPIError.unknown == TMDbAPIError.unknown)
     }
 
     @Test("encode and decode errors do not equal")

@@ -10,25 +10,39 @@ import Foundation
 ///
 /// A TMDb error.
 ///
+/// The failure cases raised from a request carry a ``TMDbErrorContext`` with the
+/// HTTP status code, TMDb's numeric ``TMDbStatusCode``, the server message, the
+/// (redacted) endpoint, and any `Retry-After` delay — read it to diagnose a
+/// failure. Two errors are equal when they are the same case with equal context
+/// (the ``network(_:)``, ``decode(_:)`` and ``encode(_:)`` cases compare only by
+/// case, since a Swift `Error` is not `Equatable`).
+///
 public enum TMDbError: Equatable, LocalizedError, Sendable {
 
     /// An error indicating an invalid request was made.
-    case badRequest(String? = nil)
+    case badRequest(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating the request was not authorised.
-    case unauthorised(String? = nil)
+    case unauthorised(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating access to the resource is forbidden.
-    case forbidden(String? = nil)
+    case forbidden(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating the resource could not be found.
-    case notFound(String? = nil)
+    case notFound(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating too many requests have been made.
-    case tooManyRequests(String? = nil)
+    case tooManyRequests(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating there was a server error.
-    case serverError(String? = nil)
+    case serverError(TMDbErrorContext = TMDbErrorContext())
+
+    /// An error indicating a request URL could not be constructed from the given
+    /// value.
+    case invalidURL(String)
+
+    /// An error indicating there was a problem encoding data.
+    case encode(Error)
 
     /// An error indicating there was a network problem.
     case network(Error)
@@ -56,23 +70,29 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     ///
     public static func == (lhs: TMDbError, rhs: TMDbError) -> Bool {
         switch (lhs, rhs) {
-        case (.badRequest(let lhsMessage), .badRequest(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.badRequest(let lhsContext), .badRequest(let rhsContext)):
+            lhsContext == rhsContext
 
-        case (.unauthorised(let lhsMessage), .unauthorised(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.unauthorised(let lhsContext), .unauthorised(let rhsContext)):
+            lhsContext == rhsContext
 
-        case (.forbidden(let lhsMessage), .forbidden(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.forbidden(let lhsContext), .forbidden(let rhsContext)):
+            lhsContext == rhsContext
 
-        case (.notFound(let lhsMessage), .notFound(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.notFound(let lhsContext), .notFound(let rhsContext)):
+            lhsContext == rhsContext
 
-        case (.tooManyRequests(let lhsMessage), .tooManyRequests(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.tooManyRequests(let lhsContext), .tooManyRequests(let rhsContext)):
+            lhsContext == rhsContext
 
-        case (.serverError(let lhsMessage), .serverError(let rhsMessage)):
-            lhsMessage == rhsMessage
+        case (.serverError(let lhsContext), .serverError(let rhsContext)):
+            lhsContext == rhsContext
+
+        case (.invalidURL(let lhsURL), .invalidURL(let rhsURL)):
+            lhsURL == rhsURL
+
+        case (.encode, .encode):
+            true
 
         case (.network, .network):
             true
@@ -100,23 +120,29 @@ public extension TMDbError {
     ///
     var errorDescription: String? {
         switch self {
-        case .badRequest(let message):
-            message ?? "Bad request"
+        case .badRequest(let context):
+            context.statusMessage ?? "Bad request"
 
-        case .unauthorised(let message):
-            message ?? "Unauthorised"
+        case .unauthorised(let context):
+            context.statusMessage ?? "Unauthorised"
 
-        case .forbidden(let message):
-            message ?? "Forbidden"
+        case .forbidden(let context):
+            context.statusMessage ?? "Forbidden"
 
-        case .notFound(let message):
-            message ?? "Not found"
+        case .notFound(let context):
+            context.statusMessage ?? "Not found"
 
-        case .tooManyRequests(let message):
-            message ?? "Too many requests"
+        case .tooManyRequests(let context):
+            context.statusMessage ?? "Too many requests"
 
-        case .serverError(let message):
-            message ?? "Server error"
+        case .serverError(let context):
+            context.statusMessage ?? "Server error"
+
+        case .invalidURL(let url):
+            "Invalid URL: \(url)"
+
+        case .encode:
+            "Encode error"
 
         case .network:
             "Network error"

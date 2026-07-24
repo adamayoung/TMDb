@@ -190,7 +190,7 @@ struct RetryHTTPClientTests {
     @Test("POST with retryable error is not retried")
     func postWithRetryableErrorNotRetried() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.failure(TMDbAPIError.tooManyRequests(nil)))
+        mockClient.enqueue(.failure(TMDbAPIError.tooManyRequests(TMDbErrorContext())))
 
         let retryClient = RetryHTTPClient(
             httpClient: mockClient,

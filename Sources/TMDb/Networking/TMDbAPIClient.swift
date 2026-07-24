@@ -40,7 +40,7 @@ final class TMDbAPIClient: UnmappedAPIClient {
             throw TMDbAPIError.network(error)
         }
 
-        try await validate(response: httpResponse, with: serialiser)
+        try await validate(response: httpResponse, with: serialiser, path: request.path)
 
         guard let data = httpResponse.data else {
             throw TMDbAPIError.unknown
@@ -135,20 +135,31 @@ extension TMDbAPIClient {
         }
     }
 
-    private func validate(response: HTTPResponse, with serialiser: some Serialiser) async throws {
+    private func validate(
+        response: HTTPResponse,
+        with serialiser: some Serialiser,
+        path: String
+    ) async throws {
         let statusCode = response.statusCode
         if (200 ... 299).contains(statusCode) {
             return
         }
 
-        guard let data = response.data else {
-            throw TMDbAPIError(statusCode: statusCode, message: nil)
+        let statusResponse: TMDbStatusResponse? = if let data = response.data {
+            try? await serialiser.decode(TMDbStatusResponse.self, from: data)
+        } else {
+            nil
         }
 
-        let statusResponse = try? await serialiser.decode(TMDbStatusResponse.self, from: data)
-        let message = statusResponse?.statusMessage
+        let context = TMDbErrorContext(
+            httpStatusCode: statusCode,
+            tmdbStatusCode: statusResponse.flatMap { TMDbStatusCode(rawValue: $0.statusCode) },
+            statusMessage: statusResponse?.statusMessage,
+            endpointPath: EndpointPathRedactor.redact(path),
+            retryAfter: response.retryAfterDuration
+        )
 
-        throw TMDbAPIError(statusCode: statusCode, message: message)
+        throw TMDbAPIError(context: context)
     }
 
 }

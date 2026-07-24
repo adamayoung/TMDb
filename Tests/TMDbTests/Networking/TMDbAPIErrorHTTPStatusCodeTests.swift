@@ -12,157 +12,66 @@ import Testing
 @Suite(.tags(.networking))
 struct TMDbAPIErrorHTTPStatusCodeTests {
 
-    @Test("Bad request")
-    func badRequest() {
-        let statusCode = 400
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.badRequest(message)
+    @Test("init(context:) selects the error case from the HTTP status code")
+    func initSelectsCaseFromStatusCode() {
+        let expectations: [(Int, (TMDbErrorContext) -> TMDbAPIError)] = [
+            (400, TMDbAPIError.badRequest),
+            (401, TMDbAPIError.unauthorised),
+            (403, TMDbAPIError.forbidden),
+            (404, TMDbAPIError.notFound),
+            (405, TMDbAPIError.methodNotAllowed),
+            (406, TMDbAPIError.notAcceptable),
+            (422, TMDbAPIError.unprocessableContent),
+            (429, TMDbAPIError.tooManyRequests),
+            (500, TMDbAPIError.internalServerError),
+            (501, TMDbAPIError.notImplemented),
+            (502, TMDbAPIError.badGateway),
+            (503, TMDbAPIError.serviceUnavailable),
+            (504, TMDbAPIError.gatewayTimeout)
+        ]
 
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
+        for (statusCode, makeExpected) in expectations {
+            let context = TMDbErrorContext(httpStatusCode: statusCode)
 
-        #expect(error == expectedError)
+            #expect(TMDbAPIError(context: context) == makeExpected(context))
+        }
     }
 
-    @Test("Unauthorised")
-    func testUnauthorised() {
-        let statusCode = 401
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.unauthorised(message)
+    @Test("init(context:) carries the full context through")
+    func initCarriesContext() {
+        let context = TMDbErrorContext(
+            httpStatusCode: 404,
+            tmdbStatusCode: .resourceNotFound,
+            statusMessage: "The resource you requested could not be found.",
+            endpointPath: "/movie/999",
+            retryAfter: nil
+        )
 
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
+        #expect(TMDbAPIError(context: context) == .notFound(context))
     }
 
-    @Test("Forbidden")
-    func forbidden() {
-        let statusCode = 403
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.forbidden(message)
+    @Test("init(context:) falls back by range for an unmapped 4xx status")
+    func initFallsBackToBadRequestForUnmapped4xx() {
+        let context = TMDbErrorContext(httpStatusCode: 418)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
+        #expect(TMDbAPIError(context: context) == .badRequest(context))
     }
 
-    @Test("Not found")
-    func notFound() {
-        let statusCode = 404
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.notFound(message)
+    @Test("init(context:) falls back by range for an unmapped 5xx status")
+    func initFallsBackToServerErrorForUnmapped5xx() {
+        let context = TMDbErrorContext(httpStatusCode: 599)
 
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
+        #expect(TMDbAPIError(context: context) == .internalServerError(context))
     }
 
-    @Test("Method not allowed")
-    func methodNotAllowed() {
-        let statusCode = 405
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.methodNotAllowed(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
+    @Test("init(context:) is unknown when the status is missing")
+    func initIsUnknownWhenStatusMissing() {
+        #expect(TMDbAPIError(context: TMDbErrorContext()) == .unknown)
     }
 
-    @Test("Not acceptable")
-    func notAcceptable() {
-        let statusCode = 406
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.notAcceptable(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Unprocessable content")
-    func unprocessableContent() {
-        let statusCode = 422
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.unprocessableContent(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Too many requests")
-    func tooManyRequests() {
-        let statusCode = 429
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.tooManyRequests(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Internal server error")
-    func internalServerError() {
-        let statusCode = 500
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.internalServerError(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Not implemented")
-    func notImplemented() {
-        let statusCode = 501
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.notImplemented(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Bad gateway")
-    func badGateway() {
-        let statusCode = 502
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.badGateway(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Service unavailable")
-    func serviceUnavailable() {
-        let statusCode = 503
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.serviceUnavailable(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Gateway timeout")
-    func gatewayTimeout() {
-        let statusCode = 504
-        let message = "Some error message"
-        let expectedError = TMDbAPIError.gatewayTimeout(message)
-
-        let error = TMDbAPIError(statusCode: statusCode, message: message)
-
-        #expect(error == expectedError)
-    }
-
-    @Test("Unknown")
-    func unknown() {
-        let statusCode = 999
-        let expectedError = TMDbAPIError.unknown
-
-        let error = TMDbAPIError(statusCode: statusCode, message: nil)
-
-        #expect(error == expectedError)
+    @Test("init(context:) is unknown for a non-4xx/5xx status")
+    func initIsUnknownForNon4xx5xxStatus() {
+        #expect(TMDbAPIError(context: TMDbErrorContext(httpStatusCode: 301)) == .unknown)
     }
 
 }
