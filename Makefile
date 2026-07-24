@@ -1,5 +1,5 @@
 TARGET = TMDb
-TEST_TARGET = TMDbTests|TMDbTestingTests
+TEST_TARGET = TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests
 INTEGRATION_TEST_TARGET = TMDbIntegrationTests
 
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 17 Pro,OS=27.0'

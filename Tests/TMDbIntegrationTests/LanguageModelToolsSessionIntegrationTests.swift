@@ -13,6 +13,7 @@
     import FoundationModels
     import Testing
     import TMDb
+    import TMDbIntelligence
 
     @Suite(
         .serialized,

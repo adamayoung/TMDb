@@ -8,6 +8,7 @@
 import Foundation
 import Testing
 @testable import TMDb
+@testable import TMDbIntelligence
 
 ///
 /// Deterministic integration coverage for natural-language search.

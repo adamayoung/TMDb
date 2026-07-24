@@ -9,6 +9,7 @@
     import Foundation
     import Testing
     @testable import TMDb
+    @testable import TMDbIntelligence
 
     ///
     /// End-to-end coverage for the deterministic NaturalLanguage planner: a sample

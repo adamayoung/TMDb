@@ -40,9 +40,14 @@ let package = Package(
             name: "TMDbIntelligenceTesting",
             dependencies: ["TMDbIntelligence"]
         ),
+        .target(
+            name: "TMDbTestFixtures",
+            dependencies: ["TMDb"],
+            path: "Tests/TMDbTestFixtures"
+        ),
         .testTarget(
             name: "TMDbTests",
-            dependencies: ["TMDb"],
+            dependencies: ["TMDb", "TMDbTestFixtures"],
             resources: [
                 .process("Resources")
             ]
@@ -52,8 +57,16 @@ let package = Package(
             dependencies: ["TMDb", "TMDbTesting"]
         ),
         .testTarget(
+            name: "TMDbIntelligenceTests",
+            dependencies: ["TMDb", "TMDbIntelligence", "TMDbTestFixtures"]
+        ),
+        .testTarget(
+            name: "TMDbIntelligenceTestingTests",
+            dependencies: ["TMDb", "TMDbIntelligence", "TMDbIntelligenceTesting"]
+        ),
+        .testTarget(
             name: "TMDbIntegrationTests",
-            dependencies: ["TMDb"]
+            dependencies: ["TMDb", "TMDbIntelligence"]
         )
     ]
 )
