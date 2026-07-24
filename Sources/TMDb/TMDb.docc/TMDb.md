@@ -48,6 +48,8 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``TMDbClient``
 - ``TMDbConfiguration``
 - ``TMDbError``
+- ``TMDbErrorContext``
+- ``TMDbStatusCode``
 
 ### How-To Guides
 
