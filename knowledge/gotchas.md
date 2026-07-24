@@ -106,11 +106,18 @@ worktree the conductor switched into. So `make test` spawned that way builds
 run's `.build/last-*.log` lands under the **main checkout** and the worktree's
 `.build/` has none — or, when the worktree adds a *new* suite, the run reports
 **"no matching test cases found"** for a `--filter` naming suites that plainly
-exist (observed 2026-07-24, #392). **Work around it for the duration of a worktree delivery:**
-run builds/tests **directly via `Bash`** (which does run in the worktree CWD) —
-`swift build --build-tests` then `swift test --skip-build --scratch-path .build
---filter "TMDbTests|TMDbTestingTests"` (see the `Makefile` `test` target for the
-exact incantation) — instead of delegating to the tooling-runner.
+exist (observed 2026-07-24, #392).
+
+**Fixed 2026-07-24** — the four skills now pass `Package directory: <absolute
+CWD>` in the task, and `tooling-runner` refuses to run without it, verifies
+`Package.swift` is there, uses `make -C "<dir>"` with absolute log paths, and
+echoes the directory it used. So the failure mode is now an explicit error
+rather than a plausible-looking wrong answer. **If you see a runner report
+without a `Directory:` line, it predates the fix — treat its result as
+untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
+`swift test --skip-build --scratch-path .build --filter
+"TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
+worktree CWD) still works if you need it.
 
 ### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
 

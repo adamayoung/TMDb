@@ -11,6 +11,12 @@ reporting contract live in `.claude/agents/tooling-runner.md`) with the
 one-line task:
 
 > Run the `build` target: compile the TMDb Swift package.
+> Package directory: `<your current working directory, absolute>`
+
+**Always include that directory line.** The subagent does not reliably inherit
+your working directory, and without it a run inside a git worktree silently
+builds the main checkout instead (see `.claude/agents/tooling-runner.md`).
+Use your actual CWD — run `pwd` if you are not certain of it.
 
 Relay its report. Do **not** run the build yourself.
 

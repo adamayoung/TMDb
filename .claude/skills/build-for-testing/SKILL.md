@@ -12,6 +12,12 @@ one-line task:
 
 > Run the `build-for-testing` target: compile the TMDb package and all test
 > targets.
+> Package directory: `<your current working directory, absolute>`
+
+**Always include that directory line.** The subagent does not reliably inherit
+your working directory, and without it a run inside a git worktree silently
+builds the main checkout instead (see `.claude/agents/tooling-runner.md`).
+Use your actual CWD — run `pwd` if you are not certain of it.
 
 Relay its report. Do **not** run the build yourself.
 
