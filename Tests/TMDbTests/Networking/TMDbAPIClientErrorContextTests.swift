@@ -161,6 +161,33 @@ struct TMDbAPIClientErrorContextTests {
         #expect(context.endpointPath?.contains("super-secret-token") == false)
     }
 
+    @Test("perform when the path is invalid throws invalidURL with a redacted path")
+    @MainActor
+    func performWhenPathInvalidThrowsRedactedInvalidURL() async throws {
+        // `URL(string:)` rejects an empty path on every supported platform;
+        // swift-corelibs-foundation rejects more, which is why the value thrown
+        // here goes through the same redactor as `TMDbErrorContext.endpointPath`.
+        let stubRequest = APIStubRequest<String, String>(path: "")
+        httpClient.result = .success(HTTPResponse())
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        #expect(thrownError == .invalidURL(""))
+    }
+
+    @Test("an invalid token-bearing path is redacted before it reaches the error")
+    func invalidTokenBearingPathIsRedacted() {
+        let redacted = EndpointPathRedactor.redact("/guest_session/super-secret-token/rated")
+
+        #expect(!redacted.contains("super-secret-token"))
+        #expect(redacted == "/guest_session/{guest_session_id}/rated")
+    }
+
     @Test("perform when the error body is not a TMDb status response keeps the HTTP context")
     @MainActor
     func performWhenErrorBodyIsNotDecodableKeepsHTTPContext() async throws {

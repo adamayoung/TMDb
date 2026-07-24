@@ -62,7 +62,9 @@ extension TMDbAPIClient {
 
     private func buildHTTPRequest(from request: some APIRequest) async throws -> HTTPRequest {
         guard let path = URL(string: request.path) else {
-            throw TMDbAPIError.invalidURL(request.path)
+            // Redacted for the same reason as `TMDbErrorContext.endpointPath`: this
+            // value reaches a public error a caller may log.
+            throw TMDbAPIError.invalidURL(EndpointPathRedactor.redact(request.path))
         }
 
         var queryItems = request.queryItems
