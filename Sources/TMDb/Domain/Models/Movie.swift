@@ -50,6 +50,9 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Movie runtime.
     ///
+    /// Runtimes have whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
     public var runtime: Duration? {
         runtimeInMinutes.map { RuntimeMinutes.duration(fromMinutes: $0) }
     }

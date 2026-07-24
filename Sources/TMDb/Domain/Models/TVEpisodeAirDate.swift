@@ -53,6 +53,9 @@ public struct TVEpisodeAirDate: Identifiable, Codable, Equatable, Hashable, Send
     ///
     /// Episode runtime.
     ///
+    /// Runtimes have whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
     public var runtime: Duration? {
         runtimeInMinutes.map { RuntimeMinutes.duration(fromMinutes: $0) }
     }

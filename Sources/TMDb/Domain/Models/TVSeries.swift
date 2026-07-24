@@ -45,6 +45,9 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// TV series episode run times.
     ///
+    /// Each run time has whole-minute granularity; any sub-minute component is
+    /// truncated to match TMDb's wire format.
+    ///
     public var episodeRunTime: [Duration]? {
         episodeRunTimeInMinutes?.map { RuntimeMinutes.duration(fromMinutes: $0) }
     }

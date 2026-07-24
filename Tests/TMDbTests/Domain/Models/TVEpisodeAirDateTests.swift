@@ -44,6 +44,15 @@ struct TVEpisodeAirDateTests {
         #expect(result.showID == nil)
     }
 
+    @Test("runtime is nil when absent from the response", .tags(.decoding))
+    func decodeWhenRuntimeAbsentReturnsNilRuntime() throws {
+        let json = Data(#"{"id": 1, "name": "Ep", "episode_number": 1, "season_number": 1}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(TVEpisodeAirDate.self, from: json)
+
+        #expect(result.runtime == nil)
+    }
+
     @Test("encoding represents runtime as integer minutes")
     func encodeRepresentsRuntimeAsIntegerMinutes() throws {
         let airDate = TVEpisodeAirDate(
