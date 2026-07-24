@@ -19,7 +19,9 @@ let package = Package(
 
     products: [
         .library(name: "TMDb", targets: ["TMDb"]),
-        .library(name: "TMDbTesting", targets: ["TMDbTesting"])
+        .library(name: "TMDbTesting", targets: ["TMDbTesting"]),
+        .library(name: "TMDbIntelligence", targets: ["TMDbIntelligence"]),
+        .library(name: "TMDbIntelligenceTesting", targets: ["TMDbIntelligenceTesting"])
     ],
 
     targets: [
@@ -29,6 +31,14 @@ let package = Package(
         .target(
             name: "TMDbTesting",
             dependencies: ["TMDb"]
+        ),
+        .target(
+            name: "TMDbIntelligence",
+            dependencies: ["TMDb"]
+        ),
+        .target(
+            name: "TMDbIntelligenceTesting",
+            dependencies: ["TMDbIntelligence"]
         ),
         .testTarget(
             name: "TMDbTests",

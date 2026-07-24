@@ -14,7 +14,7 @@ import Foundation
 /// package exposes them as `Duration`. These helpers convert between the two
 /// representations at that boundary.
 ///
-enum RuntimeMinutes {
+package enum RuntimeMinutes {
 
     ///
     /// Converts a whole number of minutes into a `Duration`.
@@ -23,7 +23,7 @@ enum RuntimeMinutes {
     ///
     /// - Returns: The equivalent `Duration`.
     ///
-    static func duration(fromMinutes minutes: Int) -> Duration {
+    package static func duration(fromMinutes minutes: Int) -> Duration {
         .seconds(minutes * 60)
     }
 
@@ -36,7 +36,7 @@ enum RuntimeMinutes {
     ///
     /// - Returns: The number of whole minutes in `duration`.
     ///
-    static func minutes(from duration: Duration) -> Int {
+    package static func minutes(from duration: Duration) -> Int {
         Int(duration.components.seconds / 60)
     }
 
