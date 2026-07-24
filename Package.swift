@@ -84,4 +84,8 @@ if ProcessInfo.processInfo.environment["SWIFTCI_DOCC"] == "1" {
     // built keeps those targets clean; the documentation build still sees them.
     package.targets.first { $0.name == "TMDb" }?.exclude = ["TMDb.docc"]
     package.targets.first { $0.name == "TMDbTesting" }?.exclude = ["TMDbTesting.docc"]
+    package.targets.first { $0.name == "TMDbIntelligence" }?
+        .exclude = ["TMDbIntelligence.docc"]
+    package.targets.first { $0.name == "TMDbIntelligenceTesting" }?
+        .exclude = ["TMDbIntelligenceTesting.docc"]
 }
