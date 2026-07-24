@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (branch `feature/tmdb-intelligence-product`, #395) · full
+## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (#398) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (~40 sources + ~110
   fixtures + ~30 tests relocated, new targets, CI/docs infra). `/plan` refreshed
