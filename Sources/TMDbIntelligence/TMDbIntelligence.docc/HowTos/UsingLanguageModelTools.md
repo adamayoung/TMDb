@@ -14,7 +14,7 @@ Windows.
 
 ## Adding the Tools to a Session
 
-Pass ``TMDbClient/languageModelTools`` to a session to make every tool available:
+Pass `languageModelTools` to a session to make every tool available:
 
 ```swift
 import FoundationModels
@@ -50,8 +50,8 @@ are applied to every tool's results — `region` drives watch-provider and
 streaming-availability lookups.
 
 Each tool is also available directly on the client when you don't need a default
-language or region — for example ``TMDbClient/searchTool`` and
-``TMDbClient/watchProvidersTool``:
+language or region — for example `searchTool` and
+`watchProvidersTool`:
 
 ```swift
 let session = LanguageModelSession(

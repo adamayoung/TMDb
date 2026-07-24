@@ -32,7 +32,7 @@ ADR for any non-obvious design decision.
 ### Service-Based Design
 
 The library uses protocol-based services with dependency injection.
-`TMDbClient` is the main facade exposing 26 service properties:
+`TMDbClient` is the main facade exposing 25 service properties:
 
 ```text
 TMDbClient (main facade)
@@ -60,17 +60,25 @@ TMDbClient (main facade)
 ├── TVEpisodeGroupService
 ├── TVSeasonService
 ├── TVSeriesService
-├── WatchProviderService
-└── NaturalLanguageSearchService
+└── WatchProviderService
 ```
 
-The `naturalLanguageSearch` service is **Apple-platforms only** — it is
-defined in a `TMDbClient` extension gated by `#if canImport(NaturalLanguage)`,
-so it is unavailable on Linux and Windows. It interprets free-text queries
-on-device with a deterministic planner (a rule-based intent classifier plus
-`NLTagger` person-name extraction) and, on capable devices, an optional
-`FoundationModelsSearchPlanGenerator` fallback for fuzzier prompts — degrading
-to a plain multi-search where neither is available.
+The on-device intelligence features live in a **separate `TMDbIntelligence`
+library product** (see [ADR-0010](knowledge/decisions/0010-tmdb-intelligence-product.md)),
+so the core `TMDb` product carries no API that cannot function on Linux and
+Windows. `TMDbIntelligence` depends on `TMDb` and adds two `TMDbClient`
+extensions, both **Apple-platforms only**:
+
+- `naturalLanguageSearch` — gated by `#if canImport(NaturalLanguage)`. It
+  interprets free-text queries on-device with a deterministic planner (a
+  rule-based intent classifier plus `NLTagger` person-name extraction) and, on
+  capable devices, an optional `FoundationModelsSearchPlanGenerator` fallback
+  for fuzzier prompts — degrading to a plain multi-search where neither is
+  available.
+- `languageModelTools` / `TMDbToolbox` — see *Language Model Tools* below.
+
+Consumers add the `TMDbIntelligence` product and `import TMDbIntelligence`
+alongside `import TMDb`. Its test doubles ship in `TMDbIntelligenceTesting`.
 
 **Key files:**
 
@@ -78,7 +86,9 @@ to a plain multi-search where neither is available.
 - `Sources/TMDb/TMDbFactory.swift` — dependency injection factory
 - `Sources/TMDb/Domain/Services/` — service protocols and implementations
 - `Sources/TMDb/Domain/Models/` — Codable data models (~170 files)
-- `Sources/TMDb/Domain/LanguageModelTools/` — FoundationModels `Tool`s
+- `Sources/TMDbIntelligence/NaturalLanguageSearch/` — on-device
+  natural-language search (Apple-only)
+- `Sources/TMDbIntelligence/LanguageModelTools/` — FoundationModels `Tool`s
   exposing TMDb to a conversational assistant (Apple-only)
 
 ### Networking Layer
@@ -106,7 +116,7 @@ centralise mapping of `TMDbAPIError` into the public `TMDbError`.
 
 ### Language Model Tools (Apple-only)
 
-`TMDbToolbox` (`Sources/TMDb/Domain/LanguageModelTools/`) wraps the services
+`TMDbToolbox` (`Sources/TMDbIntelligence/LanguageModelTools/`) wraps the services
 as FoundationModels `Tool`s so TMDb can back a conversational movie assistant
 through a `LanguageModelSession`. It is gated by
 `#if canImport(FoundationModels) && !os(tvOS)` and annotated
@@ -123,10 +133,24 @@ then fetch its details or watch providers.
 
 ### Test Organization
 
-- `Tests/TMDbTests/` — unit tests with mocks and JSON fixtures
+- `Tests/TMDbTests/` — core unit tests with JSON fixtures (`Resources/`)
+- `Tests/TMDbTestFixtures/` — **shared** mocks, `.mock` model factories, and
+  test utilities (`Tags`, `Date+ISO8601`, `MockAPIClient`), at `package`
+  access so both unit-test targets share one copy. It has no library product
+  and is re-exported via `@_exported import TMDbTestFixtures`, so test files
+  need no explicit import. Mocks of *internal* TMDb types stay in the target
+  that `@testable`-imports them.
+- `Tests/TMDbIntelligenceTests/` — unit tests for the intelligence module
+- `Tests/TMDbTestingTests/` / `Tests/TMDbIntelligenceTestingTests/` — the
+  testing kits, exercised through **public imports only** (no `@testable`)
 - `Tests/TMDbIntegrationTests/` — live API tests
 - Uses **Swift Testing** framework (`@Test`, `#expect`, `#require`) — not
   XCTest
+
+**Adding a test target?** The `swift test --filter` string is hardcoded in
+**three** places — `Makefile` (`TEST_TARGET`) and `.github/workflows/ci.yml`
+(the macOS **and** Linux `Test` steps). Miss one and the new suite silently
+never runs.
 
 ## Understanding the TMDb API
 

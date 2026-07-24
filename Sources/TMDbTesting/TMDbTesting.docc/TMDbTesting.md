@@ -75,7 +75,6 @@ let genres = [Genre].samples
 - ``MockKeywordService``
 - ``MockListService``
 - ``MockMovieService``
-- ``MockNaturalLanguageSearchService``
 - ``MockNetworkService``
 - ``MockPersonService``
 - ``MockReviewService``
