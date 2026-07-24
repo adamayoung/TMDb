@@ -21,7 +21,7 @@ struct RetryHTTPClientConfigurationTests {
     @Test("non-retryable thrown error propagates immediately")
     func nonRetryableErrorPropagatesImmediately() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.failure(TMDbAPIError.notFound("Not found")))
+        mockClient.enqueue(.failure(TMDbAPIError.notFound(TMDbErrorContext(statusMessage: "Not found"))))
 
         let retryClient = RetryHTTPClient(
             httpClient: mockClient,
@@ -58,7 +58,7 @@ struct RetryHTTPClientConfigurationTests {
     @Test("retryable thrown tooManyRequests is retried then succeeds")
     func retryableThrownErrorRetriedThenSucceeds() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.failure(TMDbAPIError.tooManyRequests("rate limited")))
+        mockClient.enqueue(.failure(TMDbAPIError.tooManyRequests(TMDbErrorContext(statusMessage: "rate limited"))))
         mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data())))
 
         let retryClient = RetryHTTPClient(
@@ -76,7 +76,7 @@ struct RetryHTTPClientConfigurationTests {
     @Test("thrown internalServerError is retried then succeeds")
     func thrownInternalServerErrorRetriedThenSucceeds() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.failure(TMDbAPIError.internalServerError("server error")))
+        mockClient.enqueue(.failure(TMDbAPIError.internalServerError(TMDbErrorContext(statusMessage: "server error"))))
         mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data())))
 
         let retryClient = RetryHTTPClient(
@@ -94,7 +94,7 @@ struct RetryHTTPClientConfigurationTests {
     @Test("thrown serviceUnavailable is retried then succeeds")
     func thrownServiceUnavailableRetriedThenSucceeds() async throws {
         let mockClient = SequencingHTTPMockClient()
-        mockClient.enqueue(.failure(TMDbAPIError.serviceUnavailable("unavailable")))
+        mockClient.enqueue(.failure(TMDbAPIError.serviceUnavailable(TMDbErrorContext(statusMessage: "unavailable"))))
         mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data())))
 
         let retryClient = RetryHTTPClient(
@@ -113,7 +113,8 @@ struct RetryHTTPClientConfigurationTests {
     func thrownServerErrorExhaustsRetries() async throws {
         let mockClient = SequencingHTTPMockClient()
         for _ in 0 ... 3 {
-            mockClient.enqueue(.failure(TMDbAPIError.internalServerError("server error")))
+            mockClient
+                .enqueue(.failure(TMDbAPIError.internalServerError(TMDbErrorContext(statusMessage: "server error"))))
         }
 
         let retryClient = RetryHTTPClient(

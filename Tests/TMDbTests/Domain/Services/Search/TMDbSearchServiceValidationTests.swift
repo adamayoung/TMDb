@@ -20,7 +20,7 @@ struct TMDbSearchServiceValidationTests {
         self.service = TMDbSearchService(apiClient: apiClient)
     }
 
-    static let expectedError = TMDbError.badRequest("Search query must not be empty")
+    static let expectedError = TMDbError.badRequest(TMDbErrorContext(statusMessage: "Search query must not be empty"))
 
     @Test("searchAll with empty query throws bad request and performs no request")
     func searchAllWithEmptyQueryThrowsBadRequest() async throws {

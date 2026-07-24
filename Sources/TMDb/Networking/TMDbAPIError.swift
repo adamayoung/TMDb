@@ -25,67 +25,67 @@ enum TMDbAPIError: Error, Equatable {
     ///
     /// Bad request.
     ///
-    case badRequest(String?)
+    case badRequest(TMDbErrorContext)
 
     ///
     /// Unauthorised.
     ///
-    case unauthorised(String?)
+    case unauthorised(TMDbErrorContext)
 
     ///
     /// Forbidden.
     ///
-    case forbidden(String?)
+    case forbidden(TMDbErrorContext)
 
     ///
     /// Not found.
     ///
-    case notFound(String?)
+    case notFound(TMDbErrorContext)
 
     ///
     /// Method not allowed.
     ///
-    case methodNotAllowed(String?)
+    case methodNotAllowed(TMDbErrorContext)
 
     ///
     /// Not acceptable.
     ///
-    case notAcceptable(String?)
+    case notAcceptable(TMDbErrorContext)
 
     ///
     /// Unprocessable content.
     ///
-    case unprocessableContent(String?)
+    case unprocessableContent(TMDbErrorContext)
 
     ///
     /// Too many requests.
     ///
-    case tooManyRequests(String?)
+    case tooManyRequests(TMDbErrorContext)
 
     ///
     /// Internal server error.
     ///
-    case internalServerError(String?)
+    case internalServerError(TMDbErrorContext)
 
     ///
     /// Not implemented.
     ///
-    case notImplemented(String?)
+    case notImplemented(TMDbErrorContext)
 
     ///
     /// Bad gateway.
     ///
-    case badGateway(String?)
+    case badGateway(TMDbErrorContext)
 
     ///
     /// Service unavailable.
     ///
-    case serviceUnavailable(String?)
+    case serviceUnavailable(TMDbErrorContext)
 
     ///
     /// Gateway timeout.
     ///
-    case gatewayTimeout(String?)
+    case gatewayTimeout(TMDbErrorContext)
 
     ///
     /// Data encode error.

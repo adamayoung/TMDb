@@ -104,7 +104,9 @@ worktree the conductor switched into. So `make test` spawned that way builds
 `main`'s pristine sources, **misses the worktree's committed changes**, and
 (compounded by the toon `errors[]` quirk below) misreports. **Detect it:** the
 run's `.build/last-*.log` lands under the **main checkout** and the worktree's
-`.build/` has none. **Work around it for the duration of a worktree delivery:**
+`.build/` has none — or, when the worktree adds a *new* suite, the run reports
+**"no matching test cases found"** for a `--filter` naming suites that plainly
+exist (observed 2026-07-24, #392). **Work around it for the duration of a worktree delivery:**
 run builds/tests **directly via `Bash`** (which does run in the worktree CWD) —
 `swift build --build-tests` then `swift test --skip-build --scratch-path .build
 --filter "TMDbTests|TMDbTestingTests"` (see the `Makefile` `test` target for the
@@ -168,6 +170,42 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   `curl -fsSL https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip`,
   unzip, and `install` the binary to `~/.local/bin/swiftformat`.
 
+### Xcode 27 / Swift 6.4 makes the `.docc` unhandled-file warning **fatal** — `make ci` fails locally, CI is green
+
+*2026-07-24.* On a toolchain **newer than the CI pin** (local Xcode 27.0 /
+Swift 6.4 vs CI's `Xcode_26.6`), SwiftPM promotes the package-load "unhandled
+files" warning for the two `.docc` catalogs into an **error** whenever
+`-Xswiftc -warnings-as-errors` is passed:
+
+```text
+error: 'TMDb': found 1 file(s) which are unhandled; explicitly declare them as
+resources or exclude from the target
+    …/Sources/TMDb/TMDb.docc
+```
+
+Consequences and how to read it:
+
+- **It is `swift build` failing, not xcsift.** `swift build … -Xswiftc
+  -warnings-as-errors` exits **1** while `xcsift` exits **0** (check with
+  `pipestatus`). Don't blame the formatter, and don't "fix" it by dropping
+  `--Werror`.
+- **It breaks `make build`, `make test`, `make build-release` — hence `make ci`
+  — locally**, on a clean checkout, with an empty diff. Plain `swift build
+  --build-tests` (no `-warnings-as-errors`) still exits 0, and `make build-docs`
+  is unaffected (it sets `SWIFTCI_DOCC=1`, which loads the plugin and *handles*
+  the catalogs). `SWIFTCI_DOCC=1` does **not** rescue the other targets.
+- **CI is unaffected** — `.github/workflows/ci.yml` pins
+  `DEVELOPER_DIR=/Applications/Xcode_26.6.app`, where the same flag leaves it a
+  warning. So a local `make ci` failure whose *only* error is these two lines is
+  a **toolchain-drift artifact, not a regression**: verify with the commands CI
+  actually runs (`swift build --build-tests -Xswiftc -warnings-as-errors`,
+  `swift test --filter "TMDbTests|TMDbTestingTests"`, `make build-docs`,
+  `make lint`, `make lint-markdown`) and let the PR's CI be the gate.
+- **A real fix**, if it starts biting: declare the catalogs explicitly in
+  `Package.swift` (e.g. `resources: [.copy("TMDb.docc")]`) or `exclude` them when
+  the plugin isn't loaded — but that touches the DocC build, so verify
+  `make build-docs` still passes.
+
 ### `make` build/test targets pipe through xcsift with `pipefail`
 
 - macOS targets pipe compiler/test output through `xcsift`; the Makefile sets
@@ -177,13 +215,13 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   format); CI builds use `xcsift -f github-actions` (GitHub annotations).
 - Build targets pass `--Werror` (warnings-as-errors) and `2>&1` (compiler
   diagnostics are emitted on stderr). **Linux/Docker targets do not use xcsift.**
-- **The `.docc` "unhandled file" warning is a false alarm — trust the exit code,
-  not the toon `errors[]` array.** `swift build`/`make build-tests` emit
+- **The `.docc` "unhandled file" warning** — `swift build`/`make build-tests` emit
   `'<pkg>': found 1 file(s) which are unhandled … Sources/TMDb/TMDb.docc` (and the
   `TMDbTesting.docc` twin) because the DocC plugin only loads under
   `SWIFTCI_DOCC=1` (see `Package.swift`), so outside a docs build SwiftPM sees the
-  catalogs as unhandled. It is a **package-load warning, not a compile error**, so
-  `--Werror` does **not** promote it and the build **exits 0** ("Build complete!").
+  catalogs as unhandled. **Whether it is fatal depends on the toolchain — see
+  the entry below.** On the CI-pinned toolchain it stays a package-load warning
+  and the build **exits 0** ("Build complete!").
   But xcsift's `-f toon` output lists it under `errors[…]{file,line,message}` with
   `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
   that array (instead of the exit status) will wrongly report the build as
@@ -255,6 +293,23 @@ fields.
 
 ## Public API
 
+### A `RawRepresentable` enum with an associated-value case gets **rawValue** equality, not structural
+
+*2026-07-24.* `TMDbStatusCode` is a hand-rolled
+`RawRepresentable, Equatable, Hashable` enum with an `.unknown(Int)` escape
+hatch. The synthesised `==` is **not** structural: Swift derives it from
+`rawValue`, so `.unknown(7) == .invalidAPIKey` is **`true`** (both have raw value
+7) even though they are different cases. A test asserting they differ fails.
+
+- This is coherent — equal raw values *should* be equal — but it is easy to
+  assume case-identity semantics and write the opposite assertion.
+- **Do it deliberately:** implement `==` and `hash(into:)` explicitly over
+  `rawValue` and document the semantics, rather than relying on the synthesis.
+  Keep construction funnelled through the classifying `init?(rawValue:)` so the
+  `.unknown` case can only ever hold an *undocumented* value and the collision
+  never arises in practice. See
+  [ADR-0012](decisions/0012-structured-tmdberror-context.md).
+
 ### `NaturalLanguageSearchService` is not platform-gated — only its `TMDbClient` accessor is
 
 *2026-06-23.* `CLAUDE.md` describes natural-language search as "Apple-platforms
@@ -305,6 +360,24 @@ the documented signature. (We initially mis-scoped the `<entity>ID` rename as
 breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
 
 ## Networking
+
+### `URL(string:)` on Apple platforms rejects almost nothing — probe before testing a rejection
+
+*2026-07-24.* Trying to test the `TMDbAPIError.invalidURL` branch (thrown when
+`URL(string: request.path)` returns `nil`), the only inputs that actually fail on
+Apple Foundation are the **empty string** and a malformed bracketed host
+(`"http://[bad/x"`). All of these **parse fine**: spaces, tabs, newlines, `NUL`,
+emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
+
+- So on macOS/iOS that error path is effectively only reachable with an empty
+  path — you cannot construct a "token-bearing invalid path" test case there.
+- **swift-corelibs-foundation (Linux/Windows) parses more strictly**, so the
+  branch is not dead code across the package's supported platforms — which is
+  why the thrown path is still redacted.
+- **Probe empirically** (a throwaway `swift script.swift` with the candidate
+  strings) before writing any test that depends on `URL(string:)` returning
+  `nil`; the behaviour changed with the swift-foundation rewrite and intuitions
+  from older Foundation are wrong.
 
 ### Bearer-token clients share one credential-free `URLCache` key space
 

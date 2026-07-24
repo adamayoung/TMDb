@@ -98,7 +98,7 @@ struct TMDbFindServiceTests {
 
     @Test("find with empty external ID throws bad request and performs no request")
     func findWithEmptyExternalIDThrowsBadRequest() async throws {
-        await #expect(throws: TMDbError.badRequest("External ID must not be empty")) {
+        await #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "External ID must not be empty"))) {
             _ = try await service.find(externalID: "", externalSource: .imdbID)
         }
 
@@ -107,7 +107,7 @@ struct TMDbFindServiceTests {
 
     @Test("find with whitespace external ID throws bad request and performs no request")
     func findWithWhitespaceExternalIDThrowsBadRequest() async throws {
-        await #expect(throws: TMDbError.badRequest("External ID must not be empty")) {
+        await #expect(throws: TMDbError.badRequest(TMDbErrorContext(statusMessage: "External ID must not be empty"))) {
             _ = try await service.find(externalID: "  \n ", externalSource: .imdbID)
         }
 

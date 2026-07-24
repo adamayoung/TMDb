@@ -12,237 +12,108 @@ import Testing
 @Suite(.tags(.models))
 struct TMDbErrorTests {
 
-    @Test("bad request errors with same message equal")
-    func badRequestErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.badRequest("Message 1")
-        let rhs = TMDbError.badRequest("Message 1")
+    @Test("errors with equal context equal")
+    func errorsWithEqualContextEqual() {
+        let context = TMDbErrorContext(httpStatusCode: 404, statusMessage: "Message 1")
 
-        #expect(lhs == rhs)
+        #expect(TMDbError.badRequest(context) == TMDbError.badRequest(context))
+        #expect(TMDbError.unauthorised(context) == TMDbError.unauthorised(context))
+        #expect(TMDbError.forbidden(context) == TMDbError.forbidden(context))
+        #expect(TMDbError.notFound(context) == TMDbError.notFound(context))
+        #expect(TMDbError.tooManyRequests(context) == TMDbError.tooManyRequests(context))
+        #expect(TMDbError.serverError(context) == TMDbError.serverError(context))
     }
 
-    @Test("bad request errors with different messages do not equal")
-    func badRequestErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.badRequest("Message 1")
-        let rhs = TMDbError.badRequest("Message 2")
+    @Test("errors with different context do not equal")
+    func errorsWithDifferentContextDoNotEqual() {
+        let lhs = TMDbError.badRequest(TMDbErrorContext(statusMessage: "Message 1"))
+        let rhs = TMDbError.badRequest(TMDbErrorContext(statusMessage: "Message 2"))
 
         #expect(lhs != rhs)
     }
 
-    @Test("unauthorised errors with same message equal")
-    func unauthorisedErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.unauthorised("Message 1")
-        let rhs = TMDbError.unauthorised("Message 1")
-
-        #expect(lhs == rhs)
-    }
-
-    @Test("unauthorised errors with different messages do not equal")
-    func unauthorisedErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.unauthorised("Message 1")
-        let rhs = TMDbError.unauthorised("Message 2")
+    @Test("errors differing only by http status code do not equal")
+    func errorsDifferingByHTTPStatusCodeDoNotEqual() {
+        let lhs = TMDbError.serverError(TMDbErrorContext(httpStatusCode: 502))
+        let rhs = TMDbError.serverError(TMDbErrorContext(httpStatusCode: 503))
 
         #expect(lhs != rhs)
     }
 
-    @Test("forbidden errors with same message equal")
-    func forbiddenErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.forbidden("Message 1")
-        let rhs = TMDbError.forbidden("Message 1")
-
-        #expect(lhs == rhs)
-    }
-
-    @Test("forbidden errors with different messages do not equal")
-    func forbiddenErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.forbidden("Message 1")
-        let rhs = TMDbError.forbidden("Message 2")
-
-        #expect(lhs != rhs)
-    }
-
-    @Test("not found errors with same message equal")
-    func notFoundErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.notFound("Message 1")
-        let rhs = TMDbError.notFound("Message 1")
-
-        #expect(lhs == rhs)
-    }
-
-    @Test("not found errors with different messages do not equal")
-    func notFoundErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.notFound("Message 1")
-        let rhs = TMDbError.notFound("Message 2")
-
-        #expect(lhs != rhs)
-    }
-
-    @Test("too many requests errors with same message equal")
-    func tooManyRequestsErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.tooManyRequests("Message 1")
-        let rhs = TMDbError.tooManyRequests("Message 1")
-
-        #expect(lhs == rhs)
-    }
-
-    @Test("too many requests errors with different messages do not equal")
-    func tooManyRequestsErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.tooManyRequests("Message 1")
-        let rhs = TMDbError.tooManyRequests("Message 2")
-
-        #expect(lhs != rhs)
-    }
-
-    @Test("server error errors with same message equal")
-    func serverErrorErrorsWithSameMessageEqual() {
-        let lhs = TMDbError.serverError("Message 1")
-        let rhs = TMDbError.serverError("Message 1")
-
-        #expect(lhs == rhs)
-    }
-
-    @Test("server error errors with different messages do not equal")
-    func serverErrorErrorsWithDifferentMessagesDoNotEqual() {
-        let lhs = TMDbError.serverError("Message 1")
-        let rhs = TMDbError.serverError("Message 2")
-
-        #expect(lhs != rhs)
+    @Test("invalidURL errors with same value equal")
+    func invalidURLErrorsWithSameValueEqual() {
+        #expect(TMDbError.invalidURL("/movie/1") == TMDbError.invalidURL("/movie/1"))
+        #expect(TMDbError.invalidURL("/movie/1") != TMDbError.invalidURL("/movie/2"))
     }
 
     @Test("network errors equal")
     func networkErrorsEqual() {
-        let lhs = TMDbError.network(MockError.test)
-        let rhs = TMDbError.network(MockError.test)
-
-        #expect(lhs == rhs)
+        #expect(TMDbError.network(MockError.test) == TMDbError.network(MockError.test))
     }
 
     @Test("decode errors equal")
     func decodeErrorsEqual() {
-        let lhs = TMDbError.decode(MockError.test)
-        let rhs = TMDbError.decode(MockError.test)
+        #expect(TMDbError.decode(MockError.test) == TMDbError.decode(MockError.test))
+    }
 
-        #expect(lhs == rhs)
+    @Test("encode errors equal")
+    func encodeErrorsEqual() {
+        #expect(TMDbError.encode(MockError.test) == TMDbError.encode(MockError.test))
+    }
+
+    @Test("invalidRating errors equal")
+    func invalidRatingErrorsEqual() {
+        #expect(TMDbError.invalidRating == TMDbError.invalidRating)
     }
 
     @Test("unknown errors equal")
     func unknownErrorsEqual() {
-        let lhs = TMDbError.unknown
-        let rhs = TMDbError.unknown
-
-        #expect(lhs == rhs)
+        #expect(TMDbError.unknown == TMDbError.unknown)
     }
 
-    @Test("not found and unknown errors do not equal")
-    func notFoundAndUnknowErrorsDoNotEqual() {
-        let lhs = TMDbError.notFound()
-        let rhs = TMDbError.unknown
-
-        #expect(lhs != rhs)
+    @Test("different cases do not equal")
+    func differentCasesDoNotEqual() {
+        #expect(TMDbError.notFound() != TMDbError.unknown)
+        #expect(TMDbError.encode(MockError.test) != TMDbError.network(MockError.test))
     }
 
-    @Test("bad request error description is correct")
-    func badRequestErrorDescriptionIsCorrect() {
-        let description = TMDbError.badRequest().errorDescription
-
-        #expect(description == "Bad request")
+    @Test(
+        "error description falls back to the case default without a message",
+        arguments: [
+            (TMDbError.badRequest(), "Bad request"),
+            (TMDbError.unauthorised(), "Unauthorised"),
+            (TMDbError.forbidden(), "Forbidden"),
+            (TMDbError.notFound(), "Not found"),
+            (TMDbError.tooManyRequests(), "Too many requests"),
+            (TMDbError.serverError(), "Server error"),
+            (TMDbError.network(MockError.test), "Network error"),
+            (TMDbError.decode(MockError.test), "Decode error"),
+            (TMDbError.encode(MockError.test), "Encode error"),
+            (TMDbError.unknown, "Unknown")
+        ]
+    )
+    func errorDescriptionFallsBackToDefault(error: TMDbError, expected: String) {
+        #expect(error.errorDescription == expected)
     }
 
-    @Test("unauthorised error description is correct")
-    func unauthorisedErrorDescriptionIsCorrect() {
-        let description = TMDbError.unauthorised().errorDescription
+    @Test("error description uses the status message when present")
+    func errorDescriptionUsesStatusMessage() {
+        let context = TMDbErrorContext(statusMessage: "Invalid API key")
 
-        #expect(description == "Unauthorised")
+        #expect(TMDbError.unauthorised(context).errorDescription == "Invalid API key")
+        #expect(TMDbError.badRequest(context).errorDescription == "Invalid API key")
     }
 
-    @Test("forbidden error description is correct")
-    func forbiddenErrorDescriptionIsCorrect() {
-        let description = TMDbError.forbidden().errorDescription
-
-        #expect(description == "Forbidden")
+    @Test("invalidURL error description includes the url")
+    func invalidURLErrorDescriptionIncludesURL() {
+        #expect(TMDbError.invalidURL("/movie/1").errorDescription == "Invalid URL: /movie/1")
     }
 
-    @Test("not found error description is correct")
-    func notFoundErrorDescriptionIsCorrect() {
-        let description = TMDbError.notFound().errorDescription
+    @Test("invalidRating error description is correct")
+    func invalidRatingErrorDescriptionIsCorrect() {
+        let description = TMDbError.invalidRating.errorDescription
 
-        #expect(description == "Not found")
-    }
-
-    @Test("too many requests error description is correct")
-    func tooManyRequestsErrorDescriptionIsCorrect() {
-        let description = TMDbError.tooManyRequests().errorDescription
-
-        #expect(description == "Too many requests")
-    }
-
-    @Test("server error error description is correct")
-    func serverErrorErrorDescriptionIsCorrect() {
-        let description = TMDbError.serverError().errorDescription
-
-        #expect(description == "Server error")
-    }
-
-    @Test("network error description is correct")
-    func networkErrorDescriptionIsCorrect() {
-        let description = TMDbError.network(MockError.test).errorDescription
-
-        #expect(description == "Network error")
-    }
-
-    @Test("decode error description is correct")
-    func decodeErrorDescriptionIsCorrect() {
-        let description = TMDbError.decode(MockError.test).errorDescription
-
-        #expect(description == "Decode error")
-    }
-
-    @Test("unknown error description is correct")
-    func unknownErrorDescriptionIsCorrect() {
-        let description = TMDbError.unknown.errorDescription
-
-        #expect(description == "Unknown")
-    }
-
-    @Test("bad request error description with message includes message")
-    func badRequestErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.badRequest("Invalid API key").errorDescription
-
-        #expect(description == "Invalid API key")
-    }
-
-    @Test("unauthorised error description with message includes message")
-    func unauthorisedErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.unauthorised("Authentication failed").errorDescription
-
-        #expect(description == "Authentication failed")
-    }
-
-    @Test("forbidden error description with message includes message")
-    func forbiddenErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.forbidden("Access denied").errorDescription
-
-        #expect(description == "Access denied")
-    }
-
-    @Test("not found error description with message includes message")
-    func notFoundErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.notFound("Resource not found").errorDescription
-
-        #expect(description == "Resource not found")
-    }
-
-    @Test("too many requests error description with message includes message")
-    func tooManyRequestsErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.tooManyRequests("Rate limit exceeded").errorDescription
-
-        #expect(description == "Rate limit exceeded")
-    }
-
-    @Test("server error error description with message includes message")
-    func serverErrorErrorDescriptionWithMessageIncludesMessage() {
-        let description = TMDbError.serverError("Internal error").errorDescription
-
-        #expect(description == "Internal error")
+        #expect(description == "Invalid rating (must be between 0.5 and 10.0, in increments of 0.5)")
     }
 
 }
