@@ -161,4 +161,77 @@ struct TMDbAPIClientErrorContextTests {
         #expect(context.endpointPath?.contains("super-secret-token") == false)
     }
 
+    @Test(
+        "error body populates the TMDb status code and message across the mapping table",
+        arguments: [
+            (
+                "error-status-401",
+                401,
+                TMDbStatusCode.invalidAPIKey,
+                "Invalid API key: You must be granted a valid key."
+            ),
+            (
+                "error-status-400",
+                400,
+                TMDbStatusCode.invalidPage,
+                "Invalid page: Pages start at 1 and max at 500. They are expected to be an integer."
+            ),
+            (
+                "error-status-422",
+                422,
+                TMDbStatusCode.invalidDateRange,
+                "Invalid date range: Should be a range no longer than 14 days."
+            ),
+            (
+                "error-status-response",
+                404,
+                TMDbStatusCode.resourceNotFound,
+                "The resource you requested could not be found."
+            )
+        ]
+    )
+    @MainActor
+    func errorBodyPopulatesContext(
+        fixture: String,
+        httpStatus: Int,
+        tmdbCode: TMDbStatusCode,
+        message: String
+    ) async throws {
+        let data = try Data(fromResource: fixture, withExtension: "json")
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        httpClient.result = .success(HTTPResponse(statusCode: httpStatus, data: data))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        let context = try #require(thrownError?.errorContext)
+        #expect(context.httpStatusCode == httpStatus)
+        #expect(context.tmdbStatusCode == tmdbCode)
+        #expect(context.statusMessage == message)
+    }
+
+}
+
+private extension TMDbAPIError {
+
+    /// The associated context for an HTTP-family error case, for test assertions.
+    var errorContext: TMDbErrorContext? {
+        switch self {
+        case .badRequest(let context), .unauthorised(let context), .forbidden(let context),
+             .notFound(let context), .methodNotAllowed(let context), .notAcceptable(let context),
+             .unprocessableContent(let context), .tooManyRequests(let context),
+             .internalServerError(let context), .notImplemented(let context),
+             .badGateway(let context), .serviceUnavailable(let context),
+             .gatewayTimeout(let context):
+            context
+
+        default:
+            nil
+        }
+    }
+
 }
