@@ -30,6 +30,30 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-25 — `/deliver` Phase 3 must run a release build before declaring done (#398) · applied
+
+- **Pattern:** a **single** occurrence, not a recurrence — logged deliberately.
+  In #398 (the `TMDbIntelligence` extraction) implementation was declared
+  complete on debug-green evidence: `swift build`, `swift build --build-tests`,
+  2869 unit tests and 291 integration tests all passed. `swift build -c release`
+  was never run, and it was **broken** — a `@testable import` inside the new
+  non-test `TMDbTestFixtures` target, which only fails without
+  `-enable-testing`. That is `make build-release`, `make ci`, and both CI
+  *Build for Release* jobs. The code reviewer caught it; the pipeline did not.
+- **Decision:** add a third hard checkpoint to `/deliver` Phase 3 — run
+  `swift build -c release` before advancing. Applied in
+  `.claude/skills/deliver/SKILL.md` (this PR), cross-referencing the
+  `knowledge/gotchas.md` entry.
+- **Rationale:** normally the scan waits for a pattern to recur, and the user
+  was told this is single-occurrence before approving. It was accepted anyway
+  because the cost is ~30 seconds, the failure class is **systematically
+  invisible** to every other Phase 3 gate (all of which build with
+  `-enable-testing`), and it is most likely exactly when `/deliver` is doing
+  target extractions or visibility changes — the work where it matters most.
+  Waiting for a second incident would mean shipping another red release gate to
+  earn evidence we already have.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-07-24 — tooling-runner ran in the main checkout, not the worktree (#390, #397) · applied
 
 - **Pattern:** the `tooling-runner` (Haiku) subagent behind `/build`,
