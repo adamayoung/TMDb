@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (`feature/tmdberror-context`) · full
+## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (#397) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (reshapes the package's
   most load-bearing public enum + networking + new public API). `review-plan`
