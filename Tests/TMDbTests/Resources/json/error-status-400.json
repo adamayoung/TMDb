@@ -1,0 +1,5 @@
+{
+    "status_code": 22,
+    "status_message": "Invalid page: Pages start at 1 and max at 500. They are expected to be an integer.",
+    "success": false
+}

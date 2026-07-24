@@ -1,0 +1,5 @@
+{
+    "status_code": 20,
+    "status_message": "Invalid date range: Should be a range no longer than 14 days.",
+    "success": false
+}
