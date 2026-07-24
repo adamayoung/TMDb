@@ -39,6 +39,9 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
 
     /// An error indicating a request URL could not be constructed from the given
     /// value.
+    ///
+    /// The associated path is redacted in the same way as
+    /// ``TMDbErrorContext/endpointPath``, so it is safe to log.
     case invalidURL(String)
 
     /// An error indicating there was a problem encoding data.
