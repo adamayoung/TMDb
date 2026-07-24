@@ -44,16 +44,26 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   review blocker forced a decision between duplicating ~100 fixtures, keeping
   tests in place, or a shared target; the user chose the shared target after I
   corrected my own under-estimate of the blast radius (494 of 572 files touch
-  those fixtures). (b) `make ci` cannot pass locally on this toolchain — a
-  pre-existing `.docc` warning that `xcsift --Werror` now promotes, verified to
-  fail **identically on `origin/main`**; every stage was run individually
-  instead. (c) M3 left as documented duplication rather than promoting two
-  internal DTOs, which cascades into member-level access.
+  those fixtures). (b) `make ci` could not pass locally for most of the
+  delivery — the Xcode 27 `.docc` trap, verified to fail **identically on
+  `origin/main`**, so every stage was run individually instead; **#396 fixed it
+  upstream mid-delivery**, and the rebase onto it made `make ci` green once the
+  two new catalogs were added to its `exclude` list. (c) M3 left as documented
+  duplication rather than promoting two internal DTOs, which cascades into
+  member-level access.
+- **Rebase (onto `cea296c`):** picked up #396 (Xcode 27) and #397 (`TMDbError`
+  context — the 19.0.0 train partner, now merged). Two conflicts, both in
+  append-at-top files (CHANGELOG, retros). The load-bearing catch was silent:
+  #396's `.docc` `exclude` list is **per target**, so the two new catalogs
+  re-introduced the build failure — a clean textual rebase and a green
+  `swift build` both missed it; only `make ci` caught it. Tests reconciled
+  again: **2869 on the new base, 2869 after**.
 - **Improvement:** **`/deliver` Phase 3 should run `swift build -c release`
   before declaring implementation done.** Debug + tests green is not evidence
   the release gate passes, and the two diverge precisely on access-level and
   `@testable` mistakes — exactly what a target-extraction PR is made of. Cheap
   check, would have caught the only Critical in this delivery.
+
 ## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (#397) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (reshapes the package's

@@ -280,15 +280,14 @@ Consequences and how to read it:
   `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
   that array (instead of the exit status) will wrongly report the build as
   **failed**. Re-check the actual exit code before believing it.
-- **Update (2026-07-24, Xcode 27 / Swift 6.4 local toolchain):** on this
-  toolchain `xcsift --Werror` now **does** fail the make target on that warning
-  — `make test`, `make build-release`, and therefore **`make ci` exit non-zero
-  with zero real errors**. It reproduces **identically on `origin/main`** (run
-  the same command there before blaming your branch), so it is a local-toolchain
-  artifact, not a regression. CI pins Xcode 26.6 and is unaffected. When it
-  fires, verify each stage individually (`swift build -c release`,
-  `swift build --build-tests`, `swift test --skip-build --filter …`,
-  `make build-docs`, `make lint`) rather than treating `make ci` as the gate.
+- **Resolved in #396 — and it needs maintaining.** `Package.swift` now
+  `exclude`s each `.docc` catalog when `SWIFTCI_DOCC != 1` (the "real fix"
+  suggested above), so `make ci` passes again on Xcode 27. **That list is
+  enumerated per target: adding a new target with a DocC catalog means adding it
+  to the `exclude` block, or the failure comes straight back for every `make`
+  build/test/release target.** Hit during #395, which added
+  `TMDbIntelligence.docc` and `TMDbIntelligenceTesting.docc` — the rebase onto
+  #396 compiled fine and only `make ci` caught the omission.
 
   **Beta-toolchain caveat (Swift 6.4 / macOS 27, Xcode 27):** on this toolchain
   `swift build --build-tests -Xswiftc -warnings-as-errors` now **exits 1** on the
