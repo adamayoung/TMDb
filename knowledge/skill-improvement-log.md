@@ -30,6 +30,35 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-24 — tooling-runner ran in the main checkout, not the worktree (#390, #397) · applied
+
+- **Pattern:** the `tooling-runner` (Haiku) subagent behind `/build`,
+  `/build-for-testing`, `/test` and `/integration-test` does not reliably
+  inherit the conductor's CWD, so during a `/deliver` — which always runs in a
+  worktree — a bare `make` executed against the **main checkout**. In #390 it
+  built `main`'s pristine sources and misreported the first build; in #397 a
+  delegated `swift test` returned *"no matching test cases found"* for suites
+  that plainly existed in the worktree. Both times the workaround was to
+  abandon the four skills and shell out via `Bash`, which makes them unusable
+  in the situation they exist for. Raised as #390's "one improvement" and
+  recurred verbatim one delivery later.
+- **Decision:** **applied** — the four skills now pass
+  `Package directory: <absolute CWD>` in the task, and `.claude/agents/tooling-runner.md`
+  gains a *Working directory — required, and never assumed* section: refuse to
+  run when no directory is supplied, verify `Package.swift` exists there, run
+  everything via `make -C "<dir>"` (and `swift test --package-path` for scoped
+  runs) with absolute log paths, and echo the directory used in the report. The
+  stale "work around it by bypassing the runner" advice in
+  `knowledge/gotchas.md` was replaced with the fix plus a way to spot a
+  pre-fix report.
+- **Rationale:** pinning the directory fixes the root cause; refusing to guess
+  converts the remaining failure mode from a *convincing wrong answer* (green
+  build, or zero tests found) into an explicit error. `make -C` was chosen over
+  `cd` so no later command in the same shell can drift back to the wrong tree.
+  Echoing the directory makes a wrong-tree run visible in the caller's context
+  rather than only in a log path.
+- **Reconsider when:** n/a (applied).
+
 ### 2026-07-08 — External-review fixes: worktree-safe flake fixing, PR-pinned watch, severity filter · applied
 
 - **Pattern:** an external model review of the `/deliver` pipeline (not the

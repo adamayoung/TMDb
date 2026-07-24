@@ -11,6 +11,12 @@ reporting contract live in `.claude/agents/tooling-runner.md`) with the
 one-line task:
 
 > Run the `integration-test` target: the TMDb live-API integration suite.
+> Package directory: `<your current working directory, absolute>`
+
+**Always include that directory line.** The subagent does not reliably inherit
+your working directory, and without it a run inside a git worktree silently
+tests the main checkout instead (see `.claude/agents/tooling-runner.md`).
+Use your actual CWD — run `pwd` if you are not certain of it.
 
 Relay its report — it distinguishes genuine assertion failures from
 transient live-API issues (429/timeout/network) and env/precondition

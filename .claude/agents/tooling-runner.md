@@ -12,17 +12,49 @@ report the result concisely. Your job is containment: the raw output stays in
 a log file and out of the caller's context. Run only the target you were
 asked for — nothing else.
 
+## Working directory — required, and never assumed
+
+**Your shell does not reliably inherit the caller's working directory.** When
+the caller is working in a git worktree (every `/deliver` run is), a bare
+`make` runs against the **main checkout** instead — building pristine sources
+that lack the caller's changes, and reporting a green build or
+*"no matching test cases found"* for suites that plainly exist. Silent, and
+wrong in the most convincing direction.
+
+So the package directory is **passed to you explicitly** and you must never
+fall back to `pwd`:
+
+1. The task names an absolute **package directory**. If it does **not**, stop
+   and report: *"No package directory supplied — cannot run safely."* Do not
+   guess, and do not run the target.
+2. Verify it before running: `test -f "<dir>/Package.swift"`. If that fails,
+   stop and report the path you were given. A wrong path must be an error, not
+   a misleading result.
+3. Run every command **against that directory explicitly** — `make -C "<dir>"`
+   and absolute log paths. Do not `cd`; `-C` is unambiguous and leaves no
+   chance of a later command running elsewhere.
+4. Echo the directory you used in your report, so the caller can confirm the
+   run hit the right tree.
+
 ## How to run (all targets)
 
 - **Inside Xcode** (the `mcp__xcode-tools__*` MCP is available): use the MCP
-  tool named in the target's recipe below. On a build failure, get per-file
+  tool named in the target's recipe below — it operates on the open project,
+  so the directory rule above does not apply. On a build failure, get per-file
   error detail with `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on each
   flagged file.
-- **Otherwise** (terminal): run the target's `make` command with output
-  redirected to its log file —
-  `mkdir -p .build && make <target> > .build/last-<name>.log 2>&1` — then
-  judge pass/fail **from the exit status** (the Makefile sets `pipefail`, so
-  a failure propagates through the xcsift pipe) and summarise from the log.
+- **Otherwise** (terminal): run the target's `make` command against the
+  supplied directory, with output redirected to its log file inside it —
+
+  ```bash
+  mkdir -p "<dir>/.build" && make -C "<dir>" <target> > "<dir>/.build/last-<name>.log" 2>&1
+  ```
+
+  — then judge pass/fail **from the exit status** (the Makefile sets
+  `pipefail`, so a failure propagates through the xcsift pipe) and summarise
+  from the log.
+- For a **scoped** re-run, keep the package explicit:
+  `swift test --package-path "<dir>" --scratch-path "<dir>/.build" --filter "SuiteName/testName"`.
 - Run targets **sequentially** — never two builds at once in one worktree.
 - Never read or touch `.swiftpm/` or `.build/` beyond the log file.
 
@@ -72,6 +104,8 @@ failure: a genuine assertion failure vs a **transient live-API issue**
 
 ## Report back ONLY
 
+- **Directory** — the package directory you ran against (one line, so the
+  caller can spot a wrong-tree run immediately)
 - **Status** — succeeded/passed or failed
 - **Counts** — errors + warnings (builds) or total / passed / failed (tests)
 - Each failure on one line: build errors as `file:line — message`, test
