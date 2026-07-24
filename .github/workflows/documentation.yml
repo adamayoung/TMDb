@@ -48,9 +48,9 @@ jobs:
     name: Build
     needs: changes
     if: always()
-    runs-on: macos-26
+    runs-on: xcode-27
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
     steps:
       - name: No changes detected
         if: needs.changes.outputs.docs != 'true' && github.event_name != 'workflow_dispatch'

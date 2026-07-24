@@ -58,10 +58,10 @@ jobs:
     runs-on: >-
       ${{
         (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
-        && 'macos-26' || 'ubuntu-latest'
+        && 'xcode-27' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
       # Pin lint tool versions so CI matches local `make lint` exactly and does
       # not drift when Homebrew publishes a new release.
       SWIFTLINT_VERSION: 0.63.2
@@ -128,10 +128,10 @@ jobs:
     runs-on: >-
       ${{
         (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
-        && 'macos-26' || 'ubuntu-latest'
+        && 'xcode-27' || 'ubuntu-latest'
       }}
     env:
-      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
@@ -170,10 +170,32 @@ jobs:
       - name: Prepare Code Coverage
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          xcrun llvm-cov export -format="lcov" \
-            .build/debug/TMDbPackageTests.xctest/Contents/MacOS/TMDbPackageTests \
-            -instr-profile .build/debug/codecov/default.profdata > info.lcov || \
-            echo "Warning: Coverage export failed, continuing without coverage"
+          set -euo pipefail
+          # Ask SwiftPM where things are rather than hardcoding paths: Swift 6.4
+          # moved the build products to .build/out/Products/Debug and emits one
+          # .xctest bundle per test target instead of a single merged
+          # <Package>PackageTests.xctest.
+          BIN_PATH=$(swift build --show-bin-path)
+          PROFDATA="$(dirname "$(swift test --show-codecov-path)")/default.profdata"
+
+          OBJECTS=()
+          for target in TMDbTests TMDbTestingTests; do
+            binary="${BIN_PATH}/${target}.xctest/Contents/MacOS/${target}"
+            if [ ! -f "${binary}" ]; then
+              echo "::error::Test binary not found: ${binary}"
+              exit 1
+            fi
+            OBJECTS+=(-object "${binary}")
+          done
+
+          xcrun llvm-cov export -format="lcov" "${OBJECTS[@]}" \
+            -instr-profile "${PROFDATA}" > info.lcov
+
+          # Fail loudly rather than uploading an empty report as 0% coverage.
+          if [ ! -s info.lcov ]; then
+            echo "::error::Coverage export produced an empty report"
+            exit 1
+          fi
 
       - name: Upload coverage reports to Codecov
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
