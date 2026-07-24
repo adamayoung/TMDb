@@ -161,6 +161,24 @@ struct TMDbAPIClientErrorContextTests {
         #expect(context.endpointPath?.contains("super-secret-token") == false)
     }
 
+    @Test("perform when the error body is not a TMDb status response keeps the HTTP context")
+    @MainActor
+    func performWhenErrorBodyIsNotDecodableKeepsHTTPContext() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/endpoint")
+        let htmlBody = Data("<html><body>502 Bad Gateway</body></html>".utf8)
+        httpClient.result = .success(HTTPResponse(statusCode: 502, data: htmlBody))
+
+        var thrownError: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let error as TMDbAPIError {
+            thrownError = error
+        }
+
+        let expectedContext = TMDbErrorContext(httpStatusCode: 502, endpointPath: "/endpoint")
+        #expect(thrownError == .badGateway(expectedContext))
+    }
+
     @Test(
         "error body populates the TMDb status code and message across the mapping table",
         arguments: [
