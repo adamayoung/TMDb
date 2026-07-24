@@ -102,6 +102,36 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .serverError(context))
     }
 
+    @Test("init when error is a TMDbAPIError.notImplemented returns serverError with context")
+    func initWithNotImplementedTMDbAPIErrorReturnsServerError() {
+        let context = TMDbErrorContext(httpStatusCode: 501, statusMessage: "Not implemented message")
+        let error = TMDbAPIError.notImplemented(context)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .serverError(context))
+    }
+
+    @Test("init when error is a TMDbAPIError.serviceUnavailable returns serverError with context")
+    func initWithServiceUnavailableTMDbAPIErrorReturnsServerError() {
+        let context = TMDbErrorContext(httpStatusCode: 503, statusMessage: "Service unavailable")
+        let error = TMDbAPIError.serviceUnavailable(context)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .serverError(context))
+    }
+
+    @Test("init when error is a TMDbAPIError.notAcceptable returns badRequest with context")
+    func initWithNotAcceptableTMDbAPIErrorReturnsBadRequestError() {
+        let context = TMDbErrorContext(httpStatusCode: 406, statusMessage: "Not acceptable message")
+        let error = TMDbAPIError.notAcceptable(context)
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .badRequest(context))
+    }
+
     @Test("init when error is a TMDbAPIError.methodNotAllowed returns badRequest with context")
     func initWithMethodNotAllowedTMDbAPIErrorReturnsBadRequestError() {
         let context = TMDbErrorContext(httpStatusCode: 405, statusMessage: "Method not allowed")

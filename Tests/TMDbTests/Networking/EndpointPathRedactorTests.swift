@@ -48,4 +48,9 @@ struct EndpointPathRedactorTests {
         #expect(redacted == "/movie/550")
     }
 
+    @Test("leaves a path with fewer than two segments unchanged", arguments: ["/account", "/", ""])
+    func leavesShortPathUnchanged(path: String) {
+        #expect(EndpointPathRedactor.redact(path) == path)
+    }
+
 }

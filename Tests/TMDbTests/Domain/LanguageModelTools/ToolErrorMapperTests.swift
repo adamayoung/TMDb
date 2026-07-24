@@ -33,6 +33,12 @@ struct ToolErrorMapperTests {
         #expect(message?.contains("Invalid request: invalid country") == true)
     }
 
+    @Test("bad request without a status message falls back to a generic detail")
+    func badRequestWithoutStatusMessage() {
+        let message = ToolErrorMapper.message(for: .badRequest())
+        #expect(message?.contains("Invalid request: bad request") == true)
+    }
+
     @Test("too many requests maps to a rate-limit message")
     func tooManyRequests() {
         let message = ToolErrorMapper.message(for: .tooManyRequests())
