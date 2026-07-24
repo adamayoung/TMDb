@@ -14,6 +14,46 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (branch `feature/tmdb-intelligence-product`, #395) · full
+
+- **Phases / skills:** phases 0–8 pre-PR; full weight (~40 sources + ~110
+  fixtures + ~30 tests relocated, new targets, CI/docs infra). `/plan` refreshed
+  the pre-existing `plans/tmdb-intelligence-product-extraction.md` after a
+  3-agent drift check. `review-plan` (3 Opus critics) → **2 blockers + 6
+  findings, all applied**. `implement-plan` in 4 checkpoints.
+  `review-changes` → **1 Critical**, 3 Medium, 2 Low. `security-review` → 0
+  findings ≥ conf-8. `capture-knowledge` → 1 new gotcha + **2 corrections to
+  existing ones**. Rubric: 7/7 ACs met (**self-graded — the independent grader
+  subagent died on a session limit; recorded, not silently passed**).
+- **Worked:** the plan critics paid for themselves twice over — they caught that
+  `TMDbTestingTests` tests `SearchPlan.sample` (which moves out, so the target
+  would not compile), that the integration inventory was 5 files not 3, and
+  unanimously that the **`.xctestplan` sweep was ghost work** (the files are
+  gitignored and untracked — the plan would have had me edit non-existent
+  files). Counting tests rather than trusting green proved the move lossless:
+  **2868 before, 2868 after**, reconciled against the true base `c22a336`.
+- **Friction — the one that mattered:** `@testable import TMDb` inside the new
+  **non-test** `TMDbTestFixtures` target broke `swift build -c release` *only*.
+  Debug builds, `--build-tests`, all 2868 unit tests and 291 integration tests
+  passed while `make build-release` — i.e. `make ci` and both CI release jobs —
+  was red. I never ran a release build before declaring implementation
+  complete; the code reviewer caught it. Whole-module-optimization then
+  misreported the culprit file, so the grep for `@testable` mattered more than
+  the compiler's own pointer.
+- **Deviations:** (a) the shared-fixtures target was **not** in the plan — the
+  review blocker forced a decision between duplicating ~100 fixtures, keeping
+  tests in place, or a shared target; the user chose the shared target after I
+  corrected my own under-estimate of the blast radius (494 of 572 files touch
+  those fixtures). (b) `make ci` cannot pass locally on this toolchain — a
+  pre-existing `.docc` warning that `xcsift --Werror` now promotes, verified to
+  fail **identically on `origin/main`**; every stage was run individually
+  instead. (c) M3 left as documented duplication rather than promoting two
+  internal DTOs, which cascades into member-level access.
+- **Improvement:** **`/deliver` Phase 3 should run `swift build -c release`
+  before declaring implementation done.** Debug + tests green is not evidence
+  the release gate passes, and the two diverge precisely on access-level and
+  `@testable` mistakes — exactly what a target-extraction PR is made of. Cheap
+  check, would have caught the only Critical in this delivery.
 ## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (#397) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (reshapes the package's
@@ -361,37 +401,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   guard note to `watch-pr/SKILL.md §0`. Do not add `reviewThreads` (or `comments`)
   to `gh pr view --json` calls.
 
-## 2026-06-24 — 🔒 Harden URL path interpolation & validate inputs (#364) · lite
-
-- **Phases / skills:** phases 0–6; `test, integration-test, review-changes,
-  security-review, capture-knowledge, pr, watch-pr`. Skipped `/review-plan` (lite;
-  plan built from a careful Explore sweep + the originating security review).
-- **Worked:** the **Phase 3.4 security review earned its place** — it traced the
-  encoding *end-to-end* through `TMDbAPIClient.urlFromPath`'s `URLComponents`
-  round-trip and confirmed query/fragment injection is genuinely blocked (not just
-  at the string layer), while surfacing the subtle `%2F`→`/` decode and correctly
-  bounding it as path-only on a locked host. That trace is what made the fix
-  trustworthy and produced ADR-0008 + the gotcha. Reusing the existing
-  `TMDbSearchService.validate` pattern kept validation uniform and review-clean.
-- **Friction — a repeated blind spot for `String`-typed IDs.** The *same class* of
-  site kept being found later than it should: my planning grep **and** the initial
-  `/security-review` both missed sites; Phase 3 code review found a 4th
-  String-into-path builder (`ReviewRequest`); then `claude-review` flagged **three
-  more** public service methods taking `String` IDs with no empty guard
-  (`CreditService`/`ReviewService`/`TVEpisodeGroupService` `.details(for…:)`). Each
-  pass found a subset. A type-driven sweep up front (grep `path = "/…\(` for
-  String interpolations **and** scan public service signatures for `String`/`*.ID`
-  params) would have enumerated all of them in one shot.
-- **Deviations:** none material — heeded the worktree edit-path gotcha (re-`Read`
-  via worktree paths after the pre-`EnterWorktree` reads; no main-checkout edits).
-  Minor: the `TaskCreate` ledger is CWD-scoped, so it was lost on `EnterWorktree`
-  and had to be recreated inside the worktree. The retro commit also hit a
-  same-day ADR-number collision with #363 (both claimed 0007) — renumbered to
-  0008 during the rebase.
-- **One improvement:** when a delivery's goal is "fix every instance of pattern X",
-  do one **type-driven enumeration of all sites up front** and list them in the
-  plan, rather than discovering them incrementally across review passes.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -399,6 +408,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-24 | #364 | lite | Percent-encode URL path segments + validate `String` IDs (ADR-0008). The security review's end-to-end trace through `urlFromPath`'s `URLComponents` round-trip is what made the fix trustworthy (and found the `%2F`→`/` decode, correctly bounded as path-only on a locked host). Lesson that became skill policy: for "fix every instance of pattern X", do **one type-driven enumeration of all sites up front** — here the planning grep, `/security-review`, code review, and `claude-review` each found a *different subset*. |
 | 2026-06-24 | #363 | lite (docs-led) | Documented the existing response caching instead of building it: challenging the premise mid-plan (`curl -D-` showed every GET returns `Cache-Control`/`ETag`, so the default `URLCache` already provides — and beats — the requested opt-in cache) turned a feature build into a docs PR + ADR-0007. A single `code-reviewer` caught a High that both `make build-docs` and `markdownlint` missed: stray `</content>`/`</invoke>` tags the `Write` tool leaked into the article tail. Fourth entry asking for a docs/config-only fast gate, widened here to "no semantic Swift change" so doc-comment-only `.swift` diffs qualify. |
 | 2026-06-24 | #361 | lite | Missing discover filter params; single-`code-reviewer` converged 0/0/0 (existing no-op-mutation guard test made the dropped-field risk in the ~30-arg `copy()` helpers trivial to cover). Two recurring traps: edits landing in `main` not the worktree (source `Read` pre-`EnterWorktree` → stale paths; now the Phase 1 `git status` checkpoint), and a stale "ready" call — verify every required check is `COMPLETED`+`SUCCESS` on the current tip, and rule out a pending required check before blaming a review rule on `BLOCKED`. |
 | 2026-06-23 | #359 | full | `TMDbTesting` mocks + samples (~16k lines, 14-agent fan-out); reference-first review caught a cross-module DocC break pre-replication; gate re-sourced samples from live MCP + split `TMDbTestingTests`; lessons: invoke specialist skills when their domain appears, never silently relax a locked user decision. |
