@@ -7,8 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.0.0] - 2026-07-24
 
+### Added
+
+- `TMDbStatusCode`, an enum modelling TMDb's documented numeric `status_code`
+  values (with an `.unknown(Int)` fallback for codes not yet modelled).
+- `TMDbErrorContext`, carrying the HTTP status code, TMDb `TMDbStatusCode`,
+  server-supplied message, redacted endpoint path, and `Retry-After` delay of a
+  failed request.
+- `TMDbError.invalidURL(_:)` and `TMDbError.encode(_:)` cases, giving honest
+  representation to failures that previously collapsed into `.badRequest` /
+  `.unknown`.
+
 ### Changed
 
+- **Breaking:** `TMDbError`'s `badRequest`, `unauthorised`, `forbidden`,
+  `notFound`, `tooManyRequests` and `serverError` cases now carry a
+  `TMDbErrorContext` instead of an optional message `String`. Migration: replace
+  `catch .notFound(let message)` with `catch .notFound(let context)` and read
+  `context.statusMessage`; the context also exposes the HTTP status, TMDb status
+  code, endpoint, and `Retry-After`.
 - **Breaking:** Model runtimes are now Swift `Duration` values instead of
   `Int` minutes — `Movie.runtime`, `TVEpisode.runtime`,
   `TVEpisodeAirDate.runtime` (`Duration?`) and `TVSeries.episodeRunTime`
