@@ -14,6 +14,57 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (feature/cached-image-url-resolver) · full
+
+- **Phases / skills:** 0–8 pre-PR; full weight (new public service + actor,
+  8 commits). `/plan` → adversarial review by a Fable reviewer **plus** an
+  independent Swift-6 design pass, which converged on the same critical flaw, so
+  `/review-plan` was skipped as already-reviewed. `implement-plan` in 4
+  checkpoints. `review-changes` ×2 (5-dimension fan-out) → **0 Critical, 0 High
+  both rounds**, 15 then 7 advisory, all applied. `security-review` → 0 findings.
+  `capture-knowledge` → ADR-0013 + 3 gotchas + 1 correction to an existing entry.
+  Rubric: **6/6 ACs met**, independently graded.
+- **Worked — driving each mechanism out of a genuine red.** Rather than writing
+  the final actor from the plan, each hazard got its own failing test first: the
+  naive memo measured **100 fetches at peak concurrency 76** under 100 concurrent
+  callers, and the refresh ABA returned `["first"]` where `["second"]` was
+  expected. That produced *evidence* those are real regression tests, for free —
+  the plan had asked for a deliberate "revert and watch it fail" step, and this
+  made it unnecessary.
+- **Worked — plan review caught a bug the plan could not have shipped without.**
+  Both plan reviewers independently found that the cache rules said *what* to
+  memoise but never *who writes state*, so a superseded fetch would clobber a
+  newer `refresh()` — a permanently stale cache that **none of the 13 planned
+  tests would have caught**. The generation counter came from that, pre-code.
+- **Friction — I introduced two flaky tests while fixing review round 1, and only
+  round 2 caught them.** A caller that *joins* a shared in-flight fetch never
+  reaches the mock or gate, so a gate-based barrier cannot observe it; both new
+  tests opened the gate and then asserted on coalescing. Neither ever failed
+  locally (one reviewer measured 0/65 reproductions, 25 under load) — they were
+  wrong by construction, not by observation. Fixed with an on-actor entry
+  counter. **Lesson: after a concurrency fix, re-review the tests, not just the
+  code.**
+- **Friction — the one that actually cost the user.** I ran the security review
+  *concurrently with* code-review round 2, reasoning it "parallelises cleanly".
+  It does for tokens; it does not for CPU. Combined with two 5-agent fan-outs and
+  a grader that ran all of `make ci` unbidden, ~10 concurrent build pipelines
+  collided on one `.build`: a 5-step gate reported **69 minutes** and a
+  `make test` **36 minutes** against a true cost of ~2 each. The user force-quit
+  them. `CLAUDE.md` mandates sequential builds within a worktree, but **subagents
+  cannot see each other**, so nothing enforced it across parallel agents.
+- **Deviations:** (a) `TMDbFactory` was not touched — the issue's AC says
+  "registered in `TMDbFactory.swift`", but the factory vends only plumbing and
+  every service is built in `TMDbClient`'s private init; the grader independently
+  confirmed the criterion is stale. (b) `APIConfigurationStore` carries an
+  internal `entryCount` that exists only so tests can observe joining callers —
+  production state for the test suite, accepted deliberately and flagged by the
+  grader. (c) The ten URL methods are protocol-*extension* members, not
+  requirements, to kill the same-signature default-witness recursion hazard.
+- **Improvement:** `/deliver` should forbid builds in reviewer/grader subagent
+  prompts and serialise its review phases. Reviewers have the diff and the
+  conductor has already run every gate, so a reviewer running `make ci` is pure
+  duplicate CPU — and with N parallel agents it is superlinear.
+
 ## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (#398) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (~40 sources + ~110
