@@ -72,6 +72,7 @@ let genres = [Genre].samples
 - ``MockFindService``
 - ``MockGenreService``
 - ``MockGuestSessionService``
+- ``MockImageService``
 - ``MockKeywordService``
 - ``MockListService``
 - ``MockMovieService``

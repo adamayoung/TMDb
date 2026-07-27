@@ -55,6 +55,13 @@ struct AllMocksSmokeTests {
         #expect(service.apiConfigurationCalls.count == 1)
     }
 
+    @Test("MockImageService is usable with zero setup")
+    func imageServiceSmoke() async throws {
+        let service = MockImageService()
+        _ = try await service.imagesConfiguration()
+        #expect(service.imagesConfigurationCalls.count == 1)
+    }
+
     @Test("MockCreditService is usable with zero setup")
     func creditServiceSmoke() async throws {
         let service = MockCreditService()

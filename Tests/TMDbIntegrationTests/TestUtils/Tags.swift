@@ -15,6 +15,7 @@ extension Tag {
     @Tag static var collection: Self
     @Tag static var company: Self
     @Tag static var configuration: Self
+    @Tag static var images: Self
     @Tag static var credit: Self
     @Tag static var discover: Self
     @Tag static var find: Self
