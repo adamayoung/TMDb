@@ -89,12 +89,21 @@ struct ImageIntegrationTests {
 
     @Test("refresh")
     func refresh() async throws {
-        let before = try await client.images.imagesConfiguration()
+        _ = try await client.images.imagesConfiguration()
 
         let refreshed = try await client.images.refresh()
 
+        // Assert the refresh returned a usable configuration, not that it equals
+        // the previous one: that would be a weak assertion (it holds trivially
+        // for a static endpoint) and would break if TMDb ever changed the
+        // configuration between the two calls.
         #expect(!refreshed.posterSizes.isEmpty)
-        #expect(refreshed == before)
+        #expect(!refreshed.profileSizes.isEmpty)
+        #expect(refreshed.secureBaseURL.scheme == "https")
+
+        // The refreshed value must be what later resolutions use.
+        let after = try await client.images.imagesConfiguration()
+        #expect(after == refreshed)
     }
 
 }
