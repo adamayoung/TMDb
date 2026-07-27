@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (feature/cached-image-url-resolver) · full
+## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (#401) · full
 
 - **Phases / skills:** 0–8 pre-PR; full weight (new public service + actor,
   8 commits). `/plan` → adversarial review by a Fable reviewer **plus** an
