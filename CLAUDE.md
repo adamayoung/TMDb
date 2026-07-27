@@ -400,7 +400,9 @@ Structural pattern for a new service:
    (e.g. `TMDbMovieService`).
 2. Models in `Domain/Models/` conform to `Codable`, `Equatable`, `Hashable`,
    `Sendable`.
-3. Register in `TMDbFactory.swift`; expose via `TMDbClient.swift`.
+3. Construct and expose the service in `TMDbClient.swift`'s private init.
+   `TMDbFactory` vends only shared plumbing (`makeServiceDependencies`,
+   `httpClient(wrapping:)`) — services are **not** registered there.
 4. Unit tests with JSON fixtures (`Tests/TMDbTests/Resources/`) **and** integration
    tests (`Tests/TMDbIntegrationTests/`).
 

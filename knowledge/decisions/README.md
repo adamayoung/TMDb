@@ -1,0 +1,38 @@
+# Architecture Decision Records
+
+One file per non-obvious design decision, with its rationale. Start from
+[`0000-template.md`](0000-template.md).
+
+**Numbering:** the next ADR takes the number after the highest in the table below
+— check the table, not a directory listing, before naming a file. (Two ADRs were
+once both numbered `0010`; the model-tier one was renumbered to `0014` by the
+2026-07-28 audit. This index exists so that cannot recur.)
+
+**Immutability:** an `Accepted` ADR is not edited to reflect a later change of
+mind — write a new one and mark the old **Superseded by [ADR-XXXX]**, with a
+forward link in the superseded file and a back link in the new one. Correcting a
+factual error, a stale status, or a broken link is *not* a change of mind and is
+always fair game.
+
+## Index
+
+| # | Decision | Date | Status |
+| --- | --- | --- | --- |
+| [0001](0001-error-mapping-api-client.md) | Centralise API error mapping in an `ErrorMappingAPIClient` decorator | 2024 | Accepted (shipped in 18.0.0) |
+| [0002](0002-changes-auto-pagination-adapter.md) | Auto-pagination for Changes adapts `ChangedIDCollection`, excludes detail endpoints | 2026-06-18 | Accepted |
+| [0003](0003-opt-in-pagination-prefetch.md) | Opt-in next-page prefetch holds an unstructured `Task` on a value-type iterator | 2026-06-18 | Accepted |
+| [0004](0004-service-parameter-name-convention.md) | Service method parameter-name convention (`<entity>ID`) | 2026-06-18 | Accepted |
+| [0005](0005-authenticated-session-additive-overloads.md) | `AuthenticatedSession` via additive extension overloads | 2026-06-18 | Accepted |
+| [0006](0006-tmdbtesting-public-target.md) | Ship a public `TMDbTesting` target (spy+stub mocks + real-data samples) | 2026-06-23 | Accepted (amended in part by [0010](0010-tmdb-intelligence-product.md)) |
+| [0007](0007-document-existing-response-caching.md) | Document existing response caching instead of building a custom on-disk cache | 2026-06-24 | Accepted |
+| [0008](0008-percent-encode-url-path-segments.md) | Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set | 2026-06-24 | Accepted |
+| [0009](0009-github-mcp-over-gh-cli.md) | Use the GitHub MCP (not the `gh` CLI) in the local skills | 2026-06-25 | Accepted |
+| [0010](0010-tmdb-intelligence-product.md) | Extract on-device intelligence into a `TMDbIntelligence` product | 2026-07-06 | Accepted (shipped in 19.0.0) |
+| [0011](0011-duration-for-runtime.md) | Represent runtimes as `Duration`, bridging integer minutes at the wire boundary | 2026-07-24 | Accepted (shipped in 19.0.0) |
+| [0012](0012-structured-tmdberror-context.md) | Enrich `TMDbError` with structured context | 2026-07-24 | Accepted (shipped in 19.0.0) |
+| [0013](0013-cached-image-url-resolver.md) | Cache the image configuration in an actor behind `client.images` | 2026-07-27 | Accepted (targets 19.x, merged unreleased) |
+| [0014](0014-subagent-model-tiers.md) | Model-tier policy for skills and subagents | 2026-07-06 | Accepted |
+
+> **Keep the Status column true.** "Targets X" becomes "shipped in X" when the
+> release tags — see [`../breaking-backlog.md`](../breaking-backlog.md), which the
+> release process reads.

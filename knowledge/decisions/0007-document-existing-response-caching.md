@@ -54,4 +54,3 @@ they interact and how to tune or disable the `URLCache` (supply a custom
 - **Expose a config knob to size/disable `URLCache`.** Deferred: the existing
   custom-`HTTPClient` escape hatch already covers tuning/disabling; a dedicated
   knob can be added later if demand appears.
-</content>

@@ -1,4 +1,4 @@
-# ADR-0010: Model-tier policy for skills and subagents
+# ADR-0014: Model-tier policy for skills and subagents
 
 - **Status:** Accepted
 - **Date:** 2026-07-06
