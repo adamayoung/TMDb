@@ -36,6 +36,7 @@
 - ``lists``
 - ``watchProviders``
 - ``configurations``
+- ``images``
 - ``account``
 - ``authentication``
 - ``changes``

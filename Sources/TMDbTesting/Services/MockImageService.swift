@@ -60,7 +60,7 @@ public final class MockImageService: ImageService, @unchecked Sendable {
     ///
     /// Returns the stubbed images configuration.
     ///
-    /// - Throws: TMDb error ``TMDbError``.
+    /// - Throws: TMDb error `TMDbError`.
     ///
     /// - Returns: The images configuration.
     ///
@@ -93,7 +93,7 @@ public final class MockImageService: ImageService, @unchecked Sendable {
     ///
     /// Returns the stubbed refreshed images configuration.
     ///
-    /// - Throws: TMDb error ``TMDbError``.
+    /// - Throws: TMDb error `TMDbError`.
     ///
     /// - Returns: The images configuration.
     ///
