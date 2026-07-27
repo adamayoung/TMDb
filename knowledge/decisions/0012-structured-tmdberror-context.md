@@ -1,6 +1,6 @@
 # ADR-0012: Enrich `TMDbError` with structured context
 
-- **Status:** Accepted (shipped in 19.0.0)
+- **Status:** Accepted (in 19.0.0, unreleased)
 - **Date:** 2026-07-24
 - **Deciders:** Adam Young
 

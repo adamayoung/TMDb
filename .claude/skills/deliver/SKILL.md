@@ -127,7 +127,7 @@ implementation = separate `/deliver` sessions.)
   *invalidates* any concurrent build's plan rather than merely queueing behind
   it — so the processes redo each other's work in a cycle. This once put ~10
   `zsh` pipelines at 100% until the user killed them
-  (`knowledge/gotchas.md` → *`make build-docs` shares `.build`*).
+  (`knowledge/gotchas.md` → *Docs builds need their own scratch path*).
 
 ## Phase 0 — Preconditions
 
@@ -271,6 +271,12 @@ deduped against `knowledge/`, written to the right file (gotchas / API notes
 a valid outcome. Exception: one or two small entries already authored during
 implementation may be committed inline instead — note the inline capture in
 the retro.
+
+Its report must include the `swept:` line — Phase 6 is the knowledge base's
+retirement trigger (the skill's step 5); a report without it means the sweep
+did not run. That applies to the inline-capture exception too: a delivery that
+touched `Makefile`, `Package.swift`, `.github/workflows/` or `.claude/` still
+owes the sweep, whoever wrote the entries.
 
 ## Phase 7 — Rubric verification (exit gate)
 

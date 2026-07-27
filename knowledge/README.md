@@ -15,11 +15,17 @@ this directory; the detail lives here and is read on demand.
 | [`tmdb-api-notes.md`](tmdb-api-notes.md) | Behaviours of the **live TMDb API** discovered while implementing (nullable/absent fields, undocumented quirks, response-shape surprises). |
 | [`delivery-retros.md`](delivery-retros.md) | A short retrospective per feature delivered via `/deliver` (written pre-PR so it rides the delivery's own PR) — what worked, friction, deviations, one improvement. |
 | [`skill-improvement-log.md`](skill-improvement-log.md) | Decisions on every skill-improvement proposal from `/deliver`'s wrap-up recurring-pattern scan (applied / deferred / rejected), so the scan doesn't re-propose settled calls. |
+| [`next-major.md`](next-major.md) | **Breaking-change backlog** — approved-in-principle changes waiting for a major version bump. Consulted when a `[X.0.0]` CHANGELOG section is opened (a sentinel there points here) and whenever a plan already contains a breaking change. |
 
 ## How to use it
 
 - **Before solving a non-trivial problem**, skim the relevant file — the answer
   may already be here.
+- **Cite the PR, not the issue.** A bare `#NNN` is ambiguous — this repo's
+  numbers interleave issues and PRs (`#392` is the issue, `#397` the PR that
+  closed it; likewise `#395`/`#398`, `#391`/`#401`). An entry describing *work
+  that was done* should name the **PR**; name the issue only when the issue
+  itself is the subject.
 - **After learning something durable** (a gotcha, an API quirk, a decision),
   record it here in the same change — ideally via `/capture-knowledge`, which
   runs automatically before a PR in the `/deliver` pipeline.
@@ -53,7 +59,14 @@ age differently:
   the past.
 - **ADRs** (`decisions/`) are one immutable file per decision — don't edit an
   Accepted ADR; **supersede** it with a new one that links back. This already
-  scales; no window needed.
+  scales; no window needed. [`decisions/README.md`](decisions/README.md) is the
+  index: take the next number from it, and keep the Status column true (an
+  unreleased `CHANGELOG` section is **not** a release — only a tag is).
+  Correcting a stale status, a broken link, or a numbering error is not a change
+  of mind and needs no supersession.
+- **`next-major.md`** is a **queue, not a log** — an entry leaves it when the
+  change ships or is rejected outright. It is read at release time, so an entry
+  that lingers past a major bump is a bug in the process, not a backlog item.
 - **Don't pre-split a file.** Split a section into its own file only when it
   genuinely dominates (e.g. `gotchas.md` → `gotchas/tooling.md`), mirroring the
   project's "promote a boundary only when the pain shows up" rule. The dated `###`

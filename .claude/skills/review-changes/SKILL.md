@@ -75,7 +75,7 @@ processes contending on one `.build/.lock` — and if any of them builds docs, t
 `SWIFTCI_DOCC` manifest flip *invalidates* the others' build plans, so they redo
 each other's work in a cycle rather than merely queueing. Observed once as ~10
 `zsh` pipelines pinned at 100% long enough that the user killed them (see
-`knowledge/gotchas.md` → *`make build-docs` shares `.build`*).
+`knowledge/gotchas.md` → *Docs builds need their own scratch path*).
 
 If a finding genuinely cannot be settled without executing something, say so in
 the finding and let the caller run it — serially, once.

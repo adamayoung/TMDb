@@ -27,12 +27,13 @@ always fair game.
 | [0007](0007-document-existing-response-caching.md) | Document existing response caching instead of building a custom on-disk cache | 2026-06-24 | Accepted |
 | [0008](0008-percent-encode-url-path-segments.md) | Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set | 2026-06-24 | Accepted |
 | [0009](0009-github-mcp-over-gh-cli.md) | Use the GitHub MCP (not the `gh` CLI) in the local skills | 2026-06-25 | Accepted |
-| [0010](0010-tmdb-intelligence-product.md) | Extract on-device intelligence into a `TMDbIntelligence` product | 2026-07-06 | Accepted (shipped in 19.0.0) |
-| [0011](0011-duration-for-runtime.md) | Represent runtimes as `Duration`, bridging integer minutes at the wire boundary | 2026-07-24 | Accepted (shipped in 19.0.0) |
-| [0012](0012-structured-tmdberror-context.md) | Enrich `TMDbError` with structured context | 2026-07-24 | Accepted (shipped in 19.0.0) |
+| [0010](0010-tmdb-intelligence-product.md) | Extract on-device intelligence into a `TMDbIntelligence` product | 2026-07-06 | Accepted (in 19.0.0, unreleased) |
+| [0011](0011-duration-for-runtime.md) | Represent runtimes as `Duration`, bridging integer minutes at the wire boundary | 2026-07-24 | Accepted (in 19.0.0, unreleased) |
+| [0012](0012-structured-tmdberror-context.md) | Enrich `TMDbError` with structured context | 2026-07-24 | Accepted (in 19.0.0, unreleased) |
 | [0013](0013-cached-image-url-resolver.md) | Cache the image configuration in an actor behind `client.images` | 2026-07-27 | Accepted (targets 19.x, merged unreleased) |
 | [0014](0014-subagent-model-tiers.md) | Model-tier policy for skills and subagents | 2026-07-06 | Accepted |
 
-> **Keep the Status column true.** "Targets X" becomes "shipped in X" when the
-> release tags — see [`../breaking-backlog.md`](../breaking-backlog.md), which the
-> release process reads.
+> **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
+> X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes
+> still waiting on a major bump, see [`../next-major.md`](../next-major.md), which
+> the release process reads.
