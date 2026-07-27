@@ -56,6 +56,13 @@ fall back to `pwd`:
 - For a **scoped** re-run, keep the package explicit:
   `swift test --package-path "<dir>" --scratch-path "<dir>/.build" --filter "SuiteName/testName"`.
 - Run targets **sequentially** — never two builds at once in one worktree.
+  You are the *only* sanctioned builder: your caller must await you before
+  starting anything else, and reviewer/grader subagents are told not to build
+  at all. If you were asked to run more than one target, run them one after
+  another, never in parallel — every target shares one SwiftPM scratch
+  directory, and concurrent builds there don't just queue, they invalidate each
+  other's build plans (see `knowledge/gotchas.md` → *`make build-docs` shares
+  `.build`*).
 - Never read or touch `.swiftpm/` or `.build/` beyond the log file.
 
 ## Judging pass/fail — the xcsift `.docc` trap

@@ -14,9 +14,22 @@ SWIFT_CONTAINER_IMAGE = swift:6.1-jammy
 # `make test SCRATCH_PATH=.build/agent-a` (stays under the gitignored .build).
 SCRATCH_PATH ?= .build
 
+# Documentation builds get their OWN scratch directory, and must keep it.
+#
+# Package.swift branches on SWIFTCI_DOCC: the =1 path adds the swift-docc-plugin
+# dependency, the else path sets `exclude` on the four .docc-bearing targets.
+# Those are two different dependency graphs *and* two different per-target source
+# lists. Pointing both at one scratch directory makes every switch between a docs
+# build and any other target re-resolve and rebuild — and under concurrency it is
+# worse than slow: a docs build re-resolves the manifest out from under an
+# in-flight build, so the two then contend on .build/.lock repeatedly redoing
+# work the other invalidated.
+DOCS_SCRATCH_PATH ?= $(SCRATCH_PATH)/docs
+
 .PHONY: clean
 clean:
 	swift package --scratch-path $(SCRATCH_PATH) clean
+	rm -rf $(DOCS_SCRATCH_PATH)
 	rm -rf docs
 
 .PHONY: format
@@ -57,16 +70,15 @@ build-linux-release:
 
 .PHONY: build-docs
 build-docs:
-	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) generate-documentation --warnings-as-errors
-	swift package --scratch-path $(SCRATCH_PATH) resolve
+	SWIFTCI_DOCC=1 swift package --scratch-path $(DOCS_SCRATCH_PATH) generate-documentation --warnings-as-errors
 
 .PHONY: preview-docs
 preview-docs:
-	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) --disable-sandbox preview-documentation --target $(TARGET)
+	SWIFTCI_DOCC=1 swift package --scratch-path $(DOCS_SCRATCH_PATH) --disable-sandbox preview-documentation --target $(TARGET)
 
 .PHONY: generate-docs
 generate-docs:
-	SWIFTCI_DOCC=1 swift package --scratch-path $(SCRATCH_PATH) --allow-writing-to-directory docs \
+	SWIFTCI_DOCC=1 swift package --scratch-path $(DOCS_SCRATCH_PATH) --allow-writing-to-directory docs \
 		generate-documentation \
 		--target TMDb \
 		--target TMDbIntelligence \
