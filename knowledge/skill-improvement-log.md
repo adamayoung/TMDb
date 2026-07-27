@@ -525,7 +525,7 @@ two fields the dedup step keys on.
   gate that's hard to skip, and explicitly covers the fan-out case this run missed.
 - **Reconsider when:** n/a (applied).
 
-### 2026-06-19 — Reconcile local `make ci` lint scope with CI · deferred
+### 2026-06-19 — Reconcile local `make ci` lint scope with CI · applied
 
 - **Pattern:** the local `make ci` lint gate and the authoritative GitHub CI lint
   gate disagree on what counts as a violation, so `make ci` mis-signals — twice
@@ -534,20 +534,18 @@ two fields the dedup step keys on.
   lints `.claude/**` and went **red** on `.claude/skills/deliver/SKILL.md:347`
   (MD028), but CI's markdown job (`ci.yml:120`) lints only `README.md` + docc, so
   CI is green on it. Both stem from the two gates having different scopes/caches.
-- **Decision:** **deferred** — surfaced to the user. The real fix is a **repo
-  config** change (narrow the Makefile `lint-markdown` to match `ci.yml`, *or* add
-  `.claude/**` to the CI markdown job and fix the pre-existing MD028), which is
-  outside the Phase-6 scan's remit (it edits SKILL.md files, not the Makefile/CI).
-  The #347 half is already mitigated in `/pr` (the `--no-cache` re-lint step).
-- **Rationale:** a green CI sitting behind a red local `make ci` repeatedly costs
-  a triage detour and risks a real local failure being dismissed as "just the
-  scope thing". But the fix belongs in `Makefile`/`ci.yml`, not a skill, so it
-  needs the user's call rather than an auto-applied skill edit.
-- **Reconsider when:** the user aligns the two scopes in repo config (then close
-  as applied), or the disagreement recurs a third time — at which point add an
-  explicit "local lint-markdown over-covers `.claude/**`; a red there on a file
-  not in your diff is a known local-only artifact" triage note to `/deliver`
-  Phase 4 and `/pr` step 4 (a skill-level mitigation that *is* in remit).
+- **Decision:** originally **deferred** (the fix was a repo-config change, outside
+  the Phase-6 scan's remit) and **closed as applied on 2026-07-28** — the two
+  scopes are now identical: `Makefile:47–49` and `.github/workflows/ci.yml:122`
+  both lint `README.md`, `CLAUDE.md`, `**/*.docc/**/*.md`, `.claude/**/*.md`.
+  The #347 half was already mitigated in `/pr` (the `--no-cache` re-lint step).
+- **Rationale:** a green CI sitting behind a red local `make ci` repeatedly cost
+  a triage detour and risked a real local failure being dismissed as "just the
+  scope thing". Aligning the two scopes in repo config removed the class.
+- **Reconsider when:** n/a (applied). *Closed retroactively by the 2026-07-28
+  knowledge-base audit — the closure condition had been met by an earlier config
+  change and nobody came back to close it. A stale `deferred` in this file is a
+  live defect: the scan reads it as the current state of a settled question.*
 
 ### 2026-06-18 — Telemetry (phases completed + skills invoked) in retro · applied
 

@@ -533,6 +533,7 @@ that automate the development workflow. Invoke any of them with `/<name>`.
 | `/implement-plan` | Implement the plan test-first (Canon TDD) until the test list is empty |
 | `/review-changes` | Review the working-tree changes — one reviewer, or a parallel fan-out with adversarial verification for large diffs |
 | `/capture-knowledge` | Record durable learnings (gotchas, API quirks, ADRs) into `knowledge/` |
+| `/review-knowledge` | Audit `knowledge/` for staleness with two adversarial critics that cross-examine and reach a consensus |
 | `/pr` | Create a pull request (`/format` → `make ci` → review → open) |
 | `/watch-pr` | Watch the PR: resolve review threads, fix failing checks, optionally merge |
 | `/review-pr-threads` | Resolve the PR's unresolved review threads in one sweep |

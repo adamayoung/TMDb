@@ -4,6 +4,13 @@
 - **Date:** 2026-06-23
 - **Deciders:** Adam Young
 
+> **Amended in part by [ADR-0010](0010-tmdb-intelligence-product.md)
+> (2026-07-06, in the unreleased 19.0.0).** The decision below still holds for the
+> `TMDb` service mocks, but the natural-language-search doubles it describes
+> (`MockNaturalLanguageSearchService`, `SearchPlan.sample`) no longer ship in
+> `TMDbTesting` — they moved to the `TMDbIntelligenceTesting` product when the
+> intelligence features were extracted. Read the two together.
+
 ## Context
 
 Apps depending on `TMDb` had no supported way to test their own code against the

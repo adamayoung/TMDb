@@ -19,9 +19,15 @@ a future me waste time without this?":
   surprise, anything that needed a **web search or doc lookup** to resolve.
 - **Live-API behaviours** → `knowledge/tmdb-api-notes.md` — a nullable/absent
   field, an undocumented response shape, an enum value the docs omit.
-- **Design decisions** → a new **ADR** in `knowledge/decisions/` (next number),
-  using `decisions/0000-template.md`. Any non-obvious choice and its rationale —
-  why this approach over the alternatives.
+- **Design decisions** → a new **ADR** in `knowledge/decisions/` (next number —
+  take it from [`decisions/README.md`](../../../knowledge/decisions/README.md)'s
+  index, not a directory listing), using `decisions/0000-template.md`. Any
+  non-obvious choice and its rationale — why this approach over the
+  alternatives. Add the new row to that index.
+- **Deferred breaking changes** → `knowledge/next-major.md` — any fix
+  rejected or deferred *because* it is breaking. The skill-improvement log
+  remembers the "no"; this file is what makes the deferred "yes" resurface
+  at the next major.
 
 ## What NOT to capture
 
@@ -52,13 +58,38 @@ Quality over volume: a few high-signal entries beat a long dump.
    - Decisions: copy `decisions/0000-template.md` to
      `decisions/NNNN-<kebab-title>.md` (next free number), fill in Status / Date /
      Context / Decision / Consequences / Alternatives. Cross-link related ADRs.
-5. **Retire what's no longer true.** The base is a **cache of current truths, not
-   an archive** (git history is the archive — see
+5. **Retire what the diff invalidates — sweep by citation, not by
+   neighbourhood.** The base is a **cache of current truths, not an archive**
+   (git history is the archive — see
    [`knowledge/README.md`](../../../knowledge/README.md) → *Maintenance &
-   retention*). While you're in `gotchas.md` / `tmdb-api-notes.md`, scan the
-   neighbouring entries and **delete** any now obsolete — an upstream bug fixed, a
-   pinned version lifted, the code removed, a quirk that no longer reproduces. The
-   file should describe the present, not narrate the past.
+   retention*). Staleness is usually caused by the very change you are
+   capturing for, so find it from the diff:
+
+   1. List the infrastructure files this change touched:
+
+      ```bash
+      git diff --name-only origin/main...HEAD | \
+        grep -E '^(Makefile|Package\.swift|Package\.resolved|\.github/workflows/|\.claude/)'
+      ```
+
+   2. For each hit, grep **all of `knowledge/`** (not just the file you are
+      writing to) for entries citing that file, its targets, or its pinned
+      values — e.g. `grep -n 'Makefile\|make ci\|TEST_TARGET' knowledge/*.md`,
+      `grep -n 'ci\.yml\|Xcode_[0-9]' knowledge/*.md`. Test-target lists,
+      pinned tool/Xcode versions, `SWIFTCI_DOCC`, scratch paths, and workflow
+      step names are the usual casualties. If the change renames or removes a
+      `knowledge/` entry heading, also grep `.claude/` and `CLAUDE.md` for
+      citations of the old title — skills cite gotchas by title.
+   3. **Read every citing entry and reconcile it**: still true → leave it;
+      partly true → rewrite it in the present tense; no longer true → delete
+      it. **Never append an "Update:" / "Resolved in #NNN" note to a stale
+      entry — rewrite or delete it.** An entry that narrates its own history
+      contradicts itself within weeks (this is exactly how the `.docc` gotcha
+      decayed across #396–#402).
+   4. Report the sweep as one line:
+      `swept: <infra files touched> → <entries rewritten/deleted | none cited>`.
+      No infra files in the diff → `swept: n/a`, and fall back to scanning
+      the neighbouring entries of any knowledge file you edited.
 6. **Keep it tidy by hand** — blank lines around headings/lists/code fences, a
    language on every fence, one `#` H1 per file. Note `knowledge/` is **not** in
    the `make lint-markdown` scope (which covers `README.md`, `CLAUDE.md`,

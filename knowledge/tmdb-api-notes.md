@@ -58,6 +58,31 @@ runs its `endpointPath` through `EndpointPathRedactor` (see
 [ADR-0012](decisions/0012-structured-tmdberror-context.md)); redaction keys off
 the **first** path component so `/authentication/guest_session/new` is untouched.
 
+## Rate limiting
+
+### v3 GET responses expose **no** `X-RateLimit-*` headers — you cannot budget against them
+
+*2026-07-28, `/3/movie/{movie_id}`.* A successful v3 GET returns only
+`server`, `cache-control`, `etag` (and an `age` when CDN-cached). There is **no**
+`X-RateLimit-Limit` / `-Remaining` / `-Reset`, so a client has no way to see how
+close it is to a limit, and no header to drive pre-emptive throttling. A burst of
+12 back-to-back requests returned no `429`, consistent with TMDb having retired
+its old 40-requests-per-10-seconds cap.
+
+Consequences for this package:
+
+- `RetryHTTPClient` and `HTTPResponse.retryAfterDuration` do parse and honour a
+  `Retry-After` header (capping it to `maxDelay` so a hostile `Retry-After:
+  86400` can't park the calling task) — but that path fires only *reactively*, on
+  a `429` we have never observed live. **Treat the 429 branch as unexercised
+  against the real API**; its unit tests are the only coverage.
+- Don't add "remaining quota" style API to the client — there is no source of
+  truth for it.
+- **Not reproduced:** an actual `429`, and therefore whether TMDb sends
+  `Retry-After` with it at all (the header is assumed, not confirmed). Deliberately
+  not pursued — inducing one means abusing the live API. If a real `429` is ever
+  captured in the wild, record its headers here.
+
 ## Discover
 
 ### `discover/movie` has *two* distinct release-date filters

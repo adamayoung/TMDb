@@ -252,7 +252,8 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   settled pre-plan via `AskUserQuestion`), `review-changes` and
   `security-review` self-skipped, `/capture-knowledge` returned nothing (the
   sole candidate was already documented inside the `capture-knowledge` skill
-  itself); ADR-0010 (model tiers) authored inline in Phase 3.
+  itself); ADR-0014 (model tiers, originally numbered 0010) authored inline in
+  Phase 3.
 - **Worked:** the plan-time Explore cross-reference sweep pre-scoped the prose
   blast radius — spotting that "delegates to a Haiku subagent" prose stays
   *true* after the refactor (the runner agent **is** Haiku) cut the edit list
@@ -458,33 +459,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   manually, not by the sub-skills. Flagging this avoids confusion when `/pr` visibly
   runs `gh pr create` while the diff says otherwise.
 
-## 2026-06-24 — 🔧 Add entry/exit criteria and auto-start to /deliver (#365) · lite
-
-- **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (lite +
-  plan approved via ExitPlanMode this session); skipped `/implement-plan`
-  (markdown-only — no TDD test list); skipped code review + security review (no
-  Swift changed).
-- **Worked:** the fast-gate detector caught this as docs/config-only correctly —
-  only `make lint-markdown` ran locally, CI resolved in under 2 minutes. Deriving
-  the changes directly from the conversation (Looper article → gap analysis →
-  plan) kept the plan tight and the edits focused. The three changes (entry gate,
-  Phase 3.6, Contract §8) landed cleanly in one commit with no review friction.
-- **Friction:** the auto-start behaviour (Contract §8) can only be captured in the
-  skill itself and memory — there's no harness hook that fires on ExitPlanMode
-  approval, so it relies on the model reading the contract. That's a soft guarantee.
-- **Deviations:** Plan had no formal acceptance criteria (the first delivery under
-  the new entry gate!) — the circular dependency was noted and the Verification
-  section stood in. Phase 3.6 was accordingly a no-op for this run.
-- **One improvement:** the entry gate prompts for ACs but doesn't suggest a format
-  or example in context — the prompt could include a one-line example inline
-  ("e.g. 'Given X, when Y, then Z'") to reduce back-and-forth.
-- **Gotcha — `reviewThreads` is not a valid `gh pr view --json` field.** Adding it
-  causes `gh` to error with empty stdout; any JSON parsing then fails with
-  `JSONDecodeError: Expecting value: line 1 column 1`. Thread data must be fetched
-  via `gh api graphql` — `/review-pr-threads` already does this correctly. Added a
-  guard note to `watch-pr/SKILL.md §0`. Do not add `reviewThreads` (or `comments`)
-  to `gh pr view --json` calls.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -492,6 +466,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-24 | #365 | lite | Entry/exit criteria + auto-start for `/deliver`. The docs/config fast-gate correctly classified it (CI green in under 2 min). Lasting lesson: auto-start on `ExitPlanMode` approval is a **soft guarantee** — no harness hook fires on it, so it depends on the model reading the contract. First delivery under the new AC entry gate, and the plan had no formal ACs (circular dependency, noted); its "one improvement" — put an inline `Given X, when Y, then Z` example in the gate prompt — still stands. Its `reviewThreads`/`gh pr view --json` gotcha was superseded by #366 (the MCP migration removed the call) and is deliberately not carried forward. |
 | 2026-06-24 | #364 | lite | Percent-encode URL path segments + validate `String` IDs (ADR-0008). The security review's end-to-end trace through `urlFromPath`'s `URLComponents` round-trip is what made the fix trustworthy (and found the `%2F`→`/` decode, correctly bounded as path-only on a locked host). Lesson that became skill policy: for "fix every instance of pattern X", do **one type-driven enumeration of all sites up front** — here the planning grep, `/security-review`, code review, and `claude-review` each found a *different subset*. |
 | 2026-06-24 | #363 | lite (docs-led) | Documented the existing response caching instead of building it: challenging the premise mid-plan (`curl -D-` showed every GET returns `Cache-Control`/`ETag`, so the default `URLCache` already provides — and beats — the requested opt-in cache) turned a feature build into a docs PR + ADR-0007. A single `code-reviewer` caught a High that both `make build-docs` and `markdownlint` missed: stray `</content>`/`</invoke>` tags the `Write` tool leaked into the article tail. Fourth entry asking for a docs/config-only fast gate, widened here to "no semantic Swift change" so doc-comment-only `.swift` diffs qualify. |
 | 2026-06-24 | #361 | lite | Missing discover filter params; single-`code-reviewer` converged 0/0/0 (existing no-op-mutation guard test made the dropped-field risk in the ~30-arg `copy()` helpers trivial to cover). Two recurring traps: edits landing in `main` not the worktree (source `Read` pre-`EnterWorktree` → stale paths; now the Phase 1 `git status` checkpoint), and a stale "ready" call — verify every required check is `COMPLETED`+`SUCCESS` on the current tip, and rule out a pending required check before blaming a review rule on `BLOCKED`. |

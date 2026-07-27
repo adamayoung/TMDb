@@ -1,8 +1,50 @@
 # Gotchas & Lookups
 
 Implementation quirks, tooling traps, and things that needed a lookup to resolve.
-Newest at the top. Keep each entry short and dated; link an ADR if a decision came
-out of it.
+Within each section, **dated entries are newest-first** and undated evergreen
+conventions sit at the bottom. Keep each entry short, and **date every entry
+that records an observation** (an undated entry can never be aged out); link an
+ADR if a decision came out of it. Cite the **PR** that did the work, not the
+issue — see `README.md`.
+
+## False green — the recurring failure family
+
+A signal only proves what it measures. The costliest recurring mistake in
+this project is accepting a passing signal as evidence of a claim it does not
+measure. Before letting any green close a loop — "implementation done",
+"ready to merge", "the API supports this", "the guarantee holds" — ask:
+**would this signal look any different if the thing I'm claiming were
+broken?** If not, it is not evidence; find the check that discriminates.
+
+Instances, each with its countermeasure:
+
+- **Green build of the wrong tree** — edits landed in the main checkout while
+  the pristine worktree built green with baseline test counts (#361); the
+  tooling-runner built the main checkout instead of the worktree (#397, fixed
+  in #399). *Check: `git status` shows your diff in the tree that built.*
+- **Pipe summary vs process exit** — `swift build` can exit 1 while `xcsift`
+  exits 0, and toon `errors[]` can list a benign diagnostic on a passing
+  build. *Check: the `pipefail` exit status is the verdict (see Tooling).*
+- **Debug-green vs release-broken** — a `@testable import` in a non-test
+  target passed debug, `--build-tests`, 2868 unit and 291 integration tests;
+  only `swift build -c release` failed (#398). *Check: run the release build
+  before declaring done — now a `/deliver` Phase 3 checkpoint (#400).*
+- **"No failures" while a required check was still running** — a stale
+  "ready" call read absence-of-red as green (#361). *Check: every required
+  check is `COMPLETED` + `SUCCESS` on the current tip.*
+- **HTTP 200 on an ignored query parameter** — TMDb returns 200 for bogus
+  discover parameters (see `tmdb-api-notes.md`). *Check: assert the response
+  content changed, never just the status.*
+- **A test asserting a guarantee it cannot observe** — the memoising-actor
+  gate test passed while unable to see joining callers: green by coincidence,
+  flaky by construction (#401). *Check: make the assertion fail once (break
+  the code or the input) before trusting its green.*
+
+The same discipline applies to this knowledge base: an entry that reads
+confidently is not thereby true. `/review-knowledge` audits it against the tree.
+
+When an instance's countermeasure becomes tooling-enforced, its bullet may be
+retired; the family heading stays.
 
 ## Tooling
 
@@ -48,9 +90,32 @@ serialised (40 suites carry `.integrationGate`, a global semaphore), so 300 live
 tests run one at a time. That is long wall-clock by design, not contention —
 don't "fix" it.
 
+### A new target with a `.docc` catalog must be added to `Package.swift`'s exclude list
+
+*2026-07-24 (#396; re-hit in #398).* The DocC plugin loads only under
+`SWIFTCI_DOCC=1` (`make build-docs`). Outside a docs build nothing claims the
+`.docc` catalogs, so `Package.swift`'s `else` branch `exclude`s each one —
+**enumerated per target** (four today). Since Swift 6.4 / Xcode 27,
+`-Xswiftc -warnings-as-errors` promotes the resulting "unhandled files"
+package-load warning to an error, so a target whose catalog is missing from
+that list fails **every** `make` build/test/release target — in CI (which pins
+`Xcode_27.0`) and locally on any Xcode 27 toolchain — with:
+
+```text
+error: 'TMDb': found 1 file(s) which are unhandled; explicitly declare them
+as resources or exclude from the target
+```
+
+- **Adding a target with a DocC catalog ⇒ extend the `exclude` block in the
+  same change.** #398 added two catalogs, rebased cleanly onto #396, and
+  compiled green under plain `swift build` — only `make ci` caught the
+  omission, because the error needs `-warnings-as-errors`.
+- `make build-docs` is unaffected either way — it sets `SWIFTCI_DOCC=1`, so
+  the plugin handles the catalogs.
+
 ### A non-test target can never `@testable import` — it breaks `swift build -c release` only
 
-*2026-07-24 (#395).* Sharing test fixtures between two test targets needs a
+*2026-07-24 (#398).* Sharing test fixtures between two test targets needs a
 **regular** `.target` (SwiftPM does not let a `.testTarget` depend on another
 `.testTarget`). But a regular target is in the **default build graph**, and
 `@testable import TMDb` requires `TMDb` to be compiled with `-enable-testing`,
@@ -84,6 +149,30 @@ jobs. **Debug-green proves nothing here; run the release build.**
   belongs in whichever test target `@testable`-imports it. Promoting such a type
   cascades into member-level access (memberwise inits, nested types) — usually
   not worth it.
+
+### The build/test tooling-runner runs in the main checkout, not the active worktree
+
+*2026-07-24.* During a `/deliver` in a worktree, the `tooling-runner` (Haiku)
+subagent behind `/build` / `/build-for-testing` / `/test` / `/integration-test` —
+and Agent-tool subagents generally — execute in the **main checkout**, not the
+worktree the conductor switched into. So `make test` spawned that way builds
+`main`'s pristine sources, **misses the worktree's committed changes**, and
+(compounded by the toon `errors[]` quirk below) misreports. **Detect it:** the
+run's `.build/last-*.log` lands under the **main checkout** and the worktree's
+`.build/` has none — or, when the worktree adds a *new* suite, the run reports
+**"no matching test cases found"** for a `--filter` naming suites that plainly
+exist (observed 2026-07-24, #397).
+
+**Fixed 2026-07-24** — the four skills now pass `Package directory: <absolute
+CWD>` in the task, and `tooling-runner` refuses to run without it, verifies
+`Package.swift` is there, uses `make -C "<dir>"` with absolute log paths, and
+echoes the directory it used. So the failure mode is now an explicit error
+rather than a plausible-looking wrong answer. **If you see a runner report
+without a `Directory:` line, it predates the fix — treat its result as
+untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
+`swift test --skip-build --scratch-path .build --filter
+"TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
+worktree CWD) still works if you need it.
 
 ### `EnterWorktree` no longer uses the requested name as the branch name
 
@@ -144,7 +233,7 @@ in isolation.
   `generate-documentation --warnings-as-errors` **without `--target`**, i.e.
   across *all* targets, so a second target's doc-link errors fail the build.
 
-> **Update (2026-07-24, PR for #395):** this is **conditional on how the docs
+> **Update (2026-07-24, #398):** this is **conditional on how the docs
 > are built**. Once the build passes `--enable-experimental-combined-documentation`
 > with every doc-bearing target listed (as `documentation.yml` and
 > `make generate-docs` now do), the module-qualified form **does** resolve:
@@ -183,30 +272,6 @@ Either way: **verify `git status` shows your diff *in the worktree*** (and the m
 checkout stayed clean) before trusting a green run. To rescue edits already made on
 `main`: `git -C <main> stash` then `git -C <worktree> stash pop` (stash is shared
 across worktrees).
-
-### The build/test tooling-runner runs in the main checkout, not the active worktree
-
-*2026-07-24.* During a `/deliver` in a worktree, the `tooling-runner` (Haiku)
-subagent behind `/build` / `/build-for-testing` / `/test` / `/integration-test` —
-and Agent-tool subagents generally — execute in the **main checkout**, not the
-worktree the conductor switched into. So `make test` spawned that way builds
-`main`'s pristine sources, **misses the worktree's committed changes**, and
-(compounded by the toon `errors[]` quirk below) misreports. **Detect it:** the
-run's `.build/last-*.log` lands under the **main checkout** and the worktree's
-`.build/` has none — or, when the worktree adds a *new* suite, the run reports
-**"no matching test cases found"** for a `--filter` naming suites that plainly
-exist (observed 2026-07-24, #392).
-
-**Fixed 2026-07-24** — the four skills now pass `Package directory: <absolute
-CWD>` in the task, and `tooling-runner` refuses to run without it, verifies
-`Package.swift` is there, uses `make -C "<dir>"` with absolute log paths, and
-echoes the directory it used. So the failure mode is now an explicit error
-rather than a plausible-looking wrong answer. **If you see a runner report
-without a `Directory:` line, it predates the fix — treat its result as
-untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
-`swift test --skip-build --scratch-path .build --filter
-"TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
-worktree CWD) still works if you need it.
 
 ### swiftlint `file_length` / `type_body_length` — split into a `+Feature` extension file
 
@@ -266,80 +331,22 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   `curl -fsSL https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip`,
   unzip, and `install` the binary to `~/.local/bin/swiftformat`.
 
-### Xcode 27 / Swift 6.4 makes the `.docc` unhandled-file warning **fatal** — `make ci` fails locally, CI is green
-
-*2026-07-24.* On a toolchain **newer than the CI pin** (local Xcode 27.0 /
-Swift 6.4 vs CI's `Xcode_26.6`), SwiftPM promotes the package-load "unhandled
-files" warning for the two `.docc` catalogs into an **error** whenever
-`-Xswiftc -warnings-as-errors` is passed:
-
-```text
-error: 'TMDb': found 1 file(s) which are unhandled; explicitly declare them as
-resources or exclude from the target
-    …/Sources/TMDb/TMDb.docc
-```
-
-Consequences and how to read it:
-
-- **It is `swift build` failing, not xcsift.** `swift build … -Xswiftc
-  -warnings-as-errors` exits **1** while `xcsift` exits **0** (check with
-  `pipestatus`). Don't blame the formatter, and don't "fix" it by dropping
-  `--Werror`.
-- **It breaks `make build`, `make test`, `make build-release` — hence `make ci`
-  — locally**, on a clean checkout, with an empty diff. Plain `swift build
-  --build-tests` (no `-warnings-as-errors`) still exits 0, and `make build-docs`
-  is unaffected (it sets `SWIFTCI_DOCC=1`, which loads the plugin and *handles*
-  the catalogs). `SWIFTCI_DOCC=1` does **not** rescue the other targets.
-- **CI is unaffected** — `.github/workflows/ci.yml` pins
-  `DEVELOPER_DIR=/Applications/Xcode_26.6.app`, where the same flag leaves it a
-  warning. So a local `make ci` failure whose *only* error is these two lines is
-  a **toolchain-drift artifact, not a regression**: verify with the commands CI
-  actually runs (`swift build --build-tests -Xswiftc -warnings-as-errors`,
-  `swift test --filter "TMDbTests|TMDbTestingTests"`, `make build-docs`,
-  `make lint`, `make lint-markdown`) and let the PR's CI be the gate.
-- **A real fix**, if it starts biting: declare the catalogs explicitly in
-  `Package.swift` (e.g. `resources: [.copy("TMDb.docc")]`) or `exclude` them when
-  the plugin isn't loaded — but that touches the DocC build, so verify
-  `make build-docs` still passes.
-
-### `make` build/test targets pipe through xcsift with `pipefail`
+### `make` build/test targets pipe through xcsift — the exit status is the verdict, not the summary
 
 - macOS targets pipe compiler/test output through `xcsift`; the Makefile sets
-  `set -o pipefail`, so a non-zero exit from `swift build`/`swift test` propagates
-  through the pipe. A subagent checking exit status can trust it.
+  `set -o pipefail`, so a non-zero exit from `swift build`/`swift test`
+  propagates through the pipe. **Trust the pipeline's exit status over any
+  rendering of its output** — the two can disagree in both directions:
+  `xcsift` itself exits 0 on input whose producer failed (check `pipestatus`
+  when debugging the pipe itself), and its `-f toon` `errors[…]` array can
+  carry a benign package-load diagnostic with `null,null` coordinates while
+  the build exited 0 — a subagent keying off that array once reported a
+  passing build as failed.
 - Install with `brew install xcsift`. Local builds use `xcsift -f toon` (TOON
-  format); CI builds use `xcsift -f github-actions` (GitHub annotations).
+  format); CI uses `xcsift -f github-actions` (GitHub annotations).
 - Build targets pass `--Werror` (warnings-as-errors) and `2>&1` (compiler
-  diagnostics are emitted on stderr). **Linux/Docker targets do not use xcsift.**
-- **The `.docc` "unhandled file" warning** — `swift build`/`make build-tests` emit
-  `'<pkg>': found 1 file(s) which are unhandled … Sources/TMDb/TMDb.docc` (and the
-  `TMDbTesting.docc` twin) because the DocC plugin only loads under
-  `SWIFTCI_DOCC=1` (see `Package.swift`), so outside a docs build SwiftPM sees the
-  catalogs as unhandled. **Whether it is fatal depends on the toolchain — see
-  the entry below.** On the CI-pinned toolchain it stays a package-load warning
-  and the build **exits 0** ("Build complete!").
-  But xcsift's `-f toon` output lists it under `errors[…]{file,line,message}` with
-  `null,null` coordinates, so a Haiku `/build-for-testing` subagent that keys off
-  that array (instead of the exit status) will wrongly report the build as
-  **failed**. Re-check the actual exit code before believing it.
-- **Resolved in #396 — and it needs maintaining.** `Package.swift` now
-  `exclude`s each `.docc` catalog when `SWIFTCI_DOCC != 1` (the "real fix"
-  suggested above), so `make ci` passes again on Xcode 27. **That list is
-  enumerated per target: adding a new target with a DocC catalog means adding it
-  to the `exclude` block, or the failure comes straight back for every `make`
-  build/test/release target.** Hit during #395, which added
-  `TMDbIntelligence.docc` and `TMDbIntelligenceTesting.docc` — the rebase onto
-  #396 compiled fine and only `make ci` caught the omission.
-
-  **Beta-toolchain caveat (Swift 6.4 / macOS 27, Xcode 27):** on this toolchain
-  `swift build --build-tests -Xswiftc -warnings-as-errors` now **exits 1** on the
-  same `.docc` diagnostic, so `make build-tests` / `make test` / `make ci` fail
-  locally even though the code is clean (plain `swift build` — no `--build-tests`,
-  no `-Werror` — still exits 0). Workaround while on the beta: build tests
-  **without** `-Werror` (`swift build --build-tests`) and run them via `swift test
-  --skip-build`; to still catch real warnings, build with `-Werror` and require
-  `… 2>&1 | grep 'error:' | grep -v unhandled` to be empty. `make build-docs` is
-  unaffected — it sets `SWIFTCI_DOCC=1`, so the plugin handles the catalogs.
+  diagnostics are emitted on stderr). **Linux/Docker targets do not use
+  xcsift.**
 
 ### The `xcode-tools` MCP only exists inside Xcode
 
@@ -354,7 +361,12 @@ Consequences and how to read it:
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
-### FoundationModels can't build for watchOS under Xcode 27 beta 2 (CoreImage)
+### FoundationModels can't build for watchOS under Xcode 27 beta (CoreImage)
+
+*Undated original; still open as of 2026-07-28 on Xcode 27.0 build `27A5228h` (a
+seed build). **Transient by nature — re-probe and delete once a GM toolchain
+ships**; a watchOS build is the only way to confirm, so it was not re-run during
+the 2026-07-28 audit.*
 
 - Building the package for a **watchOS** destination
   (`xcodebuild -scheme TMDb -destination 'generic/platform=watchOS Simulator'`)
@@ -376,6 +388,41 @@ Consequences and how to read it:
 
 ## Testing
 
+### An `async let` binding cannot be captured by `#expect(throws:)`
+
+*2026-07-27 (#401).* Awaiting an `async let` inside the `#expect(throws:)`
+closure fails to compile:
+
+```text
+error: capturing 'async let' variables is not supported
+```
+
+Use an explicit `Task {}` handle instead and await its `.value` inside the macro
+— `let caller = Task { try await store.foo() }`, then
+`await #expect(throws: TMDbError.unknown) { _ = try await caller.value }`. A
+plain `let` task handle is capturable; the `async let` binding is not.
+
+### `Date(iso8601:)` is not visible to `TMDbIntegrationTests`
+
+*2026-06-24, path updated 2026-07-28.* The `Date(iso8601: "…")` convenience
+initialiser lives in `Tests/TMDbTestFixtures/TestUtils/Date+ISO8601.swift` — the
+**shared fixtures target**, which the unit-test targets get via
+`@_exported import TMDbTestFixtures`. **`TMDbIntegrationTests` does not depend on
+it** (`Package.swift`: its dependencies are `["TMDb", "TMDbIntelligence"]`), so
+the helper is unavailable there. Using it in an integration test fails to compile
+with a misleading *"argument passed to call that takes no arguments"* (Swift
+resolves `Date(...)` to the argument-less `Date()`).
+
+The integration target has no date-from-string helper; build dates there with
+`Date(timeIntervalSince1970:)` (the existing convention, e.g. the
+`video.publishedAt` assertions). This only surfaces when the **integration**
+target compiles, so `/integration-test` catches it; a unit-only check may not.
+
+> Originally filed as "exists only in the `TMDbTests` target". The helper moved
+> to the shared fixtures target in the #398 extraction; the **conclusion**
+> was unaffected, which is exactly why the stale path survived so long — the
+> advice still worked, so nobody re-read the reasoning.
+
 ### Model-decode equality tests: build the expected value directly, not from an over-populated mock
 
 *2026-06-19.* `Network` is `Equatable` over **all six** stored properties
@@ -394,6 +441,15 @@ fields.
 - Generalises to **any** `Equatable` model whose `*+Mocks` helper over-populates
   optional fields: a mock is for convenience construction, not for asserting
   decode equality against a sparse fixture.
+
+### Integration tests need live-API env vars, and can fail transiently
+
+- `make integration-test` requires `TMDB_API_KEY` / `TMDB_USERNAME` /
+  `TMDB_PASSWORD` (injected via `.claude/settings.local.json`). A missing var is
+  a **precondition** failure, not a test failure.
+- They hit the **live** API, so HTTP 429 / timeout / network are possible — a
+  truncated log with no assertion failure is likely transient, not a code bug.
+  Use `/diagnose-integration-failure` to attribute a failure.
 
 ## Public API
 
@@ -464,7 +520,6 @@ the documented signature. (We initially mis-scoped the `<entity>ID` rename as
 breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
 
 ## Networking
-
 ### `URL(string:)` on Apple platforms rejects almost nothing — probe before testing a rejection
 
 *2026-07-24.* Trying to test the `TMDbAPIError.invalidURL` branch (thrown when
@@ -482,22 +537,6 @@ emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
   strings) before writing any test that depends on `URL(string:)` returning
   `nil`; the behaviour changed with the swift-foundation rewrite and intuitions
   from older Foundation are wrong.
-
-### Bearer-token clients share one credential-free `URLCache` key space
-
-- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
-  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
-  **not** in the request URL. That's the point (keys stay out of logs/proxies),
-  but it means the process-wide default `URLCache` (and the opt-in
-  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
-  partitions cache entries by credential. Two bearer clients with **different**
-  tokens in one process can therefore serve each other cache hits.
-- This is **benign today**: the affected v3 `GET` endpoints return app-level
-  public data identical across tokens, and user-specific requests carry
-  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
-  session requests entirely). It would only matter if TMDb started returning
-  token-specific data on an otherwise-public GET — worth remembering before
-  relying on per-token cache isolation.
 
 ### `URLComponents` path round-trip in `TMDbAPIClient.urlFromPath` decodes `%2F`
 
@@ -521,11 +560,27 @@ separator. That residual is path-only — `urlFromPath` force-overrides
 (no SSRF). If you ever need to neutralise `/` too, encode after the round-trip
 (set `percentEncodedPath`) rather than relying on the segment encoder alone.
 
+### Bearer-token clients share one credential-free `URLCache` key space
+
+- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
+  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
+  **not** in the request URL. That's the point (keys stay out of logs/proxies),
+  but it means the process-wide default `URLCache` (and the opt-in
+  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
+  partitions cache entries by credential. Two bearer clients with **different**
+  tokens in one process can therefore serve each other cache hits.
+- This is **benign today**: the affected v3 `GET` endpoints return app-level
+  public data identical across tokens, and user-specific requests carry
+  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
+  session requests entirely). It would only matter if TMDb started returning
+  token-specific data on an otherwise-public GET — worth remembering before
+  relying on per-token cache isolation.
+
 ## Swift concurrency
 
 ### Writing a `Task {}` body inside an actor: typed throws and the missing `await`
 
-*2026-07-27 (#391).* Two compiler rules bite together when an actor stores an
+*2026-07-27 (#401).* Two compiler rules bite together when an actor stores an
 unstructured `Task` and commits its result back to the actor (the memo in
 `APIConfigurationStore`).
 
@@ -553,7 +608,7 @@ same actor-isolated, suspension-free region as the task's completion.
 
 ### Testing a memoising actor: a caller that *joins* is invisible to the mock
 
-*2026-07-27 (#391).* When an actor de-duplicates concurrent work by sharing one
+*2026-07-27 (#401).* When an actor de-duplicates concurrent work by sharing one
 in-flight `Task`, only the **first** caller reaches the underlying mock or gate.
 Every later caller awaits the existing handle and never touches the double — so
 a `FetchGate`-style barrier cannot observe it, and a test that opens the gate and
@@ -621,47 +676,3 @@ in a '@Sendable' closure"*.
 - **Lesson:** before wrapping a service method in any `@Sendable` closure
   (auto-pagination, `Task {}`, etc.), check that every captured **public** type is
   `Sendable`; don't assume a simple value enum already is.
-
-## Testing
-
-### An `async let` binding cannot be captured by `#expect(throws:)`
-
-*2026-07-27 (#391).* Awaiting an `async let` inside the `#expect(throws:)`
-closure fails to compile:
-
-```text
-error: capturing 'async let' variables is not supported
-```
-
-Use an explicit `Task {}` handle instead and await its `.value` inside the macro
-— `let caller = Task { try await store.foo() }`, then
-`await #expect(throws: TMDbError.unknown) { _ = try await caller.value }`. A
-plain `let` task handle is capturable; the `async let` binding is not.
-
-### Integration tests need live-API env vars, and can fail transiently
-
-- `make integration-test` requires `TMDB_API_KEY` / `TMDB_USERNAME` /
-  `TMDB_PASSWORD` (injected via `.claude/settings.local.json`). A missing var is
-  a **precondition** failure, not a test failure.
-- They hit the **live** API, so HTTP 429 / timeout / network are possible — a
-  truncated log with no assertion failure is likely transient, not a code bug.
-  Use `/diagnose-integration-failure` to attribute a failure.
-
-### Fixtures must exercise every decoder branch
-
-- A custom `Decodable` with per-property branches (e.g. `append_to_response`
-  optionals) needs a fixture covering **all** branches, plus a "without appended
-  data" test asserting the optionals are `nil`. Untested branches hide bugs.
-
-### `Date(iso8601:)` test helper exists only in the `TMDbTests` target
-
-*2026-06-24.* The `Date(iso8601: "…")` convenience initialiser is defined in
-`Tests/TMDbTests/TestUtils/Date+ISO8601.swift`, which belongs to the **`TMDbTests`**
-(unit) target only — it is **not** visible to **`TMDbIntegrationTests`**. Using it
-in an integration test fails to compile with a misleading *"argument passed to call
-that takes no arguments"* (Swift resolves `Date(...)` to the argument-less
-`Date()`). The integration target has no date-from-string helper; build dates there
-with `Date(timeIntervalSince1970:)` (the existing convention, e.g. the `video.publishedAt`
-assertions). This only surfaces when the **integration** target compiles, so a
-`make test` that builds all targets — or `/integration-test` — catches it; a
-unit-only check may not.

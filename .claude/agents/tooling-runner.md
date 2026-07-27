@@ -61,20 +61,27 @@ fall back to `pwd`:
   at all. If you were asked to run more than one target, run them one after
   another, never in parallel — every target shares one SwiftPM scratch
   directory, and concurrent builds there don't just queue, they invalidate each
-  other's build plans (see `knowledge/gotchas.md` → *`make build-docs` shares
-  `.build`*).
+  other's build plans (see `knowledge/gotchas.md` → *Docs builds need their own
+  scratch path*).
 - Never read or touch `.swiftpm/` or `.build/` beyond the log file.
 
-## Judging pass/fail — the xcsift `.docc` trap
+## Judging pass/fail — the exit status is the verdict
 
 **Trust the exit status (and, for tests, the `failed_tests` count) — not
-xcsift's `status:` field or toon summary.** Outside a docs build, SwiftPM
-emits a benign `found N file(s) which are unhandled … *.docc` warning (the
-DocC plugin loads only under `SWIFTCI_DOCC=1`); xcsift lists it under
-`errors[]` with `null,null` coordinates and may print `status: failed` even
-though the run **exits 0**. A 0 exit whose only errors are these `.docc`
-unhandled-file entries (and, for test runs, `failed_tests: 0`) is a
-**PASS** — report succeeded and exclude those entries from the error count.
+xcsift's `status:` field or toon summary.** xcsift can print `status: failed`
+while the run **exits 0**, because its toon `errors[]` array also collects
+package-load diagnostics (they appear with `null,null` coordinates). Judge on
+the exit code; use `errors[]` only to *describe* a failure the exit code
+already established.
+
+> **Do not special-case the `.docc` "unhandled files" diagnostic as benign.**
+> It used to be a harmless package-load warning, but `Package.swift` now
+> `exclude`s every `.docc` catalog outside a docs build, so it no longer
+> appears for existing targets — and when it *does* appear it means a new
+> target's catalog is missing from that `exclude` list, which is **fatal**
+> under `-warnings-as-errors` on Xcode 27 (both local and CI). Report it as
+> the failure it now is; see `knowledge/gotchas.md` → *A new target with a
+> `.docc` catalog must be added to `Package.swift`'s exclude list*.
 
 ## Targets
 
