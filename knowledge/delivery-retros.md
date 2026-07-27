@@ -14,6 +14,80 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (#401) · full
+
+- **Phases / skills:** 0–8 pre-PR; full weight (new public service + actor,
+  8 commits). `/plan` → adversarial review by a Fable reviewer **plus** an
+  independent Swift-6 design pass, which converged on the same critical flaw, so
+  `/review-plan` was skipped as already-reviewed. `implement-plan` in 4
+  checkpoints. `review-changes` ×2 (5-dimension fan-out) → **0 Critical, 0 High
+  both rounds**, 15 then 7 advisory, all applied. `security-review` → 0 findings.
+  `capture-knowledge` → ADR-0013 + 3 gotchas + 1 correction to an existing entry.
+  Rubric: **6/6 ACs met**, independently graded.
+- **Worked — driving each mechanism out of a genuine red.** Rather than writing
+  the final actor from the plan, each hazard got its own failing test first: the
+  naive memo measured **100 fetches at peak concurrency 76** under 100 concurrent
+  callers, and the refresh ABA returned `["first"]` where `["second"]` was
+  expected. That produced *evidence* those are real regression tests, for free —
+  the plan had asked for a deliberate "revert and watch it fail" step, and this
+  made it unnecessary.
+- **Worked — plan review caught a bug the plan could not have shipped without.**
+  Both plan reviewers independently found that the cache rules said *what* to
+  memoise but never *who writes state*, so a superseded fetch would clobber a
+  newer `refresh()` — a permanently stale cache that **none of the 13 planned
+  tests would have caught**. The generation counter came from that, pre-code.
+- **Friction — I introduced two flaky tests while fixing review round 1, and only
+  round 2 caught them.** A caller that *joins* a shared in-flight fetch never
+  reaches the mock or gate, so a gate-based barrier cannot observe it; both new
+  tests opened the gate and then asserted on coalescing. Neither ever failed
+  locally (one reviewer measured 0/65 reproductions, 25 under load) — they were
+  wrong by construction, not by observation. Fixed with an on-actor entry
+  counter. **Lesson: after a concurrency fix, re-review the tests, not just the
+  code.**
+- **Friction — the one that actually cost the user: ~10 zsh pipelines pinned at
+  100% until they force-quit them.** My first explanation ("parallel agents,
+  build contention") was only half of it, and the smaller half. The real
+  amplifier is **`make build-docs` mutually invalidating every other build**:
+  `Package.swift` branches on `SWIFTCI_DOCC`, and the `=1` path *adds* the
+  swift-docc-plugin dependency while the else path *sets `exclude`* on four
+  targets — two different dependency graphs and two different per-target source
+  lists, sharing **one** `SCRATCH_PATH` (default `.build`). `Makefile:61` even
+  runs a bare `swift package resolve` after the docs build purely to undo the
+  first line's resolution, which is the Makefile conceding the point. Evidence:
+  `Package.resolved` is gitignored (the package normally has *no* dependencies)
+  yet exists, and `.build/checkouts/` holds `swift-docc-plugin` +
+  `swift-docc-symbolkit`.
+  So when I interleaved `build-docs` (×5) with `make test` / `build-release`
+  **while 5–7 review agents were independently building into the same
+  `.build`**, each docs run re-resolved the manifest out from under an in-flight
+  build; they then fought over `.build/.lock` and repeatedly redid work the other
+  had invalidated. Not slow work — *cyclical* work.
+  Two things I had wrongly folded into "CPU": the live integration suite is
+  **deliberately serialised** (40 suites carry `.integrationGate`, a global
+  semaphore), so 300 live tests run one at a time — that is most of the 69- and
+  72-minute wall-clock, and it is by design; and sheer redundancy (full unit
+  suite ×7, `build-docs` ×5, release ×3, a 12× filtered loop, plus a grader that
+  re-ran all of `make ci` unbidden, plus the real `make ci`).
+  `CLAUDE.md` mandates sequential builds within a worktree, but **subagents
+  cannot see each other**, so nothing could enforce it.
+- **Deviations:** (a) `TMDbFactory` was not touched — the issue's AC says
+  "registered in `TMDbFactory.swift`", but the factory vends only plumbing and
+  every service is built in `TMDbClient`'s private init; the grader independently
+  confirmed the criterion is stale. (b) `APIConfigurationStore` carries an
+  internal `entryCount` that exists only so tests can observe joining callers —
+  production state for the test suite, accepted deliberately and flagged by the
+  grader. (c) The ten URL methods are protocol-*extension* members, not
+  requirements, to kill the same-signature default-witness recursion hazard.
+- **Improvement (two, in priority order):** (1) **Give `build-docs` its own
+  scratch path** — `SCRATCH_PATH ?= .build/docs` for that target alone — so the
+  docc manifest never touches the directory every other target builds into. One
+  line, and it removes the invalidation cycle at the source rather than relying
+  on nobody ever running two things at once. (2) `/deliver` should forbid builds
+  in reviewer/grader subagent prompts and serialise its review phases: reviewers
+  have the diff and the conductor has already run every gate, so a reviewer
+  running `make ci` is duplicate CPU — and with N parallel agents on a shared
+  scratch path it is not merely N×, it is cyclical.
+
 ## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (#398) · full
 
 - **Phases / skills:** phases 0–8 pre-PR; full weight (~40 sources + ~110

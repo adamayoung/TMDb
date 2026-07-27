@@ -14,7 +14,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 ## Features
 
 * **Comprehensive API Coverage**: Full support for TMDb API v3 with 26
-  specialized services
+  specialized services, plus 2 on-device intelligence extensions
 * **Append to Response**: Fetch details with credits, images, videos,
   and more in a single request using `append_to_response`
 * **Movie & TV Data**: Details, credits, images, videos, reviews,
@@ -25,9 +25,9 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   (requires authentication)
 * **Metadata**: Genres, certifications, companies, collections, watch
   providers
-* **Image Generation**: Built-in URL generation for all image types with
-  size optimization, typed `ImageSize` selection, and convenience accessors
-  on models
+* **Image Generation**: One-call image URLs via `client.images`, which caches
+  TMDb's image configuration for you, with size optimization, typed
+  `ImageSize` selection, and convenience accessors on models
 * **Display Formatting**: Foundation `FormatStyle` conformances for
   rendering runtimes (`"2h 15m"`, `"139 min"`, `"2 hours, 15 minutes"`)
   and vote averages as percentages (e.g. `"85%"` in English locales)
@@ -80,6 +80,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **reviews** | Review details with author and media information |
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
+| **images** | Fully qualified image URLs from model image paths, with the image configuration fetched once and cached |
 | **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) — requires `import TMDbIntelligence` |
 | **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) — requires `import TMDbIntelligence` |
 
@@ -230,14 +231,19 @@ if let usProvider = watchProviders.first(where: { $0.countryCode == "US" }) {
     print("Available on: \(usProvider.watchProviders.flatRate?.map(\.name) ?? [])")
 }
 
-// Generate poster image URL
-let config = try await tmdbClient.configurations.apiConfiguration()
-if let posterPath = fightClub.posterPath {
-    let posterURL = config.images.posterURL(for: posterPath, idealWidth: 500)
-}
+// Generate a poster image URL — the image configuration is fetched
+// once and cached for you
+let posterURL = try await tmdbClient.images.posterURL(
+    for: fightClub.posterPath,
+    size: .width(500)
+)
 
-// Or request a specific size, directly from the model
-let posterURL = fightClub.posterURL(using: config.images, size: .width(500))
+// Resolving many at once? Fetch the configuration once and use its
+// synchronous helpers
+let imagesConfiguration = try await tmdbClient.images.imagesConfiguration()
+let posterURLs = popularMovies.map {
+    $0.posterURL(using: imagesConfiguration, size: .width(500))
+}
 ```
 
 ### Configuration
