@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Testing
 import TMDb
 
 ///
@@ -50,9 +51,36 @@ package actor FetchGate {
         }
     }
 
-    /// Suspends until at least `count` fetches have reached the gate.
-    package func waitUntilEntered(atLeast count: Int) async {
+    ///
+    /// Suspends until at least `count` fetches have reached the gate, or the
+    /// deadline passes.
+    ///
+    /// The deadline matters: the regressions these tests exist to catch are ones
+    /// where an expected fetch never starts. An unbounded wait would turn such a
+    /// regression into a CI job timeout with no diagnostic, which is far worse
+    /// than a failed assertion. On expiry this records an issue and returns, so
+    /// the caller's own expectations fail with a real message.
+    ///
+    package func waitUntilEntered(
+        atLeast count: Int,
+        within timeout: Duration = .seconds(10),
+        sourceLocation: SourceLocation = #_sourceLocation
+    ) async {
+        let deadline = ContinuousClock.now + timeout
+
         while entered < count {
+            guard ContinuousClock.now < deadline else {
+                Issue.record(
+                    """
+                    Only \(entered) of \(count) fetches reached the gate within \
+                    \(timeout). The fetch that was expected to start never did.
+                    """,
+                    sourceLocation: sourceLocation
+                )
+
+                return
+            }
+
             await Task.yield()
         }
     }

@@ -104,17 +104,27 @@ struct TMDbImageServiceTests {
         let configuration = try Self.makeConfiguration()
         let (service, configurationService) = Self.makeService(configuration: configuration)
 
-        let poster = try await service.posterURL(for: nil, size: .width(500))
-        let backdrop = try await service.backdropURL(for: nil)
-        let logo = try await service.logoURL(for: nil, size: .width(154))
-        let profile = try await service.profileURL(for: nil)
-        let still = try await service.stillURL(for: nil, size: .width(185))
+        // All ten methods, not a representative five: the `guard let path` is
+        // copy-pasted per method, and dropping one still compiles and still
+        // returns nil — it just silently fetches, breaking the guarantee below.
+        let sizedURLs = try await [
+            service.posterURL(for: nil, size: .width(500)),
+            service.backdropURL(for: nil, size: .width(780)),
+            service.logoURL(for: nil, size: .width(154)),
+            service.profileURL(for: nil, size: .height(632)),
+            service.stillURL(for: nil, size: .width(185))
+        ]
 
-        #expect(poster == nil)
-        #expect(backdrop == nil)
-        #expect(logo == nil)
-        #expect(profile == nil)
-        #expect(still == nil)
+        let idealWidthURLs = try await [
+            service.posterURL(for: nil, idealWidth: 500),
+            service.backdropURL(for: nil, idealWidth: 780),
+            service.logoURL(for: nil, idealWidth: 154),
+            service.profileURL(for: nil, idealWidth: 185),
+            service.stillURL(for: nil, idealWidth: 185)
+        ]
+
+        #expect(sizedURLs.allSatisfy { $0 == nil })
+        #expect(idealWidthURLs.allSatisfy { $0 == nil })
 
         // A model with no image must never cost a network request, and must never
         // surface a network error — rendering a list of placeholders offline would

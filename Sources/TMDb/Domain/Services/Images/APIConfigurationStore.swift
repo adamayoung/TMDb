@@ -16,6 +16,7 @@ actor APIConfigurationStore {
     private var cachedConfiguration: APIConfiguration?
     private var inFlightFetch: Fetch?
     private var generation: UInt64 = 0
+    private var refreshGeneration: UInt64?
 
     init(configurationService: some ConfigurationService) {
         self.configurationService = configurationService
@@ -30,7 +31,17 @@ actor APIConfigurationStore {
     }
 
     func refresh() async throws(TMDbError) -> APIConfiguration {
+        // Coalesce concurrent refreshes. A refresh arriving while an earlier
+        // refresh's fetch is still running joins it: that fetch started after this
+        // caller's own refresh boundary, so it is genuinely fresh for them too.
+        // Superseding it instead would waste its round trip against a rate-limited
+        // API and discard its result without ever caching it.
+        if let inFlightFetch, refreshGeneration == generation {
+            return try await result(of: inFlightFetch)
+        }
+
         invalidate()
+        refreshGeneration = generation
 
         return try await result(of: currentFetch())
     }
@@ -41,9 +52,14 @@ actor APIConfigurationStore {
     /// awaiters, and cancelling it would fail all of them because someone else
     /// refreshed. It is left to run and deliver its value to the callers that
     /// asked before the refresh; the generation bump stops it committing.
+    ///
+    /// The cached value is deliberately **kept**. Clearing it here would mean a
+    /// refresh that then fails leaves the store with no configuration at all, so
+    /// a transient network loss during a refresh would degrade every later image
+    /// URL until connectivity returned. ``complete(_:generation:)`` swaps the
+    /// cached value only once a replacement has actually arrived.
     private func invalidate() {
         generation &+= 1
-        cachedConfiguration = nil
         inFlightFetch = nil
     }
 
@@ -103,6 +119,7 @@ actor APIConfigurationStore {
         }
 
         inFlightFetch = nil
+        refreshGeneration = nil
 
         // Only successes are memoised, so a failure retries on the next call.
         if case .success(let configuration) = result {

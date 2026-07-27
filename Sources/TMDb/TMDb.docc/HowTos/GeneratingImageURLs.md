@@ -48,6 +48,12 @@ try await tmdbClient.images.preload()
 The configuration is fetched **at most once**, however many callers ask for it
 concurrently.
 
+> Important: Because concurrent callers share one fetch, these methods are
+deliberately not cancellable by any single caller. A cancelled task waiting on
+the shared fetch is not interrupted and does not throw `CancellationError` — it
+waits for the fetch to finish and receives its value. Cancelling for one caller
+would otherwise fail every other caller waiting on the same fetch.
+
 ## Resolving Many Image URLs
 
 Every resolver method is `async`, so resolving a screenful of images means an
@@ -125,3 +131,8 @@ up a change can call ``ImageService/refresh()``:
 ```swift
 try await tmdbClient.images.refresh()
 ```
+
+The cached value is replaced only once a fresh one arrives, so a refresh that
+fails leaves the previous configuration in place rather than leaving you with
+none. Callers resolving image URLs during the refresh continue to use the
+cached value instead of waiting.

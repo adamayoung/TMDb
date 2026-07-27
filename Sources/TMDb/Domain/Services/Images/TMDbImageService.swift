@@ -8,7 +8,7 @@
 import Foundation
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-final class TMDbImageService: ImageService, Sendable {
+final class TMDbImageService: ImageService {
 
     private let store: APIConfigurationStore
 

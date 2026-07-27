@@ -215,6 +215,63 @@ struct APIConfigurationStoreTests {
         #expect(configurationService.apiConfigurationCallCount == 2)
     }
 
+    @Test("concurrent refresh calls share a single fetch")
+    func concurrentRefreshCallsShareSingleFetch() async throws {
+        let gate = FetchGate()
+        let configurationService = CountingConfigurationService(gate: gate)
+        let expectedResult = APIConfiguration.mock(changeKeys: ["first"])
+        configurationService.enqueue(.success(expectedResult))
+        configurationService.enqueue(.success(.mock(changeKeys: ["second"])))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        let firstRefresh = Task { try await store.refresh() }
+        await gate.waitUntilEntered(atLeast: 1)
+
+        // Arrives while the first refresh is still fetching: it should join that
+        // fetch rather than supersede it, which would waste the first's round trip
+        // and discard its result.
+        let secondRefresh = Task { try await store.refresh() }
+
+        await gate.open()
+
+        let firstResult = try await firstRefresh.value
+        let secondResult = try await secondRefresh.value
+
+        #expect(firstResult == expectedResult)
+        #expect(secondResult == expectedResult)
+        #expect(configurationService.apiConfigurationCallCount == 1)
+
+        // …and that shared fetch must still have been memoised.
+        let cached = try await store.apiConfiguration()
+
+        #expect(cached == expectedResult)
+        #expect(configurationService.apiConfigurationCallCount == 1)
+    }
+
+    @Test("a failed refresh keeps the previously cached configuration")
+    func failedRefreshKeepsPreviouslyCachedConfiguration() async throws {
+        let configurationService = CountingConfigurationService()
+        let expectedResult = APIConfiguration.mock(changeKeys: ["first"])
+        configurationService.enqueue(.success(expectedResult))
+        configurationService.enqueue(.failure(.unknown))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        let before = try await store.apiConfiguration()
+        #expect(configurationService.apiConfigurationCallCount == 1)
+
+        await #expect(throws: TMDbError.unknown) {
+            _ = try await store.refresh()
+        }
+
+        // A refresh that fails must not destroy a known-good configuration: losing
+        // it would make every later image URL re-fetch until the network recovers.
+        let after = try await store.apiConfiguration()
+
+        #expect(before == expectedResult)
+        #expect(after == expectedResult)
+        #expect(configurationService.apiConfigurationCallCount == 2)
+    }
+
     @Test("a superseded fetch that fails does not detach the refresh's fetch")
     func supersededFetchThatFailsDoesNotDetachRefreshFetch() async throws {
         let gate = FetchGate()
@@ -261,14 +318,23 @@ struct APIConfigurationStoreTests {
         let cancelledCaller = Task { try await store.apiConfiguration() }
         await gate.waitUntilEntered(atLeast: 1)
 
-        async let second: APIConfiguration = store.apiConfiguration()
-        async let third: APIConfiguration = store.apiConfiguration()
+        // These two are given a chance to join the in-flight fetch before the gate
+        // opens. Their ordering is not guaranteed — if they arrive late they read
+        // the committed cache instead — so they are corroborating, not
+        // load-bearing. The guarantee this test actually rests on is the cancelled
+        // caller below, which `waitUntilEntered` proves was parked inside the
+        // shared fetch at the moment it was cancelled.
+        let second = Task { try await store.apiConfiguration() }
+        let third = Task { try await store.apiConfiguration() }
+        for _ in 0 ..< 10 {
+            await Task.yield()
+        }
 
         cancelledCaller.cancel()
         await gate.open()
 
-        let secondResult = try await second
-        let thirdResult = try await third
+        let secondResult = try await second.value
+        let thirdResult = try await third.value
 
         // The shared fetch is deliberately not cancellable by any one awaiter:
         // forwarding cancellation into it (as PagedAsyncSequence does, correctly,
