@@ -108,9 +108,26 @@ implementation = separate `/deliver` sessions.)
   **not** convert it to a silent subagent.
 - **The gate stays in the main agent**; phases hand off via git / disk / the
   PR, not context.
-- Separate worktrees get separate `.build` dirs; run builds sequentially
-  *within* one worktree. No `SCRATCH_PATH` override is needed — that flag is
-  only for multiple agents sharing one working directory.
+- Separate worktrees get separate `.build` dirs. No `SCRATCH_PATH` override is
+  needed — that flag is only for multiple agents sharing one working directory.
+- **One Swift process per worktree — at any instant, across every agent.** Not
+  "each agent runs its builds sequentially": *one build in the whole worktree,
+  full stop. The conductor owns it.* Concretely:
+  - Only the conductor and the `tooling-runner` it spawns may build. **Reviewer,
+    security and grader subagents must be told not to build** — their prompts
+    say so, and `/review-changes` and Phase 7 above already carry that
+    instruction.
+  - **Never run two analysis phases concurrently.** Phase 4 and Phase 5 read the
+    same commits and feel independent, so "run the security review while the
+    fan-out finishes" is tempting — it parallelises tokens but serialises
+    nothing on disk. Finish one, then start the next.
+  - Never spawn a `tooling-runner` in the background, and never two at once.
+  Why it matters more than ordinary contention: every target shares one scratch
+  directory, and a `build-docs` run flips the `SWIFTCI_DOCC` manifest, which
+  *invalidates* any concurrent build's plan rather than merely queueing behind
+  it — so the processes redo each other's work in a cycle. This once put ~10
+  `zsh` pipelines at 100% until the user killed them
+  (`knowledge/gotchas.md` → *`make build-docs` shares `.build`*).
 
 ## Phase 0 — Preconditions
 
@@ -267,13 +284,17 @@ is graded depends on weight:
 - **Full** → **an independent grader, not the conductor** — the maker does
   not grade its own homework. Spawn ONE subagent (general-purpose; inherit
   the model) given ONLY the rubric verbatim and the instruction to judge the
-  committed work (`git diff origin/main...HEAD`, reading files and running
-  targeted `swift test --filter …` as needed) — no conversation context, no
-  implementation narrative. It returns per-AC `met`/`not met` + one-line
-  evidence (file:line or test name). Run it **synchronously** — it may
-  build/test, and builds are sequential within a worktree. Grader dies or
-  returns unusable output → fall back to the inline path and note it in the
-  ledger — **a dead grader is not a pass**.
+  committed work by **reading** `git diff origin/main...HEAD` and the files —
+  no conversation context, no implementation narrative. It returns per-AC
+  `met`/`not met` + one-line evidence (file:line or test name). Run it
+  **synchronously**. Grader dies or returns unusable output → fall back to the
+  inline path and note it in the ledger — **a dead grader is not a pass**.
+  - **Cap what it may execute, explicitly.** Phase 3 and Phase 9 already run
+    the full gates; a grader re-running them proves nothing new and costs
+    minutes. Tell it: *at most one targeted `swift test --filter …`, and never
+    `make ci` / `make test` / `make integration-test` / `make build-docs`.*
+    Left unsaid, a thorough grader will run the whole of `make ci` — one did,
+    for 72 minutes, including the 300-test live suite.
 
 Satisfied → mark off. Not → fix test-first, commit, re-verify (full weight:
 re-run the grader); a gap needing a plan change is noted in the PR

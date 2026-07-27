@@ -6,20 +6,20 @@ out of it.
 
 ## Tooling
 
-### `make build-docs` shares `.build` with every other target and invalidates it
+### Docs builds need their own scratch path — sharing one invalidates the other
 
-*2026-07-27 (#401).* `Package.swift` branches on `SWIFTCI_DOCC`: the `=1` path
-**adds** the swift-docc-plugin dependency, the `else` path **sets `exclude`** on
-the four `.docc`-bearing targets. Those are two different dependency graphs *and*
-two different per-target source lists — and every `make` target shares one
-`SCRATCH_PATH`, which defaults to `.build`.
+*2026-07-27 (#401, fixed in #402).* `Package.swift` branches on `SWIFTCI_DOCC`:
+the `=1` path **adds** the swift-docc-plugin dependency, the `else` path **sets
+`exclude`** on the four `.docc`-bearing targets. Those are two different
+dependency graphs *and* two different per-target source lists. Every `make`
+target used to share one `SCRATCH_PATH`.
 
-`Makefile:61` concedes the point: `build-docs` runs a bare
-`swift package resolve` **after** the docs build purely to undo the resolution
-the first line performed. Confirmable at a glance: `Package.resolved` is
-gitignored (the package has **no** dependencies in normal mode) yet exists once
-docs have been built, and `.build/checkouts/` then holds `swift-docc-plugin` and
-`swift-docc-symbolkit`.
+Verify the divergence in seconds — no build needed:
+
+```bash
+swift package resolve                 # no Package.resolved at all: zero dependencies
+SWIFTCI_DOCC=1 swift package resolve  # two pins: swift-docc-plugin, swift-docc-symbolkit
+```
 
 Consequences:
 
@@ -33,9 +33,15 @@ Consequences:
   symptom is many `zsh` pipelines (each target is `swift … | xcsift`) pinned at
   100% for far longer than the work justifies. Observed: a 5-step gate reporting
   **69 minutes** against a true cost of a few.
-- **Mitigation:** run docs with a separate scratch path —
-  `make build-docs SCRATCH_PATH=.build/docs` — so it never touches the directory
-  the other targets use. Any path under `.build` is already gitignored.
+- **Fixed in #402:** the three `SWIFTCI_DOCC` targets now use their own
+  `DOCS_SCRATCH_PATH` (`.build/docs`), so a docs build never touches the
+  directory the other targets use — after `make build-docs`, `.build/` contains
+  only `docs`. **Keep it that way**: pointing docs back at `SCRATCH_PATH`, or
+  adding a fourth docs target that forgets the variable, reintroduces all of the
+  above.
+- The same reasoning applies to any future manifest-conditional build mode: a
+  build whose *manifest* differs needs its own scratch directory, not just its
+  own flags.
 
 Related and often mistaken for this: the live integration suite is *deliberately*
 serialised (40 suites carry `.integrationGate`, a global semaphore), so 300 live

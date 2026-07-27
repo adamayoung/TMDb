@@ -58,9 +58,27 @@ genuinely broad.
 
 ## 2a. Small change → single agent
 
-Spawn the **`code-reviewer`** agent on `git diff origin/main...HEAD`. It follows
+Spawn the **`code-reviewer`** agent on `git diff origin/main...HEAD`, telling it
+**not to build or run tests** (see *Reviewers don't build* below). It follows
 `.github/CODE_REVIEW.md` including its own adversarial self-pass, and returns the
 full severity-graded report. Pass that report back to the caller. Done.
+
+### Reviewers don't build
+
+**No reviewer — single or fanned-out — may run `make`, `swift build` or
+`swift test`.** Reviewing is a reading task: the reviewer has the diff and the
+source, and the caller has already run every gate before invoking this skill.
+
+This is not a style preference. Every target shares one SwiftPM scratch
+directory per worktree, so N parallel reviewers each starting a build is N
+processes contending on one `.build/.lock` — and if any of them builds docs, the
+`SWIFTCI_DOCC` manifest flip *invalidates* the others' build plans, so they redo
+each other's work in a cycle rather than merely queueing. Observed once as ~10
+`zsh` pipelines pinned at 100% long enough that the user killed them (see
+`knowledge/gotchas.md` → *`make build-docs` shares `.build`*).
+
+If a finding genuinely cannot be settled without executing something, say so in
+the finding and let the caller run it — serially, once.
 
 ## 2b. Large change → fan-out + verify Workflow
 
@@ -130,6 +148,7 @@ const VERDICT_SCHEMA = {
 const reviewPrompt = (d) =>
   `Review the changes on this branch through ONE lens only: ${d.focus}.\n\n` +
   `Get the diff yourself with \`git diff ${BASE}...HEAD\`, and read the surrounding source as needed. ` +
+  `DO NOT BUILD OR RUN TESTS — no \`make\`, no \`swift build\`, no \`swift test\`. You are one of several reviewers running in parallel against one shared .build directory; a build here collides with theirs and with the caller's. The caller has already run every gate. Review by reading the diff and the source. ` +
   `Follow the project review guidelines in ${SPEC} — the severity rubric, in/out scope, and the MANDATORY adversarial re-evaluation (drop any finding that doesn't survive). ` +
   `Stay strictly within your lens; other reviewers cover the rest, so don't duplicate them. ` +
   `Report only findings that survive your adversarial pass, each with file, line, what's wrong, why it matters, and a concrete fix. If your lens is clean, return an empty findings array.`
