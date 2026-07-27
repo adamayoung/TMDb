@@ -18,11 +18,23 @@ actor APIConfigurationStore {
     private var generation: UInt64 = 0
     private var refreshGeneration: UInt64?
 
+    /// The number of calls that have entered ``apiConfiguration()`` or ``refresh()``.
+    ///
+    /// Incremented on the actor before the first suspension point, so a test can
+    /// wait until callers have provably joined an in-flight fetch rather than
+    /// assuming task-start ordering. It has no effect on behaviour.
+    private(set) var entryCount = 0
+
     init(configurationService: some ConfigurationService) {
         self.configurationService = configurationService
     }
 
     func apiConfiguration() async throws(TMDbError) -> APIConfiguration {
+        entryCount += 1
+
+        // Checked before joining any in-flight fetch, so a refresh in progress
+        // does not make readers wait: they keep getting the cached value until
+        // the replacement lands.
         if let cachedConfiguration {
             return cachedConfiguration
         }
@@ -31,11 +43,18 @@ actor APIConfigurationStore {
     }
 
     func refresh() async throws(TMDbError) -> APIConfiguration {
+        entryCount += 1
+
         // Coalesce concurrent refreshes. A refresh arriving while an earlier
-        // refresh's fetch is still running joins it: that fetch started after this
-        // caller's own refresh boundary, so it is genuinely fresh for them too.
-        // Superseding it instead would waste its round trip against a rate-limited
-        // API and discard its result without ever caching it.
+        // refresh's fetch is still running joins it rather than superseding it,
+        // which would waste that round trip against a rate-limited API and
+        // discard its result without ever caching it.
+        //
+        // Joining is sound because the in-flight fetch was issued after the
+        // cached value it will replace, so it is strictly fresher than anything
+        // this caller could already have observed. Note it may have been issued
+        // slightly *before* this call, so a change made in that window is not
+        // guaranteed to be reflected.
         if let inFlightFetch, refreshGeneration == generation {
             return try await result(of: inFlightFetch)
         }

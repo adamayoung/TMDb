@@ -67,7 +67,10 @@ public protocol ImageService: Sendable {
     ///
     /// A fetch already in progress when this is called is left running rather
     /// than cancelled, so callers waiting on it still receive its value.
-    /// Concurrent calls to this method share a single fetch.
+    ///
+    /// Concurrent calls to this method share a single fetch. That fetch may have
+    /// been issued fractionally before a given call, so a change made in that
+    /// window is not guaranteed to be reflected in the value it returns.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

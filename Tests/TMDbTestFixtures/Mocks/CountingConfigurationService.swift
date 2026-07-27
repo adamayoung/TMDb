@@ -51,6 +51,14 @@ package actor FetchGate {
         }
     }
 
+    /// Parks callers arriving from now on. Already-released callers are unaffected.
+    ///
+    /// Lets a test prime a cache through an open gate and then hold a later fetch
+    /// open, without needing a second store.
+    package func close() {
+        isOpen = false
+    }
+
     ///
     /// Suspends until at least `count` fetches have reached the gate, or the
     /// deadline passes.
