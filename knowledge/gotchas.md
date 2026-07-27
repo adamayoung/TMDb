@@ -6,6 +6,42 @@ out of it.
 
 ## Tooling
 
+### `make build-docs` shares `.build` with every other target and invalidates it
+
+*2026-07-27 (#401).* `Package.swift` branches on `SWIFTCI_DOCC`: the `=1` path
+**adds** the swift-docc-plugin dependency, the `else` path **sets `exclude`** on
+the four `.docc`-bearing targets. Those are two different dependency graphs *and*
+two different per-target source lists — and every `make` target shares one
+`SCRATCH_PATH`, which defaults to `.build`.
+
+`Makefile:61` concedes the point: `build-docs` runs a bare
+`swift package resolve` **after** the docs build purely to undo the resolution
+the first line performed. Confirmable at a glance: `Package.resolved` is
+gitignored (the package has **no** dependencies in normal mode) yet exists once
+docs have been built, and `.build/checkouts/` then holds `swift-docc-plugin` and
+`swift-docc-symbolkit`.
+
+Consequences:
+
+- **Interleaving `make build-docs` with `make test` / `build-release` rebuilds
+  far more than you expect**, because each flip changes the manifest under the
+  shared build plan. `make ci` does this flip once by design.
+- **It is actively destructive under concurrency.** If anything else is building
+  into `.build` — notably fanned-out review subagents, which cannot see each
+  other — a docs run re-resolves the manifest out from under an in-flight build.
+  They then contend on `.build/.lock` and repeatedly redo invalidated work. The
+  symptom is many `zsh` pipelines (each target is `swift … | xcsift`) pinned at
+  100% for far longer than the work justifies. Observed: a 5-step gate reporting
+  **69 minutes** against a true cost of a few.
+- **Mitigation:** run docs with a separate scratch path —
+  `make build-docs SCRATCH_PATH=.build/docs` — so it never touches the directory
+  the other targets use. Any path under `.build` is already gitignored.
+
+Related and often mistaken for this: the live integration suite is *deliberately*
+serialised (40 suites carry `.integrationGate`, a global semaphore), so 300 live
+tests run one at a time. That is long wall-clock by design, not contention —
+don't "fix" it.
+
 ### A non-test target can never `@testable import` — it breaks `swift build -c release` only
 
 *2026-07-24 (#395).* Sharing test fixtures between two test targets needs a

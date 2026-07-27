@@ -44,14 +44,32 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   wrong by construction, not by observation. Fixed with an on-actor entry
   counter. **Lesson: after a concurrency fix, re-review the tests, not just the
   code.**
-- **Friction — the one that actually cost the user.** I ran the security review
-  *concurrently with* code-review round 2, reasoning it "parallelises cleanly".
-  It does for tokens; it does not for CPU. Combined with two 5-agent fan-outs and
-  a grader that ran all of `make ci` unbidden, ~10 concurrent build pipelines
-  collided on one `.build`: a 5-step gate reported **69 minutes** and a
-  `make test` **36 minutes** against a true cost of ~2 each. The user force-quit
-  them. `CLAUDE.md` mandates sequential builds within a worktree, but **subagents
-  cannot see each other**, so nothing enforced it across parallel agents.
+- **Friction — the one that actually cost the user: ~10 zsh pipelines pinned at
+  100% until they force-quit them.** My first explanation ("parallel agents,
+  build contention") was only half of it, and the smaller half. The real
+  amplifier is **`make build-docs` mutually invalidating every other build**:
+  `Package.swift` branches on `SWIFTCI_DOCC`, and the `=1` path *adds* the
+  swift-docc-plugin dependency while the else path *sets `exclude`* on four
+  targets — two different dependency graphs and two different per-target source
+  lists, sharing **one** `SCRATCH_PATH` (default `.build`). `Makefile:61` even
+  runs a bare `swift package resolve` after the docs build purely to undo the
+  first line's resolution, which is the Makefile conceding the point. Evidence:
+  `Package.resolved` is gitignored (the package normally has *no* dependencies)
+  yet exists, and `.build/checkouts/` holds `swift-docc-plugin` +
+  `swift-docc-symbolkit`.
+  So when I interleaved `build-docs` (×5) with `make test` / `build-release`
+  **while 5–7 review agents were independently building into the same
+  `.build`**, each docs run re-resolved the manifest out from under an in-flight
+  build; they then fought over `.build/.lock` and repeatedly redid work the other
+  had invalidated. Not slow work — *cyclical* work.
+  Two things I had wrongly folded into "CPU": the live integration suite is
+  **deliberately serialised** (40 suites carry `.integrationGate`, a global
+  semaphore), so 300 live tests run one at a time — that is most of the 69- and
+  72-minute wall-clock, and it is by design; and sheer redundancy (full unit
+  suite ×7, `build-docs` ×5, release ×3, a 12× filtered loop, plus a grader that
+  re-ran all of `make ci` unbidden, plus the real `make ci`).
+  `CLAUDE.md` mandates sequential builds within a worktree, but **subagents
+  cannot see each other**, so nothing could enforce it.
 - **Deviations:** (a) `TMDbFactory` was not touched — the issue's AC says
   "registered in `TMDbFactory.swift`", but the factory vends only plumbing and
   every service is built in `TMDbClient`'s private init; the grader independently
@@ -60,10 +78,15 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   production state for the test suite, accepted deliberately and flagged by the
   grader. (c) The ten URL methods are protocol-*extension* members, not
   requirements, to kill the same-signature default-witness recursion hazard.
-- **Improvement:** `/deliver` should forbid builds in reviewer/grader subagent
-  prompts and serialise its review phases. Reviewers have the diff and the
-  conductor has already run every gate, so a reviewer running `make ci` is pure
-  duplicate CPU — and with N parallel agents it is superlinear.
+- **Improvement (two, in priority order):** (1) **Give `build-docs` its own
+  scratch path** — `SCRATCH_PATH ?= .build/docs` for that target alone — so the
+  docc manifest never touches the directory every other target builds into. One
+  line, and it removes the invalidation cycle at the source rather than relying
+  on nobody ever running two things at once. (2) `/deliver` should forbid builds
+  in reviewer/grader subagent prompts and serialise its review phases: reviewers
+  have the diff and the conductor has already run every gate, so a reviewer
+  running `make ci` is duplicate CPU — and with N parallel agents on a shared
+  scratch path it is not merely N×, it is cyclical.
 
 ## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (#398) · full
 
