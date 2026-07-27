@@ -96,6 +96,15 @@ public final class TMDbClient: Sendable {
     public let guestSessions: any GuestSessionService
 
     ///
+    /// Provides access to fully qualified image URLs, resolved from the image
+    /// paths carried by models such as ``Movie``, ``TVSeries`` and ``Person``.
+    ///
+    /// The images configuration this needs is fetched on first use and cached
+    /// for the lifetime of this client.
+    ///
+    public let images: any ImageService
+
+    ///
     /// Provides access to keyword details and discovering movies by
     /// keyword.
     ///
@@ -278,6 +287,12 @@ public final class TMDbClient: Sendable {
         let authAPIClient = dependencies.authAPIClient
         let authenticateURLBuilder = dependencies.authenticateURLBuilder
 
+        // Hoisted into a local so the image service can share this exact instance:
+        // `self.configurations` cannot be read until every stored property is
+        // initialised. Sharing it means the memo sits above the same service the
+        // `configurations` property exposes.
+        let configurationService = TMDbConfigurationService(apiClient: apiClient)
+
         self.configuration = configuration
         self.account = TMDbAccountService(apiClient: apiClient)
         self.authentication = TMDbAuthenticationService(
@@ -287,12 +302,13 @@ public final class TMDbClient: Sendable {
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.collections = TMDbCollectionService(apiClient: apiClient, configuration: configuration)
         self.companies = TMDbCompanyService(apiClient: apiClient)
-        self.configurations = TMDbConfigurationService(apiClient: apiClient)
+        self.configurations = configurationService
         self.credits = TMDbCreditService(apiClient: apiClient)
         self.discover = TMDbDiscoverService(apiClient: apiClient, configuration: configuration)
         self.find = TMDbFindService(apiClient: apiClient, configuration: configuration)
         self.genres = TMDbGenreService(apiClient: apiClient, configuration: configuration)
         self.guestSessions = TMDbGuestSessionService(apiClient: apiClient)
+        self.images = TMDbImageService(configurationService: configurationService)
         self.keywords = TMDbKeywordService(apiClient: apiClient)
         self.lists = TMDbListService(apiClient: apiClient)
         self.movies = TMDbMovieService(apiClient: apiClient, configuration: configuration)
