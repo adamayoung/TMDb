@@ -481,6 +481,56 @@ separator. That residual is path-only — `urlFromPath` force-overrides
 
 ## Swift concurrency
 
+### Writing a `Task {}` body inside an actor: typed throws and the missing `await`
+
+*2026-07-27 (#391).* Two compiler rules bite together when an actor stores an
+unstructured `Task` and commits its result back to the actor (the memo in
+`APIConfigurationStore`).
+
+**Typed-throws `do`/`catch` inference does not apply inside a closure.** It works
+in a function body, but in a `Task { }` or `group.addTask { }` body a bare
+`catch` binds `any Error`:
+
+```text
+error: cannot convert value of type 'any Error' to expected argument type 'TMDbError'
+```
+
+Write the effect explicitly — `do throws(TMDbError) { … } catch { … }`. An
+explicit closure signature (`Task { () async -> Result<…> in … }`) does **not**
+fix it. And `catch let error as TMDbError` compiles but emits *"'as' test is
+always true"*, which is fatal under `--Werror`. The alternative that also works
+is extracting the `do`/`catch` into a plain `private func … async -> Result<…>`
+and calling that from the `Task`.
+
+**A `Task {}` capturing `self` inside an actor inherits that actor's isolation.**
+So calling back into the actor from the task body must **omit** `await` — a
+redundant one is `#UnnecessaryEffectMarker`, also fatal under `--Werror`. With
+`[weak self]` the isolation is *not* inherited and `await self?.foo()` **is**
+required. Strong `self` is usually what you want: the commit then happens in the
+same actor-isolated, suspension-free region as the task's completion.
+
+### Testing a memoising actor: a caller that *joins* is invisible to the mock
+
+*2026-07-27 (#391).* When an actor de-duplicates concurrent work by sharing one
+in-flight `Task`, only the **first** caller reaches the underlying mock or gate.
+Every later caller awaits the existing handle and never touches the double — so
+a `FetchGate`-style barrier cannot observe it, and a test that opens the gate and
+then asserts on de-duplication is **flaky by construction**: if the shared fetch
+commits first, the "joiner" starts its own fetch and the assertion fails.
+
+- **Fix:** count arrivals on the actor itself — an internal counter incremented
+  **before the first suspension point**, which is a true "has joined" signal —
+  and poll it. Production cost is one `private(set) var` and one increment per
+  entry point; the alternative is a test that asserts a guarantee it cannot
+  actually observe.
+- **Always bound such a barrier.** An unbounded `while x < n { await Task.yield() }`
+  turns the very regression it guards into a **CI hang with no diagnostic**,
+  which is strictly worse than a failed assertion. Give it a deadline and
+  `Issue.record` on expiry.
+- Both traps were found by code review *after* the tests were green, not by
+  running them — they are ordering assumptions, not reproducible failures. One
+  reviewer measured 0/65 reproductions including 25 under 12-way CPU load.
+
 ### Deterministically testing that cancellation is *forwarded* into an unstructured `Task`
 
 *2026-06-18.* An unstructured `Task {}` does **not** inherit its parent's
@@ -508,6 +558,12 @@ Drive such sequences directly via their `init(pageFetcher:)` with the `actor`
 recorder — **never** `MockAPIClient` (it is `@unchecked Sendable` with
 unsynchronised state and would data-race under concurrent fetches).
 
+**Forwarding is not always right.** It is correct here because the prefetch task
+has exactly **one** owner-awaiter. A task shared by **N** awaiters — such as the
+configuration memo in [ADR-0013](decisions/0013-cached-image-url-resolver.md) —
+must *not* forward, or one cancelled caller fails all the others. Check the
+awaiter count before copying this pattern.
+
 ### Public enums are not implicitly `Sendable` — explicit conformance needed for `@Sendable` capture
 
 *2026-06-18.* Adding auto-pagination over a service method captures that method's
@@ -525,6 +581,20 @@ in a '@Sendable' closure"*.
   `Sendable`; don't assume a simple value enum already is.
 
 ## Testing
+
+### An `async let` binding cannot be captured by `#expect(throws:)`
+
+*2026-07-27 (#391).* Awaiting an `async let` inside the `#expect(throws:)`
+closure fails to compile:
+
+```text
+error: capturing 'async let' variables is not supported
+```
+
+Use an explicit `Task {}` handle instead and await its `.value` inside the macro
+— `let caller = Task { try await store.foo() }`, then
+`await #expect(throws: TMDbError.unknown) { _ = try await caller.value }`. A
+plain `let` task handle is capturable; the `async let` binding is not.
 
 ### Integration tests need live-API env vars, and can fail transiently
 
