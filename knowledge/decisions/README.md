@@ -30,7 +30,7 @@ always fair game.
 | [0010](0010-tmdb-intelligence-product.md) | Extract on-device intelligence into a `TMDbIntelligence` product | 2026-07-06 | Accepted (in 19.0.0, unreleased) |
 | [0011](0011-duration-for-runtime.md) | Represent runtimes as `Duration`, bridging integer minutes at the wire boundary | 2026-07-24 | Accepted (in 19.0.0, unreleased) |
 | [0012](0012-structured-tmdberror-context.md) | Enrich `TMDbError` with structured context | 2026-07-24 | Accepted (in 19.0.0, unreleased) |
-| [0013](0013-cached-image-url-resolver.md) | Cache the image configuration in an actor behind `client.images` | 2026-07-27 | Accepted (targets 19.x, merged unreleased) |
+| [0013](0013-cached-image-url-resolver.md) | Cache the image configuration in an actor behind `client.images` | 2026-07-27 | Accepted (in 19.0.0, unreleased) |
 | [0014](0014-subagent-model-tiers.md) | Model-tier policy for skills and subagents | 2026-07-06 | Accepted |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when

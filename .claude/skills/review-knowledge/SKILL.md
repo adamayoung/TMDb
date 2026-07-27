@@ -54,7 +54,7 @@ Everything under `knowledge/`:
 | `decisions/` | Numbering collisions; a status still saying "targets X" after X shipped; an ADR superseded in fact with no forward link; the index out of sync. |
 | `delivery-retros.md` | Over its ~12-entry rolling window; prose whose lesson is already folded into a skill (spent — distil it). |
 | `skill-improvement-log.md` | A `deferred`/`rejected` entry whose "Reconsider when" condition has **already been met**. This is the highest-cost staleness in the base: the recurring-pattern scan reads this file as dedup memory, so a stale entry actively misinforms it. |
-| `breaking-backlog.md` | An item that shipped, or one whose "breaking" premise no longer holds. |
+| `next-major.md` | An item that shipped, or one whose "breaking" premise no longer holds. It is a **queue**: anything still listed after its major version tagged is a process failure, not a backlog item. |
 | `README.md` | The stated policy no longer matching what the files actually do. |
 
 Also in scope: **contradictions with `CLAUDE.md`**. When the base and `CLAUDE.md`
@@ -172,8 +172,9 @@ phase('Cross-examine')
 const rebuttals = await parallel(live.map((mine, i) => () => {
   const theirs = live[1 - i]
   return agent(
-    `You audited this knowledge base through the "${mine.lens}" lens. Another independent auditor worked the "${theirs.lens}" lens. Your job now is to CROSS-EXAMINE their findings — try to refute each one.\n\n` +
-    `Their findings:\n${JSON.stringify(theirs.findings, null, 2)}\n\n` +
+    `An audit of this knowledge base was run through the "${mine.lens}" lens — those findings are YOURS, reproduced below. Another independent auditor worked the "${theirs.lens}" lens. Your job now is to CROSS-EXAMINE their findings — try to refute each one.\n\n` +
+    `YOUR findings (the "${mine.lens}" lens):\n${JSON.stringify(mine.findings, null, 2)}\n\n` +
+    `THEIR findings (the "${theirs.lens}" lens), which you must assess:\n${JSON.stringify(theirs.findings, null, 2)}\n\n` +
     `For each, independently verify it against the tree and take a position: "confirm" (you checked, it holds), "refute" (you checked, it is wrong or the entry is actually fine — say what they misread), or "amend" (real, but the severity or the proposed fix is wrong — give the corrected one).\n\n` +
     `Default to REFUTE when the evidence is thin. A finding that cannot be independently reproduced from the tree should not survive into the consensus. Do not confirm out of collegiality.\n\n` +
     `${READONLY}\n\n` +

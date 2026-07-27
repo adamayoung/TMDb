@@ -2,8 +2,10 @@
 
 Implementation quirks, tooling traps, and things that needed a lookup to resolve.
 Within each section, **dated entries are newest-first** and undated evergreen
-conventions sit at the bottom. Keep each entry short and dated; link an ADR if a
-decision came out of it.
+conventions sit at the bottom. Keep each entry short, and **date every entry
+that records an observation** (an undated entry can never be aged out); link an
+ADR if a decision came out of it. Cite the **PR** that did the work, not the
+issue — see `README.md`.
 
 ## False green — the recurring failure family
 
@@ -96,8 +98,8 @@ don't "fix" it.
 **enumerated per target** (four today). Since Swift 6.4 / Xcode 27,
 `-Xswiftc -warnings-as-errors` promotes the resulting "unhandled files"
 package-load warning to an error, so a target whose catalog is missing from
-that list fails **every** `make` build/test/release target — locally and in
-CI (both pin Xcode 27) — with:
+that list fails **every** `make` build/test/release target — in CI (which pins
+`Xcode_27.0`) and locally on any Xcode 27 toolchain — with:
 
 ```text
 error: 'TMDb': found 1 file(s) which are unhandled; explicitly declare them
@@ -159,7 +161,7 @@ worktree the conductor switched into. So `make test` spawned that way builds
 run's `.build/last-*.log` lands under the **main checkout** and the worktree's
 `.build/` has none — or, when the worktree adds a *new* suite, the run reports
 **"no matching test cases found"** for a `--filter` naming suites that plainly
-exist (observed 2026-07-24, #392).
+exist (observed 2026-07-24, #397).
 
 **Fixed 2026-07-24** — the four skills now pass `Package directory: <absolute
 CWD>` in the task, and `tooling-runner` refuses to run without it, verifies
@@ -388,7 +390,7 @@ the 2026-07-28 audit.*
 
 ### An `async let` binding cannot be captured by `#expect(throws:)`
 
-*2026-07-27 (#391).* Awaiting an `async let` inside the `#expect(throws:)`
+*2026-07-27 (#401).* Awaiting an `async let` inside the `#expect(throws:)`
 closure fails to compile:
 
 ```text
@@ -518,7 +520,6 @@ the documented signature. (We initially mis-scoped the `<entity>ID` rename as
 breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
 
 ## Networking
-
 ### `URL(string:)` on Apple platforms rejects almost nothing — probe before testing a rejection
 
 *2026-07-24.* Trying to test the `TMDbAPIError.invalidURL` branch (thrown when
@@ -536,22 +537,6 @@ emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
   strings) before writing any test that depends on `URL(string:)` returning
   `nil`; the behaviour changed with the swift-foundation rewrite and intuitions
   from older Foundation are wrong.
-
-### Bearer-token clients share one credential-free `URLCache` key space
-
-- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
-  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
-  **not** in the request URL. That's the point (keys stay out of logs/proxies),
-  but it means the process-wide default `URLCache` (and the opt-in
-  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
-  partitions cache entries by credential. Two bearer clients with **different**
-  tokens in one process can therefore serve each other cache hits.
-- This is **benign today**: the affected v3 `GET` endpoints return app-level
-  public data identical across tokens, and user-specific requests carry
-  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
-  session requests entirely). It would only matter if TMDb started returning
-  token-specific data on an otherwise-public GET — worth remembering before
-  relying on per-token cache isolation.
 
 ### `URLComponents` path round-trip in `TMDbAPIClient.urlFromPath` decodes `%2F`
 
@@ -575,11 +560,27 @@ separator. That residual is path-only — `urlFromPath` force-overrides
 (no SSRF). If you ever need to neutralise `/` too, encode after the round-trip
 (set `percentEncodedPath`) rather than relying on the segment encoder alone.
 
+### Bearer-token clients share one credential-free `URLCache` key space
+
+- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
+  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
+  **not** in the request URL. That's the point (keys stay out of logs/proxies),
+  but it means the process-wide default `URLCache` (and the opt-in
+  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
+  partitions cache entries by credential. Two bearer clients with **different**
+  tokens in one process can therefore serve each other cache hits.
+- This is **benign today**: the affected v3 `GET` endpoints return app-level
+  public data identical across tokens, and user-specific requests carry
+  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
+  session requests entirely). It would only matter if TMDb started returning
+  token-specific data on an otherwise-public GET — worth remembering before
+  relying on per-token cache isolation.
+
 ## Swift concurrency
 
 ### Writing a `Task {}` body inside an actor: typed throws and the missing `await`
 
-*2026-07-27 (#391).* Two compiler rules bite together when an actor stores an
+*2026-07-27 (#401).* Two compiler rules bite together when an actor stores an
 unstructured `Task` and commits its result back to the actor (the memo in
 `APIConfigurationStore`).
 
@@ -607,7 +608,7 @@ same actor-isolated, suspension-free region as the task's completion.
 
 ### Testing a memoising actor: a caller that *joins* is invisible to the mock
 
-*2026-07-27 (#391).* When an actor de-duplicates concurrent work by sharing one
+*2026-07-27 (#401).* When an actor de-duplicates concurrent work by sharing one
 in-flight `Task`, only the **first** caller reaches the underlying mock or gate.
 Every later caller awaits the existing handle and never touches the double — so
 a `FetchGate`-style barrier cannot observe it, and a test that opens the gate and

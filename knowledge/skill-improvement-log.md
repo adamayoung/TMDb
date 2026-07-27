@@ -536,7 +536,7 @@ two fields the dedup step keys on.
   CI is green on it. Both stem from the two gates having different scopes/caches.
 - **Decision:** originally **deferred** (the fix was a repo-config change, outside
   the Phase-6 scan's remit) and **closed as applied on 2026-07-28** — the two
-  scopes are now identical: `Makefile:46–48` and `.github/workflows/ci.yml:122`
+  scopes are now identical: `Makefile:47–49` and `.github/workflows/ci.yml:122`
   both lint `README.md`, `CLAUDE.md`, `**/*.docc/**/*.md`, `.claude/**/*.md`.
   The #347 half was already mitigated in `/pr` (the `--no-cache` re-lint step).
 - **Rationale:** a green CI sitting behind a red local `make ci` repeatedly cost

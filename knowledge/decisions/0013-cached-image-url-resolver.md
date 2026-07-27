@@ -1,6 +1,6 @@
 # ADR-0013: Cache the image configuration in an actor behind `client.images`
 
-- **Status:** Accepted (targets 19.x)
+- **Status:** Accepted (in 19.0.0, unreleased)
 - **Date:** 2026-07-27
 - **Deciders:** Adam Young
 
