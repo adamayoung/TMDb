@@ -653,15 +653,23 @@ plain `let` task handle is capturable; the `async let` binding is not.
   optionals) needs a fixture covering **all** branches, plus a "without appended
   data" test asserting the optionals are `nil`. Untested branches hide bugs.
 
-### `Date(iso8601:)` test helper exists only in the `TMDbTests` target
+### `Date(iso8601:)` is not visible to `TMDbIntegrationTests`
 
-*2026-06-24.* The `Date(iso8601: "…")` convenience initialiser is defined in
-`Tests/TMDbTests/TestUtils/Date+ISO8601.swift`, which belongs to the **`TMDbTests`**
-(unit) target only — it is **not** visible to **`TMDbIntegrationTests`**. Using it
-in an integration test fails to compile with a misleading *"argument passed to call
-that takes no arguments"* (Swift resolves `Date(...)` to the argument-less
-`Date()`). The integration target has no date-from-string helper; build dates there
-with `Date(timeIntervalSince1970:)` (the existing convention, e.g. the `video.publishedAt`
-assertions). This only surfaces when the **integration** target compiles, so a
-`make test` that builds all targets — or `/integration-test` — catches it; a
-unit-only check may not.
+*2026-06-24, path updated 2026-07-28.* The `Date(iso8601: "…")` convenience
+initialiser lives in `Tests/TMDbTestFixtures/TestUtils/Date+ISO8601.swift` — the
+**shared fixtures target**, which the unit-test targets get via
+`@_exported import TMDbTestFixtures`. **`TMDbIntegrationTests` does not depend on
+it** (`Package.swift`: its dependencies are `["TMDb", "TMDbIntelligence"]`), so
+the helper is unavailable there. Using it in an integration test fails to compile
+with a misleading *"argument passed to call that takes no arguments"* (Swift
+resolves `Date(...)` to the argument-less `Date()`).
+
+The integration target has no date-from-string helper; build dates there with
+`Date(timeIntervalSince1970:)` (the existing convention, e.g. the
+`video.publishedAt` assertions). This only surfaces when the **integration**
+target compiles, so `/integration-test` catches it; a unit-only check may not.
+
+> Originally filed as "exists only in the `TMDbTests` target". The helper moved
+> to the shared fixtures target in the #395/#398 extraction; the **conclusion**
+> was unaffected, which is exactly why the stale path survived so long — the
+> advice still worked, so nobody re-read the reasoning.
