@@ -15,6 +15,7 @@ extension Tag {
 
     @Tag static var authentication: Self
     @Tag static var genre: Self
+    @Tag static var images: Self
     @Tag static var movie: Self
 
 }

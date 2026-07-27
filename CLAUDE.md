@@ -32,7 +32,7 @@ ADR for any non-obvious design decision.
 ### Service-Based Design
 
 The library uses protocol-based services with dependency injection.
-`TMDbClient` is the main facade exposing 25 service properties:
+`TMDbClient` is the main facade exposing 26 service properties:
 
 ```text
 TMDbClient (main facade)
@@ -48,6 +48,7 @@ TMDbClient (main facade)
 ├── FindService
 ├── GenreService
 ├── GuestSessionService
+├── ImageService
 ├── KeywordService
 ├── ListService
 ├── MovieService

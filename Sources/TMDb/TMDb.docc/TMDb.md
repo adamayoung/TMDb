@@ -369,6 +369,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 
 ### Image URLs
 
+- ``ImageService``
 - ``ImageSize``
 - ``PosterImageProviding``
 - ``BackdropImageProviding``

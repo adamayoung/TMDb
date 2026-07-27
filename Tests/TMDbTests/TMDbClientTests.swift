@@ -66,6 +66,13 @@ struct TMDbClientTests {
         #expect(client.discover is TMDbDiscoverService)
     }
 
+    @Test("init with API key creates image service")
+    func initWithAPIKeyCreatesImageService() {
+        let client = TMDbClient(apiKey: apiKey)
+
+        #expect(client.images is TMDbImageService)
+    }
+
     @Test("init with API key creates genre service")
     func initWithAPIKeyCreatesGenreService() {
         let client = TMDbClient(apiKey: apiKey)

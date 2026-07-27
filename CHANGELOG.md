@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `ImageService`, exposed as `TMDbClient.images`, resolving a model's image
+  path to a fully qualified URL in one call:
+  `try await client.images.posterURL(for: movie.posterPath, size: .width(500))`.
+  It fetches TMDb's image configuration on first use and caches it for the
+  client's lifetime, so callers no longer have to fetch `APIConfiguration` and
+  manage that object themselves. The configuration is fetched at most once
+  however many callers ask concurrently; `preload()` warms it at launch and
+  `refresh()` re-fetches it, replacing the cached value only once a fresh one
+  arrives (so a failed refresh keeps the previous one). A `nil` image path
+  returns `nil` without making a request. `MockImageService` and
+  `ImagesConfiguration.sample` ship in `TMDbTesting`.
 - `TMDbStatusCode`, an enum modelling TMDb's documented numeric `status_code`
   values (with an `.unknown(Int)` fallback for codes not yet modelled).
 - `TMDbErrorContext`, carrying the HTTP status code, TMDb `TMDbStatusCode`,
