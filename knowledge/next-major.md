@@ -14,36 +14,31 @@ CHANGELOG records it) or is rejected outright (record that in
 `skill-improvement-log.md`).
 
 > **Status as of 2026-07-28: 19.0.0 is assembled but *not tagged*** — the
-> newest tag is `18.2.0` while `CHANGELOG.md` already carries a
-> `[19.0.0] - 2026-07-24` section. Everything below is therefore **still
-> eligible for 19.0.0**, not deferred to 20.0.0. That call is the
-> maintainer's; this note exists so it is made deliberately rather than by
-> the window closing unnoticed a second time.
+> newest tag is `18.2.0` while `CHANGELOG.md` already carries a `[19.0.0]`
+> section. Everything below is therefore **still eligible for 19.0.0**, not
+> deferred to 20.0.0. That call is the maintainer's; this note exists so it is
+> made deliberately rather than by the window closing unnoticed a second time.
+>
+> **First use of this file worked:** the `Company.logoPath` fix shipped into the
+> 19.0.0 window on 2026-07-28 because this queue was read, one day after it was
+> written. Remove the status note once 19.0.0 is tagged.
 
 ## Backlog
 
-### Make `Company.logoPath` optional (`URL?`)
+### Align the `Company`/`Network` model shapes deliberately — *partially shipped*
 
-- **What:** `Company.logoPath` is `public let logoPath: URL` with a required
-  decode (`Sources/TMDb/Domain/Models/Company.swift:45,126`), so an absent,
-  `null`, or empty `logo_path` makes the **whole `Company` decode throw**.
-  TMDb does return logo-less production companies — a live decode-failure
-  risk, not a theoretical one. Fix: `URL?` with a guarded decode, matching
-  `Network.logoPath`. Note the asymmetry in the same decoder: `homepageURL`
-  *is* guarded (empty string → `nil`); only `logoPath` is unguarded.
-- **Why it waits:** property type + `init` parameter change — breaking.
-- **Source:** `tmdb-api-notes.md` → *`Company.logoPath` is a required decode*
-  (2026-06-30); `skill-improvement-log.md` → *Align `Network` to `Company`*
-  (rejected 2026-06-30).
-
-### Align the `Company`/`Network` model shapes deliberately
-
-- **What:** decide the canonical shape for the shared homepage-URL /
-  logo-path fields and apply it to both models (including whether
-  `Network.homepage` takes the `homepageURL` name). Do this together with the
-  `logoPath` change above — the 2026-06-30 audit rejected aligning them in
-  the *wrong* (non-optional) direction; the right direction is breaking.
-- **Why it waits:** public property renames — breaking.
+- **Shipped in 19.0.0 (2026-07-28):** the *nullability* half. `Company.logoPath`
+  → `URL?`, `Company.originCountry` → `String?`, `Company.Parent.logoPath` →
+  `URL?`, bringing `Company` into line with `Network`'s optionality. This also
+  closed the separate "Make `Company.logoPath` optional" entry, which is
+  removed. Plan review caught that `originCountry` throws on exactly the same
+  records, so shipping `logoPath` alone would not have fixed the bug.
+- **Consciously re-deferred:** the *naming* half — renaming `Network.homepage`
+  to `homepageURL` for parity with `Company.homepageURL`. Deliberately left out
+  of 19.0.0: it is a pure rename with no correctness benefit, and bundling it
+  would have widened a bug-fix PR into a cosmetic breaking change. It buys
+  nothing that waiting does not.
+- **Why it still waits:** public property rename — breaking.
 - **Source:** `skill-improvement-log.md` → *Align `Network` to `Company`*
   (rejected 2026-06-30; "Reconsider when: a major-version bump…").
 

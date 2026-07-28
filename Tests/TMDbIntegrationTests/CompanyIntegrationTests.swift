@@ -33,6 +33,33 @@ struct CompanyIntegrationTests {
         #expect(company.name == "LuckyChap Entertainment")
     }
 
+    @Test("details for a company with no logo")
+    func detailsForCompanyWithoutLogo() async throws {
+        // Time Warner — TMDb returns null for both logo_path and origin_country.
+        // Asserting only that the decode succeeds: whether this company has a
+        // logo is contributor-editable live data, so asserting `logoPath == nil`
+        // would go red on a data edit rather than on a regression. The nil
+        // mapping itself is locked by the fixture-driven unit tests.
+        let companyID = 128
+
+        let company = try await companyService.details(forCompany: companyID)
+
+        #expect(company.id == companyID)
+        #expect(company.name == "Time Warner")
+    }
+
+    @Test("details for a company whose parent has no logo")
+    func detailsForCompanyWhoseParentHasNoLogo() async throws {
+        // Paramount Pictures — its parent_company (Viacom International) has a
+        // null logo_path, which previously made the whole Company decode throw.
+        let companyID = 4
+
+        let company = try await companyService.details(forCompany: companyID)
+
+        #expect(company.id == companyID)
+        #expect(company.parentCompany != nil)
+    }
+
     @Test("alternativeNames")
     func alternativeNames() async throws {
         let companyID = 82968

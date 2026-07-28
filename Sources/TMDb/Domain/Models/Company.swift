@@ -40,14 +40,19 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Company's logo path.
     ///
+    /// `nil` when the company has no logo — TMDb returns a `null` `logo_path`
+    /// for many production companies.
+    ///
     /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
-    public let logoPath: URL
+    public let logoPath: URL?
 
     ///
     /// Origin country.
     ///
-    public let originCountry: String
+    /// `nil` when TMDb has no origin country recorded for the company.
+    ///
+    public let originCountry: String?
 
     ///
     /// Parent company.
@@ -73,8 +78,8 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
         description: String,
         headquarters: String,
         homepageURL: URL? = nil,
-        logoPath: URL,
-        originCountry: String,
+        logoPath: URL? = nil,
+        originCountry: String? = nil,
         parentCompany: Parent? = nil
     ) {
         self.id = id
@@ -123,8 +128,8 @@ extension Company {
         self.description = try container.decode(String.self, forKey: .description)
         self.headquarters = try container.decode(String.self, forKey: .headquarters)
         self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
-        self.logoPath = try container.decode(URL.self, forKey: .logoPath)
-        self.originCountry = try container.decode(String.self, forKey: .originCountry)
+        self.logoPath = try container.decodeNonEmptyURLIfPresent(forKey: .logoPath)
+        self.originCountry = try container.decodeIfPresent(String.self, forKey: .originCountry)
         self.parentCompany = try container.decodeIfPresent(Parent.self, forKey: .parentCompany)
     }
 
@@ -150,9 +155,12 @@ public extension Company {
         ///
         /// Company's logo path.
         ///
+        /// `nil` when the parent company has no logo — TMDb returns a `null`
+        /// `logo_path` for many production companies.
+        ///
         /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
         ///
-        public let logoPath: URL
+        public let logoPath: URL?
 
         ///
         /// Creates a parent company object.
@@ -165,7 +173,7 @@ public extension Company {
         public init(
             id: Company.ID,
             name: String,
-            logoPath: URL
+            logoPath: URL? = nil
         ) {
             self.id = id
             self.name = name

@@ -1,0 +1,14 @@
+{
+    "description": "",
+    "headquarters": "Hollywood, California",
+    "homepage": "https://www.paramountpictures.com/movies",
+    "id": 4,
+    "logo_path": "/jay6WcMgagAklUt7i9Euwj1pzTF.png",
+    "name": "Paramount Pictures",
+    "origin_country": "US",
+    "parent_company": {
+        "name": "Viacom International",
+        "id": 5308,
+        "logo_path": null
+    }
+}
