@@ -84,13 +84,28 @@ struct CompanyTests {
     }
 
     @Test(
+        "JSON decoding of Company when parent company's logo path is an empty string",
+        .tags(.decoding)
+    )
+    func decodeCompanyWhenParentCompanyLogoPathIsEmptyString() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Company.self,
+            fromResource: "company-empty-parent-logo"
+        )
+
+        let parentCompany = try #require(result.parentCompany)
+        #expect(parentCompany.logoPath == nil)
+    }
+
+    @Test(
         "JSON encoding of Company round-trips",
         .tags(.encoding),
         arguments: [
             "company",
             "company-null-logo",
             "company-null-parent-logo",
-            "company-empty-logo"
+            "company-empty-logo",
+            "company-empty-parent-logo"
         ]
     )
     func encodeCompanyRoundTrips(resource: String) throws {

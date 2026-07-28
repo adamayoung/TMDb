@@ -166,10 +166,13 @@ guessed:
   `logo_path` and `origin_country`. Don't assume sparse records are edge cases.
 - **The two null-bearing fields are exactly the two that were modelled as
   required**, so `details(forCompany:)` threw for those companies until 19.0.0.
-- The `""`/`null` split is the useful part: `homepage` needs the
-  empty-string→nil guard (`decodeNonEmptyURLIfPresent`) because it *is* `""` 23
-  times; `logo_path` never is, so a plain optional decode suffices for it. Guard
-  where the API actually produces the value, not everywhere symmetrically.
+- The `""`/`null` split tells you where a guard is *load-bearing*: `homepage`
+  needs `decodeNonEmptyURLIfPresent` because it genuinely *is* `""` 23 times;
+  for `logo_path` the guard is belt-and-braces, since the API never sent one.
+  **Both `Company.logoPath` and `Company.Parent.logoPath` guard it anyway** —
+  see the gotcha *Guard consistently within a type*: an unobserved value is a
+  reason to rank the risk low, not a reason to leave one property of a type
+  behaving differently from its neighbour.
 
 ### Verify optionality against real responses, not assumptions
 

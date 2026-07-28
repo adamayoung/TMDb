@@ -401,6 +401,32 @@ the 2026-07-28 audit.*
 
 ## Testing
 
+### Guard consistently within a type, even for a value the API never sends
+
+*2026-07-28 (#404).* Making `Company.logoPath` optional, the question was whether
+the nested `Company.Parent.logoPath` needed the same empty-string guard. The
+evidence said no: a 54-company sample found `logo_path` was `""` **zero** times,
+and no sibling logo model (`ProductionCompany`, `WatchProvider`, `Network`)
+guards it. So `Company` got `decodeNonEmptyURLIfPresent` (free — it already had
+a custom decoder) and `Parent` was left synthesized.
+
+That was the wrong cut. It produced an **asymmetry inside a single type**:
+`Company.logoPath` mapped `""` → `nil` while `Company.Parent.logoPath` still
+threw `DecodingError.dataCorrupted: Invalid URL string` on it — the very failure
+the change existed to remove, surviving one level down. The independent rubric
+grader caught it; three plan critics had split 2–1 on it beforehand.
+
+- **"Matches the siblings" and "consistent within the type" can conflict.**
+  When they do, prefer *within the type* — a reader of `Company.swift` sees both
+  properties at once and cannot explain why they differ, whereas the
+  cross-model difference is invisible in practice.
+- **"The API never sends it" ranks the risk, it doesn't close the case.** It is
+  a reason not to build elaborate machinery; it is not a reason to leave two
+  neighbouring properties behaving differently for the same input.
+- A nested type with synthesized `Decodable` needs its **own** `CodingKeys` +
+  `init(from:)` to use the helper — roughly 15 lines. That was the real cost
+  being weighed, and it was worth paying.
+
 ### Sweeping for a decode bug: sweep the *failure class*, not the property name
 
 *2026-07-28 (#404).* Fixing `Company.logoPath`'s required decode, a
