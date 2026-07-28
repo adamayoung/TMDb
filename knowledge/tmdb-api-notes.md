@@ -147,6 +147,30 @@ status code alone proves nothing.
 
 ## Field nullability
 
+### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
+
+*2026-07-28, `/3/company/{company_id}`, 54-company sample.* Measured, not
+guessed:
+
+| field | `null` | `""` | notes |
+| --- | --- | --- | --- |
+| `logo_path` | **9** (17%) | 0 | never an empty string |
+| `origin_country` | **5** (9%) | 0 | |
+| `parent_company.logo_path` | **2 of 8** | 0 | parents are sparse too |
+| `description` | 0 | 53 | empty, never null |
+| `headquarters` | 0 | 12 | empty, never null |
+| `homepage` | 0 | 23 | empty, never null |
+
+- The nulls hit **prominent** companies, not obscure ones — Time Warner (128)
+  and Viacom International (5308, Paramount's parent) return `null` for *both*
+  `logo_path` and `origin_country`. Don't assume sparse records are edge cases.
+- **The two null-bearing fields are exactly the two that were modelled as
+  required**, so `details(forCompany:)` threw for those companies until 19.0.0.
+- The `""`/`null` split is the useful part: `homepage` needs the
+  empty-string→nil guard (`decodeNonEmptyURLIfPresent`) because it *is* `""` 23
+  times; `logo_path` never is, so a plain optional decode suffices for it. Guard
+  where the API actually produces the value, not everywhere symmetrically.
+
 ### Verify optionality against real responses, not assumptions
 
 - A property should be optional (`?`) only if the API can return `null` or omit
