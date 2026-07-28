@@ -30,6 +30,35 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-28 — Grade the rubric *before* capturing knowledge (#404) · applied
+
+- **Pattern:** a **single** occurrence, logged deliberately — the third time
+  this log has broken its own ≥2-recurrence bar (cf. the #398 release build and
+  the #357 adversarial-drop rule). In #404 the capture phase ran first and
+  committed a `tmdb-api-notes.md` entry whose whole argument was that
+  `Company.Parent` did **not** need an empty-string guard. The next phase's
+  independent grader then failed AC6 precisely because `Company.Parent` threw
+  on an empty string, the design changed, and the just-committed entry had to
+  be rewritten inside the same delivery. Capture records what was decided;
+  running it before the last gate that can *change* the decision guarantees the
+  occasional rewrite — and risks shipping a knowledge entry that contradicts
+  the code it describes, which is the exact decay #403 had just finished
+  cleaning out of the base.
+- **Decision:** **applied.** Swapped the two phases in
+  `.claude/skills/deliver/SKILL.md`: **Phase 6 is now Rubric verification** and
+  **Phase 7 is Capture learnings**, with the header diagram, the four
+  cross-references, and `references/auto-and-async.md` updated to match. Phase 7
+  gains one sentence stating *why* it runs after the gate. Ordering is the only
+  change — neither phase's content or contract is otherwise altered.
+- **Rationale:** free to do, and it removes a whole class of rework rather than
+  the one instance. Capture is the pipeline's memory; it should observe the
+  final state of the delivery, not an intermediate one. Waiting for a second
+  occurrence would mean knowingly shipping another self-contradicting entry to
+  earn evidence already in hand.
+- **Reconsider when:** n/a (applied). Note for readers of older entries: retros
+  and log entries before 2026-07-28 refer to capture as "Phase 6" and grading as
+  "Phase 7" — that was the numbering at the time.
+
 ### 2026-07-25 — `/deliver` Phase 3 must run a release build before declaring done (#398) · applied
 
 - **Pattern:** a **single** occurrence, not a recurrence — logged deliberately.
