@@ -1,0 +1,11 @@
+{
+    "description": "",
+    "headquarters": "",
+    "homepage": "",
+    "id": 128,
+    "name": "Time Warner",
+    "parent_company": {
+        "name": "Viacom International",
+        "id": 5308
+    }
+}

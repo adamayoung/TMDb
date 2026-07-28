@@ -98,6 +98,24 @@ struct CompanyTests {
     }
 
     @Test(
+        "JSON decoding of Company when the logo path keys are absent",
+        .tags(.decoding)
+    )
+    func decodeCompanyWhenLogoPathKeysAreAbsent() throws {
+        // TMDb always sends these keys, so this covers the decoder's
+        // key-absent branch defensively rather than a shape seen in the wild.
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Company.self,
+            fromResource: "company-absent-logo"
+        )
+
+        #expect(result.logoPath == nil)
+        #expect(result.originCountry == nil)
+        let parentCompany = try #require(result.parentCompany)
+        #expect(parentCompany.logoPath == nil)
+    }
+
+    @Test(
         "JSON encoding of Company round-trips",
         .tags(.encoding),
         arguments: [
@@ -105,7 +123,8 @@ struct CompanyTests {
             "company-null-logo",
             "company-null-parent-logo",
             "company-empty-logo",
-            "company-empty-parent-logo"
+            "company-empty-parent-logo",
+            "company-absent-logo"
         ]
     )
     func encodeCompanyRoundTrips(resource: String) throws {

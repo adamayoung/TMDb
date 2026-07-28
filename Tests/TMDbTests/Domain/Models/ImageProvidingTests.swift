@@ -105,6 +105,15 @@ struct ImageProvidingTests {
         #expect(logoURL == URL(string: "https://image.tmdb.org/t/p/w154/logo.jpg"))
     }
 
+    @Test("Company.Parent logo URL is nil when the parent has no logo")
+    func companyParentLogoURLWhenLogoPathIsNil() {
+        let parent = Company.Parent(id: 1, name: "Parent")
+
+        let logoURL = parent.logoURL(using: configuration, size: .width(154))
+
+        #expect(logoURL == nil)
+    }
+
     @Test("TVEpisode still URL")
     func tvEpisodeStillURL() throws {
         let stillPath = try #require(URL(string: "/still.jpg"))
