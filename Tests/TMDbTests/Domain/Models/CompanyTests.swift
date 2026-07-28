@@ -83,19 +83,26 @@ struct CompanyTests {
         #expect(parentCompany.logoPath == nil)
     }
 
-    @Test("JSON encoding of Company round-trips", .tags(.decoding))
-    func encodeCompanyRoundTrips() throws {
-        for resource in ["company", "company-null-logo", "company-null-parent-logo"] {
-            let decoded = try JSONDecoder.theMovieDatabase.decode(
-                Company.self,
-                fromResource: resource
-            )
+    @Test(
+        "JSON encoding of Company round-trips",
+        .tags(.encoding),
+        arguments: [
+            "company",
+            "company-null-logo",
+            "company-null-parent-logo",
+            "company-empty-logo"
+        ]
+    )
+    func encodeCompanyRoundTrips(resource: String) throws {
+        let decoded = try JSONDecoder.theMovieDatabase.decode(
+            Company.self,
+            fromResource: resource
+        )
 
-            let data = try JSONEncoder.theMovieDatabase.encode(decoded)
-            let roundTripped = try JSONDecoder.theMovieDatabase.decode(Company.self, from: data)
+        let data = try JSONEncoder.theMovieDatabase.encode(decoded)
+        let roundTripped = try JSONDecoder.theMovieDatabase.decode(Company.self, from: data)
 
-            #expect(roundTripped == decoded, "round-trip changed \(resource)")
-        }
+        #expect(roundTripped == decoded)
     }
 
 }
