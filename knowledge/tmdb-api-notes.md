@@ -147,29 +147,39 @@ status code alone proves nothing.
 
 ## Field nullability
 
+### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
+
+*2026-07-28, `/3/company/{company_id}`, 54-company sample.* Measured, not
+guessed:
+
+| field | `null` | `""` | notes |
+| --- | --- | --- | --- |
+| `logo_path` | **9** (17%) | 0 | never an empty string |
+| `origin_country` | **5** (9%) | 0 | |
+| `parent_company.logo_path` | **2 of 8** | 0 | parents are sparse too |
+| `description` | 0 | 53 | empty, never null |
+| `headquarters` | 0 | 12 | empty, never null |
+| `homepage` | 0 | 23 | empty, never null |
+
+- The nulls hit **prominent** companies, not obscure ones — Time Warner (128)
+  and Viacom International (5308, Paramount's parent) return `null` for *both*
+  `logo_path` and `origin_country`. Don't assume sparse records are edge cases.
+- **The two null-bearing fields are exactly the two that were modelled as
+  required**, so `details(forCompany:)` threw for those companies until 19.0.0.
+- The `""`/`null` split tells you where a guard is *load-bearing*: `homepage`
+  needs `decodeNonEmptyURLIfPresent` because it genuinely *is* `""` 23 times;
+  for `logo_path` the guard is belt-and-braces, since the API never sent one.
+  **Both `Company.logoPath` and `Company.Parent.logoPath` guard it anyway** —
+  see the gotcha *Guard consistently within a type*: an unobserved value is a
+  reason to rank the risk low, not a reason to leave one property of a type
+  behaving differently from its neighbour.
+
 ### Verify optionality against real responses, not assumptions
 
 - A property should be optional (`?`) only if the API can return `null` or omit
   it. Confirm against a live response via `mcp__tmdb__*` and the OpenAPI schema
   before deciding — the docs aren't always accurate about which fields are
   guaranteed.
-
-### `Company.logoPath` is a required decode — latent throw if `logo_path` is absent
-
-*2026-06-30, `/3/company/{company_id}`.* `Company.logoPath` is non-optional
-(`public let logoPath: URL`) and decoded with a **required**
-`try container.decode(URL.self, forKey: .logoPath)`
-(`Sources/TMDb/Domain/Models/Company.swift`), so an absent, `null`, or empty
-`logo_path` makes the **whole `Company` decode throw**. TMDb does return
-logo-less production companies, so this is a real latent failure, not theoretical.
-Note the asymmetry in the *same* decoder: `homepageURL` **is** guarded (empty
-string → `nil`, with the comment "URL decoding will fail with an empty string"),
-and the sibling `Network.logoPath` is correctly `URL?` — only `Company.logoPath`
-is unguarded. **Fixing it means making `logoPath` optional (`URL?`), a breaking
-public-API change** (property type + `init` parameter), so it is deferred to a
-deliberate major version rather than patched ad hoc. Until then, treat a company
-with no logo as a known decode-failure risk. (Surfaced in the 2026-06-30
-standardization audit.)
 
 ## Changes endpoints
 

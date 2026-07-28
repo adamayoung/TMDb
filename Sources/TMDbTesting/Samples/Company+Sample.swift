@@ -18,8 +18,7 @@ public extension Company {
             description: "",
             headquarters: "San Francisco, California",
             homepageURL: URL(string: "https://www.lucasfilm.com"),
-            logoPath: URL(string: "/tlVSws0RvvtPBwViUyOFAO0vcQS.png")
-                ?? URL(fileURLWithPath: "/"),
+            logoPath: URL(string: "/tlVSws0RvvtPBwViUyOFAO0vcQS.png"),
             originCountry: "US",
             parentCompany: nil
         )

@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      knowledge/next-major.md first — it lists approved breaking changes
      waiting for exactly this bump. Ship them or consciously re-defer. -->
 
-## [19.0.0] - 2026-07-24
+## [19.0.0] - 2026-07-28
 
 ### Added
+
+- `Company` and `Company.Parent` now conform to `LogoImageProviding`, so
+  `logoURL(using:size:)` works on them as it already does on `Network`,
+  `ProductionCompany` and `WatchProvider`. Previously blocked only by
+  `logoPath` being non-optional.
 
 - `ImageService`, exposed as `TMDbClient.images`, resolving a model's image
   path to a fully qualified URL in one call:
@@ -34,6 +39,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.unknown`.
 
 ### Changed
+
+- **Breaking:** `Company.logoPath` is now `URL?` and `Company.originCountry` is
+  now `String?`, and `Company.Parent.logoPath` is now `URL?`. TMDb returns
+  `null` for these fields on many production companies (roughly 1 in 6 sampled
+  for `logo_path`), which previously made the **entire `Company` decode throw** —
+  `details(forCompany:)` failed outright for companies such as Time Warner
+  (id 128) and Paramount Pictures (id 4, whose parent company has no logo).
+  Migration: unwrap before use, e.g. `company.logoPath.map { ... }` or
+  `if let logoPath = company.logoPath`. Note the encoded JSON now omits
+  `logo_path` / `origin_country` when they are `nil`, rather than always
+  emitting them.
 
 - **Breaking:** `TMDbError`'s `badRequest`, `unauthorised`, `forbidden`,
   `notFound`, `tooManyRequests` and `serverError` cases now carry a

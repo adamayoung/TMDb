@@ -40,14 +40,19 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Company's logo path.
     ///
+    /// `nil` when the company has no logo — TMDb returns a `null` `logo_path`
+    /// for many production companies.
+    ///
     /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
     ///
-    public let logoPath: URL
+    public let logoPath: URL?
 
     ///
     /// Origin country.
     ///
-    public let originCountry: String
+    /// `nil` when TMDb has no origin country recorded for the company.
+    ///
+    public let originCountry: String?
 
     ///
     /// Parent company.
@@ -73,8 +78,8 @@ public struct Company: Identifiable, Codable, Equatable, Hashable, Sendable {
         description: String,
         headquarters: String,
         homepageURL: URL? = nil,
-        logoPath: URL,
-        originCountry: String,
+        logoPath: URL? = nil,
+        originCountry: String? = nil,
         parentCompany: Parent? = nil
     ) {
         self.id = id
@@ -123,8 +128,8 @@ extension Company {
         self.description = try container.decode(String.self, forKey: .description)
         self.headquarters = try container.decode(String.self, forKey: .headquarters)
         self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
-        self.logoPath = try container.decode(URL.self, forKey: .logoPath)
-        self.originCountry = try container.decode(String.self, forKey: .originCountry)
+        self.logoPath = try container.decodeNonEmptyURLIfPresent(forKey: .logoPath)
+        self.originCountry = try container.decodeIfPresent(String.self, forKey: .originCountry)
         self.parentCompany = try container.decodeIfPresent(Parent.self, forKey: .parentCompany)
     }
 
@@ -150,9 +155,12 @@ public extension Company {
         ///
         /// Company's logo path.
         ///
+        /// `nil` when the parent company has no logo — TMDb returns a `null`
+        /// `logo_path` for many production companies.
+        ///
         /// To generate a full URL see <doc:/TMDb/GeneratingImageURLs>.
         ///
-        public let logoPath: URL
+        public let logoPath: URL?
 
         ///
         /// Creates a parent company object.
@@ -165,13 +173,44 @@ public extension Company {
         public init(
             id: Company.ID,
             name: String,
-            logoPath: URL
+            logoPath: URL? = nil
         ) {
             self.id = id
             self.name = name
             self.logoPath = logoPath
         }
 
+    }
+
+}
+
+extension Company.Parent {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case logoPath
+    }
+
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
+    /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
+    /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
+    ///
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Company.ID.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.logoPath = try container.decodeNonEmptyURLIfPresent(forKey: .logoPath)
     }
 
 }

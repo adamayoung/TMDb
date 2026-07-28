@@ -17,9 +17,8 @@ package extension Company {
         description: String = "Some description",
         headquarters: String = "San Francisco, California",
         homepageURL: URL? = URL(string: "https://www.lucasfilm.com"),
-        // swiftlint:disable:next force_unwrapping
-        logoPath: URL = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!,
-        originCountry: String = "US",
+        logoPath: URL? = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png"),
+        originCountry: String? = "US",
         parentCompany: Company.Parent? = nil
     ) -> Company {
         Company(
@@ -35,8 +34,7 @@ package extension Company {
     }
 
     static var lucasfilm: Company {
-        // swiftlint:disable:next force_unwrapping
-        let logoPath = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")!
+        let logoPath = URL(string: "/o86DbpburjxrqAzEDhXZcyE8pDb.png")
         return Company.mock(
             id: 1,
             name: "Lucasfilm Ltd.",

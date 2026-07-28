@@ -48,6 +48,19 @@ retired; the family heading stays.
 
 ## Tooling
 
+### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
+
+*2026-07-28 (#404).* Making a property optional let two
+`URL(string: …)!` force-unwraps in `Company+Mocks.swift` become plain optionals.
+Each was preceded by `// swiftlint:disable:next force_unwrapping`; with the `!`
+gone those comments suppress nothing, and `make ci` runs `swiftlint --strict`,
+under which **`superfluous_disable_command` is an error**. The build and the
+whole test suite stay green — this fails only at the lint gate.
+
+**When you delete a `!` or a `try!`, delete its `disable` comment in the same
+edit**, and grep the file for orphans (`grep -n "disable:next" <file>`). Same
+applies in reverse to `file_length` / `type_body_length` disables after a split.
+
 ### Docs builds need their own scratch path — sharing one invalidates the other
 
 *2026-07-27 (#401, fixed in #402).* `Package.swift` branches on `SWIFTCI_DOCC`:
@@ -388,6 +401,56 @@ the 2026-07-28 audit.*
 
 ## Testing
 
+### Guard consistently within a type, even for a value the API never sends
+
+*2026-07-28 (#404).* Making `Company.logoPath` optional, the question was whether
+the nested `Company.Parent.logoPath` needed the same empty-string guard. The
+evidence said no: a 54-company sample found `logo_path` was `""` **zero** times,
+and no sibling logo model (`ProductionCompany`, `WatchProvider`, `Network`)
+guards it. So `Company` got `decodeNonEmptyURLIfPresent` (free — it already had
+a custom decoder) and `Parent` was left synthesized.
+
+That was the wrong cut. It produced an **asymmetry inside a single type**:
+`Company.logoPath` mapped `""` → `nil` while `Company.Parent.logoPath` still
+threw `DecodingError.dataCorrupted: Invalid URL string` on it — the very failure
+the change existed to remove, surviving one level down. The independent rubric
+grader caught it; three plan critics had split 2–1 on it beforehand.
+
+- **"Matches the siblings" and "consistent within the type" can conflict.**
+  When they do, prefer *within the type* — a reader of `Company.swift` sees both
+  properties at once and cannot explain why they differ, whereas the
+  cross-model difference is invisible in practice.
+- **"The API never sends it" ranks the risk, it doesn't close the case.** It is
+  a reason not to build elaborate machinery; it is not a reason to leave two
+  neighbouring properties behaving differently for the same input.
+- A nested type with synthesized `Decodable` needs its **own** `CodingKeys` +
+  `init(from:)` to use the helper — roughly 15 lines. That was the real cost
+  being weighed, and it was worth paying.
+
+### Sweeping for a decode bug: sweep the *failure class*, not the property name
+
+*2026-07-28 (#404).* Fixing `Company.logoPath`'s required decode, a
+type-driven sweep for `let logoPath: URL` found two sites — the property and
+the nested `Company.Parent`. It felt complete. It wasn't: `Company.originCountry`
+is the *same bug* in a different property, and the very records that return
+`logo_path: null` also return `origin_country: null` — so the fix would have
+shipped with its own integration test still failing.
+
+- **The sweep key was wrong.** "Every `logoPath: URL`" is a *name* sweep. The
+  real class is **"every required decode on a model whose API returns sparse
+  records"** — enumerate the model's `try container.decode(` lines and check
+  each against real responses, rather than grepping the field you already know
+  about.
+- **Nested types hide instances.** `Company.Parent` has no `init(from:)` of its
+  own, so its required decode is *synthesized* and invisible to a grep for
+  `container.decode`. A file with one custom decoder can still have several
+  decoding types — count the types, not the decoders.
+- **Sample the population, don't spot-check.** One `curl` of an affected record
+  showed `logo_path: null` and stopped the investigation there. Sampling 54
+  companies took a minute and produced the whole field/nullability matrix (see
+  `tmdb-api-notes.md`) — which is what proved `origin_country` was in scope and
+  `description`/`headquarters` were not.
+
 ### An `async let` binding cannot be captured by `#expect(throws:)`
 
 *2026-07-27 (#401).* Awaiting an `async let` inside the `#expect(throws:)`
@@ -520,6 +583,7 @@ the documented signature. (We initially mis-scoped the `<entity>ID` rename as
 breaking; it isn't.) See [ADR-0004](decisions/0004-service-parameter-name-convention.md).
 
 ## Networking
+
 ### `URL(string:)` on Apple platforms rejects almost nothing — probe before testing a rejection
 
 *2026-07-24.* Trying to test the `TMDbAPIError.invalidURL` branch (thrown when

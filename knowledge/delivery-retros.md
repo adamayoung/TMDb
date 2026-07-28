@@ -14,6 +14,56 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-28 — 🐛 Company logo path & origin country optional (#404) · full
+
+- **Phases / skills:** 0–8 pre-PR; full weight (breaking public API +
+  `Decodable`). `consulted:` next-major.md (the source), tmdb-api-notes
+  *Company.logoPath required decode*, gotchas *False green*. `/review-plan`
+  (3 Opus critics) → **1 blocker + 9 findings**. `/implement-plan` inline,
+  test-first. `/review-changes` 5-dimension fan-out + adversarial verify →
+  **0 Critical/High/Medium, 2 Low**, both applied, 0 dropped by verification.
+  `/security-review` → 0 findings ≥ conf-8. Independent grader → **6/7 ACs,
+  AC6 not met**, fixed and re-graded to met.
+- **Worked — the queue fired on its first real use.** `next-major.md` was
+  written on 2026-07-27 and consulted on 2026-07-28; the fix reached the
+  still-untagged 19.0.0 window instead of waiting for 20.0.0. The whole point
+  of that file, validated one day later.
+- **Worked — two independent checks each caught something the other didn't.**
+  My type-driven sweep found `Company.Parent.logoPath` (a second instance,
+  invisible because `Parent`'s decode is synthesized). The plan critics found
+  the **blocker**: `Company.originCountry` is the same bug on the same records,
+  so shipping `logoPath` alone would have left Time Warner throwing — and my
+  own AC1 integration test failing. Verified independently before accepting:
+  5 of 54 sampled companies.
+- **Worked — sampling beat spot-checking.** One `curl` showed
+  `logo_path: null` and nearly ended the investigation. Sampling 54 companies
+  took a minute and produced the field/nullability matrix that proved
+  `origin_country` was in scope and `description`/`headquarters` were not —
+  the difference between a correct fix and a subset.
+- **Friction — I adjudicated a 2–1 critic split wrongly, and the grader caught
+  it.** Two critics wanted `Company.Parent` to guard empty strings; one called
+  it speculative. I sided with the one, citing 0/54 observed empty strings.
+  That produced an asymmetry *inside one type* — `Company.logoPath` mapped
+  `""` → `nil` while `Company.Parent.logoPath` still threw — i.e. the exact
+  bug this delivery exists to remove, one level down. **Lesson: "matches the
+  siblings" and "consistent within the type" can conflict, and within-the-type
+  wins;** an unobserved value ranks the risk, it doesn't close the case.
+- **Friction — I nearly shipped a knowledge entry contradicting my own code.**
+  The api-note written in Phase 6 argued *against* guarding `Parent`; the
+  Phase 7 fix reversed that, and the note had to be rewritten in the same
+  delivery. Capture-before-grade is the wrong order when grading can still
+  change the design.
+- **Deviations:** (a) scope grew from one field to three plus a
+  `LogoImageProviding` conformance — the blocker forced two, and all three
+  critics independently asked for the conformance (it was blocked *only* by
+  the non-optional type). (b) Fixtures for the empty/absent cases are
+  hand-built, not live captures: TMDb always sends these keys, so those
+  decoder branches have no real-world sample. Flagged in-test.
+- **One improvement:** **`/deliver` should run the rubric grader before
+  `/capture-knowledge`, not after.** Phase 7 changed the design this run, which
+  invalidated a Phase 6 entry that had already been committed. Ordering
+  capture after grading costs nothing and removes the rewrite.
+
 ## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (#401) · full
 
 - **Phases / skills:** 0–8 pre-PR; full weight (new public service + actor,
@@ -423,42 +473,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   interruptions actually bite" condition now holds), or have `/deliver` re-create
   the ledger after an `EnterWorktree`/reconnect.
 
-## 2026-06-25 — 🔧 Use the GitHub MCP instead of the gh CLI in the skills (#366) · lite
-
-- **Phases / skills:** phases 0–6; `pr, watch-pr` (both dogfooded the new MCP path).
-  Skipped `/review-plan` as a *skill* (the plan already got a 3-critic adversarial
-  pass earlier in the session, pre-`/deliver`); skipped `/implement-plan` (markdown
-  only — no TDD list); skipped code review (no Swift) and the automated
-  `/security-review` (diff is 100% markdown — `.md` is excluded; the only
-  security-relevant artifact, the `mcp__github__*` permission, is gitignored and out
-  of the PR — reviewed by reasoning instead, parity with `Bash(gh:*)`, ADR-0009).
-- **Worked:** the migration was **dogfooded end-to-end** — PR opened via
-  `mcp__github__create_pull_request`, readiness verified positively via
-  `get`/`get_check_runs`/`get_review_comments`, and the blocking wait used the
-  *retained* `gh pr checks --watch`. The pre-implementation 3-critic plan review paid
-  off: it caught two **BLOCKERs** before any edit — the review-reply mapping gap
-  (`add_reply_to_pull_request_comment` needs a REST comment id `get_review_comments`
-  doesn't expose → reply stays on `gh`) and the wrong method name (`rerun_failed_jobs`,
-  not "rerun-failed"). Path-aware CI resolved the docs-only PR in ~1 min.
-- **Friction — the MCP registration detour cost real time.** Enabling the `actions`
-  toolset, the user repointed the single `github` server to `…/mcp/x/actions`, whose
-  **exclusive** path silently dropped the default PR toolset — `pull_request_read`
-  etc. vanished mid-implementation, needing diagnosis + two reconnect cycles before
-  `…/mcp/x/all` fixed it. Now an ADR + `gotchas.md` entry.
-- **Deviations:** (1) the owner/repo "single source" decision surfaced *mid-edit*
-  from a user question, not in the plan — it should have been a planned design point
-  (it forced re-touching four already-edited files). (2) Captured knowledge **inline**
-  (ADR-0009 + gotchas) rather than invoking `/capture-knowledge`, since the ADR was
-  written during implementation. (3) This PR **supersedes** #365's
-  `reviewThreads`/`gh pr view --json` gotcha — watch-pr §0 no longer calls
-  `gh pr view` at all, so that guard was adapted to the MCP (`get_review_comments`).
-- **One improvement:** when a delivery edits the *very skills the pipeline runs*
-  (`/pr`, `/watch-pr`, `/deliver`), `/deliver` should note up front that the skill
-  **registry loads from the main checkout**, so the in-session skills keep the *old*
-  behaviour until merge — the change can only be dogfooded by the conductor acting
-  manually, not by the sub-skills. Flagging this avoids confusion when `/pr` visibly
-  runs `gh pr create` while the diff says otherwise.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -466,6 +480,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-25 | #366 | lite | Migrated the skills from the `gh` CLI to the GitHub MCP (ADR-0009), dogfooded end-to-end. The 3-critic plan review paid for itself pre-edit: it caught that `add_reply_to_pull_request_comment` needs a REST comment id `get_review_comments` doesn't expose (so thread replies stay on `gh`), and a wrong method name. Real cost was a registration detour — the hosted `/x/<toolset>` paths are **exclusive**, so pointing at `/x/actions` silently dropped the default PR toolset mid-implementation; `/x/all` fixed it. Lesson that generalises: when a delivery edits the very skills the pipeline runs, the skill registry loads from the main checkout, so the change can only be dogfooded by the conductor acting manually until merge. |
 | 2026-06-24 | #365 | lite | Entry/exit criteria + auto-start for `/deliver`. The docs/config fast-gate correctly classified it (CI green in under 2 min). Lasting lesson: auto-start on `ExitPlanMode` approval is a **soft guarantee** — no harness hook fires on it, so it depends on the model reading the contract. First delivery under the new AC entry gate, and the plan had no formal ACs (circular dependency, noted); its "one improvement" — put an inline `Given X, when Y, then Z` example in the gate prompt — still stands. Its `reviewThreads`/`gh pr view --json` gotcha was superseded by #366 (the MCP migration removed the call) and is deliberately not carried forward. |
 | 2026-06-24 | #364 | lite | Percent-encode URL path segments + validate `String` IDs (ADR-0008). The security review's end-to-end trace through `urlFromPath`'s `URLComponents` round-trip is what made the fix trustworthy (and found the `%2F`→`/` decode, correctly bounded as path-only on a locked host). Lesson that became skill policy: for "fix every instance of pattern X", do **one type-driven enumeration of all sites up front** — here the planning grep, `/security-review`, code review, and `claude-review` each found a *different subset*. |
 | 2026-06-24 | #363 | lite (docs-led) | Documented the existing response caching instead of building it: challenging the premise mid-plan (`curl -D-` showed every GET returns `Cache-Control`/`ETag`, so the default `URLCache` already provides — and beats — the requested opt-in cache) turned a feature build into a docs PR + ADR-0007. A single `code-reviewer` caught a High that both `make build-docs` and `markdownlint` missed: stray `</content>`/`</invoke>` tags the `Write` tool leaked into the article tail. Fourth entry asking for a docs/config-only fast gate, widened here to "no semantic Swift change" so doc-comment-only `.swift` diffs qualify. |

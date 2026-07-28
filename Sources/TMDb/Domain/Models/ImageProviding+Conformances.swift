@@ -46,6 +46,8 @@ extension CreditPerson: ProfileImageProviding {}
 extension ProductionCompany: LogoImageProviding {}
 extension Network: LogoImageProviding {}
 extension WatchProvider: LogoImageProviding {}
+extension Company: LogoImageProviding {}
+extension Company.Parent: LogoImageProviding {}
 
 // MARK: - StillImageProviding
 
