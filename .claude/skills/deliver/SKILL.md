@@ -18,8 +18,8 @@ picks up from there.
 
 ```text
 you approve the plan ─▶ /deliver ─▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
-  implement ─▶ code-review + fix ─▶ security-review + fix ─▶ capture ─▶
-  rubric check (ACs met?) ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
+  implement ─▶ code-review + fix ─▶ security-review + fix ─▶
+  rubric check (ACs met?) ─▶ capture ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
   GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
   ▲ the only hard stop
   … then, when the PR actually merges (maybe a later session): teardown (Phase 12)
@@ -56,7 +56,7 @@ Non-negotiable. Do these by default, without being reminded.
    keeps one ledger sub-tree per deliverable.
 7. **Jot knowledge candidates the moment a learning occurs** (a lookup, a
    gotcha, a live-API surprise, a non-obvious decision) — one line each
-   (`<category>: <gist> [where]`), in the ledger. Phase 6 curates them;
+   (`<category>: <gist> [where]`), in the ledger. Phase 7 curates them;
    reconstruction later loses the best material.
 8. **Auto-start after plan-mode approval.** `ExitPlanMode` approval IS the
    start signal — invoke `/deliver` immediately; pause first only if
@@ -115,7 +115,7 @@ implementation = separate `/deliver` sessions.)
   full stop. The conductor owns it.* Concretely:
   - Only the conductor and the `tooling-runner` it spawns may build. **Reviewer,
     security and grader subagents must be told not to build** — their prompts
-    say so, and `/review-changes` and Phase 7 above already carry that
+    say so, and `/review-changes` and Phase 6 above already carry that
     instruction.
   - **Never run two analysis phases concurrently.** Phase 4 and Phase 5 read the
     same commits and feel independent, so "run the security review while the
@@ -150,9 +150,9 @@ implementation = separate `/deliver` sessions.)
 - **Entry gate — acceptance criteria required.** Plans are expected as
   *"As a \<user-type\> I want \<feature\> so that \<reason\>"* + acceptance
   criteria. Extract the ACs verbatim as
-  the **delivery rubric** (consumed in Phase 7) into the ledger. Absent →
+  the **delivery rubric** (consumed in Phase 6) into the ledger. Absent →
   stop and ask for them ("Given X, when Y, then Z") — don't enter the
-  worktree. **Auto:** panel — proceed rubric-less (Phase 7 no-ops) vs stop.
+  worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops) vs stop.
 - **Read the plan's content into context now** — `EnterWorktree` switches CWD
   (clearing the plans cache), and a fresh worktree lacks uncommitted local
   files; the plan must travel in the conversation.
@@ -261,24 +261,7 @@ stop even in auto**. This is the pipeline's **only** security gate (CI has no
 SAST). Surfaces that bite:
 [`references/review-loops.md`](references/review-loops.md).
 
-## Phase 6 — Capture learnings
-
-Invoke **`/capture-knowledge`**, passing the ledger's knowledge-candidates
-list as the skill argument (`$ARGUMENTS` — it travels with the call even
-after compaction). It curates: durable, non-obvious, reusable items only,
-deduped against `knowledge/`, written to the right file (gotchas / API notes
-/ an ADR). Before `/pr`, so the notes ride the same PR. Capturing nothing is
-a valid outcome. Exception: one or two small entries already authored during
-implementation may be committed inline instead — note the inline capture in
-the retro.
-
-Its report must include the `swept:` line — Phase 6 is the knowledge base's
-retirement trigger (the skill's step 5); a report without it means the sweep
-did not run. That applies to the inline-capture exception too: a delivery that
-touched `Makefile`, `Package.swift`, `.github/workflows/` or `.claude/` still
-owes the sweep, whoever wrote the entries.
-
-## Phase 7 — Rubric verification (exit gate)
+## Phase 6 — Rubric verification (exit gate)
 
 Take the rubric (Phase 0 ACs) from the ledger; none extracted → skip. How it
 is graded depends on weight:
@@ -306,6 +289,23 @@ Satisfied → mark off. Not → fix test-first, commit, re-verify (full weight:
 re-run the grader); a gap needing a plan change is noted in the PR
 description. *"Did we build what the plan said?"*, not *"did the build
 pass?"*.
+
+## Phase 7 — Capture learnings
+
+Invoke **`/capture-knowledge`**, passing the ledger's knowledge-candidates
+list as the skill argument (`$ARGUMENTS` — it travels with the call even
+after compaction). It curates: durable, non-obvious, reusable items only,
+deduped against `knowledge/`, written to the right file (gotchas / API notes
+/ an ADR). Runs **after** the rubric gate, so a grading failure that changes the design cannot invalidate an entry already committed; still before `/pr`, so the notes ride the same PR. Capturing nothing is
+a valid outcome. Exception: one or two small entries already authored during
+implementation may be committed inline instead — note the inline capture in
+the retro.
+
+Its report must include the `swept:` line — Phase 7 is the knowledge base's
+retirement trigger (the skill's step 5); a report without it means the sweep
+did not run. That applies to the inline-capture exception too: a delivery that
+touched `Makefile`, `Package.swift`, `.github/workflows/` or `.claude/` still
+owes the sweep, whoever wrote the entries.
 
 ## Phase 8 — Write the retrospective (pre-PR)
 

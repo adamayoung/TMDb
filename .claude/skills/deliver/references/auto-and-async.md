@@ -32,7 +32,7 @@ unattended run must still be reviewable.
 
 **Panel decision points** (marked **Auto:** in `SKILL.md`):
 
-- Phase 0 — missing acceptance criteria: proceed without a rubric (Phase 7
+- Phase 0 — missing acceptance criteria: proceed without a rubric (Phase 6
   becomes a no-op) vs stop.
 - Phase 2 — a plan-review blocker that is *not* data-loss/breaking: proceed
   vs stop. (Data-loss/breaking = hard stop, never delegated.)
