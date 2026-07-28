@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-28 — 🐛 Company logo path & origin country optional (`fix/company-logo-path-optional`) · full
+## 2026-07-28 — 🐛 Company logo path & origin country optional (#404) · full
 
 - **Phases / skills:** 0–8 pre-PR; full weight (breaking public API +
   `Decodable`). `consulted:` next-major.md (the source), tmdb-api-notes
