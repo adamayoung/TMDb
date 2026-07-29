@@ -174,10 +174,11 @@ jobs:
 
           # Redact anything that could carry the API key before it is published.
           #
-          # This step runs unattended with no MCP mounted, so a diagnosis here
-          # probes the live API with `curl` — and TMDb takes `api_key` as a URL
-          # query item, so the key lands in the command a diagnosis naturally
-          # quotes as its evidence. GitHub Actions masks secrets in *logs*, not
+          # This step runs unattended with no MCP mounted. The skill now tells
+          # a headless diagnosis NOT to fall back to `curl` for exactly this
+          # reason — but that is a rule, and this is the backstop for when a
+          # rule is not followed: TMDb takes `api_key` as a URL query item, so
+          # the key lands in any command a diagnosis quotes as its evidence. GitHub Actions masks secrets in *logs*, not
           # in issue bodies, and no scanner recognises this key's shape. Both
           # the literal value and the generic pattern are removed: the pattern
           # also covers a key that never came from this secret.

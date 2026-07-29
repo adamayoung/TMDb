@@ -251,8 +251,10 @@ context lean. Its report is a **contract**: a `Directory:` and a `Status:`
 line, always. `Status: refused` means a caller bug (wrong or missing package
 directory) — surface it, never fall back; a report missing those lines means
 the subagent died, so the run is *void* rather than failed — re-invoke once,
-then fall back to `make -C <dir>` and say that you did. `/lint` and `/format` run `make` directly (they are fast and
-low-output), and `make ci` is run directly before a PR.
+then fall back to `make -C <dir>` and say that you did.
+
+`/lint` and `/format` run `make` directly (they are fast and low-output), and
+`make ci` is run directly before a PR.
 
 ### Inside Xcode vs. terminal
 

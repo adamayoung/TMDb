@@ -117,20 +117,100 @@ check, each schema-validated, with `model` set per agent from the ledger
 history so the Haiku→Opus escalation survives (a Workflow cannot see that
 history on its own — pass it in via `args`).
 
-Three rules the script must enforce, all of them `throw`s rather than prose:
+Run the script below via the `Workflow` tool with
+`args: { branch, checks: [{ name, skill, priorAttempt }] }` — `priorAttempt` is
+the ledger's record for that check (omit on a first attempt). It is embedded
+here, not a file, because it runs **once per invocation** — the same rule that
+keeps `/review-plan`'s and `/review-changes`'s scripts embedded, while
+`deliver-panel.js` lives in `.claude/workflows/` (it runs six times per run).
+Invoking this skill is itself the opt-in to call `Workflow`.
 
-1. **Validate `args` before spawning anything.** `args` can arrive as a JSON
-   **string** rather than an object, so parse it
-   (`typeof args === 'string' ? JSON.parse(args) : args`) and then **throw
-   unless the checks field `Array.isArray`**. Iterating a string
-   character-by-character once fanned out ~281 agents against a spend limit —
-   a malformed payload must fail at agent zero, never mid-fan-out.
-2. **Every agent prompt carries the `DO NOT BUILD OR RUN TESTS` clause above.**
-   N parallel agents reproducing locally means N concurrent builds in one
-   worktree — the most expensive incident this repo has recorded.
-3. **The fix stays here.** Only diagnosis is delegated; §3's apply → verify →
-   commit and §4's single batched push run in the conductor, which owns the
-   build slot and the attempt counters.
+The guards are **executable `throw`s, not instructions**: a malformed payload
+must fail at agent zero, never mid-fan-out.
+
+```javascript
+export const meta = {
+  name: 'fix-pr-checks-diagnose',
+  description: 'Diagnose each failing PR check in parallel, one read-only agent per check',
+  phases: [{ title: 'Diagnose', detail: 'one agent per failing check' }],
+}
+
+// `args` can arrive as a JSON STRING rather than an object (a known harness
+// gotcha). Parsing is not optional: iterating a string character-by-character
+// once fanned out ~281 agents into a spend limit, so validate the SHAPE before
+// spawning anything.
+const input = typeof args === 'string' ? JSON.parse(args) : args
+if (!input || typeof input !== 'object') {
+  throw new Error('fix-pr-checks: args must be an object (or a JSON string encoding one).')
+}
+if (!Array.isArray(input.checks)) {
+  throw new Error(
+    `fix-pr-checks: args.checks must be an ARRAY, got ${typeof input.checks}. ` +
+      `Refusing to fan out — iterating a non-array here is the ~281-agent failure.`
+  )
+}
+if (!input.checks.length) throw new Error('fix-pr-checks: args.checks is empty — nothing to diagnose.')
+
+const NO_BUILD =
+  `DO NOT BUILD OR RUN TESTS — no \`make\`, no \`swift build\`, no \`swift test\`, and do not invoke ` +
+  `/build, /test or /integration-test. Diagnose by READING the failing run's log and the source. ` +
+  `The routed skill tells you to reproduce locally; that step is the caller's, not yours — it owns the ` +
+  `single build slot for this worktree. Reproduction here would collide with it and with any sibling ` +
+  `diagnosis running beside you.`
+
+const DIAGNOSIS_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    check: { type: 'string' },
+    summary: { type: 'string', description: 'one or two sentences on what failed' },
+    likelyCause: { type: 'string', description: 'the ranked root cause' },
+    suggestedFix: { type: 'string', description: 'the concrete next step' },
+    fileLine: { type: 'string', description: 'the offending file:line, or "unknown"' },
+    observed: {
+      type: 'string',
+      description:
+        'for an Integration check: the live call made and the shape returned, or "unavailable (headless)"; ' +
+        'omit for CI checks. NEVER include a URL, command or header carrying TMDB_API_KEY.',
+    },
+  },
+  required: ['check', 'summary', 'likelyCause', 'suggestedFix'],
+}
+
+phase('Diagnose')
+const results = await parallel(input.checks.map((c) => () =>
+  agent(
+    `The \`${c.name}\` check failed on the TMDb PR for branch \`${input.branch}\`.\n\n` +
+      `Use the \`${c.skill}\` skill to diagnose it. The skill locates the failing run, reads the log, ` +
+      `and maps it to a cause and fix.\n\n` +
+      (c.priorAttempt
+        ? `THIS IS A REPEAT. The previous attempt did not stick:\n${c.priorAttempt}\n` +
+          `Do not re-propose it — find what that diagnosis missed.\n\n`
+        : '') +
+      `${NO_BUILD}\n\n` +
+      `Report ONLY the skill's three-section result. Do not paste raw logs.`,
+    {
+      label: `diagnose:${c.name}`,
+      phase: 'Diagnose',
+      // Haiku first; a repeat escalates. The conductor supplies the history —
+      // a Workflow cannot see the ledger's per-check attempt counters.
+      model: c.priorAttempt ? 'opus' : 'haiku',
+      schema: DIAGNOSIS_SCHEMA,
+    }
+  ).then((r) => r && { ...r, check: c.name })
+))
+
+const live = results.filter(Boolean)
+const dead = input.checks.filter((c) => !live.some((r) => r.check === c.name)).map((c) => c.name)
+if (dead.length) log(`WARNING: no diagnosis returned for ${dead.join(', ')} — treat as undiagnosed, not as clean`)
+
+return { diagnoses: live, undiagnosed: dead }
+```
+
+**The fix stays here.** Only diagnosis is delegated; §3's apply → verify →
+commit and §4's single batched push run in the conductor, which owns the build
+slot and the attempt counters. A check in `undiagnosed` is **not** clean — leave
+it and report it.
 
 ## 3. Apply, verify, commit
 
