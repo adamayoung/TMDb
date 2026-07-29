@@ -21,13 +21,41 @@ likely cause, so determine the trigger first** (step 0):
 > opposite assumption: a CI failure is almost always caused by the change under
 > review.
 
+## Agent Behaviour Contract
+
+Do these by default, without being reminded.
+
+1. **Observe before you theorise.** The log tells you *what broke*; only a live
+   call tells you *what the API returns today*. So a cause that claims the API
+   changed shape, or that a test's baseline drifted, must be backed by a live
+   observation — **`mcp__tmdb__*`** (CLAUDE.md's standing instruction).
+2. **Every such cause carries an `observed:` line** naming the tool called and
+   the shape that came back. **A cause with no `observed:` line is not
+   reportable as ranked** — demote it and mark it `unverified`. This is what
+   makes the rule checkable by the consumer instead of trusting the
+   diagnostician.
+3. **Only causes 1 and 2 can be observed.** A transient/rate-limit (cause 3) and
+   an in-diff regression (cause 0) cannot be confirmed by a live call — the
+   endpoint being healthy *now* says nothing about either. Do not manufacture an
+   `observed:` line for them; the requirement does not apply.
+4. **Never publish a secret.** An `observed:` line records the **tool and the
+   shape**, never a URL, command, or header carrying `TMDB_API_KEY`. TMDb takes
+   `api_key` as a *query item*, so a pasted `curl` leaks it — and this analysis
+   is published verbatim into an issue on a **public** repo. Say
+   `mcp__tmdb__movie_details(550) → runtime: Int, present`, not the command.
+5. **Headless runs cannot probe.** The scheduled `integration-failure.yml` job
+   mounts no MCP. There, write `observed: unavailable (headless)` and mark the
+   cause `unverified` — **do not** fall back to `curl`, which would put the key
+   in the text (rule 4). Attended runs have the MCP; use it.
+
 Produce a concise markdown analysis with exactly these three sections:
 
 **Summary:** one or two sentences on what failed — name the failing
 suite/test where visible.
 
 **Likely cause:** the most probable root cause, ranked most-likely first —
-**ranked by the trigger** (step 0):
+**ranked by the trigger** (step 0). Each cause 1 or 2 carries its `observed:`
+line, or is marked `unverified`:
 
 - **If PR / push-triggered**, add as a **top candidate**:
   0. **A regression in the changed code** — read the diff (`git diff main...HEAD`).
@@ -39,11 +67,14 @@ suite/test where visible.
   straight to 1–3.
 
 1. **A TMDb backend change** — a response field was added, removed, renamed, or
-   became nullable, breaking a model's `Decodable`. Confirm against the OpenAPI
-   spec (see step 3).
+   became nullable, breaking a model's `Decodable`. **Call the endpoint via
+   `mcp__tmdb__*` and record what came back** (`observed:`); confirm against the
+   OpenAPI spec (see step 3) for the documented shape.
 2. **Stale assumed data in an integration test** — the test asserts a specific
    live value (a title, count, id, date, or ordering) that the API now returns
-   differently. The code is fine; the test's baseline has drifted.
+   differently. The code is fine; the test's baseline has drifted. **Fetch the
+   value the test asserts and record it** (`observed:`) — drift is only a fact
+   once you have seen today's value.
 3. **A transient API error, rate limiting (HTTP 429), or a timeout** — the
    Integration Test job has a 30-minute `timeout-minutes`, and a cancelled
    (timed-out) run still surfaces as a workflow `failure`. A truncated log with

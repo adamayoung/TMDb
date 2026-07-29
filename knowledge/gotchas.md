@@ -163,6 +163,35 @@ jobs. **Debug-green proves nothing here; run the release build.**
   cascades into member-level access (memberwise inits, nested types) — usually
   not worth it.
 
+### `git ls-tree` doesn't support `:!exclude` — and fails into an empty hash
+
+*2026-07-29.* Building a content stamp over "everything except `knowledge/`",
+the obvious form is a silent trap:
+
+```bash
+git ls-tree -r HEAD -- . ':!knowledge'   # fatal: pathspec magic not supported
+```
+
+`ls-tree` (unlike `git diff` / `git log` / `git ls-files`) has **no exclude
+pathspec magic**. Piped into `git hash-object --stdin`, the failure feeds it
+**empty stdin**, which hashes to git's empty blob
+`e69de29bb2d1d6434b8b29ae775ad8c2e48c5391` — *every time*. So two "stamps"
+compare **equal** and the check passes while measuring nothing. A textbook
+member of the **False green** family at the top of this file: the signal looks
+identical whether or not the thing being checked is broken.
+
+Use a line filter on the output instead — `ls-tree -r` emits
+`<mode> <type> <object>\t<path>`, so the tab keeps the path field unambiguous:
+
+```bash
+git ls-tree -r HEAD | grep -v $'\tknowledge/' | git hash-object --stdin
+```
+
+**Always sanity-check a hash against the empty blob** before trusting a
+pipeline that computes one. Verified while designing the `/deliver` resume
+stamp, which needs a hash that survives `/pr`'s rebase (so a commit sha is
+unusable) and ignores the pipeline's own `knowledge/` bookkeeping commits.
+
 ### The build/test tooling-runner runs in the main checkout, not the active worktree
 
 *2026-07-24.* During a `/deliver` in a worktree, the `tooling-runner` (Haiku)
@@ -186,6 +215,68 @@ untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
 `swift test --skip-build --scratch-path .build --filter
 "TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
 worktree CWD) still works if you need it.
+
+**Extended 2026-07-29** — the `Directory:` / `Status:` lines are now a
+**contract**, and refusals report in the same shape (`Status: refused —
+<reason>`). That closes a hole: a refusal is a *caller bug* and carried no
+`Status:` line, so a naive "missing lines ⇒ fall back to `make`" rule would
+have converted this loud detector into a silent success path — the exact
+failure it was built to prevent. Callers now branch on shape: `refused` →
+hard error, never a fallback; `passed`/`failed` → a real result; **absent or
+malformed** → the subagent died, the run is *void* (not failed), re-invoke once
+then fall back with disclosure. The four skills carry the table.
+
+### Worktrees: the lock outlives the session, and `.claude/worktrees/` isn't there
+
+*2026-07-29.* Four facts that together broke `/deliver`'s GC sweep, all verified
+first-hand while rewriting it:
+
+1. **`.claude/worktrees/` is a CWD-relative path that does not exist *inside* a
+   worktree.** Any sweep doing `ls .claude/worktrees/` from a worktree
+   enumerates **nothing** and reports success — a garbage collector that is
+   clean because it looked in the wrong place (**False green**, top of this
+   file). Enumerate with **`git worktree list --porcelain`**.
+2. **That listing reports the *main checkout* first**, and every worktree of the
+   repo — including any you made by hand, anywhere on disk. Filter to
+   `<main-root>/.claude/worktrees/` before acting, or a sweep will happily
+   remove a workspace `/deliver` never created.
+3. **`EnterWorktree` *locks* its worktree**, and the lock **outlives the session
+   that made it**:
+
+   ```text
+   .git/worktrees/<name>/locked
+   claude session <branch> (pid 85995 start Wed Jul 29 19:28:23 2026)
+   ```
+
+   `git worktree remove --force` **refuses on a locked worktree**, so the
+   dead-session worktrees a sweep most wants to reclaim are exactly the ones it
+   cannot — while happily reporting them reclaimed. **`git worktree unlock
+   <path>` first**, and `test -d` afterwards before counting a reclaim.
+   The lock's PID is also the only *fact* about liveness: test it (`kill -0`)
+   rather than guessing from a file's age.
+4. **`git rev-parse @{u}` errors** (rather than returning false) on a
+   never-pushed branch, so an "is it pushed?" proof must treat that as
+   *unproven*, not as *failed*.
+
+Related: `ExitWorktree` only removes worktrees **it** created this session — one
+entered via `EnterWorktree(path:)` must be removed with `git worktree remove`
+by hand, or the call silently no-ops while you report a reclaim
+([ADR-0015](decisions/0015-durable-deliver-run-state.md)).
+
+### The `Workflow` tool resolves a repo-relative `scriptPath`
+
+*2026-07-29.* The three embedded-script skills describe `scriptPath` only as
+"the file path the `Workflow` tool returns", which reads as tool-managed. It
+also accepts a **repo-relative path** — `Workflow({ scriptPath:
+'.claude/workflows/deliver-panel.js' })` resolves and executes. That is what
+makes a committed, version-controlled workflow script viable rather than
+re-authored prose.
+
+Two testing notes: a script's **argument-validation `throw`s run before any
+agent spawns**, so guard rails can be exercised for free (the run fails with
+`agent_count: 0`); and such a script **cannot be run standalone** with `node` —
+it uses harness globals (`agent`, `parallel`, `phase`, `log`, `args`) and a
+top-level `return`. Test it by extracting the body and supplying stubs.
 
 ### `EnterWorktree` no longer uses the requested name as the branch name
 

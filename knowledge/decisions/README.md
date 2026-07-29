@@ -32,6 +32,8 @@ always fair game.
 | [0012](0012-structured-tmdberror-context.md) | Enrich `TMDbError` with structured context | 2026-07-24 | Accepted (shipped in 19.0.0) |
 | [0013](0013-cached-image-url-resolver.md) | Cache the image configuration in an actor behind `client.images` | 2026-07-27 | Accepted (shipped in 19.0.0) |
 | [0014](0014-subagent-model-tiers.md) | Model-tier policy for skills and subagents | 2026-07-06 | Accepted |
+| [0015](0015-durable-deliver-run-state.md) | Durable `/deliver` run state in `.git/deliver/` | 2026-07-29 | Accepted |
+| [0016](0016-panel-jurors-and-workflows-directory.md) | Auto-mode panel as three independent jurors, in `.claude/workflows/` | 2026-07-29 | Accepted |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

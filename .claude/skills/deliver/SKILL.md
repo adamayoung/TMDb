@@ -49,8 +49,14 @@ Non-negotiable. Do these by default, without being reminded.
    the pipeline.
 5. **Test-first all the way.** Every review-loop fix follows `canon-tdd` —
    failing test first. No untested patches.
-6. **Keep a durable phase ledger** — a `TaskCreate` list, one task per phase,
-   statuses current, recording branch, PR number, and weight. A
+6. **Keep two records: a `TaskCreate` ledger *and* a run file.** The ledger is
+   the live view (one task per phase, statuses current, branch, PR number,
+   weight); the **run file** is the durable one, because the ledger does not
+   survive `EnterWorktree`, an MCP reconnect, or a plan-mode exit. Phase 0
+   writes it, Phase 1 records the sweep into it, **Phase 6 reads the rubric
+   from it** — so a skipped step fails loudly at a later phase instead of
+   silently. Location and schema:
+   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md). A
    template→replicate delivery adds the **`Phase 4a — reference-unit
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
    keeps one ledger sub-tree per deliverable.
@@ -65,7 +71,8 @@ Non-negotiable. Do these by default, without being reminded.
 ## Auto mode & async invocation
 
 `/deliver auto` replaces every stop-and-ask decision with an **adversarial
-panel** of three Opus subagents (majority verdict, ledger audit trail);
+panel** of three independent Opus jurors (a dead panel is not a proceed;
+ledger audit trail);
 decision points are marked **Auto:** below. Never delegated: a **data-loss or
 breaking-change plan blocker is a hard stop even in auto**. `/deliver` can
 also be queued headless (the plan + ACs must travel in the trigger prompt).
@@ -150,31 +157,45 @@ implementation = separate `/deliver` sessions.)
 - **Entry gate — acceptance criteria required.** Plans are expected as
   *"As a \<user-type\> I want \<feature\> so that \<reason\>"* + acceptance
   criteria. Extract the ACs verbatim as
-  the **delivery rubric** (consumed in Phase 6) into the ledger. Absent →
+  the **delivery rubric** (consumed in Phase 6) into **the run file** (and the
+  ledger for convenience). Absent →
   stop and ask for them ("Given X, when Y, then Z") — don't enter the
-  worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops) vs stop.
+  worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops) vs stop;
+  record that as `rubric: none`, which is **present-and-empty**, not a missing
+  file.
 - **Read the plan's content into context now** — `EnterWorktree` switches CWD
   (clearing the plans cache), and a fresh worktree lacks uncommitted local
   files; the plan must travel in the conversation.
 
-## Phase 1 — Enter an isolated worktree (before any edit)
+## Phase 1 — Reconcile prior runs, then enter an isolated worktree
 
 Procedures and traps:
 [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
 
-1. **GC first**: reclaim prior worktrees whose PRs have since merged (one
-   `list_pull_requests` call → branch→merged map → remove) — this sweep keeps
-   unattended runs from leaking disk.
+1. **Reconcile before `EnterWorktree`** (the run file already exists — Phase 0
+   wrote it; record the sweep *into* it, never mint a second one).
+   Enumerate with **`git worktree list --porcelain`** (never
+   `ls .claude/worktrees/` — that path doesn't exist inside a worktree, so the
+   old sweep silently swept nothing), scoped to
+   `<main-root>/.claude/worktrees/`, and classify every one first-match-wins:
+   `live` (lock PID alive — never touch) / `report` / `reclaim` (merged **and**
+   Phase 12's two proofs) / `resumable` / `settled`. **Report, never remove,
+   anything that doesn't prove reclaimable**, and verify a directory is gone
+   before counting it reclaimed. Record `swept:` in the ledger and the
+   `reconciled` block in the run file. Procedure, buckets and traps:
+   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
 2. **Enter** with `EnterWorktree(name: "<prefix>/<slug>")` (`feature/`,
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch
    name afterwards** (`git branch --show-current`; `git branch -m` if the
    tool renamed it). Already in a worktree? Don't nest — branch there.
 3. **Copy `.claude/settings.local.json` in** from the main checkout (the
    permission allowlist; credentials come from the process env).
-4. **Record worktree + branch in the ledger, and (re-)create the ledger
-   here** — it is CWD-scoped and cleared by `EnterWorktree`, an MCP
-   reconnect, or a plan-mode exit; found empty later → re-create from the
-   phase list, it isn't lost work.
+4. **Record worktree + branch in the run file and the ledger, and (re-)create
+   the ledger here** — the ledger is CWD-scoped and cleared by `EnterWorktree`,
+   an MCP reconnect, or a plan-mode exit; found empty later → re-create from
+   the phase list and the run file, it isn't lost work. Set the run file's
+   `entry` to `created`, or to `adopted` when resuming an existing worktree
+   via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
 5. **Edit via worktree paths**: re-`Read` anything read before entering, and
    **verify `git status` shows your diff in the worktree before trusting the
    first green build** (empty diff + baseline counts = edits went to `main`).
@@ -251,8 +272,9 @@ review** — `/pr` therefore runs in `reviewed` mode (Phase 9).
 ## Phase 5 — Security review + fix loop
 
 **Run only when the diff touches a security-relevant surface**: Swift source,
-`Package.swift`/`Package.resolved`, `.github/workflows/`, or
-`.claude/settings*`. Pure docs/markdown → skip. No scale-down on lite.
+`Package.swift`/`Package.resolved`, `.github/workflows/`, `.claude/settings*`,
+or **`.claude/workflows/`** (committed scripts that spawn agents and gate
+autonomous decisions). Pure docs/markdown → skip. No scale-down on lite.
 Invoke **`/security-review`** (findings only — the conductor fixes) and
 converge with the Phase 4 loop: fix each **High** (and any Medium with a
 concrete attack path) test-first where reproducible, commit, re-invoke, cap
@@ -263,8 +285,18 @@ SAST). Surfaces that bite:
 
 ## Phase 6 — Rubric verification (exit gate)
 
-Take the rubric (Phase 0 ACs) from the ledger; none extracted → skip. How it
-is graded depends on weight:
+Take the rubric (Phase 0 ACs) **from the run file** — the ledger copy is a
+convenience, not a source, and the plan text in context is not one either.
+Three distinct cases, and they must not be conflated:
+
+- **File present, rubric populated** → grade it (below).
+- **File present, `rubric: none`** → the sanctioned rubric-less path; skip.
+- **File missing, or missing its `reconciled` block** → **hard stop.** A
+  missing run file is not a pass, exactly as a dead grader is not a pass; and a
+  file without `reconciled` means Phase 1's sweep never ran. This is what makes
+  both gates real rather than advisory.
+
+How it is graded depends on weight:
 
 - **Lite** → verify inline: each AC against the committed diff — behaviour
   by diff-scan or a targeted test (`swift test --filter …`), coverage by the
@@ -366,8 +398,7 @@ after the gate**. Guidance:
   Critical/High thread, routed flake, wrong readiness call): append a
   one-line `watch:` bullet, commit, push — on the PR branch (watch-only), or
   a fresh branch off `origin/main` as a small follow-up PR (`merge`/auto
-  mode, before teardown; the same routing applies to any skill edits the auto
-  scan commits). Uneventful watch → don't touch it.
+  mode, before teardown). Uneventful watch → don't touch it.
 - **Any post-gate push re-opens the gate** — after the last exceptional push
   (amendment or approved skill edit), run the `/watch-pr` loop once more on
   the new tip before merge.
@@ -378,7 +409,12 @@ after the gate**. Guidance:
   `skill-improvement-log.md` first** and skip anything already decided;
   **wait for explicit approval on each proposal — never edit a skill file
   unasked**; record **every** decision in the log (five-field format). No new
-  recurrence → say so and stop. **Auto:** the panel adjudicates instead.
+  recurrence → say so and stop. **Auto:** **not delegable** — the panel has no
+  Phase 11 decision point and the script throws if asked for one. An unattended
+  run must never edit and push the repo's own skill files (least of all the
+  panel script itself), so in auto mode it **records every proposal in
+  `skill-improvement-log.md` as `deferred — raised unattended, needs review`
+  and applies none**. Phase 11 is post-gate, so the run still completes.
 
 ## Phase 12 — Teardown on merge (reclaim the worktree)
 
@@ -390,6 +426,12 @@ reclaims it once merged). Stuck/blocked/abandoned → **never** tear down.
 Two preconditions, both required, then
 `ExitWorktree(action: "remove", discard_changes: true)`:
 
+0. Which teardown applies — the run file's `entry`. **`created`** →
+   `ExitWorktree(action: "remove", …)`. **`adopted`** → `ExitWorktree` will
+   **not** remove a worktree entered by `path`; it no-ops while you report a
+   reclaim. Use `action: "keep"` then remove by hand (unlock → `git worktree
+   remove` → `git branch -D`). Either way, **verify the directory is gone
+   before reporting a reclaim.**
 1. The PR is actually **merged** (`pull_request_read` → `merged: true`).
 2. **No unsaved work beyond what's merged**: `git status --porcelain` empty
    **and** `git rev-parse HEAD` equals `git rev-parse @{u}`. Either fails →

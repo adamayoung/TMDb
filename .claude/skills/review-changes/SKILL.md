@@ -154,14 +154,31 @@ const reviewPrompt = (d) =>
   `Report only findings that survive your adversarial pass, each with file, line, what's wrong, why it matters, and a concrete fix. If your lens is clean, return an empty findings array.`
 
 phase('Find')
+// A dead agent resolves to `null` THROUGH `.then` — it does not reject — so
+// `ok` must be derived here, not in a `.catch` (which would never fire). Without
+// this, a died reviewer is indistinguishable from a lens that found nothing, and
+// the run reports full coverage while missing a dimension entirely.
 const perDim = await parallel(DIMENSIONS.map((d) => () =>
   agent(reviewPrompt(d), {
     label: `review:${d.key}`, phase: 'Find',
     model: 'opus', effort: 'high', agentType: 'code-reviewer', schema: FINDING_SCHEMA,
-  }).then((r) => (r && r.findings ? r.findings.map((f) => ({ ...f, dimension: d.key })) : []))
+  }).then((r) => ({
+    key: d.key,
+    ok: Boolean(r && Array.isArray(r.findings)),
+    findings: r && r.findings ? r.findings.map((f) => ({ ...f, dimension: d.key })) : [],
+  }))
 ))
 
-const all = perDim.filter(Boolean).flat()
+// `parallel()` maps a thrown thunk to `null`, so treat that as a dead dimension
+// too rather than letting it vanish from the tally.
+const dimResults = DIMENSIONS.map((d, i) => perDim[i] || { key: d.key, ok: false, findings: [] })
+const covered = dimResults.filter((r) => r.ok).map((r) => r.key)
+const missing = dimResults.filter((r) => !r.ok).map((r) => r.key)
+if (missing.length) {
+  log(`WARNING: ${missing.length}/${DIMENSIONS.length} dimensions did not report (${missing.join(', ')}) — this review is PARTIAL`)
+}
+
+const all = dimResults.flatMap((r) => r.findings)
 
 // Dedup overlapping findings across dimensions (same file:line + severity + gist).
 const seen = new Set()
@@ -197,20 +214,38 @@ return {
   medium: advisory.filter((f) => f.severity === 'medium'),
   low: advisory.filter((f) => f.severity === 'low'),
   droppedByVerification: blocking.length - confirmed.length,
-  dimensionsCovered: DIMENSIONS.map((d) => d.key),
+  dimensionsCovered: covered,
+  dimensionsMissing: missing,
+  partial: missing.length > 0,
 }
 ```
 
 To iterate on the script, edit the file path the `Workflow` tool returns and
 re-invoke with `{ scriptPath }` rather than resending it.
 
+**If the fan-out is interrupted or dies part-way**, don't discard the run. Each
+completed agent's return value is recorded as a `{"type":"result",…}` line in
+`journal.jsonl` inside the run's transcript directory (the `Workflow` tool
+reports the path), so the findings that landed are recoverable — reduce those
+and report as **partial**, naming what is missing. Never re-present a salvaged
+run as complete.
+
 ## 3. Output
 
 Return the report in the `.github/CODE_REVIEW.md` shape — **Strengths**, **Issues**
 grouped Critical / High / Medium / Low (each with `file:line`, what's wrong, why,
 fix), and an **Assessment** (Ready to merge? + reason). On the large path, also
-note the dimensions covered and how many Critical/High findings were dropped by
-adversarial verification (`droppedByVerification`) — that number is a feature, not
-a gap. The caller decides what blocks and applies the fixes.
+note how many Critical/High findings were dropped by adversarial verification
+(`droppedByVerification`) — that number is a feature, not a gap. The caller
+decides what blocks and applies the fixes.
+
+**On the large path, coverage is mandatory in the report**: list
+`dimensionsCovered`, and when `partial` is true name every dimension in
+`dimensionsMissing` and say plainly that the review is incomplete. A
+large-path report without a coverage line is malformed — treat it as
+untrustworthy rather than clean. A missing dimension means *nobody looked*,
+which reads identically to *nothing was found* unless you say so; that is the
+**False green** family (`knowledge/gotchas.md`), the defect this repo hits most.
+(§2a's single-reviewer path has no dimensions, so this does not apply there.)
 
 Arguments: $ARGUMENTS

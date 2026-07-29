@@ -29,6 +29,16 @@ once green. Otherwise stop at **ready-to-merge** and hand off (default).
    branch off `main`, via a PR.
 2. **Diagnose before fixing.** Always run `/diagnose-integration-failure` first;
    let its ranked cause drive the fix. Don't guess.
+   **Check the diagnosis carries its evidence.** A shape-change (cause 1) or
+   drifted-data (cause 2) conclusion must arrive with an `observed:` line — the
+   live call that saw today's response. Missing one, **re-run the diagnosis
+   once** asking for it. Still missing → treat that cause as **unverified**:
+   proceed, but say so in the PR body and in `claude-analysis.md`, and never
+   describe it as confirmed drift. **Re-run once, not in a loop** — a headless
+   run has no MCP and legitimately cannot observe (it reports
+   `observed: unavailable (headless)`), so an unbounded retry would spin
+   forever. Transient (cause 3) and in-diff regression (cause 0) carry no
+   `observed:` line by design; do not demand one.
 3. **Distinguish transient from real.** A re-run is the cheap test. Only open a PR
    for a cause that survives a re-run (or is clearly a data/shape drift).
 4. **Test-first for real fixes.** A model/decoder fix follows `canon-tdd` (failing
@@ -116,7 +126,11 @@ Run the failing suite locally to reproduce — `/integration-test` (or
 - **TMDb backend / response-shape change** (a field added, removed, renamed, or now
   nullable) → fix the Swift model / `CodingKeys` / fixture **test-first**
   (`canon-tdd`): add a failing unit test + a JSON fixture matching the *current*
-  live shape (confirm via the OpenAPI spec / `mcp__tmdb__*`), then the model fix.
+  live shape. The diagnosis's `observed:` line tells you **which** endpoint
+  drifted and how, but it is a one-line summary (and `unavailable` headless) —
+  **not** a response body, so it cannot source a fixture. **Fetch the real
+  response with `mcp__tmdb__*`** and build the fixture from that, cross-checking
+  the OpenAPI spec for the documented shape — then the model fix.
 - **Stale assumed data** (a test asserts a specific live title, count, id, date, or
   ordering that drifted) → relax the integration assertion to verify **behaviour,
   not a brittle exact value** (e.g. assert non-empty / a stable property / `>= 1`

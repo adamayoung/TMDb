@@ -570,6 +570,14 @@ Sonnet), and `tooling-runner` (build/test execution, pinned to Haiku). The
 reviewer follows the shared spec in
 [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
 
+Multi-agent fan-outs run as `Workflow` scripts. Most are embedded in the skill
+that owns them (`/review-plan`, `/review-changes`, `/review-knowledge`), since
+each runs once per invocation. A script invoked *many times within one run*
+lives in [`.claude/workflows/`](.claude/workflows/) instead — currently
+`deliver-panel.js`, which resolves `/deliver auto`'s unattended decisions — so
+that an executed script cannot drift between invocations the way one
+re-authored from prose can.
+
 #### Self-healing weekly integration run
 
 The live-API integration suite runs on a weekly schedule

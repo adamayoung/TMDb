@@ -25,11 +25,11 @@ So the package directory is **passed to you explicitly** and you must never
 fall back to `pwd`:
 
 1. The task names an absolute **package directory**. If it does **not**, stop
-   and report: *"No package directory supplied — cannot run safely."* Do not
-   guess, and do not run the target.
+   and report `Status: refused — no package directory supplied` (see
+   *Refusing safely*). Do not guess, and do not run the target.
 2. Verify it before running: `test -f "<dir>/Package.swift"`. If that fails,
-   stop and report the path you were given. A wrong path must be an error, not
-   a misleading result.
+   stop and report `Status: refused — no Package.swift at <the path you were
+   given>`. A wrong path must be an error, not a misleading result.
 3. Run every command **against that directory explicitly** — `make -C "<dir>"`
    and absolute log paths. Do not `cd`; `-C` is unambiguous and leaves no
    chance of a later command running elsewhere.
@@ -116,11 +116,30 @@ integration-test` checks these first: a missing var is an
 failure: a genuine assertion failure vs a **transient live-API issue**
 (HTTP 429 / timeout / network) — transients are not code bugs.
 
+## Refusing safely
+
+A refusal is a **caller bug** — a wrong or missing directory — and it must be
+impossible to mistake for a build failure *or* for your own death. So a refusal
+is reported in the **same shape** as any other outcome:
+
+```text
+Directory: <the path you were given, or "none">
+Status: refused — <reason>
+```
+
+Emit **both lines**, always, even when you ran nothing. The caller distinguishes
+the three cases purely by shape: `refused` is surfaced as a hard error and
+**never** triggers a fallback; `passed`/`failed` is a real result; a report
+missing these lines means *you* died, and only then may the caller fall back.
+Never soften a refusal into a failure, and never run the target anyway.
+
 ## Report back ONLY
 
 - **Directory** — the package directory you ran against (one line, so the
-  caller can spot a wrong-tree run immediately)
-- **Status** — succeeded/passed or failed
+  caller can spot a wrong-tree run immediately). **Contractual, not
+  formatting** — a report without it is treated as void and re-run.
+- **Status** — `passed`/`succeeded`, `failed`, or `refused — <reason>`.
+  **Contractual, not formatting**, for the same reason.
 - **Counts** — errors + warnings (builds) or total / passed / failed (tests)
 - Each failure on one line: build errors as `file:line — message`, test
   failures as `SuiteName/testName` with `file:line` and the assertion

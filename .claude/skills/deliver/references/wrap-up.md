@@ -16,6 +16,12 @@ not a ceremony (a handful of bullets):
   phases `0–9`; skills `review-plan, implement-plan, review-changes,
   security-review, capture-knowledge`). Telemetry for the recurring-pattern
   scan: which skills fire, which phases get skipped, where deliveries stop.
+- **`swept:`** — Phase 1's reconcile result, e.g.
+  `swept: 2 in scope / 1 reclaimed / 0 resumable / 1 reported`. **An entry
+  without this line means the sweep did not run** — the same tripwire as
+  Phase 0's `consulted:` and Phase 7's `swept:` report line, but stronger,
+  because the retro is committed and goes through PR review, so a human sees
+  the omission.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from the skill to do the right
@@ -91,8 +97,11 @@ The loop that turns one-off retros into reviewed skill improvements:
 3. **Stop and ask.** **Do not edit any skill files.** Present the proposals
    and wait for **explicit approval on each one**. If no *new* pattern recurs
    across multiple entries, say so and stop — emit no proposals.
-   (**Auto:** the panel reviews each proposal instead — see
-   `references/auto-and-async.md`.)
+   (**Auto:** **not delegable** — the panel has no Phase 11 decision point and
+   the script throws if asked for one. Record every proposal in
+   `skill-improvement-log.md` as `deferred — raised unattended, needs review`
+   and apply none; an unattended run must never edit the repo's own skill
+   files. See `references/auto-and-async.md`.)
 4. **Record every decision in the log**, in the five-field format documented
    at the top of `skill-improvement-log.md` (date · title · status; Pattern /
    Decision / Rationale / Reconsider when) — **applied** (with the skill +
