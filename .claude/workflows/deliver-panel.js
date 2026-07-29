@@ -128,6 +128,9 @@ if (degraded) {
 }
 
 const tally = `${forProceed}-${jurors.length - forProceed}`
+// Quote a juror who voted WITH the outcome — `jurors[0]` may be a dissenter, which
+// would put a stop-voter's reasoning under a PROCEED line in the audit trail.
+const speaker = jurors.find((j) => j.verdict === outcome) || jurors[0]
 
 return {
   outcome,
@@ -139,5 +142,5 @@ return {
   ledgerLine:
     `panel ${input.decision}: ${outcome.toUpperCase()} ${tally} ` +
     `(${jurors.length}/3 jurors live${degraded ? ', DEGRADED' : ''}) — ` +
-    `${(jurors[0] && jurors[0].decidingFact) || 'no verdict returned'}`,
+    `${(speaker && speaker.decidingFact) || 'no verdict returned'}`,
 }

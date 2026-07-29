@@ -150,6 +150,22 @@ if (!Array.isArray(input.checks)) {
   )
 }
 if (!input.checks.length) throw new Error('fix-pr-checks: args.checks is empty — nothing to diagnose.')
+// Element shape too, not just the container. `checks: ['CI', 'Integration']` is the
+// natural malformed form: it passes an Array.isArray check, then spawns agents whose
+// prompts read "the `undefined` check failed" and reports full coverage, because the
+// dead-detection compares `undefined === undefined`. A `null` element instead throws
+// at the dead-detection — AFTER the agents ran, discarding their work. Both violate
+// "fail at agent zero", so validate here.
+if (!input.checks.every((c) => c && typeof c === 'object' &&
+    typeof c.name === 'string' && c.name && typeof c.skill === 'string' && c.skill)) {
+  throw new Error(
+    'fix-pr-checks: every entry in args.checks must be an object { name, skill } with ' +
+      'non-empty strings. Refusing to fan out on a malformed element.'
+  )
+}
+if (typeof input.branch !== 'string' || !input.branch) {
+  throw new Error('fix-pr-checks: args.branch must be a non-empty string.')
+}
 
 const NO_BUILD =
   `DO NOT BUILD OR RUN TESTS — no \`make\`, no \`swift build\`, no \`swift test\`, and do not invoke ` +

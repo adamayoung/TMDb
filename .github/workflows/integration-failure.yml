@@ -120,7 +120,6 @@ jobs:
           GH_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
           GH_PAGER: cat
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
         run: |
           set -euo pipefail
@@ -131,7 +130,13 @@ jobs:
           # metacharacters in a secret are handled), then the generic patterns.
           redact() {
             local text="$1" v
-            for v in "${TMDB_API_KEY:-}" "${TMDB_USERNAME:-}" "${TMDB_PASSWORD:-}"; do
+            # API key and password only. The USERNAME is deliberately NOT
+            # literal-substituted: it is low-sensitivity, and if it equals the
+            # GitHub handle every `github.com/<handle>/TMDb/pull/N` link in the
+            # alert would be rewritten to a dead one and a false ::warning::
+            # raised on every run. The api_key=/Bearer patterns below still
+            # cover it wherever it appears as a credential.
+            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}"; do
               [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
             done
             printf '%s' "$text" \
@@ -140,13 +145,20 @@ jobs:
           }
 
           BODY=$(gh pr view "$PR_URL" --json body -q .body)
-          CLEAN=$(redact "$BODY")
+          TITLE=$(gh pr view "$PR_URL" --json title -q .title)
+          CLEAN_BODY=$(redact "$BODY")
+          CLEAN_TITLE=$(redact "$TITLE")
 
-          if [ "$CLEAN" != "$BODY" ]; then
-            gh pr edit "$PR_URL" --body "$CLEAN"
+          if [ "$CLEAN_BODY" != "$BODY" ]; then
+            gh pr edit "$PR_URL" --body "$CLEAN_BODY"
             echo "::warning::Redacted a secret from the agent-authored PR body of $PR_URL"
-          else
-            echo "PR body clean."
+          fi
+          if [ "$CLEAN_TITLE" != "$TITLE" ]; then
+            gh pr edit "$PR_URL" --title "$CLEAN_TITLE"
+            echo "::warning::Redacted a secret from the agent-authored PR title of $PR_URL"
+          fi
+          if [ "$CLEAN_BODY" = "$BODY" ] && [ "$CLEAN_TITLE" = "$TITLE" ]; then
+            echo "PR title and body clean."
           fi
 
       - name: Create or update failure issue
@@ -165,7 +177,6 @@ jobs:
           # last hop where a leak can still be stopped. All three are mounted
           # into the diagnosing agent, so all three can appear in its output.
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
         run: |
           set -euo pipefail
@@ -184,7 +195,13 @@ jobs:
           # also covers a key that never came from this secret.
           redact() {
             local text="$1" v
-            for v in "${TMDB_API_KEY:-}" "${TMDB_USERNAME:-}" "${TMDB_PASSWORD:-}"; do
+            # API key and password only. The USERNAME is deliberately NOT
+            # literal-substituted: it is low-sensitivity, and if it equals the
+            # GitHub handle every `github.com/<handle>/TMDb/pull/N` link in the
+            # alert would be rewritten to a dead one and a false ::warning::
+            # raised on every run. The api_key=/Bearer patterns below still
+            # cover it wherever it appears as a credential.
+            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}"; do
               [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
             done
             printf '%s' "$text" \
