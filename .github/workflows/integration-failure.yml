@@ -122,21 +122,44 @@ jobs:
           RUN_DATE: ${{ github.event.workflow_run.created_at }}
           # Who to ping. Change if you ever want to notify someone else.
           NOTIFY: adamayoung
+          # Needed to scrub the key out of anything we publish. This repo is
+          # PUBLIC and everything below lands in an issue body, so this is the
+          # last hop where a leak can still be stopped.
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: |
           set -euo pipefail
 
           LABEL="integration-failure"
 
+          # Redact anything that could carry the API key before it is published.
+          #
+          # This step runs unattended with no MCP mounted, so a diagnosis here
+          # probes the live API with `curl` — and TMDb takes `api_key` as a URL
+          # query item, so the key lands in the command a diagnosis naturally
+          # quotes as its evidence. GitHub Actions masks secrets in *logs*, not
+          # in issue bodies, and no scanner recognises this key's shape. Both
+          # the literal value and the generic pattern are removed: the pattern
+          # also covers a key that never came from this secret.
+          redact() {
+            local text="$1"
+            if [ -n "${TMDB_API_KEY:-}" ]; then
+              text="${text//"$TMDB_API_KEY"/***REDACTED***}"
+            fi
+            printf '%s' "$text" \
+              | sed -E 's/(api_key=)[^&"[:space:]]+/\1***REDACTED***/g' \
+              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g'
+          }
+
           # Pull in Claude's analysis if it produced one; otherwise fall back.
           if [ -s claude-analysis.md ]; then
-            ANALYSIS=$(cat claude-analysis.md)
+            ANALYSIS=$(redact "$(cat claude-analysis.md)")
           else
             ANALYSIS="_Automated analysis unavailable — see the run logs._"
           fi
 
           # Link the fix PR if Claude opened one.
           if [ -s pr-url.txt ]; then
-            PR_LINE="🔧 Claude opened a proposed fix for review: $(head -n1 pr-url.txt)"
+            PR_LINE="🔧 Claude opened a proposed fix for review: $(redact "$(head -n1 pr-url.txt)")"
           else
             PR_LINE="ℹ️ No automated fix PR — likely transient (re-run) or needs a human; see the analysis."
           fi
