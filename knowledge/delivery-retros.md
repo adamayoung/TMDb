@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-07-29 — 🔧 Harden the delivery skills (chore/harden-delivery-skills) · full
+## 2026-07-29 — 🔧 Harden the delivery skills (#407) · full
 
 - **Phases / skills:** 0–9; `review-plan`, `security-review`, `capture-knowledge`,
   `pr`. Substituted an adversarial *mapping* review for `/review-changes` (it
