@@ -92,9 +92,45 @@ The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.
 Use the `<SKILL>` skill to diagnose it. The skill locates the failing run,
 reads the log, and maps it to a cause and fix.
 
-Report back ONLY the skill's three-section result — Summary, Cause, Fix —
-including the offending `file:line`. Do not paste raw logs.
+DO NOT BUILD OR RUN TESTS — no `make`, no `swift build`, no `swift test`, and
+do not invoke /build, /test or /integration-test. Diagnose by reading the
+failing run's log and the source. The routed skill tells you to reproduce
+locally; that step is the caller's, not yours — it owns the single build slot
+for this worktree. Reproduction here would collide with it and with any sibling
+diagnosis running beside you.
+
+Report back ONLY the skill's three-section result — Summary, Likely cause,
+Suggested fix — including the offending `file:line`, plus the `observed:` line
+where the routed skill requires one. Do not paste raw logs.
 ```
+
+> **Section names.** `/diagnose-ci-failure` emits *Summary / Cause / Fix*;
+> `/diagnose-integration-failure` emits *Summary / Likely cause / Suggested
+> fix* and adds `observed:` for shape-drift causes. Ask for the latter shape —
+> it is a superset, so both skills can satisfy it.
+
+### Two or more failing checks → one Workflow
+
+One failing check stays a direct Agent call; a Workflow for a single agent is
+pure overhead. At **two or more**, fan out instead — one diagnosis agent per
+check, each schema-validated, with `model` set per agent from the ledger
+history so the Haiku→Opus escalation survives (a Workflow cannot see that
+history on its own — pass it in via `args`).
+
+Three rules the script must enforce, all of them `throw`s rather than prose:
+
+1. **Validate `args` before spawning anything.** `args` can arrive as a JSON
+   **string** rather than an object, so parse it
+   (`typeof args === 'string' ? JSON.parse(args) : args`) and then **throw
+   unless the checks field `Array.isArray`**. Iterating a string
+   character-by-character once fanned out ~281 agents against a spend limit —
+   a malformed payload must fail at agent zero, never mid-fan-out.
+2. **Every agent prompt carries the `DO NOT BUILD OR RUN TESTS` clause above.**
+   N parallel agents reproducing locally means N concurrent builds in one
+   worktree — the most expensive incident this repo has recorded.
+3. **The fix stays here.** Only diagnosis is delegated; §3's apply → verify →
+   commit and §4's single batched push run in the conductor, which owns the
+   build slot and the attempt counters.
 
 ## 3. Apply, verify, commit
 
