@@ -65,7 +65,8 @@ Non-negotiable. Do these by default, without being reminded.
 ## Auto mode & async invocation
 
 `/deliver auto` replaces every stop-and-ask decision with an **adversarial
-panel** of three Opus subagents (majority verdict, ledger audit trail);
+panel** of three independent Opus jurors (a dead panel is not a proceed;
+ledger audit trail);
 decision points are marked **Auto:** below. Never delegated: a **data-loss or
 breaking-change plan blocker is a hard stop even in auto**. `/deliver` can
 also be queued headless (the plan + ACs must travel in the trigger prompt).
@@ -251,8 +252,9 @@ review** — `/pr` therefore runs in `reviewed` mode (Phase 9).
 ## Phase 5 — Security review + fix loop
 
 **Run only when the diff touches a security-relevant surface**: Swift source,
-`Package.swift`/`Package.resolved`, `.github/workflows/`, or
-`.claude/settings*`. Pure docs/markdown → skip. No scale-down on lite.
+`Package.swift`/`Package.resolved`, `.github/workflows/`, `.claude/settings*`,
+or **`.claude/workflows/`** (committed scripts that spawn agents and gate
+autonomous decisions). Pure docs/markdown → skip. No scale-down on lite.
 Invoke **`/security-review`** (findings only — the conductor fixes) and
 converge with the Phase 4 loop: fix each **High** (and any Medium with a
 concrete attack path) test-first where reproducible, commit, re-invoke, cap
@@ -378,7 +380,12 @@ after the gate**. Guidance:
   `skill-improvement-log.md` first** and skip anything already decided;
   **wait for explicit approval on each proposal — never edit a skill file
   unasked**; record **every** decision in the log (five-field format). No new
-  recurrence → say so and stop. **Auto:** the panel adjudicates instead.
+  recurrence → say so and stop. **Auto:** **not delegable** — the panel has no
+  Phase 11 decision point and the script throws if asked for one. An unattended
+  run must never edit and push the repo's own skill files (least of all the
+  panel script itself), so in auto mode it **records every proposal in
+  `skill-improvement-log.md` as `deferred — raised unattended, needs review`
+  and applies none**. Phase 11 is post-gate, so the run still completes.
 
 ## Phase 12 — Teardown on merge (reclaim the worktree)
 
