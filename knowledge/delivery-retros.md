@@ -44,6 +44,18 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 - **Deviations:** `/implement-plan` skipped (markdown + JS, no Canon TDD list);
   `/review-changes` replaced by the mapping review; Phase 5 run despite its
   self-skip. All three deliberate and recorded above.
+- **`watch:`** declared ready-to-merge with CI green, then a user-requested review
+  of the *newest* code (the two committed JS scripts and the three commits that
+  postdated the mapping review) returned **fix-first** with a **major**: the
+  fan-out validated its `args`/`checks` shape but not the *elements*, so the most
+  likely malformed input spawned agents on `undefined` names and reported full
+  coverage — in the commit whose whole purpose was making those guards
+  executable. Four smaller defects with it, including an over-redaction that
+  would have dead-linked every alert issue. **The readiness call was wrong**: the
+  review chain covered the plan, rule-preservation, security and AC conformance,
+  but nothing had read the last-written code as code. A post-ready review is not
+  redundancy here — it found what five earlier passes structurally could not.
+
 - **One improvement:** the pipeline has no gate for *"this change edits the skills
   the pipeline itself runs"*. Three separate defects came from that reflexivity —
   a rewritten `/deliver` grading itself, a plan whose ACs outlived their mechanisms,
