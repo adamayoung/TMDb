@@ -163,6 +163,35 @@ jobs. **Debug-green proves nothing here; run the release build.**
   cascades into member-level access (memberwise inits, nested types) — usually
   not worth it.
 
+### `git ls-tree` doesn't support `:!exclude` — and fails into an empty hash
+
+*2026-07-29.* Building a content stamp over "everything except `knowledge/`",
+the obvious form is a silent trap:
+
+```bash
+git ls-tree -r HEAD -- . ':!knowledge'   # fatal: pathspec magic not supported
+```
+
+`ls-tree` (unlike `git diff` / `git log` / `git ls-files`) has **no exclude
+pathspec magic**. Piped into `git hash-object --stdin`, the failure feeds it
+**empty stdin**, which hashes to git's empty blob
+`e69de29bb2d1d6434b8b29ae775ad8c2e48c5391` — *every time*. So two "stamps"
+compare **equal** and the check passes while measuring nothing. A textbook
+member of the **False green** family at the top of this file: the signal looks
+identical whether or not the thing being checked is broken.
+
+Use a line filter on the output instead — `ls-tree -r` emits
+`<mode> <type> <object>\t<path>`, so the tab keeps the path field unambiguous:
+
+```bash
+git ls-tree -r HEAD | grep -v $'\tknowledge/' | git hash-object --stdin
+```
+
+**Always sanity-check a hash against the empty blob** before trusting a
+pipeline that computes one. Verified while designing the `/deliver` resume
+stamp, which needs a hash that survives `/pr`'s rebase (so a commit sha is
+unusable) and ignores the pipeline's own `knowledge/` bookkeeping commits.
+
 ### The build/test tooling-runner runs in the main checkout, not the active worktree
 
 *2026-07-24.* During a `/deliver` in a worktree, the `tooling-runner` (Haiku)
@@ -186,6 +215,16 @@ untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
 `swift test --skip-build --scratch-path .build --filter
 "TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
 worktree CWD) still works if you need it.
+
+**Extended 2026-07-29** — the `Directory:` / `Status:` lines are now a
+**contract**, and refusals report in the same shape (`Status: refused —
+<reason>`). That closes a hole: a refusal is a *caller bug* and carried no
+`Status:` line, so a naive "missing lines ⇒ fall back to `make`" rule would
+have converted this loud detector into a silent success path — the exact
+failure it was built to prevent. Callers now branch on shape: `refused` →
+hard error, never a fallback; `passed`/`failed` → a real result; **absent or
+malformed** → the subagent died, the run is *void* (not failed), re-invoke once
+then fall back with disclosure. The four skills carry the table.
 
 ### `EnterWorktree` no longer uses the requested name as the branch name
 
