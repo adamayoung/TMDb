@@ -5,7 +5,7 @@
 - **Deciders:** Adam Young
 
 > **Amended in part by [ADR-0010](0010-tmdb-intelligence-product.md)
-> (2026-07-06, in the unreleased 19.0.0).** The decision below still holds for the
+> (2026-07-06, shipped in 19.0.0).** The decision below still holds for the
 > `TMDb` service mocks, but the natural-language-search doubles it describes
 > (`MockNaturalLanguageSearchService`, `SearchPlan.sample`) no longer ship in
 > `TMDbTesting` — they moved to the `TMDbIntelligenceTesting` product when the

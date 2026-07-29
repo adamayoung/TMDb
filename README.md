@@ -114,7 +114,7 @@ let package = Package(
   name: "MyProject",
 
   dependencies: [
-    .package(url: "https://github.com/adamayoung/TMDb.git", from: "18.0.0")
+    .package(url: "https://github.com/adamayoung/TMDb.git", from: "19.0.0")
   ],
 
   targets: [
