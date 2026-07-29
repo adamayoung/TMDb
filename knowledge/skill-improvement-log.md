@@ -30,6 +30,109 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-07-29 — Tooling-runner report becomes a shape-based contract · applied
+
+- **Pattern:** the four tooling skills had no handling for the *subagent* dying,
+  as distinct from the build failing — every recovery clause presupposed a
+  report existed, while "Do not run the build yourself" was unconditional. The
+  documented fallback lived only in `knowledge/gotchas.md`, which no skill reads.
+- **Decision:** callers branch on report **shape** — `Status: refused` (caller
+  bug) → hard error, never a fallback; `passed`/`failed` → a real result;
+  absent/malformed → void, re-invoke once, then `make -C <dir>` with disclosure.
+  Refusals now emit `Directory:`/`Status:` too. Applied to the four skills and
+  `tooling-runner.md`.
+- **Rationale:** the first draft would have reclassified a *deliberate* safety
+  refusal as void and fallen back silently — converting the loud caller-bug
+  detector built after #397 into exactly the failure it was built to prevent.
+  Shape is closed and checkable; a list of refusal strings is not.
+- **Reconsider when:** n/a.
+
+### 2026-07-29 — Live observation required before naming an integration cause · applied
+
+- **Pattern:** `/diagnose-integration-failure` never mentioned `mcp__tmdb__*`,
+  had no behaviour contract, and stated its "Likely cause" output contract
+  *before* its steps — so causes were named from logs alone, against CLAUDE.md's
+  standing "ALWAYS use the TMDb MCP server".
+- **Decision:** shape-drift and stale-data causes carry an `observed:` line or
+  are demoted to `unverified`; `/fix-integration-failures` re-runs the diagnosis
+  **once** and then proceeds marked unverified. Transient and in-diff-regression
+  causes are exempt. The redaction half is enforced **in
+  `integration-failure.yml`**, not in prose.
+- **Rationale:** the repo is public and the headless job pastes the diagnosis
+  verbatim into an issue body with `TMDB_API_KEY` mounted and no MCP — so a
+  "never paste the key" *rule* would have been decoration. Actions masks logs,
+  not issue bodies, so the scrub belongs at the last hop.
+- **Reconsider when:** n/a.
+
+### 2026-07-29 — /review-changes reports real fan-out coverage · applied
+
+- **Pattern:** the large path returned `dimensionsCovered` as a **static
+  constant**, and a dead agent mapped to `[]` findings — so "nobody looked" and
+  "nothing found" were byte-identical, in the tool meant to catch false greens.
+- **Decision:** each dimension resolves to `{key, ok, findings}`; the return
+  carries real `dimensionsCovered`, new `dimensionsMissing`, and `partial`. §3
+  requires the coverage line on the large path only.
+- **Rationale:** a prose rule could not have fixed this — the value it would
+  have required was a constant. The gate had to move into the script. Derivation
+  is in `.then` because a dead agent resolves to `null` rather than rejecting, so
+  a `.catch` would never have fired.
+- **Reconsider when:** n/a.
+
+### 2026-07-29 — /fix-pr-checks diagnosis fans out at >=2 checks · applied
+
+- **Pattern:** diagnosis is read-only and independent per check, but was always
+  serial.
+- **Decision:** fan out at two or more checks; single-check stays a direct Agent
+  call. Every prompt carries `DO NOT BUILD OR RUN TESTS`; args are validated
+  (`Array.isArray`) before any spawn; Haiku→Opus escalation is passed in via
+  args since a Workflow cannot see attempt history.
+- **Rationale:** review initially recommended cutting this outright — the routed
+  skills mandate local reproduction, so N agents meant N concurrent builds in
+  one worktree, and the args-string iteration failure once spawned ~281 agents.
+  Both are fixable with guards rather than fatal, so it ships with them.
+- **Reconsider when:** if a fan-out ever produces a concurrent build despite the
+  clause, cut the unit rather than adding more prose.
+
+### 2026-07-29 — Auto panel becomes three independent jurors in a script file · applied
+
+- **Pattern:** the auto panel was prose-only (no tool, schema, model pin, or
+  dead-agent rule) **and** methodologically empty: two of three verdicts were
+  fixed by role before evidence was read.
+- **Decision:** one round of three independent `opus`/`xhigh` jurors, free
+  schema-validated verdicts, asymmetric tally (a dead panel is not a proceed),
+  guards as literal `throw`s, Phase 11 removed from the delegable set. Lives at
+  `.claude/workflows/deliver-panel.js`. ADR-0016.
+- **Rationale:** a two-round advocates→jurors design was rejected as speculative
+  generality — 5 agents × 6 decision points for a mode never exercised. The file
+  placement is about **drift**, not tokens: an executed script cannot vary
+  between invocations the way a re-authored one can, and drift in a decision
+  procedure is a correctness bug.
+- **Reconsider when:** the jurors are exercised by a real auto run and the tally
+  proves too strict or too loose in practice.
+
+### 2026-07-29 — Durable /deliver run state, and a sweep that actually enumerates · applied
+
+- **Pattern:** four of eleven analysed sessions ended "partially achieved"
+  because work outran the transcript; the ledger is explicitly non-durable; and
+  the Phase 1 sweep listed a **CWD-relative** `.claude/worktrees/` that does not
+  exist inside a worktree, so it silently swept nothing while passing.
+- **Decision:** a run file at `.git/deliver/<id>.json` holding rubric,
+  decomposition and content-hash stamps; the gate is a **data dependency**
+  (Phase 6 reads the rubric from it, and a missing file or missing `reconciled`
+  block is a hard stop); liveness from the lock **PID**, not a timeout; sweep
+  scoped to `<main-root>/.claude/worktrees/` with removal keeping Phase 12's two
+  proofs. ADR-0015.
+- **Rationale:** the first design was blocked for data loss and a **circular**
+  gate (a ledger task blocking the call that destroys the ledger). Each
+  heuristic was replaced by a checkable fact; PID liveness and the stamp were
+  verified empirically, and the stamp's first command form turned out to be a
+  false green (`ls-tree` has no exclude pathspec, so both hashes were the empty
+  blob).
+- **Reconsider when:** resume is exercised by a genuinely interrupted run —
+  none has been, so the resume path itself remains unproven.
+
+---
+
 ### 2026-07-28 — Grade the rubric *before* capturing knowledge (#404) · applied
 
 - **Pattern:** a **single** occurrence, logged deliberately — the third time

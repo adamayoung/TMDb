@@ -16,6 +16,12 @@ not a ceremony (a handful of bullets):
   phases `0–9`; skills `review-plan, implement-plan, review-changes,
   security-review, capture-knowledge`). Telemetry for the recurring-pattern
   scan: which skills fire, which phases get skipped, where deliveries stop.
+- **`swept:`** — Phase 1's reconcile result, e.g.
+  `swept: 2 in scope / 1 reclaimed / 0 resumable / 1 reported`. **An entry
+  without this line means the sweep did not run** — the same tripwire as
+  Phase 0's `consulted:` and Phase 7's `swept:` report line, but stronger,
+  because the retro is committed and goes through PR review, so a human sees
+  the omission.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from the skill to do the right
