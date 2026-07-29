@@ -14,6 +14,43 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-07-29 — 🔧 Harden the delivery skills (chore/harden-delivery-skills) · full
+
+- **Phases / skills:** 0–9; `review-plan`, `security-review`, `capture-knowledge`,
+  `pr`. Substituted an adversarial *mapping* review for `/review-changes` (it
+  self-gates to nothing on a no-Swift diff) and **deliberately overrode Phase 5's
+  self-skip** — the diff touches `.github/workflows/` and introduces
+  `.claude/workflows/`. `consulted:` gotchas (False green; tooling-runner main-checkout;
+  EnterWorktree branch naming; lint pins), ADR-0009, ADR-0014.
+- **`swept:`** 1 in scope / 0 reclaimed / 0 resumable / 0 reported (this run's own
+  worktree, correctly classified `live` by its lock PID).
+- **What worked:** *review before writing*. Three plan-review rounds (37 + 9 + 11
+  findings) ran before a single file was edited, and they were not cosmetic — round
+  1 blocked v1 outright for **data loss** (the sweep would remove worktrees with
+  unpushed work) and **credential exposure** (this repo is public and the headless
+  job pastes diagnosis text verbatim into an issue). Round 2 caught that the ACs
+  still graded mechanisms the plan had just cut, which would have red-gated Phase 6
+  by construction. Round 3 caught that the *fix* for the sweep had widened its blast
+  radius to the main checkout. Editing first would have shipped all three.
+  **Verifying mechanisms instead of asserting them** also paid: the content-stamp
+  command's first form was a false green (`git ls-tree` has no exclude pathspec, so
+  both hashes were the empty blob and compared equal), and the panel's guard rails
+  were exercised live at `agent_count: 0`.
+- **Friction:** the plan file became a patch note layered over a superseded v1 —
+  the round-2 reviewer flagged the stale normative tail as a defect in itself, and
+  it had to be fully re-issued. Two cut units were then restored by user decision,
+  so scope oscillated mid-review. Context burn was heavy: ~57 findings across three
+  rounds plus a 505-rule inventory.
+- **Deviations:** `/implement-plan` skipped (markdown + JS, no Canon TDD list);
+  `/review-changes` replaced by the mapping review; Phase 5 run despite its
+  self-skip. All three deliberate and recorded above.
+- **One improvement:** the pipeline has no gate for *"this change edits the skills
+  the pipeline itself runs"*. Three separate defects came from that reflexivity —
+  a rewritten `/deliver` grading itself, a plan whose ACs outlived their mechanisms,
+  and a fan-out shipped as prose in the very PR arguing prose isn't a gate. A Phase 0
+  check that flags a self-modifying delivery and pins its verification to the
+  *original* text would have caught all three earlier.
+
 ## 2026-07-28 — 🐛 Company logo path & origin country optional (#404) · full
 
 - **Phases / skills:** 0–8 pre-PR; full weight (breaking public API +
@@ -437,42 +474,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   of the 2026-06-18 cluster was deferred in #368 too) — an archive pass is overdue
   next cycle.
 
-## 2026-06-30 — 🔧 Harden & extend the /deliver pipeline (audit P1–P5) (#368) · lite
-
-- **Phases / skills:** phases 0–6; `pr, watch-pr`. Skipped `/review-plan` (the
-  proposals came from an adversarial audit earlier this session; `/deliver`
-  invocation was approval); skipped `/implement-plan` (markdown-only — no Canon
-  TDD list); skipped code review + `/security-review` (no Swift, and the diff
-  touches none of the security triggers — `.github/CODE_REVIEW.md` and
-  `.claude/skills/**` are not `.github/workflows/` or `.claude/settings*`).
-  Knowledge captured **inline** (skill-improvement-log + tmdb-api-notes), not via
-  a separate `/capture-knowledge`.
-- **Worked:** the audit→plan→deliver chain held end-to-end for a *meta* change
-  (editing the pipeline's own skills). Full `make ci` clean first try (unit 2824,
-  integration 289 — no flake); the PR's path-aware CI resolved in ~1 min. Scoping
-  the run to **Part 1** (skills) up front and deferring codebase fixes A/B/C to
-  follow-on runs kept it cohesive. Absorbed two mid-run asks (P5 multi-PR; the
-  durable `Company.logoPath` note) without losing the thread.
-- **Friction:** (1) **the `TaskCreate` ledger reset twice** mid-run (after the MCP
-  reconnect / plan-mode exit) — phases tracked inline instead. **Second** delivery
-  to lose the ledger (cf. #364 "CWD-scoped, lost on EnterWorktree"). (2) **The
-  markdownlint `--fix` hook corrupted a paragraph** — an inline `#A` token was
-  rewritten into a real `# A")` H1 (MD025), caught by `make lint-markdown`; fixed
-  by rewording to "PR A/B/C". (3) **Docs fast-gate over-matched** — a review-spec
-  doc (`.github/CODE_REVIEW.md`) trips `^\.github/` → full `make ci` though it's
-  not build/test-affecting.
-- **Deviations:** none material — knowledge captured inline (as in #366) since it
-  was authored during implementation. The retro file is over its ~12 window;
-  archive-distil deferred to next cycle.
-- **Bug found in `/pr`:** the mode preamble says reviewed mode should "**skip steps
-  4–6**", but **step 4 is the mandatory `make ci` gate** — the per-step
-  annotations correctly mark 5–7 as the skippable review steps. Taken literally it
-  would skip the gate; I ran it regardless. Candidate fix (separate PR).
-- **One improvement:** ledger fragility now has **two** occurrences — resurface
-  the deferred `2026-06-18 file-based ledger` decision (its "reconsider when
-  interruptions actually bite" condition now holds), or have `/deliver` re-create
-  the ledger after an `EnterWorktree`/reconnect.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -480,6 +481,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-06-30 | #368 | lite | Hardened the `/deliver` pipeline from an adversarial audit (P1–P5). Established the pattern this repo keeps returning to: an unenforceable process rule gets silently skipped, so encode the ones that matter as blocking gates (the Phase 3a/4a reference-unit review became a ledger task that blocks a later phase). Also the first delivery to skip code review and `/security-review` on a no-Swift diff — the self-gating that later had to be overridden deliberately when a docs-only change carried real risk. |
 | 2026-06-25 | #366 | lite | Migrated the skills from the `gh` CLI to the GitHub MCP (ADR-0009), dogfooded end-to-end. The 3-critic plan review paid for itself pre-edit: it caught that `add_reply_to_pull_request_comment` needs a REST comment id `get_review_comments` doesn't expose (so thread replies stay on `gh`), and a wrong method name. Real cost was a registration detour — the hosted `/x/<toolset>` paths are **exclusive**, so pointing at `/x/actions` silently dropped the default PR toolset mid-implementation; `/x/all` fixed it. Lesson that generalises: when a delivery edits the very skills the pipeline runs, the skill registry loads from the main checkout, so the change can only be dogfooded by the conductor acting manually until merge. |
 | 2026-06-24 | #365 | lite | Entry/exit criteria + auto-start for `/deliver`. The docs/config fast-gate correctly classified it (CI green in under 2 min). Lasting lesson: auto-start on `ExitPlanMode` approval is a **soft guarantee** — no harness hook fires on it, so it depends on the model reading the contract. First delivery under the new AC entry gate, and the plan had no formal ACs (circular dependency, noted); its "one improvement" — put an inline `Given X, when Y, then Z` example in the gate prompt — still stands. Its `reviewThreads`/`gh pr view --json` gotcha was superseded by #366 (the MCP migration removed the call) and is deliberately not carried forward. |
 | 2026-06-24 | #364 | lite | Percent-encode URL path segments + validate `String` IDs (ADR-0008). The security review's end-to-end trace through `urlFromPath`'s `URLComponents` round-trip is what made the fix trustworthy (and found the `%2F`→`/` decode, correctly bounded as path-only on a locked host). Lesson that became skill policy: for "fix every instance of pattern X", do **one type-driven enumeration of all sites up front** — here the planning grep, `/security-review`, code review, and `claude-review` each found a *different subset*. |

@@ -226,6 +226,58 @@ hard error, never a fallback; `passed`/`failed` → a real result; **absent or
 malformed** → the subagent died, the run is *void* (not failed), re-invoke once
 then fall back with disclosure. The four skills carry the table.
 
+### Worktrees: the lock outlives the session, and `.claude/worktrees/` isn't there
+
+*2026-07-29.* Four facts that together broke `/deliver`'s GC sweep, all verified
+first-hand while rewriting it:
+
+1. **`.claude/worktrees/` is a CWD-relative path that does not exist *inside* a
+   worktree.** Any sweep doing `ls .claude/worktrees/` from a worktree
+   enumerates **nothing** and reports success — a garbage collector that is
+   clean because it looked in the wrong place (**False green**, top of this
+   file). Enumerate with **`git worktree list --porcelain`**.
+2. **That listing reports the *main checkout* first**, and every worktree of the
+   repo — including any you made by hand, anywhere on disk. Filter to
+   `<main-root>/.claude/worktrees/` before acting, or a sweep will happily
+   remove a workspace `/deliver` never created.
+3. **`EnterWorktree` *locks* its worktree**, and the lock **outlives the session
+   that made it**:
+
+   ```text
+   .git/worktrees/<name>/locked
+   claude session <branch> (pid 85995 start Wed Jul 29 19:28:23 2026)
+   ```
+
+   `git worktree remove --force` **refuses on a locked worktree**, so the
+   dead-session worktrees a sweep most wants to reclaim are exactly the ones it
+   cannot — while happily reporting them reclaimed. **`git worktree unlock
+   <path>` first**, and `test -d` afterwards before counting a reclaim.
+   The lock's PID is also the only *fact* about liveness: test it (`kill -0`)
+   rather than guessing from a file's age.
+4. **`git rev-parse @{u}` errors** (rather than returning false) on a
+   never-pushed branch, so an "is it pushed?" proof must treat that as
+   *unproven*, not as *failed*.
+
+Related: `ExitWorktree` only removes worktrees **it** created this session — one
+entered via `EnterWorktree(path:)` must be removed with `git worktree remove`
+by hand, or the call silently no-ops while you report a reclaim
+([ADR-0015](decisions/0015-durable-deliver-run-state.md)).
+
+### The `Workflow` tool resolves a repo-relative `scriptPath`
+
+*2026-07-29.* The three embedded-script skills describe `scriptPath` only as
+"the file path the `Workflow` tool returns", which reads as tool-managed. It
+also accepts a **repo-relative path** — `Workflow({ scriptPath:
+'.claude/workflows/deliver-panel.js' })` resolves and executes. That is what
+makes a committed, version-controlled workflow script viable rather than
+re-authored prose.
+
+Two testing notes: a script's **argument-validation `throw`s run before any
+agent spawns**, so guard rails can be exercised for free (the run fails with
+`agent_count: 0`); and such a script **cannot be run standalone** with `node` —
+it uses harness globals (`agent`, `parallel`, `phase`, `log`, `args`) and a
+top-level `return`. Test it by extracting the body and supplying stubs.
+
 ### `EnterWorktree` no longer uses the requested name as the branch name
 
 *2026-07-05.* `EnterWorktree(name: "chore/deliver-retro-before-pr")` created the
