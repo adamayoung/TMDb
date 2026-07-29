@@ -13,15 +13,11 @@ deferred *because* it is breaking. **Remove an entry when it ships** (the
 CHANGELOG records it) or is rejected outright (record that in
 `skill-improvement-log.md`).
 
-> **Status as of 2026-07-28: 19.0.0 is assembled but *not tagged*** — the
-> newest tag is `18.2.0` while `CHANGELOG.md` already carries a `[19.0.0]`
-> section. Everything below is therefore **still eligible for 19.0.0**, not
-> deferred to 20.0.0. That call is the maintainer's; this note exists so it is
-> made deliberately rather than by the window closing unnoticed a second time.
->
-> **First use of this file worked:** the `Company.logoPath` fix shipped into the
-> 19.0.0 window on 2026-07-28 because this queue was read, one day after it was
-> written. Remove the status note once 19.0.0 is tagged.
+> **This file has earned its keep once.** It was written on 2026-07-27 and read
+> on 2026-07-28, while 19.0.0 was assembled but still untagged — which is the
+> only reason the `Company.logoPath` decode bug (#404) made that release instead
+> of waiting for 20.0.0. The next window is **20.0.0**; everything below is
+> queued for it.
 
 ## Backlog
 

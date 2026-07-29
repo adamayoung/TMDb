@@ -1,6 +1,6 @@
 # ADR-0010: Extract on-device intelligence into a `TMDbIntelligence` product
 
-- **Status:** Accepted (in 19.0.0, unreleased)
+- **Status:** Accepted (shipped in 19.0.0)
 - **Date:** 2026-07-06
 - **Deciders:** Adam Young
 

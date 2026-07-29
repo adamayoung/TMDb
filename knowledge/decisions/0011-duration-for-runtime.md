@@ -1,6 +1,6 @@
 # ADR-0011: Represent runtimes as `Duration`, bridging integer minutes at the wire boundary
 
-- **Status:** Accepted (in 19.0.0, unreleased)
+- **Status:** Accepted (shipped in 19.0.0)
 - **Date:** 2026-07-24
 - **Deciders:** Adam Young (with Claude Code)
 
