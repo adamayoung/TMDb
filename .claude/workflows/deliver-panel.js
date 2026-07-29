@@ -52,7 +52,9 @@ const input = typeof args === 'string' ? JSON.parse(args) : args
 if (!input || typeof input !== 'object') {
   throw new Error('deliver-panel: args must be an object (or a JSON string encoding one).')
 }
-if (!POINTS[input.decision]) {
+// `hasOwnProperty.call`, not a bare lookup: `POINTS['constructor']` and friends
+// walk the prototype chain and would pass a bare truthiness guard.
+if (!Object.prototype.hasOwnProperty.call(POINTS, input.decision)) {
   throw new Error(
     `deliver-panel: "${input.decision}" is not a delegable decision point. ` +
       `Auto mode may only panel: ${Object.keys(POINTS).join(', ')}. Anything else is a hard stop — ` +

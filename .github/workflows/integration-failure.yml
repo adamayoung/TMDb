@@ -111,6 +111,44 @@ jobs:
             cause is transient (re-run territory) or a genuine regression you
             should not auto-fix, open no PR and explain in `claude-analysis.md`.
 
+      # The agent authors a PR body/title itself via `gh pr create`, which
+      # publishes to this PUBLIC repo on a path the issue-step scrub never sees.
+      # Same threat, second hop — so scrub it in place, after the fact.
+      - name: Scrub secrets from the agent-authored PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_PAGER: cat
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
+          TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          [ -s pr-url.txt ] || { echo "No PR opened — nothing to scrub."; exit 0; }
+          PR_URL=$(head -n1 pr-url.txt)
+
+          # Literal substitution first (bash `${x//lit/}` is not a glob match, so
+          # metacharacters in a secret are handled), then the generic patterns.
+          redact() {
+            local text="$1" v
+            for v in "${TMDB_API_KEY:-}" "${TMDB_USERNAME:-}" "${TMDB_PASSWORD:-}"; do
+              [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
+            done
+            printf '%s' "$text" \
+              | sed -E 's/(api_key=)[^&"[:space:]]+/\1***REDACTED***/g' \
+              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g'
+          }
+
+          BODY=$(gh pr view "$PR_URL" --json body -q .body)
+          CLEAN=$(redact "$BODY")
+
+          if [ "$CLEAN" != "$BODY" ]; then
+            gh pr edit "$PR_URL" --body "$CLEAN"
+            echo "::warning::Redacted a secret from the agent-authored PR body of $PR_URL"
+          else
+            echo "PR body clean."
+          fi
+
       - name: Create or update failure issue
         if: always()
         env:
@@ -122,10 +160,13 @@ jobs:
           RUN_DATE: ${{ github.event.workflow_run.created_at }}
           # Who to ping. Change if you ever want to notify someone else.
           NOTIFY: adamayoung
-          # Needed to scrub the key out of anything we publish. This repo is
+          # Needed to scrub secrets out of anything we publish. This repo is
           # PUBLIC and everything below lands in an issue body, so this is the
-          # last hop where a leak can still be stopped.
+          # last hop where a leak can still be stopped. All three are mounted
+          # into the diagnosing agent, so all three can appear in its output.
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
+          TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
         run: |
           set -euo pipefail
 
@@ -141,10 +182,10 @@ jobs:
           # the literal value and the generic pattern are removed: the pattern
           # also covers a key that never came from this secret.
           redact() {
-            local text="$1"
-            if [ -n "${TMDB_API_KEY:-}" ]; then
-              text="${text//"$TMDB_API_KEY"/***REDACTED***}"
-            fi
+            local text="$1" v
+            for v in "${TMDB_API_KEY:-}" "${TMDB_USERNAME:-}" "${TMDB_PASSWORD:-}"; do
+              [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
+            done
             printf '%s' "$text" \
               | sed -E 's/(api_key=)[^&"[:space:]]+/\1***REDACTED***/g' \
               | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g'
