@@ -172,7 +172,8 @@ implementation = separate `/deliver` sessions.)
 Procedures and traps:
 [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
 
-1. **Write the run file, then reconcile — both before `EnterWorktree`.**
+1. **Reconcile before `EnterWorktree`** (the run file already exists — Phase 0
+   wrote it; record the sweep *into* it, never mint a second one).
    Enumerate with **`git worktree list --porcelain`** (never
    `ls .claude/worktrees/` — that path doesn't exist inside a worktree, so the
    old sweep silently swept nothing), scoped to
@@ -397,8 +398,7 @@ after the gate**. Guidance:
   Critical/High thread, routed flake, wrong readiness call): append a
   one-line `watch:` bullet, commit, push — on the PR branch (watch-only), or
   a fresh branch off `origin/main` as a small follow-up PR (`merge`/auto
-  mode, before teardown; the same routing applies to any skill edits the auto
-  scan commits). Uneventful watch → don't touch it.
+  mode, before teardown). Uneventful watch → don't touch it.
 - **Any post-gate push re-opens the gate** — after the last exceptional push
   (amendment or approved skill edit), run the `/watch-pr` loop once more on
   the new tip before merge.

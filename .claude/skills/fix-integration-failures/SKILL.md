@@ -126,9 +126,11 @@ Run the failing suite locally to reproduce — `/integration-test` (or
 - **TMDb backend / response-shape change** (a field added, removed, renamed, or now
   nullable) → fix the Swift model / `CodingKeys` / fixture **test-first**
   (`canon-tdd`): add a failing unit test + a JSON fixture matching the *current*
-  live shape — **take it from the diagnosis's `observed:` line**, which already
-  recorded today's response, rather than re-deriving it; cross-check the
-  OpenAPI spec for the documented shape — then the model fix.
+  live shape. The diagnosis's `observed:` line tells you **which** endpoint
+  drifted and how, but it is a one-line summary (and `unavailable` headless) —
+  **not** a response body, so it cannot source a fixture. **Fetch the real
+  response with `mcp__tmdb__*`** and build the fixture from that, cross-checking
+  the OpenAPI spec for the documented shape — then the model fix.
 - **Stale assumed data** (a test asserts a specific live title, count, id, date, or
   ordering that drifted) → relax the integration assertion to verify **behaviour,
   not a brittle exact value** (e.g. assert non-empty / a stable property / `>= 1`

@@ -48,7 +48,7 @@ tallied.
 **live** jurors **and** at least two live jurors; everything else is `stop`. So
 3 live → 2 of 3; 2 live → both must agree (a 1-1 is a `stop`); ≤1 live → `stop`,
 `degraded: true`. **A dead panel is not a proceed** — Phase 6's *"a dead grader
-is not a pass"* (`SKILL.md:280`) applied here. The asymmetry is justified, not
+is not a pass"* (Phase 6) applied here. The asymmetry is justified, not
 squeamish: `stop` hands back to a human and is recoverable; `proceed` may not be.
 
 **The conductor may not state a preference.** `args` carries facts only —

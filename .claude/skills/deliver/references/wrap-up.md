@@ -97,8 +97,11 @@ The loop that turns one-off retros into reviewed skill improvements:
 3. **Stop and ask.** **Do not edit any skill files.** Present the proposals
    and wait for **explicit approval on each one**. If no *new* pattern recurs
    across multiple entries, say so and stop — emit no proposals.
-   (**Auto:** the panel reviews each proposal instead — see
-   `references/auto-and-async.md`.)
+   (**Auto:** **not delegable** — the panel has no Phase 11 decision point and
+   the script throws if asked for one. Record every proposal in
+   `skill-improvement-log.md` as `deferred — raised unattended, needs review`
+   and apply none; an unattended run must never edit the repo's own skill
+   files. See `references/auto-and-async.md`.)
 4. **Record every decision in the log**, in the five-field format documented
    at the top of `skill-improvement-log.md` (date · title · status; Pattern /
    Decision / Rationale / Reconsider when) — **applied** (with the skill +
