@@ -45,8 +45,23 @@ extension TMDbFactory {
         )
     }
 
+    static func v4APIClient(credential: APICredential, httpClient: some HTTPClient) -> some APIClient {
+        ErrorMappingAPIClient(
+            apiClient: TMDbAPIClient(
+                credential: credential,
+                baseURL: tmdbAPIv4BaseURL,
+                serialiser: serialiser(),
+                httpClient: httpClient
+            )
+        )
+    }
+
     static func authenticateURLBuilder() -> some AuthenticateURLBuilding {
         AuthenticateURLBuilder(baseURL: tmdbWebSiteURL)
+    }
+
+    static func v4AuthenticateURLBuilder() -> some V4AuthenticateURLBuilding {
+        V4AuthenticateURLBuilder(baseURL: tmdbWebSiteURL)
     }
 
     static func makeServiceDependencies(
@@ -63,7 +78,9 @@ extension TMDbFactory {
         return TMDbServiceDependencies(
             apiClient: apiClient(credential: credential, httpClient: wrappedHTTPClient),
             authAPIClient: authAPIClient(credential: credential, httpClient: wrappedHTTPClient),
-            authenticateURLBuilder: authenticateURLBuilder()
+            v4APIClient: v4APIClient(credential: credential, httpClient: wrappedHTTPClient),
+            authenticateURLBuilder: authenticateURLBuilder(),
+            v4AuthenticateURLBuilder: v4AuthenticateURLBuilder()
         )
     }
 
@@ -130,6 +147,10 @@ extension TMDbFactory {
 
     private static var tmdbAPIBaseURL: URL {
         URL.tmdbAPIBase
+    }
+
+    private static var tmdbAPIv4BaseURL: URL {
+        URL.tmdbAPIv4Base
     }
 
     private static var tmdbWebSiteURL: URL {
