@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-07 — ✨ TMDb v4 authentication (`feature/v4-list-reads`) · full
+## 2026-08-07 — ✨ TMDb v4 authentication (#409) · full
 
 - **Phases / skills:** 0–9; `review-plan`, `implement-plan`, `review-changes`
   (2 iterations), `security-review`, `capture-knowledge`, `pr`. `consulted:`
