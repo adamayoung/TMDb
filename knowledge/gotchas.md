@@ -39,6 +39,21 @@ Instances, each with its countermeasure:
   gate test passed while unable to see joining callers: green by coincidence,
   flaky by construction (#401). *Check: make the assertion fail once (break
   the code or the input) before trusting its green.*
+- **A new check wired only into `make`** — a lint gate added to the `lint`
+  target never ran in CI, because the `Lint` job invokes `swiftlint` and
+  `swiftformat` as inline steps and no workflow calls `make` at all. Green CI
+  meant "nobody checked" (2026-08-07). *Check: grep `.github/workflows/` for
+  the tool you just wired — see Tooling.*
+- **A checker that passes on an empty scan** — pointed at a typo'd path, a
+  static analyser found zero sites, satisfied "no violations", and exited 0.
+  Its green was byte-identical to a clean tree's (2026-08-07). *Check: compare
+  against an expected **set**, not a threshold, so an empty result fails; and
+  run the analyser against a deliberately wrong input before trusting it.*
+- **N mechanical edits reported, wrong symbols edited** — a sweep script did a
+  first-occurrence `str.replace` per file, so it stripped the default argument
+  from `favouriteMovies` rather than `lists`, and still reported exactly the 36
+  edits expected (2026-08-07). *Check: a matching edit **count** is not
+  evidence; assert each edit landed on the symbol it was aimed at.*
 
 The same discipline applies to this knowledge base: an entry that reads
 confidently is not thereby true. `/review-knowledge` audits it against the tree.
@@ -47,6 +62,25 @@ When an instance's countermeasure becomes tooling-enforced, its bullet may be
 retired; the family heading stays.
 
 ## Tooling
+
+### No workflow runs `make` — a check added to a `make` target does not reach CI
+
+*2026-08-07.* The `Makefile` and CI are **parallel implementations**, not one
+delegating to the other. `.github/workflows/ci.yml`'s `Lint` job downloads
+pinned binaries and runs `swiftlint --strict .` / `swiftformat --lint .` as two
+inline steps; `build-test` runs `swift build` / `swift test` directly. Grep
+confirms it: **`make` appears nowhere in `.github/workflows/`** except inside
+comments.
+
+So adding a step to the `lint` target (or to `ci`) gates only a local
+`make ci` — an outside contributor, a GitHub-web edit, or a headless
+`/fix-integration-failures` run (which verifies with the targeted suite, not
+`make ci`) sails past it with a fully green CI. `Scripts/check-defaulted-witnesses.py`
+shipped this way for one review round before it was caught.
+
+**Wire a new check in both places**, and add its inputs to the `changes`
+paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
+skips the whole job that runs it.
 
 ### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
 
