@@ -69,6 +69,60 @@ decoder handles both, so a v4 decoder needs a strategy that tries each in turn.
   field of their own, so a per-item comment must be stitched in from that dict.
 - **Create returns HTTP 201** with `id` — not v3's `list_id`. Delete returns
   `status_code` 13.
+- **Add-items accepts a per-item `comment`, answers `success: true`, and stores
+  nothing.** Only `PUT /4/list/{id}/items` persists one. So an add-items input
+  model must *not* expose a comment field, or it is a parameter that silently
+  does nothing.
+- **A write's `success` describes the request, not the items.** Removing an item
+  that is not in the list returns overall `success: true` with that item's
+  per-item `success: false`. Always read `results[]`.
+
+### `{"public": false}` is ignored on create; `{"public": 0}` is honoured
+
+*2026-08-07.* `POST /4/list` accepts a visibility field, but only as an
+**integer**. Sending the boolean `false` returns a list that reads back
+`public: true`; sending `0` produces a private list. `is_public` and `private`
+are ignored entirely. `PUT /4/list/{id}` accepts *either* form, so the asymmetry
+is specific to create.
+
+This is why the v4 auth work concluded "TMDb ignores the visibility field" and
+nearly shipped without the parameter — the probe had sent a boolean. **Prove a
+field is honoured by reading the resource back, and if it appears ignored, try
+the other wire type before concluding anything.** The same endpoint reports
+`public` as a bool on read while requiring an int on create.
+
+### `sort_by` is honoured on create, update **and read**, with exactly ten values
+
+*2026-08-07.* `GET /4/list/{id}?sort_by=title.desc` genuinely reorders the
+response — it is not decoration, so a client wrapping this endpoint needs a sort
+parameter on its *read* methods, not only on create and update.
+
+Accepted values, each confirmed by setting it and reading the list back:
+`original_order`, `vote_average`, `primary_release_date`, `release_date` and
+`title`, each `.asc` and `.desc`. **Rejected** (`success: false`, value
+unchanged): `popularity`, `runtime`, `revenue`, `first_air_date`, `vote_count` —
+several of which *are* valid on the v3 discover endpoints, so the sets are not
+interchangeable. A new list defaults to `original_order.asc`.
+
+### List creation is spam-filtered — `status_code` 18
+
+*2026-08-07.* Creating several lists in quick succession, with
+machine-looking names (`probe 24985`, `probe 7122`, …), gets them rejected with:
+
+```json
+{"success": false, "status_code": 18, "status_message": "Validation failed.",
+ "errors": ["Content is suspected to be spam"]}
+```
+
+Two consequences. An integration suite that creates a list per test can trip
+this in CI, so create once per run with a plausible name — and do **not** turn
+the rejection into a skip, or a run that created nothing looks exactly like one
+that worked.
+
+And the diagnostic trap: ten identical failures across a parameter sweep read as
+a definitive answer about the *parameter*. Here they were a rate limit, and only
+the error **body** disproved it. A uniform failure across a sweep is evidence
+about the sweep, not about what you were varying.
 
 ## HTTP caching
 

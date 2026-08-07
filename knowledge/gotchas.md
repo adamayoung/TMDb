@@ -816,21 +816,37 @@ separator. That residual is path-only — `urlFromPath` force-overrides
 (no SSRF). If you ever need to neutralise `/` too, encode after the round-trip
 (set `percentEncodedPath`) rather than relying on the segment encoder alone.
 
-### Bearer-token clients share one credential-free `URLCache` key space
+### Caching a credentialed response: the predicate is "needs a user", not "has a header"
 
-- `TMDbClient(bearerToken:)` (v4 auth) sends the token as an
-  `Authorization: Bearer` header, so — unlike `api_key` mode — the credential is
-  **not** in the request URL. That's the point (keys stay out of logs/proxies),
-  but it means the process-wide default `URLCache` (and the opt-in
-  `CacheHTTPClient`, which keys on `request.url.absoluteString`) no longer
-  partitions cache entries by credential. Two bearer clients with **different**
-  tokens in one process can therefore serve each other cache hits.
-- This is **benign today**: the affected v3 `GET` endpoints return app-level
-  public data identical across tokens, and user-specific requests carry
-  `session_id` in the URL (distinct cache keys, and `CacheHTTPClient` bypasses
-  session requests entirely). It would only matter if TMDb started returning
-  token-specific data on an otherwise-public GET — worth remembering before
-  relying on per-token cache isolation.
+*Rewritten 2026-08-07, when v4 lists made this real.* Both caches key on the URL
+alone — `CacheHTTPClient` on `request.url.absoluteString`, and the process-wide
+`URLCache` on the URL too. A v4 list read carries its user token in a **header**,
+so two different users requesting one list send byte-identical URLs: a URL-keyed
+cache would serve one user's private list to another.
+
+The fix that looks obvious — bypass any request with an `Authorization` header —
+is wrong, and it took a review to notice. A `TMDbClient(bearerToken:)` sends that
+header on **every** request, including wholly public ones, because it is the
+*application's* API Read Access Token. Keying on the header would disable
+caching for every such client while protecting nothing.
+
+So `HTTPRequest.isUserSpecific` is set by `TMDbAPIClient` — the only component
+that sees a request *before* the client credential is applied, and can therefore
+tell a per-call credential from the client's own. It covers all three user-scoped
+mechanisms: a v4 access token, a v3 `session_id`, and a guest session.
+
+The v3 mechanisms matter for a different reason, which is easy to wave away: they
+put the credential in the URL, so keys already differ per user and nothing
+crosses between them. But the response is still one person's watchlist being
+written to a cache that is process-wide and survives relaunch. *No cross-user
+leak* is not the same as *safe to store*.
+
+Both layers act on the flag, and both are needed: `CacheHTTPClient` bypasses,
+and `URLSessionHTTPClientAdapter` routes through a second session with
+`urlCache = nil`. A cache *policy* alone stops a stale read but not the write.
+That second session copies the injected session's configuration rather than
+building a fresh one — otherwise tests injecting a `MockURLProtocol` session
+would silently reach the live network, and the bypass would be untestable.
 
 ## Swift concurrency
 

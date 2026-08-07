@@ -14,6 +14,58 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-07 — ✨ TMDb v4 lists, `client.v4Lists` (#TBD) · full
+
+- **Phases / skills:** 0–8 pre-PR. `consulted:` ADR-0017 (its four open
+  decisions are what this settles), ADR-0005/0008/0011, gotchas *bearer-token
+  URLCache*, *False green*, *file_length*; tmdb-api-notes v4 section; wiki
+  *bridge-a-wire-type-to-a-domain-type*, *prove-an-api-honours-a-field-by-
+  reading-it-back*, *only-auto-retry-idempotent-operations*,
+  *ship-your-packages-test-doubles-as-a-public-product*. Plan Fable-reviewed
+  before delivery (3 majors applied).
+- **Worked — Phase 0 probing changed the shipped API twice, and both were
+  unfixable later.** `details`/`items` take `sortedBy:` because the read-side
+  `sort_by` turned out to be honoured; adding a protocol requirement afterwards
+  is source-breaking. And `create(isPublic:)` ships after all — ADR-0017 had
+  concluded TMDb ignores the field, but it ignores the *boolean* and honours the
+  *integer*. The earlier conclusion came from a probe that sent a bool. Reading
+  the resource back is what caught both.
+- **Worked — the count-reconciliation assertion caught a real drop on its first
+  outing.** The `V4List` round-trip failed because `Show.encode` writes no
+  `media_type`, so every encoded item failed to decode and `FailableDecodable`
+  silently dropped the lot — an empty list, no error. Exactly the failure the
+  assertion was added for, found within minutes of adding it.
+- **Friction — I misread a rate limit as an API verdict.** Ten identical
+  "rejected" results across a `sort_by` sweep looked like a definitive answer
+  about `sort_by`. They were TMDb's spam filter (`status_code` 18) reacting to
+  rapid list creation, and only the error *body* disproved it. A uniform failure
+  across a parameter sweep is evidence about the sweep, not the parameter. Now
+  an api-note.
+- **Friction — my own cleanup didn't run.** A probe script's `EXIT` trap never
+  fired and orphaned four lists on Adam's account until I enumerated and deleted
+  them. The integration suite's teardown therefore *enumerates* the account
+  rather than trusting a remembered id, so an interrupted run self-heals.
+- **Deviations:** (1) A **correction mid-delivery**: I told Adam the API key and
+  password were committed in `Integration.xctestplan`. They are not — the file is
+  gitignored and absent from HEAD. They *were* committed in 2023 and remain in
+  public history, so rotation is still the remedy, but the "blank the values"
+  work item was struck as a no-op. I had read the file off disk and never run
+  `git ls-files`. (2) Adam corrected the cache criterion mid-flight — my flag
+  only covered v4 per-call tokens, leaving v3 session and guest-session responses
+  on disk. Widened to "requires a user's credential", which is the right
+  predicate and should have been the first one.
+- **One improvement:** two of this delivery's three bugs were *my probe scripts*
+  lying — the trap that never ran, and the sweep that misattributed a rate
+  limit. Live-API probing has become a core part of how this repo establishes
+  truth, but the scripts doing it get none of the rigour the Swift does: no
+  review, no assertion that cleanup happened, no check that a uniform result
+  isn't an artifact. A probe worth trusting should end by *verifying its own
+  postcondition* — here, enumerating the account and asserting it is empty.
+- **`swept:`** Makefile, .github/workflows/integration.yml,
+  integration-failure.yml → 1 entry rewritten (gotchas *bearer-token clients
+  share one credential-free URLCache key space*, now false in every particular);
+  skill-improvement-log citations of integration-failure.yml still accurate.
+
 ## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · medium
 
 - **Phases / skills:** 0–8 pre-PR. `consulted:` gotchas *defaulted-argument
@@ -483,31 +535,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   standalone invocations (deliberately out of scope this run; noted in the
   plan).
 
-## 2026-07-05 — ♻️ Restructure /deliver for progressive disclosure (#383) · lite
-
-- **Phases / skills:** phases 0–9 (new numbering); markdown-only so the Swift
-  review gates self-skipped — but the plan's **rule-inventory mapping check**
-  ran as a dedicated adversarial `code-reviewer` pass instead (the diff's real
-  risk was rule loss, not code). Stacked dependent PR: branched off
-  `chore/deliver-retro-before-pr` (#382), base retargets on its merge.
-- **Worked:** the **inventory-first** method — extract every load-bearing rule
-  with a destination *before* rewriting, then have an independent reviewer
-  diff old-vs-new against it. The reviewer confirmed all ten known
-  load-bearing rules survived in the core and caught **8 real text drops**
-  (1 Medium, 7 Low — e.g. the merge/auto-mode routing for scan-applied skill
-  edits), all restored. 915 → 343 core lines + four on-demand reference
-  files.
-- **Friction:** the ≤~350-line AC needed a second compression pass (first
-  rewrite landed at 401) — line budgets are easy to overshoot while
-  preserving every rule.
-- **Deviations:** `/pr`'s rebase-onto-`origin/main` step doesn't apply to a
-  stacked PR (it would fold the dependency's diff into this one) — based on
-  the dependency branch instead, per `/watch-pr`'s stacking guidance.
-- **One improvement:** the mapping-check-in-lieu-of-code-review worked well
-  for a docs-structure diff; if meta-changes to `.claude/skills/**` recur,
-  consider making "no-Swift but skill-structure diff → run a rule-loss
-  review" an explicit branch in the review phase.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -515,6 +542,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-05 | #383 | lite | Restructured `deliver/SKILL.md` for progressive disclosure — a lean core plus `references/` loaded on demand — after the skill had grown past what fits in working context. Paired with an adversarial mapping review that diffed old against new hunting specifically for dropped or weakened rules, which is the practice that made the compression safe and is now the wiki entry *restructure-a-normative-doc-with-a-rule-inventory-and-an-adversarial-mapping-review*. |
 | 2026-07-05 | #382 | lite | Moved the `/deliver` retro to pre-PR so it rides the delivery's own PR instead of re-opening the ready gate. Both open design decisions were settled with the user via `AskUserQuestion` *before* any edit, and the change was dogfooded immediately — its own entry was written under the sequencing it introduced. Surfaced the `EnterWorktree` gotcha: the tool ignores the requested name for the **branch** (`git branch -m` after entering), now a `gotchas.md` entry and a standing Phase 1 step. |
 | 2026-07-02 | #374 | lite | Reconciled docs/config honesty gaps from two external reviews. The lasting lesson is **verify a review's claims before acting on them**: an 18-agent read-only pass opened and counted every assertion in-repo and caught real overstatements (eight tools not seven, 84 request files not ~95, `.unsupportedLanguage` reachable rather than dead), so only the verified, softened subset shipped — the origin of the wiki heuristic *treat review findings as hypotheses*. Also diagnosed the xcsift false-failure: a benign DocC "unhandled file" warning lands in toon's `errors[]` and flips `status:` to failed on an exit-0 build, so the four build/test skills now say trust the exit status, not the summary. |
 | 2026-06-30 | #368 | lite | Hardened the `/deliver` pipeline from an adversarial audit (P1–P5). Established the pattern this repo keeps returning to: an unenforceable process rule gets silently skipped, so encode the ones that matter as blocking gates (the Phase 3a/4a reference-unit review became a ledger task that blocks a later phase). Skipped code review and `/security-review` on its no-Swift diff (as #365 and #366 had) — the self-gating that #407 later had to override deliberately, when a docs-only change carried real risk. |
