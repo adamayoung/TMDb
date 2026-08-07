@@ -6,29 +6,91 @@ matching. So a convenience in a `public extension` whose parameter list matches
 a protocol requirement's after erasing defaults silently becomes that
 requirement's default implementation — and a third-party conformer that omits
 the requirement compiles, then recurses until the stack overflows, where a
-compile error was intended.
+compile error was intended. See knowledge/gotchas.md.
 
 Two invariants, both enforced here because neither swiftlint nor a regex can
-express them (they need cross-symbol matching):
+express them: they need cross-symbol matching between a protocol and its
+extension, which no single-file linter sees.
 
   1. NO site may have exactly one defaulted parameter. Those are fixable for
      the cost of a single dropped-parameter overload, so there is never a
      reason to leave one.
-  2. The number of multi-default sites must equal EXPECTED_MULTI_DEFAULT
-     exactly. Those need the power set of overloads to stay call-site
-     compatible, so they are deliberately deferred (knowledge/next-major.md).
-     The comparison is `!=`, not `>`, for two reasons: a *new* hazard must
-     fail, and so must a scan that silently found nothing — a checker whose
-     green is indistinguishable from "it never ran" is not a checker.
+  2. The multi-default sites must be EXACTLY the set in DEFERRED below. Those
+     need the power set of overloads to stay call-site compatible, so they are
+     deliberately deferred to the next major (knowledge/next-major.md).
 
-Lower EXPECTED_MULTI_DEFAULT as they are fixed; at zero, delete this script.
+Invariant 2 is a set comparison rather than a count for two reasons. A count
+lets a fix and a regression cancel out to the same number and pass green. And
+a count of zero — which is what a scan that silently found nothing produces —
+would satisfy "at most 54"; a checker whose green is indistinguishable from
+"it never ran" is not a checker.
+
+When you fix a deferred site, delete its line from DEFERRED. At empty, delete
+this script and its `make lint` / ci.yml steps.
 """
 
 import pathlib
 import re
 import sys
 
-EXPECTED_MULTI_DEFAULT = 54
+# (protocol, method, argument labels) for every convenience deliberately left
+# with 2+ defaulted parameters. Frozen 2026-08-07 at the 20.0.0 sweep.
+DEFERRED = frozenset({
+    ("AccountService", "favouriteMovies", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "favouriteTVSeries", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "movieWatchlist", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedMovies", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedTVEpisodes", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedTVSeries", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "tvSeriesWatchlist", ("sortedBy", "page", "accountID", "session")),
+    ("ChangesService", "movieChanges", ("startDate", "endDate", "page")),
+    ("ChangesService", "movieDetails", ("forMovie", "startDate", "endDate", "page")),
+    ("ChangesService", "personChanges", ("startDate", "endDate", "page")),
+    ("ChangesService", "personDetails", ("forPerson", "startDate", "endDate", "page")),
+    ("ChangesService", "tvEpisodeDetails", ("forEpisode", "startDate", "endDate", "page")),
+    ("ChangesService", "tvSeasonDetails", ("forSeason", "startDate", "endDate", "page")),
+    ("ChangesService", "tvSeriesChanges", ("startDate", "endDate", "page")),
+    ("ChangesService", "tvSeriesDetails", ("forTVSeries", "startDate", "endDate", "page")),
+    ("DiscoverService", "movies", ("filter", "sortedBy", "page", "language")),
+    ("DiscoverService", "tvSeries", ("filter", "sortedBy", "page", "language")),
+    ("MovieService", "alternativeTitles", ("forMovie", "country", "language")),
+    ("MovieService", "changes", ("forMovie", "startDate", "endDate", "page")),
+    ("MovieService", "changes", ("startDate", "endDate", "page")),
+    ("MovieService", "lists", ("forMovie", "page", "language")),
+    ("MovieService", "nowPlaying", ("page", "country", "language")),
+    ("MovieService", "popular", ("page", "country", "language")),
+    ("MovieService", "recommendations", ("forMovie", "page", "language")),
+    ("MovieService", "reviews", ("forMovie", "page", "language")),
+    ("MovieService", "similar", ("toMovie", "page", "language")),
+    ("MovieService", "topRated", ("page", "country", "language")),
+    ("MovieService", "upcoming", ("page", "country", "language")),
+    ("PersonService", "changes", ("forPerson", "startDate", "endDate", "page")),
+    ("PersonService", "changes", ("startDate", "endDate", "page")),
+    ("PersonService", "popular", ("page", "language")),
+    ("SearchService", "searchAll", ("query", "filter", "page", "language")),
+    ("SearchService", "searchCollections", ("query", "page", "language")),
+    ("SearchService", "searchMovies", ("query", "filter", "page", "language")),
+    ("SearchService", "searchPeople", ("query", "filter", "page", "language")),
+    ("SearchService", "searchTVSeries", ("query", "filter", "page", "language")),
+    ("TVEpisodeService", "changes", ("forEpisode", "startDate", "endDate", "page")),
+    ("TVSeasonService", "changes", ("forSeason", "startDate", "endDate", "page")),
+    ("TVSeriesService", "airingToday", ("page", "timezone", "language")),
+    ("TVSeriesService", "changes", ("forTVSeries", "startDate", "endDate", "page")),
+    ("TVSeriesService", "changes", ("startDate", "endDate", "page")),
+    ("TVSeriesService", "lists", ("forTVSeries", "page", "language")),
+    ("TVSeriesService", "onTheAir", ("page", "timezone", "language")),
+    ("TVSeriesService", "popular", ("page", "language")),
+    ("TVSeriesService", "recommendations", ("forTVSeries", "page", "language")),
+    ("TVSeriesService", "reviews", ("forTVSeries", "page", "language")),
+    ("TVSeriesService", "similar", ("toTVSeries", "page", "language")),
+    ("TVSeriesService", "topRated", ("page", "language")),
+    ("TrendingService", "allTrending", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "movies", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "people", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "tvSeries", ("inTimeWindow", "page", "language")),
+    ("WatchProviderService", "movieWatchProviders", ("filter", "language")),
+    ("WatchProviderService", "tvSeriesWatchProviders", ("filter", "language")),
+})
 
 SOURCES = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "Sources")
 
@@ -82,6 +144,11 @@ def line_of(text, offset):
     return text.count("\n", 0, offset) + 1
 
 
+def site(hazard):
+    (owner, name, labels), path, line, _ = hazard
+    return "%s:%d  %s.%s(%s)" % (path, line, owner, name, "".join(l + ":" for l in labels))
+
+
 requirements, conveniences = {}, []
 for path in sorted(SOURCES.rglob("*.swift")):
     text = path.read_text()
@@ -98,9 +165,10 @@ for path in sorted(SOURCES.rglob("*.swift")):
                     (key, path, line_of(text, m.end() + offset),
                      sum(1 for p in params if "=" in p)))
 
-hazards = [(k, p, ln, n) for k, p, ln, n in conveniences if n and k in requirements]
+hazards = [h for h in conveniences if h[3] and h[0] in requirements]
 single = [h for h in hazards if h[3] == 1]
 multi = [h for h in hazards if h[3] > 1]
+found = {h[0] for h in multi}
 
 failed = False
 
@@ -108,27 +176,32 @@ if single:
     failed = True
     print("error: %d public-extension convenience(s) differ from a protocol requirement "
           "ONLY by a default argument, and so become its witness:" % len(single))
-    for (owner, name, labels), path, ln, _ in sorted(single, key=lambda h: str(h[1])):
-        print("  %s:%d  %s.%s(%s)"
-              % (path, ln, owner, name, "".join(l + ":" for l in labels)))
+    for hazard in sorted(single, key=lambda h: str(h[1])):
+        print("  " + site(hazard))
     print("\n  Fix: drop the defaulted parameter instead of defaulting it —")
     print("       `func f() { f(x: nil) }`, not `func f(x: T? = nil) { f(x: x) }`.")
     print("       See knowledge/gotchas.md.")
 
-if len(multi) != EXPECTED_MULTI_DEFAULT:
+added = found - DEFERRED
+if added:
     failed = True
-    print("\nerror: %d multi-default witness sites, expected exactly %d."
-          % (len(multi), EXPECTED_MULTI_DEFAULT))
-    if len(multi) > EXPECTED_MULTI_DEFAULT:
-        print("       A new one was added. Give the convenience a distinct signature, or")
-        print("       raise EXPECTED_MULTI_DEFAULT here and record it in "
-              "knowledge/next-major.md.")
-    else:
-        print("       Either some were fixed — lower EXPECTED_MULTI_DEFAULT and update")
-        print("       knowledge/next-major.md — or this scan found nothing it should have.")
+    print("\nerror: %d new multi-default witness site(s):" % len(added))
+    for hazard in sorted((h for h in multi if h[0] in added), key=lambda h: str(h[1])):
+        print("  " + site(hazard))
+    print("\n  Give the convenience a distinct signature (drop the defaulted parameters),")
+    print("  or add it to DEFERRED here and to knowledge/next-major.md.")
+
+gone = DEFERRED - found
+if gone:
+    failed = True
+    print("\nerror: %d site(s) in DEFERRED were not found:" % len(gone))
+    for owner, name, labels in sorted(gone):
+        print("  %s.%s(%s)" % (owner, name, "".join(l + ":" for l in labels)))
+    print("\n  Either they were fixed — delete them from DEFERRED and update")
+    print("  knowledge/next-major.md — or this scan did not see what it should have.")
 
 if failed:
     sys.exit(1)
 
-print("defaulted-witness check: 0 single-default sites, %d deferred multi-default sites "
-      "(limit %d)." % (len(multi), EXPECTED_MULTI_DEFAULT))
+print("defaulted-witness check: 0 single-default sites, %d deferred sites as expected."
+      % len(found))

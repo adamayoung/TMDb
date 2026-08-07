@@ -13,6 +13,8 @@ on:
       - ".swiftlint.yml"
       - "**/*.swift"
       - "**/*.md"
+      - "Scripts/**"
+      - "Makefile"
   workflow_dispatch:
 
 concurrency:

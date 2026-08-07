@@ -677,9 +677,13 @@ public protocols**. 37 had exactly one defaulted parameter and were fixed — th
 fix costs a single dropped-parameter overload and no call site changes. The
 remaining **54 have 2–4 defaults**, where preserving every existing call form
 needs the *power set* of overloads (4, 8 or 16 each), so they are deferred to
-`next-major.md`. `Scripts/check-defaulted-witnesses.py` runs in `make lint` and
-holds both invariants: zero single-default sites, and the multi-default count
-must not grow.
+`next-major.md`. `Scripts/check-defaulted-witnesses.py` holds both invariants — zero
+single-default sites, and the multi-default sites must match its `DEFERRED`
+allowlist exactly (a set, not a count, so a fix and a regression cannot cancel
+out and an empty scan cannot pass green). It runs from `make lint` **and** as
+its own step in the CI `Lint` job: that job invokes swiftlint and swiftformat
+directly rather than through `make`, so wiring it only into the Makefile would
+have left it invisible to CI.
 
 **The first census came out 17 short, and the reason generalises.** It grepped
 the *protocol declaration* files. But `AccountService` and `PersonService` keep

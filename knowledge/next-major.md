@@ -35,10 +35,13 @@ CHANGELOG records it) or is rejected outright (record that in
   The alternative — dropping the short forms outright — is source-breaking for
   ordinary callers, not just conformers, which is what makes it major-only.
   Distribution: 22 sites with 2 defaults, 30 with 3, 2 with 4.
-- **Guard in the meantime:** `Scripts/check-defaulted-witnesses.py`
-  (`make lint`) fails if any single-default site appears, or if the
-  multi-default count exceeds 54. Lower `EXPECTED_MULTI_DEFAULT` as they are
-  fixed; delete the script at zero.
+- **Guard in the meantime:** `Scripts/check-defaulted-witnesses.py` runs both
+  from `make lint` and as its own step in the CI `Lint` job. It fails if any
+  single-default site appears, and it compares the multi-default sites against
+  an explicit `DEFERRED` allowlist — an exact set, not a count, so a fix and a
+  regression cannot cancel out and an empty scan cannot pass. **Deleting a
+  site from that allowlist is part of fixing it**; at empty, delete the script
+  and its two invocations.
 - **Source:** 20.0.0 sweep (2026-08-07), which fixed the 37 cheap sites.
 
 ### Align the `Company`/`Network` model shapes deliberately — *partially shipped*
