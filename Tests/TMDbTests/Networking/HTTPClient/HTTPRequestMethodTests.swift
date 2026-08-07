@@ -27,4 +27,9 @@ struct HTTPRequestMethodTests {
         #expect(HTTPRequest.Method.delete.rawValue == "DELETE")
     }
 
+    @Test("put method should be equal to \"PUT\"")
+    func putMethod() {
+        #expect(HTTPRequest.Method.put.rawValue == "PUT")
+    }
+
 }

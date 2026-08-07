@@ -33,6 +33,21 @@ public struct HTTPRequest: Sendable {
     public let body: Data?
 
     ///
+    /// Whether this request is authenticated as a specific user, rather than as
+    /// the application.
+    ///
+    /// A custom ``HTTPClient`` **must not cache, store or log the response to a
+    /// request where this is `true`**. Such a response is private to one user,
+    /// yet its URL is identical for every user — the credential travels in a
+    /// header — so caching it by URL would serve one user's data to another.
+    ///
+    /// This cannot be inferred from the presence of an `Authorization` header: a
+    /// client created with ``TMDbClient/init(bearerToken:configuration:)`` sends
+    /// one on every request, including entirely public ones.
+    ///
+    public let isUserSpecific: Bool
+
+    ///
     /// Create an HTTP request object.
     ///
     /// - Parameters:
@@ -40,16 +55,20 @@ public struct HTTPRequest: Sendable {
     ///   - method: HTTP method.
     ///   - headers: HTTP headers.
     ///   - body: Body data.
+    ///   - isUserSpecific: Whether the request is authenticated as a specific
+    ///     user. Defaults to `false`.
     public init(
         url: URL,
         method: HTTPRequest.Method = .get,
         headers: [String: String] = [:],
-        body: Data? = nil
+        body: Data? = nil,
+        isUserSpecific: Bool = false
     ) {
         self.url = url
         self.method = method
         self.headers = headers
         self.body = body
+        self.isUserSpecific = isUserSpecific
     }
 
 }
@@ -75,6 +94,11 @@ public extension HTTPRequest {
         /// HTTP DELETE method.
         ///
         case delete = "DELETE"
+
+        ///
+        /// HTTP PUT method.
+        ///
+        case put = "PUT"
 
     }
 

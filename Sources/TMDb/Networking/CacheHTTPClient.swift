@@ -91,7 +91,7 @@ final class CacheHTTPClient: HTTPClient, Sendable {
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
-        guard request.method == .get else {
+        guard request.method == .get, !isStateChanging(request) else {
             return try await performMutation(request: request)
         }
 
@@ -129,6 +129,13 @@ extension CacheHTTPClient {
     }
 
     private func isUserSpecificRequest(_ request: HTTPRequest) -> Bool {
+        // Set by `TMDbAPIClient` when the request carried its own credential —
+        // the v4 endpoints thread a user access token per call, so two users'
+        // reads of one list share a URL and differ only by a header.
+        if request.isUserSpecific {
+            return true
+        }
+
         if let components = URLComponents(url: request.url, resolvingAgainstBaseURL: false),
            let queryItems = components.queryItems,
            queryItems.contains(where: { $0.name == "session_id" }) {
@@ -140,6 +147,17 @@ extension CacheHTTPClient {
         }
 
         return false
+    }
+
+    ///
+    /// Whether a `GET` mutates server state despite its method.
+    ///
+    /// `GET /4/list/{id}/clear` empties a list — `POST` to that path returns
+    /// 404 — so it must invalidate the cache rather than populate it. v3's
+    /// clear is a `POST` and so never reaches here.
+    ///
+    private func isStateChanging(_ request: HTTPRequest) -> Bool {
+        request.url.path.hasSuffix("/clear")
     }
 
     private func isSuccessful(_ response: HTTPResponse) -> Bool {

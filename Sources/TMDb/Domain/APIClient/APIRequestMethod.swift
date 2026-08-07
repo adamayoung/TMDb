@@ -11,6 +11,7 @@ package enum APIRequestMethod {
 
     case get
     case post
+    case put
     case delete
 
 }

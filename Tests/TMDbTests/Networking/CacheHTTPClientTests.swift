@@ -33,6 +33,106 @@ struct CacheHTTPClientTests {
         #expect(mockClient.performCount == 1)
     }
 
+    @Test("a user-specific GET is never cached — two identical URLs both hit the network")
+    func userSpecificGetIsNotCached() async throws {
+        // Two users' reads of the same v4 list have byte-identical URLs; the
+        // credential is only in a header. Caching by URL would serve one user's
+        // private list to another.
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("alice".utf8))))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("bob".utf8))))
+
+        let cacheClient = CacheHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.defaultConfig
+        )
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+
+        let first = try await cacheClient.perform(
+            request: HTTPRequest(
+                url: url,
+                headers: ["Authorization": "Bearer alice"],
+                isUserSpecific: true
+            )
+        )
+        let second = try await cacheClient.perform(
+            request: HTTPRequest(
+                url: url,
+                headers: ["Authorization": "Bearer bob"],
+                isUserSpecific: true
+            )
+        )
+
+        #expect(mockClient.performCount == 2)
+        #expect(first.data == Data("alice".utf8))
+        #expect(second.data == Data("bob".utf8))
+    }
+
+    @Test("a user-specific GET does not populate the cache for a later ordinary GET")
+    func userSpecificGetDoesNotPopulateCache() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("private".utf8))))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("public".utf8))))
+
+        let cacheClient = CacheHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.defaultConfig
+        )
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+
+        _ = try await cacheClient.perform(
+            request: HTTPRequest(url: url, isUserSpecific: true)
+        )
+        let response = try await cacheClient.perform(request: HTTPRequest(url: url))
+
+        #expect(mockClient.performCount == 2)
+        #expect(response.data == Data("public".utf8))
+    }
+
+    @Test("a bearer-token client's ordinary GET is still cached")
+    func ordinaryBearerGetIsStillCached() async throws {
+        // The Authorization header alone must not disable caching, or every
+        // `TMDbClient(bearerToken:)` loses it for all reads.
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("movie".utf8))))
+
+        let cacheClient = CacheHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.defaultConfig
+        )
+        let url = try #require(URL(string: "https://api.themoviedb.org/3/movie/550"))
+        let request = HTTPRequest(url: url, headers: ["Authorization": "Bearer app-token"])
+
+        _ = try await cacheClient.perform(request: request)
+        _ = try await cacheClient.perform(request: request)
+
+        #expect(mockClient.performCount == 1)
+    }
+
+    @Test("a GET ending in /clear is treated as a mutation — never cached, and invalidating")
+    func clearGetIsTreatedAsMutation() async throws {
+        // `GET /4/list/{id}/clear` empties the list. Caching it would return a
+        // stale success and never invalidate the list it just emptied.
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("list".utf8))))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("cleared".utf8))))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200, data: Data("empty".utf8))))
+
+        let cacheClient = CacheHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.defaultConfig
+        )
+        let listURL = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+        let clearURL = try #require(URL(string: "https://api.themoviedb.org/4/list/1/clear"))
+
+        _ = try await cacheClient.perform(request: HTTPRequest(url: listURL))
+        _ = try await cacheClient.perform(request: HTTPRequest(url: clearURL))
+        let afterClear = try await cacheClient.perform(request: HTTPRequest(url: listURL))
+
+        #expect(mockClient.performCount == 3)
+        #expect(afterClear.data == Data("empty".utf8))
+    }
+
     @Test("GET cache miss for different URLs performs request for each")
     func getCacheMiss() async throws {
         let mockClient = SequencingHTTPMockClient()

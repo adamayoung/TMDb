@@ -198,7 +198,10 @@ private extension HTTPRequest.Method {
     /// methods such as `POST` are not idempotent and must never be retried.
     var isIdempotent: Bool {
         switch self {
-        case .get, .delete:
+        case .get, .delete, .put:
+            // `PUT` replaces the resource with the request's own representation,
+            // so replaying it converges on the same state — unlike `POST`,
+            // which appends.
             true
 
         case .post:

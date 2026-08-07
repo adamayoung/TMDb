@@ -70,11 +70,22 @@ extension TMDbAPIClient {
         var queryItems = request.queryItems
         var headers = request.headers
 
-        switch credential {
-        case .apiKey(let apiKey):
-            queryItems["api_key"] = apiKey
-        case .bearerToken(let token):
-            headers["Authorization"] = "Bearer \(token)"
+        // A request that brought its own `Authorization` is authenticated as a
+        // specific *user* (the v4 endpoints thread an access token per call).
+        // The client credential is then withheld entirely — both the header and
+        // the `api_key` query item — because sending two credentials leaves
+        // precedence to the server, which is not something this library should
+        // guess at. Without this, `Authorization` was overwritten below and a
+        // user-scoped read would return the *application owner's* data.
+        let isUserSpecific = headers["Authorization"] != nil
+
+        if !isUserSpecific {
+            switch credential {
+            case .apiKey(let apiKey):
+                queryItems["api_key"] = apiKey
+            case .bearerToken(let token):
+                headers["Authorization"] = "Bearer \(token)"
+            }
         }
 
         let url = urlFromPath(path, queryItems: queryItems)
@@ -93,7 +104,13 @@ extension TMDbAPIClient {
             }
         }
 
-        return HTTPRequest(url: url, method: method, headers: headers, body: data)
+        return HTTPRequest(
+            url: url,
+            method: method,
+            headers: headers,
+            body: data,
+            isUserSpecific: isUserSpecific
+        )
     }
 
     private func urlFromPath(
@@ -131,6 +148,9 @@ extension TMDbAPIClient {
 
         case .post:
             .post
+
+        case .put:
+            .put
 
         case .delete:
             .delete

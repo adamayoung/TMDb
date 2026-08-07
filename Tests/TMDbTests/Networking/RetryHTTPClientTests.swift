@@ -206,6 +206,25 @@ struct RetryHTTPClientTests {
         #expect(mockClient.performCount == 1)
     }
 
+    @Test("PUT with retryable response is retried — it is idempotent")
+    func putWithRetryableResponseIsRetried() async throws {
+        let mockClient = SequencingHTTPMockClient()
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 429)))
+        mockClient.enqueue(.success(HTTPResponse(statusCode: 200)))
+
+        let retryClient = RetryHTTPClient(
+            httpClient: mockClient,
+            configuration: Self.fastConfig
+        )
+        let url = try #require(URL(string: "https://example.com"))
+        let request = HTTPRequest(url: url, method: .put)
+
+        let response = try await retryClient.perform(request: request)
+
+        #expect(response.statusCode == 200)
+        #expect(mockClient.performCount == 2)
+    }
+
     @Test("502 bad gateway is retried")
     func badGatewayIsRetried() async throws {
         let mockClient = SequencingHTTPMockClient()
