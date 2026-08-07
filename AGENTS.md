@@ -217,12 +217,12 @@ branch → (`$review-plan` for risky/large changes) → `$implement-plan` →
 `$capture-knowledge` → retro → `$pr reviewed` → `$watch-pr`.
 
 Key skills (the README's *Claude Code Skills* tables list the Claude
-originals — the mirror reuses the same names, plus a mirror-local
-`$security-review`):
+originals — the mirror reuses the same names, plus the mirror-local
+`$security-review` and `$check-drift`):
 
 - **`$deliver`** — run the whole pipeline from an approved plan.
 - **`$review-plan`** — adversarial 3-critic review of a plan; apply the consensus.
-- **`$implement-plan`** — implement test-first (`canon-tdd`) to an empty test
+- **`$implement-plan`** — implement test-first (`$canon-tdd`) to an empty test
   list, committing at logical checkpoints.
 - **`$review-changes`** — code review of the working-tree change (scales: one
   reviewer, or a fan-out + adversarial verification for large diffs).
@@ -345,15 +345,19 @@ rule's behaviour changed between versions), not a real violation — check
 ### Auto-formatting on edit (PostToolUse hooks)
 
 A `PostToolUse` hook (`.codex/hooks.json` →
-`.codex/hooks/post-edit-format.sh`) runs automatically after every file edit,
-so files are reshaped on disk **after** you write them:
+`.codex/hooks/post-edit-format.sh`) runs automatically after every file edit —
+once the one-time project-hook trust prompt has been accepted (the matcher is
+provisional; see `.agents/PORT-STATE.md`) — so files are reshaped on disk
+**after** you write them:
 
 - **`.swift`** → `swiftlint --fix` then `swiftformat`.
 - **`.md` / `.markdown`** → `markdownlint --fix` (auto-fixable rules only — it
   **cannot** fix `MD013` line-length, so still wrap long lines by hand).
 
 Consequences: the on-disk content can differ from what you wrote (imports
-reordered, blank lines collapsed, list markers normalised). **Re-read a file
+reordered, blank lines collapsed, list markers normalised) — and until the
+hook's payload shape is verified, its fallback may reformat any
+recently-changed dirty file, not just the one you edited. **Re-read a file
 before a dependent edit** if the edit relies on exact surrounding text, and
 don't attribute hook reformatting to your own diff. The hook can't fix real
 compile/lint errors — still run `$lint` and `make ci`.

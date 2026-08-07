@@ -37,7 +37,7 @@ durable residue (the file map and the deliberate divergences).
 | `CLAUDE.md` | `AGENTS.md` | PR-A | Section-by-section port; `$skill` names; Xcode-native section dropped; PR section re-based on `gh` |
 | `.claude/settings.json` (PostToolUse hooks) | `.codex/hooks.json` + `.codex/hooks/post-edit-format.sh` | PR-A | Same events; single script handles `.swift` + `.md`; always exits 0 |
 | `.claude/settings.local.json` (`env` block) | `.codex/config.toml` (gitignored; template: `.codex/config.example.toml`) | PR-A | `[shell_environment_policy.set]`; never committed |
-| `.mcp.json` | `[mcp_servers.*]` in `.codex/config.toml` | PR-A | tmdb / xcode / sosumi mirrored; `github` deliberately absent (gh CLI instead) |
+| `.mcp.json` | `[mcp_servers.*]` in `.codex/config.toml` | PR-A | tmdb / xcode / sosumi mirrored 1:1 (`github` was never in `.mcp.json` — Claude registers it at user scope per ADR-0009; the mirror uses the gh CLI) |
 | `.claude/agents/*.md` | `.codex/agents/*.toml` | PR-B (planned) | — |
 | `.claude/skills/*` | `.agents/skills/*` | PR-B/C (planned) | — |
 | `.claude/workflows/deliver-panel.js` | `.agents/skills/deliver/scripts/deliver-panel.sh` | PR-C (planned) | Deterministic script; tally arithmetic preserved |
@@ -88,10 +88,14 @@ next mirror PR:
   → must answer never-edit-`main` + `make ci`, from `AGENTS.md`. **Passed
   pre-merge** (run from the PR-A worktree, 2026-08-07: answered both rules,
   cited `AGENTS.md`).
-- [ ] **Project-layer config loads** — with `.codex/config.toml` created from
-  the template: `codex exec --ephemeral "Reply with only: the value of TMDB_USERNAME's length in characters (do not print the value), or 'unset'"`
-  → non-`unset` proves `[shell_environment_policy]` merged from the project
-  layer.
+- [x] **Project-layer config loads** — **mechanism verified pre-merge** by
+  the PR-A code review against Codex CLI 0.147.0 in an isolated scratch
+  project using this exact template: the project-layer `config.toml` parsed,
+  all three MCP servers registered (2 stdio + 1 streamable-HTTP), sandbox
+  network access applied, and all five `[shell_environment_policy.set]` vars
+  reached the command environment. After creating the real
+  `.codex/config.toml`, a one-line on-repo spot check remains handy:
+  `codex exec --ephemeral "Reply with only: the length of TMDB_USERNAME in characters (do not print the value), or 'unset'"`.
 - [ ] **tmdb MCP server** —
   `codex exec --ephemeral "Using the tmdb MCP server, fetch movie details for id 550 and reply with only the title"`
   → "Fight Club".
@@ -101,8 +105,12 @@ next mirror PR:
   file comes back `swiftformat`-normalised; delete the file.
 - [ ] **Refine the provisional hook matcher from observed payloads** — the
   matcher in `.codex/hooks.json` was written blind (see above). Temporarily
-  add a logging entry (`"command": "cat > .codex/hooks/last-payload.json"`,
+  add a logging entry (`"command": "cat > \"$TMPDIR/codex-hook-payload.json\""`,
   matcher `".*"`), edit a scratch file, read the captured payload, correct
   the matcher's tool names and the script's jq paths if they differ, then
-  remove the logging entry and the capture file. The script works under any
-  payload shape meanwhile (sweep fallback).
+  remove the logging entry and the capture file. (Capture into `$TMPDIR`,
+  not the repo — an `apply_patch` payload carries file contents, and a
+  repo-side capture path would be a tracked file.) The script works under
+  any payload shape meanwhile (sweep fallback). Note: `codex doctor` does
+  **not** validate `hooks.json` — invalid JSON produces zero diagnostics —
+  so this interactive test is the only signal the hook config is live.

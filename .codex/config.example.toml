@@ -9,7 +9,8 @@
 # .claude/settings.json vs settings.local.json split.)
 #
 # Project-layer config loads only while the project is trusted in
-# ~/.codex/config.toml ([projects."/Users/adam/Developer/TMDb"]).
+# ~/.codex/config.toml ([projects."/path/to/TMDb"] with trust_level =
+# "trusted").
 
 # --- Environment for make / tests -------------------------------------------
 # Mirror of the env block in .claude/settings.local.json. make integration-test
@@ -58,8 +59,6 @@ TMDB_API_KEY = "YOUR_TMDB_API_KEY"
 command = "xcrun"
 args = ["mcpbridge"]
 
-# Apple documentation (HTTP transport). If this key shape is rejected on a
-# newer Codex, check the current MCP config reference — the post-merge smoke
-# test in .agents/PORT-STATE.md covers it.
+# Apple documentation (streamable-HTTP transport).
 [mcp_servers.sosumi]
 url = "https://sosumi.ai/mcp"

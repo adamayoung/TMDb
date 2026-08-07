@@ -72,8 +72,9 @@ observation. Resolutions:
 5. **Medium — phased-rollout fallback undefined for skills wrapping no raw
    command** → fixed: "do its work inline against CODE_REVIEW.md /
    knowledge/ — never skip it" appended to the mirror section.
-6. **Low — `canon-tdd` conversion inconsistent** → fixed: `$canon-tdd` in
-   both sites.
+6. **Low — `canon-tdd` conversion inconsistent** → fixed: `$canon-tdd` at
+   all **three** sites (the PR-A code review caught a third occurrence in the
+   key-skills list that the first fix missed).
 7. **Low — hook singular/plural mismatch** → fixed: "The hook can't fix…".
 8. **Low — README pointer lost its section name; over-claimed name parity**
    → fixed: section named; `$security-review` excepted as mirror-local.
