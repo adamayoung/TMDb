@@ -553,7 +553,6 @@ public extension MovieService {
     ///
     /// [TMDb API - Movies: Credits](https://developer.themoviedb.org/reference/movie-credits)
     ///
-    /// - Parameters:
     /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb error ``TMDbError``.

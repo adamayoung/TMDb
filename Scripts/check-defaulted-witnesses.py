@@ -14,10 +14,12 @@ express them (they need cross-symbol matching):
   1. NO site may have exactly one defaulted parameter. Those are fixable for
      the cost of a single dropped-parameter overload, so there is never a
      reason to leave one.
-  2. The number of multi-default sites may not exceed EXPECTED_MULTI_DEFAULT.
-     Those need the power set of overloads to stay call-site compatible, so
-     they are deliberately deferred (knowledge/next-major.md) — but the count
-     must not grow.
+  2. The number of multi-default sites must equal EXPECTED_MULTI_DEFAULT
+     exactly. Those need the power set of overloads to stay call-site
+     compatible, so they are deliberately deferred (knowledge/next-major.md).
+     The comparison is `!=`, not `>`, for two reasons: a *new* hazard must
+     fail, and so must a scan that silently found nothing — a checker whose
+     green is indistinguishable from "it never ran" is not a checker.
 
 Lower EXPECTED_MULTI_DEFAULT as they are fixed; at zero, delete this script.
 """
@@ -29,6 +31,9 @@ import sys
 EXPECTED_MULTI_DEFAULT = 54
 
 SOURCES = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "Sources")
+
+if not SOURCES.is_dir():
+    sys.exit("error: %s is not a directory — run this from the package root." % SOURCES)
 
 
 def closing_paren(text, open_idx):
@@ -110,12 +115,17 @@ if single:
     print("       `func f() { f(x: nil) }`, not `func f(x: T? = nil) { f(x: x) }`.")
     print("       See knowledge/gotchas.md.")
 
-if len(multi) > EXPECTED_MULTI_DEFAULT:
+if len(multi) != EXPECTED_MULTI_DEFAULT:
     failed = True
-    print("\nerror: %d multi-default witness sites, expected at most %d."
+    print("\nerror: %d multi-default witness sites, expected exactly %d."
           % (len(multi), EXPECTED_MULTI_DEFAULT))
-    print("       A new one was added. Give the convenience a distinct signature, or")
-    print("       raise EXPECTED_MULTI_DEFAULT here and record it in knowledge/next-major.md.")
+    if len(multi) > EXPECTED_MULTI_DEFAULT:
+        print("       A new one was added. Give the convenience a distinct signature, or")
+        print("       raise EXPECTED_MULTI_DEFAULT here and record it in "
+              "knowledge/next-major.md.")
+    else:
+        print("       Either some were fixed — lower EXPECTED_MULTI_DEFAULT and update")
+        print("       knowledge/next-major.md — or this scan found nothing it should have.")
 
 if failed:
     sys.exit(1)

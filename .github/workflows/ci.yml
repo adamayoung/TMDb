@@ -43,6 +43,8 @@ jobs:
               - '.swiftlint.yml'
               - 'Package.swift'
               - 'Package.resolved'
+              - 'Scripts/**'
+              - 'Makefile'
               - '.github/workflows/ci.yml'
             markdown:
               - 'README.md'
@@ -100,6 +102,15 @@ jobs:
       - name: SwiftFormat
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swiftformat --lint .
+
+      # Cross-symbol check that swiftlint cannot express: a public-extension
+      # convenience must not share a requirement's signature, or it silently
+      # becomes that requirement's witness and self-recurses. `make lint` runs
+      # this too, but the Lint job invokes the tools directly rather than via
+      # make — so without this step the guard would never run in CI.
+      - name: Defaulted-witness check
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: python3 Scripts/check-defaulted-witnesses.py
 
   lint-markdown:
     name: Lint Markdown
