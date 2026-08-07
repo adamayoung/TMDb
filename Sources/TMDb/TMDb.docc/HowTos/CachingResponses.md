@@ -76,11 +76,38 @@ let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>", configuration: config
 
 This layer is deliberately lightweight: it holds responses in memory only (so it
 is cleared when the process ends), caches `GET` requests only, bypasses
-user-specific requests (those carrying a `session_id` or a guest session), and
-invalidates the entire cache after any successful `POST` or `DELETE`.
+user-specific requests (see below), and invalidates the entire cache after any
+successful `POST` or `DELETE`.
 
 Reach for it when you want a predictable, fixed TTL regardless of TMDb's headers,
 or when you need a cache on a platform where `URLCache` is unavailable.
+
+## User-specific responses are never cached
+
+A response that required a *user's* credential is never stored or served by
+either layer — not the in-memory cache, and not the on-disk `URLCache`. That
+covers all three of TMDb's user-scoped mechanisms:
+
+- a v4 user access token, passed per call to ``V4ListService``
+- a v3 `session_id`
+- a guest session
+
+The reason differs by mechanism, and both matter. A v4 list read carries its
+token in a **header**, so two different users requesting the same list send
+byte-identical URLs — a URL-keyed cache would serve one user's private list to
+another. A v3 session request carries its credential in the URL, so the keys do
+differ and nothing crosses between users; but the response is still one person's
+watchlist or ratings being written to a store that is shared process-wide and
+survives relaunch.
+
+A request built with `TMDbClient(bearerToken:)` is **not** treated as
+user-specific just for having an `Authorization` header. That token is your
+application's API Read Access Token, sent on every request including entirely
+public ones, so those responses stay cacheable.
+
+- Important: If you supply your own ``HTTPClient``, honour
+  ``HTTPRequest/isUserSpecific``. When it is `true`, do not cache, store or log
+  the response.
 
 ## How the layers interact
 

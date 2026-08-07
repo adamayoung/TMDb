@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.0]
 
+### Added
+
+- `client.v4Lists` — TMDb v4 lists. Unlike the v3 `client.lists`, a v4 list
+  holds **movies and TV series together**, can be private, and can carry a
+  comment on each item. All eleven operations are covered: reading a list and
+  its items, checking whether an item is present, listing an account's lists,
+  creating, updating, adding, commenting, removing, clearing and deleting.
+
+  Reading a public list needs no user credential; everything else takes an
+  access token from `client.v4Authentication`. Adds `V4ListService` and its
+  models, plus `MockV4ListService` and samples in `TMDbTesting`. See the
+  *Authenticating with the v4 API* article.
+
+### Changed
+
+- **Breaking:** `HTTPRequest.Method` gains a `.put` case. v4 list update is a
+  PUT and there is no other way to express it. This only affects you if you
+  supply your own `HTTPClient` **and** switch exhaustively over the method — add
+  a `.put` branch, or a `default`.
+
+- **Breaking:** `HTTPRequest` gains `isUserSpecific`. It is `true` when a
+  request required a specific user's credential — a v4 access token, a v3
+  `session_id`, or a guest session. **A custom `HTTPClient` must not cache,
+  store or log such a response.** The memberwise initialiser takes it last with
+  a default of `false`, so existing construction still compiles.
+
+- A request that carries its own `Authorization` header now suppresses the
+  client credential entirely, rather than having it overwritten. Without this a
+  per-call user token never reached the wire, and a user-scoped v4 read returned
+  the *application owner's* data.
+
+- Responses requiring a user's credential are no longer written to, or served
+  from, either cache — the opt-in in-memory cache or the always-on on-disk
+  `URLCache`. This changes behaviour for v3 session and guest-session requests,
+  which were previously stored on disk. Responses authenticated with an
+  application bearer token are unaffected and remain cached.
+
 ### Fixed
 
 - 37 convenience methods on the public service protocols no longer share a

@@ -118,3 +118,10 @@ ci: .check-env-vars lint lint-markdown test integration-test build-release build
 	@test $${TMDB_API_KEY?Please set environment variable TMDB_API_KEY}
 	@test $${TMDB_USERNAME?Please set environment variable TMDB_USERNAME}
 	@test $${TMDB_PASSWORD?Please set environment variable TMDB_PASSWORD}
+# The v4 credentials warn rather than fail: the suites needing them self-gate
+# with `.enabled(if:)`, so a contributor without them must still be able to run
+# `make ci` to green.
+	@test -n "$${TMDB_API_READ_ONLY_TOKEN:-}" || \
+		echo "warning: TMDB_API_READ_ONLY_TOKEN not set — v4 suites will skip"
+	@test -n "$${TMDB_API_USER_TOKEN:-}" || \
+		echo "warning: TMDB_API_USER_TOKEN not set — v4 list suites will skip"
