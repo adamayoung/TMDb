@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   supply your own `HTTPClient` **and** switch exhaustively over the method — add
   a `.put` branch, or a `default`.
 
+- **Breaking:** `Network.homepage` is renamed to `homepageURL`, matching
+  `Company.homepageURL`. The two models describe the same kind of thing and
+  disagreed only by accident. The JSON key is unchanged, so only Swift call
+  sites need updating: `network.homepage` becomes `network.homepageURL`.
+
 - `HTTPRequest` gains `isUserSpecific`. It is `true` when a request required a
   specific user's credential — a v4 access token, a v3 `session_id`, or a guest
   session. **A custom `HTTPClient` must not cache, store or log such a

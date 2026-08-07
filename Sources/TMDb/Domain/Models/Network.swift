@@ -42,7 +42,7 @@ public struct Network: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Network homepage URL.
     ///
-    public let homepage: URL?
+    public let homepageURL: URL?
 
     ///
     /// Creates a network object.
@@ -53,7 +53,7 @@ public struct Network: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - logoPath: Network logo path.
     ///    - originCountry: Network origin country.
     ///    - headquarters: Network headquarters location.
-    ///    - homepage: Network homepage URL.
+    ///    - homepageURL: Network homepage URL.
     ///
     public init(
         id: Int,
@@ -61,14 +61,14 @@ public struct Network: Identifiable, Codable, Equatable, Hashable, Sendable {
         logoPath: URL? = nil,
         originCountry: String? = nil,
         headquarters: String? = nil,
-        homepage: URL? = nil
+        homepageURL: URL? = nil
     ) {
         self.id = id
         self.name = name
         self.logoPath = logoPath
         self.originCountry = originCountry
         self.headquarters = headquarters
-        self.homepage = homepage
+        self.homepageURL = homepageURL
     }
 
 }
@@ -81,7 +81,7 @@ extension Network {
         case logoPath
         case originCountry
         case headquarters
-        case homepage
+        case homepageURL = "homepage"
     }
 
     ///
@@ -105,7 +105,7 @@ extension Network {
         self.logoPath = try container.decodeIfPresent(URL.self, forKey: .logoPath)
         self.originCountry = try container.decodeIfPresent(String.self, forKey: .originCountry)
         self.headquarters = try container.decodeIfPresent(String.self, forKey: .headquarters)
-        self.homepage = try container.decodeNonEmptyURLIfPresent(forKey: .homepage)
+        self.homepageURL = try container.decodeNonEmptyURLIfPresent(forKey: .homepageURL)
     }
 
 }
