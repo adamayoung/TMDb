@@ -188,7 +188,11 @@ final class URLSessionHTTPClientAdapterTests {
         // too, on Linux only, where no test would notice.
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
-        configuration.urlCache = URLCache(memoryCapacity: 1024, diskCapacity: 0)
+        // `URLCache.shared` rather than a constructed one: the two-argument
+        // initialiser does not exist on swift-corelibs-foundation (it requires
+        // `diskPath:`), and the three-argument form is deprecated on Apple —
+        // which `--Werror` would reject. The shared instance exists on both.
+        configuration.urlCache = .shared
         let session = URLSession(configuration: configuration)
 
         let adapter = URLSessionHTTPClientAdapter(urlSession: session)
