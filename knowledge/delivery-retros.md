@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#TBD) · lite
+## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#412) · lite
 
 - **Phases / skills:** 0–8 pre-PR; lite, so no `/review-plan` critics and the
   single-reviewer path. `consulted:` next-major.md (the source), gotchas
