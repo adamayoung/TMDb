@@ -100,6 +100,21 @@ These are **not** settled by this ADR and must be recorded when they are:
   Both cache layers need addressing — the opt-in `CacheHTTPClient` *and* the
   always-on 1 GB on-disk `URLCache` installed by `TMDbFactory`, which keys on
   URL alone. Fixing only the former leaves the leak open.
+
+  This is measured, not theoretical. Probing the live API during the security
+  review of this change:
+
+  ```text
+  GET https://api.themoviedb.org/4/list/1  ->  cache-control: public, max-age=300
+  ```
+
+  So once v4 list `GET`s land, private list responses **will** be stored:
+  by `CacheHTTPClient` (keyed on `request.url.absoluteString`, and
+  `isUserSpecificRequest` will not fire because a v4 URL carries neither
+  `session_id` nor `/guest_session/`) and by the on-disk `URLCache` under
+  `.useProtocolCachePolicy`. Not reachable from this change — all three v4
+  auth requests are POST/POST/DELETE, which `CacheHTTPClient` routes straight
+  to `performMutation`.
 - **`GET /4/list/{id}/clear`.** Verified against the live API: clearing a list
   is a **GET** (`POST` returns 404). A state-changing GET must not be cached.
 - **`create(isPublic:)`.** Creating a list with `"public": false` returned a
