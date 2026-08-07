@@ -49,4 +49,27 @@ struct CreateV4RequestTokenRequestTests {
         #expect(request.body?.redirectTo == "https://my.domain.com/auth/callback")
     }
 
+    @Test("body encodes redirect_to in snake case", .tags(.encoding))
+    func bodyEncodesRedirectToSnakeCase() throws {
+        let redirectURL = try #require(URL(string: "https://my.domain.com/auth/callback"))
+        let request = CreateV4RequestTokenRequest(redirectURL: redirectURL)
+        let body = try #require(request.body)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(body)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+
+        #expect(json?["redirect_to"] as? String == "https://my.domain.com/auth/callback")
+    }
+
+    @Test("body omits redirect_to entirely when no redirect URL is given", .tags(.encoding))
+    func bodyOmitsRedirectToWhenAbsent() throws {
+        let request = CreateV4RequestTokenRequest()
+        let body = try #require(request.body)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(body)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+
+        #expect(json?["redirect_to"] == nil)
+    }
+
 }

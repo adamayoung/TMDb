@@ -4,6 +4,7 @@
 
 ### Creating Access Tokens
 
+- ``requestToken()``
 - ``requestToken(redirectURL:)``
 - ``authenticateURL(for:)``
 - ``createAccessToken(withRequestToken:)``

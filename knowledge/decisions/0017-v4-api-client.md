@@ -79,6 +79,17 @@ token (the normal case — it is what you put in the keychain) to synthesise a
 
 These are **not** settled by this ADR and must be recorded when they are:
 
+- **Carrying a per-call bearer token — the seam this ADR's own design needs.**
+  `TMDbAPIClient.buildHTTPRequest` copies `request.headers` and *then* sets
+  `Authorization` from the client credential, so a request-level
+  `Authorization` is overwritten. A `V4ListService` that threads the user
+  access token per call, as decided above, therefore has no way to reach the
+  wire today: the request would go out authenticated as the *application* and
+  quietly return the app owner's lists rather than the caller's. Two options —
+  (a) have `buildHTTPRequest` set the credential header only when
+  `headers["Authorization"] == nil`, a one-line change that preserves the
+  decorator chain, or (b) construct a per-token `APIClient`. Decide and record
+  before the first user-scoped v4 endpoint lands.
 - **A `.put` case on the public `HTTPRequest.Method`.** v4 list update is a
   PUT. The enum is public and non-frozen in a non-resilient module, and the
   README invites consumers to supply their own `HTTPClient`, so adding a case

@@ -71,12 +71,30 @@ struct MockV4AuthenticationServiceTests {
         #expect(service.authenticateURLCalls.first?.requestToken == .sample)
     }
 
+    @Test("authenticateURL by default returns the TMDb approval URL")
+    func authenticateURLReturnsDefaultURL() throws {
+        let expectedURL = try #require(URL(string: "https://www.themoviedb.org/auth/access"))
+
+        let url = service.authenticateURL(for: .sample)
+
+        #expect(url == expectedURL)
+    }
+
     @Test("deleteAccessToken records the token it revoked")
     func deleteAccessTokenRecordsCall() async throws {
         let result = try await service.deleteAccessToken("token123")
 
         #expect(result == true)
         #expect(service.deleteAccessTokenCalls.first?.accessToken == "token123")
+    }
+
+    @Test("deleteAccessToken returns the injected false result")
+    func deleteAccessTokenReturnsInjectedFalse() async throws {
+        service.deleteAccessTokenResult = .success(false)
+
+        let result = try await service.deleteAccessToken("token123")
+
+        #expect(result == false)
     }
 
 }
