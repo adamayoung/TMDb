@@ -34,6 +34,7 @@ always fair game.
 | [0014](0014-subagent-model-tiers.md) | Model-tier policy for skills and subagents | 2026-07-06 | Accepted |
 | [0015](0015-durable-deliver-run-state.md) | Durable `/deliver` run state in `.git/deliver/` | 2026-07-29 | Accepted |
 | [0016](0016-panel-jurors-and-workflows-directory.md) | Auto-mode panel as three independent jurors, in `.claude/workflows/` | 2026-07-29 | Accepted |
+| [0017](0017-v4-api-client.md) | A third `TMDbAPIClient` instance for the v4 API | 2026-08-07 | Accepted |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes
