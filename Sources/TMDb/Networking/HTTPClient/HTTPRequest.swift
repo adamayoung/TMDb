@@ -33,17 +33,23 @@ public struct HTTPRequest: Sendable {
     public let body: Data?
 
     ///
-    /// Whether this request is authenticated as a specific user, rather than as
-    /// the application.
+    /// Whether this request requires a specific user's credential, rather than
+    /// the application's.
     ///
     /// A custom ``HTTPClient`` **must not cache, store or log the response to a
-    /// request where this is `true`**. Such a response is private to one user,
-    /// yet its URL is identical for every user — the credential travels in a
-    /// header — so caching it by URL would serve one user's data to another.
+    /// request where this is `true`** — it is one user's private data.
     ///
-    /// This cannot be inferred from the presence of an `Authorization` header: a
-    /// client created with ``TMDbClient/init(bearerToken:configuration:)`` sends
-    /// one on every request, including entirely public ones.
+    /// It is `true` for all three of TMDb's user-scoped mechanisms: a v4 user
+    /// access token passed per call, a v3 `session_id`, and a guest session.
+    /// Where the token travels in a header, two users' requests for the same
+    /// resource have *identical* URLs, so a URL-keyed cache would serve one
+    /// user's data to another; where it travels in the URL the keys differ, but
+    /// the response is still private and must not be written to a shared store.
+    ///
+    /// It cannot be inferred from the presence of an `Authorization` header
+    /// alone: a client created with ``TMDbClient/init(bearerToken:configuration:)``
+    /// sends one on every request, including wholly public ones, and those
+    /// remain cacheable.
     ///
     public let isUserSpecific: Bool
 

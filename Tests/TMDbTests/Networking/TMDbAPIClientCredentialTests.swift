@@ -120,6 +120,54 @@ struct TMDbAPIClientCredentialTests {
         #expect(request.isUserSpecific)
     }
 
+    @Test("isUserSpecific is set for a v3 session request")
+    @MainActor
+    func isUserSpecificSetForSessionRequest() async throws {
+        // A v3 session request is user-scoped too. Its `session_id` is in the
+        // URL, so the on-disk cache keys differ per user and nothing leaks
+        // across users — but the response is still private data being written
+        // to a shared cache that survives relaunch.
+        let client = apiClient(credential: .apiKey("abc123"))
+        let stubRequest = APIStubRequest<String, String>(
+            path: "/account/42/lists",
+            queryItems: ["session_id": "user-session"]
+        )
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await client.perform(stubRequest)
+
+        let request = try #require(httpClient.lastRequest)
+        #expect(request.isUserSpecific)
+    }
+
+    @Test("isUserSpecific is set for a guest session request")
+    @MainActor
+    func isUserSpecificSetForGuestSessionRequest() async throws {
+        let client = apiClient(credential: .apiKey("abc123"))
+        let stubRequest = APIStubRequest<String, String>(
+            path: "/guest_session/abc/rated/movies"
+        )
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await client.perform(stubRequest)
+
+        let request = try #require(httpClient.lastRequest)
+        #expect(request.isUserSpecific)
+    }
+
+    @Test("isUserSpecific is not set for an ordinary api_key request")
+    @MainActor
+    func isUserSpecificNotSetForAPIKeyRequest() async throws {
+        let client = apiClient(credential: .apiKey("abc123"))
+        let stubRequest = APIStubRequest<String, String>(path: "/movie/550")
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await client.perform(stubRequest)
+
+        let request = try #require(httpClient.lastRequest)
+        #expect(request.isUserSpecific == false)
+    }
+
     @Test("isUserSpecific is not set when only the client credential authenticates")
     @MainActor
     func isUserSpecificNotSetForClientCredential() async throws {
