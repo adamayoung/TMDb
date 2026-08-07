@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#TBD) · medium
+## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · medium
 
 - **Phases / skills:** 0–8 pre-PR. `consulted:` gotchas *defaulted-argument
   witness* (the source), *Growing a public protocol additively*, *sweep the
