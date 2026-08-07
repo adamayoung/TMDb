@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-07 — ✨ TMDb v4 lists, `client.v4Lists` (#TBD) · full
+## 2026-08-07 — ✨ TMDb v4 lists, `client.v4Lists` (#411) · full
 
 - **Phases / skills:** 0–8 pre-PR. `consulted:` ADR-0017 (its four open
   decisions are what this settles), ADR-0005/0008/0011, gotchas *bearer-token
