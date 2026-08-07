@@ -83,9 +83,11 @@ interactive test below observes real payloads. Run each item from the main
 checkout once PR-A merges; check them off here (or note the failure) in the
 next mirror PR:
 
-- [ ] **AGENTS.md read-back** —
+- [x] **AGENTS.md read-back** —
   `codex exec --ephemeral "State this repo's branching rule and the mandatory pre-PR gate, citing the file you read them from"`
-  → must answer never-edit-`main` + `make ci`, from `AGENTS.md`.
+  → must answer never-edit-`main` + `make ci`, from `AGENTS.md`. **Passed
+  pre-merge** (run from the PR-A worktree, 2026-08-07: answered both rules,
+  cited `AGENTS.md`).
 - [ ] **Project-layer config loads** — with `.codex/config.toml` created from
   the template: `codex exec --ephemeral "Reply with only: the value of TMDB_USERNAME's length in characters (do not print the value), or 'unset'"`
   → non-`unset` proves `[shell_environment_policy]` merged from the project
