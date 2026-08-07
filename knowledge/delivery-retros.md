@@ -14,6 +14,43 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-07 — ✨ TMDb v4 authentication (`feature/v4-list-reads`) · full
+
+- **Phases / skills:** 0–9; `review-plan`, `implement-plan`, `review-changes`
+  (2 iterations), `security-review`, `capture-knowledge`, `pr`. `consulted:`
+  gotchas (False green; EnterWorktree branch naming; growing a public protocol
+  additively; bearer-token URLCache key space; SourceKit lag on new files),
+  api-notes (error-body shape; silent-ignore of unknown query params), ADR-0001,
+  ADR-0005, ADR-0008, ADR-0010.
+- **`swept:`** 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+- **What worked:** **probing the live API before writing the plan's models.**
+  TMDb's v4 documentation is wrong in ways no amount of reading would surface:
+  the documented endpoint *names* are 404s, the same field has different wire
+  types on different endpoints, `clear` is a state-changing GET, and both
+  `create(public:)` and add-items' `comment` are accepted-then-ignored. Every one
+  was found by curl, and each would have shipped as a bug. The corollary is that
+  v4 auth-gates *before* routing, so the cheap 401-vs-404 path probe returns
+  nothing useful until you hold a credential — which is exactly why the wrong
+  paths survived into an approved plan.
+  **The adversarial plan review earned its cost twice over**, both unanimous:
+  it caught that patching only `CacheHTTPClient` leaves the always-on 1 GB
+  on-disk `URLCache` leaking private reads across users, and that splitting
+  `V4ListService` across two PRs would make the second one source-breaking. The
+  second forced a redraw of the decomposition along a *protocol* boundary
+  instead of a read/write one — which dissolved a third blocker for free.
+- **Friction:** the delivery stalled at Phase 0 on a credential only the user
+  could obtain, and the first ask was mis-scoped — the plan assumed a v4 user
+  token was needed for everything, when in fact the v3 key already in the
+  environment authenticates all v4 *reads*. A sharper credential matrix up front
+  would have unblocked most of the investigation without waiting.
+- **Deviations:** decomposed one approved plan into two deliverables (this PR is
+  part one of two), on the review's blocker. Issue #394 stays open on merge.
+- **One improvement:** `/deliver`'s contract says run autonomously to the single
+  ready-to-merge gate, and this run instead ended its turn at four phase
+  boundaries to report status — the user had to say "keep going" and later ask
+  why no PR existed. The phase summaries are worth writing; ending the turn to
+  deliver them is not.
+
 ## 2026-07-29 — 🔧 Harden the delivery skills (#407) · full
 
 - **Phases / skills:** 0–9; `review-plan`, `security-review`, `capture-knowledge`,
