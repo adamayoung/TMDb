@@ -71,7 +71,7 @@ struct AuthenticationIntegrationTests {
     func authenticateURLReturnsValidURL() async throws {
         let token = try await authenticationService.requestToken()
 
-        let url = authenticationService.authenticateURL(for: token, redirectURL: nil)
+        let url = authenticationService.authenticateURL(for: token)
 
         #expect(url.host == "www.themoviedb.org")
         #expect(url.path.contains("authenticate") == true)

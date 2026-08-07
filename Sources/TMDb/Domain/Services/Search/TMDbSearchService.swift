@@ -113,7 +113,7 @@ final class TMDbSearchService: SearchService {
 
     func searchCompanies(
         query: String,
-        page: Int? = nil
+        page: Int?
     ) async throws(TMDbError) -> CompanyPageableList {
         try Self.validate(query: query)
         let request = CompanySearchRequest(
@@ -126,7 +126,7 @@ final class TMDbSearchService: SearchService {
 
     func searchKeywords(
         query: String,
-        page: Int? = nil
+        page: Int?
     ) async throws(TMDbError) -> KeywordPageableList {
         try Self.validate(query: query)
         let request = KeywordSearchRequest(

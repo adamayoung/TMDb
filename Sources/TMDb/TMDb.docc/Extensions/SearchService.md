@@ -24,10 +24,12 @@
 
 ### Companies
 
+- ``searchCompanies(query:)``
 - ``searchCompanies(query:page:)``
 
 ### Keywords
 
+- ``searchKeywords(query:)``
 - ``searchKeywords(query:page:)``
 
 ### Auto-Pagination

@@ -223,7 +223,7 @@ final class TMDbAccountService: AccountService {
     }
 
     func lists(
-        page: Int? = nil,
+        page: Int?,
         accountID: Int,
         session: Session
     ) async throws(TMDbError) -> MediaListSummaryPageableList {

@@ -21,7 +21,7 @@ final class TMDbGenreService: GenreService {
         self.configuration = configuration
     }
 
-    func movieGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
+    func movieGenres(language: String?) async throws(TMDbError) -> [Genre] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieGenresRequest(language: languageCode)
 
@@ -30,7 +30,7 @@ final class TMDbGenreService: GenreService {
         return genreList.genres
     }
 
-    func tvSeriesGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
+    func tvSeriesGenres(language: String?) async throws(TMDbError) -> [Genre] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesGenresRequest(language: languageCode)
 

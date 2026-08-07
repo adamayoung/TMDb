@@ -14,6 +14,61 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · medium
+
+- **Phases / skills:** 0–8 pre-PR. `consulted:` gotchas *defaulted-argument
+  witness* (the source), *Growing a public protocol additively*, *sweep the
+  failure class not the property name*, *False green*, *swiftlint file_length*;
+  next-major.md; ADR-0005; wiki *a-protocol-extension-convenience-must-differ…*.
+  Plan pre-reviewed by a Fable critic (3 majors, all applied) so Phase 2's
+  critics were skipped. Phase 4a reference-unit review, then `/review-changes`
+  ×2 (1 High + 3 Medium → converged 0/0), `/security-review` → 0 findings,
+  independent grader → **4/4 ACs met**.
+- **Worked — the reference-unit gate earned its keep, again.** Reviewing one
+  site before replicating caught a DocC-curation regression (the convenience
+  is now a distinct symbol and falls out of its Topics group unless curated)
+  that would have shipped 37 times. It also settled three open design
+  questions in one pass — remove the concrete-side defaults, one `- Note:`
+  wording everywhere, split the tests per protocol — which is exactly what a
+  template review is for. Same pattern as #359.
+- **Worked — the census was re-derived, not trusted.** Both reviewers rebuilt
+  it independently and reproduced 91/15 and the 37/54 split, which is the only
+  reason the numbers in `gotchas.md`, `next-major.md` and the CHANGELOG can be
+  relied on. The first census had been **17 short** — it grepped protocol
+  *declaration* files and missed the two protocols that keep conveniences in a
+  sibling `+Defaults.swift`.
+- **Friction — I shipped a gate that did not gate.** The new check went into
+  `make lint`, but no workflow in this repo invokes `make`: the `Lint` job runs
+  swiftlint and swiftformat as inline steps. So the guard against a 55th hazard
+  site was invisible to CI, and CI stayed green. Caught in review, now its own
+  step, and recorded in gotchas *No workflow runs `make`*.
+- **Friction — two mechanical-sweep bugs, both of the same shape.** The script
+  did a first-occurrence `str.replace` per file, so it stripped the default from
+  `favouriteMovies` instead of `lists` — while reporting exactly the 36 edits
+  expected. And the checker itself passed on an empty scan (a typo'd path
+  printed success and exited 0). **A matching count is not evidence**; both are
+  now bullets under *False green*, and the checker compares against an explicit
+  set with its negatives verified rather than assumed.
+- **Deviations:** (1) scope grew twice, both times deliberately — from the one
+  method Adam asked about to all 37 cheap sites (deferring them to a *future*
+  major while this major is open is precisely what `next-major.md` exists to
+  prevent), and then to a committed lint guard, because otherwise "we recorded
+  54 in a markdown file" is a promise with nothing enforcing it. (2) **No
+  red-green.** The behaviour is unchanged by design, so these are
+  characterisation tests that pass before and after — what `CLAUDE.md`
+  prescribes for refactoring. Calling that TDD would have been theatre.
+  (3) Knowledge captured inline rather than via `/capture-knowledge`, since the
+  gotchas rewrite *is* part of the change; the retirement sweep still ran.
+- **One improvement:** the durable guard here is a committed script with an
+  explicit allowlist, and it is the third time this repo has reached for
+  "encode the rule as a blocking gate" (after the Phase 4a ledger task and the
+  `next-major.md` queue). Worth asking whether `/capture-knowledge` should
+  *prompt* for one: when an entry records a known-remaining defect count, the
+  natural follow-up question is "what fails if that number changes?"
+- **`swept:`** Makefile, .github/workflows/ci.yml, Scripts/ → no entry
+  invalidated (the `make ci` citations all describe composition this change
+  does not alter); gotchas.md and next-major.md rewritten as part of the change.
+
 ## 2026-08-07 — ✨ TMDb v4 authentication (#409) · full
 
 - **Phases / skills:** 0–9; `review-plan`, `implement-plan`, `review-changes`
@@ -453,76 +508,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   consider making "no-Swift but skill-structure diff → run a rule-loss
   review" an explicit branch in the review phase.
 
-## 2026-07-05 — 🔧 Write the /deliver retro pre-PR (#382) · lite
-
-- **Phases / skills:** phases 0–4; no sub-skills fired (markdown-only: code +
-  security review self-skipped, `/implement-plan` N/A with no Canon TDD list,
-  `/review-plan` skipped — lite + plan approved via `ExitPlanMode` after a
-  plan-mode design round). Knowledge captured **inline** (an `EnterWorktree`
-  gotcha + the skill-improvement-log entry), precedented in #366/#368/#374.
-- **Worked:** the plan came from a first-principles review of `/deliver` against
-  this file and the improvement log — the same loop the skill automates — and
-  both open design decisions (amend-only-if-noteworthy; two sequenced PRs) were
-  settled with the user via `AskUserQuestion` *before* any edit. The change is
-  **dogfooded immediately**: this entry is written pre-PR under the sequencing
-  it introduces, and the overdue archive-distil (deferred in #368 and #374) ran
-  as part of the new Phase 3.7 windowing step.
-- **Friction:** `EnterWorktree` ignored the requested name for the **branch**
-  (created `worktree-chore+…`; prior deliveries got the requested name) —
-  renamed with `git branch -m`, now a `gotchas.md` entry.
-- **Deviations:** none material — inline knowledge capture per precedent.
-- **One improvement:** deliverable B of this same run — the
-  progressive-disclosure restructure of `deliver/SKILL.md` — is the standing
-  improvement; no new one surfaced.
-
-## 2026-07-02 — 📝 Reconcile docs/config honesty gaps from external reviews (#374) · lite
-
-- **Phases / skills:** phases 0.5–6; `review-changes, security-review,
-  build-for-testing, pr`. Skipped `/review-plan` (lite + the worklist was approved
-  via `ExitPlanMode` this session, and its findings were already adversarially
-  *verified* by an 18-agent read-only workflow beforehand); skipped
-  `/implement-plan` (no Canon TDD list — docs/config edits + a dead-code deletion).
-  Knowledge captured **inline** (a gotcha + the skill-improvement-log entry), not
-  via a separate `/capture-knowledge`.
-- **Worked:** the standout was **verifying the reviews before acting on them.** Two
-  external reviews (Fable + Codex) were turned into a de-risked worklist by an
-  18-agent workflow that opened/grepped/counted every claim in-repo — which caught
-  real overstatements before any edit (tool count is *eight* not "seven"; the
-  `*DetailsResponse` decoders are 90–225 lines not "~180"; 84 request files not
-  "~95"; `.unsupportedLanguage` is actually reachable, not dead). Only the
-  **verified, softened** Tier-1 subset was delivered. `make ci` green first try
-  (2838 unit + 289 integration); the single `code-reviewer` returned **0 findings**
-  and independently re-checked the docs claims (tool count, CHANGELOG dates vs the
-  actual tags).
-- **Friction — the standout:** the Haiku `/build-for-testing` subagent reported the
-  build **failed** when `swift build` had **exited 0**. Cause: the benign DocC
-  `.docc` "unhandled file" package-load warning lands in xcsift's toon `errors[]`
-  array (with `null,null` coords) and flips its `status:` field to `failed`; the
-  agent trusted that field over the exit code. The same artifact reappeared in
-  `make ci`'s toon (`status: failed` with `failed_tests: 0`). Cost a diagnostic
-  cycle to prove it benign. **Fixed this run** (user-requested): a gotcha in
-  `gotchas.md` + a "trust the exit status, not xcsift's toon summary" caveat added
-  to all four build/test skill prompts (`/build`, `/build-for-testing`, `/test`,
-  `/integration-test`).
-- **Deviations:** (1) the delivery is **one tier of a 5-batch verified worklist**
-  (user green-lit Tiers 1–4 + F7 via `AskUserQuestion`), so the "plan" is the
-  worklist doc, not a single-feature plan. (2) **Bundled** the build/test
-  skill-prompt fix + its gotcha + skill-improvement-log entry into this honesty PR
-  rather than a separate one — the diagnosis gotcha was already committed here, so
-  splitting diagnosis from remediation would be worse; a mild scope-broadening,
-  flagged to the user. (3) Ran `/security-review` on a zero-attack-surface change
-  (docs + a version string + a dead-code deletion) because the Swift-touched gate
-  triggered — returned clean, as expected.
-- **One improvement:** the DocC-warning false-failure is patched at the prompt
-  level, but the deeper fix is to give the Haiku build subagents an **unambiguous**
-  pass/fail signal instead of asking them to interpret xcsift's toon fields — e.g.
-  have the `make build*/test*` targets append the real exit code to the log
-  (`echo "EXIT=$?"`) so the subagent parses one authoritative line. Worth a
-  follow-up if the toon-interpretation ambiguity bites again.
-- **Housekeeping:** this file is ~2 cycles over its ~12-entry window (archive-distil
-  of the 2026-06-18 cluster was deferred in #368 too) — an archive pass is overdue
-  next cycle.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -530,6 +515,8 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-05 | #382 | lite | Moved the `/deliver` retro to pre-PR so it rides the delivery's own PR instead of re-opening the ready gate. Both open design decisions were settled with the user via `AskUserQuestion` *before* any edit, and the change was dogfooded immediately — its own entry was written under the sequencing it introduced. Surfaced the `EnterWorktree` gotcha: the tool ignores the requested name for the **branch** (`git branch -m` after entering), now a `gotchas.md` entry and a standing Phase 1 step. |
+| 2026-07-02 | #374 | lite | Reconciled docs/config honesty gaps from two external reviews. The lasting lesson is **verify a review's claims before acting on them**: an 18-agent read-only pass opened and counted every assertion in-repo and caught real overstatements (eight tools not seven, 84 request files not ~95, `.unsupportedLanguage` reachable rather than dead), so only the verified, softened subset shipped — the origin of the wiki heuristic *treat review findings as hypotheses*. Also diagnosed the xcsift false-failure: a benign DocC "unhandled file" warning lands in toon's `errors[]` and flips `status:` to failed on an exit-0 build, so the four build/test skills now say trust the exit status, not the summary. |
 | 2026-06-30 | #368 | lite | Hardened the `/deliver` pipeline from an adversarial audit (P1–P5). Established the pattern this repo keeps returning to: an unenforceable process rule gets silently skipped, so encode the ones that matter as blocking gates (the Phase 3a/4a reference-unit review became a ledger task that blocks a later phase). Skipped code review and `/security-review` on its no-Swift diff (as #365 and #366 had) — the self-gating that #407 later had to override deliberately, when a docs-only change carried real risk. |
 | 2026-06-25 | #366 | lite | Migrated the skills from the `gh` CLI to the GitHub MCP (ADR-0009), dogfooded end-to-end. The 3-critic plan review paid for itself pre-edit: it caught that `add_reply_to_pull_request_comment` needs a REST comment id `get_review_comments` doesn't expose (so thread replies stay on `gh`), and a wrong method name. Real cost was a registration detour — the hosted `/x/<toolset>` paths are **exclusive**, so pointing at `/x/actions` silently dropped the default PR toolset mid-implementation; `/x/all` fixed it. Lesson that generalises: when a delivery edits the very skills the pipeline runs, the skill registry loads from the main checkout, so the change can only be dogfooded by the conductor acting manually until merge. |
 | 2026-06-24 | #365 | lite | Entry/exit criteria + auto-start for `/deliver`. The docs/config fast-gate correctly classified it (CI green in under 2 min). Lasting lesson: auto-start on `ExitPlanMode` approval is a **soft guarantee** — no harness hook fires on it, so it depends on the model reading the contract. First delivery under the new AC entry gate, and the plan had no formal ACs (circular dependency, noted); its "one improvement" — put an inline `Given X, when Y, then Z` example in the gate prompt — still stands. Its `reviewThreads`/`gh pr view --json` gotcha was superseded by #366 (the MCP migration removed the call) and is deliberately not carried forward. |

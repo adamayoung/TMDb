@@ -4,13 +4,18 @@
 
 ### Details
 
+- ``details(forPerson:)``
 - ``details(forPerson:language:)``
+- ``details(forPerson:appending:)``
 - ``details(forPerson:appending:language:)``
 
 ### Credits
 
+- ``combinedCredits(forPerson:)``
 - ``combinedCredits(forPerson:language:)``
+- ``movieCredits(forPerson:)``
 - ``movieCredits(forPerson:language:)``
+- ``tvSeriesCredits(forPerson:)``
 - ``tvSeriesCredits(forPerson:language:)``
 
 ### Media
@@ -28,6 +33,7 @@
 
 - ``popular(page:language:)``
 - ``externalLinks(forPerson:)``
+- ``taggedImages(forPerson:)``
 - ``taggedImages(forPerson:page:)``
 - ``translations(forPerson:)``
 

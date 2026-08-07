@@ -282,24 +282,26 @@ public extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: An episode of the matching TV series.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> TVEpisode {
         try await details(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
-            language: language
+            language: nil
         )
     }
 
@@ -314,27 +316,28 @@ public extension TVEpisodeService {
     ///    - seasonNumber: The season number.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - appending: The additional data to append.
-    ///    - language: ISO 639-1 language code to display results
-    ///     in. Defaults to the client's configured default
-    ///     language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching TV episode with appended data.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        appending: TVEpisodeAppendOption,
-        language: String? = nil
+        appending: TVEpisodeAppendOption
     ) async throws(TMDbError) -> TVEpisodeDetailsResponse {
         try await details(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
             appending: appending,
-            language: language
+            language: nil
         )
     }
 
@@ -347,24 +350,26 @@ public extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching TV episode.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func credits(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> ShowCredits {
         try await credits(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
-            language: language
+            language: nil
         )
     }
 
@@ -377,23 +382,26 @@ public extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of images for the matching TV episode.
     ///
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func images(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVEpisodeImageFilter? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> TVEpisodeImageCollection {
         try await images(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
-            filter: filter
+            filter: nil
         )
     }
 
@@ -406,23 +414,26 @@ public extension TVEpisodeService {
     ///    - episodeNumber: The episode number of a TV series.
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of videos for the matching TV episode.
     ///
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func videos(
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVEpisodeVideoFilter? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> VideoCollection {
         try await videos(
             forEpisode: episodeNumber,
             inSeason: seasonNumber,
             inTVSeries: tvSeriesID,
-            filter: filter
+            filter: nil
         )
     }
 

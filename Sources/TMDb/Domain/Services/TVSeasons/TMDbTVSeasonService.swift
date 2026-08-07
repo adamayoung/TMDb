@@ -21,7 +21,7 @@ final class TMDbTVSeasonService: TVSeasonService {
     func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVSeason {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonRequest(
@@ -37,7 +37,7 @@ final class TMDbTVSeasonService: TVSeasonService {
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeasonAppendOption,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVSeasonDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonDetailsAppendRequest(
@@ -53,7 +53,7 @@ final class TMDbTVSeasonService: TVSeasonService {
     func aggregateCredits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVSeasonAggregateCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonAggregateCreditsRequest(
@@ -68,7 +68,7 @@ final class TMDbTVSeasonService: TVSeasonService {
     func credits(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeasonCreditsRequest(
@@ -83,7 +83,7 @@ final class TMDbTVSeasonService: TVSeasonService {
     func images(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonImageFilter? = nil
+        filter: TVSeasonImageFilter?
     ) async throws(TMDbError) -> TVSeasonImageCollection {
         let request = TVSeasonImagesRequest(
             seasonNumber: seasonNumber,
@@ -97,7 +97,7 @@ final class TMDbTVSeasonService: TVSeasonService {
     func videos(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonVideoFilter? = nil
+        filter: TVSeasonVideoFilter?
     ) async throws(TMDbError) -> VideoCollection {
         let request = TVSeasonVideosRequest(
             seasonNumber: seasonNumber,

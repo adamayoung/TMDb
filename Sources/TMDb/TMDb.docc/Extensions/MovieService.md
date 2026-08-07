@@ -4,11 +4,14 @@
 
 ### Details
 
+- ``details(forMovie:)``
 - ``details(forMovie:language:)``
+- ``details(forMovie:appending:)``
 - ``details(forMovie:appending:language:)``
 
 ### Credits
 
+- ``credits(forMovie:)``
 - ``credits(forMovie:language:)``
 
 ### Reviews
@@ -17,7 +20,9 @@
 
 ### Media
 
+- ``images(forMovie:)``
 - ``images(forMovie:filter:)``
+- ``videos(forMovie:)``
 - ``videos(forMovie:filter:)``
 
 ### User Interactions

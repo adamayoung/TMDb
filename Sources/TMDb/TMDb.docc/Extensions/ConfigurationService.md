@@ -8,6 +8,7 @@
 
 ### Lists
 
+- ``countries()``
 - ``countries(language:)``
 - ``jobsByDepartment()``
 - ``languages()``

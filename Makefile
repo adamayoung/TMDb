@@ -38,9 +38,16 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint:
+lint: lint-witnesses
 	@swiftlint --strict .
 	@swiftformat --lint .
+
+# Cross-symbol check that swiftlint cannot express: a public-extension
+# convenience must not share a requirement's signature (see the script, and
+# knowledge/gotchas.md).
+.PHONY: lint-witnesses
+lint-witnesses:
+	@python3 Scripts/check-defaulted-witnesses.py
 
 .PHONY: lint-markdown
 lint-markdown:

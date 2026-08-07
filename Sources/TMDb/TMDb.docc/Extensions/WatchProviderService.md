@@ -9,4 +9,5 @@
 
 ### Countries with Watch Provider data
 
+- ``countries()``
 - ``countries(language:)``

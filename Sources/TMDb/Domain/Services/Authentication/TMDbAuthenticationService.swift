@@ -33,7 +33,7 @@ final class TMDbAuthenticationService: AuthenticationService {
         return try await apiClient.perform(request)
     }
 
-    func authenticateURL(for token: Token, redirectURL: URL? = nil) -> URL {
+    func authenticateURL(for token: Token, redirectURL: URL?) -> URL {
         authenticateURLBuilder.authenticateURL(
             with: token.requestToken, redirectURL: redirectURL
         )
