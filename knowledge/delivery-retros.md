@@ -584,27 +584,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   post-merge `/build` is the real verification; if it surprises, that's a
   `gotchas.md` entry.
 
-## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (#384) · lite
-
-- **Phases / skills:** phases 0–10; markdown-only, so `review-plan` skipped
-  (lite + `ExitPlanMode` approval), `review-changes` and `security-review`
-  self-skipped; capture was inline (the `skill-improvement-log.md` entry *is*
-  part of the delivery, per the 2026-07-05 inline-capture decision).
-- **Worked:** the plan arrived with the user story + ACs already in
-  Given/When/Then form, so the Phase 0 entry gate extracted the rubric with
-  zero friction; the diff-by-eye rule-loss check was proportionate for a
-  two-section edit (the full inventory method stayed shelved, correctly).
-- **Friction:** none material — smallest delivery to date (2 files at
-  implement, +49/−8).
-- **Deviations:** the change originated from an external article review
-  rather than a repo-native trigger; the knowledge-consult it adds was done
-  implicitly this run (the design phase had already read the relevant
-  gotchas/wiki material) — the new `consulted:` ledger line is what makes it
-  explicit from the next run on.
-- **One improvement:** extend the consult step to `/implement-plan`
-  standalone invocations (deliberately out of scope this run; noted in the
-  plan).
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -612,6 +591,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-05 | #384 | lite | Knowledge consult at entry + independent rubric grader. Smallest delivery to date (2 files, +49/−8); the plan arrived with Given/When/Then ACs so the entry gate extracted the rubric with zero friction. Lasting piece: the `consulted:` ledger line, which turned the implicit design-phase reading of gotchas/wiki into a checkable step — the origin of the consult line every later run records. Its "one improvement" (extend the consult step to standalone `/implement-plan`) was noted in-plan and remains open. |
 | 2026-07-05 | #383 | lite | Restructured `deliver/SKILL.md` for progressive disclosure — a lean core plus `references/` loaded on demand — after the skill had grown past what fits in working context. Paired with an adversarial mapping review that diffed old against new hunting specifically for dropped or weakened rules, which is the practice that made the compression safe and is now the wiki entry *restructure-a-normative-doc-with-a-rule-inventory-and-an-adversarial-mapping-review*. |
 | 2026-07-05 | #382 | lite | Moved the `/deliver` retro to pre-PR so it rides the delivery's own PR instead of re-opening the ready gate. Both open design decisions were settled with the user via `AskUserQuestion` *before* any edit, and the change was dogfooded immediately — its own entry was written under the sequencing it introduced. Surfaced the `EnterWorktree` gotcha: the tool ignores the requested name for the **branch** (`git branch -m` after entering), now a `gotchas.md` entry and a standing Phase 1 step. |
 | 2026-07-02 | #374 | lite | Reconciled docs/config honesty gaps from two external reviews. The lasting lesson is **verify a review's claims before acting on them**: an 18-agent read-only pass opened and counted every assertion in-repo and caught real overstatements (eight tools not seven, 84 request files not ~95, `.unsupportedLanguage` reachable rather than dead), so only the verified, softened subset shipped — the origin of the wiki heuristic *treat review findings as hypotheses*. Also diagnosed the xcsift false-failure: a benign DocC "unhandled file" warning lands in toon's `errors[]` and flips `status:` to failed on an exit-0 build, so the four build/test skills now say trust the exit status, not the summary. |
