@@ -62,6 +62,11 @@ durable residue (the file map and the deliberate divergences).
   MCP's lowercase `mergeable_state` — ported logic is re-keyed, not drifted.
 - **`$security-review` is a local skill** in the mirror (Claude uses a
   built-in `/security-review`).
+- **`.github/CODE_REVIEW.md` reads Claude-flavoured in one bullet:** its
+  capability-scope section names `/build`, `/test`, `/integration-test` and
+  `mcp__tmdb__*` as the local reviewer's tools. The mirror reads those
+  through as their `$`-twins / the `tmdb` MCP server; generalising the shared
+  spec's wording is deferred to a later mirror PR.
 
 ## Deferred post-merge verification (PR-A)
 
