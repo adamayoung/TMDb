@@ -9,7 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      knowledge/next-major.md first — it lists approved breaking changes
      waiting for exactly this bump. Ship them or consciously re-defer. -->
 
-## [Unreleased]
+## [20.0.0]
+
+### Fixed
+
+- 37 convenience methods on the public service protocols no longer share a
+  signature with the requirement they forward to. A default argument value is
+  not part of a signature for witness matching, so each of these *was* its
+  requirement's default implementation — a type conforming to, say,
+  `MovieService` without implementing `details(forMovie:language:)` compiled,
+  then recursed until the stack overflowed. Each convenience now drops the
+  parameter instead of defaulting it (`details(forMovie:)` forwarding to
+  `details(forMovie:language:)`), so omitting a requirement is a compile error
+  again.
+
+  **Calling code is unaffected** — `details(forMovie: 550)` and
+  `details(forMovie: 550, language: "en")` both still compile. The break is
+  narrow and deliberate: a conformer that relied on the accidental default now
+  fails to build, which is the point.
+
+  Affected: `AccountService`, `AuthenticationService`, `ConfigurationService`,
+  `FindService`, `GenreService`, `MovieService`, `PersonService`,
+  `SearchService`, `TVEpisodeService`, `TVSeasonService`, `TVSeriesService`,
+  `WatchProviderService`. A further 54 conveniences with two or more defaulted
+  parameters keep the old shape for now — fixing those cannot preserve every
+  existing call form (see `knowledge/next-major.md`).
 
 ### Added
 
@@ -178,6 +202,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PersonService.personChanges(startDate:endDate:page:)` — use
   `PersonService.changes(startDate:endDate:page:)` instead.
 
+[20.0.0]: https://github.com/adamayoung/TMDb/releases/tag/20.0.0
 [19.0.0]: https://github.com/adamayoung/TMDb/releases/tag/19.0.0
 [18.1.0]: https://github.com/adamayoung/TMDb/releases/tag/18.1.0
 [18.0.1]: https://github.com/adamayoung/TMDb/releases/tag/18.0.1

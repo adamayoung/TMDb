@@ -4,17 +4,23 @@
 
 ### Details
 
+- ``details(forSeason:inTVSeries:)``
 - ``details(forSeason:inTVSeries:language:)``
+- ``details(forSeason:inTVSeries:appending:)``
 - ``details(forSeason:inTVSeries:appending:language:)``
 
 ### Credits
 
+- ``credits(forSeason:inTVSeries:)``
 - ``credits(forSeason:inTVSeries:language:)``
+- ``aggregateCredits(forSeason:inTVSeries:)``
 - ``aggregateCredits(forSeason:inTVSeries:language:)``
 
 ### Media
 
+- ``images(forSeason:inTVSeries:)``
 - ``images(forSeason:inTVSeries:filter:)``
+- ``videos(forSeason:inTVSeries:)``
 - ``videos(forSeason:inTVSeries:filter:)``
 
 ### Account

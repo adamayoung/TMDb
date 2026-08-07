@@ -21,6 +21,26 @@ CHANGELOG records it) or is rejected outright (record that in
 
 ## Backlog
 
+### Fix the remaining 54 defaulted-witness conveniences
+
+- **What:** 54 public-extension conveniences still share a protocol
+  requirement's signature, differing only by default argument values, so each
+  *is* that requirement's default implementation — a third-party conformer that
+  omits the requirement compiles and then recurses to a stack overflow. See
+  `knowledge/gotchas.md` § *A protocol-extension convenience that differs only
+  by a default argument becomes the requirement's witness*.
+- **Why it waits:** these have **2–4** defaulted parameters, so the
+  dropped-parameter fix used for the other 37 would need the *power set* of
+  overloads (4, 8 or 16 per site) to keep every current call form compiling.
+  The alternative — dropping the short forms outright — is source-breaking for
+  ordinary callers, not just conformers, which is what makes it major-only.
+  Distribution: 22 sites with 2 defaults, 30 with 3, 2 with 4.
+- **Guard in the meantime:** `Scripts/check-defaulted-witnesses.py`
+  (`make lint`) fails if any single-default site appears, or if the
+  multi-default count exceeds 54. Lower `EXPECTED_MULTI_DEFAULT` as they are
+  fixed; delete the script at zero.
+- **Source:** 20.0.0 sweep (2026-08-07), which fixed the 37 cheap sites.
+
 ### Align the `Company`/`Network` model shapes deliberately — *partially shipped*
 
 - **Shipped in 19.0.0 (2026-07-28):** the *nullability* half. `Company.logoPath`

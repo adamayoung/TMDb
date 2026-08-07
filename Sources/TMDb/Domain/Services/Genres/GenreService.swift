@@ -50,15 +50,17 @@ public extension GenreService {
     ///
     /// [TMDb API - Genres: Movie List](https://developer.themoviedb.org/reference/genre-movie-list)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
-    func movieGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
-        try await movieGenres(language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func movieGenres() async throws(TMDbError) -> [Genre] {
+        try await movieGenres(language: nil)
     }
 
     ///
@@ -66,15 +68,17 @@ public extension GenreService {
     ///
     /// [TMDb API - Genres: TV List](https://developer.themoviedb.org/reference/genre-tv-list)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A list of genres.
     ///
-    func tvSeriesGenres(language: String? = nil) async throws(TMDbError) -> [Genre] {
-        try await tvSeriesGenres(language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func tvSeriesGenres() async throws(TMDbError) -> [Genre] {
+        try await tvSeriesGenres(language: nil)
     }
 
 }

@@ -670,10 +670,36 @@ public extension P {
 ```
 
 Call sites (`f()`) are unchanged, and omitting the requirement is now a compile
-error. `V4AuthenticationService.requestToken()` is written this way for this
-reason. **`AuthenticationService.authenticateURL(for:redirectURL:)` still carries
-the hazard** — it is the defaulted form, so a third-party `AuthenticationService`
-conformer that omits it will infinite-loop rather than fail to build.
+error.
+
+**The idiom was repo-wide, not a one-off.** A census found **91 sites across 15
+public protocols**. 37 had exactly one defaulted parameter and were fixed — the
+fix costs a single dropped-parameter overload and no call site changes. The
+remaining **54 have 2–4 defaults**, where preserving every existing call form
+needs the *power set* of overloads (4, 8 or 16 each), so they are deferred to
+`next-major.md`. `Scripts/check-defaulted-witnesses.py` runs in `make lint` and
+holds both invariants: zero single-default sites, and the multi-default count
+must not grow.
+
+**The first census came out 17 short, and the reason generalises.** It grepped
+the *protocol declaration* files. But `AccountService` and `PersonService` keep
+their conveniences in a sibling `+Defaults.swift`, so the sweep silently missed
+two whole protocols while looking complete. The sweep key here is the failure
+class — *"a public-extension member whose parameter list matches a requirement's
+after erasing defaults"* — which is a property of the pair, not of a file. Same
+lesson as *Sweeping for a decode bug: sweep the failure class, not the property
+name*, and the same shape as the `Company.Parent` miss: **enumerate by symbol
+relationship, never by filename convention.**
+
+**A conformer that omits the method is the only thing this can hurt, so the test
+has to be shaped for that.** Every in-package type implements every requirement,
+so nothing in `Sources` can reproduce it, and the *compile error* the fix
+restores cannot be asserted from a test at all. What is testable is the other
+half of the contract — that the convenience still forwards `nil` — and the
+faithful conformers to drive it through are `TMDbTesting`'s mocks, which
+implement requirements only and carry no default arguments. Hence
+`Tests/TMDbTestingTests/Services/Conveniences/`, a target that imports through
+the public API with no `@testable`.
 
 ### Growing a public protocol additively: extension defaults, and the `--Werror` deprecation trap
 

@@ -18,7 +18,7 @@ final class TMDbMovieService: MovieService {
         self.configuration = configuration
     }
 
-    func details(forMovie movieID: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
+    func details(forMovie movieID: Movie.ID, language: String?) async throws(TMDbError) -> Movie {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieRequest(id: movieID, language: languageCode)
 
@@ -28,7 +28,7 @@ final class TMDbMovieService: MovieService {
     func details(
         forMovie movieID: Movie.ID,
         appending: MovieAppendOption,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> MovieDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieDetailsAppendRequest(
@@ -42,7 +42,7 @@ final class TMDbMovieService: MovieService {
 
     func credits(
         forMovie movieID: Movie.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = MovieCreditsRequest(id: movieID, language: languageCode)
@@ -61,14 +61,14 @@ final class TMDbMovieService: MovieService {
         return try await apiClient.perform(request)
     }
 
-    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter? = nil) async throws(TMDbError)
+    func images(forMovie movieID: Movie.ID, filter: MovieImageFilter?) async throws(TMDbError)
     -> ImageCollection {
         let request = MovieImagesRequest(id: movieID, languages: filter?.languages)
 
         return try await apiClient.perform(request)
     }
 
-    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter? = nil) async throws(TMDbError)
+    func videos(forMovie movieID: Movie.ID, filter: MovieVideoFilter?) async throws(TMDbError)
     -> VideoCollection {
         let request = MovieVideosRequest(id: movieID, languages: filter?.languages)
 

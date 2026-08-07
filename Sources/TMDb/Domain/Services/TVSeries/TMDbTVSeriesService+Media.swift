@@ -12,7 +12,7 @@ extension TMDbTVSeriesService {
 
     func images(
         forTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeriesImageFilter? = nil
+        filter: TVSeriesImageFilter?
     ) async throws(TMDbError) -> ImageCollection {
         let request = TVSeriesImagesRequest(id: tvSeriesID, languages: filter?.languages)
 
@@ -21,7 +21,7 @@ extension TMDbTVSeriesService {
 
     func videos(
         forTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeriesVideoFilter? = nil
+        filter: TVSeriesVideoFilter?
     ) async throws(TMDbError) -> VideoCollection {
         let request = TVSeriesVideosRequest(id: tvSeriesID, languages: filter?.languages)
 

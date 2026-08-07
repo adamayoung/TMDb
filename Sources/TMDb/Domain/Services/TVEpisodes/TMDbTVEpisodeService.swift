@@ -22,7 +22,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVEpisode {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeRequest(
@@ -40,7 +40,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
         appending: TVEpisodeAppendOption,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVEpisodeDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeDetailsAppendRequest(
@@ -58,7 +58,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVEpisodeCreditsRequest(
@@ -75,7 +75,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVEpisodeImageFilter? = nil
+        filter: TVEpisodeImageFilter?
     ) async throws(TMDbError) -> TVEpisodeImageCollection {
         let request = TVEpisodeImagesRequest(
             episodeNumber: episodeNumber,
@@ -91,7 +91,7 @@ final class TMDbTVEpisodeService: TVEpisodeService {
         forEpisode episodeNumber: Int,
         inSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVEpisodeVideoFilter? = nil
+        filter: TVEpisodeVideoFilter?
     ) async throws(TMDbError) -> VideoCollection {
         let request = TVEpisodeVideosRequest(
             episodeNumber: episodeNumber,

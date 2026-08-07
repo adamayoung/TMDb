@@ -53,20 +53,22 @@ public extension FindService {
     /// - Parameters:
     ///   - externalID: The external identifier to search for.
     ///   - externalSource: The external source of the identifier.
-    ///   - language: ISO 639-1 language code to display results in. Defaults to the client's
-    ///               configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The find results containing any matching movies, TV shows, seasons, episodes,
     ///            or people.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func find(
         externalID: String,
-        externalSource: ExternalSource,
-        language: String? = nil
+        externalSource: ExternalSource
     ) async throws(TMDbError) -> FindResults {
-        try await find(externalID: externalID, externalSource: externalSource, language: language)
+        try await find(externalID: externalID, externalSource: externalSource, language: nil)
     }
 
 }

@@ -64,6 +64,7 @@
 ### Custom Lists
 
 - ``lists(page:authenticatedSession:)``
+- ``lists(accountID:session:)``
 - ``lists(page:accountID:session:)``
 
 ### Auto-Pagination

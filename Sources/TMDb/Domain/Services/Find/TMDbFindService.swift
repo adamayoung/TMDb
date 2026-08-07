@@ -21,7 +21,7 @@ final class TMDbFindService: FindService {
     func find(
         externalID: String,
         externalSource: ExternalSource,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> FindResults {
         try Self.validate(externalID: externalID)
         let languageCode = language ?? configuration.defaultLanguage

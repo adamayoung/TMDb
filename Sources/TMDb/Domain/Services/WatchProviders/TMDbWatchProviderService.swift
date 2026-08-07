@@ -18,7 +18,7 @@ final class TMDbWatchProviderService: WatchProviderService {
         self.configuration = configuration
     }
 
-    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
+    func countries(language: String?) async throws(TMDbError) -> [Country] {
         let languageCode = language ?? configuration.defaultLanguage
         let request = WatchProviderRegionsRequest(language: languageCode)
 

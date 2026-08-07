@@ -24,7 +24,7 @@ final class TMDbAccountService: AccountService {
 
     func favouriteMovies(
         sortedBy: FavouriteSort? = nil,
-        page: Int? = nil,
+        page: Int?,
         accountID: Int,
         session: Session
     ) async throws(TMDbError) -> MoviePageableList {

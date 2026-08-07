@@ -92,15 +92,17 @@ public extension ConfigurationService {
     ///
     /// [TMDb API - Configuration: Countries](https://developer.themoviedb.org/reference/configuration-countries)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries used throughout TMDb.
     ///
-    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
-        try await countries(language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func countries() async throws(TMDbError) -> [Country] {
+        try await countries(language: nil)
     }
 
 }

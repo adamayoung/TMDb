@@ -20,7 +20,7 @@ final class TMDbPersonService: PersonService {
 
     func details(
         forPerson personID: Person.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> Person {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonRequest(id: personID, language: languageCode)
@@ -31,7 +31,7 @@ final class TMDbPersonService: PersonService {
     func details(
         forPerson personID: Person.ID,
         appending: PersonAppendOption,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> PersonDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonDetailsAppendRequest(
@@ -45,7 +45,7 @@ final class TMDbPersonService: PersonService {
 
     func combinedCredits(
         forPerson personID: Person.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> PersonCombinedCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonCombinedCreditsRequest(id: personID, language: languageCode)
@@ -55,7 +55,7 @@ final class TMDbPersonService: PersonService {
 
     func movieCredits(
         forPerson personID: Person.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> PersonMovieCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonMovieCreditsRequest(id: personID, language: languageCode)
@@ -65,7 +65,7 @@ final class TMDbPersonService: PersonService {
 
     func tvSeriesCredits(
         forPerson personID: Person.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> PersonTVSeriesCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = PersonTVSeriesCreditsRequest(id: personID, language: languageCode)

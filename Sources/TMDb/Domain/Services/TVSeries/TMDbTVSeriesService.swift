@@ -18,7 +18,7 @@ final class TMDbTVSeriesService: TVSeriesService {
         self.configuration = configuration
     }
 
-    func details(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws(TMDbError) -> TVSeries {
+    func details(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws(TMDbError) -> TVSeries {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesRequest(id: tvSeriesID, language: languageCode)
 
@@ -28,7 +28,7 @@ final class TMDbTVSeriesService: TVSeriesService {
     func details(
         forTVSeries tvSeriesID: TVSeries.ID,
         appending: TVSeriesAppendOption,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVSeriesDetailsResponse {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesDetailsAppendRequest(
@@ -40,7 +40,7 @@ final class TMDbTVSeriesService: TVSeriesService {
         return try await apiClient.perform(request)
     }
 
-    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String? = nil) async throws(TMDbError)
+    func credits(forTVSeries tvSeriesID: TVSeries.ID, language: String?) async throws(TMDbError)
     -> ShowCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesCreditsRequest(id: tvSeriesID, language: languageCode)
@@ -50,7 +50,7 @@ final class TMDbTVSeriesService: TVSeriesService {
 
     func aggregateCredits(
         forTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        language: String?
     ) async throws(TMDbError) -> TVSeriesAggregateCredits {
         let languageCode = language ?? configuration.defaultLanguage
         let request = TVSeriesAggregateCreditsRequest(id: tvSeriesID, language: languageCode)

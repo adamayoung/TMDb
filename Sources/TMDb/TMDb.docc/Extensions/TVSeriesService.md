@@ -4,12 +4,16 @@
 
 ### Details
 
+- ``details(forTVSeries:)``
 - ``details(forTVSeries:language:)``
+- ``details(forTVSeries:appending:)``
 - ``details(forTVSeries:appending:language:)``
 
 ### Credits
 
+- ``credits(forTVSeries:)``
 - ``credits(forTVSeries:language:)``
+- ``aggregateCredits(forTVSeries:)``
 - ``aggregateCredits(forTVSeries:language:)``
 
 ### Reviews
@@ -18,7 +22,9 @@
 
 ### Media
 
+- ``images(forTVSeries:)``
 - ``images(forTVSeries:filter:)``
+- ``videos(forTVSeries:)``
 - ``videos(forTVSeries:filter:)``
 
 ### Lists and Related Content

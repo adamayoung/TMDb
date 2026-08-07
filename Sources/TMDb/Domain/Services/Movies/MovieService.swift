@@ -504,17 +504,19 @@ public extension MovieService {
     ///
     /// [TMDb API - Movies: Details](https://developer.themoviedb.org/reference/movie-details)
     ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie.
     ///
-    func details(forMovie movieID: Movie.ID, language: String? = nil) async throws(TMDbError) -> Movie {
-        try await details(forMovie: movieID, language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func details(forMovie movieID: Movie.ID) async throws(TMDbError) -> Movie {
+        try await details(forMovie: movieID, language: nil)
     }
 
     ///
@@ -525,22 +527,24 @@ public extension MovieService {
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
     ///    - appending: The additional data to append to the response.
-    ///    - language: ISO 639-1 language code to display results in.
-    ///     Defaults to the client's configured default language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching movie with appended data.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forMovie movieID: Movie.ID,
-        appending: MovieAppendOption,
-        language: String? = nil
+        appending: MovieAppendOption
     ) async throws(TMDbError) -> MovieDetailsResponse {
         try await details(
             forMovie: movieID,
             appending: appending,
-            language: language
+            language: nil
         )
     }
 
@@ -550,19 +554,19 @@ public extension MovieService {
     /// [TMDb API - Movies: Credits](https://developer.themoviedb.org/reference/movie-credits)
     ///
     /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching movie.
     ///
-    func credits(
-        forMovie movieID: Movie.ID,
-        language: String? = nil
-    ) async throws(TMDbError) -> ShowCredits {
-        try await credits(forMovie: movieID, language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func credits(forMovie movieID: Movie.ID) async throws(TMDbError) -> ShowCredits {
+        try await credits(forMovie: movieID, language: nil)
     }
 
     ///
@@ -595,19 +599,19 @@ public extension MovieService {
     ///
     /// [TMDb API - Movies: Images](https://developer.themoviedb.org/reference/movie-images)
     ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - filter: Image filter.
+    /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of images for the matching movie.
     ///
-    func images(
-        forMovie movieID: Movie.ID,
-        filter: MovieImageFilter? = nil
-    ) async throws(TMDbError) -> ImageCollection {
-        try await images(forMovie: movieID, filter: filter)
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func images(forMovie movieID: Movie.ID) async throws(TMDbError) -> ImageCollection {
+        try await images(forMovie: movieID, filter: nil)
     }
 
     ///
@@ -615,19 +619,19 @@ public extension MovieService {
     ///
     /// [TMDb API - Movies: Videos](https://developer.themoviedb.org/reference/movie-videos)
     ///
-    /// - Parameters:
-    ///    - movieID: The identifier of the movie.
-    ///    - filter: Video filter.
+    /// - Parameter movieID: The identifier of the movie.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Collection of videos for the matching movie.
     ///
-    func videos(
-        forMovie movieID: Movie.ID,
-        filter: MovieVideoFilter? = nil
-    ) async throws(TMDbError) -> VideoCollection {
-        try await videos(forMovie: movieID, filter: filter)
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func videos(forMovie movieID: Movie.ID) async throws(TMDbError) -> VideoCollection {
+        try await videos(forMovie: movieID, filter: nil)
     }
 
     ///

@@ -332,22 +332,21 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Company](https://developer.themoviedb.org/reference/search-company)
     ///
-    /// - Note: `query` must not be empty or whitespace-only. `page` can be
-    ///   between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only.
     ///
-    /// - Parameters:
-    ///    - query: A text query to search for.
-    ///    - page: The page of results to return.
+    /// - Parameter query: A text query to search for.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Companies matching the query.
     ///
-    func searchCompanies(
-        query: String,
-        page: Int? = nil
-    ) async throws(TMDbError) -> CompanyPageableList {
-        try await searchCompanies(query: query, page: page)
+    /// - Note: This convenience omits `page` rather than defaulting it, so that
+    /// its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func searchCompanies(query: String) async throws(TMDbError) -> CompanyPageableList {
+        try await searchCompanies(query: query, page: nil)
     }
 
     ///
@@ -355,22 +354,21 @@ public extension SearchService {
     ///
     /// [TMDb API - Search: Keyword](https://developer.themoviedb.org/reference/search-keyword)
     ///
-    /// - Note: `query` must not be empty or whitespace-only. `page` can be
-    ///   between `1` and `1000`.
+    /// - Note: `query` must not be empty or whitespace-only.
     ///
-    /// - Parameters:
-    ///    - query: A text query to search for.
-    ///    - page: The page of results to return.
+    /// - Parameter query: A text query to search for.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Keywords matching the query.
     ///
-    func searchKeywords(
-        query: String,
-        page: Int? = nil
-    ) async throws(TMDbError) -> KeywordPageableList {
-        try await searchKeywords(query: query, page: page)
+    /// - Note: This convenience omits `page` rather than defaulting it, so that
+    /// its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func searchKeywords(query: String) async throws(TMDbError) -> KeywordPageableList {
+        try await searchKeywords(query: query, page: nil)
     }
 
 }

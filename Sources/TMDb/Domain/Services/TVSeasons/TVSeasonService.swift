@@ -265,19 +265,21 @@ public extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A season of the matching TV series.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> TVSeason {
-        try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+        try await details(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: nil)
     }
 
     ///
@@ -290,25 +292,26 @@ public extension TVSeasonService {
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
     ///    - appending: The additional data to append.
-    ///    - language: ISO 639-1 language code to display results
-    ///     in. Defaults to the client's configured default
-    ///     language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching TV season with appended data.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forSeason seasonNumber: Int,
         inTVSeries tvSeriesID: TVSeries.ID,
-        appending: TVSeasonAppendOption,
-        language: String? = nil
+        appending: TVSeasonAppendOption
     ) async throws(TMDbError) -> TVSeasonDetailsResponse {
         try await details(
             forSeason: seasonNumber,
             inTVSeries: tvSeriesID,
             appending: appending,
-            language: language
+            language: nil
         )
     }
 
@@ -325,20 +328,22 @@ public extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Show credits for the matching TV season.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func aggregateCredits(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> TVSeasonAggregateCredits {
         try await aggregateCredits(
-            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language
+            forSeason: seasonNumber, inTVSeries: tvSeriesID, language: nil
         )
     }
 
@@ -350,19 +355,21 @@ public extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Credits for the matching TV season.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func credits(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        language: String? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> ShowCredits {
-        try await credits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: language)
+        try await credits(forSeason: seasonNumber, inTVSeries: tvSeriesID, language: nil)
     }
 
     ///
@@ -373,18 +380,21 @@ public extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - filter: Image filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of images for the matching TV season.
     ///
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func images(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonImageFilter? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> TVSeasonImageCollection {
-        try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+        try await images(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: nil)
     }
 
     ///
@@ -395,18 +405,21 @@ public extension TVSeasonService {
     /// - Parameters:
     ///    - seasonNumber: The season number of a TV series.
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - filter: Video filter.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: A collection of videos for the matching TV series season.
     ///
+    /// - Note: This convenience omits `filter` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func videos(
         forSeason seasonNumber: Int,
-        inTVSeries tvSeriesID: TVSeries.ID,
-        filter: TVSeasonVideoFilter? = nil
+        inTVSeries tvSeriesID: TVSeries.ID
     ) async throws(TMDbError) -> VideoCollection {
-        try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: filter)
+        try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: nil)
     }
 
     ///

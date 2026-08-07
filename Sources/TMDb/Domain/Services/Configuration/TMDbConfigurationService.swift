@@ -22,7 +22,7 @@ final class TMDbConfigurationService: ConfigurationService {
         return try await apiClient.perform(request)
     }
 
-    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
+    func countries(language: String?) async throws(TMDbError) -> [Country] {
         let request = CountriesConfigurationRequest(language: language)
 
         return try await apiClient.perform(request)

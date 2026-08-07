@@ -14,20 +14,19 @@ public extension PersonService {
     ///
     /// [TMDb API - People: Details](https://developer.themoviedb.org/reference/person-details)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person.
     ///
-    func details(
-        forPerson personID: Person.ID,
-        language: String? = nil
-    ) async throws(TMDbError) -> Person {
-        try await details(forPerson: personID, language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func details(forPerson personID: Person.ID) async throws(TMDbError) -> Person {
+        try await details(forPerson: personID, language: nil)
     }
 
     ///
@@ -39,23 +38,24 @@ public extension PersonService {
     /// - Parameters:
     ///    - personID: The identifier of the person.
     ///    - appending: The additional data to append.
-    ///    - language: ISO 639-1 language code to display results
-    ///     in. Defaults to the client's configured default
-    ///     language.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person with appended data.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func details(
         forPerson personID: Person.ID,
-        appending: PersonAppendOption,
-        language: String? = nil
+        appending: PersonAppendOption
     ) async throws(TMDbError) -> PersonDetailsResponse {
         try await details(
             forPerson: personID,
             appending: appending,
-            language: language
+            language: nil
         )
     }
 
@@ -64,20 +64,21 @@ public extension PersonService {
     ///
     /// [TMDb API - People: Combined Credits](https://developer.themoviedb.org/reference/person-combined-credits)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's combined movie and TV series credits.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func combinedCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
+        forPerson personID: Person.ID
     ) async throws(TMDbError) -> PersonCombinedCredits {
-        try await combinedCredits(forPerson: personID, language: language)
+        try await combinedCredits(forPerson: personID, language: nil)
     }
 
     ///
@@ -85,20 +86,21 @@ public extension PersonService {
     ///
     /// [TMDb API - People: Movie Credits](https://developer.themoviedb.org/reference/person-movie-credits)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's movie credits.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func movieCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
+        forPerson personID: Person.ID
     ) async throws(TMDbError) -> PersonMovieCredits {
-        try await movieCredits(forPerson: personID, language: language)
+        try await movieCredits(forPerson: personID, language: nil)
     }
 
     ///
@@ -106,20 +108,21 @@ public extension PersonService {
     ///
     /// [TMDb API - People: TV Credits](https://developer.themoviedb.org/reference/person-tv-credits)
     ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's TV series credits.
     ///
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func tvSeriesCredits(
-        forPerson personID: Person.ID,
-        language: String? = nil
+        forPerson personID: Person.ID
     ) async throws(TMDbError) -> PersonTVSeriesCredits {
-        try await tvSeriesCredits(forPerson: personID, language: language)
+        try await tvSeriesCredits(forPerson: personID, language: nil)
     }
 
     ///
@@ -150,22 +153,22 @@ public extension PersonService {
     ///
     /// [TMDb API - People: Tagged Images](https://developer.themoviedb.org/reference/person-tagged-images)
     ///
-    /// - Precondition: `page` can be between `1` and `1000`.
-    ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - page: The page of results to return.
+    /// - Parameter personID: The identifier of the person.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: The matching person's tagged images.
     ///
+    /// - Note: This convenience omits `page` rather than defaulting it, so that
+    /// its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
     func taggedImages(
-        forPerson personID: Person.ID,
-        page: Int? = nil
+        forPerson personID: Person.ID
     ) async throws(TMDbError) -> TaggedImagePageableList {
         try await taggedImages(
-            forPerson: personID, page: page
+            forPerson: personID, page: nil
         )
     }
 

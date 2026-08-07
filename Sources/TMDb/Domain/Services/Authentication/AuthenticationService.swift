@@ -137,11 +137,10 @@ public extension AuthenticationService {
     ///
     /// - Returns: An authenticate URL.
     ///
-    /// - Note: This convenience deliberately omits `redirectURL` rather than
-    /// defaulting it. A default argument value is not part of a signature for
-    /// witness matching, so a defaulted overload would silently become this
-    /// requirement's default implementation and recurse instead of failing to
-    /// compile.
+    /// - Note: This convenience omits `redirectURL` rather than defaulting it,
+    /// so that its signature stays distinct from the requirement it forwards
+    /// to. A defaulted overload would instead become that requirement's default
+    /// implementation.
     ///
     func authenticateURL(for token: Token) -> URL {
         authenticateURL(for: token, redirectURL: nil)

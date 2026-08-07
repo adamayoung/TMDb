@@ -77,15 +77,17 @@ public extension WatchProviderService {
     /// [TMDb API - Watch Providers: Available
     /// Regions](https://developer.themoviedb.org/reference/watch-providers-available-regions)
     ///
-    /// - Parameter language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: Countries TMDb have watch provider data for.
     ///
-    func countries(language: String? = nil) async throws(TMDbError) -> [Country] {
-        try await countries(language: language)
+    /// - Note: This convenience omits `language` rather than defaulting it, so
+    /// that its signature stays distinct from the requirement it forwards to. A
+    /// defaulted overload would instead become that requirement's default
+    /// implementation.
+    ///
+    func countries() async throws(TMDbError) -> [Country] {
+        try await countries(language: nil)
     }
 
     ///

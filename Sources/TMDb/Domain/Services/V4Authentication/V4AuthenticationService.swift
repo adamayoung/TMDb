@@ -115,13 +115,10 @@ public extension V4AuthenticationService {
     ///
     /// - Returns: An intermediate request token.
     ///
-    /// - Note: This convenience deliberately takes no parameters rather than
-    /// defaulting `redirectURL` to `nil`. A default argument is not part of a
-    /// function's signature for witness matching, so a defaulted overload here
-    /// would *become* the requirement's default implementation — and a
-    /// conforming type that omitted the method would compile, then recurse
-    /// until the stack overflowed. A distinct signature makes the omission a
-    /// compile error instead.
+    /// - Note: This convenience omits `redirectURL` rather than defaulting it,
+    /// so that its signature stays distinct from the requirement it forwards
+    /// to. A defaulted overload would instead become that requirement's default
+    /// implementation.
     ///
     func requestToken() async throws(TMDbError) -> V4RequestToken {
         try await requestToken(redirectURL: nil)
