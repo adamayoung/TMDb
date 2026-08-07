@@ -21,7 +21,7 @@ struct NetworkTests {
         #expect(result.logoPath == network.logoPath)
         #expect(result.originCountry == network.originCountry)
         #expect(result.headquarters == network.headquarters)
-        #expect(result.homepage == network.homepage)
+        #expect(result.homepageURL == network.homepageURL)
     }
 
     @Test("JSON decoding of Network when homepage is empty string", .tags(.decoding))
@@ -30,7 +30,7 @@ struct NetworkTests {
             Network.self, fromResource: "network-blank-homepage"
         )
 
-        #expect(result.homepage == nil)
+        #expect(result.homepageURL == nil)
         #expect(result.id == network.id)
     }
 
@@ -40,7 +40,7 @@ struct NetworkTests {
         logoPath: URL(string: "/tuomPhY2UtuPTqqFnKMVHvSb724.png"),
         originCountry: "US",
         headquarters: "New York City, New York",
-        homepage: URL(string: "https://www.hbo.com")
+        homepageURL: URL(string: "https://www.hbo.com")
     )
 
 }

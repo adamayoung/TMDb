@@ -13,6 +13,11 @@ deferred *because* it is breaking. **Remove an entry when it ships** (the
 CHANGELOG records it) or is rejected outright (record that in
 `skill-improvement-log.md`).
 
+> **Status: the 20.0.0 window is OPEN.** The `Network.homepage` rename shipped
+> into it (2026-08-07) and the `TMDbError` item below was consciously
+> re-deferred. Anything added here now is queued for **21.0.0** unless 20.0.0 is
+> still untagged when you read this.
+>
 > **This file has earned its keep once.** It was written on 2026-07-27 and read
 > on 2026-07-28, while 19.0.0 was assembled but still untagged — which is the
 > only reason the `Company.logoPath` decode bug (#404) made that release instead
@@ -44,24 +49,15 @@ CHANGELOG records it) or is rejected outright (record that in
   and its two invocations.
 - **Source:** 20.0.0 sweep (2026-08-07), which fixed the 37 cheap sites.
 
-### Align the `Company`/`Network` model shapes deliberately — *partially shipped*
-
-- **Shipped in 19.0.0 (2026-07-28):** the *nullability* half. `Company.logoPath`
-  → `URL?`, `Company.originCountry` → `String?`, `Company.Parent.logoPath` →
-  `URL?`, bringing `Company` into line with `Network`'s optionality. This also
-  closed the separate "Make `Company.logoPath` optional" entry, which is
-  removed. Plan review caught that `originCountry` throws on exactly the same
-  records, so shipping `logoPath` alone would not have fixed the bug.
-- **Consciously re-deferred:** the *naming* half — renaming `Network.homepage`
-  to `homepageURL` for parity with `Company.homepageURL`. Deliberately left out
-  of 19.0.0: it is a pure rename with no correctness benefit, and bundling it
-  would have widened a bug-fix PR into a cosmetic breaking change. It buys
-  nothing that waiting does not.
-- **Why it still waits:** public property rename — breaking.
-- **Source:** `skill-improvement-log.md` → *Align `Network` to `Company`*
-  (rejected 2026-06-30; "Reconsider when: a major-version bump…").
-
 ### Revisit `TMDbError.invalidRating` inside a broader `TMDbError` review
+
+- **Re-deferred at 20.0.0 (2026-08-07), deliberately.** The window was open and
+  this entry was read. It stays because its own condition is not met: it is only
+  worth doing *inside* a wider `TMDbError` review, and 20.0.0 did not open one.
+  Shipping the merge on its own would trade a precise typed case for a
+  stringly-typed one with no compensating cleanup — the reason it was rejected
+  in the first place. Recorded rather than skipped, so the next reader knows it
+  was considered and not merely missed.
 
 - **What:** the audit floated merging `.invalidRating` into `.badRequest` and
   rejected it as a net-worse API (a precise typed case traded for a

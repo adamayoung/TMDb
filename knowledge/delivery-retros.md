@@ -14,6 +14,36 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#TBD) · lite
+
+- **Phases / skills:** 0–8 pre-PR; lite, so no `/review-plan` critics and the
+  single-reviewer path. `consulted:` next-major.md (the source), gotchas
+  *Renaming a method's internal parameter name is source- and ABI-compatible*
+  (this is the opposite case — a public *property* rename **is** breaking).
+- **Worked — the queue fired for the second time.** `next-major.md` existed
+  precisely so a deferred breaking change would resurface at the next major
+  rather than be forgotten. This entry was written on 2026-07-27, deferred out
+  of 19.0.0 as cosmetic scope creep on a bug fix, and shipped here because the
+  file was read when the 20.0.0 window opened. That is the whole design working
+  end to end.
+- **Worked — the entry that did *not* ship was recorded, not skipped.** The
+  `TMDbError.invalidRating` item stays deferred because its own condition is
+  unmet: it is only worth doing inside a wider `TMDbError` review, and 20.0.0
+  did not open one. Recorded explicitly, so the next reader can tell
+  "considered and declined" from "missed".
+- **Friction:** none material. The rename is three files plus fixtures; the JSON
+  key is unchanged so only Swift call sites move. `Translation.homepage` was
+  deliberately left alone — it is a `String`, a different type, and outside the
+  entry's scope.
+- **Deviations:** stacked on `feature/v4-lists` rather than branched from
+  `main`, because both edit `CHANGELOG.md`'s `[20.0.0]` section and would
+  otherwise conflict. Rebase onto `main` once #411 merges.
+- **One improvement:** the file now carries a status line saying the 20.0.0
+  window is open, so a future entry is not filed against a version that has
+  already shipped. Worth `/capture-knowledge` asserting that whenever it adds an
+  entry.
+- **`swept:`** n/a — no infra files touched.
+
 ## 2026-08-07 — ✨ TMDb v4 lists, `client.v4Lists` (#411) · full
 
 - **Phases / skills:** 0–8 pre-PR. `consulted:` ADR-0017 (its four open
