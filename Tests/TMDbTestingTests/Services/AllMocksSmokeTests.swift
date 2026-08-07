@@ -27,6 +27,13 @@ struct AllMocksSmokeTests {
         #expect(service.requestTokenCalls.count == 1)
     }
 
+    @Test("MockV4ListService is usable with zero setup")
+    func v4ListServiceSmoke() async throws {
+        let service = MockV4ListService()
+        _ = try await service.details(forList: 1)
+        #expect(service.detailsCalls.count == 1)
+    }
+
     @Test("MockCertificationService is usable with zero setup")
     func certificationServiceSmoke() async throws {
         let service = MockCertificationService()
