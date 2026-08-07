@@ -200,8 +200,8 @@ grows — update it in the same change, then run `make lint-markdown`:
 - **Available Services table** (`## Available Services`) — one row per service,
   `| **serviceName** | capability, capability, … |`.
   - *New service* → add a row, and bump the service count in the
-    `**Comprehensive API Coverage**` feature bullet (currently "26 specialized
-    services") so the number stays accurate.
+    `**Comprehensive API Coverage**` feature bullet so the number stays
+    accurate.
   - *New method/capability on an existing service* → extend that service's row
     description if it adds a notable capability (e.g. add "watch providers" to the
     **movies** row). A new endpoint that's just a variant of an existing one does

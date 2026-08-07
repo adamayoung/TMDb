@@ -43,8 +43,13 @@ guidelines mark as "tool-permitting / local only":
   review and `swift-testing-expert` for test-code review.
 - **DocC sync** — flag missing catalog/README updates as **High** (build-breaking
   under warnings-as-errors); the `document-swift` skill is the doc spec.
-- You normally just read; if you must build/test, the `make` commands are fine.
-  Never read or touch `.swiftpm/` or `.build/`.
+- **Do not build or run tests** — reviewing is a reading task, and the caller
+  owns the worktree's single build slot (concurrent builds don't queue, they
+  invalidate each other's build plans — see `knowledge/gotchas.md` → *Docs
+  builds need their own scratch path*). If a finding genuinely cannot be
+  settled without executing something, say so in the finding and let the
+  caller run it — serially, once. Never read or touch `.swiftpm/` or
+  `.build/`.
 
 ## Output
 

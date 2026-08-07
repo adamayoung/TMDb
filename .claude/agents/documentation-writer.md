@@ -2,18 +2,11 @@
 name: documentation-writer
 description: Swift DocC subagent for BULK documentation work — documenting many public declarations across multiple files (e.g. a whole new service, or every undocumented symbol in a diff) in an isolated context. For documenting a single symbol as you write it, apply the `document-swift` skill inline instead.
 model: sonnet
-permissionMode: restricted
+permissionMode: auto
+tools: Read, Glob, Grep, Edit, Write, Bash, Skill, mcp__sosumi__searchAppleDocumentation, mcp__sosumi__fetchAppleDocumentation
 skills:
+  - document-swift
   - swift-concurrency
-autoApprove:
-  - Read
-  - Glob
-  - Grep
-  - mcp__sosumi__searchAppleDocumentation
-  - mcp__sosumi__fetchAppleDocumentation
-  - "Bash(git diff:*)"
-  - "Bash(git log:*)"
-  - "Bash(ls:*)"
 ---
 
 # Claude Subagent: Swift Documentation Writer (bulk)
@@ -31,11 +24,9 @@ main agent via the `document-swift` skill — not by you.
 ## The conventions live in one place — read it first
 
 **The single source of truth for this project's DocC style is the
-`document-swift` skill.** Before writing anything, read:
-
-```text
-.claude/skills/document-swift/SKILL.md
-```
+`document-swift` skill.** Its full content is preloaded into your context via
+this agent's `skills` frontmatter (on disk at
+`.claude/skills/document-swift/SKILL.md`).
 
 Follow it exactly — scope, `///` style, summary patterns per declaration kind,
 section order (API link → Precondition → Parameters → Throws → Returns), the

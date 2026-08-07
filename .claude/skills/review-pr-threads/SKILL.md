@@ -12,11 +12,13 @@ threads that are unresolved *right now* — it does not wait for new reviews to
 arrive. The caller (you, or `/watch-pr`) decides whether to run it again after a
 push triggers a fresh review.
 
-Repo is `adamayoung/TMDb`. GitHub reads (find the PR, fetch threads) and the
-**resolve** use the **GitHub MCP** (`mcp__github__*`); the thread **reply** stays on
-`gh api graphql` — the MCP reply tool needs a numeric REST comment id that the thread
-read doesn't expose, whereas the GraphQL reply takes the thread node id we already
-have. `gh` is authenticated.
+Repo is `adamayoung/TMDb`. GitHub reads (find the PR, fetch threads), the
+**reply**, and the **resolve** all use the **GitHub MCP** (`mcp__github__*`):
+`get_review_comments` exposes each comment's numeric REST id in its `html_url`
+(the `#discussion_r<id>` anchor — verified 2026-08-07), which is exactly the id
+`add_reply_to_pull_request_comment` takes. `gh` is authenticated and kept as
+the reply **fallback** (`gh api graphql` with the thread node id) on a 401/403
+or if the anchor is ever absent.
 
 ## Principles
 
@@ -55,7 +57,9 @@ read a specific one with `mcp__github__pull_request_read` method `get`
 Use `mcp__github__pull_request_read` method `get_review_comments` (owner/repo from
 `origin`, `pullNumber: <n>`). It returns review **threads**, each with metadata
 (`isResolved`, `isOutdated`, `isCollapsed`), the thread **node id** (`PRRT_…`, used to
-resolve in §2), `path`/`line`, and the grouped comments. Paginate with
+resolve in §2), `path`/`line`, and the grouped comments — each comment carrying an
+`html_url` whose `#discussion_r<id>` anchor is the numeric comment id §2's reply
+needs. Paginate with
 `perPage`/`after` (the `endCursor` from the previous page's `pageInfo`) if needed.
 
 Process each thread where `isResolved` is `false` and whose thread id is not already
@@ -76,10 +80,13 @@ For each unresolved thread:
 3. **No fix warranted** (disagree / out of scope / a question / already done) →
    make no code change; you'll say why in the reply.
 4. **Reply** on the thread — what you assessed and whether you fixed it (include
-   the commit SHA when you did). This step stays on `gh api graphql`: the GraphQL
-   reply takes the thread **node id** (`PRRT_…`) we already have from §1, whereas the
-   MCP `add_reply_to_pull_request_comment` needs a numeric REST comment id that
-   `get_review_comments` doesn't return.
+   the commit SHA when you did). Use
+   `mcp__github__add_reply_to_pull_request_comment` (owner/repo from `origin`,
+   `pullNumber: <n>`, `body`, and `commentId` — the number from the thread's
+   first comment's `html_url` anchor, `…#discussion_r<ID>`; the number only,
+   never the `PRRT_…` node id). On a **401/403**, or if no comment in the
+   thread carries the anchor, fall back to the GraphQL reply with the thread
+   node id we already have from §1:
 
    ```bash
    gh api graphql -f query='mutation($id:ID!,$body:String!){

@@ -78,8 +78,8 @@ Apply the loop with the project's tooling and conventions:
 - **Bug fixes:** the first item on the list is a test that **reproduces the bug**
   (red), then the fix (green) — never fix first.
 - **New public API:** the test list should include the doc/DocC and README
-  updates as completion items, even though they aren't tests (CLAUDE.md
-  consistency checklist).
+  updates as completion items, even though they aren't tests (per the
+  `document-swift` skill's consistency checklist).
 
 ## When NOT to use it
 

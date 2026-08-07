@@ -10,7 +10,7 @@ swift build -c release    -Xswiftc -warnings-as-errors
 
 The telltale signature: **it fails on Linux but the macOS `Build and Test` job
 passes.** That is almost always a **platform-portability** problem, not a logic
-bug — the package targets Linux and Windows alongside the Apple platforms.
+bug — the package targets Linux alongside the Apple platforms.
 
 ## Reading the failure
 

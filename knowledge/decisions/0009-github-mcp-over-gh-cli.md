@@ -86,3 +86,11 @@ read -r OWNER REPO < <(git remote get-url origin \
   `CLAUDE.md` are the onboarding breadcrumb.
 - All team skills now hinge on **one user's PAT** — a single point of failure the
   `gh`-per-developer model didn't have.
+- *Addendum (2026-08-07):* holdout **2 (review-thread reply)** has closed —
+  `get_review_comments` now exposes each comment's numeric REST id in its
+  `html_url` (the `#discussion_r<id>` anchor), which is exactly the id
+  `add_reply_to_pull_request_comment` documents taking. `/review-pr-threads`
+  now replies via the MCP, keeping `gh api graphql` as the 401/403 fallback.
+  Holdouts 1 and 3 were re-checked the same day and still stand: the mounted
+  toolset has no blocking-wait tool, and CI runners still mount no
+  user-scoped MCP.

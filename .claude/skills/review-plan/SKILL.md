@@ -93,7 +93,7 @@ const LENSES = [
   {
     key: 'correctness',
     title: 'Correctness & Completeness',
-    brief: `Does the plan actually achieve the goal? Hunt for: missing steps, wrong assumptions about how the code works, unhandled edge cases and error paths, ordering/dependency mistakes, missing tests, and "done" criteria that do not actually prove the feature works. This is a Swift package (see CLAUDE.md) — scrutinise Sendable/concurrency gaps, Codable/JSON-fixture coverage of every decoder branch, Linux/Windows portability, and public-API + DocC obligations.`,
+    brief: `Does the plan actually achieve the goal? Hunt for: missing steps, wrong assumptions about how the code works, unhandled edge cases and error paths, ordering/dependency mistakes, missing tests, and "done" criteria that do not actually prove the feature works. This is a Swift package (see CLAUDE.md) — scrutinise Sendable/concurrency gaps, Codable/JSON-fixture coverage of every decoder branch, Linux portability, and public-API + DocC obligations.`,
   },
   {
     key: 'risk',

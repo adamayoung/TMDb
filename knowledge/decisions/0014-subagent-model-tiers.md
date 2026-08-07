@@ -61,6 +61,12 @@ re-diagnoses only where judgment demonstrably matters.
   model family shift (e.g. pinning the top judgment calls to a Fable-class
   model) revisits this ADR — the *shape → tier* mapping is the durable part,
   not the model names.
+- *Addendum (2026-08-07):* `/review-knowledge` (added after this ADR) pins its
+  two audit critics to a **Fable-class** model — the first judgment role above
+  the Opus floor, chosen for verification depth on the knowledge audit. The
+  shape → tier mapping is unchanged, and the trigger for revisiting the
+  remaining Opus pins (the `/review-plan` critics, the `/deliver` panel) stays
+  "critics start missing blockers".
 
 ## Alternatives considered
 
