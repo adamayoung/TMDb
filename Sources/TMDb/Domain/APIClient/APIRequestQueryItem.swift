@@ -46,6 +46,8 @@ extension APIRequestQueryItem.Name {
     static let sessionID = APIRequestQueryItem.Name("session_id")
     static let language = APIRequestQueryItem.Name("language")
     static let region = APIRequestQueryItem.Name("region")
+    static let mediaID = APIRequestQueryItem.Name("media_id")
+    static let mediaType = APIRequestQueryItem.Name("media_type")
 
     static let withPeople = APIRequestQueryItem.Name("with_people")
     static let withOriginalLanguage = APIRequestQueryItem.Name("with_original_language")

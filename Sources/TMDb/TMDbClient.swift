@@ -53,6 +53,17 @@ public final class TMDbClient: Sendable {
     public let v4Authentication: any V4AuthenticationService
 
     ///
+    /// Provides access to TMDb v4 lists.
+    ///
+    /// Unlike ``lists``, a v4 list holds **movies and TV series together**, can
+    /// be private, and can carry a comment on each item.
+    ///
+    /// Reading a public list needs no user credential. Everything else takes an
+    /// access token obtained through ``v4Authentication``.
+    ///
+    public let v4Lists: any V4ListService
+
+    ///
     /// Provides access to content certifications (e.g. G, PG, R) for
     /// movies and TV series.
     ///
@@ -315,6 +326,7 @@ public final class TMDbClient: Sendable {
             apiClient: v4APIClient,
             authenticateURLBuilder: v4AuthenticateURLBuilder
         )
+        self.v4Lists = TMDbV4ListService(apiClient: v4APIClient)
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.collections = TMDbCollectionService(apiClient: apiClient, configuration: configuration)
         self.companies = TMDbCompanyService(apiClient: apiClient)
