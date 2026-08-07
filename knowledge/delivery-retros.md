@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-07 — 🔧 Codex mirror PR-A: AGENTS.md + .codex layer (chore/codex-config) · lite
+## 2026-08-07 — 🔧 Codex mirror PR-A: AGENTS.md + .codex layer (#414) · lite
 
 - **Phases / skills:** 0–8 pre-PR; lite (docs/config only), so no
   `/review-plan` critics (plan was Plan-agent-designed + user-approved this
