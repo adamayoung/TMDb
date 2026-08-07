@@ -6,8 +6,9 @@ repository.
 ## Project Overview
 
 TMDb is a Swift Package for The Movie Database API, supporting iOS 16+,
-macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux, and Windows. Built
-with Swift 6.0+ and strict concurrency.
+macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, and Linux. Built with
+Swift 6.0+ and strict concurrency. (Windows is deliberately **not**
+claimed — no CI job builds it; see PR #374, which dropped the claim.)
 
 ## Knowledge Base
 
@@ -21,6 +22,11 @@ knowledge; `CLAUDE.md` stays imperative.)
   that needed a lookup.
 - [`knowledge/tmdb-api-notes.md`](knowledge/tmdb-api-notes.md) — live-API
   behaviours.
+- [`knowledge/next-major.md`](knowledge/next-major.md) — deferred **breaking
+  changes**, queued so they resurface when the next major version opens.
+- [`knowledge/skill-improvement-log.md`](knowledge/skill-improvement-log.md) —
+  every skill-improvement proposal and its decision; the recurring-pattern
+  scan's dedup memory.
 
 **Before solving a non-trivial problem**, skim the relevant file. **After learning
 something durable** (a gotcha, an API quirk, a design decision), record it there —
@@ -68,8 +74,8 @@ TMDbClient (main facade)
 
 The on-device intelligence features live in a **separate `TMDbIntelligence`
 library product** (see [ADR-0010](knowledge/decisions/0010-tmdb-intelligence-product.md)),
-so the core `TMDb` product carries no API that cannot function on Linux and
-Windows. `TMDbIntelligence` depends on `TMDb` and adds two `TMDbClient`
+so the core `TMDb` product carries no API that cannot function on Linux.
+`TMDbIntelligence` depends on `TMDb` and adds two `TMDbClient`
 extensions, both **Apple-platforms only**:
 
 - `naturalLanguageSearch` — gated by `#if canImport(NaturalLanguage)`. It
@@ -88,7 +94,7 @@ alongside `import TMDb`. Its test doubles ship in `TMDbIntelligenceTesting`.
 - `Sources/TMDb/TMDbClient.swift` — main public API entry point
 - `Sources/TMDb/TMDbFactory.swift` — dependency injection factory
 - `Sources/TMDb/Domain/Services/` — service protocols and implementations
-- `Sources/TMDb/Domain/Models/` — Codable data models (~170 files)
+- `Sources/TMDb/Domain/Models/` — Codable data models
 - `Sources/TMDbIntelligence/NaturalLanguageSearch/` — on-device
   natural-language search (Apple-only)
 - `Sources/TMDbIntelligence/LanguageModelTools/` — FoundationModels `Tool`s
@@ -204,8 +210,8 @@ than stalling, and records each delivery's short retrospective into
 opens**, so it rides the delivery's own PR:
 
 branch → (`/review-plan` for risky/large changes) → `/implement-plan` →
-`/review-changes` (+ fix) → `/security-review` (+ fix) → `/capture-knowledge` →
-retro → `/pr reviewed` → `/watch-pr`.
+`/review-changes` (+ fix) → `/security-review` (+ fix) → rubric check →
+`/capture-knowledge` → retro → `/pr reviewed` → `/watch-pr`.
 
 Key skills (the README's *Claude Code Skills* tables list them all):
 
@@ -234,10 +240,12 @@ verifies with the targeted suite (not full `make ci`) and opens the PR via
 
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
-**run only when the change touches Swift** (docs/config-only changes are not
-reviewed). Three subagents back the pipeline: `code-reviewer` (deep Swift/TMDb
-review, pinned to Opus), `documentation-writer` (bulk DocC generation, pinned
-to Sonnet), and `tooling-runner` (build/test execution, pinned to Haiku).
+**run only when the change touches reviewable code** — Swift for both
+reviewers, plus committed `.claude/workflows/` scripts for the local one
+(docs/prose-only changes are not reviewed). Three subagents back the pipeline:
+`code-reviewer` (deep Swift/TMDb review, pinned to Opus),
+`documentation-writer` (bulk DocC generation, pinned to Sonnet), and
+`tooling-runner` (build/test execution, pinned to Haiku).
 
 ## Build and Test Tooling
 
@@ -288,7 +296,7 @@ Run shell commands directly — do not prefix them with
 `TMDB_USERNAME`, `TMDB_PASSWORD`) plus the two v4 credentials
 (`TMDB_API_READ_ONLY_TOKEN`, `TMDB_API_USER_TOKEN` — without them the v4 suites
 skip) are injected via the `env` block in `.claude/settings.local.json`, and Homebrew tools (`gh`, `swiftlint`,
-`swiftformat`, `xcsift`, `markdownlint-cli2`) are already on `PATH`.
+`swiftformat`, `xcsift`, `markdownlint`) are already on `PATH`.
 
 ```bash
 make integration-test
@@ -479,8 +487,8 @@ the final pipeline step. The gitmoji title convention and the PR body template l
 in that skill.
 
 GitHub access goes through the **GitHub MCP** (`mcp__github__*`), with `gh` as the
-fallback and for the few things the MCP can't do (the blocking CI wait, the
-review-thread reply, headless Actions). The MCP registration command, the `/x/all`
+fallback and for the few things the MCP can't do (the blocking CI wait,
+headless Actions). The MCP registration command, the `/x/all`
 path rationale, the owner/repo derivation, and the full `gh`-only exceptions are in
 [ADR-0009](knowledge/decisions/0009-github-mcp-over-gh-cli.md).
 

@@ -57,8 +57,12 @@ inflate nitpicks to Critical.
 - A **library** (not an app) — no UI frameworks. Swift 6.0+ strict concurrency.
   No external dependencies (stdlib + Foundation only).
 - Platforms: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux.
-- **28 services** behind `TMDbClient`, each a public `protocol` + an internal
-  `TMDb`-prefixed implementation; the `naturalLanguageSearch` service is Apple-only.
+- The per-domain services behind `TMDbClient`, each a public `protocol` + an
+  internal `TMDb`-prefixed implementation. On-device intelligence lives in the
+  separate **`TMDbIntelligence`** product (Apple-only): `naturalLanguageSearch`
+  and the FoundationModels language-model tools are `TMDbClient` *extensions*
+  there, gated by `#if canImport(...)` — on those diffs, also review platform
+  gating and `@available` annotations.
 - **Networking decorator chain:**
 
   ```text
@@ -71,8 +75,10 @@ inflate nitpicks to Critical.
                       └── URLSessionHTTPClientAdapter  (or user-supplied client)
   ```
 
-- DI via `TMDbFactory`; new public API must be exposed on `TMDbClient` and wired
-  in `TMDbFactory`. Models conform to `Codable, Equatable, Hashable, Sendable`.
+- New services are constructed and exposed in `TMDbClient`'s private init;
+  `TMDbFactory` vends only shared plumbing (`makeServiceDependencies`, the API
+  clients, `httpClient(wrapping:)`) — services are **not** registered there.
+  Models conform to `Codable, Equatable, Hashable, Sendable`.
 
 ## What to check (in scope)
 
@@ -84,7 +90,8 @@ inflate nitpicks to Critical.
   Sendable`. (For deep analysis the local reviewer uses the `swift-concurrency`
   skill.)
 - **Architecture** — protocol + `TMDb`-prefixed impl pattern; service-layer
-  boundaries; new API exposed on `TMDbClient` and registered in `TMDbFactory`;
+  boundaries; new API exposed on `TMDbClient` (the service constructed in its
+  private init, dependencies via `TMDbFactory.makeServiceDependencies`);
   required model conformances.
 - **Testing** — Swift Testing (`@Suite`/`@Test`/`#expect`/`#require`, never force
   unwrap in tests). New behaviour needs **both** unit (mock + JSON fixture) and

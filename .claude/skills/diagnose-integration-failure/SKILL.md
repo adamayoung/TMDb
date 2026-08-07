@@ -7,7 +7,7 @@ description: Diagnose a failing TMDb integration-test run — summarise the fail
 
 The TMDb integration tests hit the **live** TMDb API. The suite runs on three
 triggers — **`pull_request` / `push`** (where it *gates* the change) and
-**`schedule`** (the nightly live-API canary). **Which run failed flips the most
+**`schedule`** (the weekly live-API canary). **Which run failed flips the most
 likely cause, so determine the trigger first** (step 0):
 
 - **PR / push-triggered** → this run is the gate for a code change, so a

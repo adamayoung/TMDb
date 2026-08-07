@@ -78,7 +78,7 @@ path the plan implies — as a plain checklist, not code. For this package that
 means thinking about: each new/changed public method, Codable decode paths
 (every optional/appended branch — one fixture item per branch), empty/degenerate
 inputs at public boundaries, `Sendable`/concurrency expectations, and
-Linux/Windows portability.
+Linux portability.
 
 **Print the list before writing any code**, e.g.:
 
@@ -203,8 +203,9 @@ Quality, not just presence:
 - Keep the **DocC catalog in sync** when public API changes: the service
   extension file (`TMDb.docc/Extensions/<Service>Service.md`), the catalog
   (`TMDb.docc/TMDb.md`) for new return types, `TMDbClient.md` for new
-  properties, and the `README.md` service table — per the Documentation
-  Consistency Checklist in `CLAUDE.md`.
+  properties, and the `README.md` service table — per the consistency
+  checklist in the `document-swift` skill (its *Verify before finishing*
+  section).
 
 Apply the **`document-swift`** skill — the project's single source of DocC
 conventions — inline as you write each public symbol. For a bulk pass (a whole

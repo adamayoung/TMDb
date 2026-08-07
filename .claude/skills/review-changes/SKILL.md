@@ -25,20 +25,30 @@ code-review phase, or you) applies the fixes.
    finding is independently refuted before it's reported — the strongest lever
    against false positives.
 
-## 0. Gate — skip if there are no Swift changes
+## 0. Gate — skip if there is no reviewable code
 
-Code review exists to review **Swift**. If the diff touches no Swift source,
-there is nothing to review — return immediately, don't spawn any reviewer.
+Code review exists to review **code** — Swift source, plus the committed
+Workflow scripts under `.claude/workflows/` (they are decision infrastructure,
+not prose). If the diff touches neither, there is nothing to review — return
+immediately, don't spawn any reviewer.
 
 ```bash
-git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift"
+git diff --name-only origin/main...HEAD | grep -qE '\.swift$|^\.claude/workflows/' \
+  || echo "no-reviewable-code"
 ```
 
-If that prints `no-swift` (no `*.swift` files changed — e.g. a docs-only,
-config-only, or `.claude/` change), **stop here** and report "No Swift changes —
-code review skipped." Do not run §1–§3. (JSON fixtures under
+If that prints `no-reviewable-code` (e.g. a docs-only, config-only, or
+skills-prose change), **stop here** and report "No reviewable code — code
+review skipped." Do not run §1–§3. (JSON fixtures under
 `Tests/**/Resources/` accompany Swift changes; a fixture-only change with no
 `.swift` is rare — note it and let the caller decide.)
+
+**If the only reviewable change is under `.claude/workflows/`**, take the §2a
+single-reviewer path with a **script-focused brief** in place of the Swift
+lens: input guards and executable `throw`s, schema shapes, tally / dead-agent
+handling, and prompt-injection surface (what untrusted text reaches an agent
+prompt). `.github/CODE_REVIEW.md`'s severity rubric and adversarial
+re-evaluation still apply; its Swift-specific checks don't.
 
 ## 1. Scope the change
 
@@ -105,7 +115,7 @@ const SPEC = '.github/CODE_REVIEW.md'
 const DIMENSIONS = [
   { key: 'correctness', focus: 'correctness & safety — logic bugs, behavioural regressions, force unwraps / try!, and input validation at system boundaries' },
   { key: 'concurrency', focus: 'Swift 6 concurrency — async/await, actor isolation, Sendable conformance, no blanket @MainActor, and justified @preconcurrency / @unchecked Sendable' },
-  { key: 'architecture', focus: 'architecture — protocol + TMDb-prefixed implementation, service-layer boundaries, new API exposed on TMDbClient and wired in TMDbFactory, required model conformances, AND sibling-convention conformance: a newly-added member of an existing family (service method, model, guarded method) must match its siblings — same input validation, same error case, same conformance set / decode strategy — or the divergence is flagged' },
+  { key: 'architecture', focus: 'architecture — protocol + TMDb-prefixed implementation, service-layer boundaries, new API exposed on TMDbClient with the service constructed in its private init (TMDbFactory vends shared plumbing only — services are not registered there), required model conformances, AND sibling-convention conformance: a newly-added member of an existing family (service method, model, guarded method) must match its siblings — same input validation, same error case, same conformance set / decode strategy — or the divergence is flagged' },
   { key: 'testing', focus: 'tests — both unit and integration present, fixtures exercise EVERY decoder branch, edge cases (boundaries / empty / nil), request-pattern correctness, #require over force-unwrap, AND test-suite convention conformance: a new @Suite matches its siblings (same tags / construction pattern) or the divergence is flagged' },
   { key: 'api-docs', focus: 'model<->API alignment (verify properties/optionality/types/CodingKeys via mcp__tmdb__* and the OpenAPI spec) and public-API docs + DocC catalog + README sync' },
 ]

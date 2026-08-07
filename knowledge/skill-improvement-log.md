@@ -30,6 +30,47 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-08-07 — Full CLAUDE.md/skills/agents review: drift fixes + review-integrity seams · applied
+
+- **Pattern:** an external full review (not the wrap-up scan) of `CLAUDE.md`,
+  all 21 skills, the 3 agents and the panel script found drift concentrated
+  where prose describes things that move: the weekly canary called "nightly"
+  (`diagnose-integration-failure`); `document-swift` quoting a README service
+  count that had already moved; two skills pointing at a consistency checklist
+  that had moved out of `CLAUDE.md`; `CODE_REVIEW.md`'s context block still
+  describing `naturalLanguageSearch` as a core service and services as "wired
+  in `TMDbFactory`"; and `CLAUDE.md` still claiming Windows after #374 dropped
+  that claim from the README/`CODE_REVIEW.md` (no CI builds it). Plus four
+  seams: `code-reviewer.md` permitting builds while every caller forbids them;
+  `/pr`'s standalone review spawning a non-scaling single reviewer;
+  `.claude/workflows/` scripts having no correctness-review path; and
+  `documentation-writer.md` declaring an invalid `permissionMode: restricted`
+  plus a nonexistent `autoApprove` field — both silently ignored per the
+  official subagent frontmatter schema, so its permission scheme never applied.
+- **Decision:** **applied** (user-approved, this PR). All drift corrected
+  (Windows aligned to #374's call); `code-reviewer.md` now defaults to
+  no-build; `/pr` step 5 delegates to `/review-changes`; the `/review-changes`
+  gate widens to `.claude/workflows/` (script-focused §2a brief);
+  `/review-pr-threads` replies via the MCP (`add_reply_to_pull_request_comment`
+  with the `#discussion_r<id>` anchor id — verified 2026-08-07; `gh api
+  graphql` demoted to fallback) with ADR-0009 annotated; `documentation-writer`
+  gets `permissionMode: auto` + a real `tools` allowlist (including
+  `Edit`/`Write`) and preloads `document-swift`; ADR-0014 gains an addendum
+  recording `/review-knowledge`'s Fable pin. Two deliberate narrowings, both
+  user-chosen: `/deliver` Phase 2's skip now requires an actual adversarial
+  review (`ExitPlanMode` approval alone is consent, not review), and the
+  delivery-weight vocabulary stays **binary** (hybrids record as full with
+  skips noted — no "medium" tier).
+- **Rationale:** the drift sat exactly where `review-knowledge`'s scope table
+  predicts (prose describing moving parts); the seams all reduce to one
+  principle — a guard that lives only in per-call prompts, or in a frontmatter
+  field the schema ignores, is not a guard.
+- **Reconsider when:** for the weight binary — a third genuinely distinct
+  scaling shape recurs across retros (not a full run with one skipped step).
+  For the narrowed Phase 2 skip — if the three-critic pass starts firing
+  redundantly on plans that plainly had equivalent in-conversation review,
+  tighten the *wording* of what qualifies, not the gate.
+
 ### 2026-07-29 — Tooling-runner report becomes a shape-based contract · applied
 
 - **Pattern:** the four tooling skills had no handling for the *subagent* dying,

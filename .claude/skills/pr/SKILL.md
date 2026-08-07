@@ -8,10 +8,10 @@ description: Create a pull request
 I'll create a pull request for the current branch by following these steps. If any steps fail, stop.
 
 **Mode** — check the arguments passed to this skill (shown at the end). If they
-include `reviewed` (or `skip-review`), an upstream step already ran the
-`code-reviewer` and fixed its findings (e.g. `/deliver`'s code-review phase), so
-**skip steps 5–7** to avoid reviewing identical code twice. Otherwise (standalone
-`/pr`), run the internal review as normal.
+include `reviewed` (or `skip-review`), an upstream step already ran the review
+and fixed its findings (e.g. `/deliver`'s code-review phase via
+`/review-changes`), so **skip steps 5–7** to avoid reviewing identical code
+twice. Otherwise (standalone `/pr`), run the internal review as normal.
 
 **Also skip steps 5–7 when the branch changes no Swift** — code review is for
 Swift, so a docs-only / config-only PR needs none:
@@ -52,7 +52,7 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
         ```
 
         Fix anything it flags (oversized files: split, or add a `// swiftlint:disable` directive matching the `AccountService+Pagination.swift` precedent) and re-run. This catches file-size violations locally instead of on a CI round-trip.
-5. *(skip in `reviewed` mode or when no Swift changed)* Spawn the `code-reviewer` agent to perform a code review of all changes (pass the git diff output as context)
+5. *(skip in `reviewed` mode or when no Swift changed)* Run the **`/review-changes`** skill — it scales the review to the diff (a single `code-reviewer` for a small change, the fan-out + adversarial-verify Workflow for a large one), follows `.github/CODE_REVIEW.md`, and returns a severity-graded report
 6. *(skip in `reviewed` mode or when no Swift changed)* Summarize the code review findings:
     - List any critical or high-severity issues that should be addressed
     - List any medium-severity suggestions for improvement
@@ -108,5 +108,8 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
 
     🤖 Generated with [Claude Code](https://claude.com/claude-code)
     ```
+
+    The harness appends a `claude.ai/code` session link after the attribution
+    line — that is expected; leave it in place.
 
 $ARGUMENTS

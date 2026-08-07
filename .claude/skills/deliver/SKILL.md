@@ -71,9 +71,9 @@ Non-negotiable. Do these by default, without being reminded.
 ## Auto mode & async invocation
 
 `/deliver auto` replaces every stop-and-ask decision with an **adversarial
-panel** of three independent Opus jurors (a dead panel is not a proceed;
-ledger audit trail);
-decision points are marked **Auto:** below. Never delegated: a **data-loss or
+panel** of three independent Opus jurors — a dead panel is never a proceed,
+and every panel convened leaves an audit line in the ledger. Decision points
+are marked **Auto:** below. Never delegated: a **data-loss or
 breaking-change plan blocker is a hard stop even in auto**. `/deliver` can
 also be queued headless (the plan + ACs must travel in the trigger prompt).
 Panel procedure and queuing caveats:
@@ -89,7 +89,10 @@ new public API beyond a simple additive method; under a few hundred changed
 lines) ⇒ skip `/review-plan`'s critics; `/review-changes` takes its
 single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 `/review-plan` and the fan-out + adversarial-verify `/review-changes`.
-**When unsure, prefer full.**
+**When unsure, prefer full.** The vocabulary is **binary** — a hybrid run
+(e.g. a pre-reviewed plan with the full review machinery) records as **full**
+with the skipped machinery noted, in the ledger and the retro; never invent a
+third tier.
 
 ## Multi-deliverable plans — one run, several PRs
 
@@ -205,8 +208,10 @@ enter, proceed.
 
 ## Phase 2 — Harden the plan (no approval stop)
 
-**Lite, or already reviewed this session** (a converged `/review-plan`, or
-`ExitPlanMode` approval) → skip the critics. **Full with an unreviewed plan**
+**Lite, or already adversarially reviewed this session** (a converged
+`/review-plan`, or an equivalent in-conversation critique whose findings were
+applied) → skip the critics. `ExitPlanMode` approval alone is consent, not
+review — it does **not** skip. **Full with an unreviewed plan**
 → invoke `/review-plan`, present the revised plan + a one-line change log
 (applied / rejected) as an **FYI**, keep going —
 except a **blocker** (wrong approach, breaking, data-loss), which stops the
@@ -227,9 +232,9 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
   `-enable-testing`; the release build does not, so **access-level and
   `@testable` mistakes fail there and nowhere else** — precisely what target
   extractions, new non-test targets, and visibility changes are made of. It is
-  a ~30s check that guards `make build-release`, `make ci`, and both CI *Build
-  for Release* jobs. (Incident: PR #398 shipped a `@testable import` inside a
-  new non-test fixtures target; debug, `--build-tests`, 2869 unit and 291
+  a ~30s check that guards `make build-release`, `make ci`, and the *Build for
+  Release* steps of both CI Build and Test jobs. (Incident: PR #398 shipped a
+  `@testable import` inside a new non-test fixtures target; debug, `--build-tests`, 2869 unit and 291
   integration tests all passed while release was red — caught only in code
   review. See `knowledge/gotchas.md`.)
 
@@ -247,9 +252,10 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
 
 ## Phase 4 — Code review + fix loop
 
-**Skip entirely if the diff has no Swift source** (`/review-changes`
-self-gates). Review **stable** code once the design settles — not per TDD
-item. Granularity by weight:
+**Skip entirely if the diff has no reviewable code — no Swift and no
+`.claude/workflows/` script** (`/review-changes` self-gates). Review
+**stable** code once the design settles — not per TDD item. Granularity by
+weight:
 
 - **Lite / single-unit** → one review of the full diff (single-reviewer
   path).

@@ -384,7 +384,7 @@ in isolation.
 ### `make ci` skips the Linux build — CI has a separate `build-test-linux` job
 
 *2026-06-23.* `make ci` does **not** run `make build-linux` (it's lint,
-lint-markdown, test, integration-test, build-release, build-docs). Linux/Windows
+lint-markdown, test, integration-test, build-release, build-docs). Linux
 portability is instead gated by `.github/workflows/ci.yml`'s **`build-test-linux`**
 job (container `swift:6.1-jammy`, runs `swift build --build-tests`). So when Docker
 isn't available locally to run `make build-linux`, the PR's CI is the authoritative
@@ -668,7 +668,7 @@ only", which is easy to over-apply. In fact the **protocol** and all its types
 the `TMDbClient.naturalLanguageSearch` *accessor* (and the on-device planner
 implementation, e.g. `PersonNameExtracting`, `FoundationModelsSearchPlanGenerator`).
 So code that merely conforms to or references the protocol/types (e.g. a mock)
-compiles on Linux/Windows and must **not** be wrapped in `#if canImport(...)` —
+compiles on Linux and must **not** be wrapped in `#if canImport(...)` —
 over-gating would needlessly remove it off-Apple. Gate only the specific symbol
 that actually imports `NaturalLanguage`/`FoundationModels`.
 
@@ -786,7 +786,7 @@ emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
 
 - So on macOS/iOS that error path is effectively only reachable with an empty
   path — you cannot construct a "token-bearing invalid path" test case there.
-- **swift-corelibs-foundation (Linux/Windows) parses more strictly**, so the
+- **swift-corelibs-foundation (Linux) parses more strictly**, so the
   branch is not dead code across the package's supported platforms — which is
   why the thrown path is still redacted.
 - **Probe empirically** (a throwaway `swift script.swift` with the candidate
