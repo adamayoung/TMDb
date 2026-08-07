@@ -17,5 +17,8 @@ junit-swift-testing.xml
 .claude/scheduled_tasks.lock
 .claude/worktrees/
 
+# Codex (never commit — .codex/config.toml holds TMDB_* credentials; see .codex/config.example.toml)
+.codex/config.toml
+
 # Git worktrees
 .worktrees/
