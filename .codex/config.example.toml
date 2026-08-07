@@ -17,8 +17,12 @@
 # requires the first three; the two v4 tokens are optional (their suites skip
 # without them). See AGENTS.md → Shell Environment.
 
+# inherit = "core" (HOME/PATH/etc only) rather than "all": the five TMDB vars
+# below are delivered by the set block regardless, and core keeps unrelated
+# shell secrets (cloud/npm/GitHub tokens) out of sandboxed commands and MCP
+# subprocesses. Widen to "all" only if a tool demonstrably needs it.
 [shell_environment_policy]
-inherit = "all"
+inherit = "core"
 
 [shell_environment_policy.set]
 TMDB_API_KEY = "YOUR_TMDB_API_KEY"

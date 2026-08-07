@@ -102,7 +102,12 @@ next mirror PR:
 - [ ] **Hook trust + PostToolUse hook fires** — in an interactive `codex`
   session, accept the one-time project-hook trust prompt, then ask it to
   create a deliberately badly-formatted `HookTest.swift`; confirm the on-disk
-  file comes back `swiftformat`-normalised; delete the file.
+  file comes back `swiftformat`-normalised; delete the file. **Also verify
+  what the trust grant keys on:** after granting, modify
+  `.codex/hooks/post-edit-format.sh`'s body and confirm Codex re-prompts —
+  if trust keys on the `hooks.json` path alone, a malicious branch could
+  swap the script body under an existing grant, which would need mitigating
+  (e.g. pinning or re-trust on change).
 - [ ] **Refine the provisional hook matcher from observed payloads** — the
   matcher in `.codex/hooks.json` was written blind (see above). Temporarily
   add a logging entry (`"command": "cat > \"$TMPDIR/codex-hook-payload.json\""`,

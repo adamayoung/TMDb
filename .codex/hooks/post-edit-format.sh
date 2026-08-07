@@ -55,6 +55,18 @@ while IFS= read -r f; do
   case "$f" in
     -*) f="./$f" ;;
   esac
+  # Containment: never format outside the repo (payload shape is unverified,
+  # so extracted paths are untrusted until the interactive capture confirms
+  # them; absolute paths must live under the repo root, and ../ never enters).
+  case "$f" in
+    /*)
+      case "$f" in
+        "$root"/*) ;;
+        *) continue ;;
+      esac
+      ;;
+    ../*) continue ;;
+  esac
   case "$f" in
     *.swift)
       swiftlint --fix "$f" > /dev/null 2>&1
