@@ -20,6 +20,15 @@ struct URLTMDbTests {
         #expect(result == expectedResult)
     }
 
+    @Test("TMDb v4 API base URL returns correct URL")
+    func tmdbAPIv4BaseURLReturnsCorrectURL() throws {
+        let expectedResult = try #require(URL(string: "https://api.themoviedb.org/4"))
+
+        let result = URL.tmdbAPIv4Base
+
+        #expect(result == expectedResult)
+    }
+
     @Test("TMDb website base URL returns correct URL")
     func tmdbWebSiteBaseURLReturnsCorrectURL() throws {
         let expectedResult = try #require(URL(string: "https://www.themoviedb.org"))

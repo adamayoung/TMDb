@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      knowledge/next-major.md first — it lists approved breaking changes
      waiting for exactly this bump. Ship them or consciously re-defer. -->
 
+## [Unreleased]
+
+### Added
+
+- `client.v4Authentication` — TMDb v4 user authentication. Create a request
+  token, send the user to the approval URL, then exchange the approved token
+  for a long-lived user access token; revoke it with `deleteAccessToken(_:)`.
+  Adds `V4AuthenticationService`, `V4RequestToken` and `V4AccessToken`, plus
+  `MockV4AuthenticationService` and samples in `TMDbTesting`.
+
+  These endpoints authenticate with a bearer credential and reject a v3 API
+  key, so they require a client created with `TMDbClient(bearerToken:)` using
+  your API Read Access Token. See the *Authenticating with the v4 API* article.
+
 ## [19.0.0] - 2026-07-29
 
 ### Added
@@ -165,7 +179,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `PersonService.changes(startDate:endDate:page:)` instead.
 
 [19.0.0]: https://github.com/adamayoung/TMDb/releases/tag/19.0.0
-[18.2.0]: https://github.com/adamayoung/TMDb/releases/tag/18.2.0
 [18.1.0]: https://github.com/adamayoung/TMDb/releases/tag/18.1.0
 [18.0.1]: https://github.com/adamayoung/TMDb/releases/tag/18.0.1
 [18.0.0]: https://github.com/adamayoung/TMDb/releases/tag/18.0.0

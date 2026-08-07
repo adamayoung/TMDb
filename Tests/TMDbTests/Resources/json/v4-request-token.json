@@ -1,0 +1,6 @@
+{
+  "success": true,
+  "status_code": 1,
+  "status_message": "Success.",
+  "request_token": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsInN1YiI6IjFhMmIzYzRkNWU2ZjdhOGI5YzBkMWUyZiIsInNjb3BlcyI6WyJwZW5kaW5nX3JlcXVlc3RfdG9rZW4iXSwidmVyc2lvbiI6Mn0.0000000000000000000000000000000000000000000"
+}

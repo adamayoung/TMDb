@@ -4,6 +4,72 @@ Behaviours of the **live** TMDb API discovered while implementing — the things
 docs don't say, or say wrongly. This is an API-client library, so these recur.
 Newest at the top; cite the endpoint and the date observed.
 
+## v4 API
+
+### A v3 API key authenticates v4 *reads* — as a query item, never as a bearer
+
+*2026-08-07.* The two credentials TMDb shows on one settings page are not
+interchangeable, and the boundary is not where the docs imply:
+
+| Request | Result |
+| --- | --- |
+| `GET /4/list/1?api_key=<32-char v3 key>` | **200** with real data |
+| same key as `Authorization: Bearer` | **401** — a v3 key is not a bearer token |
+| `GET /4/account/{id}/lists` with api_key | **401** — needs a *user* token |
+| `POST`/`PUT`/`DELETE /4/list…` with api_key | **401** — needs a *user* token |
+
+So public v4 reads work from a `TMDbClient(apiKey:)`; the v4 auth endpoints and
+every write need a bearer credential. The bearer credential is itself two
+different things — the **API Read Access Token** identifies the *application*,
+the **user access token** (from the approval flow) identifies a *user*.
+
+### Unauthenticated v4 requests auth-gate *before* routing, so 401-vs-404 proves nothing
+
+*2026-08-07.* With no valid credential every v4 path returns an identical `401`,
+including `/4/completely/bogus/nonsense`. The usual trick of probing an unknown
+REST path and reading 401 ("exists") vs 404 ("wrong path") therefore **cannot
+discriminate** on v4 until you hold a working credential. With one, routing shows
+through normally and 404 means the path is wrong.
+
+This matters because TMDb's v4 docs name endpoints in prose that is not the
+route: the real paths are `POST /4/auth/request_token` and
+`POST /4/auth/access_token`, while the documented-sounding
+`…/auth/create-request-token` and `…/auth/create-access-token` are **404**.
+
+### The same field has different wire types on different v4 endpoints
+
+*2026-08-07.* Verified by capturing both responses. This is the single most
+dangerous v4 behaviour — a shared model across the two endpoints cannot decode:
+
+| field | `GET /4/list/{id}` | `GET /4/account/{id}/lists` |
+| --- | --- | --- |
+| `public` | `true` (bool) | `1` (int) |
+| `sort_by` | `"original_order.asc"` (String) | `1` (int) |
+| `runtime` | `8433` (int) | `"0"` (**String**) |
+| `adult` / `featured` | absent | `0` (int) |
+
+Dates diverge too: account-list summaries carry `created_at`/`updated_at` as
+`"2026-08-06 23:26:00 UTC"` (the format `JSONDecoder.theMovieDatabaseAuth`
+already handles) while list *items* carry plain `yyyy-MM-dd`. Neither existing
+decoder handles both, so a v4 decoder needs a strategy that tries each in turn.
+
+### v4 list quirks: a state-changing GET, a 404-means-false status, and out-of-band comments
+
+*2026-08-07.* Four shapes that will not be guessed from the docs:
+
+- **`GET /4/list/{id}/clear` clears the list** — `POST` to it returns 404. A
+  state-changing GET must be kept out of any response cache. It returns
+  `items_deleted`.
+- **`GET /4/list/{id}/item_status`** returns 200 for a member and **404**
+  (`status_code` 34) for a non-member. There is no `item_present` boolean, so a
+  `Bool`-returning wrapper has to catch not-found — and that conflates "not in
+  the list" with "no such list" and "no access", all of which are also 404.
+- **`comments` is a top-level dictionary** keyed `"media_type:id"` (e.g.
+  `"movie:550"`, `"tv:1399"`) with nullable values. List items carry no comment
+  field of their own, so a per-item comment must be stitched in from that dict.
+- **Create returns HTTP 201** with `id` — not v3's `list_id`. Delete returns
+  `status_code` 13.
+
 ## HTTP caching
 
 ### Every GET response is HTTP-cacheable — `Cache-Control: public, max-age` + `ETag`
@@ -17,6 +83,12 @@ fully cacheable *and* conditionally revalidatable (a stale entry's `ETag` yields
 a `304 Not Modified`). This is why the default `URLSession` adapter's `URLCache`
 gives real on-disk caching for free on Apple platforms — see
 [ADR-0007](decisions/0007-document-existing-response-caching.md).
+
+**The v4 surface does the same** — `GET /4/list/{id}` serves
+`Cache-Control: public, max-age=300` (verified 2026-08-07). That is a hazard
+rather than a gift: v4 list responses are *user-private* yet carry no credential
+in the URL, so both cache layers would key them identically across users. See
+[ADR-0017](decisions/0017-v4-api-client.md) → *Still open*.
 
 ## Errors
 
@@ -42,6 +114,8 @@ longer than 14 days).
 - POST body-validation can instead return an `{"errors":[…]}` array with no
   `status_code`, so a decoder for the shape above must degrade gracefully
   (the client decodes it with `try?` and keeps the HTTP status).
+- **The v4 API uses this same body shape** (verified 2026-08-07), so error
+  mapping needs no v4-specific handling.
 
 ### Credentials and PII live in the URL *path*, not just the query
 
@@ -102,6 +176,20 @@ query key rather than erroring, so a misspelled or unsupported parameter looks l
 it "works" but is a no-op. To confirm a parameter is real and effective, compare
 **result counts** with vs without it (a bogus key yields the *unfiltered* count) —
 status code alone proves nothing.
+
+**The same applies to request *bodies*, and it is worse there** — a body field is
+accepted, reported as a success, and dropped. Both observed on v4 lists,
+2026-08-07:
+
+- `POST /4/list/{id}/items` with a per-item `comment` returns
+  `{"success":true}` per item, and the comment is **never stored** — reading the
+  list back shows `null`. Only `PUT /4/list/{id}/items` persists one.
+- Creating a list with `"public": false` returns success and yields a **public**
+  list.
+
+So verify a body field by **reading the resource back**, never by the response's
+success flag. Anything else risks exposing a parameter the API ignores — a
+public method that silently does nothing.
 
 ## OpenAPI spec
 

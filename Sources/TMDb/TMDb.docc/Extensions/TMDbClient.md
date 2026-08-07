@@ -39,5 +39,6 @@
 - ``images``
 - ``account``
 - ``authentication``
+- ``v4Authentication``
 - ``changes``
 - ``guestSessions``

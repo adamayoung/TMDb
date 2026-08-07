@@ -60,6 +60,7 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - <doc:/UsingAutoPagination>
 - <doc:/GeneratingImageURLs>
 - <doc:/ManagingUserAccounts>
+- <doc:/AuthenticatingWithV4>
 - <doc:/HandlingErrors>
 - <doc:/CachingResponses>
 
@@ -421,6 +422,12 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``Credential``
 - ``Token``
 - ``Session``
+
+### Authentication (v4)
+
+- ``V4AuthenticationService``
+- ``V4RequestToken``
+- ``V4AccessToken``
 
 ### Changes
 

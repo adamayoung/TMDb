@@ -638,6 +638,43 @@ compiles on Linux/Windows and must **not** be wrapped in `#if canImport(...)` �
 over-gating would needlessly remove it off-Apple. Gate only the specific symbol
 that actually imports `NaturalLanguage`/`FoundationModels`.
 
+### A protocol-extension convenience that differs only by a default argument becomes the requirement's witness
+
+*2026-08-07.* Default argument *values* are not part of a function's signature
+for witness matching. So this, in a `public extension`, does not do what it looks
+like it does:
+
+```swift
+protocol P { func f(x: URL?) async throws -> T }          // the requirement
+
+public extension P {
+    func f(x: URL? = nil) async throws -> T {             // SAME signature!
+        try await f(x: x)                                 // calls *itself*
+    }
+}
+```
+
+The extension member has the same signature as the requirement, so it silently
+becomes that requirement's **default implementation**. For any conformer that
+omits `f(x:)`, the witness *is* this extension member, and the call recurses
+until the stack overflows — where the author intended a compile error. In-package
+conformers hide it (they all implement the method); it surfaces for a third-party
+conformer, i.e. exactly the case a public protocol exists for.
+
+Give the convenience a genuinely distinct signature instead:
+
+```swift
+public extension P {
+    func f() async throws -> T { try await f(x: nil) }    // cannot be the witness
+}
+```
+
+Call sites (`f()`) are unchanged, and omitting the requirement is now a compile
+error. `V4AuthenticationService.requestToken()` is written this way for this
+reason. **`AuthenticationService.authenticateURL(for:redirectURL:)` still carries
+the hazard** — it is the defaulted form, so a third-party `AuthenticationService`
+conformer that omits it will infinite-loop rather than fail to build.
+
 ### Growing a public protocol additively: extension defaults, and the `--Werror` deprecation trap
 
 *2026-06-18.* Two traps when adding API to a **`public protocol`** (e.g.

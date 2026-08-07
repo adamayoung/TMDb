@@ -43,6 +43,16 @@ public final class TMDbClient: Sendable {
     public let authentication: any AuthenticationService
 
     ///
+    /// Provides access to TMDb v4 user authentication — creating a request
+    /// token, approving it, and exchanging it for a user access token.
+    ///
+    /// - Important: These endpoints require a client created with
+    /// ``init(bearerToken:configuration:)`` using your API Read Access Token;
+    /// a v3 API key is rejected. See <doc:AuthenticatingWithV4>.
+    ///
+    public let v4Authentication: any V4AuthenticationService
+
+    ///
     /// Provides access to content certifications (e.g. G, PG, R) for
     /// movies and TV series.
     ///
@@ -285,7 +295,9 @@ public final class TMDbClient: Sendable {
     ) {
         let apiClient = dependencies.apiClient
         let authAPIClient = dependencies.authAPIClient
+        let v4APIClient = dependencies.v4APIClient
         let authenticateURLBuilder = dependencies.authenticateURLBuilder
+        let v4AuthenticateURLBuilder = dependencies.v4AuthenticateURLBuilder
 
         // Hoisted into a local so the image service can share this exact instance:
         // `self.configurations` cannot be read until every stored property is
@@ -298,6 +310,10 @@ public final class TMDbClient: Sendable {
         self.authentication = TMDbAuthenticationService(
             apiClient: authAPIClient,
             authenticateURLBuilder: authenticateURLBuilder
+        )
+        self.v4Authentication = TMDbV4AuthenticationService(
+            apiClient: v4APIClient,
+            authenticateURLBuilder: v4AuthenticateURLBuilder
         )
         self.certifications = TMDbCertificationService(apiClient: apiClient)
         self.collections = TMDbCollectionService(apiClient: apiClient, configuration: configuration)

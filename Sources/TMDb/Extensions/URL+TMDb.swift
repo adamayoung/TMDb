@@ -14,6 +14,11 @@ extension URL {
         URL(string: "https://api.themoviedb.org/3")!
     }
 
+    static var tmdbAPIv4Base: URL {
+        // swiftlint:disable:next force_unwrapping
+        URL(string: "https://api.themoviedb.org/4")!
+    }
+
     static var tmdbWebSite: URL {
         // swiftlint:disable:next force_unwrapping
         URL(string: "https://www.themoviedb.org")!
