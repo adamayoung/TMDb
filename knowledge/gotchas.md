@@ -614,7 +614,7 @@ target compiles, so `/integration-test` catches it; a unit-only check may not.
 ### Model-decode equality tests: build the expected value directly, not from an over-populated mock
 
 *2026-06-19.* `Network` is `Equatable` over **all six** stored properties
-(`id`, `name`, `logoPath`, `originCountry`, `headquarters`, `homepage`), and both
+(`id`, `name`, `logoPath`, `originCountry`, `headquarters`, `homepageURL`), and both
 the `Network.mock()` helper and `Network.hbo` default `headquarters` **and**
 `homepage` to **non-nil** values. When a decode test compares a decoded value
 against an expected one built from a **minimal** JSON fixture entry (only

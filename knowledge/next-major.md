@@ -21,8 +21,7 @@ CHANGELOG records it) or is rejected outright (record that in
 > **This file has earned its keep once.** It was written on 2026-07-27 and read
 > on 2026-07-28, while 19.0.0 was assembled but still untagged — which is the
 > only reason the `Company.logoPath` decode bug (#404) made that release instead
-> of waiting for 20.0.0. The next window is **20.0.0**; everything below is
-> queued for it.
+> of waiting for 20.0.0.
 
 ## Backlog
 
