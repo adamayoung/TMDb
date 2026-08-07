@@ -1,0 +1,15 @@
+{
+  "PostToolUse": [
+    {
+      "matcher": "^(apply_patch|write_file|edit_file|create_file|str_replace)$",
+      "hooks": [
+        {
+          "type": "command",
+          "command": ".codex/hooks/post-edit-format.sh",
+          "timeout": 60,
+          "statusMessage": "Formatting changed Swift/Markdown files..."
+        }
+      ]
+    }
+  ]
+}

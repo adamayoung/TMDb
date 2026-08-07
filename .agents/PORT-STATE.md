@@ -70,11 +70,18 @@ durable residue (the file map and the deliberate divergences).
 
 ## Deferred post-merge verification (PR-A)
 
-The PR-A worktree path is not a Codex **trusted project**
-(`~/.codex/config.toml` trusts `/Users/adam/Developer/TMDb`), so the
-codex-live smoke tests below could not run against the worktree. Run each
-from the main checkout once PR-A merges; check them off here (or note the
-failure) in the next mirror PR:
+What PR-A's in-worktree probe **did** establish: `codex exec` runs fine
+inside a `.claude/worktrees/` worktree (trust extends to subpaths of the
+trusted project root), and the agent edits files via `apply_patch`. What it
+could **not** establish: project-layer hooks are additionally gated by a
+persisted **hook-trust store** that a headless run cannot satisfy
+(`--dangerously-bypass-hook-trust` exists but was out of bounds for the
+autonomous run), so no hook fired and no payload was captured. The
+`post-edit-format.sh` script is therefore payload-shape independent (git-diff
+sweep fallback), and the `hooks.json` matcher is **provisional** until the
+interactive test below observes real payloads. Run each item from the main
+checkout once PR-A merges; check them off here (or note the failure) in the
+next mirror PR:
 
 - [ ] **AGENTS.md read-back** —
   `codex exec --ephemeral "State this repo's branching rule and the mandatory pre-PR gate, citing the file you read them from"`
@@ -86,11 +93,14 @@ failure) in the next mirror PR:
 - [ ] **tmdb MCP server** —
   `codex exec --ephemeral "Using the tmdb MCP server, fetch movie details for id 550 and reply with only the title"`
   → "Fight Club".
-- [ ] **PostToolUse hook fires** — in an interactive `codex` session, ask it
-  to create a deliberately badly-formatted `HookTest.swift`; confirm the
-  on-disk file comes back `swiftformat`-normalised; delete the file. Note:
-  the hook matcher was written from a captured payload (see
-  `.codex/hooks.json`); if tool names changed in a newer Codex, re-capture
-  with a logging hook (`cat > .codex/hooks/last-payload.json`).
-- [ ] **Hook trust** — first hook execution may show a one-time trust prompt
-  for project hooks; accept it (the project is already trusted).
+- [ ] **Hook trust + PostToolUse hook fires** — in an interactive `codex`
+  session, accept the one-time project-hook trust prompt, then ask it to
+  create a deliberately badly-formatted `HookTest.swift`; confirm the on-disk
+  file comes back `swiftformat`-normalised; delete the file.
+- [ ] **Refine the provisional hook matcher from observed payloads** — the
+  matcher in `.codex/hooks.json` was written blind (see above). Temporarily
+  add a logging entry (`"command": "cat > .codex/hooks/last-payload.json"`,
+  matcher `".*"`), edit a scratch file, read the captured payload, correct
+  the matcher's tool names and the script's jq paths if they differ, then
+  remove the logging entry and the capture file. The script works under any
+  payload shape meanwhile (sweep fallback).

@@ -1,0 +1,65 @@
+# Codex project config TEMPLATE for the TMDb repo.
+#
+# Setup: copy this file to .codex/config.toml and fill in the real values.
+#
+#     cp .codex/config.example.toml .codex/config.toml
+#
+# .codex/config.toml is GITIGNORED because it holds live TMDb credentials —
+# NEVER commit it, and never put real values in THIS template. (Mirror of the
+# .claude/settings.json vs settings.local.json split.)
+#
+# Project-layer config loads only while the project is trusted in
+# ~/.codex/config.toml ([projects."/Users/adam/Developer/TMDb"]).
+
+# --- Environment for make / tests -------------------------------------------
+# Mirror of the env block in .claude/settings.local.json. make integration-test
+# requires the first three; the two v4 tokens are optional (their suites skip
+# without them). See AGENTS.md → Shell Environment.
+
+[shell_environment_policy]
+inherit = "all"
+
+[shell_environment_policy.set]
+TMDB_API_KEY = "YOUR_TMDB_API_KEY"
+TMDB_USERNAME = "YOUR_TMDB_USERNAME"
+TMDB_PASSWORD = "YOUR_TMDB_PASSWORD"
+TMDB_API_READ_ONLY_TOKEN = "YOUR_V4_READ_ONLY_TOKEN"
+TMDB_API_USER_TOKEN = "YOUR_V4_USER_TOKEN"
+
+# --- Sandbox ----------------------------------------------------------------
+# Live-API integration tests, gh, and nested `codex exec` (the deliver panel's
+# jurors, arriving in a later mirror PR) all need network access.
+
+[sandbox_workspace_write]
+network_access = true
+
+# --- Subagent defaults ------------------------------------------------------
+# Blast-radius backstop for fan-out skills (review dimensions, per-check CI
+# fixes): parallel threads beyond this queue rather than spawn.
+
+[agents]
+max_concurrent_threads_per_session = 4
+
+# --- MCP servers ------------------------------------------------------------
+# Mirror of .mcp.json. The `github` server is deliberately ABSENT: the Codex
+# mirror uses the gh CLI for all GitHub access (see AGENTS.md → Creating Pull
+# Requests; ADR-0018 records the decision when the full port lands).
+
+[mcp_servers.tmdb]
+command = "npx"
+args = ["-y", "@adamayoung/mcp-server-tmdb"]
+
+[mcp_servers.tmdb.env]
+TMDB_API_KEY = "YOUR_TMDB_API_KEY"
+
+# Optional — for occasional use, not a route to call instead of the skills
+# (see AGENTS.md → Build and Test Tooling).
+[mcp_servers.xcode]
+command = "xcrun"
+args = ["mcpbridge"]
+
+# Apple documentation (HTTP transport). If this key shape is rejected on a
+# newer Codex, check the current MCP config reference — the post-merge smoke
+# test in .agents/PORT-STATE.md covers it.
+[mcp_servers.sosumi]
+url = "https://sosumi.ai/mcp"
