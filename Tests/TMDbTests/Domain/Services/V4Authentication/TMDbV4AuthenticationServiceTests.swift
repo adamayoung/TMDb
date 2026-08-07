@@ -85,11 +85,14 @@ struct TMDbV4AuthenticationServiceTests {
         #expect(apiClient.lastRequest as? CreateV4AccessTokenRequest == expectedRequest)
     }
 
-    @Test("createAccessToken with an empty request token throws without performing a request")
-    func createAccessTokenWithEmptyTokenThrowsError() async throws {
-        let requestToken = V4RequestToken(success: true, requestToken: "")
+    @Test("createAccessToken with an empty request token throws bad request and performs no request")
+    func createAccessTokenWithEmptyTokenThrowsBadRequest() async throws {
+        let requestToken = V4RequestToken(success: true, requestToken: "   ")
+        let expectedError = TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Request token must not be empty")
+        )
 
-        await #expect(throws: (any Error).self) {
+        await #expect(throws: expectedError) {
             _ = try await service.createAccessToken(withRequestToken: requestToken)
         }
 
@@ -117,10 +120,14 @@ struct TMDbV4AuthenticationServiceTests {
         #expect(apiClient.lastRequest as? DeleteV4AccessTokenRequest == expectedRequest)
     }
 
-    @Test("deleteAccessToken with an empty token throws without performing a request")
-    func deleteAccessTokenWithEmptyTokenThrowsError() async throws {
-        await #expect(throws: (any Error).self) {
-            _ = try await service.deleteAccessToken("")
+    @Test("deleteAccessToken with an empty token throws bad request and performs no request")
+    func deleteAccessTokenWithEmptyTokenThrowsBadRequest() async throws {
+        let expectedError = TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Access token must not be empty")
+        )
+
+        await #expect(throws: expectedError) {
+            _ = try await service.deleteAccessToken("   ")
         }
 
         #expect(apiClient.requests.isEmpty)
@@ -137,21 +144,41 @@ struct TMDbV4AuthenticationServiceTests {
 
 }
 
+/// A `V4AuthenticateURLBuilding` double that records the token it was asked for.
+///
+/// `@unchecked Sendable` is justified by the lock: every stored property is read
+/// and written only while `lock` is held, so concurrent access is safe even
+/// though the compiler cannot prove it.
 final class V4AuthenticateURLMockBuilder: V4AuthenticateURLBuilding, @unchecked Sendable {
 
-    var authenticateURLResult: URL = .init(fileURLWithPath: "/")
-    private(set) var lastRequestToken: String?
-    private(set) var lastRedirectURL: URL?
+    private let lock = NSLock()
+    private var storage = Storage()
 
-    func authenticateURL(with requestToken: String) -> URL {
-        authenticateURL(with: requestToken, redirectURL: nil)
+    private struct Storage {
+        var authenticateURLResult = URL(fileURLWithPath: "/")
+        var lastRequestToken: String?
     }
 
-    func authenticateURL(with requestToken: String, redirectURL: URL?) -> URL {
-        lastRequestToken = requestToken
-        lastRedirectURL = redirectURL
+    var authenticateURLResult: URL {
+        get { withLock { storage.authenticateURLResult } }
+        set { withLock { storage.authenticateURLResult = newValue } }
+    }
 
-        return authenticateURLResult
+    var lastRequestToken: String? {
+        withLock { storage.lastRequestToken }
+    }
+
+    private func withLock<R>(_ body: () -> R) -> R {
+        lock.lock()
+        defer { lock.unlock() }
+        return body()
+    }
+
+    func authenticateURL(with requestToken: String) -> URL {
+        withLock {
+            storage.lastRequestToken = requestToken
+            return storage.authenticateURLResult
+        }
     }
 
 }

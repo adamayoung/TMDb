@@ -18,15 +18,15 @@ import TMDb
 /// integration-tested. Their request construction is covered by the unit suite.
 ///
 /// These endpoints authenticate with a bearer credential, so the suite builds
-/// its client from `TMDB_API_READ_ONLY_TOKEN` rather than the v3 API key — a
-/// v3 key is rejected here — and skips when that variable is absent, including
-/// on CI.
+/// its client from the API Read Access Token rather than the v3 API key — a v3
+/// key is rejected here — and skips when that token is absent, which currently
+/// includes CI.
 ///
 @Suite(
     .integrationGate,
     .serialized,
     .tags(.authentication),
-    .enabled(if: CredentialHelper.shared.hasAPIReadOnlyToken)
+    .enabled(if: CredentialHelper.shared.hasAccessToken)
 )
 struct V4AuthenticationIntegrationTests {
 
@@ -34,7 +34,7 @@ struct V4AuthenticationIntegrationTests {
 
     init() {
         self.client = TMDbClient(
-            bearerToken: CredentialHelper.shared.tmdbAPIReadOnlyToken,
+            bearerToken: CredentialHelper.shared.tmdbAccessToken,
             configuration: TMDbConfiguration(retry: .default)
         )
     }

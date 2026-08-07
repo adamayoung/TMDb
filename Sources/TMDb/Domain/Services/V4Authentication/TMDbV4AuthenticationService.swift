@@ -21,7 +21,7 @@ final class TMDbV4AuthenticationService: V4AuthenticationService {
         self.authenticateURLBuilder = authenticateURLBuilder
     }
 
-    func requestToken(redirectURL: URL? = nil) async throws(TMDbError) -> V4RequestToken {
+    func requestToken(redirectURL: URL?) async throws(TMDbError) -> V4RequestToken {
         let request = CreateV4RequestTokenRequest(redirectURL: redirectURL)
 
         return try await apiClient.perform(request)

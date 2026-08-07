@@ -19,8 +19,14 @@ struct V4AccessTokenTests {
             fromResource: "v4-access-token"
         )
 
+        let expectedAccessToken = """
+        eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCIsInN1YiI6IjFhMm\
+        IzYzRkNWU2ZjdhOGI5YzBkMWUyZiIsInNjb3BlcyI6WyJhcGlfcmVhZCBhcGlfd3JpdGUiXSwidmVyc2lvbiI6Mn0.0\
+        000000000000000000000000000000000000000000
+        """
+
         #expect(result.success == true)
-        #expect(result.accessToken.hasPrefix("eyJ"))
+        #expect(result.accessToken == expectedAccessToken)
         #expect(result.accountID == "1a2b3c4d5e6f7a8b9c0d1e2f")
     }
 

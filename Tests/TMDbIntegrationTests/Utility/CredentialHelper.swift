@@ -14,14 +14,16 @@ final class CredentialHelper: Sendable {
 
     let tmdbCredential: Credential
     let tmdbAPIKey: String
-    let tmdbAccessToken: String
 
     /// The API Read Access Token — the *application* bearer credential.
     ///
-    /// Distinct from `tmdbAccessToken`: the v4 authentication endpoints reject
-    /// a v3 API key, so suites exercising them need this token rather than
-    /// `tmdbAPIKey`.
-    let tmdbAPIReadOnlyToken: String
+    /// This is not the v3 API key: the v4 endpoints authenticate with a bearer
+    /// token and reject an `api_key`, so suites exercising them need this.
+    ///
+    /// Read from `TMDB_ACCESS_TOKEN`, falling back to
+    /// `TMDB_API_READ_ONLY_TOKEN` — the name TMDb itself uses on the settings
+    /// page. They are the same credential, so either may be set.
+    let tmdbAccessToken: String
 
     var hasCredential: Bool {
         !tmdbCredential.username.isEmpty && !tmdbCredential.password.isEmpty
@@ -33,10 +35,6 @@ final class CredentialHelper: Sendable {
 
     var hasAccessToken: Bool {
         !tmdbAccessToken.isEmpty
-    }
-
-    var hasAPIReadOnlyToken: Bool {
-        !tmdbAPIReadOnlyToken.isEmpty
     }
 
     /// Returns a `TMDbClient` configured with the integration-test API key
@@ -57,8 +55,10 @@ final class CredentialHelper: Sendable {
         self.tmdbCredential = Credential(username: username, password: password)
 
         self.tmdbAPIKey = processInfo.environment["TMDB_API_KEY"] ?? ""
-        self.tmdbAccessToken = processInfo.environment["TMDB_ACCESS_TOKEN"] ?? ""
-        self.tmdbAPIReadOnlyToken = processInfo.environment["TMDB_API_READ_ONLY_TOKEN"] ?? ""
+        self.tmdbAccessToken =
+            processInfo.environment["TMDB_ACCESS_TOKEN"]
+                ?? processInfo.environment["TMDB_API_READ_ONLY_TOKEN"]
+                ?? ""
     }
 
 }

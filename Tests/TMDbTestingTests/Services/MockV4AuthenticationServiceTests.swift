@@ -10,7 +10,7 @@ import Testing
 import TMDb
 import TMDbTesting
 
-@Suite(.tags(.testingSupport, .mocks))
+@Suite(.tags(.testingSupport, .mocks, .authentication))
 struct MockV4AuthenticationServiceTests {
 
     var service: MockV4AuthenticationService

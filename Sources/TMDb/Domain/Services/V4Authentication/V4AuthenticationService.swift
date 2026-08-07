@@ -91,22 +91,28 @@ public protocol V4AuthenticationService: Sendable {
 public extension V4AuthenticationService {
 
     ///
-    /// Creates an intermediate request token that a TMDb user can approve.
+    /// Creates an intermediate request token that a TMDb user can approve,
+    /// with no redirect.
     ///
     /// The returned token carries no authority of its own — it must be
     /// approved by the user at ``authenticateURL(for:)`` before it can be
     /// exchanged for an access token. Request tokens expire 15 minutes after
     /// they are issued.
     ///
-    /// - Parameter redirectURL: Optional URL to redirect to once the user has
-    /// approved the request token.
-    ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
     /// - Returns: An intermediate request token.
     ///
-    func requestToken(redirectURL: URL? = nil) async throws(TMDbError) -> V4RequestToken {
-        try await requestToken(redirectURL: redirectURL)
+    /// - Note: This convenience deliberately takes no parameters rather than
+    /// defaulting `redirectURL` to `nil`. A default argument is not part of a
+    /// function's signature for witness matching, so a defaulted overload here
+    /// would *become* the requirement's default implementation — and a
+    /// conforming type that omitted the method would compile, then recurse
+    /// until the stack overflowed. A distinct signature makes the omission a
+    /// compile error instead.
+    ///
+    func requestToken() async throws(TMDbError) -> V4RequestToken {
+        try await requestToken(redirectURL: nil)
     }
 
 }

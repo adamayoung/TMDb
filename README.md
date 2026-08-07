@@ -13,9 +13,9 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 
 ## Features
 
-* **Comprehensive API Coverage**: Full support for TMDb API v3 with 27
-  specialized services, plus v4 user authentication and 2 on-device
-  intelligence extensions
+* **Comprehensive API Coverage**: Full support for TMDb API v3, plus v4 user
+  authentication — 27 specialized services and 2 on-device intelligence
+  extensions
 * **Append to Response**: Fetch details with credits, images, videos,
   and more in a single request using `append_to_response`
 * **Movie & TV Data**: Details, credits, images, videos, reviews,
