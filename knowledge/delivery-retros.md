@@ -14,6 +14,46 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-07 — 🔧 Codex mirror PR-A: AGENTS.md + .codex layer (chore/codex-config) · lite
+
+- **Phases / skills:** 0–8 pre-PR; lite (docs/config only), so no
+  `/review-plan` critics (plan was Plan-agent-designed + user-approved this
+  session) and the single-reviewer path. `consulted:` gotchas *Write
+  tag-leak*, *worktree lock/paths*, *EnterWorktree branch rename*,
+  *make-not-in-CI*; wiki *restructure-a-normative-doc*,
+  *unenforceable-rule*, *worktree path re-resolution*,
+  *query-state-never-infer*.
+- **Worked — the rule-inventory + adversarial-mapping-review method paid for
+  itself twice.** The mapping reviewer caught a genuinely dropped
+  prohibition (the "don't call the Xcode MCP directly" rule survived only
+  because the review used the ORIGINAL as ground truth, exactly as the wiki
+  pattern prescribes) and a third `canon-tdd` site the author's own fix
+  pass had missed. The code review then *empirically validated* the config
+  template against the real Codex binary — falsifying five of its own
+  candidate findings and pre-verifying a deferred smoke test.
+- **Worked — probes over assumptions.** Running `codex exec` from the
+  worktree settled trust-subpath behaviour and surfaced the hook-trust gate
+  before the hook design calcified; the script was rewritten payload-shape
+  independent as a result.
+- **Friction:** the worktree sandbox guard refuses compound Bash with git +
+  pipes/redirects, which blocked the canonical run-file stamp incantation
+  (worked around with a diff-scoped blob-SHA stamp, basis recorded in the
+  run file) — and two classifier denials (user-global `~/.codex` write; a
+  `--dangerously-*` flag) rerouted the hook probe into the repo's own
+  `.codex/` (now a gotcha entry).
+- **Deviations:** Makefile/ci.yml lint-glob extension for the new markdown
+  deliberately NOT applied (plan defers it to the final mirror PR with
+  Adam's sign-off) — noted in the PR body instead. The AGENTS.md read-back
+  smoke test ran pre-merge from the worktree (bonus; plan expected it
+  post-merge).
+- **One improvement:** `/review-changes`' §0 gate pattern should include the
+  mirror's committed-script surface (`.agents/skills/*/scripts/`,
+  `.codex/hooks/`) once the mirror lands — this run had to argue its way
+  past the letter of the gate (noted for the recurring-pattern scan; the
+  gate edit itself is a skill-file change needing approval).
+- **`swept:`** no pattern-listed infra files in diff (`.gitignore` + new
+  mirror trees only) → none cited.
+
 ## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#412) · lite
 
 - **Phases / skills:** 0–8 pre-PR; lite, so no `/review-plan` critics and the
