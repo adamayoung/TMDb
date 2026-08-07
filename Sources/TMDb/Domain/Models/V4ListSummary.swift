@@ -200,6 +200,50 @@ public struct V4ListSummary: Identifiable, Codable, Equatable, Hashable, Sendabl
 
 extension V4ListSummary {
 
+    ///
+    /// Creates a v4 list summary by decoding from the given decoder.
+    ///
+    /// Every field except `id` and `name` is decoded tolerantly. That matters
+    /// more here than usual: `lists(forAccount:)` wraps its results in
+    /// `FailableDecodable`, so a summary that *throws* is silently **dropped**
+    /// from the page rather than surfaced — one field TMDb stopped sending
+    /// would make a user's list disappear with no error at all. `V4List`
+    /// defends itself the same way.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: An error if reading from the decoder fails, or if the data is
+    ///   corrupted or otherwise invalid.
+    ///
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decodeIfPresent(String.self, forKey: .description)
+        self.accountObjectID = try container.decodeIfPresent(
+            String.self, forKey: .accountObjectID
+        ) ?? ""
+        self.numberOfItems = try container.decodeIfPresent(Int.self, forKey: .numberOfItems) ?? 0
+        self.averageRating = try container.decodeIfPresent(Double.self, forKey: .averageRating) ?? 0
+        self.revenue = try container.decodeIfPresent(Int.self, forKey: .revenue) ?? 0
+        self.sortBy = try container.decodeIfPresent(Int.self, forKey: .sortBy) ?? 1
+        self.languageCode = try container.decodeIfPresent(String.self, forKey: .languageCode) ?? ""
+        self.countryCode = try container.decodeIfPresent(String.self, forKey: .countryCode) ?? ""
+        self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
+        self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
+        self.createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt)
+            ?? Date(timeIntervalSince1970: 0)
+        self.updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt)
+            ?? Date(timeIntervalSince1970: 0)
+        // Absent visibility defaults to *private*: for a privacy flag the safe
+        // failure direction is the restrictive one.
+        self.publicValue = try container.decodeIfPresent(Int.self, forKey: .publicValue) ?? 0
+        self.adultValue = try container.decodeIfPresent(Int.self, forKey: .adultValue) ?? 0
+        self.featuredValue = try container.decodeIfPresent(Int.self, forKey: .featuredValue) ?? 0
+        self.runtimeValue = try container.decodeIfPresent(String.self, forKey: .runtimeValue) ?? "0"
+    }
+
     /// With `.convertFromSnakeCase` the decoder hands over the camelCased form,
     /// so these raw values must be spelled that way — `iso6391`, not `iso_639_1`.
     private enum CodingKeys: String, CodingKey {

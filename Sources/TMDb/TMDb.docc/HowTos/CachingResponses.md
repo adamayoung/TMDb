@@ -140,6 +140,7 @@ import TMDb
 struct CustomHTTPClient: HTTPClient {
 
     private let urlSession: URLSession
+    private let noCacheURLSession: URLSession
 
     init() {
         let configuration = URLSessionConfiguration.default
@@ -148,6 +149,14 @@ struct CustomHTTPClient: HTTPClient {
         configuration.urlCache = URLCache(memoryCapacity: 10_000_000, diskCapacity: 200_000_000)
         // ...or set `configuration.urlCache = nil` to disable HTTP caching.
         urlSession = URLSession(configuration: configuration)
+
+        // A second session with no cache, for user-specific responses. A cache
+        // *policy* alone would stop a stale read but not the write, so the
+        // response would still be on disk.
+        let privateConfiguration = URLSessionConfiguration.default
+        privateConfiguration.urlCache = nil
+        privateConfiguration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        noCacheURLSession = URLSession(configuration: privateConfiguration)
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
@@ -158,7 +167,14 @@ struct CustomHTTPClient: HTTPClient {
             urlRequest.setValue(value, forHTTPHeaderField: field)
         }
 
-        let (data, response) = try await urlSession.data(for: urlRequest)
+        // Never cache, store or log a response that required a user's
+        // credential — see `HTTPRequest.isUserSpecific`.
+        let session = request.isUserSpecific ? noCacheURLSession : urlSession
+        if request.isUserSpecific {
+            urlRequest.cachePolicy = .reloadIgnoringLocalCacheData
+        }
+
+        let (data, response) = try await session.data(for: urlRequest)
         let httpResponse = response as? HTTPURLResponse
         let statusCode = httpResponse?.statusCode ?? 0
         // Forward the headers so features like Retry-After backoff keep working.

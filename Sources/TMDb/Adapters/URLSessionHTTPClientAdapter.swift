@@ -28,12 +28,19 @@ final class URLSessionHTTPClientAdapter: HTTPClient, Sendable {
     /// built fresh, so `protocolClasses`, timeouts and
     /// `waitsForConnectivity` all carry over — without that, tests injecting a
     /// `MockURLProtocol` session would silently reach the live network here.
+    ///
+    /// The `.copy()` is load-bearing on Linux. On Apple platforms
+    /// `URLSession.configuration` is `@NSCopying` and already hands back a
+    /// copy, but swift-corelibs-foundation returns the **stored instance** —
+    /// so mutating it would unhook the `URLCache` from the primary session too,
+    /// disabling caching everywhere.
     private let noCacheURLSession: URLSession
 
     init(urlSession: URLSession) {
         self.urlSession = urlSession
 
-        let configuration = urlSession.configuration
+        let configuration = urlSession.configuration.copy() as? URLSessionConfiguration
+            ?? URLSessionConfiguration.default
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         self.noCacheURLSession = URLSession(configuration: configuration)

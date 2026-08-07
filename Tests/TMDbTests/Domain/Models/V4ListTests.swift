@@ -107,16 +107,73 @@ struct V4ListTests {
         #expect(result.comment == nil)
     }
 
-    @Test("round trips through encode and decode, comments included")
-    func roundTrips() throws {
+    @Test(
+        "round trips through encode and decode",
+        arguments: ["v4-list-with-comments", "v4-list", "v4-list-with-images", "v4-list-minimal"]
+    )
+    func roundTrips(fixture: String) throws {
+        // All four, so both branches of the comment encoding are covered: the
+        // `guard let comment else` skip, and the `if !comments.isEmpty`
+        // omission for a list where nobody has commented.
         let original = try JSONDecoder.theMovieDatabaseV4.decode(
-            V4List.self, fromResource: "v4-list-with-comments"
+            V4List.self, fromResource: fixture
         )
 
         let encoded = try JSONEncoder.theMovieDatabaseV4.encode(original)
         let result = try JSONDecoder.theMovieDatabaseV4.decode(V4List.self, from: encoded)
 
         #expect(result == original)
+    }
+
+    @Test("every optional field falls back when TMDb omits it")
+    func minimalPayloadUsesDefaults() throws {
+        // Both full fixtures carry every key, so without this not one of the
+        // fourteen `?? default` branches is ever exercised.
+        let result = try JSONDecoder.theMovieDatabaseV4.decode(
+            V4List.self, fromResource: "v4-list-minimal"
+        )
+
+        #expect(result.id == 8_679_001)
+        #expect(result.name == "Minimal List")
+        #expect(result.description == nil)
+        #expect(result.isPublic == false)
+        #expect(result.items.isEmpty)
+        #expect(result.itemCount == 0)
+        #expect(result.averageRating == 0)
+        #expect(result.runtime == 0)
+        #expect(result.revenue == 0)
+        #expect(result.sortBy == "original_order.asc")
+        #expect(result.languageCode == "")
+        #expect(result.countryCode == "")
+        #expect(result.backdropPath == nil)
+        #expect(result.posterPath == nil)
+        #expect(result.page == 1)
+        #expect(result.totalPages == 1)
+        #expect(result.totalResults == 0)
+    }
+
+    @Test("an absent visibility flag decodes as private, not public")
+    func absentVisibilityDefaultsToPrivate() throws {
+        // For a privacy flag the safe failure direction is the restrictive one.
+        let result = try JSONDecoder.theMovieDatabaseV4.decode(
+            V4List.self, fromResource: "v4-list-minimal"
+        )
+
+        #expect(result.isPublic == false)
+    }
+
+    @Test("decodes the image paths when TMDb sends them")
+    func decodesImagePaths() throws {
+        // Both other fixtures send null for these, leaving the URL branch
+        // unverified.
+        let result = try JSONDecoder.theMovieDatabaseV4.decode(
+            V4List.self, fromResource: "v4-list-with-images"
+        )
+
+        let backdropPath = try #require(result.backdropPath)
+        let posterPath = try #require(result.posterPath)
+        #expect(backdropPath.absoluteString == "/c6OLXfKAk5BKeR6broC8pYiCquX.jpg")
+        #expect(posterPath.absoluteString == "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg")
     }
 
 }

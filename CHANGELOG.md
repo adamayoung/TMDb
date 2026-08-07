@@ -31,11 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   supply your own `HTTPClient` **and** switch exhaustively over the method — add
   a `.put` branch, or a `default`.
 
-- **Breaking:** `HTTPRequest` gains `isUserSpecific`. It is `true` when a
-  request required a specific user's credential — a v4 access token, a v3
-  `session_id`, or a guest session. **A custom `HTTPClient` must not cache,
-  store or log such a response.** The memberwise initialiser takes it last with
-  a default of `false`, so existing construction still compiles.
+- `HTTPRequest` gains `isUserSpecific`. It is `true` when a request required a
+  specific user's credential — a v4 access token, a v3 `session_id`, or a guest
+  session. **A custom `HTTPClient` must not cache, store or log such a
+  response.** This is source-compatible: it is a new property with a defaulted
+  trailing initialiser parameter, so nothing needs changing to compile — but a
+  custom `HTTPClient` should be updated to honour it.
 
 - A request that carries its own `Authorization` header now suppresses the
   client credential entirely, rather than having it overwritten. Without this a

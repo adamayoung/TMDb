@@ -180,6 +180,25 @@ final class URLSessionHTTPClientAdapterTests {
         #expect(session.configuration.requestCachePolicy == .reloadIgnoringLocalCacheData)
     }
 
+    @Test("deriving the cache-free session leaves the injected session untouched")
+    func derivingCacheFreeSessionDoesNotMutateInjectedSession() throws {
+        // On Apple platforms `URLSession.configuration` is @NSCopying, but
+        // swift-corelibs-foundation returns the stored instance — so without an
+        // explicit copy this would unhook the URLCache from the primary session
+        // too, on Linux only, where no test would notice.
+        let configuration = URLSessionConfiguration.default
+        configuration.protocolClasses = [MockURLProtocol.self]
+        configuration.urlCache = URLCache(memoryCapacity: 1024, diskCapacity: 0)
+        let session = URLSession(configuration: configuration)
+
+        let adapter = URLSessionHTTPClientAdapter(urlSession: session)
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+        _ = adapter.session(for: HTTPRequest(url: url, isUserSpecific: true))
+
+        #expect(session.configuration.urlCache != nil)
+        #expect(session.configuration.requestCachePolicy == .useProtocolCachePolicy)
+    }
+
     @Test("an ordinary request still goes through the shared, caching session")
     func ordinaryRequestUsesSharedSession() throws {
         let url = try #require(URL(string: "https://api.themoviedb.org/3/movie/550"))

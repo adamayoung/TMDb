@@ -519,6 +519,15 @@ Integration tests require these environment variables:
 * `TMDB_USERNAME` - Your TMDb username
 * `TMDB_PASSWORD` - Your TMDB password
 
+The v4 suites need two further credentials, and **skip silently** without them:
+
+* `TMDB_API_READ_ONLY_TOKEN` - Your API Read Access Token, from the same TMDb
+  settings page as the API key. This is the *application's* bearer credential —
+  the v4 endpoints reject an API key.
+* `TMDB_API_USER_TOKEN` - A *user* access token, minted through the v4 approval
+  flow (see the *Authenticating with the v4 API* article). Required for anything
+  touching a user's lists.
+
 Running unit tests on Linux requires [Docker](https://www.docker.com) to be running.
 
 ### Claude Code Skills

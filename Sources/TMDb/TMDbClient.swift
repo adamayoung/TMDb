@@ -258,6 +258,13 @@ public final class TMDbClient: Sendable {
     /// therefore out of logs, proxies, and cache keys). Use the **API Read
     /// Access Token** from your TMDb account's API settings.
     ///
+    /// - Warning: Pass the *application's* Read Access Token here, not a
+    /// **user** access token. TMDb accepts either, but a client built this way
+    /// is treated as application-level and its responses are cacheable — pass a
+    /// user token and that user's private data is written to a cache shared
+    /// across the process. To act as a user, keep the application token here
+    /// and pass the user's token per call, as ``V4ListService`` takes it.
+    ///
     /// - Parameters:
     ///   - bearerToken: The TMDb v4 access token to authenticate requests with.
     ///   - configuration: The configuration for the client. Defaults to ``TMDbConfiguration/system``.
@@ -280,6 +287,13 @@ public final class TMDbClient: Sendable {
     /// `api_key` query item, keeping the credential out of request URLs (and
     /// therefore out of logs, proxies, and cache keys). Use the **API Read
     /// Access Token** from your TMDb account's API settings.
+    ///
+    /// - Warning: Pass the *application's* Read Access Token here, not a
+    /// **user** access token. TMDb accepts either, but a client built this way
+    /// is treated as application-level and its responses are cacheable — pass a
+    /// user token and that user's private data is written to a cache shared
+    /// across the process. To act as a user, keep the application token here
+    /// and pass the user's token per call, as ``V4ListService`` takes it.
     ///
     /// - Parameters:
     ///   - bearerToken: The TMDb v4 access token to authenticate requests with.

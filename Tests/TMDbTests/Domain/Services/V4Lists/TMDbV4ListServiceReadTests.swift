@@ -165,6 +165,21 @@ struct TMDbV4ListServiceReadTests {
         }
     }
 
+    @Test("itemStatus decodes the real item-status response")
+    func itemStatusDecodesFixture() async throws {
+        let response = try JSONDecoder.theMovieDatabaseV4.decode(
+            V4ListItemStatusResult.self, fromResource: "v4-list-item-status"
+        )
+        apiClient.addResponse(.success(response))
+
+        let result = try await service.itemStatus(forMedia: 550, ofType: .movie, inList: 1)
+
+        #expect(result)
+        #expect(response.mediaID == 550)
+        #expect(response.mediaType == .movie)
+        #expect(response.id == 8_678_999)
+    }
+
     @Test("itemStatus uses the tv media type for a TV series")
     func itemStatusUsesTVMediaType() async throws {
         apiClient.addResponse(.success(V4ListItemStatusResult(

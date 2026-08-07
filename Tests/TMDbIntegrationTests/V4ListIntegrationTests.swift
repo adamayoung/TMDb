@@ -18,9 +18,11 @@ import TMDb
 ///
 /// - **TMDb rate-limits list creation.** Fourteen quick creates named
 ///   `probe <random>` were all rejected with `status_code` 18, "Content is
-///   suspected to be spam". So this creates once per run, with a name a person
-///   might plausibly use, and treats a spam rejection as a *skip* rather than a
-///   failure — it says nothing about the library.
+///   suspected to be spam". So this creates once per test, with a name a person
+///   might plausibly use. A rejection is deliberately **not** turned into a
+///   skip: a green run that created nothing looks exactly like one that worked.
+///   It fails, and the failure names itself so an upstream limit can be told
+///   apart from real drift.
 /// - **Cleanup cannot rely on a remembered identifier.** A probe script's
 ///   `EXIT` trap never fired and orphaned four lists on the account. Teardown
 ///   here enumerates the account's lists and deletes any left over from a
@@ -85,28 +87,36 @@ final class V4ListIntegrationTests {
             // from one that worked. It fails, loudly, and the failure names
             // itself so `/fix-integration-failures` can tell an upstream limit
             // from real drift.
-            Issue.record(
-                error,
-                """
-                Creating the list failed. If the message is "Content is suspected to be spam", \
-                this is TMDb rate-limiting list creation — an upstream limit, not a defect here. \
-                Re-run after a pause.
-                """
-            )
+            // Rethrow only — `Issue.record` here as well would report one cause
+            // twice. The context lives in the suite documentation instead:
+            // a `status_code` 18 / "Content is suspected to be spam" body means
+            // TMDb is rate-limiting list creation, not that the library broke.
             throw error
         }
     }
 
+    /// Deletes every list this suite has ever created that is still around.
+    ///
+    /// Walks **all** pages: the `deinit` cleanup is a detached `Task` that the
+    /// runtime can drop at process exit, so the final test's list routinely
+    /// survives to the next run and leftovers can accumulate past page one.
     private func deleteLeftoverLists() async throws {
         guard let accountObjectID = CredentialHelper.shared.v4AccountObjectID else {
             return
         }
 
-        let lists = try await client.v4Lists.lists(
-            forAccount: accountObjectID, accessToken: token
-        )
-        for list in lists.results where list.name == Self.listName {
-            try? await client.v4Lists.delete(list: list.id, accessToken: token)
+        var page = 1
+        while true {
+            let lists = try await client.v4Lists.lists(
+                forAccount: accountObjectID, page: page, accessToken: token
+            )
+            for list in lists.results where list.name == Self.listName {
+                try? await client.v4Lists.delete(list: list.id, accessToken: token)
+            }
+            guard page < lists.totalPages else {
+                return
+            }
+            page += 1
         }
     }
 

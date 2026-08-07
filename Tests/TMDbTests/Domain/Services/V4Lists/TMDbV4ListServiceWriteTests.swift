@@ -117,6 +117,89 @@ struct TMDbV4ListServiceWriteTests {
         #expect(request.path == "/list/1")
     }
 
+    @Test("update sends the visibility flag as an integer, like create")
+    func updateSendsIntegerVisibility() async throws {
+        // Update accepts either form, unlike create — but the two must agree,
+        // or the same `isPublic: false` means different things one method apart.
+        apiClient.addResponse(.success(SuccessResult(success: true)))
+
+        try await service.update(
+            list: 1,
+            attributes: V4ListAttributes(isPublic: false, sortBy: .title(descending: true)),
+            accessToken: Self.token
+        )
+
+        let request = try #require(apiClient.lastRequest as? UpdateV4ListRequest)
+        let body = try #require(request.body)
+        #expect(body.isPublic == 0)
+        #expect(body.sortBy == "title.desc")
+
+        let data = try JSONEncoder.theMovieDatabaseV4.encode(body)
+        let json = try #require(String(data: data, encoding: .utf8))
+        #expect(json.contains("\"public\":0"))
+        #expect(json.contains("\"public\":false") == false)
+    }
+
+    @Test("update omits the fields it was not given")
+    func updateOmitsUnsetFields() async throws {
+        apiClient.addResponse(.success(SuccessResult(success: true)))
+
+        try await service.update(list: 1, name: "Renamed", accessToken: Self.token)
+
+        let request = try #require(apiClient.lastRequest as? UpdateV4ListRequest)
+        let body = try #require(request.body)
+        #expect(body.name == "Renamed")
+        #expect(body.description == nil)
+        #expect(body.isPublic == nil)
+        #expect(body.sortBy == nil)
+    }
+
+    @Test("addItems sends the items in the body")
+    func addItemsSendsBody() async throws {
+        apiClient.addResponse(.success(itemsResult()))
+
+        _ = try await service.addItems(
+            [.movie(550), .tvSeries(1399)], toList: 1, accessToken: Self.token
+        )
+
+        let request = try #require(apiClient.lastRequest as? AddV4ListItemsRequest)
+        #expect(request.body?.items == [.movie(550), .tvSeries(1399)])
+    }
+
+    @Test("updateItems sends the comments in the body")
+    func updateItemsSendsBody() async throws {
+        apiClient.addResponse(.success(itemsResult()))
+
+        _ = try await service.updateItems(
+            [.movie(550, comment: "Great twist")], inList: 1, accessToken: Self.token
+        )
+
+        let request = try #require(apiClient.lastRequest as? UpdateV4ListItemsRequest)
+        #expect(request.body?.items == [.movie(550, comment: "Great twist")])
+    }
+
+    @Test("updateItems with no items throws bad request without a call")
+    func updateItemsWithNoItemsThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Items must not be empty")
+        )) {
+            _ = try await service.updateItems([], inList: 1, accessToken: Self.token)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("removeItems with no items throws bad request without a call")
+    func removeItemsWithNoItemsThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Items must not be empty")
+        )) {
+            _ = try await service.removeItems([], fromList: 1, accessToken: Self.token)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
     @Test("update with an empty name throws bad request without a call")
     func updateWithEmptyNameThrows() async throws {
         await #expect(throws: TMDbError.badRequest(

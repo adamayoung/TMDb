@@ -209,8 +209,12 @@ extension V4List {
     /// each comment is matched back onto its item here.
     ///
     /// Items decode tolerantly: one the library cannot model is skipped rather
-    /// than failing the whole page. Compare ``items``.count against
-    /// ``itemCount`` if you need to detect that.
+    /// than failing the whole page.
+    ///
+    /// - Important: A skipped item is **not detectable** from this type.
+    ///   ``itemCount`` is the size of the whole list across every page, not of
+    ///   ``items``, so the two differ legitimately whenever the list is longer
+    ///   than a page. They are only comparable for a single-page list.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
@@ -223,7 +227,9 @@ extension V4List {
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
-        self.isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic) ?? true
+        // Absent visibility defaults to *private*: for a privacy flag the safe
+        // failure direction is the restrictive one.
+        self.isPublic = try container.decodeIfPresent(Bool.self, forKey: .isPublic) ?? false
         self.createdBy = try container.decode(V4ListCreator.self, forKey: .createdBy)
         self.itemCount = try container.decodeIfPresent(Int.self, forKey: .itemCount) ?? 0
         self.averageRating = try container.decodeIfPresent(Double.self, forKey: .averageRating) ?? 0

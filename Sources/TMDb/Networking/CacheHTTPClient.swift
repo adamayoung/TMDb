@@ -70,10 +70,13 @@ private actor ResponseCache {
 ///
 /// An `HTTPClient` decorator that caches successful `GET` responses in memory.
 ///
-/// Cache hits short-circuit the wrapped client. User-specific requests (those
-/// carrying a `session_id` or a guest session) bypass the cache, and any
-/// successful `POST` or `DELETE` invalidates the entire cache. This layer sits
-/// above the underlying transport's own on-disk `URLCache`.
+/// Cache hits short-circuit the wrapped client. Requests needing a *user's*
+/// credential bypass the cache entirely — see ``HTTPRequest/isUserSpecific`` —
+/// and any successful mutation invalidates the whole cache. A mutation here
+/// means a `POST`, `PUT` or `DELETE`, **or** a state-changing `GET`: TMDb
+/// clears a v4 list with `GET /4/list/{id}/clear`, which must invalidate rather
+/// than be cached. This layer sits above the underlying transport's own on-disk
+/// `URLCache`.
 ///
 final class CacheHTTPClient: HTTPClient, Sendable {
 
@@ -149,15 +152,8 @@ extension CacheHTTPClient {
         return false
     }
 
-    ///
-    /// Whether a `GET` mutates server state despite its method.
-    ///
-    /// `GET /4/list/{id}/clear` empties a list — `POST` to that path returns
-    /// 404 — so it must invalidate the cache rather than populate it. v3's
-    /// clear is a `POST` and so never reaches here.
-    ///
     private func isStateChanging(_ request: HTTPRequest) -> Bool {
-        request.url.path.hasSuffix("/clear")
+        request.isStateChangingGET
     }
 
     private func isSuccessful(_ response: HTTPResponse) -> Bool {
