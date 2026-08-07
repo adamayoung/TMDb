@@ -63,6 +63,7 @@ let genres = [Genre].samples
 - ``MockAccountService``
 - ``MockAuthenticationService``
 - ``MockV4AuthenticationService``
+- ``MockV4ListService``
 - ``MockCertificationService``
 - ``MockChangesService``
 - ``MockCollectionService``

@@ -167,4 +167,87 @@ final class URLSessionHTTPClientAdapterTests {
         requireSendable(URLSessionHTTPClientAdapter.self)
     }
 
+    // MARK: - User-specific requests bypass the on-disk URLCache
+
+    @Test("a user-specific request goes through a session with no URLCache")
+    func userSpecificRequestUsesCacheFreeSession() throws {
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+        let request = HTTPRequest(url: url, isUserSpecific: true)
+
+        let session = httpClient.session(for: request)
+
+        #expect(session.configuration.urlCache == nil)
+        #expect(session.configuration.requestCachePolicy == .reloadIgnoringLocalCacheData)
+    }
+
+    @Test("deriving the cache-free session leaves the injected session untouched")
+    func derivingCacheFreeSessionDoesNotMutateInjectedSession() throws {
+        // On Apple platforms `URLSession.configuration` is @NSCopying, but
+        // swift-corelibs-foundation returns the stored instance — so without an
+        // explicit copy this would unhook the URLCache from the primary session
+        // too, on Linux only, where no test would notice.
+        let configuration = URLSessionConfiguration.default
+        configuration.protocolClasses = [MockURLProtocol.self]
+        // `URLCache.shared` rather than a constructed one: the two-argument
+        // initialiser does not exist on swift-corelibs-foundation (it requires
+        // `diskPath:`), and the three-argument form is deprecated on Apple —
+        // which `--Werror` would reject. The shared instance exists on both.
+        configuration.urlCache = .shared
+        let session = URLSession(configuration: configuration)
+
+        let adapter = URLSessionHTTPClientAdapter(urlSession: session)
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+        _ = adapter.session(for: HTTPRequest(url: url, isUserSpecific: true))
+
+        #expect(session.configuration.urlCache != nil)
+        #expect(session.configuration.requestCachePolicy == .useProtocolCachePolicy)
+    }
+
+    @Test("an ordinary request still goes through the shared, caching session")
+    func ordinaryRequestUsesSharedSession() throws {
+        let url = try #require(URL(string: "https://api.themoviedb.org/3/movie/550"))
+        let request = HTTPRequest(url: url)
+
+        let session = httpClient.session(for: request)
+
+        #expect(session === urlSession)
+    }
+
+    @Test("the cache-free session inherits the injected session's protocol classes")
+    func cacheFreeSessionInheritsConfiguration() throws {
+        // Without this, a test injecting MockURLProtocol would reach the live
+        // network for user-specific requests and the bypass would be untestable.
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+        let request = HTTPRequest(url: url, isUserSpecific: true)
+
+        let session = httpClient.session(for: request)
+        let classes = try #require(session.configuration.protocolClasses)
+
+        #expect(classes.contains { $0 == MockURLProtocol.self })
+    }
+
+    @Test("a user-specific request is sent with a cache-ignoring policy")
+    func userSpecificRequestIgnoresCache() async throws {
+        MockURLProtocol.responseStatusCode = 200
+        let url = try #require(URL(string: "https://api.themoviedb.org/4/list/1"))
+
+        _ = try? await httpClient.perform(
+            request: HTTPRequest(url: url, isUserSpecific: true)
+        )
+
+        let lastURLRequest = try #require(MockURLProtocol.lastRequest)
+        #expect(lastURLRequest.cachePolicy == .reloadIgnoringLocalCacheData)
+    }
+
+    @Test("an ordinary request keeps the default cache policy")
+    func ordinaryRequestKeepsDefaultCachePolicy() async throws {
+        MockURLProtocol.responseStatusCode = 200
+        let url = try #require(URL(string: "https://api.themoviedb.org/3/movie/550"))
+
+        _ = try? await httpClient.perform(request: HTTPRequest(url: url))
+
+        let lastURLRequest = try #require(MockURLProtocol.lastRequest)
+        #expect(lastURLRequest.cachePolicy == .useProtocolCachePolicy)
+    }
+
 }

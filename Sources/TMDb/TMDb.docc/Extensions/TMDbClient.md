@@ -40,5 +40,6 @@
 - ``account``
 - ``authentication``
 - ``v4Authentication``
+- ``v4Lists``
 - ``changes``
 - ``guestSessions``

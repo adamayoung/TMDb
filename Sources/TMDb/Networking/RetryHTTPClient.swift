@@ -25,7 +25,13 @@ final class RetryHTTPClient: HTTPClient, Sendable {
         // Only retry idempotent methods. Retrying a non-idempotent mutation
         // (e.g. a POST that adds to a list or rates an item) risks
         // double-applying it server-side, so perform it exactly once.
-        guard request.method.isIdempotent else {
+        //
+        // The method alone is not the whole answer: `GET /4/list/{id}/clear`
+        // mutates, so a replay after a lost response would report
+        // `items_deleted: 0` for a clear that did happen. `CacheHTTPClient`
+        // makes the same judgement from the same property, so the two cannot
+        // drift apart.
+        guard request.method.isIdempotent, !request.isStateChangingGET else {
             return try await httpClient.perform(request: request)
         }
 
@@ -198,7 +204,10 @@ private extension HTTPRequest.Method {
     /// methods such as `POST` are not idempotent and must never be retried.
     var isIdempotent: Bool {
         switch self {
-        case .get, .delete:
+        case .get, .delete, .put:
+            // `PUT` replaces the resource with the request's own representation,
+            // so replaying it converges on the same state — unlike `POST`,
+            // which appends.
             true
 
         case .post:

@@ -15,16 +15,55 @@ final class URLSessionHTTPClientAdapter: HTTPClient, Sendable {
 
     private let urlSession: URLSession
 
+    /// A second session for user-specific requests, with **no** `URLCache`.
+    ///
+    /// The shared session installs a 1 GB on-disk `URLCache` that is
+    /// process-wide, survives relaunch, and keys on URL alone. A v4 list read
+    /// is private to one user yet has the same URL for every user — the token
+    /// is in a header — so its response must never be stored there. Bypassing
+    /// the *policy* alone is not enough: that stops a stale read, not the
+    /// write.
+    ///
+    /// The configuration is **copied from the injected session** rather than
+    /// built fresh, so `protocolClasses`, timeouts and
+    /// `waitsForConnectivity` all carry over — without that, tests injecting a
+    /// `MockURLProtocol` session would silently reach the live network here.
+    ///
+    /// The `.copy()` is load-bearing on Linux. On Apple platforms
+    /// `URLSession.configuration` is `@NSCopying` and already hands back a
+    /// copy, but swift-corelibs-foundation returns the **stored instance** —
+    /// so mutating it would unhook the `URLCache` from the primary session too,
+    /// disabling caching everywhere.
+    private let noCacheURLSession: URLSession
+
     init(urlSession: URLSession) {
         self.urlSession = urlSession
+
+        let configuration = urlSession.configuration.copy() as? URLSessionConfiguration
+            ?? URLSessionConfiguration.default
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        self.noCacheURLSession = URLSession(configuration: configuration)
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
         let urlRequest = Self.urlRequest(from: request)
 
-        let (data, response) = try await perform(urlRequest)
+        let (data, response) = try await perform(urlRequest, using: session(for: request))
 
         return Self.httpResponse(from: data, response: response)
+    }
+
+    ///
+    /// The session a request is sent through.
+    ///
+    /// - Parameter request: The request about to be performed.
+    ///
+    /// - Returns: The cache-free session for a user-specific request, otherwise
+    ///   the shared one.
+    ///
+    func session(for request: HTTPRequest) -> URLSession {
+        request.isUserSpecific ? noCacheURLSession : urlSession
     }
 
 }
@@ -37,6 +76,13 @@ extension URLSessionHTTPClientAdapter {
         urlRequest.httpBody = httpRequest.body
         for header in httpRequest.headers {
             urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+
+        if httpRequest.isUserSpecific {
+            // Belt and braces with `noCacheURLSession`: this stops a *stale*
+            // read even if some cache is reachable, while the cache-free
+            // session stops the *write*.
+            urlRequest.cachePolicy = .reloadIgnoringLocalCacheData
         }
 
         return urlRequest
@@ -80,7 +126,10 @@ extension URLSessionHTTPClientAdapter {
             }
         }
 
-        private func perform(_ urlRequest: URLRequest) async throws -> (Data, URLResponse) {
+        private func perform(
+            _ urlRequest: URLRequest,
+            using urlSession: URLSession
+        ) async throws -> (Data, URLResponse) {
             let box = DataTaskBox()
 
             return try await withTaskCancellationHandler {
@@ -115,7 +164,10 @@ extension URLSessionHTTPClientAdapter {
             }
         }
     #else
-        private func perform(_ urlRequest: URLRequest) async throws -> (Data, URLResponse) {
+        private func perform(
+            _ urlRequest: URLRequest,
+            using urlSession: URLSession
+        ) async throws -> (Data, URLResponse) {
             try await urlSession.data(for: urlRequest)
         }
     #endif

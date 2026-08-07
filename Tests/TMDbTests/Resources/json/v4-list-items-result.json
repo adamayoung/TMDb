@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "status_code": 1,
+  "status_message": "Success.",
+  "results": [
+    {
+      "media_id": 550,
+      "media_type": "movie",
+      "success": true
+    },
+    {
+      "media_id": 1399,
+      "media_type": "tv",
+      "success": true
+    }
+  ]
+}

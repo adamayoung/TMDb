@@ -97,6 +97,11 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+          # The v4 suites need two further credentials: the application's API
+          # Read Access Token, and a *user* access token for anything touching
+          # a user's lists. Absent either, those suites skip rather than fail.
+          TMDB_API_READ_ONLY_TOKEN: ${{ secrets.TMDB_API_READ_ONLY_TOKEN }}
+          TMDB_API_USER_TOKEN: ${{ secrets.TMDB_API_USER_TOKEN }}
 
       - name: Upload test results to Codecov
         if: >-

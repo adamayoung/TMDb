@@ -104,6 +104,65 @@ Users can also revoke access from their TMDb account settings, so treat a
 sudden authentication failure as a signal to discard the stored token and run
 the flow again rather than as a bug.
 
+## Using the token with v4 lists
+
+The access token is what ``V4ListService`` needs. Reading a *public* list takes
+no token at all:
+
+```swift
+let list = try await client.v4Lists.details(forList: 1)
+```
+
+Everything else — a private list, and every write — takes the user's token:
+
+```swift
+let token = accessToken.accessToken
+
+let created = try await client.v4Lists.create(
+    name: "Weekend Watchlist",
+    attributes: V4ListAttributes(description: "Films to catch up on", isPublic: false),
+    accessToken: token
+)
+
+// A v4 list holds movies and TV series together.
+let added = try await client.v4Lists.addItems(
+    [.movie(550), .tvSeries(1399)],
+    toList: created.id,
+    accessToken: token
+)
+
+// Check the per-item outcomes: TMDb reports overall success even when an
+// individual item failed.
+if !added.allItemsSucceeded {
+    print("failed: \(added.failures)")
+}
+```
+
+Comments are set separately. Adding an item with a comment attached does not
+store it — only updating an existing item does:
+
+```swift
+try await client.v4Lists.updateItems(
+    [.movie(550, comment: "Rewatch for the twist")],
+    inList: created.id,
+    accessToken: token
+)
+```
+
+To list everything the user owns, use the `accountID` from the access token:
+
+```swift
+let lists = try await client.v4Lists.lists(
+    forAccount: accessToken.accountID,
+    accessToken: token
+)
+```
+
+- Note: Responses to any of these are **never cached**, by either cache layer.
+  They are private to one user, and a v4 list read carries its credential in a
+  header rather than the URL — so two users' requests are otherwise
+  indistinguishable. See <doc:CachingResponses>.
+
 ## Bridging to a v3 session
 
 If you already hold a v4 user access token and need to call a v3 endpoint,

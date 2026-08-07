@@ -429,6 +429,22 @@ Watch providers provided by [JustWatch](https://www.justwatch.com).
 - ``V4RequestToken``
 - ``V4AccessToken``
 
+### Lists (v4)
+
+- ``V4ListService``
+- ``V4List``
+- ``V4ListItem``
+- ``V4ListSummary``
+- ``V4ListCreator``
+- ``V4ListAttributes``
+- ``V4ListSortBy``
+- ``V4ListMediaItem``
+- ``V4ListItemComment``
+- ``V4CreateListResult``
+- ``V4ClearListResult``
+- ``V4ListItemsResult``
+- ``V4ListItemResult``
+
 ### Changes
 
 - ``ChangesService``

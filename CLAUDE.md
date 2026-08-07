@@ -32,13 +32,14 @@ ADR for any non-obvious design decision.
 ### Service-Based Design
 
 The library uses protocol-based services with dependency injection.
-`TMDbClient` is the main facade exposing 27 service properties:
+`TMDbClient` is the main facade exposing 28 service properties:
 
 ```text
 TMDbClient (main facade)
 ├── AccountService
 ├── AuthenticationService
 ├── V4AuthenticationService
+├── V4ListService
 ├── CertificationService
 ├── ChangesService
 ├── CollectionService
@@ -284,8 +285,9 @@ scratch directory. Every target accepts an overridable `SCRATCH_PATH`
 
 Run shell commands directly — do not prefix them with
 `source ~/.zshrc`. Required environment variables (`TMDB_API_KEY`,
-`TMDB_USERNAME`, `TMDB_PASSWORD`) are injected via the `env` block in
-`.claude/settings.local.json`, and Homebrew tools (`gh`, `swiftlint`,
+`TMDB_USERNAME`, `TMDB_PASSWORD`) plus the two v4 credentials
+(`TMDB_API_READ_ONLY_TOKEN`, `TMDB_API_USER_TOKEN` — without them the v4 suites
+skip) are injected via the `env` block in `.claude/settings.local.json`, and Homebrew tools (`gh`, `swiftlint`,
 `swiftformat`, `xcsift`, `markdownlint-cli2`) are already on `PATH`.
 
 ```bash

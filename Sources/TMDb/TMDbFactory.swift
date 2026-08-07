@@ -50,7 +50,7 @@ extension TMDbFactory {
             apiClient: TMDbAPIClient(
                 credential: credential,
                 baseURL: tmdbAPIv4BaseURL,
-                serialiser: serialiser(),
+                serialiser: v4Serialiser(),
                 httpClient: httpClient
             )
         )
@@ -139,6 +139,10 @@ extension TMDbFactory {
 
     private static func authSerialiser() -> some Serialiser {
         TMDbAuthJSONSerialiser()
+    }
+
+    private static func v4Serialiser() -> some Serialiser {
+        TMDbV4JSONSerialiser()
     }
 
 }

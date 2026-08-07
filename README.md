@@ -14,7 +14,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 ## Features
 
 * **Comprehensive API Coverage**: Full support for TMDb API v3, plus v4 user
-  authentication — 27 specialized services and 2 on-device intelligence
+  authentication — 28 specialized services and 2 on-device intelligence
   extensions
 * **Append to Response**: Fetch details with credits, images, videos,
   and more in a single request using `append_to_response`
@@ -68,6 +68,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **account** | User favorites, watchlist, rated items (requires authentication) |
 | **authentication** | Session management, guest sessions, request tokens |
 | **v4Authentication** | TMDb v4 user authentication: request tokens, approval URLs, user access tokens (requires a bearer-token client) |
+| **v4Lists** | TMDb v4 lists: mixed movie/TV lists, private lists, per-item comments |
 | **genres** | Genre lists for movies and TV shows |
 | **keywords** | Keyword details and movies by keyword |
 | **networks** | TV network details, alternative names, logos |
@@ -517,6 +518,15 @@ Integration tests require these environment variables:
 * `TMDB_API_KEY` - Your TMDb API key
 * `TMDB_USERNAME` - Your TMDb username
 * `TMDB_PASSWORD` - Your TMDB password
+
+The v4 suites need two further credentials, and **skip silently** without them:
+
+* `TMDB_API_READ_ONLY_TOKEN` - Your API Read Access Token, from the same TMDb
+  settings page as the API key. This is the *application's* bearer credential —
+  the v4 endpoints reject an API key.
+* `TMDB_API_USER_TOKEN` - A *user* access token, minted through the v4 approval
+  flow (see the *Authenticating with the v4 API* article). Required for anything
+  touching a user's lists.
 
 Running unit tests on Linux requires [Docker](https://www.docker.com) to be running.
 

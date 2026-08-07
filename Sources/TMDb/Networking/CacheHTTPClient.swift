@@ -70,10 +70,13 @@ private actor ResponseCache {
 ///
 /// An `HTTPClient` decorator that caches successful `GET` responses in memory.
 ///
-/// Cache hits short-circuit the wrapped client. User-specific requests (those
-/// carrying a `session_id` or a guest session) bypass the cache, and any
-/// successful `POST` or `DELETE` invalidates the entire cache. This layer sits
-/// above the underlying transport's own on-disk `URLCache`.
+/// Cache hits short-circuit the wrapped client. Requests needing a *user's*
+/// credential bypass the cache entirely — see ``HTTPRequest/isUserSpecific`` —
+/// and any successful mutation invalidates the whole cache. A mutation here
+/// means a `POST`, `PUT` or `DELETE`, **or** a state-changing `GET`: TMDb
+/// clears a v4 list with `GET /4/list/{id}/clear`, which must invalidate rather
+/// than be cached. This layer sits above the underlying transport's own on-disk
+/// `URLCache`.
 ///
 final class CacheHTTPClient: HTTPClient, Sendable {
 
@@ -91,7 +94,7 @@ final class CacheHTTPClient: HTTPClient, Sendable {
     }
 
     func perform(request: HTTPRequest) async throws -> HTTPResponse {
-        guard request.method == .get else {
+        guard request.method == .get, !isStateChanging(request) else {
             return try await performMutation(request: request)
         }
 
@@ -129,6 +132,13 @@ extension CacheHTTPClient {
     }
 
     private func isUserSpecificRequest(_ request: HTTPRequest) -> Bool {
+        // Set by `TMDbAPIClient` when the request carried its own credential —
+        // the v4 endpoints thread a user access token per call, so two users'
+        // reads of one list share a URL and differ only by a header.
+        if request.isUserSpecific {
+            return true
+        }
+
         if let components = URLComponents(url: request.url, resolvingAgainstBaseURL: false),
            let queryItems = components.queryItems,
            queryItems.contains(where: { $0.name == "session_id" }) {
@@ -140,6 +150,10 @@ extension CacheHTTPClient {
         }
 
         return false
+    }
+
+    private func isStateChanging(_ request: HTTPRequest) -> Bool {
+        request.isStateChangingGET
     }
 
     private func isSuccessful(_ response: HTTPResponse) -> Bool {

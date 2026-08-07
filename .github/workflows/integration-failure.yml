@@ -87,6 +87,8 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_USERNAME: ${{ secrets.TMDB_USERNAME }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+          TMDB_API_READ_ONLY_TOKEN: ${{ secrets.TMDB_API_READ_ONLY_TOKEN }}
+          TMDB_API_USER_TOKEN: ${{ secrets.TMDB_API_USER_TOKEN }}
           # git push + `gh pr create` use this token (PAT so the PR triggers CI).
           GH_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
         with:
@@ -121,6 +123,10 @@ jobs:
           GH_PAGER: cat
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+          TMDB_API_READ_ONLY_TOKEN: ${{ secrets.TMDB_API_READ_ONLY_TOKEN }}
+          TMDB_API_USER_TOKEN: ${{ secrets.TMDB_API_USER_TOKEN }}
+          # Mounted into the diagnosing agent above, so it can reach its output.
+          SCRUB_PR_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           [ -s pr-url.txt ] || { echo "No PR opened — nothing to scrub."; exit 0; }
@@ -130,18 +136,28 @@ jobs:
           # metacharacters in a secret are handled), then the generic patterns.
           redact() {
             local text="$1" v
-            # API key and password only. The USERNAME is deliberately NOT
-            # literal-substituted: it is low-sensitivity, and if it equals the
-            # GitHub handle every `github.com/<handle>/TMDb/pull/N` link in the
-            # alert would be rewritten to a dead one and a false ::warning::
-            # raised on every run. The api_key=/Bearer patterns below still
-            # cover it wherever it appears as a credential.
-            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}"; do
+            # Every high-value secret: the API key, the password, and the two
+            # v4 tokens. The USERNAME is deliberately NOT literal-substituted:
+            # it is low-sensitivity, and if it equals the GitHub handle every
+            # `github.com/<handle>/TMDb/pull/N` link in the alert would be
+            # rewritten to a dead one and a false ::warning:: raised on every
+            # run. The patterns below still cover it wherever it appears as a
+            # credential.
+            #
+            # The bare-JWT pattern matters because the v4 tokens are JWTs that
+            # an agent may quote WITHOUT a `Bearer ` prefix — in a curl body, a
+            # log line, an env dump — which the `[Bb]earer` pattern would miss
+            # entirely.
+            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}" \
+                     "${TMDB_API_READ_ONLY_TOKEN:-}" "${TMDB_API_USER_TOKEN:-}" \
+                     "${SCRUB_PR_TOKEN:-}"; do
               [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
             done
             printf '%s' "$text" \
               | sed -E 's/(api_key=)[^&"[:space:]]+/\1***REDACTED***/g' \
-              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g'
+              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g' \
+              | sed -E 's/eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+/***REDACTED-JWT***/g' \
+              | sed -E 's/(gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}/***REDACTED-PAT***/g'
           }
 
           BODY=$(gh pr view "$PR_URL" --json body -q .body)
@@ -178,6 +194,10 @@ jobs:
           # into the diagnosing agent, so all three can appear in its output.
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TMDB_PASSWORD: ${{ secrets.TMDB_PASSWORD }}
+          TMDB_API_READ_ONLY_TOKEN: ${{ secrets.TMDB_API_READ_ONLY_TOKEN }}
+          TMDB_API_USER_TOKEN: ${{ secrets.TMDB_API_USER_TOKEN }}
+          # Mounted into the diagnosing agent above, so it can reach its output.
+          SCRUB_PR_TOKEN: ${{ secrets.INTEGRATION_FIX_PR_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -195,18 +215,28 @@ jobs:
           # also covers a key that never came from this secret.
           redact() {
             local text="$1" v
-            # API key and password only. The USERNAME is deliberately NOT
-            # literal-substituted: it is low-sensitivity, and if it equals the
-            # GitHub handle every `github.com/<handle>/TMDb/pull/N` link in the
-            # alert would be rewritten to a dead one and a false ::warning::
-            # raised on every run. The api_key=/Bearer patterns below still
-            # cover it wherever it appears as a credential.
-            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}"; do
+            # Every high-value secret: the API key, the password, and the two
+            # v4 tokens. The USERNAME is deliberately NOT literal-substituted:
+            # it is low-sensitivity, and if it equals the GitHub handle every
+            # `github.com/<handle>/TMDb/pull/N` link in the alert would be
+            # rewritten to a dead one and a false ::warning:: raised on every
+            # run. The patterns below still cover it wherever it appears as a
+            # credential.
+            #
+            # The bare-JWT pattern matters because the v4 tokens are JWTs that
+            # an agent may quote WITHOUT a `Bearer ` prefix — in a curl body, a
+            # log line, an env dump — which the `[Bb]earer` pattern would miss
+            # entirely.
+            for v in "${TMDB_API_KEY:-}" "${TMDB_PASSWORD:-}" \
+                     "${TMDB_API_READ_ONLY_TOKEN:-}" "${TMDB_API_USER_TOKEN:-}" \
+                     "${SCRUB_PR_TOKEN:-}"; do
               [ -n "$v" ] && text="${text//"$v"/***REDACTED***}"
             done
             printf '%s' "$text" \
               | sed -E 's/(api_key=)[^&"[:space:]]+/\1***REDACTED***/g' \
-              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g'
+              | sed -E 's/([Bb]earer )[A-Za-z0-9._-]{16,}/\1***REDACTED***/g' \
+              | sed -E 's/eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+/***REDACTED-JWT***/g' \
+              | sed -E 's/(gh[pousr]_|github_pat_)[A-Za-z0-9_]{20,}/***REDACTED-PAT***/g'
           }
 
           # Pull in Claude's analysis if it produced one; otherwise fall back.

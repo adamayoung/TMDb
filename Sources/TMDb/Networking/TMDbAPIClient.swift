@@ -70,11 +70,35 @@ extension TMDbAPIClient {
         var queryItems = request.queryItems
         var headers = request.headers
 
-        switch credential {
-        case .apiKey(let apiKey):
-            queryItems["api_key"] = apiKey
-        case .bearerToken(let token):
-            headers["Authorization"] = "Bearer \(token)"
+        // Does this request require a *user's* credential, by any of the three
+        // mechanisms TMDb offers? Marking it here — the one place that sees the
+        // request before the client credential is applied — keeps the rule out
+        // of the individual request classes, where a new user-scoped endpoint
+        // could forget it and silently have its private response cached.
+        //
+        // A client-level bearer token is deliberately NOT included: that is the
+        // application's API Read Access Token, sent on every request including
+        // wholly public ones, so treating it as user-scoped would disable
+        // caching for every `TMDbClient(bearerToken:)`.
+        let carriesUserToken = headers["Authorization"] != nil
+        let carriesSession = queryItems["session_id"] != nil
+        let isGuestSession = request.path.contains("guest_session")
+        let isUserSpecific = carriesUserToken || carriesSession || isGuestSession
+
+        // A request that brought its own `Authorization` is authenticated as a
+        // specific user (the v4 endpoints thread an access token per call), so
+        // the client credential is withheld entirely — both the header and the
+        // `api_key` query item — because sending two credentials leaves
+        // precedence to the server, which this library should not guess at.
+        // Without this, `Authorization` was overwritten below and a user-scoped
+        // read would return the *application owner's* data.
+        if !carriesUserToken {
+            switch credential {
+            case .apiKey(let apiKey):
+                queryItems["api_key"] = apiKey
+            case .bearerToken(let token):
+                headers["Authorization"] = "Bearer \(token)"
+            }
         }
 
         let url = urlFromPath(path, queryItems: queryItems)
@@ -93,7 +117,13 @@ extension TMDbAPIClient {
             }
         }
 
-        return HTTPRequest(url: url, method: method, headers: headers, body: data)
+        return HTTPRequest(
+            url: url,
+            method: method,
+            headers: headers,
+            body: data,
+            isUserSpecific: isUserSpecific
+        )
     }
 
     private func urlFromPath(
@@ -131,6 +161,9 @@ extension TMDbAPIClient {
 
         case .post:
             .post
+
+        case .put:
+            .put
 
         case .delete:
             .delete

@@ -94,22 +94,3 @@ extension PageableListResult {
     }
 
 }
-
-///
-/// A decoding wrapper that tolerates a failing element.
-///
-/// Decoding never throws: when the wrapped value cannot be decoded, ``value``
-/// is `nil` and the element is consumed so the surrounding array continues to
-/// decode. This lets a list skip an unrecognised element instead of dropping
-/// the whole page.
-///
-private struct FailableDecodable<Wrapped: Decodable>: Decodable {
-
-    let value: Wrapped?
-
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.value = try? container.decode(Wrapped.self)
-    }
-
-}

@@ -19,6 +19,7 @@ extension Tag {
     @Tag static var find: Self
     @Tag static var genre: Self
     @Tag static var images: Self
+    @Tag static var list: Self
     @Tag static var movie: Self
     @Tag static var person: Self
     @Tag static var search: Self
