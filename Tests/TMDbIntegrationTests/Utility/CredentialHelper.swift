@@ -33,8 +33,55 @@ final class CredentialHelper: Sendable {
         !tmdbAPIKey.isEmpty
     }
 
+    /// A **user** access token — the credential v4 writes require.
+    ///
+    /// Distinct from ``tmdbAccessToken``: that is the *application's* API Read
+    /// Access Token, which can read public data but cannot touch a user's
+    /// lists. This one is minted through the request-token → approve →
+    /// access-token flow and identifies a person.
+    ///
+    /// Read from `TMDB_API_USER_TOKEN`.
+    let tmdbUserAccessToken: String
+
     var hasAccessToken: Bool {
         !tmdbAccessToken.isEmpty
+    }
+
+    var hasUserAccessToken: Bool {
+        !tmdbUserAccessToken.isEmpty
+    }
+
+    /// The account object id the user token belongs to, read from its JWT
+    /// `sub` claim.
+    ///
+    /// Taken from the token rather than a separate secret, so there is one
+    /// fewer credential to configure and no way for the two to disagree.
+    /// Returns `nil` if the token is absent or not a decodable JWT, and the
+    /// suites that need it skip rather than fail.
+    var v4AccountObjectID: String? {
+        Self.subjectClaim(ofJWT: tmdbUserAccessToken)
+    }
+
+    static func subjectClaim(ofJWT token: String) -> String? {
+        let segments = token.split(separator: ".")
+        guard segments.count >= 2 else {
+            return nil
+        }
+
+        var base64 = String(segments[1])
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        base64 += String(repeating: "=", count: (4 - base64.count % 4) % 4)
+
+        guard
+            let data = Data(base64Encoded: base64),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let subject = json["sub"] as? String
+        else {
+            return nil
+        }
+
+        return subject
     }
 
     /// Returns a `TMDbClient` configured with the integration-test API key
@@ -59,6 +106,7 @@ final class CredentialHelper: Sendable {
             processInfo.environment["TMDB_ACCESS_TOKEN"]
                 ?? processInfo.environment["TMDB_API_READ_ONLY_TOKEN"]
                 ?? ""
+        self.tmdbUserAccessToken = processInfo.environment["TMDB_API_USER_TOKEN"] ?? ""
     }
 
 }
