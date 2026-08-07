@@ -113,7 +113,7 @@ struct V4ListTests {
             V4List.self, fromResource: "v4-list-with-comments"
         )
 
-        let encoded = try JSONEncoder.theMovieDatabase.encode(original)
+        let encoded = try JSONEncoder.theMovieDatabaseV4.encode(original)
         let result = try JSONDecoder.theMovieDatabaseV4.decode(V4List.self, from: encoded)
 
         #expect(result == original)

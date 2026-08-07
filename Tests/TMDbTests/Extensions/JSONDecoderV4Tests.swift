@@ -61,10 +61,10 @@ struct JSONDecoderV4Tests {
         // means reusing v3's time zone (the current one), not GMT.
         let data = Data(#"{"release_date": "1999-10-15"}"#.utf8)
 
-        let v4 = try JSONDecoder.theMovieDatabaseV4.decode(DayPrecision.self, from: data)
-        let v3 = try JSONDecoder.theMovieDatabase.decode(DayPrecision.self, from: data)
+        let v4Decoded = try JSONDecoder.theMovieDatabaseV4.decode(DayPrecision.self, from: data)
+        let v3Decoded = try JSONDecoder.theMovieDatabase.decode(DayPrecision.self, from: data)
 
-        #expect(v4.releaseDate == v3.releaseDate)
+        #expect(v4Decoded.releaseDate == v3Decoded.releaseDate)
     }
 
     @Test("both date forms decode from one response")

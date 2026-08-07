@@ -14,7 +14,10 @@ import Foundation
 /// shapes — account-list summaries use `"2026-08-06 23:26:00 UTC"` while list
 /// items use `"1999-10-15"` — and neither v3 decoder parses both.
 ///
-/// Encoding reuses the v3 encoder: no v4 request body carries a date.
+/// Encoding writes the timestamp form for every date. No v4 request body
+/// carries a date, so this only matters when re-encoding a decoded response —
+/// where it is what makes a round trip exact, since the day-precision encoder
+/// would discard the time from an account-list timestamp.
 ///
 final class TMDbV4JSONSerialiser: Serialiser {
 
@@ -29,7 +32,7 @@ final class TMDbV4JSONSerialiser: Serialiser {
     }
 
     func encode(_ value: some Encodable) async throws -> Data {
-        let encoder = JSONEncoder.theMovieDatabase
+        let encoder = JSONEncoder.theMovieDatabaseV4
 
         return try encoder.encode(value)
     }
