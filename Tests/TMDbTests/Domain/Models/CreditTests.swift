@@ -35,6 +35,31 @@ struct CreditTests {
         }
     }
 
+    /// The bug this guards is not the enum in isolation but the whole call:
+    /// before `CreditType` tolerated `"creator"`, `details(forCredit:)` threw
+    /// `TMDbError.decode` for every TV creator credit.
+    @Test("JSON decoding of Credit with a creator credit type", .tags(.decoding))
+    func decodeCreditWithCreatorCreditType() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            Credit.self,
+            fromResource: "credit-creator"
+        )
+
+        #expect(result.id == "5257855d19c29531db28adea")
+        #expect(result.creditType == .creator)
+        #expect(result.department == "Creator")
+        #expect(result.job == "Creator")
+        #expect(result.person.name == "Steven Spielberg")
+
+        guard case .tvSeries(let tvSeries) = result.media else {
+            Issue.record("Expected TV series media type")
+            return
+        }
+
+        #expect(tvSeries.id == 6227)
+        #expect(tvSeries.name == "Invasion America")
+    }
+
     @Test(
         "JSON decoding of Credit with an unknown media type throws a data corrupted error",
         .tags(.decoding)
