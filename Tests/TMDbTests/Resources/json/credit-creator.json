@@ -1,0 +1,43 @@
+{
+    "credit_type": "creator",
+    "department": "Creator",
+    "job": "Creator",
+    "media": {
+        "adult": false,
+        "backdrop_path": null,
+        "id": 6227,
+        "name": "Invasion America",
+        "original_name": "Invasion America",
+        "overview": "Invasion America is an animated science fiction miniseries that aired in the prime time lineup on The WB Television Network.",
+        "poster_path": "/jzWTpVGzJ9X6vW4Hj2iUdmp79Xh.jpg",
+        "media_type": "tv",
+        "original_language": "en",
+        "genre_ids": [
+            10765,
+            16
+        ],
+        "popularity": 3.3331,
+        "first_air_date": "1998-06-08",
+        "softcore": false,
+        "vote_average": 7,
+        "vote_count": 9,
+        "origin_country": [
+            "US"
+        ],
+        "episodes": [],
+        "seasons": []
+    },
+    "media_type": "tv",
+    "id": "5257855d19c29531db28adea",
+    "person": {
+        "adult": false,
+        "id": 488,
+        "name": "Steven Spielberg",
+        "original_name": "Steven Spielberg",
+        "media_type": "person",
+        "popularity": 7.7254,
+        "gender": 2,
+        "known_for_department": "Directing",
+        "profile_path": "/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg"
+    }
+}
