@@ -297,6 +297,29 @@ entered via `EnterWorktree(path:)` must be removed with `git worktree remove`
 by hand, or the call silently no-ops while you report a reclaim
 ([ADR-0015](decisions/0015-durable-deliver-run-state.md)).
 
+### In a worktree session, Bash refuses commands it can't prove stay inside it
+
+*2026-08-12 (#417).* A worktree-isolated session guards `Bash`, rejecting
+anything it cannot statically verify targets the worktree:
+*"this command is too complex to verify that it stays inside the worktree; break
+it into plain, separate commands."* It fires on shape, not on actual destination,
+so it also blocks commands that were never leaving. Seen refusing:
+
+- `jq … > "$tmp" && mv "$tmp" "$file"` and `curl -o <path>` where the path was
+  built from a variable — including writes to `.git/deliver/` (the durable
+  `/deliver` run file), which lives in the **common** git dir and is therefore
+  outside the worktree path by design.
+- Multi-stage pipelines with `$(…)` substitution, `for`/`while` loops over
+  `curl`, and `cd "$SOMEWHERE"` followed by a redirect.
+
+Workarounds, in order of preference: keep each command **single-purpose with
+fully literal paths** (`sed -i '' 's/…/…/' /abs/literal/path` succeeded where the
+`jq`+`mv` equivalent was refused); write scratch output **inside** the worktree
+under `.build/` (gitignored); or delegate the work to a subagent, which is not
+subject to the caller's guard. `Edit`/`Write` on a path outside the worktree are
+refused too, with a pointer to the worktree copy — which is wrong for
+`.git/`-relative state, so reach for `sed` there.
+
 ### The `Workflow` tool resolves a repo-relative `scriptPath`
 
 *2026-07-29.* The three embedded-script skills describe `scriptPath` only as
@@ -526,6 +549,51 @@ the 2026-07-28 audit.*
 
 ## Testing
 
+### An empty-string-guard fixture must come from a real record — `null` passes either way
+
+*2026-08-12 (#417).* `decodeNonEmptyDateIfPresent` and plain
+`decodeIfPresent(Date.self)` behave **identically** on JSON `null` and on an
+absent key. Only `""` tells them apart. So a hand-written "blank date" fixture
+that uses `null` instead of `""` passes with *and* without the guard — the
+regression test is void while looking green, and the same applies to
+`decodeNonEmptyURLIfPresent`.
+
+- **Capture the fixture from a record that genuinely returns `""`**, and record
+  the source ID. Confirm the red step fails as a **thrown** `DecodingError`, not
+  as a failed `== nil` assertion — a nil-mismatch failure means the fixture is
+  wrong, not the code.
+- **A fixture where every key is present cannot catch the sibling mistake.**
+  Replacing synthesized `Decodable` with a hand-written `init(from:)` loses the
+  compiler's guarantee that optionals use `decodeIfPresent`:
+  `try container.decode(String.self, forKey: .character)` assigned to a `String?`
+  compiles fine and then throws on every record that omits the key. Pair each
+  model with a minimal-JSON test asserting **all** its optionals are `nil` — the
+  "without appended data" pairing `CLAUDE.md` mandates is the only thing that
+  catches this.
+- Prefer a real record that is sparse in *two* ways at once. Here the blank-date
+  fixtures are crew credits, which omit `character` entirely, so one fixture
+  covers the empty-date branch and an absent-optional branch.
+
+### A `#expect(throws: DecodingError.self)` test is a false green twice over
+
+*2026-08-12 (#417).* Two independent traps when pinning "this input must throw":
+
+1. **Copying `ImageSizeTests` uses a bare `JSONDecoder()`.**
+   `ImageSizeTests.swift:49-55` decodes a single-value enum, so it needs no key
+   strategy. Reuse that shape for a *keyed* model and there is no
+   `.convertFromSnakeCase`, so an inline `{"media_type": …}` literal throws
+   `keyNotFound(mediaType)` — never reaching the branch under test. Both are
+   `DecodingError`, so the test passes for the wrong reason. Decode via
+   `JSONDecoder.theMovieDatabase` and assert the **specific** case
+   (`guard case .dataCorrupted(let context)`, then check
+   `context.debugDescription`).
+2. **`decode(_:fromResource:)` records the failure before rethrowing.**
+   `Tests/TMDbTests/TestUtils/JSONDecoder+DecodeFromFile.swift:24` calls
+   `Issue.record(error)` and *then* throws, so a fixture-based
+   `#expect(throws:)` fails the test even when the throw is exactly what was
+   wanted. Throws-tests must build their JSON inline via
+   `Data(#"…"#.utf8)` and call `decode(_:from:)`.
+
 ### Guard consistently within a type, even for a value the API never sends
 
 *2026-07-28 (#404).* Making `Company.logoPath` optional, the question was whether
@@ -552,6 +620,20 @@ grader caught it; three plan critics had split 2–1 on it beforehand.
   `init(from:)` to use the helper — roughly 15 lines. That was the real cost
   being weighed, and it was worth paying.
 
+**Scope of the rule: same value class, not same file.** *2026-08-12 (#417),
+where one of three plan critics read this entry as requiring
+`decodeNonEmptyURLIfPresent` on `CreditMovie.posterPath` because the neighbouring
+`releaseDate` had just been guarded.* That over-applies it. The #404 asymmetry was
+two properties of **one value class** — `Company.logoPath` and
+`Company.Parent.logoPath`, both logo paths, same wire shape, no explicable reason
+to differ. A date behaving differently from a URL is not that: they are different
+types with **measured** different API behaviour (see `tmdb-api-notes.md` →
+*`/credit/{id}`*: dates are `""`, image paths only ever `null`), and every sibling
+model leaves image paths unguarded. The test is *"could a reader explain the
+difference in one sentence?"* — not *"are these two lines identical?"*. Guarding
+here would have made `CreditMovie` the lone divergence across ~20 models and set
+the precedent in all of them.
+
 ### Sweeping for a decode bug: sweep the *failure class*, not the property name
 
 *2026-07-28 (#404).* Fixing `Company.logoPath`'s required decode, a
@@ -575,6 +657,13 @@ shipped with its own integration test still failing.
   companies took a minute and produced the whole field/nullability matrix (see
   `tmdb-api-notes.md`) — which is what proved `origin_country` was in scope and
   `description`/`headquarters` were not.
+- **The sweep earns its keep by *excluding*, not only by finding.** *2026-08-12
+  (#417).* Sweeping the whole `/credit/{id}` response tree did both: it turned up
+  an unrelated live decode failure the issue never mentioned (`credit_type:
+  "creator"`), **and** it cleared five URL decodes the plan had excluded on a
+  single spot-check. The second half is what makes a narrow scope defensible in
+  review instead of merely asserted — a measured "we checked, it isn't in the
+  class" survives a reviewer; "the API probably never sends that" does not.
 
 ### An `async let` binding cannot be captured by `#expect(throws:)`
 

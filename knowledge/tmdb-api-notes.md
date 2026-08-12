@@ -280,6 +280,20 @@ public method that silently does nothing.
 
 ## Decoding resilience
 
+### `credit_type` is not just `cast`/`crew` — `"creator"` exists
+
+*2026-08-12 (#417), found in a 300-credit sample.* `GET /credit/{id}` can return
+`"credit_type": "creator"` (with `department` and `job` both `"Creator"`) — live
+example `5257855d19c29531db28adea`, Steven Spielberg on *Invasion America*. Rare
+(1 in 300) but a normal category: it is how TMDb models a TV series creator.
+
+`CreditType` has only `cast`/`crew` with synthesized `Decodable`, so
+`credits.details(forCredit:)` throws `TMDbError.decode` for these credits. #417
+deliberately left it that way — adding a case to a public two-case enum breaks
+exhaustive switches, and mapping `creator` → `crew` would be data corruption —
+so the throw is pinned by `CreditTypeTests.decodeUnknownCreditTypeThrows` and the
+policy decision belongs to #418. Invert that test when the enum grows.
+
 ### Unknown enum-like string values should decode resiliently
 
 - Fields like `status` and `media_type` can return values not in our enums; decode
@@ -288,6 +302,37 @@ public method that silently does nothing.
   history.)
 
 ## Field nullability
+
+### `/credit/{id}`: dates are `""`, image paths are `null` — never the other way round
+
+*2026-08-12 (#417), 300-credit sample* biased toward sparse records (upcoming
+movies, in-development TV, and the combined credits of prolific people).
+Measured, not guessed:
+
+| field | `null` | `""` | absent | notes |
+| --- | --- | --- | --- | --- |
+| `media.release_date` | 0 | **6** of 215 movie | 0 | 2.8% of movie credits |
+| `media.first_air_date` | 0 | **1** of 85 tv | 0 | 1.2% of tv credits |
+| `media.poster_path` | 32 | 0 | 0 | never an empty string |
+| `media.backdrop_path` | 85 | 0 | 0 | never an empty string |
+| `person.profile_path` | 13 | 0 | 0 | never an empty string |
+| `media.character` | 0 | 15 | **109** | absent on every crew credit |
+
+The `""`/`null` split is the whole point: **the two date fields needed
+`decodeNonEmptyDateIfPresent` and the three image paths did not.** `null` and an
+absent key both decode to `nil` through plain `decodeIfPresent`, so a
+null-bearing field is already safe; only `""` throws. This measurement is what
+justified guarding the dates and leaving `posterPath`/`backdropPath` alone —
+matching every sibling model, where image paths are unguarded package-wide.
+
+- **`character` is absent, not empty, on crew credits** — so a crew credit is
+  the cheapest fixture for an absent-optional branch. Cast credits carry
+  `character` (sometimes `""`, on unreleased titles).
+- Every required decode held: top-level `department`, `job`, `id`; `media.id`;
+  `person.id`, `person.name`. None was ever `null` or absent in 300 records.
+- Unmodelled keys on `media`, ignored by the decoder: `genre_ids`, `adult`,
+  `video`, `softcore`, `original_language`, `origin_country`, `episodes`,
+  `seasons`.
 
 ### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
 
