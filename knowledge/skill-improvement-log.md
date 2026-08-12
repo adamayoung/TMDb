@@ -740,8 +740,14 @@ two fields the dedup step keys on.
   `knowledge/tmdb-api-notes.md` and deferred (fixing it is breaking).
 - **Rationale:** "make them consistent" would break public API and degrade decode
   resilience; only the non-breaking robustness improvement is worth doing now.
-- **Reconsider when:** a major-version bump lets `Company.logoPath` become optional
-  and the two models can be aligned deliberately.
+- **Reconsider when:** **n/a for the `homepage` rename — it shipped.** The
+  condition was met when the 20.0.0 window opened, and `Network.homepage` →
+  `homepageURL` was merged in **#412** (2026-08-07) via `next-major.md`, which is
+  exactly the route this entry anticipated. (Merged, not released: 20.0.0 is
+  still untagged.) The rejection stands only for the *aligning* direction it was
+  written about — forcing `Network.logoPath` non-optional remains wrong, and the
+  open item is a major-version bump letting `Company.logoPath` become optional so
+  the two models can be aligned deliberately.
 
 ### 2026-06-24 — "Fix every instance of X" deliveries: enumerate all sites up front · applied
 

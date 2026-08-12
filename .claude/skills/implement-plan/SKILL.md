@@ -31,6 +31,11 @@ These are non-negotiable. Do them by default, without being reminded.
    the list has a written, passing test and the full suite is green — nothing
    less. Pair this with the `/goal` command for autonomous cross-turn iteration
    (see *Set the finishing goal*).
+   **Exactly three kinds of item are exempt**, because `canon-tdd` puts them on
+   the list and no test can assert them: the `///` doc comment, the DocC catalog
+   entry, and the `README.md` update. They are done when `make build-docs`
+   passes and the README is in sync — not when a test covers them. Nothing else
+   is exempt; don't reclassify a behavioural item into this set.
 4. **Reach for the right specialist skill.** Use `swift-testing-expert` when
    writing/structuring tests and `swift-concurrency` for anything touching
    tasks, actors, `@MainActor`, `Sendable`, or data races — don't hand-roll what
@@ -69,6 +74,21 @@ test list is anchored to it:
 If there is no plan, stop and say so — offer to draft one first (e.g. via the
 `Plan` agent or plan mode), and to `/review-plan` it before implementing. Never
 fabricate a plan in order to implement it.
+
+## Step 0 — Consult the knowledge base
+
+**Before deriving the list**, skim the entry headings of
+[`knowledge/gotchas.md`](../../../knowledge/gotchas.md) and
+[`knowledge/tmdb-api-notes.md`](../../../knowledge/tmdb-api-notes.md), read the
+entries (and any `knowledge/decisions/` ADR) relevant to what you are about to
+build, and say in one line what you consulted — `consulted: <entries | none
+relevant>`. Captured knowledge only compounds if it is read *before* the code,
+and half these entries exist precisely to stop a test list being written with a
+known trap missing from it.
+
+`/deliver` does this at its Phase 0, so a run reaching here through the pipeline
+has it already; this step is what makes a **standalone** `/implement-plan`
+equivalent rather than a knowledge-blind shortcut.
 
 ## Step 1 — Derive and show the test list
 

@@ -1,5 +1,15 @@
 # Plan: Extract `TMDbIntelligence` target + product
 
+> **SUPERSEDED — this plan shipped in #398 (2026-07-24) and is kept only for
+> its reasoning.** Do not pick it up as "the current plan": `/deliver` Phase 0
+> resolves a plan from a named target, plan mode, or the conversation, never
+> from this directory. `TMDbIntelligence` exists; see
+> [ADR-0010](../knowledge/decisions/0010-tmdb-intelligence-product.md) for the
+> decision as shipped and the retro for #398 in
+> [`knowledge/delivery-retros.md`](../knowledge/delivery-retros.md) for how it
+> went. A spent plan is archive material — git history keeps it if this file is
+> ever deleted.
+
 Implements [ADR-0010](../knowledge/decisions/0010-tmdb-intelligence-product.md).
 Read the ADR first — it holds the rationale and the alternatives already
 rejected; this plan is the mechanics. Drafted 2026-07-06 against `main` at

@@ -1,0 +1,27 @@
+# Gitignored files copied into every worktree Claude Code creates
+# (--worktree, subagent worktrees, desktop parallel sessions).
+#
+# Syntax is .gitignore's, but the rule is narrower: a pattern only takes effect
+# if the file it matches is ALSO gitignored. Tracked files are never duplicated.
+#
+# Carries the TMDb credentials into worktrees. `.claude/settings.local.json`
+# holds TMDB_API_KEY / TMDB_USERNAME / TMDB_PASSWORD and the two v4 tokens in
+# its `env` block, and a fresh checkout has none of them — without this the
+# integration suites cannot authenticate (`make integration-test` fails at
+# `.check-env-vars`, and the v4 suites skip). Ignored at .gitignore:16.
+.claude/settings.local.json
+
+# Xcode test plans (ignored at .gitignore:9, so absent from every fresh
+# checkout). `make`/CI drive SwiftPM directly and never read these, but without
+# them a worktree opened in Xcode has no TMDb (unit) or Integration test plan,
+# so the simulator route documented in CLAUDE.md is unavailable there. Both are
+# under 1 KB and hold no absolute paths — their `container:` refs are relative,
+# so a copy works in any checkout.
+#
+# NOTE: `Integration.xctestplan` stores TMDB_API_KEY / TMDB_USERNAME /
+# TMDB_PASSWORD as literal values in `environmentVariableEntries` — Xcode cannot
+# read the `env` block above, so the Xcode route needs them here. Same three
+# secrets already copied above, no new class of exposure, and worktrees are
+# gitignored (.gitignore:18) — but treat this file as credential-bearing:
+# never paste it, and never commit it.
+*.xctestplan

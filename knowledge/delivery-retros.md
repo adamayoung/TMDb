@@ -8,9 +8,20 @@ nothing. The point is **continuous improvement**: when the same friction or
 deviation recurs across entries, fold the fix into the relevant skill. Keep each
 entry to a handful of bullets — a log, not a ceremony.
 
-Format: **Feature / PR** · date · weight · *phases completed / skills invoked* ·
-*what worked* · *friction* · *deviations* · *one improvement* · *watch:*
-(optional, amended post-gate).
+Format: **Feature / PR** · date · **weight** · *phases completed / skills
+invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *friction*
+· *deviations* · *one improvement* · *watch:* (optional, amended post-gate).
+
+- **Weight is `lite` or `full` — there is no third tier.** A hybrid run (say, a
+  pre-reviewed plan that still gets the full review machinery) records as
+  **full** with the skipped machinery noted.
+- The three lowercase keys are **tripwires**, one per phase that can be silently
+  skipped: `consulted:` (Phase 0's knowledge consult), `reconciled:` (Phase 1's
+  worktree sweep), `swept:` (Phase 7's knowledge-retirement sweep). **A missing
+  line means that step did not run.** They are deliberately three distinct keys:
+  when Phase 1 and Phase 7 both wrote `swept:`, one silently occupied the
+  other's slot for four deliveries. See
+  [`wrap-up.md`](../.claude/skills/deliver/references/wrap-up.md).
 
 ---
 
@@ -289,7 +300,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   share one credential-free URLCache key space*, now false in every particular);
   skill-improvement-log citations of integration-failure.yml still accurate.
 
-## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · medium
+## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · full
 
 - **Phases / skills:** 0–8 pre-PR. `consulted:` gotchas *defaulted-argument
   witness* (the source), *Growing a public protocol additively*, *sweep the

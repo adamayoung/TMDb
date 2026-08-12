@@ -139,10 +139,13 @@ gives real on-disk caching for free on Apple platforms — see
 [ADR-0007](decisions/0007-document-existing-response-caching.md).
 
 **The v4 surface does the same** — `GET /4/list/{id}` serves
-`Cache-Control: public, max-age=300` (verified 2026-08-07). That is a hazard
-rather than a gift: v4 list responses are *user-private* yet carry no credential
-in the URL, so both cache layers would key them identically across users. See
-[ADR-0017](decisions/0017-v4-api-client.md) → *Still open*.
+`Cache-Control: public, max-age=300` (verified 2026-08-07). Left alone that is a
+hazard rather than a gift: v4 list responses are *user-private* yet carry no
+credential in the URL, so both cache layers would key them identically across
+users. **Resolved in the v4 list work (2026-08-07)** — credential-bearing
+responses now bypass both layers. For the predicate and how it is applied, see
+[ADR-0017](decisions/0017-v4-api-client.md) → *Resolved in the v4 list work*;
+don't restate the mechanism here, it lives with the code.
 
 ## Errors
 
@@ -368,7 +371,7 @@ them:
 | Model | Required decodes | Sample | Result |
 | --- | --- | --- | --- |
 | `ProductionCompany` | `id`, `name`, `originCountry` | `/search/company` ×5, N=100 | never `null`/absent |
-| `MediaListSummary` | `id`, `name`, `itemCount`, `favoriteCount` | `/movie|tv/{id}/lists`, N=539 | never `null`/absent |
+| `MediaListSummary` | `id`, `name`, `itemCount`, `favoriteCount` | `/movie\|tv/{id}/lists`, N=539 | never `null`/absent |
 | `TaggedImage` | 8 fields + nested `media` | `/person/{id}/tagged_images`, N=229 | never `null`/absent |
 | `TVSeriesListItem` | incl. `originCountries` | search/discover/trending/similar, N=1,046 | never `null`/absent (7 rows `[]`) |
 | `MovieListItem` | `title`, `originalTitle`, … | search/discover/trending, N=758 | never `null`/absent |
