@@ -211,8 +211,10 @@ Procedures and traps:
    `live` (lock PID alive — never touch) / `report` / `reclaim` (merged **and**
    Phase 12's two proofs) / `resumable` / `settled`. **Report, never remove,
    anything that doesn't prove reclaimable**, and verify a directory is gone
-   before counting it reclaimed. Record `swept:` in the ledger and the
-   `reconciled` block in the run file. Procedure, buckets and traps:
+   before counting it reclaimed. Record `reconciled:` in the ledger, the
+   `reconciled` block in the run file, and the retro (Phase 8) — **never as
+   `swept:`, which is Phase 7's knowledge sweep and will silently take the
+   slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
 2. **Enter** with `EnterWorktree(name: "<prefix>/<slug>")` (`feature/`,
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch

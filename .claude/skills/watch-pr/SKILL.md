@@ -45,6 +45,14 @@ uppercase `mergeStateStatus`). Read the check runs separately with method
 - **Thread data is a separate call** — `pull_request_read` method `get` does not
   return review threads. Fetch them with method `get_review_comments` (delegated to
   `/review-pr-threads`); never expect thread data on the PR `get`.
+- **Pin the tree to the PR, and re-check it every pass.** The number alone is
+  not enough: both sweeps in §1 **edit and push the current working tree**, so
+  a drifted CWD doesn't just read the wrong PR, it commits to the wrong branch.
+  Before each pass assert `git branch --show-current` equals the PR's
+  `head.ref` (already fetched above, so this is free). Mismatch → **stop and
+  report; never sweep.** This is the case §0 exists for — a background watch
+  outlives the session's CWD, and `/deliver` Phase 10 moves to the next
+  deliverable's worktree while this loop is still running.
 
 Keep a **run ledger** in your working notes: resolved thread IDs, a topic
 signature per handled thread (`path:line` + short gist), and a fix-attempt
@@ -56,7 +64,9 @@ Repeat the pass below until the PR is **ready** (§3) or **stuck** (§2).
 
 ### 1a. Review threads
 
-Delegate the thread sweep to **`/review-pr-threads`** — it resolves the
+Delegate the thread sweep to **`/review-pr-threads <number>`** — **always pass
+the PR number.** Without it the skill falls back to "the current branch's PR"
+(`review-pr-threads` §1), re-introducing exactly the dependency §0 forbids. It resolves the
 currently-unresolved threads in one pass (assess → fix+verify / reply-only →
 reply → resolve), reusing **this run's ledger** so a topic you already fixed isn't
 re-edited, and returns a summary (fixed w/ SHAs, replied-only, left-for-user,
@@ -69,7 +79,8 @@ not duplicate its per-thread logic here.
 
 ### 1b. Status checks
 
-Delegate failing-check fixing to **`/fix-pr-checks`** — it routes each failing
+Delegate failing-check fixing to **`/fix-pr-checks <number>`** — **always pass
+the PR number**, for the same reason as §1a. It routes each failing
 check to the right diagnosis skill (`/diagnose-ci-failure` or
 `/diagnose-integration-failure`) via a Haiku subagent, applies and verifies the
 fix, commits, pushes once, and returns a summary (fixed w/ SHAs, exhausted,

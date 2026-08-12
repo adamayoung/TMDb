@@ -16,12 +16,19 @@ not a ceremony (a handful of bullets):
   phases `0–9`; skills `review-plan, implement-plan, review-changes,
   security-review, capture-knowledge`). Telemetry for the recurring-pattern
   scan: which skills fire, which phases get skipped, where deliveries stop.
-- **`swept:`** — Phase 1's reconcile result, e.g.
-  `swept: 2 in scope / 1 reclaimed / 0 resumable / 1 reported`. **An entry
-  without this line means the sweep did not run** — the same tripwire as
-  Phase 0's `consulted:` and Phase 7's `swept:` report line, but stronger,
-  because the retro is committed and goes through PR review, so a human sees
-  the omission.
+- **`reconciled:`** — Phase 1's worktree sweep, e.g.
+  `reconciled: 2 in scope / 1 reclaimed / 0 resumable / 1 reported`. Named for
+  the run file's own `reconciled` block.
+- **`swept:`** — Phase 7's knowledge-retirement sweep, verbatim from
+  `/capture-knowledge`'s report line, e.g.
+  `swept: Makefile, ci.yml → 1 entry rewritten`, or `swept: n/a`.
+- **Both are tripwires. An entry missing either line means that sweep did not
+  run** — stronger than Phase 0's `consulted:`, because the retro is committed
+  and goes through PR review, so a human sees the omission. **They are
+  separate keys on purpose:** when both were called `swept:`, the Phase 7 form
+  filled the slot for four consecutive deliveries and Phase 1's tripwire went
+  missing without anyone noticing — a filled slot looks identical to the right
+  one.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from the skill to do the right
@@ -94,6 +101,15 @@ The loop that turns one-off retros into reviewed skill improvements:
    already **applied**, or **deferred/rejected** (don't re-propose a settled
    *no*; only resurface it if its recorded "reconsider when…" condition now
    holds).
+
+   **Then raise every unrecorded "one improvement", including singletons.** A
+   *pattern* needs two entries to recur; a retro's **one improvement** needs
+   none — it is already the single highest-value change that run identified.
+   Scan the window's "one improvement" bullets and propose any with **no entry
+   at all** in `skill-improvement-log.md` (not applied, not deferred, not
+   rejected). It does not have to be *applied* — but it must reach a **recorded
+   decision**, which is what the log is for. Without this step an improvement
+   that never recurs is proposed by nobody: six went unrecorded this way.
 3. **Stop and ask.** **Do not edit any skill files.** Present the proposals
    and wait for **explicit approval on each one**. If no *new* pattern recurs
    across multiple entries, say so and stop — emit no proposals.

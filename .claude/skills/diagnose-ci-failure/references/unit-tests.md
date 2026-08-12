@@ -3,7 +3,8 @@
 The **Build and Test** job runs the unit suite:
 
 ```bash
-swift test --filter TMDbTests --enable-code-coverage --xunit-output junit.xml
+swift test --filter "TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests" \
+  --enable-code-coverage --xunit-output junit.xml
 ```
 
 Tests use the **Swift Testing** framework (`@Suite`, `@Test`, `#expect`,
