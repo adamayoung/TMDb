@@ -56,6 +56,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `credits.details(forCredit:)` no longer fails for a credit attached to an
+  unreleased movie or an unaired TV series. TMDb reports an absent date as an
+  empty string, which the day-precision date parser rejected, so the whole call
+  threw `TMDbError.decode`. `CreditMovie.releaseDate` and
+  `CreditTVSeries.firstAirDate` now decode an empty string as `nil`, matching
+  every sibling model.
+
 - 37 convenience methods on the public service protocols no longer share a
   signature with the requirement they forward to. A default argument value is
   not part of a signature for witness matching, so each of these *was* its

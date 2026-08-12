@@ -115,3 +115,52 @@ Hashable, Sendable {
     }
 
 }
+
+extension CreditMovie {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case originalTitle
+        case overview
+        case posterPath
+        case backdropPath
+        case popularity
+        case releaseDate
+        case voteAverage
+        case voteCount
+        case character
+    }
+
+    ///
+    /// Creates a new instance by decoding from the given decoder.
+    ///
+    /// This initializer throws an error if reading from the decoder fails, or
+    /// if the data read is corrupted or otherwise invalid.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: `DecodingError.typeMismatch` if the encountered encoded value is not convertible to the requested
+    /// type.
+    /// - Throws: `DecodingError.keyNotFound` if self does not have an entry for the given key.
+    /// - Throws: `DecodingError.valueNotFound` if self has a null entry for the given key.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        self.originalTitle = try container.decodeIfPresent(String.self, forKey: .originalTitle)
+        self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
+        self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
+        self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
+        self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
+        // An unreleased movie reports `release_date` as an empty string, which
+        // the day-precision date strategy cannot parse.
+        self.releaseDate = try container.decodeNonEmptyDateIfPresent(forKey: .releaseDate)
+        self.voteAverage = try container.decodeIfPresent(Double.self, forKey: .voteAverage)
+        self.voteCount = try container.decodeIfPresent(Int.self, forKey: .voteCount)
+        self.character = try container.decodeIfPresent(String.self, forKey: .character)
+    }
+
+}

@@ -1,0 +1,55 @@
+{
+    "credit_type": "crew",
+    "department": "Production",
+    "job": "Executive Producer",
+    "media": {
+        "adult": false,
+        "backdrop_path": "/qQyzfPaMcFR41mJCXVGhygxHa6b.jpg",
+        "id": 302069,
+        "name": "Untitled Peaky Blinders Sequel",
+        "original_name": "Untitled Peaky Blinders Sequel",
+        "overview": "In this new era of Peaky Blinders, a decade after World War Two, the race to rebuild Birmingham becomes a brutal contest of mythical dimensions. This is a city of unprecedented opportunity and jeopardy. At its blood-soaked heart is Duke Shelby: older, wiser, more ambitious, and most certainly more dangerous.",
+        "poster_path": "/nsyIOzlruBQ8wHXUOJ0238ZDqym.jpg",
+        "media_type": "tv",
+        "original_language": "en",
+        "genre_ids": [
+            18
+        ],
+        "popularity": 1.8405,
+        "first_air_date": "",
+        "softcore": false,
+        "vote_average": 0,
+        "vote_count": 0,
+        "origin_country": [
+            "GB"
+        ],
+        "episodes": [],
+        "seasons": [
+            {
+                "id": 478065,
+                "name": "Season 1",
+                "overview": "Britain, 1953. After being heavily bombed in WWII, Birmingham is building a better future out of concrete and steel.",
+                "poster_path": null,
+                "media_type": "tv_season",
+                "vote_average": 0,
+                "air_date": null,
+                "season_number": 1,
+                "show_id": 302069,
+                "episode_count": 1
+            }
+        ]
+    },
+    "media_type": "tv",
+    "id": "68df0276225889fef91299a5",
+    "person": {
+        "adult": false,
+        "id": 2037,
+        "name": "Cillian Murphy",
+        "original_name": "Cillian Murphy",
+        "media_type": "person",
+        "popularity": 7.5411,
+        "gender": 2,
+        "known_for_department": "Acting",
+        "profile_path": "/2lKs67r7FI4bPu0AXxMUJZxmUXn.jpg"
+    }
+}

@@ -14,6 +14,72 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
+
+- **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a
+  named risky surface), so the 3-critic `/review-plan` ran and Phase 6 used an
+  independent grader. `/review-changes` took the single-reviewer path (555 lines,
+  one cohesive unit). `consulted:` gotchas *Guard consistently within a type*,
+  *Sweep the failure class, not the property name*, *Model-decode equality tests*,
+  *`Date(iso8601:)` is not visible to `TMDbIntegrationTests`*; api-notes
+  *Verify optionality against real responses*, *`/company/{id}` nullability*;
+  issues #418, #426, #430 for scope boundaries.
+- **Worked — the #404 failure-class sweep, in both directions.** The plan reached
+  Phase 0 having excluded the URL decodes from a *single* spot-check of one
+  record. Sweeping the whole `/credit/{id}` tree over 300 live records instead
+  both **cleared** those five URL decodes with a measurement (`null`-bearing,
+  never `""`) and **found a bug the issue never mentioned**: `credit_type:
+  "creator"` throws today. Without the sweep the first would have been an
+  assertion a reviewer could reasonably reject, and the second would have
+  shipped undiscovered.
+- **Worked — the critics found the false green I had built in.** All three
+  returned `sound-with-fixes` and every load-bearing claim I checked held up.
+  The best catch was mine to be embarrassed by: **no fixture in my test list
+  omitted `character`**, so a `decode`-instead-of-`decodeIfPresent` slip in
+  either hand-written init would have compiled, passed everything, and broken
+  36% of live credits. Re-sourcing both blank-date fixtures to **crew** credits
+  fixed it for free — TMDb omits `character` entirely on crew credits, so one
+  fixture now covers an empty date *and* an absent optional.
+- **Worked — reconciling a 2-vs-1 critic split on evidence rather than vote.**
+  One critic read *Guard consistently within a type* as requiring
+  `decodeNonEmptyURLIfPresent` on the image paths. The rule is about one **value
+  class** diverging (`Company.logoPath` vs `Company.Parent.logoPath`), not a date
+  differing from a URL — and guarding would have made `CreditMovie` the lone
+  divergence across ~20 models. The gotcha now records that scope explicitly, so
+  the next reader doesn't re-derive it.
+- **Friction — the worktree Bash guard.** A worktree-isolated session refuses any
+  command it cannot statically prove stays inside the worktree, which blocked
+  writing the durable run file under `.git/deliver/` (outside the worktree *by
+  design* — it lives in the common git dir) via `jq`+`mv` **and** via `Edit`,
+  plus several `curl -o` and multi-pipe sampling commands that were never leaving.
+  `sed` with fully literal paths worked. Now a `gotchas.md` entry; the deeper
+  issue is that `/deliver`'s own run-file location is at odds with its own
+  worktree isolation.
+- **Friction — two API 529s killed the code reviewer** before it started. Retried
+  after doing unrelated work; the second retry succeeded. Void ≠ failed was the
+  right read.
+- **Friction — a subagent asserted a green it could not see.** The
+  `tooling-runner` reported the integration suite passed "including the newly
+  added `detailsForMovieCredit` test", but the xcsift log carries only aggregate
+  counts — no test names. A scoped `--filter` run proved it genuinely ran. The
+  runner's report shape cannot distinguish *ran and passed* from *never ran*.
+- **Deviations:** (1) The plan had **no formal ACs** — a bug-fix plan written as
+  a test list. Rather than stop the run for a rubric the author could not supply
+  mid-flight, I derived seven Given/When/Then ACs from the issue and the test
+  list and recorded `rubricProvenance: derived-…` in the run file; the grader
+  then judged against them and returned ALL MET. Flagged as derived, not
+  supplied. (2) Reported the `creator` finding to #418 **before** the PR rather
+  than in Phase 11, because all three critics independently observed that
+  "defer to #418" deferred it *nowhere* — #418's body never mentioned
+  `CreditType`.
+- **One improvement:** `/deliver`'s Phase 0 entry gate assumes a plan either has
+  ACs or doesn't. A bug fix whose issue already states observable
+  before/after behaviour is a third case: the ACs are *derivable* rather than
+  absent, and stopping to ask for them is pure ceremony. The gate should sanction
+  deriving them with recorded provenance — which is what `rubricProvenance` did
+  here ad hoc — instead of forcing a choice between a hard stop and
+  `rubric: none`.
+
 ## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#412) · lite
 
 - **Phases / skills:** 0–8 pre-PR; lite, so no `/review-plan` critics and the
@@ -544,27 +610,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   post-merge `/build` is the real verification; if it surprises, that's a
   `gotchas.md` entry.
 
-## 2026-07-05 — 🔧 Knowledge consult at entry + independent rubric grader (#384) · lite
-
-- **Phases / skills:** phases 0–10; markdown-only, so `review-plan` skipped
-  (lite + `ExitPlanMode` approval), `review-changes` and `security-review`
-  self-skipped; capture was inline (the `skill-improvement-log.md` entry *is*
-  part of the delivery, per the 2026-07-05 inline-capture decision).
-- **Worked:** the plan arrived with the user story + ACs already in
-  Given/When/Then form, so the Phase 0 entry gate extracted the rubric with
-  zero friction; the diff-by-eye rule-loss check was proportionate for a
-  two-section edit (the full inventory method stayed shelved, correctly).
-- **Friction:** none material — smallest delivery to date (2 files at
-  implement, +49/−8).
-- **Deviations:** the change originated from an external article review
-  rather than a repo-native trigger; the knowledge-consult it adds was done
-  implicitly this run (the design phase had already read the relevant
-  gotchas/wiki material) — the new `consulted:` ledger line is what makes it
-  explicit from the next run on.
-- **One improvement:** extend the consult step to `/implement-plan`
-  standalone invocations (deliberately out of scope this run; noted in the
-  plan).
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -572,6 +617,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-05 | #384 | lite | Added the Phase 0 knowledge-consult step and the independent Phase 6 rubric grader — the two gates that make captured knowledge compound and stop the maker grading its own homework. Smallest delivery to date (+49/−8), and the plan arrived with ACs already in Given/When/Then form, so the entry gate extracted the rubric with zero friction. Its own knowledge-consult was done implicitly (the design phase had already read the relevant material); the `consulted:` ledger line is what made it explicit from the next run on. Its "one improvement" — extend the consult step to standalone `/implement-plan` invocations — still stands. |
 | 2026-07-05 | #383 | lite | Restructured `deliver/SKILL.md` for progressive disclosure — a lean core plus `references/` loaded on demand — after the skill had grown past what fits in working context. Paired with an adversarial mapping review that diffed old against new hunting specifically for dropped or weakened rules, which is the practice that made the compression safe and is now the wiki entry *restructure-a-normative-doc-with-a-rule-inventory-and-an-adversarial-mapping-review*. |
 | 2026-07-05 | #382 | lite | Moved the `/deliver` retro to pre-PR so it rides the delivery's own PR instead of re-opening the ready gate. Both open design decisions were settled with the user via `AskUserQuestion` *before* any edit, and the change was dogfooded immediately — its own entry was written under the sequencing it introduced. Surfaced the `EnterWorktree` gotcha: the tool ignores the requested name for the **branch** (`git branch -m` after entering), now a `gotchas.md` entry and a standing Phase 1 step. |
 | 2026-07-02 | #374 | lite | Reconciled docs/config honesty gaps from two external reviews. The lasting lesson is **verify a review's claims before acting on them**: an 18-agent read-only pass opened and counted every assertion in-repo and caught real overstatements (eight tools not seven, 84 request files not ~95, `.unsupportedLanguage` reachable rather than dead), so only the verified, softened subset shipped — the origin of the wiki heuristic *treat review findings as hypotheses*. Also diagnosed the xcsift false-failure: a benign DocC "unhandled file" warning lands in toon's `errors[]` and flips `status:` to failed on an exit-0 build, so the four build/test skills now say trust the exit status, not the summary. |

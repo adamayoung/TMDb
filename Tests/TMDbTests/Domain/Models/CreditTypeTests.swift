@@ -34,6 +34,22 @@ struct CreditTypeTests {
         #expect(result == .crew)
     }
 
+    /// TMDb also returns `credit_type` values outside this enum — a live
+    /// example is credit 5257855d19c29531db28adea, which reports "creator".
+    /// Decoding one throws today, failing the whole `details(forCredit:)` call.
+    /// This test locks that behaviour so making it tolerant is a deliberate,
+    /// source-breaking change rather than an accident; tracked in issue #418.
+    @Test("JSON decoding of an unknown CreditType throws", .tags(.decoding))
+    func decodeUnknownCreditTypeThrows() {
+        let data = Data(#""creator""#.utf8)
+
+        #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder().decode(
+                CreditType.self, from: data
+            )
+        }
+    }
+
     @Test("JSON encoding of cast CreditType", .tags(.encoding))
     func encodeCast() throws {
         let data = try JSONEncoder().encode(CreditType.cast)
