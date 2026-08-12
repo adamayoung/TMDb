@@ -87,6 +87,34 @@ struct KeyedDecodingContainerMediaTypeTests {
         #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast"))
     }
 
+    /// The raw value reaches a public error a caller may log, so it is bounded and
+    /// escaped at the construction site — a response must not be able to forge log
+    /// lines through it, or bloat a log with a huge media type. The untruncated
+    /// value stays on the internal marker.
+    @Test("does not put a raw server string into the error message")
+    func redactsRawValueInErrorMessage() throws {
+        let padding = String(repeating: "a", count: 80)
+        // `\n` here is a JSON escape, so the decoded value carries a real newline.
+        let data = Data(#"{"media_type": "\#(padding)\nINJECTED LOG LINE"}"#.utf8)
+        let hostile = padding + "\nINJECTED LOG LINE"
+
+        let error = #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(Element.self, from: data)
+        }
+
+        let decodingError = try #require(error)
+        guard case .dataCorrupted(let context) = decodingError else {
+            Issue.record("Expected a dataCorrupted error")
+            return
+        }
+
+        #expect(!context.debugDescription.contains("\n"))
+        #expect(!context.debugDescription.contains("INJECTED"))
+        #expect(context.debugDescription.count < 80)
+        // The full value is still available internally for diagnosis.
+        #expect(decodingError.unknownMediaType?.rawValue == hostile)
+    }
+
     /// The three negatives below assert the *absence* of the marker, which is what
     /// keeps the tolerant wrapper from skipping them.
     @Test("does not mark an absent, null or mistyped media_type as unmodelled")

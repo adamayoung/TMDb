@@ -52,9 +52,24 @@ extension DecodingError {
         .dataCorrupted(
             Context(
                 codingPath: codingPath,
-                debugDescription: "Unknown media type: \(rawValue)",
+                // Bounded and escaped: this string reaches a public error a caller
+                // may log, and the value comes straight off the wire. A raw one
+                // would let a response forge log lines with newlines, or bloat a
+                // log with a multi-megabyte media type. The untruncated value stays
+                // on the internal `UnknownMediaTypeError`, which never escapes.
+                debugDescription: "Unknown media type: \(redacting(rawValue))",
                 underlyingError: UnknownMediaTypeError(rawValue: rawValue)
             )
+        )
+    }
+
+    private static func redacting(_ rawValue: String) -> String {
+        String(
+            rawValue.prefix(32).map { character in
+                character.isLetter || character.isNumber || character == "_" || character == "-"
+                    ? character
+                    : "?"
+            }
         )
     }
 
