@@ -48,4 +48,32 @@ struct MediaListTests {
         #expect(result.totalResults == 69)
     }
 
+    /// A v3 list holds movies and TV series together, and TMDb gives a TV row
+    /// `name`/`original_name`/`first_air_date` with none of the movie keys.
+    /// `MediaList.items` decodes all-or-nothing, so before this was supported
+    /// `lists.details(forList:)` threw outright on any list containing a TV
+    /// series — which is most real lists.
+    ///
+    /// The `media-list.json` fixture had no consumer at all until now, which is
+    /// why nothing caught it: the decode test above uses an empty `items` array.
+    @Test("JSON decoding of a MediaList holding both a movie and a TV series", .tags(.decoding))
+    func decodeReturnsMediaListWithMixedMediaTypes() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            MediaList.self,
+            fromResource: "media-list"
+        )
+
+        #expect(result.items.count == 3)
+
+        let movie = try #require(result.items.first { $0.id == 986_056 })
+        #expect(movie.mediaType == .movie)
+        #expect(movie.title == "Thunderbolts*")
+
+        let tvSeries = try #require(result.items.first { $0.id == 200_875 })
+        #expect(tvSeries.mediaType == .tvSeries)
+        #expect(tvSeries.title == "IT: Welcome to Derry")
+        #expect(tvSeries.originalTitle == "IT: Welcome to Derry")
+        #expect(tvSeries.releaseDate == Date(iso8601: "2025-10-26T00:00:00Z"))
+    }
+
 }
