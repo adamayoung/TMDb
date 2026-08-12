@@ -85,7 +85,8 @@ over them.
   it waits for the fetch and receives its value. Bounded (one small request), and
   typed `throws(TMDbError)` could not honestly surface a `CancellationError`
   anyway. Documented on the protocol and in the How-To.~~
-  **Superseded in 20.0.0 by [ADR-0018](0018-cancellation-as-tmdberror-case.md).**
+  **Superseded by [ADR-0018](0018-cancellation-as-tmdberror-case.md) (in 20.0.0,
+  unreleased).**
   Two of the three clauses were wrong. "Bounded (one small request)" understated
   it: with retry enabled (`maxRetries: 3`, `maxDelay: 30s`) a cancelled caller
   could block for **minutes**, not the ~30s of a single timeout. And typed

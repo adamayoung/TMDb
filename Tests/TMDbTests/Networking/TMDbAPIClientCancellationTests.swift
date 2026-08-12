@@ -139,7 +139,12 @@ struct TMDbAPIClientCancellationTests {
         // seam between them unproven.
         let httpClient = SequencingHTTPMockClient()
         for _ in 0 ... 3 {
-            httpClient.enqueue(.success(HTTPResponse(statusCode: 429)))
+            // `Retry-After` makes the backoff exactly `min(60s, maxDelay)`.
+            // Without it the delay is `Double.random(in: 0 ... 60)`, which wakes
+            // before the 50ms cancel roughly once in 1200 runs and retries.
+            httpClient.enqueue(
+                .success(HTTPResponse(statusCode: 429, headers: ["Retry-After": "60"]))
+            )
         }
 
         let retryClient = RetryHTTPClient(

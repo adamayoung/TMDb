@@ -1,6 +1,6 @@
 # ADR-0018: Surface task cancellation as `TMDbError.cancelled`
 
-- **Status:** Accepted (shipped in 20.0.0)
+- **Status:** Accepted (in 20.0.0, unreleased)
 - **Date:** 2026-08-12
 - **Deciders:** Adam Young
 
