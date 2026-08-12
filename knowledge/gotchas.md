@@ -312,7 +312,7 @@ by hand, or the call silently no-ops while you report a reclaim
 
 ### In a worktree session, Bash refuses commands it can't prove stay inside it
 
-*2026-08-12 (#417).* A worktree-isolated session guards `Bash`, rejecting
+*2026-08-12 (#432).* A worktree-isolated session guards `Bash`, rejecting
 anything it cannot statically verify targets the worktree:
 *"this command is too complex to verify that it stays inside the worktree; break
 it into plain, separate commands."* It fires on shape, not on actual destination,
@@ -422,9 +422,22 @@ in isolation.
 *2026-06-23.* `make ci` does **not** run `make build-linux` (it's lint,
 lint-markdown, test, integration-test, build-release, build-docs). Linux
 portability is instead gated by `.github/workflows/ci.yml`'s **`build-test-linux`**
-job (container `swift:6.1-jammy`, runs `swift build --build-tests`). So when Docker
-isn't available locally to run `make build-linux`, the PR's CI is the authoritative
-off-Apple check — don't treat a missing local Linux build as a blocker.
+job (container `swift:6.1-jammy`), which runs the full trio — `swift build
+--build-tests`, `swift test` over all four unit-test targets, and
+`swift build -c release`. So when Docker isn't available locally to run
+`make build-linux`, the PR's CI is the authoritative off-Apple check — don't
+treat a missing local Linux build as a blocker.
+
+**One carve-out, added 2026-08-12 (#433).** For a **hand-rolled concurrency
+primitive** — a continuation wrapper, a lock, an `@unchecked Sendable` box —
+run `make test-linux` *before* opening the PR if Docker is up. That class is
+invisible to every Apple-side gate and to a diff-reading reviewer: an
+uninitialised read in `ResumeOnce` was `nil` garbage on Darwin and passed 3144
+tests, `make ci`, two review passes, a security review and an independent
+grader, then segfaulted on Linux and wedged the runner so hard it ignored both
+GitHub's concurrency cancel and `gh run cancel`. Everything else (`#if os(…)`,
+ordinary portability) fails loudly at compile time and can safely wait for CI.
+Docker down → say so and flag the PR Linux-unverified, don't skip silently.
 
 ### Edits can land in the main checkout instead of the active worktree
 
@@ -637,7 +650,7 @@ all**; `git grep` for a fixture's name before trusting that it covers anything.
 
 ### An empty-string-guard fixture must come from a real record — `null` passes either way
 
-*2026-08-12 (#417).* `decodeNonEmptyDateIfPresent` and plain
+*2026-08-12 (#432).* `decodeNonEmptyDateIfPresent` and plain
 `decodeIfPresent(Date.self)` behave **identically** on JSON `null` and on an
 absent key. Only `""` tells them apart. So a hand-written "blank date" fixture
 that uses `null` instead of `""` passes with *and* without the guard — the
@@ -662,7 +675,7 @@ regression test is void while looking green, and the same applies to
 
 ### A `#expect(throws: DecodingError.self)` test is a false green twice over
 
-*2026-08-12 (#417).* Two independent traps when pinning "this input must throw":
+*2026-08-12 (#432).* Two independent traps when pinning "this input must throw":
 
 1. **Copying `ImageSizeTests` uses a bare `JSONDecoder()`.**
    `ImageSizeTests.swift:49-55` decodes a single-value enum, so it needs no key
@@ -706,7 +719,7 @@ grader caught it; three plan critics had split 2–1 on it beforehand.
   `init(from:)` to use the helper — roughly 15 lines. That was the real cost
   being weighed, and it was worth paying.
 
-**Scope of the rule: same value class, not same file.** *2026-08-12 (#417),
+**Scope of the rule: same value class, not same file.** *2026-08-12 (#432),
 where one of three plan critics read this entry as requiring
 `decodeNonEmptyURLIfPresent` on `CreditMovie.posterPath` because the neighbouring
 `releaseDate` had just been guarded.* That over-applies it. The #404 asymmetry was
@@ -744,7 +757,7 @@ shipped with its own integration test still failing.
   `tmdb-api-notes.md`) — which is what proved `origin_country` was in scope and
   `description`/`headquarters` were not.
 - **The sweep earns its keep by *excluding*, not only by finding.** *2026-08-12
-  (#417).* Sweeping the whole `/credit/{id}` response tree did both: it turned up
+  (#432).* Sweeping the whole `/credit/{id}` response tree did both: it turned up
   an unrelated live decode failure the issue never mentioned (`credit_type:
   "creator"`), **and** it cleared five URL decodes the plan had excluded on a
   single spot-check. The second half is what makes a narrow scope defensible in

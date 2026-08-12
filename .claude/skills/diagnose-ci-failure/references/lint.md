@@ -26,7 +26,7 @@ release binaries). Local versions must match (the local pin lives at
      nothing more.
    - For SwiftLint rules that can't autocorrect (e.g. line length, cyclomatic
      complexity, force-unwrap), fix the flagged `file:line` by hand per the
-     project's style (line length 100, no force-unwrap/try, guard for early
+     project's style (line length 120, no force-unwrap/try, guard for early
      exits).
 
 2. **Version drift — `superfluous_disable_command` on *unchanged* code.** A

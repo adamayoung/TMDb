@@ -318,7 +318,9 @@ There is no `make test-ios` target. Run simulator tests
 
 Enforced via `swiftlint` and `swiftformat`:
 
-- **Line length:** 100 characters
+- **Line length:** 120 characters (`.swiftformat --maxwidth 120`; SwiftLint's
+  `line_length` default, with URLs, comments and interpolated strings exempt
+  per `.swiftlint.yml`)
 - **All public declarations must have documentation** (`///` style)
 - **No force unwrapping** (`!`) or force try (`try!`)
 - **Use guard for early exits**
@@ -340,8 +342,10 @@ Two `PostToolUse` hooks (in `.claude/settings.json`) run automatically after eve
 `Edit`/`Write`, so files are reshaped on disk **after** you write them:
 
 - **`.swift`** → `swiftlint --fix` then `swiftformat`.
-- **`.md` / `.markdown`** → `markdownlint --fix` (auto-fixable rules only — it
-  **cannot** fix `MD013` line-length, so still wrap long lines by hand).
+- **`.md` / `.markdown`** → `markdownlint --fix` (auto-fixable rules only).
+  `MD013` line-length is **disabled** repo-wide in `.markdownlintrc`, so long
+  lines are not a lint failure — wrap prose near 80 columns for readability,
+  not to satisfy a gate.
 
 Consequences: the on-disk content can differ from what you wrote (imports
 reordered, blank lines collapsed, list markers normalised). **Re-`Read` a file
@@ -439,12 +443,20 @@ comments in sync with every public-API change.
 
 ## Completion Checklist
 
-Before a task is complete: `/format`, `/lint`, then run **both** unit and
-integration tests (`/test`, `/integration-test`) — both must pass. If the public
-API changed, build docs (`make build-docs`) and keep `README.md` in sync (see
-`/document-swift`). Lint markdown (`make lint-markdown`) if any `.md` changed.
-Record durable learnings with `/capture-knowledge`. **`make ci` is the mandatory
-gate before pushing or opening a PR — no exceptions.**
+Iterate with `/format`, `/lint`, `/test` and `/integration-test` **while you
+work** — then run **`make ci` once** before pushing or opening a PR. That is the
+mandatory gate, and it already runs lint, markdown lint, both test suites, the
+release build and the docs build, so **don't run those individually again just
+before it**: the live integration suite is deliberately serialised, and
+re-running it is the largest avoidable cost in a delivery (#401). `/pr`
+documents the one sanctioned narrowing — a diff touching no `*.swift`,
+`Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan` or
+`.github/workflows/**` runs `make lint && make lint-markdown` instead.
+
+**The one thing `make ci` cannot check is `README.md`** — `build-docs` compiles
+DocC but cannot see a stale README. If the public API changed, keep it in sync
+by hand (see `/document-swift`). Record durable learnings with
+`/capture-knowledge`.
 
 `/deliver` runs this checklist, the self-review (`/review-changes`), and the PR
 end-to-end; the individual skills are the manual fallback. Self-review still

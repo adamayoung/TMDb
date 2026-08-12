@@ -28,12 +28,16 @@ code-review phase, or you) applies the fixes.
 ## 0. Gate — skip if there is no reviewable code
 
 Code review exists to review **code** — Swift source, plus the committed
-Workflow scripts under `.claude/workflows/` (they are decision infrastructure,
-not prose). If the diff touches neither, there is nothing to review — return
+scripts under `.claude/workflows/` (decision infrastructure) and `Scripts/`
+(enforcement infrastructure: `check-defaulted-witnesses.py` runs from `make
+lint` **and** as its own CI `Lint` step, so a bug there silently weakens a
+gate — it shipped as a false green once already, passing on an empty scan).
+If the diff touches none of them, there is nothing to review — return
 immediately, don't spawn any reviewer.
 
 ```bash
-git diff --name-only origin/main...HEAD | grep -qE '\.swift$|^\.claude/workflows/' \
+git diff --name-only origin/main...HEAD \
+  | grep -qE '\.swift$|^\.claude/workflows/|^Scripts/' \
   || echo "no-reviewable-code"
 ```
 
@@ -43,12 +47,15 @@ review skipped." Do not run §1–§3. (JSON fixtures under
 `Tests/**/Resources/` accompany Swift changes; a fixture-only change with no
 `.swift` is rare — note it and let the caller decide.)
 
-**If the only reviewable change is under `.claude/workflows/`**, take the §2a
-single-reviewer path with a **script-focused brief** in place of the Swift
-lens: input guards and executable `throw`s, schema shapes, tally / dead-agent
-handling, and prompt-injection surface (what untrusted text reaches an agent
-prompt). `.github/CODE_REVIEW.md`'s severity rubric and adversarial
-re-evaluation still apply; its Swift-specific checks don't.
+**If the only reviewable change is a script** (`.claude/workflows/` or
+`Scripts/`), take the §2a single-reviewer path with a **script-focused brief**
+in place of the Swift lens: input guards and executable `throw`s, schema
+shapes, tally / dead-agent handling, and prompt-injection surface (what
+untrusted text reaches an agent prompt). For a `Scripts/` checker add the
+question that matters most: **can it pass while measuring nothing?** — an empty
+scan, a typo'd path, a count compared instead of an explicit set.
+`.github/CODE_REVIEW.md`'s severity rubric and adversarial re-evaluation still
+apply; its Swift-specific checks don't.
 
 ## 1. Scope the change
 

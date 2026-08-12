@@ -152,9 +152,29 @@ implementation = separate `/deliver` sessions.)
   [`knowledge/gotchas.md`](../../../knowledge/gotchas.md) and
   [`knowledge/tmdb-api-notes.md`](../../../knowledge/tmdb-api-notes.md), read
   the entries (and any `knowledge/decisions/` ADR) relevant to the goal's
-  area, and record one `consulted: <entries | none relevant>` line in the
-  ledger. Captured knowledge only compounds if it is read at entry — the
-  ledger line is what makes this step checkable.
+  area, and record one `consulted: <entries | none relevant>` line **in the run
+  file** (and the ledger for convenience). Captured knowledge only compounds if
+  it is read at entry — that line is what makes this step checkable, so it must
+  live where it survives: **the ledger alone is not enough, because Phase 1's
+  `EnterWorktree` clears it.** Phase 8 copies it into the retro, which is the
+  committed, human-reviewed copy.
+- **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
+  `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
+  machinery that runs it**. Record `reflexive: true` in the run file and hold
+  two consequences for the rest of the pipeline:
+  1. **It cannot be dogfooded before merge.** The skill registry loaded at
+     session start comes from the **main checkout**, so your edits are not what
+     executes this run. Verify by reading, and say so in the PR — never claim a
+     changed skill was exercised end-to-end.
+  2. **Pin verification to the original text.** A rewritten rule must not be
+     the thing that grades its own rewrite: Phase 6's rubric and any review of
+     this diff judge against the ACs and the text as they stood at Phase 0.
+     (#407 shipped three defects from exactly this: a rewritten `/deliver`
+     grading itself, ACs that outlived the mechanisms they graded, and a
+     fan-out shipped as prose in the PR arguing prose isn't a gate.)
+  Phase 4 and Phase 5 both self-skip on a no-Swift diff — **override that here**
+  and review the change on its own terms; the diff being markdown is not
+  evidence it is low-risk.
 - **Decompose a multi-deliverable plan** (rules above); single-deliverable
   plans skip this.
 - **Entry gate — a gradeable rubric required.** Plans are expected as

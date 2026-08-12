@@ -1,11 +1,11 @@
 ---
 name: review-knowledge
-description: Audit the knowledge/ base for staleness, self-contradiction, and drift from its own retention policy — two independent adversarial critics verify every load-bearing claim against the current tree, cross-examine each other, and reach a consensus on if/what needs changing. Use periodically, after a run of deliveries that changed build config or target layout, or whenever you suspect the knowledge base has aged out of true.
+description: Audit the knowledge/ base and the .claude/ skills, agents and workflows for staleness, self-contradiction, and drift from their own stated rules — two independent adversarial critics verify every load-bearing claim against the current tree, cross-examine each other, and reach a consensus on if/what needs changing. Use periodically, after a run of deliveries that changed build config, target layout or the skills themselves, or whenever you suspect the docs have aged out of true.
 ---
 
 # Review Knowledge
 
-Audit `knowledge/` against reality. A knowledge base is a **cache of currently-true
+Audit `knowledge/` **and `.claude/`** against reality. Both are a **cache of currently-true
 facts** (`knowledge/README.md` → *Maintenance & retention*), and caches go stale
 silently: writes are engineered here (`/capture-knowledge`, `/deliver`'s capture
 phase) but retirements are not, so truth decays exactly where the code moves
@@ -45,7 +45,7 @@ The point of this skill: do these by default, without being reminded.
 
 ## Scope
 
-Everything under `knowledge/`:
+Two trees. First, everything under `knowledge/`:
 
 | File | What decay looks like here |
 | --- | --- |
@@ -57,9 +57,24 @@ Everything under `knowledge/`:
 | `next-major.md` | An item that shipped, or one whose "breaking" premise no longer holds. It is a **queue**: anything still listed after its major version tagged is a process failure, not a backlog item. |
 | `README.md` | The stated policy no longer matching what the files actually do. |
 
-Also in scope: **contradictions with `CLAUDE.md`**. When the base and `CLAUDE.md`
-disagree, determine which is right from the tree — the base is often the one that
-already diagnosed the truth, and nobody propagated it upstream.
+Also in scope: **`CLAUDE.md` and everything under `.claude/`** — skills, agents,
+`workflows/`, and `.github/CODE_REVIEW.md`. This tree is *larger and more
+normative* than `knowledge/`, decays the same way, and until 2026-08-12 had no
+periodic audit at all — an audit that month found most of its defects here, not
+in `knowledge/`.
+
+| Where | What decay looks like here |
+| --- | --- |
+| A skill's prose | A `make` target, CI job name, path, test filter or tool version that moved; a count quoted from another file. |
+| A rule stated in two places | The copies drift; one silently becomes wrong. Prefer one owner and a pointer. |
+| A rule with no enforcement | Stated as advice where a gate, hook or `tools` allowlist could carry it — this repo's recurring failure (`#368`). |
+| Precedence clauses | "If X and this file disagree, the file wins" — check the file actually says what X assumes, or X's rule is inert. |
+| Two rules sharing one key | Two mandated report lines with the same name, one retro slot: the loser vanishes while the slot still looks filled. |
+| A skill's handoff | Skill A delegates to B without passing the argument B needs, so B falls back to a default A just forbade. |
+
+When the base and `CLAUDE.md` disagree, determine which is right from the tree —
+the base is often the one that already diagnosed the truth, and nobody
+propagated it upstream.
 
 ## Run the audit (Workflow)
 
