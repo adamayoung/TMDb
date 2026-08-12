@@ -547,7 +547,80 @@ the 2026-07-28 audit.*
   build failure is transient beta breakage, expected to clear in a later toolchain.
 - `make ci` is unaffected — it builds the macOS host only, never watchOS.
 
+### Extraneous `CodingKeys` cases break synthesized `Encodable`
+
+*2026-08-12 (#418).* Adding a `CodingKeys` case with **no matching stored
+property** — the normal way to decode a second key spelling, e.g. `name` alongside
+`title` — stops `Encodable` synthesising, because nothing can produce a value for
+that key. The compiler error names the conformance, not the extra case, so it
+reads like an unrelated problem.
+
+Every model here that decodes two key spellings already hand-writes `encode(to:)`
+for exactly this reason — `CollectionListItem`, and `V4List` (a `comments` key
+with no `comments` property). If you extend a `CodingKeys`, budget for the encoder
+too, and decide deliberately which spelling it emits.
+
+The reverse is fine, and is how you *skip* a property: a stored property absent
+from `CodingKeys` is simply not encoded.
+
+### A `package` symbol cannot be referenced by a DocC link
+
+*2026-08-12 (#418).* ` ``droppedItemCount`` ` in a doc comment fails
+`make build-docs` with `error: 'droppedItemCount' doesn't exist at '/TMDb/…'`
+when the symbol is `package` or `internal` — DocC resolves public API only, and
+the build is warnings-as-errors. Describe it in prose or use a code span. Same
+family as the cross-module link trap.
+
+### Check how a page is *built* before reasoning about its decode tolerance
+
+*2026-08-12 (#418).* Three `PageableListResult` specialisations are never decoded
+at all — `<MediaListItem>`, `<V4ListItem>` and `<ChangedID>` are assembled in
+Swift from an already-decoded model (`TMDbListService`, `TMDbV4ListService`,
+`ChangesService+Pagination`). The page type's decode behaviour, tolerant or
+strict, simply does not apply to them, and a drop count reaches the caller only if
+the hand-off passes it along explicitly.
+
+This produced a wrong premise that survived into a plan and a commit message:
+"`lists.items(forList:)` silently drops TV rows". It threw, exactly like
+`lists.details(forList:)`, because both decode the same `MediaList`. Grepping for
+the *request* type (`DecodableAPIRequest<…>`) answers it in one step.
+
+### Carry a decode marker inside a `DecodingError`, not as a bare custom error
+
+*2026-08-12 (#418).* To let a container skip one specific decode failure and stay
+loud for the rest, you need to mark that failure. Throwing a custom `Error` from
+`init(from:)` works, but leaks: every model's `init(from:)` is **public**, so a
+consumer decoding their own cached JSON gets a type they cannot name, and
+`catch let error as DecodingError` silently stops matching.
+
+Throw `DecodingError.dataCorrupted` with the marker as its `underlyingError`, and
+match on that. The public contract is preserved by construction, and it removes
+any question about whether a custom error survives a given platform's
+`JSONDecoder` — a `DecodingError` is that decoder's own currency, which matters
+because Linux uses swift-corelibs-foundation's separate implementation.
+
 ## Testing
+
+### A fixture the author invented tests the author's belief, not the API
+
+*2026-08-12 (#418).* Two bugs in one delivery were hidden by hand-written
+fixtures that could not fail:
+
+- `tv-series-details-append-response.json` gave the appended `lists` section
+  TV-series-shaped rows with `"media_type": "tv"`. The real endpoint returns list
+  *summaries* with no `media_type` at all, so the property was typed wrong and had
+  always decoded to an empty array. The test asserted only `!results.isEmpty`.
+- `MediaListItemTests` had a "TV show" case whose JSON carried `title` and
+  `release_date` — keys TMDb never sends for a series. It passed while
+  `lists.details(forList:)` failed on every real mixed list.
+
+Both shapes are the same: a fixture invented from the model, then asserted
+loosely enough that the invention is never challenged. Source a fixture from a
+real response, and assert its *contents*, not that a collection is non-empty —
+an emptiness check passes for a page that decoded nothing.
+
+Related: an orphan fixture is worse still. `media-list.json` had **no consumer at
+all**; `git grep` for a fixture's name before trusting that it covers anything.
 
 ### An empty-string-guard fixture must come from a real record — `null` passes either way
 

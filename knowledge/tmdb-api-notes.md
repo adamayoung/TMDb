@@ -338,6 +338,65 @@ matching every sibling model, where image paths are unguarded package-wide.
   `video`, `softcore`, `original_language`, `origin_country`, `episodes`,
   `seasons`.
 
+### `/list/{id}` holds movies and TV series, with different keys for each
+
+*2026-08-12, `/3/list/{list_id}`.* A v3 list is mixed media, and each shape gets
+its own keys — a movie row carries `title`, `original_title`, `release_date` and
+`video`; a TV row carries `name`, `original_name`, `first_air_date` and
+`origin_country`, and **none** of the movie keys. A model that requires the
+movie-shaped keys fails on any list containing a series, which is most of them.
+
+- **List `1`** ("The Marvel Universe") is **movie-only** — which is why it hid
+  this for so long; it is the list every test used.
+- **List `8679585`** is genuinely mixed. It is a third-party user list, so assert
+  shape, not content, against it. TMDb publishes no stable mixed-media list.
+
+### `/tv/{id}/lists` returns list summaries, not media rows
+
+*2026-08-12, 70/70 rows across 4 series.* Each row is
+`{ description, favorite_count, id, item_count, iso_639_1, iso_3166_1, name,
+poster_path }` — **no `media_type` at all**, and no `list_type`. It is the same
+shape `/movie/{id}/lists` returns, i.e. `MediaListSummary`, not `Media`.
+
+### Element-model nullability, measured across ~7,900 records
+
+*2026-08-12, sweeping every model reachable as an element of a tolerant
+container.* The point of recording this is the **exclusions** — each of these is
+cleared by measurement, not by assumption, so a future change need not re-litigate
+them:
+
+| Model | Required decodes | Sample | Result |
+| --- | --- | --- | --- |
+| `ProductionCompany` | `id`, `name`, `originCountry` | `/search/company` ×5, N=100 | never `null`/absent |
+| `MediaListSummary` | `id`, `name`, `itemCount`, `favoriteCount` | `/movie|tv/{id}/lists`, N=539 | never `null`/absent |
+| `TaggedImage` | 8 fields + nested `media` | `/person/{id}/tagged_images`, N=229 | never `null`/absent |
+| `TVSeriesListItem` | incl. `originCountries` | search/discover/trending/similar, N=1,046 | never `null`/absent (7 rows `[]`) |
+| `MovieListItem` | `title`, `originalTitle`, … | search/discover/trending, N=758 | never `null`/absent |
+| `CollectionListItem`, `PersonListItem`, `Review`, `Keyword`, `TVEpisode` | — | N=228/443/195/180/194 | never `null`/absent |
+
+**`ProductionCompany.originCountry` does not inherit the `/company/{id}` result
+below.** Those are different serialisers: `/search/company` emits four keys and
+never nulls `origin_country` (100/100), while `/company/{id}` nulls it in 9% of
+records. A nullability note transfers between endpoints only if measured there.
+
+Not measurable here: the whole **v4** surface (no MCP tooling) and the
+**rated-TV-episodes** page (needs a session). CI does not cover the latter either
+— `AccountIntegrationTests` asserts those pages are *empty*, so
+`PageableListResult<TVEpisode>` and `<MediaListSummary>` have never decoded a
+real row in CI.
+
+### `TaggedImageMedia` models only `movie` and `tv_episode`
+
+*2026-08-12, N=229 across 11 people.* The nested `media.media_type` was `movie`
+165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page is
+discarded, and far more for TV-heavy people (person 17419 lost 18 of 20 on page
+one). Tracked as #437; a tolerance policy cannot recover these, because the
+library has nowhere to put a series — the fix is a new case.
+
+Note also that the **top-level** `media_type` on a tagged image uses a *different
+vocabulary* from the nested one: `episode` where the nested object says
+`tv_episode`. Only the nested key is decoded.
+
 ### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
 
 *2026-07-28, `/3/company/{company_id}`, 54-company sample.* Measured, not
@@ -372,19 +431,39 @@ guessed:
   before deciding — the docs aren't always accurate about which fields are
   guaranteed.
 
+## Unmodelled fields
+
+### `softcore` is on every movie and TV row, package-wide
+
+*2026-08-12, measured across ~7,900 records spanning search, discover, trending,
+lists, credits and the changes endpoints.* TMDb now sends `softcore` on
+essentially every movie/TV object, not just the changes endpoints where it was
+first noticed. No model carries it.
+
+This costs nothing: an unmodelled key is ignored by **any** `Codable` decoder.
+Tolerance settings are irrelevant to it — a decoder only fails on keys it asks
+for. (An earlier version of this note attributed the absorption to
+`PageableListResult`'s tolerant element decoding, which was wrong twice over:
+that tolerance is about *elements*, not keys, and `ChangedID` never passes
+through it — see below.)
+
 ## Changes endpoints
 
-### `changes/movie|tv|person` list responses are large and carry an unmodelled `softcore` field
+### `changes/movie|tv|person` list responses are large, and are not decoded as a page
 
 *2026-06-18, `/3/movie/changes` (and the tv/person equivalents).*
 
 - These list endpoints return many pages — `total_pages` was ~76 for the default
   24-hour movie window — so iterate them with a bounded `.prefix(n)` rather than
   draining the whole sequence.
-- Each result object is `{ id, adult, softcore }`. `ChangedID` models only `id`
-  and `adult`; the extra `softcore` key is silently absorbed by
-  `PageableListResult`'s tolerant `FailableDecodable` decoder, so decoding never
-  fails — but the model is incomplete if `softcore` is ever needed.
+- Each result object is `{ id, adult, softcore }`; `ChangedID` models `id` and
+  `adult`.
+- `ChangedID` is **not** an element of a decoded `PageableListResult`. The
+  response decodes as `ChangedIDCollection` and the page is assembled in Swift at
+  `ChangesService+Pagination.swift` — so none of the page-level decode tolerance
+  applies to it. The same is true of `PageableListResult<MediaListItem>` and
+  `PageableListResult<V4ListItem>`: check how a page is *built* before reasoning
+  about its decode behaviour.
 - The change **list** endpoints return a paged shape (`page`/`total_pages`/
   `total_results`, modelled as `ChangedIDCollection`), but the per-entity change
   **detail** endpoints (`/movie/{id}/changes` etc.) return an unpaged
