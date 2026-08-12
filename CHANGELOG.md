@@ -70,6 +70,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   keep that fetcher's own error type, but cancellation the sequence itself
   observes always throws `TMDbError.cancelled`.
 
+- **Breaking:** `CreditType` gains `.creator` and `.unknown` cases, and an
+  unrecognised `credit_type` now decodes to `.unknown` instead of throwing.
+  TMDb returns `"creator"` for a TV series creator — so
+  `credits.details(forCredit:)` failed outright with `TMDbError.decode` for
+  every such credit, including Steven Spielberg's on *Invasion America*. This
+  only affects you if you switch exhaustively over `CreditType` — add
+  `.creator` and `.unknown` branches, or a `default`. `CreditType` now matches
+  the tolerance every other decoded enum in the library already has
+  (`Status`, `VideoType`, `ReleaseType`, `VideoSize`, `Gender`,
+  `TMDbStatusCode`).
+
 - **Breaking:** `HTTPRequest.Method` gains a `.put` case. v4 list update is a
   PUT and there is no other way to express it. This only affects you if you
   supply your own `HTTPClient` **and** switch exhaustively over the method — add

@@ -282,17 +282,21 @@ public method that silently does nothing.
 
 ### `credit_type` is not just `cast`/`crew` — `"creator"` exists
 
-*2026-08-12 (#417), found in a 300-credit sample.* `GET /credit/{id}` can return
+*2026-08-12, found in a 300-credit sample.* `GET /credit/{id}` can return
 `"credit_type": "creator"` (with `department` and `job` both `"Creator"`) — live
 example `5257855d19c29531db28adea`, Steven Spielberg on *Invasion America*. Rare
 (1 in 300) but a normal category: it is how TMDb models a TV series creator.
 
-`CreditType` has only `cast`/`crew` with synthesized `Decodable`, so
-`credits.details(forCredit:)` throws `TMDbError.decode` for these credits. #417
-deliberately left it that way — adding a case to a public two-case enum breaks
-exhaustive switches, and mapping `creator` → `crew` would be data corruption —
-so the throw is pinned by `CreditTypeTests.decodeUnknownCreditTypeThrows` and the
-policy decision belongs to #418. Invert that test when the enum grows.
+`CreditType` models it as `.creator`, and any other unrecognised value decodes
+to `.unknown` rather than throwing — the same tolerance `Status`, `VideoType`,
+`ReleaseType`, `VideoSize`, `Gender` and `TMDbStatusCode` have. Before 20.0.0 it
+was a two-case `cast`/`crew` enum with synthesized `Decodable`, so
+`credits.details(forCredit:)` failed outright for every creator credit.
+
+The lesson generalises past this field: a two-case enum over server vocabulary is
+a latent whole-response failure, and "the API only documents two values" is not
+evidence that it only sends two. `credit_type` was not in the reviewed inventory
+of brittle enums precisely because nobody had sampled it.
 
 ### Unknown enum-like string values should decode resiliently
 

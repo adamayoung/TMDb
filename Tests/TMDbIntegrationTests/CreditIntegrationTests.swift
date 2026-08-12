@@ -64,4 +64,26 @@ struct CreditIntegrationTests {
         #expect(movie.title == "Fight Club")
     }
 
+    /// A TV series creator credit: `credit_type` is neither `cast` nor `crew`,
+    /// which used to fail the whole call. A 1998 series, so the credit is stable.
+    @Test("details for a creator credit")
+    func detailsForCreatorCredit() async throws {
+        let creditID = "5257855d19c29531db28adea"
+
+        let credit = try await creditService.details(
+            forCredit: creditID
+        )
+
+        #expect(credit.id == creditID)
+        #expect(credit.creditType == .creator)
+        #expect(credit.person.name == "Steven Spielberg")
+
+        guard case .tvSeries(let tvSeries) = credit.media else {
+            Issue.record("Expected TV series media type")
+            return
+        }
+
+        #expect(tvSeries.id == 6227)
+    }
+
 }
