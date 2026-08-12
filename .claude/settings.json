@@ -22,6 +22,18 @@
     }
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); [ -z \"$f\" ] && exit 0; d=$(dirname \"$f\"); while [ ! -d \"$d\" ] && [ \"$d\" != \"/\" ]; do d=$(dirname \"$d\"); done; root=$(git -C \"$d\" rev-parse --show-toplevel 2>/dev/null) || exit 0; case \"$(git -C \"$root\" remote get-url origin 2>/dev/null)\" in *adamayoung/TMDb*) ;; *) exit 0 ;; esac; [ \"$(git -C \"$root\" branch --show-current 2>/dev/null)\" = \"main\" ] || exit 0; echo \"Refusing to edit on main: $f - CLAUDE.md requires all changes on a branch. Run: git checkout -b <prefix>/<slug>\" >&2; exit 2",
+            "statusMessage": "Checking branch..."
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
