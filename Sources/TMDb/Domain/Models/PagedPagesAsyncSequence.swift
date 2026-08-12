@@ -33,7 +33,8 @@ import Foundation
 ///
 /// - **Lazy fetching**: Pages are fetched only when needed, one at a time
 /// - **Automatic termination**: Stops when reaching the last page (based on `totalPages`) or an empty page
-/// - **Cancellation support**: Respects `Task` cancellation via `Task.checkCancellation()`
+/// - **Cancellation support**: Throws ``TMDbError/cancelled`` at the next page
+///   boundary when the task is cancelled
 /// - **Error propagation**: Errors from the page fetcher propagate immediately and stop iteration
 /// - **Early break**: Breaking from the loop stops fetching additional pages
 ///
@@ -139,7 +140,10 @@ public extension PagedPagesAsyncSequence {
         /// Produces the next page in the sequence.
         ///
         /// - Returns: The next page, or `nil` if the sequence is exhausted.
-        /// - Throws: Any error encountered during page fetching or if the task is cancelled.
+        /// - Throws: ``TMDbError/cancelled`` when the task is cancelled;
+        ///   otherwise whatever the page fetcher throws. A page fetcher supplied
+        ///   by the caller keeps its own error type — only cancellation the
+        ///   sequence itself observes is normalised.
         ///
         public mutating func next() async throws -> PageableListResult<Result>? {
             // If we're finished, return nil
@@ -148,7 +152,9 @@ public extension PagedPagesAsyncSequence {
             }
 
             // Check for cancellation before fetching the next page
-            try Task.checkCancellation()
+            guard !Task.isCancelled else {
+                throw TMDbError.cancelled
+            }
 
             // Check if we've reached the last page
             if let totalPages, currentPage >= totalPages {
