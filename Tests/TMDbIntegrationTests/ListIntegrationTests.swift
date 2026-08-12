@@ -47,6 +47,37 @@ struct ListIntegrationTests {
         #expect(result.page >= 1)
         #expect(result.totalResults >= 1)
         #expect(result.totalPages >= 1)
+        #expect(result.droppedItemCount == 0)
+    }
+
+    /// A v3 list holds movies and TV series together, and TMDb gives a TV row
+    /// `name`/`original_name`/`first_air_date` with none of the movie keys. Both
+    /// of these calls threw outright on any such list until `MediaListItem`
+    /// learned the TV shape — and list 1, the one every other test here uses, is
+    /// movie-only, so nothing caught it.
+    ///
+    /// This asserts *shape*, never content: list 8679585 is a third-party user
+    /// list that can be edited or deleted at any time, and TMDb publishes no
+    /// stable mixed-media list.
+    @Test("details and items decode a list holding both movies and TV series")
+    func mixedMediaListDecodes() async throws {
+        let listID = 8_679_585
+
+        let list = try await listService.details(forList: listID, page: nil)
+
+        #expect(!list.items.isEmpty)
+        #expect(list.droppedItemCount == 0)
+        for item in list.items {
+            #expect(!item.title.isEmpty)
+        }
+
+        let page = try await listService.items(forList: listID, page: nil)
+
+        #expect(!page.results.isEmpty)
+        #expect(page.droppedItemCount == 0)
+        for item in page.results {
+            #expect(!item.title.isEmpty)
+        }
     }
 
     @Test("itemStatus")

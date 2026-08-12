@@ -36,6 +36,25 @@ struct TVSeriesServiceTests {
         #expect(season.episodeCount != nil)
     }
 
+    /// `/tv/{id}/lists` returns list summaries, not media rows. The appended
+    /// response modelled them as media, so every row failed to decode and the
+    /// page came back empty — invisibly, because nothing appended `.lists` here.
+    @Test("details appending lists")
+    func detailsAppendingLists() async throws {
+        let tvSeriesID = 1396
+
+        let response = try await tvSeriesService.details(
+            forTVSeries: tvSeriesID, appending: [.lists]
+        )
+
+        let lists = try #require(response.lists)
+        #expect(!lists.results.isEmpty)
+        #expect(lists.droppedItemCount == 0)
+
+        let list = try #require(lists.results.first)
+        #expect(!list.name.isEmpty)
+    }
+
     @Test("credits")
     func credits() async throws {
         let tvSeriesID = 4604
