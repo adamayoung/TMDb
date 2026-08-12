@@ -147,15 +147,20 @@ struct TMDbNaturalLanguageSearchServiceTests {
         }
     }
 
-    @Test("canFallBack is false for cancellation")
-    func canFallBackIsFalseForCancellation() async throws {
-        planner.planError = .cancelled
+    @Test("cancellation during plan execution surfaces as cancelled")
+    func cancellationDuringExecutionSurfacesAsCancelled() async throws {
+        // Planning succeeds; the cancellation happens in `executor.execute(plan)`,
+        // which reaches the service through an untyped `throws` as a
+        // `TMDbError.cancelled`. Without its own catch arm it would be re-labelled
+        // `.planningFailed`, which is the misreporting this change removes.
+        planner.planResult = SearchPlan(intent: .list, mediaType: .movie, list: .popular)
+        dataSource.curatedMoviesError = TMDbError.cancelled
 
-        // Even with the fallback explicitly enabled, cancellation must not use it.
         await #expect(throws: NaturalLanguageSearchError.cancelled) {
-            try await makeService(literalFallbackEnabled: true).search(matching: "x")
+            try await makeService().search(matching: "popular movies")
         }
 
+        // And it is still not rescued by the fallback at this stage either.
         #expect(dataSource.searchAllQueries.isEmpty)
     }
 

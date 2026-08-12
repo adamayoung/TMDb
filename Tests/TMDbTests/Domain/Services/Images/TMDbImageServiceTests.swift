@@ -9,7 +9,10 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.services, .images))
+/// Bounded for the same reason as `APIConfigurationStoreTests`: every call here
+/// routes through the cancellable join, where a regression presents as a hang
+/// rather than a failure.
+@Suite(.tags(.services, .images), .timeLimit(.minutes(1)))
 struct TMDbImageServiceTests {
 
     private static func makeConfiguration() throws -> ImagesConfiguration {

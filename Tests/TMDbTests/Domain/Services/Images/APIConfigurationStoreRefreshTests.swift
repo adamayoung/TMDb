@@ -9,7 +9,10 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.services, .images))
+/// Bounded for the same reason as `APIConfigurationStoreTests`: these drive the
+/// same cancellable join, where a regression presents as a hang rather than a
+/// failure.
+@Suite(.tags(.services, .images), .timeLimit(.minutes(1)))
 struct APIConfigurationStoreRefreshTests {
 
     @Test("refresh re-fetches and re-memoises the new value")

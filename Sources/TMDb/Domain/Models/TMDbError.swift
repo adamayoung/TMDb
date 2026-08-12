@@ -66,9 +66,10 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// retry.
     ///
     /// - Note: Cancellation is only reported when the library actually observes
-    ///   it. A value already held in memory — a cached image configuration, or
-    ///   items still buffered by an auto-pagination sequence — is returned
-    ///   without suspending, and so without noticing the cancellation.
+    ///   it. A cached image configuration is returned without suspending, and so
+    ///   without noticing the cancellation. An auto-pagination sequence, by
+    ///   contrast, checks *before* serving buffered items, so a cancelled scan
+    ///   throws at the next element even with a page still buffered.
     ///
     case cancelled
 

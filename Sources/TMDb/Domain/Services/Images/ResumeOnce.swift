@@ -83,8 +83,13 @@ final class ResumeOnce<Value: Sendable>: @unchecked Sendable {
             }
 
             guard let continuation else {
-                // Beat the continuation here; `attach` will deliver it.
-                pendingValue = value
+                // Beat the continuation here; `attach` will deliver it. Latched,
+                // so a second pre-attach producer cannot overwrite the first —
+                // otherwise "first call wins" would silently become "last wins"
+                // in exactly the window where the race is hardest to observe.
+                if pendingValue == nil {
+                    pendingValue = value
+                }
                 return nil
             }
 

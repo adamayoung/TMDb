@@ -82,6 +82,24 @@ struct ErrorCancellationTests {
         #expect(await task.value == false)
     }
 
+    @Test("the cancelled code in a foreign domain is not a task cancellation")
+    func cancelledCodeInForeignDomainIsNotTaskCancellation() async {
+        // Guards the domain half of the conjunction: -999 is only meaningful
+        // within NSURLErrorDomain, and another domain is free to reuse it.
+        let task = Task { () -> Bool in
+            while !Task.isCancelled {
+                await Task.yield()
+            }
+
+            let error = NSError(domain: "com.example.Other", code: NSURLErrorCancelled)
+            return error.isTaskCancellation
+        }
+
+        task.cancel()
+
+        #expect(await task.value == false)
+    }
+
     @Test("an unrelated error is never a task cancellation")
     func unrelatedErrorIsNotTaskCancellation() {
         struct SomeError: Error {}

@@ -40,11 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   code while the caller's task is alive; those remain `TMDbError.network`, since
   they are real failures rather than the caller changing their mind.
 
-- `client.images` no longer blocks a cancelled caller. A caller waiting on the
-  shared configuration fetch was dragged along to the end of it — up to ~30s, or
-  minutes with retry enabled. It now abandons its wait; the shared fetch still
-  runs on and delivers to every other caller. A caller served from the cache
-  never suspends and is unaffected.
+- **Breaking:** `client.images` no longer blocks a cancelled caller. A caller
+  waiting on the shared configuration fetch was dragged along to the end of it —
+  up to ~30s, or minutes with retry enabled. It now abandons its wait and throws
+  `TMDbError.cancelled` where it previously returned the fetched value; the
+  shared fetch still runs on and delivers to every other caller. A caller served
+  from the cache never suspends and is unaffected.
 
 - A cancelled natural-language search (`TMDbIntelligence`) no longer issues
   three fresh searches. Cancellation was wrapped as
@@ -62,8 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Breaking:** a cancelled auto-pagination scan now throws `TMDbError.cancelled`
   rather than `CancellationError`, and stops at the next element even while
   items from the current page are still buffered. Replace
-  `catch is CancellationError` with `catch TMDbError.cancelled`. A sequence you
-  built with your own `pageFetcher` keeps that fetcher's own error type.
+  `catch is CancellationError` with `catch TMDbError.cancelled`. This applies
+  however the sequence was built: errors *from* a `pageFetcher` you supplied
+  keep that fetcher's own error type, but cancellation the sequence itself
+  observes always throws `TMDbError.cancelled`.
 
 - **Breaking:** `HTTPRequest.Method` gains a `.put` case. v4 list update is a
   PUT and there is no other way to express it. This only affects you if you

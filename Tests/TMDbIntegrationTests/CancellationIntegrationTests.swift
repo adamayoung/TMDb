@@ -26,7 +26,7 @@ import Testing
 @Suite(
     .integrationGate,
     .serialized,
-    .tags(.network),
+    .tags(.cancellation),
     .enabled(if: CredentialHelper.shared.hasAPIKey),
     .timeLimit(.minutes(1))
 )
