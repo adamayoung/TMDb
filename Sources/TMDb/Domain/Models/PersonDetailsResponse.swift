@@ -130,11 +130,30 @@ extension PersonDetailsResponse: Decodable {
             )
             .map { PersonTVSeriesCredits(id: id, cast: $0.cast, crew: $0.crew) }
 
-        self.combinedCredits = try container
-            .decodeCastAndCrewIfPresent(
-                ShowCastCredit.self, ShowCrewCredit.self, forKey: .combinedCredits
+        // Decoded inline rather than through `decodeCastAndCrewIfPresent`: combined
+        // credits are the only credits shape whose elements carry a `media_type`,
+        // so the tolerance belongs here rather than in a helper the movie and TV
+        // credit shapes share.
+        if container.contains(.combinedCredits) {
+            let nested = try container.nestedContainer(
+                keyedBy: StringCodingKey.self, forKey: .combinedCredits
             )
-            .map { PersonCombinedCredits(id: id, cast: $0.cast, crew: $0.crew) }
+            let cast = try nested.decodeSkippingUnknownMediaTypes(
+                ShowCastCredit.self, forKey: StringCodingKey("cast")
+            )
+            let crew = try nested.decodeSkippingUnknownMediaTypes(
+                ShowCrewCredit.self, forKey: StringCodingKey("crew")
+            )
+
+            self.combinedCredits = PersonCombinedCredits(
+                id: id,
+                cast: cast.elements,
+                crew: crew.elements,
+                droppedItemCount: cast.dropped + crew.dropped
+            )
+        } else {
+            self.combinedCredits = nil
+        }
 
         self.images = try container
             .decodeNestedArrayIfPresent(ImageMetadata.self, forKey: .images, nestedKey: "profiles")

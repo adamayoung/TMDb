@@ -34,7 +34,8 @@ final class TMDbListService: ListService {
             page: response.page,
             results: response.items,
             totalResults: response.totalResults,
-            totalPages: response.totalPages
+            totalPages: response.totalPages,
+            droppedItemCount: response.droppedItemCount
         )
     }
 

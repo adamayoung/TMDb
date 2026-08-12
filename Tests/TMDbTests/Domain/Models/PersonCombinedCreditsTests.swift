@@ -106,6 +106,73 @@ struct PersonCombinedCreditsTests {
         }
     }
 
+    /// Before this, one foreign `media_type` anywhere in either array failed
+    /// `people.combinedCredits(forPerson:)` wholesale.
+    @Test("JSON decoding skips credits with an unmodelled media type and counts them")
+    func decodeSkipsCreditsWithUnmodelledMediaType() throws {
+        let json = """
+        {
+          "id": 287,
+          "cast": [
+            {
+              "id": 1,
+              "title": "A Movie",
+              "original_title": "A Movie",
+              "original_language": "en",
+              "overview": "An overview.",
+              "genre_ids": [],
+              "character": "Someone",
+              "credit_id": "525333fb19c295794002c720",
+              "order": 0,
+              "media_type": "movie"
+            },
+            {"id": 2, "name": "A Future Thing", "media_type": "podcast"}
+          ],
+          "crew": [
+            {"id": 3, "name": "Another Future Thing", "media_type": "hologram"}
+          ]
+        }
+        """
+
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            PersonCombinedCredits.self, from: Data(json.utf8)
+        )
+
+        #expect(result.cast.count == 1)
+        #expect(result.crew.isEmpty)
+        #expect(result.droppedItemCount == 2)
+    }
+
+    @Test("JSON decoding throws when a credit is malformed for any other reason")
+    func decodeThrowsWhenCreditIsMalformed() {
+        let json = """
+        {
+          "id": 287,
+          "cast": [
+            {
+              "id": "not-an-int",
+              "title": "A Movie",
+              "original_title": "A Movie",
+              "original_language": "en",
+              "overview": "An overview.",
+              "genre_ids": [],
+              "character": "Someone",
+              "credit_id": "525333fb19c295794002c720",
+              "order": 0,
+              "media_type": "movie"
+            }
+          ],
+          "crew": []
+        }
+        """
+
+        #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(
+                PersonCombinedCredits.self, from: Data(json.utf8)
+            )
+        }
+    }
+
     private let personCombinedCredits = PersonCombinedCredits(
         id: 287,
         cast: [

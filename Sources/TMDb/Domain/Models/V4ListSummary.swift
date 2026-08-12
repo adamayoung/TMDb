@@ -203,12 +203,15 @@ extension V4ListSummary {
     ///
     /// Creates a v4 list summary by decoding from the given decoder.
     ///
-    /// Every field except `id` and `name` is decoded tolerantly. That matters
-    /// more here than usual: `lists(forAccount:)` wraps its results in
-    /// `FailableDecodable`, so a summary that *throws* is silently **dropped**
-    /// from the page rather than surfaced — one field TMDb stopped sending
-    /// would make a user's list disappear with no error at all. `V4List`
-    /// defends itself the same way.
+    /// Every field except `id` and `name` is decoded tolerantly, so one field
+    /// TMDb stopped sending cannot fail a user's whole list page.
+    ///
+    /// A page no longer swallows a summary that throws — only an unmodelled
+    /// media type is skipped — so a throw here now surfaces to the caller of
+    /// `lists(forAccount:)` as an error rather than making a list quietly
+    /// disappear. That is the intended direction, and it is why the tolerance
+    /// above is worth keeping: it reserves the loud failure for a genuine
+    /// decoder defect. `V4List` defends itself the same way.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///

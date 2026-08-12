@@ -68,9 +68,9 @@ struct V4ListSummaryTests {
 
     @Test("a summary missing optional fields still decodes rather than vanishing")
     func minimalSummaryDecodes() throws {
-        // These are wrapped in `FailableDecodable` by `PageableListResult`, so a
-        // throw here would silently DROP the list from the user's results
-        // instead of surfacing an error.
+        // A page no longer swallows an element that throws, so a throw here would
+        // now fail the caller's whole `lists(forAccount:)` call. Keeping the
+        // summary tolerant reserves that loud failure for a real decoder defect.
         let json = Data(#"{"id": 42, "name": "Sparse"}"#.utf8)
 
         let result = try JSONDecoder.theMovieDatabaseV4.decode(V4ListSummary.self, from: json)

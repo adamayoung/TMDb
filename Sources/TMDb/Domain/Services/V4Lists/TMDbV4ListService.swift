@@ -54,7 +54,8 @@ final class TMDbV4ListService: V4ListService {
             page: list.page,
             results: list.items,
             totalResults: list.totalResults,
-            totalPages: list.totalPages
+            totalPages: list.totalPages,
+            droppedItemCount: list.droppedItemCount
         )
     }
 

@@ -112,4 +112,99 @@ struct KeyedDecodingContainerMediaTypeTests {
         }
     }
 
+    // MARK: - Tolerant arrays
+
+    private struct Page: Decodable {
+        let items: [Element]
+        let dropped: Int
+
+        private enum CodingKeys: String, CodingKey {
+            case items
+        }
+
+        init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let decoded = try container.decodeSkippingUnknownMediaTypes(
+                Element.self, forKey: .items
+            )
+            self.items = decoded.elements
+            self.dropped = decoded.dropped
+        }
+    }
+
+    private struct OptionalPage: Decodable {
+        let items: [Element]?
+        let dropped: Int
+
+        private enum CodingKeys: String, CodingKey {
+            case items
+        }
+
+        init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let decoded = try container.decodeSkippingUnknownMediaTypesIfPresent(
+                Element.self, forKey: .items
+            )
+            self.items = decoded.elements
+            self.dropped = decoded.dropped
+        }
+    }
+
+    @Test("keeps every element when all media types are modelled")
+    func keepsEveryModelledElement() throws {
+        let data = Data(#"{"items": [{"media_type": "movie"}, {"media_type": "tv"}]}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(Page.self, from: data)
+
+        #expect(result.items.count == 2)
+        #expect(result.dropped == 0)
+    }
+
+    @Test("skips only the element with an unmodelled media type, and counts it")
+    func skipsAndCountsUnmodelledElement() throws {
+        let json = """
+        {"items": [{"media_type": "movie"}, {"media_type": "podcast"}, {"media_type": "tv"}]}
+        """
+
+        let result = try JSONDecoder.theMovieDatabase.decode(Page.self, from: Data(json.utf8))
+
+        #expect(result.items.map(\.mediaType) == [.movie, .tvSeries])
+        #expect(result.dropped == 1)
+    }
+
+    /// The loud half of the policy, and the behaviour this change exists to
+    /// introduce: before it, an element that failed for *any* reason was dropped
+    /// silently, so a decoder regression showed up as a quietly short page.
+    @Test("propagates a genuine DecodingError instead of skipping the element")
+    func propagatesGenuineDecodingError() {
+        let json = """
+        {"items": [{"media_type": "movie"}, {"media_type": 7}]}
+        """
+
+        #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(Page.self, from: Data(json.utf8))
+        }
+    }
+
+    @Test("decodes an absent key as an empty array")
+    func decodesAbsentKeyAsEmptyArray() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(Page.self, from: Data(#"{}"#.utf8))
+
+        #expect(result.items.isEmpty)
+        #expect(result.dropped == 0)
+    }
+
+    /// `nil` and `[]` are different on a public optional — the synthesized encoder
+    /// writes the key for one and omits it for the other — so the `IfPresent`
+    /// variant must not collapse them.
+    @Test("decodes an absent key as nil for the IfPresent variant")
+    func decodesAbsentKeyAsNilWhenOptional() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            OptionalPage.self, from: Data(#"{}"#.utf8)
+        )
+
+        #expect(result.items == nil)
+        #expect(result.dropped == 0)
+    }
+
 }

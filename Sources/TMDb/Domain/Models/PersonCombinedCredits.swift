@@ -122,6 +122,16 @@ public struct PersonCombinedCredits: Identifiable, Codable, Equatable, Hashable,
         return (castShows + crewShows).uniqued()
     }
 
+    ///
+    /// How many credits were skipped while decoding because their media type is
+    /// one this library does not model, across both ``cast`` and ``crew``.
+    ///
+    /// Decode telemetry, not data: it exists so tests can assert that credits are
+    /// missing for a known reason rather than a regression. It is zero for a
+    /// value built in code.
+    ///
+    package let droppedItemCount: Int
+
     /// Creates a person combined credits object.
     ///
     /// - Parameters:
@@ -130,9 +140,69 @@ public struct PersonCombinedCredits: Identifiable, Codable, Equatable, Hashable,
     ///    - crew: Shows where person is in the crew.
     ///
     public init(id: Int, cast: [ShowCastCredit], crew: [ShowCrewCredit]) {
+        self.init(id: id, cast: cast, crew: crew, droppedItemCount: 0)
+    }
+
+    ///
+    /// Creates a person combined credits object carrying a decode drop count.
+    ///
+    /// - Parameters:
+    ///    - id: Person identifier.
+    ///    - cast: Shows where person is in the cast.
+    ///    - crew: Shows where person is in the crew.
+    ///    - droppedItemCount: How many credits were skipped while decoding.
+    ///
+    package init(
+        id: Int,
+        cast: [ShowCastCredit],
+        crew: [ShowCrewCredit],
+        droppedItemCount: Int
+    ) {
         self.id = id
         self.cast = cast
         self.crew = crew
+        self.droppedItemCount = droppedItemCount
+    }
+
+}
+
+extension PersonCombinedCredits {
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case cast
+        case crew
+    }
+
+    ///
+    /// Creates a person combined credits object by decoding from the given decoder.
+    ///
+    /// A credit whose media type this library does not model is skipped rather
+    /// than failing the whole set, and counted in ``droppedItemCount``. Every
+    /// other decode failure throws.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: An error if reading from the decoder fails, or if the data is
+    ///   corrupted or otherwise invalid.
+    ///
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let id = try container.decode(Int.self, forKey: .id)
+        let cast = try container.decodeSkippingUnknownMediaTypes(
+            ShowCastCredit.self, forKey: .cast
+        )
+        let crew = try container.decodeSkippingUnknownMediaTypes(
+            ShowCrewCredit.self, forKey: .crew
+        )
+
+        self.init(
+            id: id,
+            cast: cast.elements,
+            crew: crew.elements,
+            droppedItemCount: cast.dropped + crew.dropped
+        )
     }
 
 }

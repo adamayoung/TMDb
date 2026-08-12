@@ -30,10 +30,10 @@ struct V4ListTests {
 
     @Test("keeps every item — a short page would mean a dropped decode")
     func decodesEveryItem() throws {
-        // `FailableDecodable` skips an element it cannot model, silently. This
-        // reconciles the decoded count against the count TMDb reports, so a
-        // decoder regression fails here rather than returning a quietly short
-        // page.
+        // An item whose media type is unmodelled is skipped. This reconciles the
+        // decoded count against the count TMDb reports, and asserts nothing was
+        // skipped, so a decoder regression fails here rather than returning a
+        // quietly short page.
         let result = try JSONDecoder.theMovieDatabaseV4.decode(
             V4List.self, fromResource: "v4-list"
         )
@@ -41,6 +41,7 @@ struct V4ListTests {
         #expect(result.items.count == 2)
         #expect(result.items.count == result.itemCount)
         #expect(result.items.count == result.totalResults)
+        #expect(result.droppedItemCount == 0)
     }
 
     @Test("decodes a movie item and a TV item into the right Show cases")

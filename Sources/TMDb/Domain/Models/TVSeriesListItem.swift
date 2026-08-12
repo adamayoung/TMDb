@@ -183,7 +183,13 @@ extension TVSeriesListItem {
         // array rather than failing to decode the whole page.
         self.genreIDs = try container.decodeIfPresent([Genre.ID].self, forKey: .genreIDs) ?? []
         self.firstAirDate = try container.decodeNonEmptyDateIfPresent(forKey: .firstAirDate)
-        self.originCountries = try container.decode([String].self, forKey: .originCountries)
+        // Defence in depth rather than a measured failure: `origin_country` was
+        // present on all 1,046 sampled rows across search, discover, trending,
+        // similar and recommendations. But it is a required decode on the hottest
+        // list path in the package, and its sibling `MovieListItem.originCountry`
+        // already tolerates absence — the asymmetry is the risk, not the data.
+        self.originCountries =
+            try container.decodeIfPresent([String].self, forKey: .originCountries) ?? []
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
         self.backdropPath = try container.decodeIfPresent(URL.self, forKey: .backdropPath)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)

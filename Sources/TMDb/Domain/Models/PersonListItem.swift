@@ -55,6 +55,16 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
     public let knownFor: [Show]?
 
     ///
+    /// How many entries were skipped while decoding ``knownFor`` because their
+    /// media type is one this library does not model.
+    ///
+    /// Decode telemetry, not data: it exists so tests can assert that entries are
+    /// missing for a known reason rather than a regression. It is zero for a
+    /// value built in code.
+    ///
+    package let droppedItemCount: Int
+
+    ///
     /// Is the Person only suitable for adults.
     ///
     public let isAdultOnly: Bool?
@@ -93,6 +103,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
         self.popularity = popularity
         self.knownFor = knownFor
         self.isAdultOnly = isAdultOnly
+        self.droppedItemCount = 0
     }
 
 }
@@ -134,7 +145,16 @@ extension PersonListItem {
         self.gender = (try? container.decodeIfPresent(Gender.self, forKey: .gender)) ?? .unknown
         self.profilePath = try container.decodeIfPresent(URL.self, forKey: .profilePath)
         self.popularity = try container.decodeIfPresent(Double.self, forKey: .popularity)
-        self.knownFor = try container.decodeIfPresent([Show].self, forKey: .knownFor)
+        // A show here whose media type this library does not model is skipped from
+        // `knownFor`, not allowed to discard the whole person. `decodeIfPresent`'s
+        // nil-for-absent behaviour is preserved: nil and [] are different on a
+        // public optional, and the synthesized encoder writes the key for one and
+        // omits it for the other.
+        let decodedKnownFor = try container.decodeSkippingUnknownMediaTypesIfPresent(
+            Show.self, forKey: .knownFor
+        )
+        self.knownFor = decodedKnownFor.elements
+        self.droppedItemCount = decodedKnownFor.dropped
         self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
     }
 
