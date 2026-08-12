@@ -14,6 +14,73 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
+## 2026-08-12 — 🐛 Surface task cancellation as `TMDbError.cancelled` (#433) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight: three-critic `/review-plan`, the
+  fan-out + adversarial-verify `/review-changes`, independent grader.
+  `consulted:` ADR-0001/0003/0012/0013, `next-major.md` (the `invalidRating`
+  entry, settled here), gotchas *Swift concurrency* §853-950 (all four entries),
+  `swift-concurrency` skill; wiki *semantic-errors-not-transport-errors*,
+  *treat-review-findings-as-hypotheses*, *for-a-sendable-test-double-reach-for-a-
+  lock-before-an-actor*.
+- **Worked — the plan critics changed the design, not just the wording.** All
+  three independently found a bug the issue never mentioned: a cancelled
+  natural-language search was wrapped as `.planningFailed`, which `canFallBack`
+  treats as fallback-eligible, so `TMDbIntelligence` issued *three fresh live
+  searches on an already-cancelled task* — the library itself doing the
+  "re-run work the user cancelled" harm #419 was filed about. That became Part 4.
+  They also killed two defects that would have shipped: the detection predicate
+  would have swallowed `URLSession.invalidateAndCancel()` as a user cancellation,
+  and `(error as? URLError)` may not match what corelibs-foundation raises on
+  Linux — where the integration test meant to prove it never runs.
+- **Worked — the simplicity critic reversed my Part 2 design, for the better.**
+  I had planned a waiter registry on the actor. The `DataTaskBox`-style
+  `ResumeOnce` box it proposed instead is smaller, touches none of ADR-0013's
+  commit machinery, and *removes* a hang class (late registration) rather than
+  adding one. Its decisive argument was that `onCancel` is synchronous, so a lock
+  beats an actor — which is the wiki entry I had already read and not applied.
+- **Worked — mutation-testing a review finding.** The fan-out claimed the
+  executor-path `catch` arm was untested. Rather than trust or dismiss it, I
+  mutated the arm and re-ran: it failed with `planningFailed(underlying:
+  .cancelled)`, proving both the finding and, after the fix, the new test.
+- **Friction — `.build` contention shaped the schedule, not just the tokens.**
+  Phases 4 and 5 read the same commits and feel parallel, but one scratch dir
+  means they must be serial; every reviewer prompt needed an explicit "do not
+  build". Worth it: full 5/5 dimension coverage, 1 finding dropped by refutation.
+- **Deviations:** (1) test-first per *cohesive unit*, not per test — the
+  exhaustive switches acted as the red signal for the mapping sites, but that is
+  a looser loop than `canon-tdd` prescribes. (2) I skipped a test my own plan
+  listed (composing `TMDbAPIClient` over `RetryHTTPClient`); the grader caught
+  it. (3) The rubric named AC4 in terms the critics later proved unachievable,
+  so it was narrowed mid-run, and AC8 added for Part 4 — both flagged to the
+  user rather than quietly restated.
+- **One improvement — Phase 6 grades AC-shaped knowledge work that Phase 7 has
+  not done yet.** AC6 ("ADR-0018 exists, ADR-0013 amended, `next-major.md` entry
+  removed") failed the first grading *purely* because capture runs after the
+  rubric gate. The criterion was correct and the ordering is deliberate, but a
+  knowledge-shaped AC is guaranteed to fail its first grading. Either `/deliver`
+  should grade knowledge ACs after Phase 7, or Phase 0 should refuse to accept
+  one — worth a wrap-up scan proposal if it recurs.
+- **`swept:`** one stale claim retired — the prefetch-forwarding testing gotcha
+  still described the `Task.checkCancellation()` guard this change replaced;
+  annotated rather than deleted, since its actor-recorder advice still holds. No
+  `Makefile`/`Package.swift`/workflow/`.claude` changes, so the target-layout
+  half is n/a.
+- **`watch:`** the Linux CI job caught a **production** bug that every other gate
+  missed. In `ResumeOnce.resume(_:)` a local named `continuation` shadowed the
+  stored property *inside its own initialiser*, so `guard let continuation` read
+  uninitialised stack memory. On Darwin that garbage was `nil` and the code
+  behaved perfectly — 3144 macOS tests, `make ci`, two review passes, a security
+  review and an independent grader all green. On Linux it was non-`nil` and
+  segfaulted in `swift_retain`, wedging the runner so hard it ignored both
+  GitHub's concurrency cancel and `gh run cancel`. Three lessons, all captured:
+  a full green `make ci` **never builds for Linux**, so a hand-rolled concurrency
+  primitive needs `make test-linux` *before* the PR; `.timeLimit` cannot rescue a
+  task parked on an unresumed continuation (the timeout blocks with it), so my
+  earlier claim that it "turns a hang into a failure" was overstated and is now
+  corrected in the suite comment; and a diff-reading reviewer cannot see this
+  class of bug — `claude-review` explicitly approved the file.
+
 ## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
 
 - **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a
@@ -558,58 +625,6 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   tree. Captured as a gotcha this delivery; a skill fix would stop the next
   worktree run hitting it cold.
 
-## 2026-07-08 — 👷 Bump CI workflows to Xcode 26.6 (#387) · lite
-
-- **Phases / skills:** phases 0–10; config-only (`.github/workflows/`), so
-  `review-plan` skipped (lite + `ExitPlanMode` approval) and `review-changes`
-  self-skipped (no Swift). `security-review` **ran** — workflows are a
-  security-relevant surface — and returned 0 findings (a trusted-literal token
-  swap with no untrusted-input path). `/capture-knowledge` returned nothing:
-  the only fact (macos-26 ships Xcode 26.6, build 17F113) is transient
-  runner-image state, already recorded in the commit message.
-- **Worked:** a plan-time `WebFetch` of the `macos-26` runner-image README
-  confirmed `/Applications/Xcode_26.6.app` exists (build 17F113) **before**
-  pinning it — retiring the one real risk of a version-pin bump (pinning a
-  toolchain the runner doesn't ship) at plan time. Explore's exact-line
-  inventory made Phase 3 a mechanical 6-line swap; grep + `actionlint` (exit 0)
-  double-checked the result.
-- **Friction:** none material.
-- **Deviations:** `implement-plan`/`canon-tdd` not applicable — a YAML
-  version-string swap has no code under test; edited directly, verified with
-  grep (zero `26.5`, six `26.6`). Rubric came from the plan's Verification
-  section (chore plan, no Given/When/Then user story).
-- **Housekeeping:** distilled the oldest full entry (#361) into the archive
-  table, clearing the archive-distil deferred in #368/#374 and keeping the file
-  at its ~12-entry window.
-- **One improvement:** none — the pre-pin runner-image README check is the right
-  guard for any toolchain bump; reuse it verbatim next time the pin moves.
-
-## 2026-07-06 — ♻️ Consolidate build/test runners into a tooling-runner agent (#385) · lite
-
-- **Phases / skills:** phases 0–10; markdown/config-only, so `review-plan`
-  skipped (lite + `ExitPlanMode` approval — the two open design choices were
-  settled pre-plan via `AskUserQuestion`), `review-changes` and
-  `security-review` self-skipped, `/capture-knowledge` returned nothing (the
-  sole candidate was already documented inside the `capture-knowledge` skill
-  itself); ADR-0014 (model tiers, originally numbered 0010) authored inline in
-  Phase 3.
-- **Worked:** the plan-time Explore cross-reference sweep pre-scoped the prose
-  blast radius — spotting that "delegates to a Haiku subagent" prose stays
-  *true* after the refactor (the runner agent **is** Haiku) cut the edit list
-  to 11 files, only 4 of them prose spots. Phase 0's gotcha consult paid off
-  twice within minutes (branch rename after `EnterWorktree`; `.md` tail check
-  after every `Write`).
-- **Friction:** none material.
-- **Deviations:** `canon-tdd` not applicable — no test surface on a pure
-  skills/agents/docs change; the plan's Changes list served as the checklist,
-  and the rubric came from its Changes + Verification sections rather than
-  Given/When/Then ACs (chore plan, no user story).
-- **One improvement:** a freshly added `.claude/agents/*.md` may not register
-  as a spawnable `subagent_type` until a new session, so the consolidation
-  can't be smoke-tested end-to-end inside the delivering session — the first
-  post-merge `/build` is the real verification; if it surprises, that's a
-  `gotchas.md` entry.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -617,6 +632,8 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-08 | #387 | lite | Bumped the CI workflows to Xcode 26.6. The lasting practice: a plan-time `WebFetch` of the `macos-26` runner-image README confirmed `/Applications/Xcode_26.6.app` exists (build 17F113) **before** pinning it — retiring the one real risk of a toolchain-version bump, pinning a version the runner does not ship, at plan time rather than in CI. Now the wiki heuristic *before-bumping-a-pinned-ci-toolchain-version-verify-the-runner-image-ships-it*. `security-review` ran (workflows are security-relevant) and returned 0 findings. |
+| 2026-07-06 | #385 | lite | Consolidated the build/test runners into a single `tooling-runner` agent (ADR-0014, model tiers). The plan-time Explore cross-reference sweep pre-scoped the prose blast radius and cut the edit list to 11 files — noticing that "delegates to a Haiku subagent" stays *true* after the refactor, since the runner agent **is** Haiku. Lasting caveat: a freshly added `.claude/agents/*.md` may not register as a spawnable `subagent_type` until a new session, so a consolidation like this cannot be smoke-tested end-to-end inside the delivering session; the first post-merge `/build` is the real verification. |
 | 2026-07-05 | #384 | lite | Added the Phase 0 knowledge-consult step and the independent Phase 6 rubric grader — the two gates that make captured knowledge compound and stop the maker grading its own homework. Smallest delivery to date (+49/−8), and the plan arrived with ACs already in Given/When/Then form, so the entry gate extracted the rubric with zero friction. Its own knowledge-consult was done implicitly (the design phase had already read the relevant material); the `consulted:` ledger line is what made it explicit from the next run on. Its "one improvement" — extend the consult step to standalone `/implement-plan` invocations — still stands. |
 | 2026-07-05 | #383 | lite | Restructured `deliver/SKILL.md` for progressive disclosure — a lean core plus `references/` loaded on demand — after the skill had grown past what fits in working context. Paired with an adversarial mapping review that diffed old against new hunting specifically for dropped or weakened rules, which is the practice that made the compression safe and is now the wiki entry *restructure-a-normative-doc-with-a-rule-inventory-and-an-adversarial-mapping-review*. |
 | 2026-07-05 | #382 | lite | Moved the `/deliver` retro to pre-PR so it rides the delivery's own PR instead of re-opening the ready gate. Both open design decisions were settled with the user via `AskUserQuestion` *before* any edit, and the change was dogfooded immediately — its own entry was written under the sequencing it introduced. Surfaced the `EnterWorktree` gotcha: the tool ignores the requested name for the **branch** (`git branch -m` after entering), now a `gotchas.md` entry and a standing Phase 1 step. |

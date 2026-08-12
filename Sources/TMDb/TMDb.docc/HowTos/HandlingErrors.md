@@ -31,6 +31,7 @@ case.
 | ``TMDbError/network(_:)`` | The request never completed — offline, timed out, or a DNS / connection failure. The underlying error is attached. |
 | ``TMDbError/decode(_:)`` | A response was received but could not be decoded into the expected model. The underlying error is attached. |
 | ``TMDbError/invalidRating`` | A rating passed to an `addRating` method is out of range; it must be between `0.5` and `10.0` in increments of `0.5`. Validated on-device before any request is sent. |
+| ``TMDbError/cancelled`` | The task performing the request was cancelled — see <doc:#Cancellation>. |
 | ``TMDbError/unknown`` | An unexpected error that does not map to any of the above. |
 
 The six HTTP-family cases carry a ``TMDbErrorContext`` with structured detail
@@ -92,6 +93,46 @@ do {
 Because the service methods use typed throws, the `catch` clauses match
 ``TMDbError`` cases directly, and the final `catch` handles any case you did
 not name explicitly.
+
+## Cancellation
+
+Cancelling the task that made a request is not a failure — the caller changed
+their mind. TMDb reports it as its own case, ``TMDbError/cancelled``, so it
+never looks like a network outage:
+
+```swift
+.task {
+    do {
+        movie = try await tmdbClient.movies.details(forMovie: 550)
+    } catch TMDbError.cancelled {
+        // The view was dismissed. Show nothing, log nothing, retry nothing.
+    } catch {
+        errorMessage = error.localizedDescription
+    }
+}
+```
+
+This matters most where it is easy to miss: a SwiftUI `.task {}` cancelled on
+view dismissal, or a `withThrowingTaskGroup` where one sibling failing cancels
+the rest. Reporting those as ``TMDbError/network(_:)`` produces spurious
+"you're offline" alerts, makes telemetry count cancellations as outages, and
+invites "retry on network error" logic to redo work the user abandoned.
+
+``TMDbError/cancelled`` is never retried, whatever your
+``RetryableErrors`` configuration says.
+
+- Note: Cancellation is reported only where the library actually observes it.
+  A value already held in memory is returned without suspending, and so
+  without noticing: an image URL built from a cached configuration
+  (see <doc:GeneratingImageURLs>) succeeds, as does the request that was
+  already in flight when a *different* task cancelled. An auto-pagination
+  sequence you built with your own page fetcher also keeps that fetcher's own
+  error type — only cancellation the sequence itself observes is normalised.
+
+- Important: `catch is CancellationError` does **not** match. Because every
+  service method uses typed throws (`throws(TMDbError)`), a bare
+  `CancellationError` cannot cross the boundary — match
+  ``TMDbError/cancelled`` instead.
 
 ## Interaction with Retry and Caching
 

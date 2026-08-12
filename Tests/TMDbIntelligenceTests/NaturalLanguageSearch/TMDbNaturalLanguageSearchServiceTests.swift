@@ -114,4 +114,54 @@ struct TMDbNaturalLanguageSearchServiceTests {
         }
     }
 
+    @Test("a cancelled plan surfaces as cancelled, not a planning failure")
+    func cancelledPlanSurfacesAsCancelled() async throws {
+        planner.planUntypedError = CancellationError()
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().search(matching: "popular movies")
+        }
+    }
+
+    @Test("a cancelled plan is never rescued by the literal-search fallback")
+    func cancelledPlanIsNotRescuedByFallback() async throws {
+        // The regression this exists for: cancellation used to be wrapped as
+        // `.planningFailed`, which IS fallback-eligible, so a cancelled search
+        // went on to issue three fresh live searches — doing the very work the
+        // caller had abandoned.
+        planner.planError = .cancelled
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().search(matching: "Kill Bill")
+        }
+
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
+    @Test("a cancelled plan(for:) surfaces as cancelled")
+    func cancelledPlanForSurfacesAsCancelled() async throws {
+        planner.planUntypedError = CancellationError()
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().plan(for: "x")
+        }
+    }
+
+    @Test("cancellation during plan execution surfaces as cancelled")
+    func cancellationDuringExecutionSurfacesAsCancelled() async throws {
+        // Planning succeeds; the cancellation happens in `executor.execute(plan)`,
+        // which reaches the service through an untyped `throws` as a
+        // `TMDbError.cancelled`. Without its own catch arm it would be re-labelled
+        // `.planningFailed`, which is the misreporting this change removes.
+        planner.planResult = SearchPlan(intent: .list, mediaType: .movie, list: .popular)
+        dataSource.curatedMoviesError = TMDbError.cancelled
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().search(matching: "popular movies")
+        }
+
+        // And it is still not rescued by the fallback at this stage either.
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
 }

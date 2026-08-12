@@ -28,12 +28,14 @@ import Foundation
 ///   ``imagesConfiguration()`` once and calling the synchronous helpers on
 ///   ``ImagesConfiguration`` directly — that avoids an `await` per image.
 ///
-/// - Important: Because concurrent callers share a single fetch, these methods
-///   are deliberately not cancellable by any one caller. Cancelling a task that
-///   is waiting on the shared fetch neither interrupts it nor makes it throw
-///   `CancellationError`: it waits for the fetch to finish and receives its
-///   value. Cancelling on behalf of one caller would otherwise fail every other
-///   caller waiting on the same fetch.
+/// - Important: A caller that **suspends** on the shared fetch and is then
+///   cancelled abandons its wait and throws ``TMDbError/cancelled``. The fetch
+///   itself is never cancelled on that caller's behalf — it runs on, delivers to
+///   every other caller waiting on it, and caches its result — because
+///   cancelling it for one uninterested caller would fail all the others.
+///
+///   A caller served from the **cache** never suspends, so it cannot observe the
+///   cancellation and returns its value as normal.
 ///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public protocol ImageService: Sendable {
@@ -67,6 +69,11 @@ public protocol ImageService: Sendable {
     ///
     /// A fetch already in progress when this is called is left running rather
     /// than cancelled, so callers waiting on it still receive its value.
+    ///
+    /// Unlike the URL resolvers and ``imagesConfiguration()``, this always
+    /// fetches — a warm cache does not exempt it — so it throws
+    /// ``TMDbError/cancelled`` when the calling task is already cancelled,
+    /// without perturbing any fetch in flight.
     ///
     /// Concurrent calls to this method share a single fetch. That fetch may have
     /// been issued fractionally before a given call, so a change made in that

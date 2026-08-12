@@ -201,4 +201,22 @@ struct TMDbErrorTMDbAPIErrorTests {
         #expect(tmdbError == .unknown)
     }
 
+    @Test("init when error is a TMDbAPIError.cancelled returns cancelled error")
+    func initWithCancelledTMDbAPIErrorReturnsCancelledError() {
+        let error = TMDbAPIError.cancelled
+
+        let tmdbError = TMDbError(error: error)
+
+        #expect(tmdbError == .cancelled)
+    }
+
+    @Test("init when error is a bare CancellationError returns cancelled error")
+    func initWithBareCancellationErrorReturnsCancelledError() {
+        // Defensive: unreachable in the shipped composition, where every error
+        // reaching this seam is already a `TMDbAPIError`.
+        let tmdbError = TMDbError(error: CancellationError())
+
+        #expect(tmdbError == .cancelled)
+    }
+
 }

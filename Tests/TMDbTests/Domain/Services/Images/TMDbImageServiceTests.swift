@@ -9,7 +9,10 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.services, .images))
+/// Bounded for the same reason as `APIConfigurationStoreTests`: every call here
+/// routes through the cancellable join, where a regression presents as a hang
+/// rather than a failure.
+@Suite(.tags(.services, .images), .timeLimit(.minutes(1)))
 struct TMDbImageServiceTests {
 
     private static func makeConfiguration() throws -> ImagesConfiguration {
@@ -187,6 +190,59 @@ struct TMDbImageServiceTests {
         #expect(refreshed == second)
         #expect(after == second)
         #expect(configurationService.apiConfigurationCallCount == 2)
+    }
+
+    @Test("posterURL on a cancelled task throws cancelled when nothing is cached")
+    func posterURLOnCancelledTaskThrowsCancelledWhenUncached() async throws {
+        let (service, configurationService) = try Self.makeService(
+            configuration: Self.makeConfiguration()
+        )
+        let path = try #require(URL(string: "/image.jpg"))
+
+        let task = Task { () -> TMDbError? in
+            while !Task.isCancelled {
+                await Task.yield()
+            }
+
+            do throws(TMDbError) {
+                _ = try await service.posterURL(for: path)
+                return nil
+            } catch {
+                return error
+            }
+        }
+
+        task.cancel()
+
+        #expect(await task.value == .cancelled)
+        #expect(configurationService.apiConfigurationCallCount == 0)
+    }
+
+    @Test("posterURL on a cancelled task still returns a URL when the configuration is cached")
+    func posterURLOnCancelledTaskReturnsURLWhenCached() async throws {
+        let (service, configurationService) = try Self.makeService(
+            configuration: Self.makeConfiguration()
+        )
+        let path = try #require(URL(string: "/image.jpg"))
+
+        // Prime the cache, so the call below never suspends.
+        try await service.preload()
+
+        let task = Task { () -> URL? in
+            while !Task.isCancelled {
+                await Task.yield()
+            }
+
+            return try? await service.posterURL(for: path)
+        }
+
+        task.cancel()
+
+        // Documented carve-out: cancellation is only reported when the library
+        // actually observes it. A cached value costs no suspension, so it is
+        // handed back rather than turned into an error.
+        #expect(await task.value != nil)
+        #expect(configurationService.apiConfigurationCallCount == 1)
     }
 
 }

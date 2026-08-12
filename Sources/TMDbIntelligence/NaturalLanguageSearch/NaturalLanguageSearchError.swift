@@ -51,6 +51,15 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
     ///
     case planningFailed(underlying: (any Error)?)
 
+    ///
+    /// The task performing the search was cancelled.
+    ///
+    /// Distinct from ``planningFailed(underlying:)`` because the search did not
+    /// fail — the caller withdrew it. It is never eligible for the literal-search
+    /// fallback, so a cancelled search issues no further requests.
+    ///
+    case cancelled
+
     public static func == (
         lhs: NaturalLanguageSearchError,
         rhs: NaturalLanguageSearchError
@@ -71,6 +80,8 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
         case (.planningFailed, .planningFailed):
             // The underlying error is not `Equatable`, so any two `.planningFailed`
             // values compare equal regardless of their wrapped cause.
+            true
+        case (.cancelled, .cancelled):
             true
         default:
             false
@@ -97,6 +108,8 @@ extension NaturalLanguageSearchError: LocalizedError {
             "The on-device model is rate limited. Try again shortly."
         case .planningFailed:
             "The request could not be interpreted."
+        case .cancelled:
+            "The search was cancelled."
         }
     }
 

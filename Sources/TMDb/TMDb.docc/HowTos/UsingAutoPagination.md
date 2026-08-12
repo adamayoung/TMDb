@@ -54,6 +54,32 @@ for try await movie in tmdbClient.movies.allTopRated() {
 }
 ```
 
+## Cancellation
+
+Cancelling the task driving the loop stops the scan at the next element and
+throws ``TMDbError/cancelled`` — including while items from the current page are
+still buffered, so a cancelled scan does not keep handing you results it already
+had.
+
+```swift
+let task = Task {
+    do {
+        for try await movie in tmdbClient.movies.allTopRated() {
+            await process(movie)
+        }
+    } catch TMDbError.cancelled {
+        // Stopped on request — not a failure.
+    }
+}
+
+task.cancel()
+```
+
+- Note: If you built the sequence yourself with
+  ``PagedAsyncSequence/init(pageFetcher:)``, your own page fetcher keeps its own
+  error type — only cancellation the sequence itself observes is reported as
+  ``TMDbError/cancelled``.
+
 ## Prefetching the Next Page
 
 By default pages are fetched lazily — the next page is requested only once the

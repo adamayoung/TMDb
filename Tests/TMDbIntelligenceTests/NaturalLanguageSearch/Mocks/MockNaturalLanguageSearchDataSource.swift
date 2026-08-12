@@ -33,6 +33,10 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
     var curatedTVSeriesResult: [TVSeriesListItem] = []
     var trendingPeopleResult: [PersonListItem] = []
 
+    /// Thrown from `curatedMovies(_:)`, for exercising failures raised by plan
+    /// *execution* rather than by planning.
+    var curatedMoviesError: (any Error)?
+
     // Captured inputs.
     private(set) var lastMovieFilter: DiscoverMovieFilter?
     private(set) var lastTVFilter: DiscoverTVSeriesFilter?
@@ -118,6 +122,9 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
 
     func curatedMovies(_ kind: SearchPlan.ListKind) async throws -> [MovieListItem] {
         lastCuratedMovieKind = kind
+        if let curatedMoviesError {
+            throw curatedMoviesError
+        }
         return curatedMoviesResult
     }
 

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `TMDbError.cancelled` — task cancellation is now its own error case instead of
+  being reported as a network failure. See the *Handling Errors* article.
+
 - `client.v4Lists` — TMDb v4 lists. Unlike the v3 `client.lists`, a v4 list
   holds **movies and TV series together**, can be private, and can carry a
   comment on each item. All eleven operations are covered: reading a list and
@@ -24,7 +27,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   models, plus `MockV4ListService` and samples in `TMDbTesting`. See the
   *Authenticating with the v4 API* article.
 
+### Fixed
+
+- **Breaking:** cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
+  SwiftUI `.task {}` looked like an outage, `withThrowingTaskGroup` sibling
+  cancellation produced N phantom network errors, "retry on network error" logic
+  re-ran work the user had cancelled, and telemetry counted cancellations as
+  outages. Cancellation the library observes now throws `TMDbError.cancelled`,
+  and is never retried.
+
+  `URLSession.invalidateAndCancel()` and app teardown raise the same underlying
+  code while the caller's task is alive; those remain `TMDbError.network`, since
+  they are real failures rather than the caller changing their mind.
+
+- **Breaking:** `client.images` no longer blocks a cancelled caller. A caller
+  waiting on the shared configuration fetch was dragged along to the end of it —
+  up to ~30s, or minutes with retry enabled. It now abandons its wait and throws
+  `TMDbError.cancelled` where it previously returned the fetched value; the
+  shared fetch still runs on and delivers to every other caller. A caller served
+  from the cache never suspends and is unaffected.
+
+- **Breaking:** a cancelled natural-language search (`TMDbIntelligence`) no
+  longer issues three fresh searches, and throws
+  `NaturalLanguageSearchError.cancelled` where it previously returned those
+  fallback results. Cancellation was wrapped as
+  `NaturalLanguageSearchError.planningFailed`, which is eligible for the
+  literal-search fallback, so the library did the very work the caller had
+  cancelled.
+
 ### Changed
+
+- **Breaking:** `TMDbError` gains a `.cancelled` case, and
+  `NaturalLanguageSearchError` (in `TMDbIntelligence`) gains one too. This only
+  affects you if you switch **exhaustively** over either — add a `.cancelled`
+  branch, or a `default`.
+
+- **Breaking:** a cancelled auto-pagination scan now throws `TMDbError.cancelled`
+  rather than `CancellationError`, and stops at the next element even while
+  items from the current page are still buffered. Replace
+  `catch is CancellationError` with `catch TMDbError.cancelled`. This applies
+  however the sequence was built: errors *from* a `pageFetcher` you supplied
+  keep that fetcher's own error type, but cancellation the sequence itself
+  observes always throws `TMDbError.cancelled`.
 
 - **Breaking:** `CreditType` gains `.creator` and `.unknown` cases, and an
   unrecognised `credit_type` now decodes to `.unknown` instead of throwing.

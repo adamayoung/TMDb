@@ -11,7 +11,12 @@ extension TMDbError {
 
     init(error: some Error) {
         guard let apiError = error as? TMDbAPIError else {
-            self = .unknown
+            // Defensive only: `ErrorMappingAPIClient` is only ever constructed
+            // over `TMDbAPIClient` (see `TMDbFactory`), which throws nothing but
+            // `TMDbAPIError` — so this branch is unreachable in the shipped
+            // composition. It stays honest about cancellation in case a future
+            // seam wraps a differently-composed client.
+            self = error.isTaskCancellation ? .cancelled : .unknown
             return
         }
 
@@ -54,6 +59,9 @@ extension TMDbError {
 
         case .encode(let error):
             self = .encode(error)
+
+        case .cancelled:
+            self = .cancelled
 
         case .unknown:
             self = .unknown

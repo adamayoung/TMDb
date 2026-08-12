@@ -48,11 +48,15 @@ try await tmdbClient.images.preload()
 The configuration is fetched **at most once**, however many callers ask for it
 concurrently.
 
-> Important: Because concurrent callers share one fetch, these methods are
-deliberately not cancellable by any single caller. A cancelled task waiting on
-the shared fetch is not interrupted and does not throw `CancellationError` — it
-waits for the fetch to finish and receives its value. Cancelling for one caller
-would otherwise fail every other caller waiting on the same fetch.
+> Important: A caller that is **waiting** on the shared fetch when its task is
+cancelled abandons the wait and throws ``TMDbError/cancelled``. The fetch itself
+is never cancelled on that caller's behalf — it runs on, delivers to every other
+caller waiting on it, and caches its result — because cancelling it for one
+uninterested caller would fail all the others.
+>
+> A caller served from the **cache** never suspends, so it cannot observe the
+cancellation and returns its URL as normal. Preloading therefore makes these
+methods effectively cancellation-free.
 
 ## Resolving Many Image URLs
 

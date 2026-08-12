@@ -80,11 +80,25 @@ over them.
 
 ## Consequences
 
-- The public API is **cancellation-unresponsive**: a cancelled caller waiting on
-  the shared fetch is not interrupted and does not throw `CancellationError` — it
-  waits for the fetch and receives its value. Bounded (one small request), and
+- ~~The public API is **cancellation-unresponsive**: a cancelled caller waiting
+  on the shared fetch is not interrupted and does not throw `CancellationError` —
+  it waits for the fetch and receives its value. Bounded (one small request), and
   typed `throws(TMDbError)` could not honestly surface a `CancellationError`
-  anyway. Documented on the protocol and in the How-To.
+  anyway. Documented on the protocol and in the How-To.~~
+  **Superseded by [ADR-0018](0018-cancellation-as-tmdberror-case.md) (in 20.0.0,
+  unreleased).**
+  Two of the three clauses were wrong. "Bounded (one small request)" understated
+  it: with retry enabled (`maxRetries: 3`, `maxDelay: 30s`) a cancelled caller
+  could block for **minutes**, not the ~30s of a single timeout. And typed
+  `throws(TMDbError)` *can* now surface cancellation honestly, because
+  `TMDbError.cancelled` exists — this ADR's own constraint was what motivated
+  adding it.
+
+  The **decision** above still stands: the shared fetch is still never cancelled,
+  for exactly the N-awaiters reason given. What changed is that an individual
+  awaiter can now leave, via a per-call `ResumeOnce` handoff, without disturbing
+  it. A caller served from the cache never suspends and so still cannot observe
+  cancellation — that carve-out is real and is now documented as such.
 - `refresh()` may return a configuration fetched fractionally *before* the call,
   when it coalesces onto an in-flight refresh. Documented.
 - Two ways now exist to build an image URL. The How-To leads with `client.images`

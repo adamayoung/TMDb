@@ -997,9 +997,18 @@ cancellation. To forward it, await the child inside
 (see the prefetch iterators, [ADR-0003](decisions/0003-opt-in-pagination-prefetch.md)).
 
 Testing the forward is subtle: a naive test asserting the consumer throws
-`CancellationError` passes even if the forward is dropped, because the iterator's
-*pre-await* `Task.checkCancellation()` guard also throws. To prove the forward
+*something* passes even if the forward is dropped, because the iterator's
+*pre-await* cancellation guard also throws. To prove the forward
 actually fired:
+
+> *Updated 2026-08-12 (#419):* that pre-await guard is now
+> `guard !Task.isCancelled else { throw TMDbError.cancelled }`, not
+> `try Task.checkCancellation()`, so the two paths are no longer the *same*
+> error type — the guard throws `TMDbError.cancelled` while a forwarded cancel
+> surfaces whatever the page fetcher throws (`CancellationError` in these
+> tests). That makes the confusion less likely but does not remove the need for
+> the recorder below: the fetcher's error type is the test's own choice, so
+> asserting on it still cannot prove *where* the cancellation came from.
 
 - Have the awaited child fetcher **signal an `AsyncStream` before blocking** on
   `Task.sleep`, and `await` that signal in the test — so the consumer is provably
@@ -1020,7 +1029,134 @@ unsynchronised state and would data-race under concurrent fetches).
 has exactly **one** owner-awaiter. A task shared by **N** awaiters — such as the
 configuration memo in [ADR-0013](decisions/0013-cached-image-url-resolver.md) —
 must *not* forward, or one cancelled caller fails all the others. Check the
-awaiter count before copying this pattern.
+awaiter count before copying this pattern. But "don't forward" does **not** have
+to mean "not cancellable" — see the next entry.
+
+### Letting ONE awaiter of an N-awaiter shared task bail out
+
+*2026-08-12.* The complement to the entry above. `Task.value` on a
+`Task<_, Never>` is **not a cancellation point**, so awaiters joining a memoised
+fetch that way are dragged to its completion — ~30s on a default URLSession
+timeout, but **minutes** with retry enabled (`maxRetries: 3`, `maxDelay: 30s`).
+The fix is *not* to forward cancellation into the shared task; it is to give each
+awaiter its own exit:
+
+```swift
+let box = ResumeOnce<Result<Value, MyError>>()
+let outcome = await withTaskCancellationHandler {
+    await withCheckedContinuation { continuation in
+        box.attach(continuation)              // runs in the actor's isolation
+        Task { box.resume(await shared.value) }  // unstructured: no inherited cancel
+    }
+} onCancel: {
+    box.resume(.failure(.cancelled))          // synchronous — no actor hop
+}
+```
+
+Four things make this work, and each is load-bearing:
+
+- **A lock, not an actor**, for the box. `onCancel` is a **synchronous**
+  nonisolated closure — it cannot `await` a hop onto an actor. Hopping via
+  `Task { await … }` instead makes cancellation delivery *race* the shared task's
+  completion, which is precisely the "flaky by construction" shape this file
+  warns about elsewhere. Same reasoning as `DataTaskBox` in
+  `URLSessionHTTPClientAdapter`.
+- **Resume outside the lock.** Resuming a continuation while holding the lock can
+  re-enter the awaiting code on the same thread.
+- **The box holds *either* the continuation *or* a pending value**, whichever
+  arrives first, plus a `hasResumed` flag — because `onCancel` can fire *before*
+  the continuation is installed. Latch the first pending value: without
+  `if pendingValue == nil`, "first call wins" silently becomes "last wins".
+  (`pendingValue == nil` needs no `Equatable` on `Value` — it binds the
+  unconstrained `Optional` overload.)
+- **The observer `Task` is unstructured**, so it does not inherit the awaiter's
+  cancellation and the shared fetch still runs on and commits for everyone else.
+
+Rejected alternatives, both worse: a **waiter registry** keyed on the actor
+introduces a late-registration hang class (a waiter registered after its fetch
+drained is never resumed) that `await task.value` cannot have, since it returns
+immediately for an already-finished task; and **racing via `withTaskGroup`**
+does not work at all, because the losing child awaiting `.value` is itself
+uncancellable and the group awaits every child at scope exit.
+
+**Test the box directly.** Driven only through the store, first-wins and
+last-wins are indistinguishable — and the failure mode of a future edit is a
+`SWIFT TASK CONTINUATION MISUSE` crash or a hang, not a red assertion. Also put
+`.timeLimit` on any suite that exercises such a join: a lost continuation
+otherwise burns the CI job's default timeout with no diagnostic.
+See [ADR-0018](decisions/0018-cancellation-as-tmdberror-case.md).
+
+### A local named after a stored property reads **uninitialised memory** inside its own initialiser
+
+*2026-08-12 (#419/#433).* This compiles, passes every macOS test, and segfaults
+on Linux:
+
+```swift
+private var continuation: CheckedContinuation<Value, Never>?   // stored property
+
+func resume(_ value: Value) {
+    let continuation: CheckedContinuation<Value, Never>? = lock.withLock {
+        guard let continuation else { … return nil }   // ← NOT self.continuation
+        self.continuation = nil
+        return continuation                            // ← returns garbage
+    }
+}
+```
+
+Inside the closure that *initialises* the local, the bare name `continuation`
+binds the **local being declared**, not the property — and at that point it holds
+uninitialised stack memory. Definite-initialisation analysis does not catch it
+through the closure, so there is no warning. The read is undefined behaviour:
+on Darwin the stack garbage happened to be `nil`, so the `guard` took its `else`
+branch and the code behaved perfectly; on Linux/aarch64 it was non-`nil`, so the
+guard fell through and returned a bogus pointer, crashing in `swift_retain`
+(`Bad pointer dereference at 0x107`).
+
+- **Symptom to recognise:** a crash or hang *only* on Linux, in a function whose
+  local shares a name with a stored property. The backtrace points at the
+  `return` inside the `withLock`/closure, which "cannot" be reached.
+- **Fix:** name the local something else (`waiting`, `attached`) **and**
+  `self.`-qualify every property access in the closure. Renaming alone is enough
+  for the compiler; the qualification is what stops it being reintroduced.
+- **Why review missed it:** it is invisible in a diff — the code reads exactly
+  like the correct version. `claude-review` explicitly approved the file. Only
+  running it on a second platform found it.
+
+**Corollary — a fully green `make ci` does not cover this.** `make ci` never
+builds for Linux (see *`make ci` skips the Linux build*), so
+`build-test-linux` is the only gate that can catch platform-dependent UB. For
+any hand-rolled concurrency primitive, run `make test-linux` **before** opening
+the PR: a blind CI round-trip costs ~45 minutes *and* a manual force-cancel,
+because a hang wedges the runner and ignores GitHub's cancel.
+
+### `.timeLimit` does not rescue a task parked on an unresumed continuation
+
+*2026-08-12 (#419/#433).* A Swift Testing `.timeLimit` trait cancels the test's
+task — but a task suspended on a `CheckedContinuation` that is never resumed is
+**not cancellable**, so the timeout itself blocks. Observed directly: 17 tests in
+the neighbouring suites correctly recorded *"Time limit was exceeded: 60.000
+seconds"*, while the suite holding the leaked continuation recorded **nothing at
+all** and kept `swift test` alive indefinitely — the job then ignored both the
+GitHub concurrency cancel and `gh run cancel`, and needed a `force-cancel`.
+
+So `.timeLimit` is worth adding (it converts *slow* into *failed*, and it did
+localise the blast radius here), but do not describe it as protection against a
+lost continuation. The real backstops are a job-level `timeout-minutes`
+(absent on this repo's `build-test*` jobs — issue #435) and testing the
+primitive directly so the leak never ships.
+
+### `withCheckedContinuation`'s body runs in the enclosing actor's isolation
+
+*2026-08-12.* Since Swift 5.10 `withCheckedContinuation` /
+`withTaskCancellationHandler` take `isolation: isolated (any Actor)? = #isolation`,
+and the body closure is non-`Sendable` and runs **synchronously on the caller's
+executor**. Called from an actor-isolated method, the body is therefore
+actor-isolated: registering state there cannot interleave with the actor's own
+mutations, and no `await` is needed (adding one is an
+`#UnnecessaryEffectMarker` error under `--Werror`). The repo already relied on
+this in the test-only `FetchGate`. What it does *not* buy you is protection from
+a **nonisolated** producer such as a cancellation handler — that still needs a
+lock.
 
 ### Public enums are not implicitly `Sendable` — explicit conformance needed for `@Sendable` capture
 

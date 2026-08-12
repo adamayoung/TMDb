@@ -9,7 +9,13 @@ import Foundation
 import Testing
 @testable import TMDb
 
-@Suite(.tags(.services, .images))
+/// A regression in the cancellable join presents as a hang, not a failure, and
+/// neither this suite nor the CI jobs bound one today. The time limit converts a
+/// *slow* join into a failure — but it cannot rescue a continuation that is never
+/// resumed at all: that task is not cancellable, so the timeout blocks with it
+/// (see `knowledge/gotchas.md`). The real backstop is `ResumeOnceTests`, which
+/// exercises the primitive directly.
+@Suite(.tags(.services, .images), .timeLimit(.minutes(1)))
 struct APIConfigurationStoreTests {
 
     @Test("apiConfiguration fetches and returns the configuration")
@@ -184,18 +190,132 @@ struct APIConfigurationStoreTests {
         let secondResult = try await second.value
         let thirdResult = try await third.value
 
-        // The shared fetch is deliberately not cancellable by any one awaiter:
-        // forwarding cancellation into it (as PagedAsyncSequence does, correctly,
-        // for its single owner) would fail every other caller here.
+        // The shared fetch is still never cancelled by any one awaiter:
+        // forwarding cancellation into it would fail every other caller here.
         #expect(secondResult == expectedResult)
         #expect(thirdResult == expectedResult)
         #expect(configurationService.apiConfigurationCallCount == 1)
 
-        // Documented consequence: the cancelled caller is unresponsive to
-        // cancellation — it completes with the value rather than throwing.
-        let cancelledResult = try await cancelledCaller.value
+        // The cancelled caller abandons its wait instead of being dragged along
+        // to the end of a fetch it no longer wants.
+        await #expect(throws: TMDbError.cancelled) {
+            _ = try await cancelledCaller.value
+        }
+    }
 
-        #expect(cancelledResult == expectedResult)
+    @Test("cancelling an awaiter leaves the shared fetch to commit for later callers")
+    func cancellingAnAwaiterLeavesSharedFetchToCommit() async throws {
+        let gate = FetchGate()
+        let configurationService = CountingConfigurationService(gate: gate)
+        let expectedResult = APIConfiguration.mock()
+        configurationService.enqueue(.success(expectedResult))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        let cancelledCaller = Task { try await store.apiConfiguration() }
+        await store.waitUntilCallersEntered(atLeast: 1)
+
+        cancelledCaller.cancel()
+        await gate.open()
+
+        await #expect(throws: TMDbError.cancelled) {
+            _ = try await cancelledCaller.value
+        }
+
+        // The abandoned fetch still ran to completion and memoised its value, so
+        // a later caller is served from cache rather than paying a second trip.
+        let later = try await store.apiConfiguration()
+
+        #expect(later == expectedResult)
+        #expect(configurationService.apiConfigurationCallCount == 1)
+    }
+
+    @Test("a caller cancelled before entry throws without starting a fetch")
+    func callerCancelledBeforeEntryThrowsWithoutFetching() async {
+        let configurationService = CountingConfigurationService()
+        configurationService.enqueue(.success(APIConfiguration.mock()))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        let task = Task { () -> TMDbError? in
+            while !Task.isCancelled {
+                await Task.yield()
+            }
+
+            do throws(TMDbError) {
+                _ = try await store.apiConfiguration()
+                return nil
+            } catch {
+                return error
+            }
+        }
+
+        task.cancel()
+
+        #expect(await task.value == .cancelled)
+        #expect(configurationService.apiConfigurationCallCount == 0)
+    }
+
+    @Test("a cancelled refresh does not perturb the generation")
+    func cancelledRefreshDoesNotPerturbGeneration() async throws {
+        let configurationService = CountingConfigurationService()
+        let expectedResult = APIConfiguration.mock()
+        configurationService.enqueue(.success(expectedResult))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        // Prime the cache so a stray generation bump would be observable as a
+        // lost cached value on the next read.
+        _ = try await store.apiConfiguration()
+
+        let task = Task { () -> TMDbError? in
+            while !Task.isCancelled {
+                await Task.yield()
+            }
+
+            do throws(TMDbError) {
+                _ = try await store.refresh()
+                return nil
+            } catch {
+                return error
+            }
+        }
+
+        task.cancel()
+
+        #expect(await task.value == .cancelled)
+
+        let afterCancelledRefresh = try await store.apiConfiguration()
+
+        #expect(afterCancelledRefresh == expectedResult)
+        #expect(configurationService.apiConfigurationCallCount == 1)
+    }
+
+    @Test("a cancelled awaiter of a superseded fetch resolves rather than hanging")
+    func cancelledAwaiterOfSupersededFetchResolves() async throws {
+        let gate = FetchGate()
+        let configurationService = CountingConfigurationService(gate: gate)
+        let first = APIConfiguration.mock()
+        let second = APIConfiguration.mock()
+        configurationService.enqueue(.success(first))
+        configurationService.enqueue(.success(second))
+        let store = APIConfigurationStore(configurationService: configurationService)
+
+        // Park a caller on fetch #1, then supersede it with a refresh so its
+        // commit is discarded by the generation guard.
+        let cancelledCaller = Task { try await store.apiConfiguration() }
+        await store.waitUntilCallersEntered(atLeast: 1)
+
+        let refresher = Task { try await store.refresh() }
+        await store.waitUntilCallersEntered(atLeast: 2)
+
+        cancelledCaller.cancel()
+        await gate.open()
+
+        // The superseded fetch's awaiter must still resolve — a waiter whose
+        // fetch never commits is exactly the leak that would hang here.
+        await #expect(throws: TMDbError.cancelled) {
+            _ = try await cancelledCaller.value
+        }
+
+        _ = try await refresher.value
     }
 
 }

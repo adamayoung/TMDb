@@ -129,6 +129,18 @@ struct TMDbAPIErrorTests {
         #expect(error1 != error2)
     }
 
+    @Test("cancelled errors equal")
+    func cancelledErrorsEqual() {
+        #expect(TMDbAPIError.cancelled == TMDbAPIError.cancelled)
+    }
+
+    @Test("cancelled does not equal any other case")
+    func cancelledDoesNotEqualOtherCases() {
+        // `==` carries a `default: false`, so a missing arm compiles silently.
+        #expect(TMDbAPIError.cancelled != TMDbAPIError.unknown)
+        #expect(TMDbAPIError.cancelled != TMDbAPIError.network(MockError()))
+    }
+
 }
 
 extension TMDbAPIErrorTests {

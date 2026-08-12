@@ -63,4 +63,11 @@ struct ToolErrorMapperTests {
         #expect(ToolErrorMapper.message(for: .unknown) == nil)
     }
 
+    @Test("cancellation returns nil so it is rethrown rather than re-prompted")
+    func cancellationIsRethrown() {
+        // Returning a message would invite the model to retry work the caller
+        // deliberately abandoned.
+        #expect(ToolErrorMapper.message(for: .cancelled) == nil)
+    }
+
 }
