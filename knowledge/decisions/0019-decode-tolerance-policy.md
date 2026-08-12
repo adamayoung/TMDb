@@ -76,9 +76,11 @@ Mechanically:
   `==`, a decoded page that skipped an element would not equal its own
   encode-decode round trip, and a consumer diffing pages across a cache boundary
   would see a mismatch caused by a field they cannot even see.
-- `CreditMedia` is deliberately out of scope: it sits in no tolerant container,
-  so a marker there could never be caught, and its existing behaviour is locked
-  by a test.
+- `CreditMedia` is deliberately out of scope for the *tolerance* half: it sits in
+  no tolerant container, so nothing would ever catch a skip, and its throwing
+  behaviour is locked by a test. It does raise its error through the same helper,
+  so the bounded, escaped message applies there too — a raw `media_type` reaching
+  a loggable `debugDescription` is the same hazard wherever it happens.
 - `ShowType.unknown` is decode-only. It is rejected in `TMDbV4ListService` with
   `TMDbError.badRequest` — not in `ShowType.encode(to:)` (which would break
   `Codable` round-tripping of public models that legitimately hold `.unknown`,
