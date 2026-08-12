@@ -997,9 +997,18 @@ cancellation. To forward it, await the child inside
 (see the prefetch iterators, [ADR-0003](decisions/0003-opt-in-pagination-prefetch.md)).
 
 Testing the forward is subtle: a naive test asserting the consumer throws
-`CancellationError` passes even if the forward is dropped, because the iterator's
-*pre-await* `Task.checkCancellation()` guard also throws. To prove the forward
+*something* passes even if the forward is dropped, because the iterator's
+*pre-await* cancellation guard also throws. To prove the forward
 actually fired:
+
+> *Updated 2026-08-12 (#419):* that pre-await guard is now
+> `guard !Task.isCancelled else { throw TMDbError.cancelled }`, not
+> `try Task.checkCancellation()`, so the two paths are no longer the *same*
+> error type — the guard throws `TMDbError.cancelled` while a forwarded cancel
+> surfaces whatever the page fetcher throws (`CancellationError` in these
+> tests). That makes the confusion less likely but does not remove the need for
+> the recorder below: the fetcher's error type is the test's own choice, so
+> asserting on it still cannot prove *where* the cancellation came from.
 
 - Have the awaited child fetcher **signal an `AsyncStream` before blocking** on
   `Task.sleep`, and `await` that signal in the test — so the consumer is provably
@@ -1020,7 +1029,75 @@ unsynchronised state and would data-race under concurrent fetches).
 has exactly **one** owner-awaiter. A task shared by **N** awaiters — such as the
 configuration memo in [ADR-0013](decisions/0013-cached-image-url-resolver.md) —
 must *not* forward, or one cancelled caller fails all the others. Check the
-awaiter count before copying this pattern.
+awaiter count before copying this pattern. But "don't forward" does **not** have
+to mean "not cancellable" — see the next entry.
+
+### Letting ONE awaiter of an N-awaiter shared task bail out
+
+*2026-08-12.* The complement to the entry above. `Task.value` on a
+`Task<_, Never>` is **not a cancellation point**, so awaiters joining a memoised
+fetch that way are dragged to its completion — ~30s on a default URLSession
+timeout, but **minutes** with retry enabled (`maxRetries: 3`, `maxDelay: 30s`).
+The fix is *not* to forward cancellation into the shared task; it is to give each
+awaiter its own exit:
+
+```swift
+let box = ResumeOnce<Result<Value, MyError>>()
+let outcome = await withTaskCancellationHandler {
+    await withCheckedContinuation { continuation in
+        box.attach(continuation)              // runs in the actor's isolation
+        Task { box.resume(await shared.value) }  // unstructured: no inherited cancel
+    }
+} onCancel: {
+    box.resume(.failure(.cancelled))          // synchronous — no actor hop
+}
+```
+
+Four things make this work, and each is load-bearing:
+
+- **A lock, not an actor**, for the box. `onCancel` is a **synchronous**
+  nonisolated closure — it cannot `await` a hop onto an actor. Hopping via
+  `Task { await … }` instead makes cancellation delivery *race* the shared task's
+  completion, which is precisely the "flaky by construction" shape this file
+  warns about elsewhere. Same reasoning as `DataTaskBox` in
+  `URLSessionHTTPClientAdapter`.
+- **Resume outside the lock.** Resuming a continuation while holding the lock can
+  re-enter the awaiting code on the same thread.
+- **The box holds *either* the continuation *or* a pending value**, whichever
+  arrives first, plus a `hasResumed` flag — because `onCancel` can fire *before*
+  the continuation is installed. Latch the first pending value: without
+  `if pendingValue == nil`, "first call wins" silently becomes "last wins".
+  (`pendingValue == nil` needs no `Equatable` on `Value` — it binds the
+  unconstrained `Optional` overload.)
+- **The observer `Task` is unstructured**, so it does not inherit the awaiter's
+  cancellation and the shared fetch still runs on and commits for everyone else.
+
+Rejected alternatives, both worse: a **waiter registry** keyed on the actor
+introduces a late-registration hang class (a waiter registered after its fetch
+drained is never resumed) that `await task.value` cannot have, since it returns
+immediately for an already-finished task; and **racing via `withTaskGroup`**
+does not work at all, because the losing child awaiting `.value` is itself
+uncancellable and the group awaits every child at scope exit.
+
+**Test the box directly.** Driven only through the store, first-wins and
+last-wins are indistinguishable — and the failure mode of a future edit is a
+`SWIFT TASK CONTINUATION MISUSE` crash or a hang, not a red assertion. Also put
+`.timeLimit` on any suite that exercises such a join: a lost continuation
+otherwise burns the CI job's default timeout with no diagnostic.
+See [ADR-0018](decisions/0018-cancellation-as-tmdberror-case.md).
+
+### `withCheckedContinuation`'s body runs in the enclosing actor's isolation
+
+*2026-08-12.* Since Swift 5.10 `withCheckedContinuation` /
+`withTaskCancellationHandler` take `isolation: isolated (any Actor)? = #isolation`,
+and the body closure is non-`Sendable` and runs **synchronously on the caller's
+executor**. Called from an actor-isolated method, the body is therefore
+actor-isolated: registering state there cannot interleave with the actor's own
+mutations, and no `await` is needed (adding one is an
+`#UnnecessaryEffectMarker` error under `--Werror`). The repo already relied on
+this in the test-only `FetchGate`. What it does *not* buy you is protection from
+a **nonisolated** producer such as a cancellation handler — that still needs a
+lock.
 
 ### Public enums are not implicitly `Sendable` — explicit conformance needed for `@Sendable` capture
 

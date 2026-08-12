@@ -14,9 +14,12 @@ CHANGELOG records it) or is rejected outright (record that in
 `skill-improvement-log.md`).
 
 > **Status: the 20.0.0 window is OPEN.** The `Network.homepage` rename shipped
-> into it (2026-08-07) and the `TMDbError` item below was consciously
-> re-deferred. Anything added here now is queued for **21.0.0** unless 20.0.0 is
-> still untagged when you read this.
+> into it (2026-08-07), and on 2026-08-12 issue #419 reopened `TMDbError` to add
+> `.cancelled` — which finally met the deferred `invalidRating` entry's own
+> condition. That entry was settled (rejected outright) and removed; see
+> [ADR-0018](decisions/0018-cancellation-as-tmdberror-case.md) and the
+> `skill-improvement-log.md` entry of the same date. Anything added here now is
+> queued for **21.0.0** unless 20.0.0 is still untagged when you read this.
 >
 > **This file has earned its keep once.** It was written on 2026-07-27 and read
 > on 2026-07-28, while 19.0.0 was assembled but still untagged — which is the
@@ -47,23 +50,3 @@ CHANGELOG records it) or is rejected outright (record that in
   site from that allowlist is part of fixing it**; at empty, delete the script
   and its two invocations.
 - **Source:** 20.0.0 sweep (2026-08-07), which fixed the 37 cheap sites.
-
-### Revisit `TMDbError.invalidRating` inside a broader `TMDbError` review
-
-- **Re-deferred at 20.0.0 (2026-08-07), deliberately.** The window was open and
-  this entry was read. It stays because its own condition is not met: it is only
-  worth doing *inside* a wider `TMDbError` review, and 20.0.0 did not open one.
-  Shipping the merge on its own would trade a precise typed case for a
-  stringly-typed one with no compensating cleanup — the reason it was rejected
-  in the first place. Recorded rather than skipped, so the next reader knows it
-  was considered and not merely missed.
-
-- **What:** the audit floated merging `.invalidRating` into `.badRequest` and
-  rejected it as a net-worse API (a precise typed case traded for a
-  stringly-typed one). If a major bump reopens `TMDbError` anyway, settle the
-  argument-validation error idiom once, as part of that review — never as a
-  standalone change.
-- **Why it waits:** removing/merging a public enum case — breaking, and only
-  worth doing inside a wider review.
-- **Source:** `skill-improvement-log.md` → *Error-idiom unification*
-  (rejected 2026-06-30).

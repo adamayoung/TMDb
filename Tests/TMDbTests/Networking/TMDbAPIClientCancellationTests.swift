@@ -130,6 +130,51 @@ struct TMDbAPIClientCancellationTests {
         #expect(error == .cancelled)
     }
 
+    @Test("cancelling during retry backoff surfaces as cancelled, not network")
+    func cancellingDuringRetryBackoffSurfacesAsCancelled() async throws {
+        // The second wire shape, composed rather than injected: a real
+        // `RetryHTTPClient` parked in `Task.sleep` raises a bare
+        // `CancellationError`, which only becomes `.cancelled` once it passes
+        // through `TMDbAPIClient`. Testing the two layers separately leaves the
+        // seam between them unproven.
+        let httpClient = SequencingHTTPMockClient()
+        for _ in 0 ... 3 {
+            httpClient.enqueue(.success(HTTPResponse(statusCode: 429)))
+        }
+
+        let retryClient = RetryHTTPClient(
+            httpClient: httpClient,
+            configuration: RetryConfiguration(
+                maxRetries: 3,
+                initialDelay: .seconds(60),
+                maxDelay: .seconds(60),
+                retryableErrors: [.rateLimit]
+            )
+        )
+        let apiClient = try ErrorMappingAPIClient(
+            apiClient: makeAPIClient(httpClient: retryClient)
+        )
+
+        let task = Task { () -> TMDbError? in
+            do throws(TMDbError) {
+                _ = try await apiClient.perform(APIStubRequest<String, String>(path: "/endpoint"))
+                return nil
+            } catch {
+                return error
+            }
+        }
+
+        // Let the first attempt fail and the client park in its 60s backoff. The
+        // sleep is a regression ceiling, not a happy-path wait.
+        try await Task.sleep(for: .milliseconds(50))
+        task.cancel()
+
+        #expect(await task.value == .cancelled)
+
+        // The first attempt ran; the retries never did.
+        #expect(httpClient.performCount == 1)
+    }
+
     @Test("sibling cancellation in a task group reports cancelled, never network")
     func siblingCancellationInATaskGroupReportsCancelledNeverNetwork() async throws {
         // The reported failure from issue #419: cancelling a task group made every

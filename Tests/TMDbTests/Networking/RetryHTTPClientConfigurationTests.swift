@@ -213,7 +213,11 @@ struct RetryHTTPClientConfigurationTests {
         try await Task.sleep(for: .milliseconds(50))
         task.cancel()
 
-        await #expect(throws: (any Error).self) {
+        // At this layer it is a bare `CancellationError` — `RetryHTTPClient` sits
+        // below `TMDbAPIClient` and never constructs a `TMDbAPIError`. Mapping to
+        // `.cancelled` happens above it; see the composed test in
+        // `TMDbAPIClientCancellationTests`.
+        await #expect(throws: CancellationError.self) {
             try await task.value
         }
     }

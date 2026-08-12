@@ -30,6 +30,34 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-08-12 — Merge `TMDbError.invalidRating` into `.badRequest` · rejected
+
+- **Pattern:** `knowledge/next-major.md` carried a deferred entry — *"Revisit
+  `TMDbError.invalidRating` inside a broader `TMDbError` review"* — whose own
+  condition was that a wider `TMDbError` review must open first. It was
+  consciously re-deferred at 20.0.0 (2026-08-07) because none had. Issue #419
+  (`TMDbError.cancelled`, PR for `fix/cancellation-tmdberror`) reopened the enum,
+  meeting that condition.
+- **Decision:** **rejected outright** — `.invalidRating` stays as its own case.
+  Recorded here per `next-major.md`'s retention rule ("remove an entry when it
+  ships or is rejected outright — record that in `skill-improvement-log.md`"),
+  and the `next-major.md` entry deleted in the same PR.
+- **Rationale:** the original audit rejected the merge as a net-worse API — a
+  precise typed case traded for a stringly-typed one — and nothing about #419
+  changes that. `.invalidRating` is an on-device argument-validation failure
+  raised before any request is sent; folding it into `.badRequest`, whose whole
+  payload is a `TMDbErrorContext` describing a *server* response, would mean a
+  case with an all-`nil` context and no way for a caller to distinguish "you
+  passed a bad rating" from "TMDb rejected the request". #419 in fact reinforces
+  the direction: it added `.cancelled` as a distinct payload-free case for the
+  same reason.
+- **Reconsider when:** never for the merge itself. Only if `TMDbError` gains a
+  general argument-validation case (e.g. `.invalidArgument(name:)`) that
+  `.invalidRating` could join without losing precision — at which point this is a
+  taxonomy question, not a merge.
+
+---
+
 ### 2026-08-12 — Phase 0 entry gate: sanction *deriving* ACs, with provenance (#432) · deferred
 
 - **Pattern:** the entry gate treats acceptance criteria as binary — present, or
