@@ -39,7 +39,10 @@ extension KeyedDecodingContainer {
         let rawValue = try decode(String.self, forKey: key)
 
         guard let mediaType = T(rawValue: rawValue) else {
-            throw UnknownMediaTypeError(rawValue: rawValue)
+            throw DecodingError.unknownMediaType(
+                rawValue: rawValue,
+                codingPath: codingPath + [key]
+            )
         }
 
         return mediaType
@@ -125,7 +128,7 @@ private struct UnknownMediaTypeTolerant<Wrapped: Decodable>: Decodable {
 
         do {
             self.value = try container.decode(Wrapped.self)
-        } catch is UnknownMediaTypeError {
+        } catch let error as DecodingError where error.unknownMediaType != nil {
             self.value = nil
         }
     }

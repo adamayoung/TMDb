@@ -41,7 +41,14 @@ Codable, Equatable, Hashable, Sendable {
     /// short for a known reason rather than a regression. It is zero for a page
     /// built in code.
     ///
-    package let droppedItemCount: Int
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many results were skipped while decoding this page.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
 
     ///
     /// Creates a pageable list result object.
@@ -91,7 +98,7 @@ Codable, Equatable, Hashable, Sendable {
         self.results = results
         self.totalResults = totalResults ?? 0
         self.totalPages = totalPages ?? 0
-        self.droppedItemCount = droppedItemCount
+        self.droppedItems = DroppedItemCount(droppedItemCount)
     }
 
 }
@@ -131,7 +138,7 @@ extension PageableListResult {
             forKey: .results
         )
         self.results = results.elements
-        self.droppedItemCount = results.dropped
+        self.droppedItems = DroppedItemCount(results.dropped)
         self.totalResults = try container.decodeIfPresent(Int.self, forKey: .totalResults) ?? 0
         self.totalPages = try container.decodeIfPresent(Int.self, forKey: .totalPages) ?? 0
     }

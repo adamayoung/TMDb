@@ -80,7 +80,14 @@ public struct MediaList: Identifiable, Codable, Equatable, Hashable, Sendable {
     /// short for a known reason rather than a regression. It is zero for a list
     /// built in code.
     ///
-    package let droppedItemCount: Int
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many items were skipped while decoding this page.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
 
     ///
     /// Creates a media list object.
@@ -125,7 +132,7 @@ public struct MediaList: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.page = page
         self.totalPages = totalPages
         self.totalResults = totalResults
-        self.droppedItemCount = 0
+        self.droppedItems = .none
     }
 
 }
@@ -178,7 +185,7 @@ extension MediaList {
             forKey: .items
         )
         self.items = decodedItems.elements
-        self.droppedItemCount = decodedItems.dropped
+        self.droppedItems = DroppedItemCount(decodedItems.dropped)
 
         self.page = try container.decodeIfPresent(Int.self, forKey: .page)
         self.totalPages = try container.decodeIfPresent(Int.self, forKey: .totalPages)

@@ -130,7 +130,14 @@ public struct PersonCombinedCredits: Identifiable, Codable, Equatable, Hashable,
     /// missing for a known reason rather than a regression. It is zero for a
     /// value built in code.
     ///
-    package let droppedItemCount: Int
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many credits were skipped while decoding, across cast and crew.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
 
     /// Creates a person combined credits object.
     ///
@@ -161,7 +168,7 @@ public struct PersonCombinedCredits: Identifiable, Codable, Equatable, Hashable,
         self.id = id
         self.cast = cast
         self.crew = crew
-        self.droppedItemCount = droppedItemCount
+        self.droppedItems = DroppedItemCount(droppedItemCount)
     }
 
 }

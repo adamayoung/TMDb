@@ -35,23 +35,26 @@ struct KeyedDecodingContainerMediaTypeTests {
     }
 
     ///
-    /// The whole decode-tolerance design rests on this: a custom, non-`DecodingError`
-    /// error thrown from a **nested** `init(from:)` must escape `JSONDecoder.decode`
-    /// catchable as itself, so the tolerant array wrapper can distinguish it from a
-    /// genuine decode failure.
+    /// The tolerant array wrapper has to tell an unmodelled media type apart from a
+    /// genuine decode failure, and it does that by reading the `underlyingError` of a
+    /// `DecodingError` raised in a **nested** `init(from:)`. This pins that the marker
+    /// survives the trip out through `JSONDecoder`.
     ///
-    /// Verified by spike on macOS Foundation. Linux CI uses swift-corelibs-foundation's
-    /// separate `JSONDecoder`, so this is a permanent canary rather than a throwaway
-    /// spike — if it ever fails, throw `DecodingError.dataCorrupted` carrying the
-    /// sentinel as its `underlyingError` and match on that instead.
+    /// It also pins the public half of the contract: what escapes is a
+    /// `DecodingError` — the type every public `init(from:)` documents and that a
+    /// consumer decoding their own cached JSON can still catch — never the internal
+    /// marker on its own.
     ///
-    @Test("an UnknownMediaTypeError from a nested init(from:) escapes JSONDecoder unwrapped")
-    func unknownMediaTypeErrorEscapesDecoderUnwrapped() {
+    @Test("an unmodelled media type escapes a nested init(from:) as a DecodingError")
+    func unknownMediaTypeEscapesDecoderAsDecodingError() throws {
         let data = Data(#"{"items": [{"media_type": "podcast"}]}"#.utf8)
 
-        #expect(throws: UnknownMediaTypeError(rawValue: "podcast")) {
+        let error = #expect(throws: DecodingError.self) {
             _ = try JSONDecoder.theMovieDatabase.decode(Wrapper.self, from: data)
         }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast"))
     }
 
     @Test("decodes a movie media type")
@@ -72,12 +75,31 @@ struct KeyedDecodingContainerMediaTypeTests {
         #expect(result.mediaType == .tvSeries)
     }
 
-    @Test("throws UnknownMediaTypeError for a string no case matches")
-    func throwsUnknownMediaTypeErrorForUnmodelledValue() {
+    @Test("marks an unmodelled media type for a string no case matches")
+    func marksUnmodelledMediaTypeValue() throws {
         let data = Data(#"{"media_type": "podcast"}"#.utf8)
 
-        #expect(throws: UnknownMediaTypeError(rawValue: "podcast")) {
+        let error = #expect(throws: DecodingError.self) {
             _ = try JSONDecoder.theMovieDatabase.decode(Element.self, from: data)
+        }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast"))
+    }
+
+    /// The three negatives below assert the *absence* of the marker, which is what
+    /// keeps the tolerant wrapper from skipping them.
+    @Test("does not mark an absent, null or mistyped media_type as unmodelled")
+    func doesNotMarkGenuineDecodeFailures() throws {
+        for json in [#"{}"#, #"{"media_type": null}"#, #"{"media_type": 7}"#] {
+            let error = #expect(throws: DecodingError.self) {
+                _ = try JSONDecoder.theMovieDatabase.decode(
+                    Element.self, from: Data(json.utf8)
+                )
+            }
+
+            let decodingError = try #require(error)
+            #expect(decodingError.unknownMediaType == nil)
         }
     }
 

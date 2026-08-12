@@ -134,6 +134,44 @@ struct MediaPageableListTests {
         #expect(object["droppedItemCount"] == nil)
     }
 
+    /// The drop count is decode telemetry, not part of the value. If it took part in
+    /// `==` a page that skipped an element would never equal its own round trip —
+    /// and the field a consumer could not even see would be the reason.
+    @Test("a page that dropped an item still equals its own round trip", .tags(.encoding))
+    func droppedItemCountIsNotPartOfValueIdentity() throws {
+        let json = """
+        {
+            "page": 1,
+            "results": [
+                {
+                    "id": 1,
+                    "title": "A Movie",
+                    "original_title": "A Movie",
+                    "original_language": "en",
+                    "overview": "An overview.",
+                    "genre_ids": [],
+                    "media_type": "movie"
+                },
+                {"id": 2, "name": "A Future Thing", "media_type": "future_media"}
+            ],
+            "total_results": 2,
+            "total_pages": 1
+        }
+        """
+
+        let decoder = JSONDecoder.theMovieDatabase
+        let decoded = try decoder.decode(MediaPageableList.self, from: Data(json.utf8))
+        #expect(decoded.droppedItemCount == 1)
+
+        let roundTripped = try decoder.decode(
+            MediaPageableList.self, from: JSONEncoder.theMovieDatabase.encode(decoded)
+        )
+
+        #expect(roundTripped.droppedItemCount == 0)
+        #expect(roundTripped == decoded)
+        #expect(roundTripped.hashValue == decoded.hashValue)
+    }
+
     private let list = MediaPageableList(
         page: 1,
         results: [

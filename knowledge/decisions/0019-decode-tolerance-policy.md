@@ -50,21 +50,35 @@ We will apply one policy, in three limbs:
 
 Mechanically:
 
-- A single internal `UnknownMediaTypeError` is thrown by `decodeMediaType`, the
-  one place that decides a `media_type` is unmodelled. It decodes the raw
-  *string* first, so an absent key, a `null` and a non-string all still produce a
-  genuine `DecodingError`. Decoding the enum with `try?` would have collapsed all
-  four cases into "unmodelled" and silently reopened the unbounded tolerance this
-  change exists to remove.
+- `decodeMediaType` is the one place that decides a `media_type` is unmodelled.
+  It decodes the raw *string* first, so an absent key, a `null` and a non-string
+  all still produce a genuine `DecodingError`. Decoding the enum with `try?`
+  would have collapsed all four cases into "unmodelled" and silently reopened the
+  unbounded tolerance this change exists to remove.
+- The unmodelled case is raised as a **`DecodingError.dataCorrupted` carrying an
+  internal `UnknownMediaTypeError` as its `underlyingError`** — never as a bare
+  custom error. Every discriminator is reachable through a *public*
+  `init(from:)`, so a consumer decoding their own cached JSON must still get the
+  `DecodingError` those initialisers document and can `catch` by type. The marker
+  only tells the tolerant wrapper which `DecodingError` it may skip. This also
+  moots the platform question: a `DecodingError` is `JSONDecoder`'s own currency,
+  so nothing rests on whether a *custom* error survives a given platform's
+  decoder.
 - `FailableDecodable` is replaced by `decodeSkippingUnknownMediaTypes` and an
   `…IfPresent` variant that preserves `nil` for an absent key, both catching only
   that sentinel.
 - Five containers carry a `package droppedItemCount`: `PageableListResult`,
-  `V4List`, `MediaList`, `PersonCombinedCredits` and `PersonListItem`.
-- A discriminator with **no tolerant container above it** keeps throwing
-  `DecodingError`, so `TMDbError.decode(_:)` still always carries one for
-  consumers. `CreditMedia` is the one such site today and is deliberately
-  untouched.
+  `V4List`, `MediaList`, `PersonCombinedCredits` and `PersonListItem`. It is
+  stored as a `DroppedItemCount` whose `==` is always `true` and whose
+  `hash(into:)` writes nothing, so the containing models keep their
+  **synthesized** conformances while the count stays out of value identity. That
+  matters because the count is absent from every `CodingKeys`: were it part of
+  `==`, a decoded page that skipped an element would not equal its own
+  encode-decode round trip, and a consumer diffing pages across a cache boundary
+  would see a mismatch caused by a field they cannot even see.
+- `CreditMedia` is deliberately out of scope: it sits in no tolerant container,
+  so a marker there could never be caught, and its existing behaviour is locked
+  by a test.
 - `ShowType.unknown` is decode-only. It is rejected in `TMDbV4ListService` with
   `TMDbError.badRequest` — not in `ShowType.encode(to:)` (which would break
   `Codable` round-tripping of public models that legitimately hold `.unknown`,
@@ -93,11 +107,10 @@ into "swallow anything".
   closed-vocabulary endpoints (lists, combined credits) — deliberately not on
   search or trending, where a genuinely new TMDb media type is plausible and
   would turn the weekly cron red for something working as designed.
-- **One assumption is pinned by a test rather than by the type system:** that a
-  non-`DecodingError` thrown from a nested `init(from:)` escapes `JSONDecoder`
-  unwrapped. Verified on macOS; Linux uses a separate decoder, so a named canary
-  test guards it. If it ever fails, throw `DecodingError.dataCorrupted` carrying
-  the sentinel as its `underlyingError` and match on that instead.
+- **The tolerance hinges on an `underlyingError` surviving the decoder**, which a
+  named test pins. This is far weaker than the original design's dependence on a
+  *custom* error propagating unwrapped, and it holds by construction on any
+  platform whose `JSONDecoder` propagates `DecodingError` at all.
 - **`TaggedImageMedia` models only `movie` and `tv_episode`**, but 31 of 229
   sampled tagged images are `tv` — roughly 13.5% of every tagged-images page is
   discarded, and far more for TV-heavy people. That was previously invisible and
@@ -105,11 +118,15 @@ into "swallow anything".
 
 ## Alternatives considered
 
-- **A `DroppedItemCount` wrapper struct** whose `==` always returned `true`, so
-  five structs could keep synthesized `Equatable`. Rejected once the count went
-  `package`: no production code compares these models, so a plain `Int` in the
-  synthesized `==` breaks nothing and avoids deliberately bending equality on
-  public types.
+- **A plain `Int` count** left in the synthesized `Equatable`. Tried, and
+  reverted in review. The argument for it — "no production code compares these
+  models" — was true of *in-package* code and irrelevant to the consumers who
+  actually use a public `Equatable`. It made a decoded page unequal to its own
+  round trip over a field they cannot see.
+- **Hand-written `==`/`hash(into:)` on all five models** instead of the wrapper.
+  Rejected: it states the same claim in five places across types with up to 18
+  stored properties, and goes silently wrong the day someone adds a property and
+  updates four of them.
 - **A `MediaTypeDiscriminated` protocol** carrying a `Set` of modelled raw
   values, so the wrapper could check the discriminator without ever calling the
   element's `init(from:)` — deleting the sentinel and the Linux question

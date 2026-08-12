@@ -108,7 +108,10 @@ struct PersonCombinedCreditsTests {
 
     /// Before this, one foreign `media_type` anywhere in either array failed
     /// `people.combinedCredits(forPerson:)` wholesale.
-    @Test("JSON decoding skips credits with an unmodelled media type and counts them")
+    @Test(
+        "JSON decoding skips credits with an unmodelled media type and counts them",
+        .tags(.decoding)
+    )
     func decodeSkipsCreditsWithUnmodelledMediaType() throws {
         let json = """
         {
@@ -143,7 +146,10 @@ struct PersonCombinedCreditsTests {
         #expect(result.droppedItemCount == 2)
     }
 
-    @Test("JSON decoding throws when a credit is malformed for any other reason")
+    @Test(
+        "JSON decoding throws when a credit is malformed for any other reason",
+        .tags(.decoding)
+    )
     func decodeThrowsWhenCreditIsMalformed() {
         let json = """
         {

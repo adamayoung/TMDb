@@ -119,7 +119,14 @@ public struct V4List: Identifiable, Codable, Equatable, Hashable, Sendable {
     /// short for a known reason rather than a regression. It is zero for a list
     /// built in code.
     ///
-    package let droppedItemCount: Int
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many items were skipped while decoding this page.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
 
     ///
     /// Creates a v4 list object.
@@ -182,7 +189,7 @@ public struct V4List: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.page = page
         self.totalPages = totalPages
         self.totalResults = totalResults
-        self.droppedItemCount = 0
+        self.droppedItems = .none
     }
 
 }
@@ -263,7 +270,7 @@ extension V4List {
             forKey: .items
         )
         let media = decodedItems.elements
-        self.droppedItemCount = decodedItems.dropped
+        self.droppedItems = DroppedItemCount(decodedItems.dropped)
         let comments = try container.decodeIfPresent(
             [String: String?].self,
             forKey: .comments

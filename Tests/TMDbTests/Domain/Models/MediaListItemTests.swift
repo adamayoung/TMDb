@@ -171,7 +171,7 @@ struct MediaListItemTests {
     }
 
     @Test("JSON decoding of MediaListItem with an unmodelled media type throws", .tags(.decoding))
-    func decodeMediaListItemWithUnmodelledMediaTypeThrows() {
+    func decodeMediaListItemWithUnmodelledMediaTypeThrows() throws {
         let json = """
         {
           "id": 3,
@@ -185,9 +185,12 @@ struct MediaListItemTests {
 
         let data = Data(json.utf8)
 
-        #expect(throws: UnknownMediaTypeError(rawValue: "podcast")) {
+        let error = #expect(throws: DecodingError.self) {
             _ = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
         }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast"))
     }
 
 }
@@ -243,7 +246,11 @@ extension MediaListItemTests {
           "genre_ids": [18, 9648],
           "popularity": 39.2708,
           "vote_average": 8.216,
-          "vote_count": 1585
+          "vote_count": 1585,
+          "poster_path": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
+          "backdrop_path": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+          "adult": false,
+          "video": false
         }
         """
 

@@ -62,7 +62,14 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
     /// missing for a known reason rather than a regression. It is zero for a
     /// value built in code.
     ///
-    package let droppedItemCount: Int
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many ``knownFor`` entries were skipped while decoding.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
 
     ///
     /// Is the Person only suitable for adults.
@@ -103,7 +110,7 @@ public struct PersonListItem: Identifiable, Codable, Equatable, Hashable, Sendab
         self.popularity = popularity
         self.knownFor = knownFor
         self.isAdultOnly = isAdultOnly
-        self.droppedItemCount = 0
+        self.droppedItems = .none
     }
 
 }
@@ -154,7 +161,7 @@ extension PersonListItem {
             Show.self, forKey: .knownFor
         )
         self.knownFor = decodedKnownFor.elements
-        self.droppedItemCount = decodedKnownFor.dropped
+        self.droppedItems = DroppedItemCount(decodedKnownFor.dropped)
         self.isAdultOnly = try container.decodeIfPresent(Bool.self, forKey: .isAdultOnly)
     }
 

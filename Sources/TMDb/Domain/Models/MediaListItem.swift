@@ -203,7 +203,10 @@ public extension MediaListItem {
         // library does not model cannot be decoded at all — unlike a value enum,
         // where `.unknown` is a usable result.
         guard mediaType != .unknown else {
-            throw UnknownMediaTypeError(rawValue: ShowType.unknown.rawValue)
+            throw DecodingError.unknownMediaType(
+                rawValue: ShowType.unknown.rawValue,
+                codingPath: container.codingPath + [CodingKeys.mediaType]
+            )
         }
         self.mediaType = mediaType
 

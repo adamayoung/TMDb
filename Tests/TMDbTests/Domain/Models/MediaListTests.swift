@@ -77,7 +77,10 @@ struct MediaListTests {
         #expect(result.droppedItemCount == 0)
     }
 
-    @Test("JSON decoding of a MediaList skips an item with an unmodelled media type")
+    @Test(
+        "JSON decoding of a MediaList skips an item with an unmodelled media type",
+        .tags(.decoding)
+    )
     func decodeSkipsItemWithUnmodelledMediaType() throws {
         let json = """
         {
@@ -115,7 +118,7 @@ struct MediaListTests {
         #expect(result.droppedItemCount == 1)
     }
 
-    @Test("JSON decoding of a MediaList whose item is malformed throws")
+    @Test("JSON decoding of a MediaList whose item is malformed throws", .tags(.decoding))
     func decodeThrowsWhenItemIsMalformed() {
         let json = """
         {
