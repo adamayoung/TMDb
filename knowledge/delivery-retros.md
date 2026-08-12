@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (`fix/credit-empty-date-decoding`) · full
+## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
 
 - **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a
   named risky surface), so the 3-critic `/review-plan` ran and Phase 6 used an
