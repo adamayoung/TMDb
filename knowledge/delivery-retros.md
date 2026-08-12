@@ -80,7 +80,8 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   earlier claim that it "turns a hang into a failure" was overstated and is now
   corrected in the suite comment; and a diff-reading reviewer cannot see this
   class of bug — `claude-review` explicitly approved the file.
-## 2026-08-12 — ✨ One decode-tolerance policy (`fix/decode-tolerance-policy`) · full
+
+## 2026-08-12 — ✨ Adopt a single decode-tolerance policy (#440) · full
 
 - **Phases / skills:** 0–11; **full**. `/review-plan` (3 critics),
   `/implement-plan`, `/review-changes` (5-dimension fan-out + adversarial
