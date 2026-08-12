@@ -30,6 +30,38 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-08-12 — Phase 0 entry gate: drop knowledge-shaped ACs from the rubric (#433) · applied
+
+- **Pattern:** a rubric item whose evidence is a `knowledge/` artifact is
+  **guaranteed** to fail its first grading, because Phase 6 grades before Phase 7
+  writes. In #433 the delivery-agreed AC6 ("ADR-0018 records the decision,
+  ADR-0013's superseded consequence is amended, the `next-major.md` entry is
+  removed") came back `NOT MET` from the independent grader with `git diff … --
+  knowledge/` **empty** — correctly, and for no reason but the ordering. The
+  other seven ACs passed. Second entry touching the capture-vs-grading seam,
+  after the 2026-07-28 swap below.
+- **Decision:** **applied.** `.claude/skills/deliver/SKILL.md` Phase 0's entry
+  gate gains a sub-bullet: extract the ACs as now, but **drop** any whose
+  evidence is a `knowledge/` artifact, and say which were dropped and why rather
+  than silently reshaping the user's criteria. Phase 7 gains a reciprocal
+  sentence so the rule is visible from either end. No new **Auto:** marker — the
+  drop is deterministic, not a panel decision, so the reference's count of six
+  panel decision points still holds.
+- **Rationale:** the tempting fix — grade knowledge ACs after capture — would
+  revert the 2026-07-28 decision below, which exists because capture must observe
+  the delivery's **final** state; #404 shipped a knowledge entry that the next
+  phase's grader then invalidated. Both constraints are real and they point in
+  opposite directions, so neither phase can move. The gate is the only place left
+  to fix it, and nothing is lost: the work is still enforced, by Phase 7's own
+  contract (its `swept:` line and capture report) rather than by a rubric row.
+- **Reconsider when:** n/a (applied). Adjacent but distinct: the deferred #432
+  entry below proposes a *third* entry-gate branch for ACs that are absent but
+  **derivable**. The two compose — one governs where a missing AC may come from,
+  this one governs which extracted ACs are gradeable — and neither supersedes the
+  other.
+
+---
+
 ### 2026-08-12 — Merge `TMDbError.invalidRating` into `.badRequest` · rejected
 
 - **Pattern:** `knowledge/next-major.md` carried a deferred entry — *"Revisit

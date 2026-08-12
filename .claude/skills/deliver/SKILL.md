@@ -166,6 +166,16 @@ implementation = separate `/deliver` sessions.)
   worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops) vs stop;
   record that as `rubric: none`, which is **present-and-empty**, not a missing
   file.
+  - **Reject a knowledge-shaped AC — it cannot pass.** An AC whose evidence is a
+    `knowledge/` artifact ("an ADR records X", "the `next-major.md` entry is
+    removed", "a gotcha is captured") is **guaranteed** to fail its first
+    grading, because Phase 7 writes that artifact *after* Phase 6 grades. That
+    ordering is deliberate — capture must observe the delivery's final state, not
+    an intermediate one — so the fix is at this gate, not in the sequence.
+    Drop such an AC from the rubric when extracting it; the work still happens
+    and is still enforced, by Phase 7's own contract (its `swept:` line and
+    capture report). Say which ACs you dropped and why, rather than silently
+    reshaping the user's criteria.
 - **Read the plan's content into context now** — `EnterWorktree` switches CWD
   (clearing the plans cache), and a fresh worktree lacks uncommitted local
   files; the plan must travel in the conversation.
@@ -338,6 +348,10 @@ deduped against `knowledge/`, written to the right file (gotchas / API notes
 a valid outcome. Exception: one or two small entries already authored during
 implementation may be committed inline instead — note the inline capture in
 the retro.
+
+That ordering is why Phase 0 **drops a knowledge-shaped AC** from the rubric:
+grading it would always precede the work. This phase's own contract — the
+`swept:` line and the capture report below — is what enforces it instead.
 
 Its report must include the `swept:` line — Phase 7 is the knowledge base's
 retirement trigger (the skill's step 5); a report without it means the sweep
