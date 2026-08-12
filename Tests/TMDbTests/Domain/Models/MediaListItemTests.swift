@@ -170,6 +170,32 @@ struct MediaListItemTests {
         #expect(result.releaseDate == nil)
     }
 
+    /// `ShowType.unknown` has the raw value `"unknown"`, so a server literally
+    /// sending that string would match the enum and slip past `decodeMediaType`.
+    /// The guard exists for exactly that case; this is the only way to reach it.
+    @Test("JSON decoding of MediaListItem with a literal unknown media type throws", .tags(.decoding))
+    func decodeMediaListItemWithLiteralUnknownMediaTypeThrows() throws {
+        let json = """
+        {
+          "id": 4,
+          "title": "Something",
+          "original_title": "Something",
+          "overview": "An overview.",
+          "media_type": "unknown",
+          "original_language": "en"
+        }
+        """
+
+        let error = #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(
+                MediaListItem.self, from: Data(json.utf8)
+            )
+        }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "unknown"))
+    }
+
     @Test("JSON decoding of MediaListItem with an unmodelled media type throws", .tags(.decoding))
     func decodeMediaListItemWithUnmodelledMediaTypeThrows() throws {
         let json = """
