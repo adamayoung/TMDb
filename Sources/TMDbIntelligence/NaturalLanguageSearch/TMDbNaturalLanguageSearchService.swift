@@ -49,6 +49,8 @@ final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
             return try await planner.plan(for: prompt)
         } catch let error as NaturalLanguageSearchError {
             throw error
+        } catch is CancellationError {
+            throw .cancelled
         } catch {
             throw .planningFailed(underlying: error)
         }
@@ -70,6 +72,13 @@ final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
             return try await executor.execute(plan)
         } catch let error as NaturalLanguageSearchError {
             throw error
+        } catch is CancellationError {
+            throw .cancelled
+        } catch TMDbError.cancelled {
+            // Raised by `executor.execute`'s service calls. Without this arm it
+            // would be re-labelled a planning failure — the same misreporting
+            // this change exists to remove.
+            throw .cancelled
         } catch {
             throw .planningFailed(underlying: error)
         }
@@ -93,6 +102,10 @@ extension TMDbNaturalLanguageSearchService {
         case .guardrailViolation, .refused, .planningFailed:
             return true
         case .modelUnavailable, .outOfScope, .unsupportedLanguage, .rateLimited:
+            return false
+        case .cancelled:
+            // Falling back would issue fresh searches on a task the caller has
+            // already abandoned — doing the very work they cancelled.
             return false
         }
     }

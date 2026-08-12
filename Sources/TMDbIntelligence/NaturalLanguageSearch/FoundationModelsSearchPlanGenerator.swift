@@ -51,6 +51,11 @@
                     return try await retryAfterDecodingFailure(for: prompt)
                 }
                 throw await Self.mapError(error)
+            } catch is CancellationError {
+                // Not a planning failure. Wrapping it as one makes it eligible
+                // for the caller's literal-search fallback, which would issue
+                // fresh requests on an already-cancelled task.
+                throw NaturalLanguageSearchError.cancelled
             } catch {
                 throw NaturalLanguageSearchError.planningFailed(underlying: error)
             }
@@ -70,6 +75,8 @@
                 return try await generatePlan(for: prompt)
             } catch let error as LanguageModelSession.GenerationError {
                 throw await Self.mapError(error)
+            } catch is CancellationError {
+                throw NaturalLanguageSearchError.cancelled
             } catch {
                 throw NaturalLanguageSearchError.planningFailed(underlying: error)
             }

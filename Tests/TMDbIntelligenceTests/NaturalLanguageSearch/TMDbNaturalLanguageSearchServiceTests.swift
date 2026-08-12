@@ -114,4 +114,49 @@ struct TMDbNaturalLanguageSearchServiceTests {
         }
     }
 
+    @Test("a cancelled plan surfaces as cancelled, not a planning failure")
+    func cancelledPlanSurfacesAsCancelled() async throws {
+        planner.planUntypedError = CancellationError()
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().search(matching: "popular movies")
+        }
+    }
+
+    @Test("a cancelled plan is never rescued by the literal-search fallback")
+    func cancelledPlanIsNotRescuedByFallback() async throws {
+        // The regression this exists for: cancellation used to be wrapped as
+        // `.planningFailed`, which IS fallback-eligible, so a cancelled search
+        // went on to issue three fresh live searches — doing the very work the
+        // caller had abandoned.
+        planner.planError = .cancelled
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().search(matching: "Kill Bill")
+        }
+
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
+    @Test("a cancelled plan(for:) surfaces as cancelled")
+    func cancelledPlanForSurfacesAsCancelled() async throws {
+        planner.planUntypedError = CancellationError()
+
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService().plan(for: "x")
+        }
+    }
+
+    @Test("canFallBack is false for cancellation")
+    func canFallBackIsFalseForCancellation() async throws {
+        planner.planError = .cancelled
+
+        // Even with the fallback explicitly enabled, cancellation must not use it.
+        await #expect(throws: NaturalLanguageSearchError.cancelled) {
+            try await makeService(literalFallbackEnabled: true).search(matching: "x")
+        }
+
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
 }
