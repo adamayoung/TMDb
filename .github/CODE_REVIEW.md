@@ -24,10 +24,16 @@ Only raise a finding you can **substantiate in your environment**. This is what
 keeps the two reviews aligned instead of one inventing issues the other can verify
 away:
 
-- **Local reviewer** — has the repo, build/test (via the `/build`, `/test`,
-  `/integration-test` skills), and MCP (`mcp__tmdb__*`, the OpenAPI spec via
-  `WebFetch`, sosumi). Do the deep verification the sections below describe:
-  model↔API alignment, fixture accuracy, and Apple-API checks.
+- **Local reviewer** — has the repo and MCP (`mcp__tmdb__*`, the OpenAPI spec
+  via `WebFetch`, sosumi). Do the deep verification the sections below
+  describe: model↔API alignment, fixture accuracy, and Apple-API checks.
+  **But do not build or run tests** — no `make`, no `swift build`, no
+  `swift test`, and don't invoke `/build`, `/test` or `/integration-test`.
+  Reviewing is a reading task: the caller has already run every gate and owns
+  the worktree's single build slot, and parallel reviewers building into one
+  scratch path *invalidate* each other's build plans rather than queueing. If
+  a finding genuinely cannot be settled without executing something, say so in
+  the finding and let the caller run it — serially, once.
 - **GitHub Actions reviewer** — has only the **diff and the checked-out repo**: no
   MCP, no build, no test run. Review what the code itself shows. Do **not**
   speculate about model/API accuracy, fixture correctness, or whether tests pass —

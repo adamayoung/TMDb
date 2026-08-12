@@ -11,7 +11,7 @@ matching file.
 | **Lint** | [lint.md](lint.md) | `swiftlint --strict .` or `swiftformat --lint .` failed |
 | **Lint Markdown** | [markdown.md](markdown.md) | `markdownlint` failed on README or a DocC `.md` |
 | **Build and Test** (build step) | [build.md](build.md) | `swift build … -warnings-as-errors` failed (error or warning) |
-| **Build and Test** (test step) | [unit-tests.md](unit-tests.md) | `swift test --filter TMDbTests` failed |
+| **Build and Test** (test step) | [unit-tests.md](unit-tests.md) | `swift test` failed (filter covers all four unit-test targets) |
 | **Build and Test (Linux)** | [linux.md](linux.md) | Fails in the `swift:6.1-jammy` container but passes on macOS |
 
 ## By symptom

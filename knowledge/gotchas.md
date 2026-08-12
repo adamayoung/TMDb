@@ -245,10 +245,23 @@ CWD>` in the task, and `tooling-runner` refuses to run without it, verifies
 echoes the directory it used. So the failure mode is now an explicit error
 rather than a plausible-looking wrong answer. **If you see a runner report
 without a `Directory:` line, it predates the fix — treat its result as
-untrusted** and re-run. The manual fallback (`swift build --build-tests`, then
-`swift test --skip-build --scratch-path .build --filter
-"TMDbTests|TMDbTestingTests"` directly via `Bash`, which does run in the
-worktree CWD) still works if you need it.
+untrusted** and re-run. **Prefer `make -C "<dir>" test`** as the fallback: it
+runs in the worktree CWD *and* takes the filter from `Makefile`'s `TEST_TARGET`,
+so it cannot drift.
+
+Going direct via `Bash` means hand-writing the filter, and **all four**
+unit-test targets must be named:
+
+```bash
+swift build --build-tests --scratch-path .build
+swift test --skip-build --scratch-path .build \
+  --filter "TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests"
+```
+
+A hand-copied two-target filter runs half the suite and reports green — at the
+exact moment this entry says to distrust the runner, i.e. when a narrower green
+is least likely to be questioned (**False green**, top of this file). Check it
+against `Makefile:2` before trusting it.
 
 **Extended 2026-07-29** — the `Directory:` / `Status:` lines are now a
 **contract**, and refusals report in the same shape (`Status: refused —

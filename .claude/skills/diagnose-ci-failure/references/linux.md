@@ -4,7 +4,7 @@ The **Build and Test (Linux)** job runs in the `swift:6.1-jammy` container:
 
 ```bash
 swift build --build-tests -Xswiftc -warnings-as-errors
-swift test  --skip-build  --filter TMDbTests
+swift test  --skip-build  --filter "TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests"
 swift build -c release    -Xswiftc -warnings-as-errors
 ```
 
