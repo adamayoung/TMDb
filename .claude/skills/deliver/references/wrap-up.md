@@ -16,19 +16,22 @@ not a ceremony (a handful of bullets):
   phases `0–9`; skills `review-plan, implement-plan, review-changes,
   security-review, capture-knowledge`). Telemetry for the recurring-pattern
   scan: which skills fire, which phases get skipped, where deliveries stop.
+- **`consulted:`** — Phase 0's knowledge-consult proof, copied from the run
+  file: the `knowledge/` entries and ADRs read at entry, or `none relevant`.
 - **`reconciled:`** — Phase 1's worktree sweep, e.g.
   `reconciled: 2 in scope / 1 reclaimed / 0 resumable / 1 reported`. Named for
   the run file's own `reconciled` block.
 - **`swept:`** — Phase 7's knowledge-retirement sweep, verbatim from
   `/capture-knowledge`'s report line, e.g.
   `swept: Makefile, ci.yml → 1 entry rewritten`, or `swept: n/a`.
-- **Both are tripwires. An entry missing either line means that sweep did not
-  run** — stronger than Phase 0's `consulted:`, because the retro is committed
-  and goes through PR review, so a human sees the omission. **They are
-  separate keys on purpose:** when both were called `swept:`, the Phase 7 form
-  filled the slot for four consecutive deliveries and Phase 1's tripwire went
-  missing without anyone noticing — a filled slot looks identical to the right
-  one.
+- **All three are tripwires. A missing line means that step did not run** —
+  and the retro is where they bite, because it is committed and goes through
+  PR review, so a human sees the omission. (`consulted:` and `reconciled:` also
+  live in the run file, which is durable but never reviewed; `.git/` is not a
+  diff.) **They are three separate keys on purpose:** when Phase 1 and Phase 7
+  both wrote `swept:`, the Phase 7 form filled the slot for four consecutive
+  deliveries and Phase 1's tripwire went missing without anyone noticing — a
+  filled slot looks identical to the right one.
 - **What worked** — one or two things the pipeline did well.
 - **Friction** — where it was rough, slow, or stopped unnecessarily.
 - **Deviations** — anywhere you had to depart from the skill to do the right

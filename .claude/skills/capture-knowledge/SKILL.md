@@ -55,6 +55,13 @@ Quality over volume: a few high-signal entries beat a long dump.
 4. **Write each entry** in the right file:
    - Gotchas / API notes: a short dated subsection (`### <title>`), newest at the
      top, under the right heading. Date it with today's date.
+   - **Cite the PR that did the work, not the issue it came from.** A bare
+     `#NNN` is ambiguous — this repo's numbers interleave issues and PRs, so
+     `(#432)` and `(#417)` look identical and only one is the change. Take the
+     number from the branch's own PR; if it doesn't exist yet, leave a
+     placeholder and backfill it. Name the issue only when the issue itself is
+     the subject, and then say "issue #NNN" in words. (See
+     [`knowledge/README.md`](../../../knowledge/README.md) → *How to use it*.)
    - Decisions: copy `decisions/0000-template.md` to
      `decisions/NNNN-<kebab-title>.md` (next free number), fill in Status / Date /
      Context / Decision / Consequences / Alternatives. Cross-link related ADRs.

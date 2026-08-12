@@ -309,7 +309,7 @@ of brittle enums precisely because nobody had sampled it.
 
 ### `/credit/{id}`: dates are `""`, image paths are `null` — never the other way round
 
-*2026-08-12 (#417), 300-credit sample* biased toward sparse records (upcoming
+*2026-08-12 (#432), 300-credit sample* biased toward sparse records (upcoming
 movies, in-development TV, and the combined credits of prolific people).
 Measured, not guessed:
 
