@@ -37,6 +37,13 @@ final class TMDbAPIClient: UnmappedAPIClient {
         do {
             httpResponse = try await httpClient.perform(request: httpRequest)
         } catch let error {
+            // Cancellation is not a network failure. Reporting it as one makes a
+            // dismissed SwiftUI `.task {}` look like an outage and invites the
+            // caller to retry work they deliberately cancelled.
+            if error.isTaskCancellation {
+                throw TMDbAPIError.cancelled
+            }
+
             throw TMDbAPIError.network(error)
         }
 

@@ -98,6 +98,11 @@ enum TMDbAPIError: Error, Equatable {
     case decode(Error)
 
     ///
+    /// The task performing the request was cancelled.
+    ///
+    case cancelled
+
+    ///
     /// Unknown error.
     ///
     case unknown
@@ -153,6 +158,9 @@ enum TMDbAPIError: Error, Equatable {
             true
 
         case (.decode, .decode):
+            true
+
+        case (.cancelled, .cancelled):
             true
 
         case (.unknown, .unknown):

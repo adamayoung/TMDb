@@ -48,9 +48,12 @@ enum ToolErrorMapper {
         case .unauthorised, .forbidden:
             return "TMDb access was denied (check the API key)."
 
-        case .network, .serverError, .decode, .encode, .invalidURL, .invalidRating, .unknown:
+        case .network, .serverError, .decode, .encode, .invalidURL, .invalidRating,
+             .cancelled, .unknown:
             // Infrastructure or programmer errors the model cannot recover from by
-            // re-prompting — rethrow so the host app handles them.
+            // re-prompting — rethrow so the host app handles them. `.cancelled`
+            // belongs here too: the caller withdrew the request, so re-prompting
+            // the model would restart work that was deliberately abandoned.
             return nil
         }
     }

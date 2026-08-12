@@ -71,10 +71,26 @@ struct TMDbErrorTests {
         #expect(TMDbError.unknown == TMDbError.unknown)
     }
 
+    @Test("cancelled errors equal")
+    func cancelledErrorsEqual() {
+        #expect(TMDbError.cancelled == TMDbError.cancelled)
+    }
+
     @Test("different cases do not equal")
     func differentCasesDoNotEqual() {
         #expect(TMDbError.notFound() != TMDbError.unknown)
         #expect(TMDbError.encode(MockError.test) != TMDbError.network(MockError.test))
+    }
+
+    @Test("cancelled does not equal any other case")
+    func cancelledDoesNotEqualOtherCases() {
+        // `==` carries a `default: false`, so a missing `.cancelled` arm would
+        // compile and silently make every comparison false. Only a test catches
+        // it — hence asserting the positive case above *and* these negatives.
+        #expect(TMDbError.cancelled != TMDbError.unknown)
+        #expect(TMDbError.cancelled != TMDbError.network(MockError.test))
+        #expect(TMDbError.cancelled != TMDbError.invalidRating)
+        #expect(TMDbError.cancelled != TMDbError.notFound())
     }
 
     @Test(
@@ -89,6 +105,7 @@ struct TMDbErrorTests {
             (TMDbError.network(MockError.test), "Network error"),
             (TMDbError.decode(MockError.test), "Decode error"),
             (TMDbError.encode(MockError.test), "Encode error"),
+            (TMDbError.cancelled, "Cancelled"),
             (TMDbError.unknown, "Unknown")
         ]
     )

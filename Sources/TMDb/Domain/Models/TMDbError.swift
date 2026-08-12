@@ -56,6 +56,22 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An error indicating an invalid rating value was provided.
     case invalidRating
 
+    ///
+    /// An error indicating the task performing the request was cancelled.
+    ///
+    /// Thrown when the calling `Task` is cancelled while a request is in flight
+    /// or waiting to be retried — for example a SwiftUI `.task {}` whose view is
+    /// dismissed. It is never the result of a network or server failure, so
+    /// treat it as "the caller changed their mind", not as an error to report or
+    /// retry.
+    ///
+    /// - Note: Cancellation is only reported when the library actually observes
+    ///   it. A value already held in memory — a cached image configuration, or
+    ///   items still buffered by an auto-pagination sequence — is returned
+    ///   without suspending, and so without noticing the cancellation.
+    ///
+    case cancelled
+
     /// An unknown error.
     case unknown
 
@@ -104,6 +120,9 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
             true
 
         case (.invalidRating, .invalidRating):
+            true
+
+        case (.cancelled, .cancelled):
             true
 
         case (.unknown, .unknown):
@@ -155,6 +174,9 @@ public extension TMDbError {
 
         case .invalidRating:
             "Invalid rating (must be between 0.5 and 10.0, in increments of 0.5)"
+
+        case .cancelled:
+            "Cancelled"
 
         case .unknown:
             "Unknown"
