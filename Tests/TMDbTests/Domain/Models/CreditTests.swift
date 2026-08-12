@@ -35,4 +35,72 @@ struct CreditTests {
         }
     }
 
+    @Test(
+        "JSON decoding of Credit with an unknown media type throws a data corrupted error",
+        .tags(.decoding)
+    )
+    func decodeCreditWithUnknownMediaTypeThrowsDataCorruptedError() throws {
+        let data = Data(#"{"media_type": "podcast", "id": 1}"#.utf8)
+
+        let error = #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(
+                CreditMedia.self,
+                from: data
+            )
+        }
+
+        guard case .dataCorrupted(let context) = try #require(error) else {
+            Issue.record("Expected a data corrupted error")
+            return
+        }
+
+        #expect(context.debugDescription.contains("Unknown media type"))
+    }
+
+    @Test("JSON encoding of movie CreditMedia", .tags(.encoding))
+    func encodeMovieCreditMedia() throws {
+        let releaseDate = DateFormatter.theMovieDatabase.date(from: "1999-10-15")
+        let media = CreditMedia.movie(
+            .mock(id: 550, releaseDate: releaseDate, character: "Narrator")
+        )
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            CreditMedia.self,
+            from: data
+        )
+
+        guard case .movie(let movie) = result else {
+            Issue.record("Expected movie media type")
+            return
+        }
+
+        #expect(movie.id == 550)
+        #expect(movie.releaseDate == releaseDate)
+        #expect(movie.character == "Narrator")
+    }
+
+    @Test("JSON encoding of TV series CreditMedia", .tags(.encoding))
+    func encodeTVSeriesCreditMedia() throws {
+        let firstAirDate = DateFormatter.theMovieDatabase.date(from: "2008-01-20")
+        let media = CreditMedia.tvSeries(
+            .mock(id: 1396, firstAirDate: firstAirDate, character: "Walter White")
+        )
+
+        let data = try JSONEncoder.theMovieDatabase.encode(media)
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            CreditMedia.self,
+            from: data
+        )
+
+        guard case .tvSeries(let tvSeries) = result else {
+            Issue.record("Expected TV series media type")
+            return
+        }
+
+        #expect(tvSeries.id == 1396)
+        #expect(tvSeries.firstAirDate == firstAirDate)
+        #expect(tvSeries.character == "Walter White")
+    }
+
 }

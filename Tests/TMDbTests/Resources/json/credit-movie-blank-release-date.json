@@ -1,0 +1,40 @@
+{
+    "credit_type": "crew",
+    "department": "Directing",
+    "job": "Director",
+    "media": {
+        "adult": false,
+        "backdrop_path": null,
+        "id": 1047807,
+        "title": "Heat 2",
+        "original_title": "Heat 2",
+        "overview": "Spanning the years 1988–2000, this sequel/prequel will explore the lives of homicide detective Vincent Hanna and criminals Neil McCauley and Chris Shiherlis years before their paths cross in 1995, and will follow Shiherlis and Hanna's lives in the aftermath of McCauley's death.",
+        "poster_path": "/8nVqwnRrTQZatWqaVtobjmFUdbJ.jpg",
+        "media_type": "movie",
+        "original_language": "en",
+        "genre_ids": [
+            80,
+            18,
+            28
+        ],
+        "popularity": 2.6161,
+        "release_date": "",
+        "softcore": false,
+        "video": false,
+        "vote_average": 0,
+        "vote_count": 0
+    },
+    "media_type": "movie",
+    "id": "63704523e894a6008292323c",
+    "person": {
+        "adult": false,
+        "id": 638,
+        "name": "Michael Mann",
+        "original_name": "Michael Mann",
+        "media_type": "person",
+        "popularity": 2.163,
+        "gender": 2,
+        "known_for_department": "Directing",
+        "profile_path": "/kEYrCk6y6siUOxUlMD2KyFuRBQK.jpg"
+    }
+}

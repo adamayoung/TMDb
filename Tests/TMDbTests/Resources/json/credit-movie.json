@@ -1,0 +1,40 @@
+{
+    "credit_type": "cast",
+    "department": "Acting",
+    "job": "Actor",
+    "media": {
+        "adult": false,
+        "backdrop_path": "/c6OLXfKAk5BKeR6broC8pYiCquX.jpg",
+        "id": 550,
+        "title": "Fight Club",
+        "original_title": "Fight Club",
+        "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.",
+        "poster_path": "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg",
+        "media_type": "movie",
+        "original_language": "en",
+        "genre_ids": [
+            18,
+            53
+        ],
+        "popularity": 44.4391,
+        "release_date": "1999-10-15",
+        "softcore": false,
+        "video": false,
+        "vote_average": 8.437,
+        "vote_count": 32596,
+        "character": "Narrator"
+    },
+    "media_type": "movie",
+    "id": "52fe4250c3a36847f80149f3",
+    "person": {
+        "adult": false,
+        "id": 819,
+        "name": "Edward Norton",
+        "original_name": "Edward Norton",
+        "media_type": "person",
+        "popularity": 6.5852,
+        "gender": 2,
+        "known_for_department": "Acting",
+        "profile_path": "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg"
+    }
+}
