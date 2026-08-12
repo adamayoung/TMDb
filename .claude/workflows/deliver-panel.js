@@ -12,7 +12,7 @@ export const meta = {
 // least of all this script.
 const POINTS = {
   'phase0-no-acs':
-    'The plan arrived with no acceptance criteria. Proceeding makes Phase 6 (rubric verification) a no-op for the whole delivery — it ships with no exit gate.',
+    'The plan arrived with no acceptance criteria AND none derivable from a linked issue or an explicit test list (derivable ACs are handled by the entry gate, not panelled). Proceeding makes Phase 6 (rubric verification) a no-op for the whole delivery — it ships with no exit gate.',
   'phase2-blocker':
     'A /review-plan blocker that is NOT data loss and NOT a breaking change. (Those two never reach this panel.)',
   'phase4-findings':

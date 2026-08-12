@@ -29,6 +29,25 @@ the issues, re-invoke this skill to re-check. To attribute a failure
 (live-API/backend drift vs a regression in your change), use
 `/diagnose-integration-failure`.
 
+## A count is not evidence that *your* new test ran
+
+The log is an **aggregate** — it names failures only, never the tests that
+passed, so `passed_tests: 310` looks the same whether a test you just added ran
+or never compiled into the bundle. The runner reports `Names observed: no` for a
+full run and is instructed not to claim any passing test by name; treat such a
+claim as unfounded, and a rising total as no evidence about an individual test.
+
+This bites hardest here, because a new integration test is usually the *only*
+live proof that a fix works. When it matters, follow up with a scoped run and
+read the names:
+
+```bash
+swift test --skip-build --scratch-path .build --filter 'SuiteName'
+```
+
+Seconds against an already-built bundle, and it distinguishes "the live suite is
+green" from "my new test reached the API and passed".
+
 ## If the report is missing or malformed
 
 Judge the runner's report by **shape**, not by tone — the three outcomes are

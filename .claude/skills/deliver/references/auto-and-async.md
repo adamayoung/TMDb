@@ -65,8 +65,12 @@ unattended run must still be reviewable.
 
 **Panel decision points** — **six** (marked **Auto:** in `SKILL.md`):
 
-- Phase 0 — missing acceptance criteria: proceed without a rubric (Phase 6
-  becomes a no-op) vs stop.
+- Phase 0 — acceptance criteria neither supplied **nor derivable**: proceed
+  without a rubric (Phase 6 becomes a no-op) vs stop. ACs that are *derivable*
+  from a linked issue or an explicit test list are **not** a panel decision — the
+  entry gate's second case derives them and records `rubricProvenance`, so the
+  delivery keeps its exit gate. Only a plan with no definition of done at all
+  reaches this panel.
 - Phase 2 — a plan-review blocker that is *not* data-loss/breaking: proceed
   vs stop. (Data-loss/breaking = hard stop, never delegated.)
 - Phases 4/5 — Critical/High (or High security) findings persisting after the
