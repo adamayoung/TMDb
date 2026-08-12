@@ -80,7 +80,8 @@ public protocol V4ListService: Sendable {
     ///
     /// - Parameters:
     ///    - mediaID: The identifier of the movie or TV series.
-    ///    - showType: Whether it is a movie or a TV series.
+    ///    - showType: Whether it is a movie or a TV series. ``ShowType/unknown``
+    ///      is decode-only and throws ``TMDbError/badRequest(_:)``.
     ///    - listID: The identifier of the list.
     ///    - accessToken: The list owner's access token.
     ///
@@ -165,7 +166,8 @@ public protocol V4ListService: Sendable {
     /// [TMDb API - List: Add Items](https://developer.themoviedb.org/v4/reference/list-add-items)
     ///
     /// - Parameters:
-    ///    - items: The movies and TV series to add.
+    ///    - items: The movies and TV series to add. An item whose media type is
+    ///      ``ShowType/unknown`` throws ``TMDbError/badRequest(_:)``.
     ///    - listID: The identifier of the list.
     ///    - accessToken: The list owner's access token.
     ///
@@ -187,7 +189,8 @@ public protocol V4ListService: Sendable {
     /// [TMDb API - List: Update Items](https://developer.themoviedb.org/v4/reference/list-update-items)
     ///
     /// - Parameters:
-    ///    - items: The items to comment on.
+    ///    - items: The items to comment on. An item whose media type is
+    ///      ``ShowType/unknown`` throws ``TMDbError/badRequest(_:)``.
     ///    - listID: The identifier of the list.
     ///    - accessToken: The list owner's access token.
     ///
@@ -210,7 +213,8 @@ public protocol V4ListService: Sendable {
     /// [TMDb API - List: Remove Items](https://developer.themoviedb.org/v4/reference/list-remove-items)
     ///
     /// - Parameters:
-    ///    - items: The movies and TV series to remove.
+    ///    - items: The movies and TV series to remove. An item whose media type
+    ///      is ``ShowType/unknown`` throws ``TMDbError/badRequest(_:)``.
     ///    - listID: The identifier of the list.
     ///    - accessToken: The list owner's access token.
     ///

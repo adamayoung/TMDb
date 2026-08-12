@@ -146,6 +146,17 @@ struct TMDbV4ListServiceReadTests {
         #expect(apiClient.lastRequest as? V4ListItemStatusRequest == expected)
     }
 
+    @Test("itemStatus with an unknown media type throws bad request without a call")
+    func itemStatusWithUnknownMediaTypeThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Media type must be a movie or a TV series")
+        )) {
+            _ = try await service.itemStatus(forMedia: 550, ofType: .unknown, inList: 1)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
     @Test("itemStatus is false when TMDb answers not found")
     func itemStatusFalseWhenNotFound() async throws {
         // TMDb has no present/absent flag — an absent item is a 404.

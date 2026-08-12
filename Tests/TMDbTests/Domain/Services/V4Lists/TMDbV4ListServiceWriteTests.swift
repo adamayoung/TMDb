@@ -178,6 +178,55 @@ struct TMDbV4ListServiceWriteTests {
         #expect(request.body?.items == [.movie(550, comment: "Great twist")])
     }
 
+    /// `ShowType.unknown` is decode-only — it exists so a media type TMDb adds
+    /// later does not fail a whole response. It still encodes to the literal
+    /// string "unknown", so it has to be rejected here rather than left to the
+    /// encoder to drop.
+    @Test("addItems with an unknown media type throws bad request without a call")
+    func addItemsWithUnknownMediaTypeThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Media type must be a movie or a TV series")
+        )) {
+            _ = try await service.addItems(
+                [V4ListMediaItem(mediaType: .unknown, mediaID: 550)],
+                toList: 1,
+                accessToken: Self.token
+            )
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("updateItems with an unknown media type throws bad request without a call")
+    func updateItemsWithUnknownMediaTypeThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Media type must be a movie or a TV series")
+        )) {
+            _ = try await service.updateItems(
+                [V4ListItemComment(mediaType: .unknown, mediaID: 550, comment: "Nope")],
+                inList: 1,
+                accessToken: Self.token
+            )
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
+    @Test("removeItems with an unknown media type throws bad request without a call")
+    func removeItemsWithUnknownMediaTypeThrows() async throws {
+        await #expect(throws: TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Media type must be a movie or a TV series")
+        )) {
+            _ = try await service.removeItems(
+                [V4ListMediaItem(mediaType: .unknown, mediaID: 550)],
+                fromList: 1,
+                accessToken: Self.token
+            )
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
     @Test("updateItems with no items throws bad request without a call")
     func updateItemsWithNoItemsThrows() async throws {
         await #expect(throws: TMDbError.badRequest(
