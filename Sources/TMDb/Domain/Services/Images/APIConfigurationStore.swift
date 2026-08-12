@@ -35,8 +35,18 @@ actor APIConfigurationStore {
         // Checked before joining any in-flight fetch, so a refresh in progress
         // does not make readers wait: they keep getting the cached value until
         // the replacement lands.
+        //
+        // Deliberately ahead of the cancellation check: a cached value costs
+        // nothing to hand back, and a caller that never suspends cannot
+        // meaningfully be said to have observed the cancellation.
         if let cachedConfiguration {
             return cachedConfiguration
+        }
+
+        // Nothing cached, so this call would start a network fetch. Bail before
+        // spending a round trip on a caller that has already gone away.
+        guard !Task.isCancelled else {
+            throw .cancelled
         }
 
         return try await result(of: currentFetch())
@@ -44,6 +54,12 @@ actor APIConfigurationStore {
 
     func refresh() async throws(TMDbError) -> APIConfiguration {
         entryCount += 1
+
+        // Ahead of `invalidate()`, so a cancelled refresh neither bumps the
+        // generation nor detaches a live fetch that other callers are awaiting.
+        guard !Task.isCancelled else {
+            throw .cancelled
+        }
 
         // Coalesce concurrent refreshes. A refresh arriving while an earlier
         // refresh's fetch is still running joins it rather than superseding it,
@@ -82,8 +98,37 @@ actor APIConfigurationStore {
         inFlightFetch = nil
     }
 
+    ///
+    /// Awaits a shared fetch, abandoning the wait if **this** caller is cancelled.
+    ///
+    /// `Task.value` on a `Task<_, Never>` is not a cancellation point, so joining
+    /// it directly left a cancelled caller blocked until the fetch finished —
+    /// ~30s on the default session timeout, but minutes with retry enabled.
+    ///
+    /// The shared fetch is still never cancelled: it has N awaiters, and
+    /// cancelling it because one of them lost interest would fail all the others
+    /// (ADR-0013). Only this awaiter leaves; the observer `Task` below is
+    /// unstructured and so does not inherit cancellation, letting the fetch run
+    /// on and commit for everyone else.
+    ///
     private func result(of fetch: Fetch) async throws(TMDbError) -> APIConfiguration {
-        try await fetch.value.get()
+        let box = ResumeOnce<Result<APIConfiguration, TMDbError>>()
+
+        let outcome = await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                // Runs in this actor's isolation, so it cannot interleave with
+                // the actor's own state changes.
+                box.attach(continuation)
+                Task { await box.resume(fetch.value) }
+            }
+        } onCancel: {
+            // Synchronous — `ResumeOnce` needs no actor hop, so cancellation
+            // cannot lose a race against the fetch completing. A cancel arriving
+            // before `attach` is held as a pending value and delivered by it.
+            box.resume(.failure(.cancelled))
+        }
+
+        return try outcome.get()
     }
 
     private func currentFetch() -> Fetch {
