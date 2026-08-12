@@ -49,11 +49,12 @@ public extension CreditMedia {
             self = .tvSeries(tvSeries)
 
         default:
-            throw DecodingError.dataCorruptedError(
-                forKey: .mediaType,
-                in: container,
-                debugDescription:
-                "Unknown media type: \(mediaType)"
+            // Bounded and escaped for the same reason as every other media type
+            // that reaches an error message: the value comes off the wire and
+            // lands in a `debugDescription` a caller may log.
+            throw DecodingError.unknownMediaType(
+                rawValue: mediaType,
+                codingPath: container.codingPath + [CodingKeys.mediaType]
             )
         }
     }

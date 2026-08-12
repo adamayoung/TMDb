@@ -112,6 +112,23 @@ public struct V4List: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let totalResults: Int
 
     ///
+    /// How many items were skipped while decoding this page because their media
+    /// type is one this library does not model.
+    ///
+    /// Decode telemetry, not data: it exists so tests can assert that a page is
+    /// short for a known reason rather than a regression. It is zero for a list
+    /// built in code.
+    ///
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many items were skipped while decoding this page.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
+
+    ///
     /// Creates a v4 list object.
     ///
     /// - Parameters:
@@ -172,6 +189,7 @@ public struct V4List: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.page = page
         self.totalPages = totalPages
         self.totalResults = totalResults
+        self.droppedItems = .none
     }
 
 }
@@ -208,13 +226,15 @@ extension V4List {
     /// — for example `"movie:550"` or `"tv:1399"` — with nullable values, so
     /// each comment is matched back onto its item here.
     ///
-    /// Items decode tolerantly: one the library cannot model is skipped rather
-    /// than failing the whole page.
+    /// An item whose media type this library does not model is skipped rather
+    /// than failing the whole page. Every other decode failure throws.
     ///
-    /// - Important: A skipped item is **not detectable** from this type.
-    ///   ``itemCount`` is the size of the whole list across every page, not of
-    ///   ``items``, so the two differ legitimately whenever the list is longer
-    ///   than a page. They are only comparable for a single-page list.
+    /// - Important: A skipped item is **not detectable from outside the
+    ///   package** — the count is recorded internally for tests, not exposed to
+    ///   callers. ``itemCount`` is no substitute: it is the size of the whole
+    ///   list across every page, not of ``items``, so the two differ
+    ///   legitimately whenever the list is longer than a page. They are only
+    ///   comparable for a single-page list.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
@@ -245,11 +265,12 @@ extension V4List {
         self.totalPages = try container.decodeIfPresent(Int.self, forKey: .totalPages) ?? 1
         self.totalResults = try container.decodeIfPresent(Int.self, forKey: .totalResults) ?? 0
 
-        let wrapped = try container.decodeIfPresent(
-            [FailableDecodable<Show>].self,
+        let decodedItems = try container.decodeSkippingUnknownMediaTypes(
+            Show.self,
             forKey: .items
         )
-        let media = (wrapped ?? []).compactMap(\.value)
+        let media = decodedItems.elements
+        self.droppedItems = DroppedItemCount(decodedItems.dropped)
         let comments = try container.decodeIfPresent(
             [String: String?].self,
             forKey: .comments

@@ -30,10 +30,10 @@ struct V4ListTests {
 
     @Test("keeps every item — a short page would mean a dropped decode")
     func decodesEveryItem() throws {
-        // `FailableDecodable` skips an element it cannot model, silently. This
-        // reconciles the decoded count against the count TMDb reports, so a
-        // decoder regression fails here rather than returning a quietly short
-        // page.
+        // An item whose media type is unmodelled is skipped. This reconciles the
+        // decoded count against the count TMDb reports, and asserts nothing was
+        // skipped, so a decoder regression fails here rather than returning a
+        // quietly short page.
         let result = try JSONDecoder.theMovieDatabaseV4.decode(
             V4List.self, fromResource: "v4-list"
         )
@@ -41,6 +41,34 @@ struct V4ListTests {
         #expect(result.items.count == 2)
         #expect(result.items.count == result.itemCount)
         #expect(result.items.count == result.totalResults)
+        #expect(result.droppedItemCount == 0)
+    }
+
+    @Test("skips an item with an unmodelled media type and counts it", .tags(.decoding))
+    func decodeSkipsItemWithUnmodelledMediaType() throws {
+        let json = """
+        {
+          "id": 1, "name": "Mixed", "public": true, "item_count": 2,
+          "created_by": {"id": "abc", "name": "Test", "username": "testuser"},
+          "sort_by": "original_order.asc", "iso_639_1": "en", "iso_3166_1": "US",
+          "results": [
+            {
+              "id": 550, "title": "Fight Club", "original_title": "Fight Club",
+              "original_language": "en", "overview": "An overview.",
+              "media_type": "movie"
+            },
+            {"id": 2, "name": "A Future Thing", "media_type": "podcast"}
+          ],
+          "total_pages": 1, "total_results": 2
+        }
+        """
+
+        let result = try JSONDecoder.theMovieDatabaseV4.decode(
+            V4List.self, from: Data(json.utf8)
+        )
+
+        #expect(result.items.count == 1)
+        #expect(result.droppedItemCount == 1)
     }
 
     @Test("decodes a movie item and a TV item into the right Show cases")

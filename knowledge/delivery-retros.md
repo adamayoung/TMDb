@@ -81,6 +81,66 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   corrected in the suite comment; and a diff-reading reviewer cannot see this
   class of bug — `claude-review` explicitly approved the file.
 
+## 2026-08-12 — ✨ Adopt a single decode-tolerance policy (#440) · full
+
+- **Phases / skills:** 0–11; **full**. `/review-plan` (3 critics),
+  `/implement-plan`, `/review-changes` (5-dimension fan-out + adversarial
+  verify), `/security-review`, independent Phase 6 grader (ALL MET),
+  `/capture-knowledge`. 11 commits.
+- **Worked — making the failure-class sweep a *blocking ledger task*, not a plan
+  bullet.** All three critics independently graded the blast-radius audit as the
+  weakest part of revision 1 (two called it a blocker), because it was a *name*
+  sweep that missed every synthesized decoder — the exact #404 mistake. Promoting
+  it to a Step 0 gate that blocked the container flip is what found the delivery's
+  worst bug: `TVSeriesDetailsResponse.lists` was typed `MediaPageableList` when
+  `/tv/{id}/lists` returns list summaries with no `media_type`, so tightening
+  tolerance would have turned a silent empty array into a thrown call. Rule of
+  thumb confirmed: a process step that only exists in prose gets skipped under
+  momentum; one that blocks a task does not.
+- **Worked — the sweep's exclusions, not just its findings.** It disproved my own
+  plan's claim that `TVSeriesListItem.originCountries` was "the one confirmed
+  hardening needed" (clean at 1,046/1,046), and showed the 9%-null
+  `origin_country` figure recorded for `/company/{id}` does **not** transfer to
+  `/search/company` (100/100 clean). Both would have shipped as confident
+  assertions a reviewer could reasonably have rejected.
+- **Worked — review overturning a decision the critics had settled.** Phase 2
+  rejected an inert-equality wrapper for the drop count on the grounds that "no
+  production code compares these models". Two review dimensions independently
+  pointed out that reasoning covered *in-package* code and ignored consumers,
+  who are exactly who a public `Equatable` serves — a decoded page no longer
+  equalled its own round trip. Reinstated. Later-phase evidence beating an
+  earlier consensus is the pipeline working, not churn.
+- **Friction — three of my own load-bearing claims were wrong, each caught by a
+  different stage.** (1) "`lists.items` silently drops TV rows" — it threw, like
+  `details`; both decode the same `MediaList` (critic). (2) The sentinel "sits
+  inside a tolerant container so it never reaches a caller" — every `init(from:)`
+  is public, so a consumer decoding cached JSON gets it directly (reviewer).
+  (3) The error message was safe — it interpolated an unbounded raw server string
+  into a loggable `debugDescription` (security). Each was cheap to fix and
+  expensive to have shipped.
+- **Friction — a peer session landed `CreditType` (#436) into `main` mid-flight**,
+  duplicating work I had already committed. Cost a rebase, four conflict
+  resolutions in favour of `main`, and a reworded commit whose message had become
+  half-false. Two sessions picking up the same issue is the real cost; the
+  worktree sweep saw the peer's worktree but had no way to know what it would
+  claim.
+- **Deviations:** (1) The run file could not live at `.git/deliver/<id>.json` —
+  this session's background worktree-isolation guard refuses every write outside
+  the worktree, via both `Write` and a Bash redirect. Kept it at
+  `<worktree>/.build/deliver-run.json` (gitignored, survives `make ci`) and
+  recorded the deviation in the file. (2) The rubric was **derived** from the
+  plan's test list plus the issue's comment rather than supplied, with
+  `rubricProvenance` recorded — the path #432's retro asked to have sanctioned.
+  (3) `tooling-runner` hit a session limit near the end; fell back to
+  `make -C <dir> test` directly and disclosed it.
+- **One improvement:** the `tooling-runner` contract reports aggregate counts
+  only, so "3147 passed" reads identically whether a new test ran or never
+  compiled in — a peer hit the same thing today and logged it as `deferred`. I
+  worked around it by re-running each batch of new tests with a scoped
+  `--filter` and reading the names back. That workaround should be the contract:
+  after adding tests, `/test` should confirm the new ones **by name**, not by
+  total.
+
 ## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
 
 - **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a

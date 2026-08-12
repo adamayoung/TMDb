@@ -86,34 +86,207 @@ struct MediaListItemTests {
         #expect(result.backdropPath == nil)
     }
 
-    @Test("JSON decoding of MediaListItem with TV show", .tags(.decoding))
-    func decodeReturnsMediaListItemWithTVShow() throws {
+    /// The real shape of a TV row from `/list/{id}` — `name`, `original_name` and
+    /// `first_air_date`, with **no** `title`, `original_title`, `release_date` or
+    /// `video`. Taken from list 8679585. The previous version of this test gave a
+    /// TV row a `title` and a `release_date`, which TMDb never sends, so it
+    /// passed while `lists.details(forList:)` failed on every real mixed list.
+    @Test("JSON decoding of MediaListItem with a TV series", .tags(.decoding))
+    func decodeReturnsMediaListItemWithTVSeries() throws {
         let json = """
         {
           "adult": false,
-          "backdrop_path": "/test.jpg",
-          "id": 999999,
-          "title": "Test TV Show",
-          "original_title": "Test TV Show",
-          "overview": "A test TV show.",
-          "poster_path": "/test-poster.jpg",
+          "backdrop_path": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+          "id": 200875,
+          "name": "IT: Welcome to Derry",
+          "original_name": "IT: Welcome to Derry",
+          "overview": "In 1962, amid a spate of unexplained disappearances.",
+          "poster_path": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
           "media_type": "tv",
           "original_language": "en",
-          "genre_ids": [18],
-          "popularity": 15.0,
-          "release_date": "2024-01-15",
-          "video": false,
-          "vote_average": 8.5,
-          "vote_count": 500
+          "genre_ids": [18, 9648],
+          "popularity": 39.2708,
+          "first_air_date": "2025-10-26",
+          "vote_average": 8.216,
+          "vote_count": 1585,
+          "origin_country": ["US"]
         }
         """
 
         let data = Data(json.utf8)
         let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
 
-        #expect(result.id == 999_999)
+        #expect(result.id == 200_875)
         #expect(result.mediaType == .tvSeries)
-        #expect(result.title == "Test TV Show")
+        #expect(result.title == "IT: Welcome to Derry")
+        #expect(result.originalTitle == "IT: Welcome to Derry")
+        // Pinned to an explicit GMT instant: this type parses day-precision dates
+        // at GMT midnight, while TVSeriesListItem uses the decoder's
+        // local-timezone strategy. A formatter-derived expectation here would
+        // pass in UTC and drift everywhere else.
+        #expect(result.releaseDate == Date(iso8601: "2025-10-26T00:00:00Z"))
+        #expect(result.hasVideo == nil)
+    }
+
+    @Test("JSON decoding of MediaListItem prefers title when both keys present", .tags(.decoding))
+    func decodeReturnsMediaListItemPreferringTitleOverName() throws {
+        let json = """
+        {
+          "id": 1,
+          "title": "Movie Title",
+          "name": "Series Name",
+          "original_title": "Original Movie Title",
+          "original_name": "Original Series Name",
+          "overview": "Both key pairs present.",
+          "media_type": "movie",
+          "original_language": "en"
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        #expect(result.title == "Movie Title")
+        #expect(result.originalTitle == "Original Movie Title")
+    }
+
+    @Test("JSON decoding of MediaListItem with empty first_air_date", .tags(.decoding))
+    func decodeReturnsMediaListItemWithEmptyFirstAirDateAsNil() throws {
+        let json = """
+        {
+          "id": 2,
+          "name": "Unaired Series",
+          "original_name": "Unaired Series",
+          "overview": "Not yet aired.",
+          "media_type": "tv",
+          "original_language": "en",
+          "first_air_date": ""
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        #expect(result.releaseDate == nil)
+    }
+
+    /// `ShowType.unknown` has the raw value `"unknown"`, so a server literally
+    /// sending that string would match the enum and slip past `decodeMediaType`.
+    /// The guard exists for exactly that case; this is the only way to reach it.
+    @Test("JSON decoding of MediaListItem with a literal unknown media type throws", .tags(.decoding))
+    func decodeMediaListItemWithLiteralUnknownMediaTypeThrows() throws {
+        let json = """
+        {
+          "id": 4,
+          "title": "Something",
+          "original_title": "Something",
+          "overview": "An overview.",
+          "media_type": "unknown",
+          "original_language": "en"
+        }
+        """
+
+        let error = #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(
+                MediaListItem.self, from: Data(json.utf8)
+            )
+        }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "unknown"))
+    }
+
+    @Test("JSON decoding of MediaListItem with an unmodelled media type throws", .tags(.decoding))
+    func decodeMediaListItemWithUnmodelledMediaTypeThrows() throws {
+        let json = """
+        {
+          "id": 3,
+          "title": "A Podcast",
+          "original_title": "A Podcast",
+          "overview": "Not a movie or a TV series.",
+          "media_type": "podcast",
+          "original_language": "en"
+        }
+        """
+
+        let data = Data(json.utf8)
+
+        let error = #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+        }
+
+        let decodingError = try #require(error)
+        #expect(decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast"))
+    }
+
+}
+
+extension MediaListItemTests {
+
+    /// A TV row re-encodes through the `title`/`original_title` keys, matching
+    /// `CollectionListItem`, which faces the same two-shape input. Asserting the
+    /// emitted keys rather than a decoded round-trip keeps this independent of
+    /// the machine's timezone: the encoder's `yyyy-MM-dd` formatter has no
+    /// explicit time zone while this type parses at GMT, so a dated round-trip
+    /// would shift a day in any negative-offset region.
+    @Test("a decoded TV series MediaListItem encodes through the title keys", .tags(.encoding))
+    func tvSeriesMediaListItemEncodesThroughTitleKeys() throws {
+        let json = """
+        {
+          "id": 200875,
+          "name": "IT: Welcome to Derry",
+          "original_name": "IT: Welcome to Derry",
+          "overview": "In 1962, amid a spate of unexplained disappearances.",
+          "media_type": "tv",
+          "original_language": "en",
+          "first_air_date": "2025-10-26"
+        }
+        """
+
+        let item = try JSONDecoder.theMovieDatabase.decode(
+            MediaListItem.self, from: Data(json.utf8)
+        )
+
+        let encoded = try JSONEncoder.theMovieDatabase.encode(item)
+        let object = try #require(
+            JSONSerialization.jsonObject(with: encoded) as? [String: Any]
+        )
+
+        #expect(object["title"] as? String == "IT: Welcome to Derry")
+        #expect(object["original_title"] as? String == "IT: Welcome to Derry")
+        #expect(object["name"] == nil)
+        #expect(object["original_name"] == nil)
+        #expect(object["media_type"] as? String == "tv")
+    }
+
+    @Test("an undated MediaListItem round-trips exactly", .tags(.encoding))
+    func undatedMediaListItemRoundTrips() throws {
+        let json = """
+        {
+          "id": 200875,
+          "name": "IT: Welcome to Derry",
+          "original_name": "IT: Welcome to Derry",
+          "overview": "In 1962, amid a spate of unexplained disappearances.",
+          "media_type": "tv",
+          "original_language": "en",
+          "genre_ids": [18, 9648],
+          "popularity": 39.2708,
+          "vote_average": 8.216,
+          "vote_count": 1585,
+          "poster_path": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
+          "backdrop_path": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+          "adult": false,
+          "video": false
+        }
+        """
+
+        let decoder = JSONDecoder.theMovieDatabase
+        let original = try decoder.decode(MediaListItem.self, from: Data(json.utf8))
+
+        let encoded = try JSONEncoder.theMovieDatabase.encode(original)
+        let result = try decoder.decode(MediaListItem.self, from: encoded)
+
+        #expect(result == original)
     }
 
     @Test("JSON decoding of MediaListItem with missing release_date", .tags(.decoding))

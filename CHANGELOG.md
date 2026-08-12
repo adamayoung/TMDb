@@ -69,6 +69,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   however the sequence was built: errors *from* a `pageFetcher` you supplied
   keep that fetcher's own error type, but cancellation the sequence itself
   observes always throws `TMDbError.cancelled`.
+- **Breaking:** `ShowType` gains an `.unknown` case, and a `media_type` this
+  library does not model now decodes to it instead of throwing — matching
+  `CreditType`, `Status`, `VideoType`, `ReleaseType`, `VideoSize`, `Gender` and
+  `TMDbStatusCode`. This only affects you if you switch exhaustively over a
+  `ShowType` — add an `.unknown` branch, or a `default`. `.unknown` is
+  **decode-only**: passing it to `v4Lists.itemStatus`, `addItems`,
+  `updateItems` or `removeItems` throws `TMDbError.badRequest` rather than
+  sending a media type TMDb cannot interpret.
+
+- **Breaking:** `TVSeriesDetailsResponse.lists` changes from
+  `MediaPageableList` to `MediaListSummaryPageableList`. `/tv/{id}/lists`
+  returns list summaries, not media rows, so every row failed to decode and was
+  silently dropped — `tvSeries.details(appending: .lists)` has always returned
+  an empty array. Any code reading it was reading nothing. `MovieDetailsResponse`
+  and the standalone `tvSeries.lists(forTVSeries:)` already used the correct
+  type.
+
+- Decode tolerance is now one policy: an element whose `media_type` this library
+  does not model is skipped from its containing array and counted, and **every
+  other decode failure throws**. Previously `PageableListResult` and `V4List`
+  swallowed *any* undecodable element, unbounded and unreported, so a decoder
+  regression showed up as a quietly short page with no signal at all — while
+  `MediaList`, `PersonCombinedCredits` and `PersonListItem.knownFor` did the
+  opposite and failed wholesale on one foreign entry. Those three are now
+  tolerant too. **This is behavioural, not source-breaking** — but a response
+  that previously came back quietly short may now throw `TMDbError.decode`. See
+  ADR-0019.
 
 - **Breaking:** `CreditType` gains `.creator` and `.unknown` cases, and an
   unrecognised `credit_type` now decodes to `.unknown` instead of throwing.
@@ -110,6 +137,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   application bearer token are unaffected and remain cached.
 
 ### Fixed
+
+- `lists.details(forList:)` and `lists.items(forList:)` no longer throw for a
+  list containing a TV series — which is most real lists. TMDb sends a list's TV
+  rows with `name`, `original_name` and `first_air_date` and **no** `title`,
+  `original_title` or `release_date`, while `MediaListItem` required the
+  movie-shaped keys. Both key pairs now decode into `title`, `originalTitle` and
+  `releaseDate`, as `CollectionListItem` already did, so callers never branch on
+  `mediaType`.
+
+- `PersonListItem.knownFor` no longer removes the whole person from a page when
+  one `known_for` entry has a `media_type` this library does not model. Only the
+  entry is skipped.
 
 - `credits.details(forCredit:)` no longer fails for a credit attached to an
   unreleased movie or an unaired TV series. TMDb reports an absent date as an

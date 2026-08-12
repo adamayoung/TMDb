@@ -95,7 +95,8 @@ public extension V4ListService {
     ///
     /// - Parameters:
     ///    - mediaID: The identifier of the movie or TV series.
-    ///    - showType: Whether it is a movie or a TV series.
+    ///    - showType: Whether it is a movie or a TV series. ``ShowType/unknown``
+    ///      is decode-only and throws ``TMDbError/badRequest(_:)``.
     ///    - listID: The identifier of the list.
     ///
     /// - Throws: TMDb error ``TMDbError``.

@@ -54,7 +54,8 @@ final class TMDbV4ListService: V4ListService {
             page: list.page,
             results: list.items,
             totalResults: list.totalResults,
-            totalPages: list.totalPages
+            totalPages: list.totalPages,
+            droppedItemCount: list.droppedItemCount
         )
     }
 
@@ -65,6 +66,7 @@ final class TMDbV4ListService: V4ListService {
         accessToken: String?
     ) async throws(TMDbError) -> Bool {
         try Self.validate(accessToken: accessToken)
+        try Self.validate(showType: showType)
         let request = V4ListItemStatusRequest(
             listID: listID,
             mediaID: mediaID,
@@ -147,6 +149,7 @@ final class TMDbV4ListService: V4ListService {
     ) async throws(TMDbError) -> V4ListItemsResult {
         try Self.validate(accessToken: accessToken)
         try Self.validate(itemCount: items.count)
+        try Self.validate(mediaTypesOf: items.map(\.mediaType))
         let request = AddV4ListItemsRequest(
             items: items,
             listID: listID,
@@ -163,6 +166,7 @@ final class TMDbV4ListService: V4ListService {
     ) async throws(TMDbError) -> V4ListItemsResult {
         try Self.validate(accessToken: accessToken)
         try Self.validate(itemCount: items.count)
+        try Self.validate(mediaTypesOf: items.map(\.mediaType))
         let request = UpdateV4ListItemsRequest(
             items: items,
             listID: listID,
@@ -179,6 +183,7 @@ final class TMDbV4ListService: V4ListService {
     ) async throws(TMDbError) -> V4ListItemsResult {
         try Self.validate(accessToken: accessToken)
         try Self.validate(itemCount: items.count)
+        try Self.validate(mediaTypesOf: items.map(\.mediaType))
         let request = RemoveV4ListItemsRequest(
             items: items,
             listID: listID,
@@ -229,6 +234,24 @@ extension TMDbV4ListService {
     private static func validate(itemCount: Int) throws(TMDbError) {
         guard itemCount > 0 else {
             throw .badRequest(TMDbErrorContext(statusMessage: "Items must not be empty"))
+        }
+    }
+
+    /// `ShowType.unknown` exists so a media type TMDb adds later decodes instead of
+    /// failing a whole response. It is meaningless as a request: TMDb would reject
+    /// `media_type=unknown`, so it is caught here rather than sent.
+    private static func validate(showType: ShowType) throws(TMDbError) {
+        guard showType != .unknown else {
+            throw .badRequest(
+                TMDbErrorContext(statusMessage: "Media type must be a movie or a TV series")
+            )
+        }
+    }
+
+    private static func validate(mediaTypesOf showTypes: some Sequence<ShowType>)
+    throws(TMDbError) {
+        for showType in showTypes {
+            try validate(showType: showType)
         }
     }
 

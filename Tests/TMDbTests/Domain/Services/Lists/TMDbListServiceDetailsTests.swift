@@ -32,6 +32,47 @@ struct TMDbListServiceDetailsTests {
         #expect(apiClient.lastRequest as? ListRequest == expectedRequest)
     }
 
+    /// `items(forList:)` builds its page in memory from a decoded `MediaList`, so the
+    /// drop count only survives if the hand-off passes it along. Every other assertion
+    /// in this suite is `== 0`, which a hand-off that dropped the argument entirely
+    /// would satisfy just as well — this one starts from a list that really did skip
+    /// an item, so it can actually fail.
+    @Test("items carries the decoded list's dropped item count into the page")
+    func itemsCarriesDroppedItemCount() async throws {
+        let json = """
+        {
+          "created_by": "Travis Bell",
+          "favorite_count": 0,
+          "id": 1,
+          "iso_639_1": "en",
+          "item_count": 2,
+          "items": [
+            {
+              "id": 1,
+              "title": "A Movie",
+              "original_title": "A Movie",
+              "original_language": "en",
+              "overview": "An overview.",
+              "media_type": "movie"
+            },
+            {"id": 2, "name": "A Future Thing", "media_type": "podcast"}
+          ],
+          "name": "Mixed",
+          "poster_path": null
+        }
+        """
+        let list = try JSONDecoder.theMovieDatabase.decode(
+            MediaList.self, from: Data(json.utf8)
+        )
+        #expect(list.droppedItemCount == 1)
+        apiClient.addResponse(.success(list))
+
+        let result = try await service.items(forList: 1, page: nil)
+
+        #expect(result.results.count == 1)
+        #expect(result.droppedItemCount == 1)
+    }
+
     @Test("details returns media list with page parameter")
     func detailsReturnsMediaListWithPageParameter() async throws {
         let expectedResult = MediaList.mock()

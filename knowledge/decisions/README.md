@@ -36,6 +36,7 @@ always fair game.
 | [0016](0016-panel-jurors-and-workflows-directory.md) | Auto-mode panel as three independent jurors, in `.claude/workflows/` | 2026-07-29 | Accepted |
 | [0017](0017-v4-api-client.md) | A third `TMDbAPIClient` instance for the v4 API | 2026-08-07 | Accepted |
 | [0018](0018-cancellation-as-tmdberror-case.md) | Surface task cancellation as `TMDbError.cancelled` | 2026-08-12 | Accepted |
+| [0019](0019-decode-tolerance-policy.md) | One decode-tolerance policy: skip an unmodelled `media_type`, stay loud otherwise | 2026-08-12 | Accepted |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

@@ -43,6 +43,29 @@
       "video": false,
       "vote_average": 5.5,
       "vote_count": 100
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+      "id": 200875,
+      "name": "IT: Welcome to Derry",
+      "original_name": "IT: Welcome to Derry",
+      "overview": "In 1962, amid a spate of unexplained disappearances of local children, a group of misfit friends begin to suspect a long-buried ancient evil lurking.",
+      "poster_path": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
+      "media_type": "tv",
+      "original_language": "en",
+      "genre_ids": [
+        18,
+        9648
+      ],
+      "popularity": 39.2708,
+      "first_air_date": "2025-10-26",
+      "softcore": false,
+      "vote_average": 8.216,
+      "vote_count": 1585,
+      "origin_country": [
+        "US"
+      ]
     }
   ],
   "name": "The Marvel Universe",

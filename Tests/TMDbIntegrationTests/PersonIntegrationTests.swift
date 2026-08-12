@@ -43,6 +43,10 @@ struct PersonIntegrationTests {
         #expect(credits.id == personID)
         #expect(!credits.cast.isEmpty)
         #expect(!credits.crew.isEmpty)
+        // Combined credits are the one credits shape whose elements carry a
+        // `media_type`. A non-zero count here means TMDb has started sending one
+        // this library does not model.
+        #expect(credits.droppedItemCount == 0)
     }
 
     @Test("movieCredits")

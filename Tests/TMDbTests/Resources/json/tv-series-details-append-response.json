@@ -383,21 +383,14 @@
         "page": 1,
         "results": [
             {
-                "id": 1396,
-                "name": "Breaking Bad",
-                "overview": "A teacher turns to crime.",
-                "poster_path": null,
-                "backdrop_path": null,
-                "first_air_date": "2008-01-20",
-                "vote_average": 8.9,
-                "vote_count": 500,
-                "adult": false,
-                "genre_ids": [18, 80],
-                "origin_country": ["US"],
-                "original_language": "en",
-                "original_name": "Breaking Bad",
-                "popularity": 100.0,
-                "media_type": "tv"
+                "id": 8267392,
+                "name": "Crime & Drama Series",
+                "description": "Long-running crime and drama television.",
+                "favorite_count": 0,
+                "item_count": 42,
+                "iso_639_1": "en",
+                "iso_3166_1": "US",
+                "poster_path": null
             }
         ],
         "total_pages": 1,

@@ -27,10 +27,16 @@ public struct MediaListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// Title.
     ///
+    /// A TV series arrives from TMDb as `name` rather than `title`; both decode
+    /// into this property, so a caller does not have to branch on ``mediaType``.
+    ///
     public let title: String
 
     ///
     /// Original title.
+    ///
+    /// A TV series arrives from TMDb as `original_name` rather than
+    /// `original_title`; both decode into this property.
     ///
     public let originalTitle: String
 
@@ -52,7 +58,9 @@ public struct MediaListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// Release date.
     ///
-    /// Empty strings are decoded as `nil`.
+    /// A movie's `release_date`, or a TV series' `first_air_date`.
+    ///
+    /// Empty and unparseable strings are decoded as `nil`.
     ///
     public let releaseDate: Date?
 
@@ -147,17 +155,20 @@ public struct MediaListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
 
 }
 
-extension MediaListItem {
+public extension MediaListItem {
 
     private enum CodingKeys: String, CodingKey {
         case id
         case mediaType
         case title
+        case name
         case originalTitle
+        case originalName
         case originalLanguage
         case overview
         case genreIDs = "genreIds"
         case releaseDate
+        case firstAirDate
         case posterPath
         case backdropPath
         case popularity
@@ -170,19 +181,41 @@ extension MediaListItem {
     ///
     /// Creates a media list item from a decoder.
     ///
-    /// Handles empty `release_date` strings by decoding them as `nil`.
+    /// A list holds movies and TV series together, and TMDb gives each shape its
+    /// own keys: a movie carries `title`, `original_title` and `release_date`,
+    /// while a TV series carries `name`, `original_name` and `first_air_date`.
+    /// Both decode into ``title``, ``originalTitle`` and ``releaseDate``, so a
+    /// caller never has to branch on ``mediaType``.
+    ///
+    /// Empty and unparseable date strings decode as `nil`.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
     /// - Throws: An error if decoding fails.
     ///
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(Int.self, forKey: .id)
-        self.mediaType = try container.decode(ShowType.self, forKey: .mediaType)
-        self.title = try container.decode(String.self, forKey: .title)
-        self.originalTitle = try container.decode(String.self, forKey: .originalTitle)
+
+        let mediaType = try container.decodeMediaType(ShowType.self, forKey: .mediaType)
+        // A list item's field shape depends on its media type, so one this
+        // library does not model cannot be decoded at all — unlike a value enum,
+        // where `.unknown` is a usable result.
+        guard mediaType != .unknown else {
+            throw DecodingError.unknownMediaType(
+                rawValue: ShowType.unknown.rawValue,
+                codingPath: container.codingPath + [CodingKeys.mediaType]
+            )
+        }
+        self.mediaType = mediaType
+
+        self.title = try container.decodeIfPresent(
+            String.self, forKey: .title
+        ) ?? container.decode(String.self, forKey: .name)
+        self.originalTitle = try container.decodeIfPresent(
+            String.self, forKey: .originalTitle
+        ) ?? container.decode(String.self, forKey: .originalName)
         self.originalLanguage = try container.decode(String.self, forKey: .originalLanguage)
         self.overview = try container.decode(String.self, forKey: .overview)
         // Some results omit `genre_ids` entirely; default to an empty array
@@ -199,15 +232,51 @@ extension MediaListItem {
         // Handle empty release_date strings - decode as nil.
         // Day-precision dates (e.g. "2025-04-30") are parsed at GMT midnight; an
         // unparseable string decodes as nil, mirroring the previous behaviour.
-        if let releaseDateString = try container.decodeIfPresent(String.self, forKey: .releaseDate),
-           !releaseDateString.isEmpty {
+        // A TV series sends `first_air_date` in place of `release_date`.
+        let dateString = try container.decodeIfPresent(
+            String.self, forKey: .releaseDate
+        ) ?? container.decodeIfPresent(String.self, forKey: .firstAirDate)
+
+        if let dateString, !dateString.isEmpty {
             self.releaseDate = try? Date(
-                releaseDateString,
+                dateString,
                 strategy: .iso8601.year().month().day().dateSeparator(.dash)
             )
         } else {
             self.releaseDate = nil
         }
+    }
+
+    ///
+    /// Encodes this value into the given encoder.
+    ///
+    /// Both media shapes encode through the movie-style ``title``,
+    /// ``originalTitle`` and ``releaseDate`` keys — the same choice
+    /// ``CollectionListItem`` makes for the same two-shape input — so the output
+    /// is one consistent shape rather than one that depends on ``mediaType``.
+    ///
+    /// - Parameter encoder: The encoder to write data to.
+    ///
+    /// - Throws: An error if encoding fails.
+    ///
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(mediaType, forKey: .mediaType)
+        try container.encode(title, forKey: .title)
+        try container.encode(originalTitle, forKey: .originalTitle)
+        try container.encode(originalLanguage, forKey: .originalLanguage)
+        try container.encode(overview, forKey: .overview)
+        try container.encode(genreIDs, forKey: .genreIDs)
+        try container.encodeIfPresent(releaseDate, forKey: .releaseDate)
+        try container.encodeIfPresent(posterPath, forKey: .posterPath)
+        try container.encodeIfPresent(backdropPath, forKey: .backdropPath)
+        try container.encodeIfPresent(popularity, forKey: .popularity)
+        try container.encodeIfPresent(voteAverage, forKey: .voteAverage)
+        try container.encodeIfPresent(voteCount, forKey: .voteCount)
+        try container.encodeIfPresent(hasVideo, forKey: .hasVideo)
+        try container.encodeIfPresent(isAdultOnly, forKey: .isAdultOnly)
     }
 
 }

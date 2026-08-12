@@ -34,6 +34,33 @@ struct TVSeriesListItemTests {
         #expect(result.genreIDs == [])
     }
 
+    /// `origin_country` was present on all 1,046 rows sampled across search,
+    /// discover, trending, similar and recommendations, so this fallback is
+    /// defence in depth rather than a fix for an observed failure — but it is
+    /// reachable behaviour, so it gets a test like every other decoder branch.
+    @Test(
+        "JSON decoding of TVSeriesListItem with missing origin_country",
+        .tags(.decoding)
+    )
+    func decodeWhenOriginCountriesMissingReturnsEmptyOriginCountries() throws {
+        let json = """
+        {
+          "id": 1,
+          "name": "A TV Series",
+          "original_name": "A TV Series",
+          "original_language": "en",
+          "overview": "An overview."
+        }
+        """
+
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeriesListItem.self, from: Data(json.utf8)
+        )
+
+        #expect(result.id == 1)
+        #expect(result.originCountries == [])
+    }
+
 }
 
 extension TVSeriesListItemTests {

@@ -125,6 +125,36 @@ two fields the dedup step keys on.
   ACs to be quoted in the PR body for inspection, not merely disclosed as
   derived.
 
+### 2026-08-12 — ADR-0015's run-file location is unreachable from a background delivery (#440) · deferred
+
+- **Pattern:** first occurrence, but structural rather than incidental, so it will
+  recur on every background `/deliver`. [ADR-0015](decisions/0015-durable-deliver-run-state.md)
+  puts the durable run file at `<main checkout>/.git/deliver/<id>.json`, chosen
+  precisely because `.git` cannot enter a diff. A background session's
+  worktree-isolation guard refuses **every** write outside the worktree, and it
+  does not distinguish `.git` from working-tree paths — it blocked the `Write`
+  tool, and then blocked a Bash heredoc to the same path. So the location the ADR
+  mandates is unreachable exactly when `/deliver` runs unattended, which is the
+  case the durable file exists for.
+- **Decision:** **deferred — raised in an unattended background run, needs
+  review; nothing applied.** Worked around by writing to
+  `<worktree>/.build/deliver-run.json` (gitignored via `/.build`, untouched by any
+  `make ci` step since `clean` is a separate target) and recording a
+  `locationDeviation` field in the file itself. Options for review: (a) teach the
+  isolation guard that the repo's *common git dir* is a sanctioned write target;
+  (b) amend ADR-0015 to put the file under the worktree with an explicit
+  cross-worktree-batch caveat; (c) leave it, and have `/deliver` fall back with a
+  recorded deviation, which is what happened here.
+- **Rationale:** the workaround is sound for a single-deliverable run — the file
+  survives the whole delivery and Phase 6 read the rubric from it as designed.
+  It is only *unsound for a batch*, where ADR-0015's whole point is that
+  deliverable 1's `ExitWorktree(remove)` must not destroy deliverables 2..N's
+  state. That case did not arise here, so applying a fix blind would be guessing
+  at which of three quite different remedies the user wants.
+- **Reconsider when:** a multi-deliverable `/deliver` runs in a background
+  session — where the workaround is genuinely wrong, not merely non-canonical —
+  or the user picks one of the three options.
+
 ### 2026-08-12 — A well-formed tooling-runner report can still assert an unobserved green (#432) · applied
 
 - **Pattern:** third occurrence in the same family — the runner's report reads
@@ -158,6 +188,15 @@ two fields the dedup step keys on.
 - **Reconsider when:** n/a. If xcsift ever grows a passing-test name list, the
   `Names observed` marker becomes the place to surface it rather than a reason to
   drop the rule.
+- **Confirmed 2026-08-12 (#440), the next delivery, before the fix landed.**
+  Fourth occurrence in the family: that run verified every batch of new tests with
+  a scoped `--filter` and read the names back, and all had genuinely run — a
+  near-miss, not an incident. Two observations that support the shape #438 chose.
+  The workaround was arrived at independently by two sessions, so it is a contract
+  rather than one operator's habit; and the unfounded claim was made by the
+  **conductor** quoting a count in a status message, not only by the runner —
+  which is why applying it to `/test` and `/integration-test` as well as
+  `tooling-runner.md` was the right call.
 
 ### 2026-08-07 — Full CLAUDE.md/skills/agents review: drift fixes + review-integrity seams · applied
 

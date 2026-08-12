@@ -73,6 +73,23 @@ public struct MediaList: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let totalResults: Int?
 
     ///
+    /// How many items were skipped while decoding this page because their media
+    /// type is one this library does not model.
+    ///
+    /// Decode telemetry, not data: it exists so tests can assert that a page is
+    /// short for a known reason rather than a regression. It is zero for a list
+    /// built in code.
+    ///
+    private let droppedItems: DroppedItemCount
+
+    ///
+    /// How many items were skipped while decoding this page.
+    ///
+    package var droppedItemCount: Int {
+        droppedItems.value
+    }
+
+    ///
     /// Creates a media list object.
     ///
     /// - Parameters:
@@ -115,6 +132,64 @@ public struct MediaList: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.page = page
         self.totalPages = totalPages
         self.totalResults = totalResults
+        self.droppedItems = .none
+    }
+
+}
+
+extension MediaList {
+
+    /// `.convertFromSnakeCase` hands the decoder the camelCased key, so these raw
+    /// values must be spelled that way — `iso6391`, not `iso_639_1`.
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case description
+        case createdBy
+        case iso6391
+        case itemCount
+        case favoriteCount
+        case posterPath
+        case items
+        case page
+        case totalPages
+        case totalResults
+    }
+
+    ///
+    /// Creates a media list by decoding from the given decoder.
+    ///
+    /// An item whose media type this library does not model is skipped rather
+    /// than failing the whole list, and counted internally for tests. Every
+    /// other decode failure throws.
+    ///
+    /// - Parameter decoder: The decoder to read data from.
+    ///
+    /// - Throws: An error if reading from the decoder fails, or if the data is
+    ///   corrupted or otherwise invalid.
+    ///
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decodeIfPresent(String.self, forKey: .description)
+        self.createdBy = try container.decode(String.self, forKey: .createdBy)
+        self.iso6391 = try container.decode(String.self, forKey: .iso6391)
+        self.itemCount = try container.decode(Int.self, forKey: .itemCount)
+        self.favoriteCount = try container.decode(Int.self, forKey: .favoriteCount)
+        self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)
+
+        let decodedItems = try container.decodeSkippingUnknownMediaTypes(
+            MediaListItem.self,
+            forKey: .items
+        )
+        self.items = decodedItems.elements
+        self.droppedItems = DroppedItemCount(decodedItems.dropped)
+
+        self.page = try container.decodeIfPresent(Int.self, forKey: .page)
+        self.totalPages = try container.decodeIfPresent(Int.self, forKey: .totalPages)
+        self.totalResults = try container.decodeIfPresent(Int.self, forKey: .totalResults)
     }
 
 }

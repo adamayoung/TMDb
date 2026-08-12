@@ -65,7 +65,7 @@ extension ShowCrewCredit {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let mediaType = try container.decode(MediaType.self, forKey: .mediaType)
+        let mediaType = try container.decodeMediaType(MediaType.self, forKey: .mediaType)
 
         switch mediaType {
         case .movie:
