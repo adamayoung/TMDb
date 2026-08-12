@@ -14,7 +14,7 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
 
 ---
 
-## 2026-08-12 — 🐛 Surface task cancellation as `TMDbError.cancelled` (`fix/cancellation-tmdberror`) · full
+## 2026-08-12 — 🐛 Surface task cancellation as `TMDbError.cancelled` (#433) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight: three-critic `/review-plan`, the
   fan-out + adversarial-verify `/review-changes`, independent grader.
