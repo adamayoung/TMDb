@@ -190,6 +190,10 @@ struct MediaListItemTests {
         }
     }
 
+}
+
+extension MediaListItemTests {
+
     /// A TV row re-encodes through the `title`/`original_title` keys, matching
     /// `CollectionListItem`, which faces the same two-shape input. Asserting the
     /// emitted keys rather than a decoded round-trip keeps this independent of

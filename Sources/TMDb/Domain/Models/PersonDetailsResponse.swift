@@ -130,30 +130,7 @@ extension PersonDetailsResponse: Decodable {
             )
             .map { PersonTVSeriesCredits(id: id, cast: $0.cast, crew: $0.crew) }
 
-        // Decoded inline rather than through `decodeCastAndCrewIfPresent`: combined
-        // credits are the only credits shape whose elements carry a `media_type`,
-        // so the tolerance belongs here rather than in a helper the movie and TV
-        // credit shapes share.
-        if container.contains(.combinedCredits) {
-            let nested = try container.nestedContainer(
-                keyedBy: StringCodingKey.self, forKey: .combinedCredits
-            )
-            let cast = try nested.decodeSkippingUnknownMediaTypes(
-                ShowCastCredit.self, forKey: StringCodingKey("cast")
-            )
-            let crew = try nested.decodeSkippingUnknownMediaTypes(
-                ShowCrewCredit.self, forKey: StringCodingKey("crew")
-            )
-
-            self.combinedCredits = PersonCombinedCredits(
-                id: id,
-                cast: cast.elements,
-                crew: crew.elements,
-                droppedItemCount: cast.dropped + crew.dropped
-            )
-        } else {
-            self.combinedCredits = nil
-        }
+        self.combinedCredits = try Self.decodeCombinedCredits(from: container, id: id)
 
         self.images = try container
             .decodeNestedArrayIfPresent(ImageMetadata.self, forKey: .images, nestedKey: "profiles")
@@ -185,6 +162,45 @@ extension PersonDetailsResponse: Decodable {
                     tikTok: TikTokLink(tikTokID: $0.tikTokID)
                 )
             }
+    }
+
+}
+
+extension PersonDetailsResponse {
+
+    ///
+    /// Decodes the appended `combined_credits` section, skipping credits whose
+    /// media type this library does not model.
+    ///
+    /// Deliberately not routed through `decodeCastAndCrewIfPresent`: combined
+    /// credits are the only credits shape whose elements carry a `media_type`, so
+    /// the tolerance belongs here rather than in a helper the movie, TV, season
+    /// and episode credit shapes all share.
+    ///
+    private static func decodeCombinedCredits(
+        from container: KeyedDecodingContainer<CodingKeys>,
+        id: Int
+    ) throws -> PersonCombinedCredits? {
+        guard container.contains(.combinedCredits) else {
+            return nil
+        }
+
+        let nested = try container.nestedContainer(
+            keyedBy: StringCodingKey.self, forKey: .combinedCredits
+        )
+        let cast = try nested.decodeSkippingUnknownMediaTypes(
+            ShowCastCredit.self, forKey: StringCodingKey("cast")
+        )
+        let crew = try nested.decodeSkippingUnknownMediaTypes(
+            ShowCrewCredit.self, forKey: StringCodingKey("crew")
+        )
+
+        return PersonCombinedCredits(
+            id: id,
+            cast: cast.elements,
+            crew: crew.elements,
+            droppedItemCount: cast.dropped + crew.dropped
+        )
     }
 
 }

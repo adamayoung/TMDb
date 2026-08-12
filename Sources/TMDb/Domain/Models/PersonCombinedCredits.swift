@@ -178,7 +178,7 @@ extension PersonCombinedCredits {
     /// Creates a person combined credits object by decoding from the given decoder.
     ///
     /// A credit whose media type this library does not model is skipped rather
-    /// than failing the whole set, and counted in ``droppedItemCount``. Every
+    /// than failing the whole set, and counted internally for tests. Every
     /// other decode failure throws.
     ///
     /// - Parameter decoder: The decoder to read data from.

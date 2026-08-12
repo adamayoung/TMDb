@@ -112,7 +112,7 @@ extension PageableListResult {
     /// defaults to `1`, while `totalResults` and `totalPages` default to `0`.
     ///
     /// A result whose `media_type` this library does not model is skipped rather
-    /// than failing the whole page, and counted in ``droppedItemCount``. **Every
+    /// than failing the whole page, and counted internally for tests. **Every
     /// other decode failure throws** — an element dropped for any other reason is
     /// a decoder defect, and swallowing it would turn a regression into a quietly
     /// short page with no signal at all.

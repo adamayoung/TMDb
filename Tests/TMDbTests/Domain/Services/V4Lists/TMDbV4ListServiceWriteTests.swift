@@ -178,6 +178,10 @@ struct TMDbV4ListServiceWriteTests {
         #expect(request.body?.items == [.movie(550, comment: "Great twist")])
     }
 
+}
+
+extension TMDbV4ListServiceWriteTests {
+
     /// `ShowType.unknown` is decode-only — it exists so a media type TMDb adds
     /// later does not fail a whole response. It still encodes to the literal
     /// string "unknown", so it has to be rejected here rather than left to the

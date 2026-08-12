@@ -153,7 +153,7 @@ extension MediaList {
     /// Creates a media list by decoding from the given decoder.
     ///
     /// An item whose media type this library does not model is skipped rather
-    /// than failing the whole list, and counted in ``droppedItemCount``. Every
+    /// than failing the whole list, and counted internally for tests. Every
     /// other decode failure throws.
     ///
     /// - Parameter decoder: The decoder to read data from.
