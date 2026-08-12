@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
+- **Breaking:** cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
   SwiftUI `.task {}` looked like an outage, `withThrowingTaskGroup` sibling
   cancellation produced N phantom network errors, "retry on network error" logic
   re-ran work the user had cancelled, and telemetry counted cancellations as
@@ -47,8 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   shared fetch still runs on and delivers to every other caller. A caller served
   from the cache never suspends and is unaffected.
 
-- A cancelled natural-language search (`TMDbIntelligence`) no longer issues
-  three fresh searches. Cancellation was wrapped as
+- **Breaking:** a cancelled natural-language search (`TMDbIntelligence`) no
+  longer issues three fresh searches, and throws
+  `NaturalLanguageSearchError.cancelled` where it previously returned those
+  fallback results. Cancellation was wrapped as
   `NaturalLanguageSearchError.planningFailed`, which is eligible for the
   literal-search fallback, so the library did the very work the caller had
   cancelled.

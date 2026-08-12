@@ -70,9 +70,10 @@ public protocol ImageService: Sendable {
     /// A fetch already in progress when this is called is left running rather
     /// than cancelled, so callers waiting on it still receive its value.
     ///
-    /// Unlike the URL resolvers, this always fetches — a warm cache does not
-    /// exempt it — so it throws ``TMDbError/cancelled`` when the calling task is
-    /// already cancelled, without perturbing any fetch in flight.
+    /// Unlike the URL resolvers and ``imagesConfiguration()``, this always
+    /// fetches — a warm cache does not exempt it — so it throws
+    /// ``TMDbError/cancelled`` when the calling task is already cancelled,
+    /// without perturbing any fetch in flight.
     ///
     /// Concurrent calls to this method share a single fetch. That fetch may have
     /// been issued fractionally before a given call, so a change made in that
