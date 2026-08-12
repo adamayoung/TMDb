@@ -101,7 +101,7 @@ Sendable {
     ///
     /// Lists containing this TV series.
     ///
-    public let lists: MediaPageableList?
+    public let lists: MediaListSummaryPageableList?
 
     ///
     /// Change history.
@@ -148,7 +148,7 @@ Sendable {
         externalIDs: TVSeriesExternalLinksCollection? = nil,
         screenedTheatrically: [ScreenedTheatricallyResult]? = nil,
         episodeGroups: [TVEpisodeGroup]? = nil,
-        lists: MediaPageableList? = nil,
+        lists: MediaListSummaryPageableList? = nil,
         changes: ChangeCollection? = nil
     ) {
         self.tvSeries = tvSeries
@@ -228,7 +228,7 @@ extension TVSeriesDetailsResponse: Decodable {
             TVSeriesPageableList.self, forKey: .similar
         )
         self.lists = try container.decodeIfPresent(
-            MediaPageableList.self, forKey: .lists
+            MediaListSummaryPageableList.self, forKey: .lists
         )
         self.changes = try container.decodeIfPresent(
             ChangeCollection.self, forKey: .changes

@@ -106,8 +106,15 @@ struct TVSeriesDetailsResponseTests {
         #expect(!episodeGroups.isEmpty)
         #expect(episodeGroups[0].name == "Aired Order")
 
+        // `/tv/{id}/lists` returns list summaries, not media rows — the same shape
+        // the standalone `TVSeriesListsRequest` already decodes. This asserts the
+        // row's contents, not just that the page is non-empty: an emptiness check
+        // is what let the response carry the wrong element type unnoticed.
         let lists = try #require(result.lists)
-        #expect(!lists.results.isEmpty)
+        let list = try #require(lists.results.first)
+        #expect(list.id == 8_267_392)
+        #expect(list.name == "Crime & Drama Series")
+        #expect(list.itemCount == 42)
 
         let changes = try #require(result.changes)
         #expect(!changes.changes.isEmpty)
