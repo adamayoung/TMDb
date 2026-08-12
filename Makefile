@@ -45,6 +45,13 @@ lint: lint-witnesses
 # Cross-symbol check that swiftlint cannot express: a public-extension
 # convenience must not share a requirement's signature (see the script, and
 # knowledge/gotchas.md).
+#
+# NO WORKFLOW RUNS `make`. The CI Lint job invokes swiftlint/swiftformat as
+# inline steps, so a check wired only here never reaches CI and green means
+# "nobody looked". This one is mirrored as the `Defaulted-witness check` step in
+# .github/workflows/ci.yml. Adding a check? Wire it in BOTH places, and add its
+# inputs to the `changes` paths filter, or a PR touching only that input skips
+# the whole job that runs it.
 .PHONY: lint-witnesses
 lint-witnesses:
 	@python3 Scripts/check-defaulted-witnesses.py

@@ -53,9 +53,12 @@ Non-negotiable. Do these by default, without being reminded.
    the live view (one task per phase, statuses current, branch, PR number,
    weight); the **run file** is the durable one, because the ledger does not
    survive `EnterWorktree`, an MCP reconnect, or a plan-mode exit. Phase 0
-   writes it, Phase 1 records the sweep into it, **Phase 6 reads the rubric
-   from it** — so a skipped step fails loudly at a later phase instead of
-   silently. Location and schema:
+   writes it, Phase 1 records the reconcile into it, **Phases 4/5/6 each stamp
+   it on convergence** (`stamps.reviewedClean` / `securityClean` — that is what
+   makes a resume able to skip a pass already done), and **Phase 6 reads the
+   rubric from it** — so a skipped step fails loudly at a later phase instead of
+   silently. This list is exhaustive: if a phase isn't named here, nothing
+   writes on its behalf. Location and schema:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md). A
    template→replicate delivery adds the **`Phase 4a — reference-unit
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
@@ -240,8 +243,16 @@ Procedures and traps:
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch
    name afterwards** (`git branch --show-current`; `git branch -m` if the
    tool renamed it). Already in a worktree? Don't nest — branch there.
-3. **Copy `.claude/settings.local.json` in** from the main checkout (the
-   permission allowlist; credentials come from the process env).
+3. **Check `.claude/settings.local.json` arrived** — `.worktreeinclude` at the
+   repo root copies it into every worktree Claude Code creates, so this is a
+   verification (`test -f .claude/settings.local.json`), not a copy. Missing →
+   copy it from the main checkout and say so.
+   **It carries the credentials**, not just permissions: `TMDB_API_KEY`,
+   `TMDB_USERNAME`, `TMDB_PASSWORD` and the two v4 tokens live in its `env`
+   block, and a fresh checkout has none of them, so without it the integration
+   suites cannot authenticate. (Permission *approvals* no longer need copying —
+   since Claude Code v2.1.211 they save to the **main checkout's** copy and
+   apply in every worktree of the repo.) Never paste its contents anywhere.
 4. **Record worktree + branch in the run file and the ledger, and (re-)create
    the ledger here** — the ledger is CWD-scoped and cleared by `EnterWorktree`,
    an MCP reconnect, or a plan-mode exit; found empty later → re-create from

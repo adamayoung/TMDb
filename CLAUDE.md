@@ -112,16 +112,22 @@ cache decorators are opt-in (see `TMDbFactory.httpClient(wrapping:...)`).
 
 ```text
 Service (e.g. TMDbMovieService)
-└── APIClient
-    └── TMDbAPIClient            (adds api_key, validates status, decodes)
-        └── HTTPClient (protocol)
-            └── CacheHTTPClient          (opt-in; cache hits short-circuit)
-                └── RetryHTTPClient      (opt-in; exponential backoff)
-                    └── URLSessionHTTPClientAdapter  (or user-supplied client)
+└── APIClient (protocol)
+    └── ErrorMappingAPIClient           (TMDbAPIError -> public TMDbError)
+        └── UnmappedAPIClient (protocol)
+            └── TMDbAPIClient           (adds api_key, validates status, decodes)
+                └── HTTPClient (protocol)
+                    └── CacheHTTPClient         (opt-in; hits short-circuit)
+                        └── RetryHTTPClient     (opt-in; exponential backoff)
+                            └── URLSessionHTTPClientAdapter  (or user-supplied)
 ```
 
-In 18.0.0 an `ErrorMappingAPIClient` decorator wraps the `APIClient` to
-centralise mapping of `TMDbAPIError` into the public `TMDbError`.
+`ErrorMappingAPIClient` is the **outermost** `APIClient`, so no service does its
+own error translation. The two-protocol split is what enforces it: services
+depend on `APIClient`, `TMDbAPIClient` conforms only to `UnmappedAPIClient`, so a
+service *cannot* be wired to the unmapped client by accident. All three factory
+methods (`apiClient`, `authAPIClient`, `v4APIClient`) wrap the same way — see
+[ADR-0001](knowledge/decisions/0001-error-mapping-api-client.md).
 
 ### Language Model Tools (Apple-only)
 
@@ -193,13 +199,32 @@ for:
 1. Check the OpenAPI spec for endpoint structure and parameters
 2. Use MCP to fetch real data (e.g., `mcp__tmdb__movie_details`)
 3. Examine the actual JSON response structure
-4. Create models based on real data, not assumptions
-5. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
-6. Implement the feature
+4. **Sample the population before deciding optionality — don't spot-check.**
+   One record tells you what *that* record has. Pull tens of records and build a
+   field/nullability matrix: #404 nearly shipped a one-field fix because a
+   single `curl` looked conclusive, and 54 companies showed a second field had
+   the same bug; #432's 300-record sweep both cleared five decodes *and* found a
+   bug the issue never mentioned. A sweep earns its keep by **excluding** as
+   much as by finding — a measured "we checked, it isn't in the class" survives
+   review; "the API probably never sends that" doesn't.
+5. Create models based on real data, not assumptions
+6. Save response as JSON fixture in `Tests/TMDbTests/Resources/json/`
+7. Implement the feature
+
+**A probe script must verify its own postcondition.** Live-API probing is how
+this repo establishes truth, but the scripts doing it get none of the rigour the
+Swift does, and two of #411's three bugs *were the probe lying*: a cleanup
+`EXIT` trap that never fired and orphaned four lists on a real account, and a
+uniform "rejected" result across a parameter sweep that was the spam filter
+(`status_code` 18), not an answer. So: end a probe by asserting the state it
+claims to have left — enumerate and confirm the cleanup happened — and treat a
+**uniform** result across a sweep as evidence about the *sweep* until the error
+body says otherwise.
 
 ## Development Workflow
 
-Feature work is **skill-driven**. Draft and approve a plan with `/plan`, then run
+Feature work is **skill-driven**. Draft and approve a plan in **plan mode**
+(there is no `/plan` skill — use plan mode, or the `Plan` agent), then run
 `/deliver` to carry it through to a ready-to-merge PR. **Invoking `/deliver` is
 itself the plan-approval gate** — it then runs autonomously to a single hard stop,
 **ready-to-merge**, pausing only for a plan-review blocker or a red gate it can't
@@ -313,6 +338,16 @@ build-docs); a single test runs via `swift test --filter "Suite/test"`.
 There is no `make test-ios` target. Run simulator tests
 (iOS/watchOS/tvOS/visionOS) from Xcode using the **TMDb** (unit) or
 **Integration** test plans.
+
+**The `.xctestplan` files are gitignored (`.gitignore:9`) and untracked**, so a
+fresh clone has neither and this Xcode route is unavailable until you create
+them locally. Nothing in CI depends on them — CI and `make` both drive SwiftPM
+directly — so a contributor without them loses only the simulator route, not
+coverage. Don't plan work that edits them: they are not in the repo (a plan once
+scheduled a sweep over files that don't exist, #398). **Worktrees do get them**,
+via `.worktreeinclude`. `Integration.xctestplan` stores the TMDb credentials as
+literal values, since Xcode can't read `settings.local.json` — treat it as
+credential-bearing.
 
 ## Code Style
 

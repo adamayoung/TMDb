@@ -27,7 +27,11 @@ a future me waste time without this?":
 - **Deferred breaking changes** → `knowledge/next-major.md` — any fix
   rejected or deferred *because* it is breaking. The skill-improvement log
   remembers the "no"; this file is what makes the deferred "yes" resurface
-  at the next major.
+  at the next major. **Reconcile its status line whenever you add an entry:**
+  it states which major window is open, and an entry filed against a window
+  that already shipped is invisible at exactly the moment it should fire. A
+  window is open until the version is **tagged** — an unreleased `CHANGELOG`
+  section is not a release (`git tag --list | sort -V | tail -1`).
 
 ## What NOT to capture
 
@@ -39,6 +43,21 @@ Mirror the discipline of a good memory — don't record:
   *non-obvious* part (what surprised you) or skip it.
 
 Quality over volume: a few high-signal entries beat a long dump.
+
+## When an entry records a count, ask what enforces it
+
+If a candidate entry states a **known-remaining defect count** — "54 sites still
+do X", "3 models still decode Y unsafely" — stop and ask the follow-up:
+**"what fails if that number changes?"** A number in a markdown file is a
+promise with nothing behind it; it silently goes stale as sites are fixed *or*
+regressed, and the two cancel out.
+
+Prefer a committed check with an **explicit set**, not a count (an exact
+allowlist so a fix and a regression can't cancel, and an empty scan can't pass),
+wired into **both** `make lint` and CI — no workflow runs `make`, so one alone
+is invisible. `Scripts/check-defaulted-witnesses.py` is the worked example. If a
+guard isn't worth building, say so in the entry, so the number reads as an
+observation rather than an invariant.
 
 ## Steps
 
