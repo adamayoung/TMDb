@@ -54,11 +54,12 @@ two fields the dedup step keys on.
   opposite directions, so neither phase can move. The gate is the only place left
   to fix it, and nothing is lost: the work is still enforced, by Phase 7's own
   contract (its `swept:` line and capture report) rather than by a rubric row.
-- **Reconsider when:** n/a (applied). Adjacent but distinct: the deferred #432
-  entry below proposes a *third* entry-gate branch for ACs that are absent but
-  **derivable**. The two compose — one governs where a missing AC may come from,
-  this one governs which extracted ACs are gradeable — and neither supersedes the
-  other.
+- **Reconsider when:** n/a (applied). Adjacent but distinct: the #432 entry below
+  adds a *third* entry-gate branch for ACs that are absent but **derivable**, and
+  was applied in #438. The two compose — one governs where a missing AC may come
+  from, this one governs which extracted ACs are gradeable — and neither
+  supersedes the other. #438 promoted this rule from a sub-bullet of the old flat
+  gate to a peer rule alongside the three cases, since it applies to all of them.
 
 ---
 
@@ -90,7 +91,7 @@ two fields the dedup step keys on.
 
 ---
 
-### 2026-08-12 — Phase 0 entry gate: sanction *deriving* ACs, with provenance (#432) · deferred
+### 2026-08-12 — Phase 0 entry gate: sanction *deriving* ACs, with provenance (#432) · applied
 
 - **Pattern:** the entry gate treats acceptance criteria as binary — present, or
   stop and ask. A bug fix whose issue already states observable before/after
@@ -104,26 +105,27 @@ two fields the dedup step keys on.
   `rubricProvenance: derived-…` in the run file, and the Phase 6 grader returned
   ALL MET against them — so the workaround demonstrably works; it is just
   unsanctioned.
-- **Decision:** **deferred — raised in an unattended background run, needs
-  review; nothing applied.** Proposal: add a third entry-gate branch — ACs
-  absent **but derivable from a linked issue or an explicit test list** may be
-  derived by the conductor, provided the run file records a
-  `rubricProvenance` field naming the source, and the PR body states the rubric
-  was derived rather than supplied. The hard stop stays for a plan with neither
-  ACs nor a derivable definition of done. Would touch
-  `.claude/skills/deliver/SKILL.md` Phase 0 and the run-file schema in
-  `references/worktree-lifecycle.md`.
+- **Decision:** **applied** (#438), after the user reviewed it. The entry gate is
+  now three cases rather than two: ACs **supplied** → extract verbatim; ACs
+  absent **but derivable** from a linked issue or an explicit test list → derive
+  into Given/When/Then, record `rubricProvenance: derived — <source>`, and state
+  in the PR body that the rubric was derived; **neither** → the hard stop, kept
+  intact. `rubricProvenance` added to the run-file schema in
+  `references/worktree-lifecycle.md`, and Phase 6 now says explicitly that a
+  `derived` rubric is graded exactly as strictly as a `supplied` one.
 - **Rationale:** the gate exists so Phase 6 has something real to grade, and a
   derived-with-provenance rubric satisfies that while a hard stop in an
-  autonomous run does not. The risk is the conductor grading against ACs it
-  invented to be easy to meet — which is why the provenance field and the
-  independent grader both matter, and why this needs a human's yes rather than a
-  self-approval.
-- **Reconsider when:** the user reviews this entry. If rejected, the fallback is
-  to make `rubric: none` the explicit expectation for bug fixes and let Phase 6
-  no-op — but note that trades a graded delivery for an ungraded one.
+  autonomous run does not. The risk is the conductor deriving ACs that are easy
+  to meet, so three things carry the weight: the ACs must be written from the
+  source's own words *before* implementing, the provenance field makes a derived
+  rubric auditable rather than invisible, and Phase 6's independent grader sees
+  only the ACs and the committed diff.
+- **Reconsider when:** n/a — but if a delivery is ever found to have derived a
+  rubric that flattered its own implementation, tighten by requiring the derived
+  ACs to be quoted in the PR body for inspection, not merely disclosed as
+  derived.
 
-### 2026-08-12 — A well-formed tooling-runner report can still assert an unobserved green (#432) · deferred
+### 2026-08-12 — A well-formed tooling-runner report can still assert an unobserved green (#432) · applied
 
 - **Pattern:** third occurrence in the same family — the runner's report reads
   green while the thing you actually cared about was never observed. #374
@@ -137,22 +139,25 @@ two fields the dedup step keys on.
   new test silently never ran. The existing shape-based contract (2026-07-29)
   covers *refused / passed / void* but says nothing about narrative claims inside
   a valid report.
-- **Decision:** **deferred — raised in an unattended background run, needs
-  review; nothing applied.** Proposal: (a) `tooling-runner.md` forbids asserting
-  that any *named* test ran unless the log evidences it, and reports counts plus
-  a `namesObserved: yes|no` marker; (b) the `/test` and `/integration-test`
-  skills state that confirming a specific new test executed requires a scoped
-  `--filter` run, since the default log is aggregate-only.
+- **Decision:** **applied** (#438), after the user reviewed it.
+  `.claude/agents/tooling-runner.md` gains a *Never claim a named test ran*
+  section — the runner reports counts and must not volunteer that any **passing**
+  test ran (naming **failures** stays required, since the log does name those),
+  not even when asked by name or when the total rose; asked to confirm a named
+  test, it says the full-suite log cannot show it and recommends the scoped run.
+  A `Names observed: yes|no` line joins its report contract. `/test` and
+  `/integration-test` each gain *A count is not evidence that your new test ran*,
+  pointing at the scoped `--filter` run.
 - **Rationale:** this is the repo's most-hit defect family (`gotchas.md` → *False
   green*), and the wiki heuristic *a detector whose green looks the same when it
   didn't run is not a detector* applies directly: "310 passed" looks identical
-  whether the new test ran or was never compiled in. Deferred rather than applied
-  because it edits a shared agent contract three skills depend on, and because the
-  cheap half — the caller doing a scoped verification run — is already the
-  conductor's habit and needs no skill change to keep doing.
-- **Reconsider when:** the user reviews this entry, or a delivery is found where a
-  new test genuinely did not run and the aggregate report concealed it — which
-  would upgrade this from a near-miss to a real incident.
+  whether the new test ran or was never compiled in. Applied on both sides
+  deliberately — telling the caller to verify is the durable half, but leaving the
+  runner free to volunteer an unfounded claim would keep manufacturing the very
+  assurance the caller is meant to distrust.
+- **Reconsider when:** n/a. If xcsift ever grows a passing-test name list, the
+  `Names observed` marker becomes the place to surface it rather than a reason to
+  drop the rule.
 
 ### 2026-08-07 — Full CLAUDE.md/skills/agents review: drift fixes + review-integrity seams · applied
 

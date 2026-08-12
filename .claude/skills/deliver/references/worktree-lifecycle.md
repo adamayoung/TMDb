@@ -121,6 +121,13 @@ loudly instead of silently. **A missing run file at Phase 6 is a hard stop**,
 exactly as a dead grader is not a pass. `rubric: none` (present, empty) is the
 sanctioned rubric-less path and is *not* the same as a missing file.
 
+`rubricProvenance` records where the ACs came from — `supplied` when the plan
+carried them, or `derived — <source>` when Phase 0 derived them from a linked
+issue or an explicit test list (its second entry-gate case). It exists so a
+derived rubric is auditable rather than indistinguishable from a supplied one:
+Phase 6 grades both identically, but a reader can tell which was which, and the
+PR body is required to say so.
+
 ```json
 {
   "id": "harden-delivery-skills-2026-07-29T19:28:23Z",
@@ -132,6 +139,7 @@ sanctioned rubric-less path and is *not* the same as a missing file.
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
     "rubric": ["Given …, when …, then …"],
+    "rubricProvenance": "supplied",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
                 "rubricGraded": null },
     "openFindings": [], "knowledgeCandidates": [], "pr": null,

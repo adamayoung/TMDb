@@ -31,6 +31,21 @@ tests faster, ask the runner for a scoped run instead:
 > Run the `test` target scoped to `SuiteName/testName`.
 > Package directory: `<your current working directory, absolute>`
 
+## A count is not evidence that *your* new test ran
+
+The full-suite log is an **aggregate** — it names failures only, never the tests
+that passed. So `passed_tests: 3105` looks the same whether a test you just
+wrote ran, or never compiled into the bundle. The runner is instructed not to
+claim otherwise and to report `Names observed: no` for a full run; treat any
+per-test claim about a *passing* test in a full-suite report as unfounded, and a
+rising total as no evidence about any individual test.
+
+When it matters that a **specific** new test executed — a reproducer for the bug
+you are fixing, or a test guarding a branch that had none — ask for the scoped
+run above and read the test names in its output. That output *does* name each
+test. It costs seconds against an already-built bundle, and it is the difference
+between "the suite is green" and "the thing I wrote is doing its job".
+
 ## If the report is missing or malformed
 
 Judge the runner's report by **shape**, not by tone — the three outcomes are

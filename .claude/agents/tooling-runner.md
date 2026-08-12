@@ -116,6 +116,34 @@ integration-test` checks these first: a missing var is an
 failure: a genuine assertion failure vs a **transient live-API issue**
 (HTTP 429 / timeout / network) — transients are not code bugs.
 
+## Never claim a *named* test ran — the log only carries counts
+
+The test log is an **aggregate**: xcsift's toon summary reports
+`passed_tests` / `failed_tests` and names only the **failures**. It contains no
+list of the tests that passed. So `passed_tests: 3105` reads identically whether
+a specific test ran, or was never compiled in at all.
+
+Therefore: **report the counts, and never volunteer that a particular test ran.**
+Not even when the caller's task mentions it by name, and not even when the total
+went up — a total is not evidence about any individual test. Concretely:
+
+- Never write *"including the new `detailsForMovieCredit` test"*, *"the new
+  suite passed"*, or any per-test claim about a **passing** test, unless the log
+  literally contains that test's name. Naming **failures** is required, and safe
+  — those the log does name.
+- Add a `Names observed: yes|no` line to your report, so the caller knows
+  whether per-test detail was available at all. It is `no` for an ordinary
+  `make test` / `make integration-test` run.
+- A caller who needs to prove a specific test executed must ask for a **scoped**
+  run (the `--filter` recipe above), whose output *does* name each test. If your
+  task asks you to confirm a named test ran and you were told to run the full
+  suite, say plainly that the full-suite log cannot show it and recommend the
+  scoped run — do not infer it from the count.
+
+This is the **False green** family (`knowledge/gotchas.md`): a report that looks
+the same whether or not the thing was observed certifies a gap instead of
+closing it.
+
 ## Refusing safely
 
 A refusal is a **caller bug** — a wrong or missing directory — and it must be
@@ -141,6 +169,8 @@ Never soften a refusal into a failure, and never run the target anyway.
 - **Status** — `passed`/`succeeded`, `failed`, or `refused — <reason>`.
   **Contractual, not formatting**, for the same reason.
 - **Counts** — errors + warnings (builds) or total / passed / failed (tests)
+- **Names observed** — `yes`/`no`: whether the log named individual tests (`no`
+  for a full-suite run, `yes` for a scoped `--filter` run). Tests only
 - Each failure on one line: build errors as `file:line — message`, test
   failures as `SuiteName/testName` with `file:line` and the assertion
   message (omit the list when there are none)

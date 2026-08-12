@@ -157,25 +157,42 @@ implementation = separate `/deliver` sessions.)
   ledger line is what makes this step checkable.
 - **Decompose a multi-deliverable plan** (rules above); single-deliverable
   plans skip this.
-- **Entry gate — acceptance criteria required.** Plans are expected as
+- **Entry gate — a gradeable rubric required.** Plans are expected as
   *"As a \<user-type\> I want \<feature\> so that \<reason\>"* + acceptance
   criteria. Extract the ACs verbatim as
   the **delivery rubric** (consumed in Phase 6) into **the run file** (and the
-  ledger for convenience). Absent →
-  stop and ask for them ("Given X, when Y, then Z") — don't enter the
-  worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops) vs stop;
-  record that as `rubric: none`, which is **present-and-empty**, not a missing
-  file.
-  - **Reject a knowledge-shaped AC — it cannot pass.** An AC whose evidence is a
-    `knowledge/` artifact ("an ADR records X", "the `next-major.md` entry is
-    removed", "a gotcha is captured") is **guaranteed** to fail its first
-    grading, because Phase 7 writes that artifact *after* Phase 6 grades. That
-    ordering is deliberate — capture must observe the delivery's final state, not
-    an intermediate one — so the fix is at this gate, not in the sequence.
-    Drop such an AC from the rubric when extracting it; the work still happens
-    and is still enforced, by Phase 7's own contract (its `swept:` line and
-    capture report). Say which ACs you dropped and why, rather than silently
-    reshaping the user's criteria.
+  ledger for convenience), and record
+  `rubricProvenance: supplied`. Three cases, and only the last one stops:
+  - **ACs supplied** → the above.
+  - **ACs absent but derivable** — the plan has a definition of done in the
+    wrong *shape* rather than none at all: a linked issue stating observable
+    before/after behaviour, or an explicit `canon-tdd` test list. **Derive** the
+    ACs into "Given X, when Y, then Z" form, record
+    `rubricProvenance: derived — <the source>`, and say in the PR body that the
+    rubric was derived rather than supplied. Bug fixes land here routinely;
+    stopping to ask a question the plan already answers is ceremony, not rigour.
+  - **Neither** → stop and ask for them ("Given X, when Y, then Z") — don't
+    enter the worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops)
+    vs stop; record that as `rubric: none`, which is **present-and-empty**, not
+    a missing file.
+
+  **Reject a knowledge-shaped AC — it cannot pass.** This applies to whichever
+  case produced the rubric: an AC whose evidence is a `knowledge/` artifact ("an
+  ADR records X", "the `next-major.md` entry is removed", "a gotcha is
+  captured") is **guaranteed** to fail its first grading, because Phase 7 writes
+  that artifact *after* Phase 6 grades. That ordering is deliberate — capture
+  must observe the delivery's final state, not an intermediate one — so the fix
+  is at this gate, not in the sequence. Drop such an AC from the rubric when
+  extracting it; the work still happens and is still enforced, by Phase 7's own
+  contract (its `swept:` line and capture report). Say which ACs you dropped and
+  why, rather than silently reshaping the user's criteria. When *deriving*, don't
+  write one in the first place.
+
+  Derive to *grade yourself honestly*, not to pass: write the ACs from the
+  source's own words before implementing, never after, and never soften one
+  because the implementation went another way. The provenance field is what
+  makes a derived rubric auditable, and Phase 6's independent grader — which
+  sees only the ACs and the committed diff — is what stops a self-serving one.
 - **Read the plan's content into context now** — `EnterWorktree` switches CWD
   (clearing the plans cache), and a fresh worktree lacks uncommitted local
   files; the plan must travel in the conversation.
@@ -305,7 +322,9 @@ Take the rubric (Phase 0 ACs) **from the run file** — the ledger copy is a
 convenience, not a source, and the plan text in context is not one either.
 Three distinct cases, and they must not be conflated:
 
-- **File present, rubric populated** → grade it (below).
+- **File present, rubric populated** → grade it (below). Grade a `derived`
+  rubric exactly as strictly as a `supplied` one — the provenance is there to be
+  disclosed, never to lower the bar.
 - **File present, `rubric: none`** → the sanctioned rubric-less path; skip.
 - **File missing, or missing its `reconciled` block** → **hard stop.** A
   missing run file is not a pass, exactly as a dead grader is not a pass; and a
