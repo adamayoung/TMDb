@@ -9,10 +9,12 @@ import Foundation
 import Testing
 @testable import TMDb
 
-/// A regression in the cancellable join would present as a continuation that is
-/// never resumed — i.e. a hang, not a failure. Neither this suite nor the CI jobs
-/// bound one today, so a leak would burn GitHub's 6-hour default with no
-/// diagnostic. The time limit turns that into a test failure.
+/// A regression in the cancellable join presents as a hang, not a failure, and
+/// neither this suite nor the CI jobs bound one today. The time limit converts a
+/// *slow* join into a failure — but it cannot rescue a continuation that is never
+/// resumed at all: that task is not cancellable, so the timeout blocks with it
+/// (see `knowledge/gotchas.md`). The real backstop is `ResumeOnceTests`, which
+/// exercises the primitive directly.
 @Suite(.tags(.services, .images), .timeLimit(.minutes(1)))
 struct APIConfigurationStoreTests {
 

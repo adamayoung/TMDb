@@ -66,6 +66,21 @@ Format: **Feature / PR** · date · weight · *phases completed / skills invoked
   annotated rather than deleted, since its actor-recorder advice still holds. No
   `Makefile`/`Package.swift`/workflow/`.claude` changes, so the target-layout
   half is n/a.
+- **`watch:`** the Linux CI job caught a **production** bug that every other gate
+  missed. In `ResumeOnce.resume(_:)` a local named `continuation` shadowed the
+  stored property *inside its own initialiser*, so `guard let continuation` read
+  uninitialised stack memory. On Darwin that garbage was `nil` and the code
+  behaved perfectly — 3144 macOS tests, `make ci`, two review passes, a security
+  review and an independent grader all green. On Linux it was non-`nil` and
+  segfaulted in `swift_retain`, wedging the runner so hard it ignored both
+  GitHub's concurrency cancel and `gh run cancel`. Three lessons, all captured:
+  a full green `make ci` **never builds for Linux**, so a hand-rolled concurrency
+  primitive needs `make test-linux` *before* the PR; `.timeLimit` cannot rescue a
+  task parked on an unresumed continuation (the timeout blocks with it), so my
+  earlier claim that it "turns a hang into a failure" was overstated and is now
+  corrected in the suite comment; and a diff-reading reviewer cannot see this
+  class of bug — `claude-review` explicitly approved the file.
+
 ## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
 
 - **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a

@@ -1086,6 +1086,65 @@ last-wins are indistinguishable — and the failure mode of a future edit is a
 otherwise burns the CI job's default timeout with no diagnostic.
 See [ADR-0018](decisions/0018-cancellation-as-tmdberror-case.md).
 
+### A local named after a stored property reads **uninitialised memory** inside its own initialiser
+
+*2026-08-12 (#419/#433).* This compiles, passes every macOS test, and segfaults
+on Linux:
+
+```swift
+private var continuation: CheckedContinuation<Value, Never>?   // stored property
+
+func resume(_ value: Value) {
+    let continuation: CheckedContinuation<Value, Never>? = lock.withLock {
+        guard let continuation else { … return nil }   // ← NOT self.continuation
+        self.continuation = nil
+        return continuation                            // ← returns garbage
+    }
+}
+```
+
+Inside the closure that *initialises* the local, the bare name `continuation`
+binds the **local being declared**, not the property — and at that point it holds
+uninitialised stack memory. Definite-initialisation analysis does not catch it
+through the closure, so there is no warning. The read is undefined behaviour:
+on Darwin the stack garbage happened to be `nil`, so the `guard` took its `else`
+branch and the code behaved perfectly; on Linux/aarch64 it was non-`nil`, so the
+guard fell through and returned a bogus pointer, crashing in `swift_retain`
+(`Bad pointer dereference at 0x107`).
+
+- **Symptom to recognise:** a crash or hang *only* on Linux, in a function whose
+  local shares a name with a stored property. The backtrace points at the
+  `return` inside the `withLock`/closure, which "cannot" be reached.
+- **Fix:** name the local something else (`waiting`, `attached`) **and**
+  `self.`-qualify every property access in the closure. Renaming alone is enough
+  for the compiler; the qualification is what stops it being reintroduced.
+- **Why review missed it:** it is invisible in a diff — the code reads exactly
+  like the correct version. `claude-review` explicitly approved the file. Only
+  running it on a second platform found it.
+
+**Corollary — a fully green `make ci` does not cover this.** `make ci` never
+builds for Linux (see *`make ci` skips the Linux build*), so
+`build-test-linux` is the only gate that can catch platform-dependent UB. For
+any hand-rolled concurrency primitive, run `make test-linux` **before** opening
+the PR: a blind CI round-trip costs ~45 minutes *and* a manual force-cancel,
+because a hang wedges the runner and ignores GitHub's cancel.
+
+### `.timeLimit` does not rescue a task parked on an unresumed continuation
+
+*2026-08-12 (#419/#433).* A Swift Testing `.timeLimit` trait cancels the test's
+task — but a task suspended on a `CheckedContinuation` that is never resumed is
+**not cancellable**, so the timeout itself blocks. Observed directly: 17 tests in
+the neighbouring suites correctly recorded *"Time limit was exceeded: 60.000
+seconds"*, while the suite holding the leaked continuation recorded **nothing at
+all** and kept `swift test` alive indefinitely — the job then ignored both the
+GitHub concurrency cancel and `gh run cancel`, and needed a `force-cancel`.
+
+So `.timeLimit` is worth adding (it converts *slow* into *failed*, and it did
+localise the blast radius here), but do not describe it as protection against a
+lost continuation. The real backstops are a job-level `timeout-minutes`
+(absent on this repo's `build-test*` jobs — issue #435) and testing the
+primitive directly so the leak never ships.
+
 ### `withCheckedContinuation`'s body runs in the enclosing actor's isolation
 
 *2026-08-12.* Since Swift 5.10 `withCheckedContinuation` /

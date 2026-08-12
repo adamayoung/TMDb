@@ -47,19 +47,23 @@ final class ResumeOnce<Value: Sendable>: @unchecked Sendable {
     /// - Parameter continuation: The continuation awaiting a value.
     ///
     func attach(_ continuation: CheckedContinuation<Value, Never>) {
+        // `self.`-qualified throughout for the same reason as `resume(_:)` below —
+        // the parameter is already named `continuation`, so an unqualified
+        // property access here would be ambiguous to a reader even where it is
+        // unambiguous to the compiler.
         let value: Value? = lock.withLock {
-            guard !hasResumed else {
+            guard !self.hasResumed else {
                 return nil
             }
 
-            guard let pendingValue else {
+            guard let pending = self.pendingValue else {
                 self.continuation = continuation
                 return nil
             }
 
-            hasResumed = true
+            self.hasResumed = true
             self.pendingValue = nil
-            return pendingValue
+            return pending
         }
 
         guard let value else {
@@ -77,28 +81,35 @@ final class ResumeOnce<Value: Sendable>: @unchecked Sendable {
     /// - Parameter value: The value to deliver.
     ///
     func resume(_ value: Value) {
-        let continuation: CheckedContinuation<Value, Never>? = lock.withLock {
-            guard !hasResumed else {
+        // The result is named `waiting`, not `continuation`: a local of the same
+        // name as the stored property shadows it *inside its own initialiser*, so
+        // `guard let continuation` below would bind the uninitialised local
+        // rather than `self.continuation`. That read is undefined behaviour — it
+        // happened to see `nil` on Darwin and garbage on Linux, where it
+        // segfaulted in `swift_retain`. Every property access here is explicitly
+        // `self.`-qualified so the binding cannot be misread again.
+        let waiting: CheckedContinuation<Value, Never>? = lock.withLock {
+            guard !self.hasResumed else {
                 return nil
             }
 
-            guard let continuation else {
+            guard let attached = self.continuation else {
                 // Beat the continuation here; `attach` will deliver it. Latched,
                 // so a second pre-attach producer cannot overwrite the first —
                 // otherwise "first call wins" would silently become "last wins"
                 // in exactly the window where the race is hardest to observe.
-                if pendingValue == nil {
-                    pendingValue = value
+                if self.pendingValue == nil {
+                    self.pendingValue = value
                 }
                 return nil
             }
 
-            hasResumed = true
+            self.hasResumed = true
             self.continuation = nil
-            return continuation
+            return attached
         }
 
-        continuation?.resume(returning: value)
+        waiting?.resume(returning: value)
     }
 
 }
