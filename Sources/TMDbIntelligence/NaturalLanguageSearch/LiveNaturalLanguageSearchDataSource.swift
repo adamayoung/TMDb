@@ -144,8 +144,8 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
         try await tvSeries.credits(forTVSeries: id)
     }
 
-    func curatedMovies(_ kind: SearchPlan.ListKind) async throws -> [MovieListItem] {
-        switch kind {
+    func curatedMovies(_ listKind: SearchPlan.ListKind) async throws -> [MovieListItem] {
+        switch listKind.kind {
         case .trending: try await trending.movies().results
         case .popular: try await movies.popular().results
         case .topRated: try await movies.topRated().results
@@ -154,8 +154,8 @@ struct LiveNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource {
         }
     }
 
-    func curatedTVSeries(_ kind: SearchPlan.ListKind) async throws -> [TVSeriesListItem] {
-        switch kind {
+    func curatedTVSeries(_ listKind: SearchPlan.ListKind) async throws -> [TVSeriesListItem] {
+        switch listKind.kind {
         case .trending: try await trending.tvSeries().results
         case .popular: try await tvSeries.popular().results
         case .topRated: try await tvSeries.topRated().results

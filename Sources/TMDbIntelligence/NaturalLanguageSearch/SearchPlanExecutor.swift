@@ -49,7 +49,9 @@ struct SearchPlanExecutor {
         let plan = Self.normalize(rawPlan)
         var degradations: [SearchDegradation] = []
 
-        switch plan.intent {
+        // Switched over the internal representation, not the public `Intent`, so
+        // the compiler still requires an arm for every intent we model.
+        switch plan.intent.kind {
         case .find:
             return try await executeFind(plan)
 

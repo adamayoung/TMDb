@@ -47,7 +47,7 @@ struct NaturalLanguageSearchPlanGenerator: DeterministicSearchPlanning {
             return nil
         }
 
-        switch intent {
+        switch intent.kind {
         case .find:
             return findPlan(prompt: prompt)
 

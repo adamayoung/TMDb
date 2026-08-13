@@ -15,6 +15,11 @@ import TMDb
 /// model-reported confidence score; each one describes a concrete way the
 /// results differ from a literal interpretation of the prompt.
 ///
+/// This vocabulary grows as the planner learns new ways to approximate a prompt.
+/// Cover the degradations you render explicitly and handle the rest with a
+/// `default:` — a new kind arrives as ``other(_:)`` rather than as a new case, so
+/// a `switch` written today keeps compiling.
+///
 public enum SearchDegradation: Sendable, Equatable {
 
     /// A genre name could not be matched to a TMDb genre.
@@ -44,5 +49,20 @@ public enum SearchDegradation: Sendable, Equatable {
 
     /// The model refused the prompt; the associated message explains why.
     case refusalExplained(String)
+
+    ///
+    /// A degradation this version of the library does not model.
+    ///
+    /// This is a reserved growth slot, and it is what keeps the rest of this
+    /// vocabulary stable: a new kind of degradation ships **here** in a minor
+    /// release, carrying a stable identifier, and is promoted to a case of its
+    /// own at the next major version. Without it, every new degradation would
+    /// break exhaustive `switch`es downstream.
+    ///
+    /// The associated value identifies the kind for logging and diagnostics. It
+    /// is not display copy — render it the way you would render a degradation you
+    /// do not recognise.
+    ///
+    case other(String)
 
 }
