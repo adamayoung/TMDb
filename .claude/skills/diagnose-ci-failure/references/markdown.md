@@ -7,14 +7,19 @@ The **Lint Markdown** job runs in the
 markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md"
 ```
 
-Four path groups: `README.md`, `CLAUDE.md`, DocC catalog markdown
-(`Sources/**/*.docc/**/*.md`), and **every skill and agent file under
-`.claude/`** — which in this repo is the most frequently edited of the four, so
-a failure here is most often a skill edit, not a README one. `knowledge/**` is
-deliberately **not** linted. The job runs only when the `markdown` paths filter
+Five path groups: `README.md`, `CLAUDE.md`, DocC catalog markdown
+(`Sources/**/*.docc/**/*.md`), **every skill and agent file under `.claude/`**,
+and **the knowledge base under `knowledge/`** — the last two are the most
+frequently edited, so a failure here is most often a skill edit or a captured
+entry, not a README one. The job runs only when the `markdown` paths filter
 matched one of those, or on `workflow_dispatch`.
 
-Config is `.markdownlintrc`, shared by all four groups. Note **`MD013`
+`knowledge/skill-improvement-log.md` carries a scoped
+`<!-- markdownlint-disable-file MD001 -->`: its entries are dated `###` headings
+with no `##` sections, which is the documented log shape. That is the only
+per-file exemption — don't add more without saying why in the file.
+
+Config is `.markdownlintrc`, shared by all five groups. Note **`MD013`
 (line-length) and `MD041` (first-line heading) are disabled**, so neither can
 be the cause — don't start there.
 

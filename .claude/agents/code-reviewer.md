@@ -3,6 +3,7 @@ name: code-reviewer
 description: Code reviewer subagent to be used to review code changes when asked, or at appropriate points when implementing new features
 model: opus
 permissionMode: auto
+disallowedTools: Edit, Write, NotebookEdit, Skill
 skills:
   - swift-concurrency
   - swift-testing-expert
@@ -50,6 +51,14 @@ guidelines mark as "tool-permitting / local only":
   settled without executing something, say so in the finding and let the
   caller run it — serially, once. Never read or touch `.swiftpm/` or
   `.build/`.
+
+  **Half of this is enforced, half is not — know which.** The frontmatter's
+  `disallowedTools` removes `Edit`/`Write`/`NotebookEdit` (you cannot modify
+  the tree, so "produce findings, don't fix" is structural) and `Skill` (so
+  `/build`, `/test` and `/integration-test` are unreachable). `Bash` you keep,
+  because you need `git diff` and `git log` — so **`make` and `swift build` are
+  still physically reachable and the rule against them rests on you**. That is
+  the one prohibition here with nothing behind it.
 
 ## Output
 

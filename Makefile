@@ -61,6 +61,7 @@ lint-markdown:
 	markdownlint "README.md" "CLAUDE.md"
 	markdownlint "**/*.docc/**/*.md"
 	markdownlint ".claude/**/*.md"
+	markdownlint "knowledge/**/*.md"
 
 .PHONY: build
 build:

@@ -116,11 +116,12 @@ observation rather than an invariant.
       `swept: <infra files touched> → <entries rewritten/deleted | none cited>`.
       No infra files in the diff → `swept: n/a`, and fall back to scanning
       the neighbouring entries of any knowledge file you edited.
-6. **Keep it tidy by hand** — blank lines around headings/lists/code fences, a
-   language on every fence, one `#` H1 per file. Note `knowledge/` is **not** in
-   the `make lint-markdown` scope (which covers `README.md`, `CLAUDE.md`,
-   `**/*.docc/**`, and `.claude/**`), so there's no CI gate on these files —
-   readability is on you. Aim for ~80-col prose; long `jq`/URL lines are fine.
+6. **Keep it tidy** — blank lines around headings/lists/code fences, a language
+   on every fence, one `#` H1 per file. `knowledge/**` **is** in the
+   `make lint-markdown` scope and the CI `Lint Markdown` job, so a malformed
+   entry fails the gate rather than rendering wrong in silence (a raw `|` inside
+   a table cell once did exactly that). Run `make lint-markdown` after writing.
+   Aim for ~80-col prose; long `jq`/URL lines are fine — `MD013` is disabled.
 7. **Update `knowledge/README.md`** only if you added a new file or category (the
    per-entry index inside each file is enough otherwise).
 
