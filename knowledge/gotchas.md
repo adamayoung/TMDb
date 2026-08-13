@@ -1206,27 +1206,67 @@ emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
   `nil`; the behaviour changed with the swift-foundation rewrite and intuitions
   from older Foundation are wrong.
 
-### `URLComponents` path round-trip in `TMDbAPIClient.urlFromPath` decodes `%2F`
+### Percent-encoding is not a traversal defence when the peer decodes first
 
-*2026-06-24.* `TMDbAPIClient.urlFromPath` rebuilds the request URL by reading and
-re-assigning `URLComponents.path` (to prefix the API base path). Two non-obvious
-Foundation behaviours interact here:
+*2026-08-13.* Encoding a `/` as `%2F` makes it inert **only if nothing downstream
+decodes it**. TMDb's edge percent-decodes the whole path and *then* resolves
+dot-segments, so `/3/credit/x%2F..%2F..%2Fmovie%2F550` reaches the `movie`
+endpoint exactly as the unencoded form does — measured, see
+[`tmdb-api-notes.md`](tmdb-api-notes.md) → *Path handling at the edge*. Against
+such a peer the only defence is to **refuse to send** the request
+([ADR-0022](decisions/0022-reject-traversal-capable-path-segments.md)), which is
+what `URLPathSegmentValidator` now does.
 
-- The `URLComponents.path` **getter percent-decodes** (`%3F` → `?`), and the
-  **setter re-encodes** characters invalid in a path component when serialising
-  via `.url` (`?` → `%3F`, `#` → `%23`).
-- But `/` is a *valid* path separator, so an encoded `%2F` decodes to a literal
-  `/` on the getter and is **not** re-encoded — it round-trips into extra path
-  segments.
+Two Foundation behaviours make the client's own handling easy to get wrong, and
+both still apply:
 
-Consequence for the `urlPathSegmentEncoded` hardening
-([ADR-0008](decisions/0008-percent-encode-url-path-segments.md)): percent-encoding
-a user string before interpolating it into a request path **does** prevent
-query/fragment injection end-to-end, but an injected `/` still becomes a real
-separator. That residual is path-only — `urlFromPath` force-overrides
-`scheme`/`host` to `https://api.themoviedb.org`, so it cannot redirect off-host
-(no SSRF). If you ever need to neutralise `/` too, encode after the round-trip
-(set `percentEncodedPath`) rather than relying on the segment encoder alone.
+- The `URLComponents.path` **getter percent-decodes** (`%3F` → `?`, `%2F` → `/`).
+  Reading it and re-assigning it therefore *undoes* the request builders'
+  encoding — which is why the base path is now composed through
+  `percentEncodedPath` instead.
+- `URL(string:)` splits a **raw** `?` or `#` into the query/fragment components,
+  so an unencoded caller value breaks out of the path client-side, before any
+  server sees it. `TMDbAPIClient` rejects a parsed path carrying a query,
+  fragment, scheme, host, userinfo or port for exactly this reason.
+
+The rule to carry forward: encode at the interpolation site *and* validate what
+you are about to send, then check the final serialised URL — not the intermediate
+string — in a test.
+
+### `URLComponents.percentEncodedPath`'s setter traps on a badly-encoded string
+
+*2026-08-13.* Assigning an invalid percent-encoding to `percentEncodedPath` is a
+**`fatalError`**, not a thrown error:
+
+```text
+Fatal error: Attempting to set percentEncodedPath with invalid characters
+```
+
+Reproduced with `c.percentEncodedPath = "/find/a%2"`. In a library that aborts the
+host app, so it is strictly worse than the bug it might be fixing.
+
+It is safe to assign a value **read back from a `URL(string:)`-parsed component**,
+because Foundation fixes the string up during parsing — `"a b"` → `a%20b`,
+`"100%"` → `100%25`, `"a%2"` → `a%252`, `"a%zz"` → `a%25zz`. `TMDbAPIClient`
+relies on that, but does not *depend* on it: it rejects malformed escapes before
+the setter runs, so the ordering is what keeps the trap unreachable rather than
+the fix-up. Never assign a hand-built string to it.
+
+### `String.contains("/")` compares grapheme clusters — a security check must not
+
+*2026-08-13.* Swift's `String.contains(_:)` works on `Character`s, i.e. grapheme
+clusters, so a separator followed by a combining mark is a **single Character**
+and does not match:
+
+```swift
+"x/\u{0301}y".contains("/")                 // false
+"x/\u{0301}y".unicodeScalars.contains("/")  // true
+```
+
+A peer parsing bytes still sees the separator, so any check deciding whether a
+string is safe to send must compare `unicodeScalars`, not Characters. Found by
+the `/deliver` security review of issue #421; `URLPathSegmentValidator` does its
+whole comparison in one scalar pass for this reason.
 
 ### Caching a credentialed response: the predicate is "needs a user", not "has a header"
 

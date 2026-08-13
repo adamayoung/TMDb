@@ -174,6 +174,42 @@ longer than 14 days).
 - **The v4 API uses this same body shape** (verified 2026-08-07), so error
   mapping needs no v4-specific handling.
 
+### Path handling at the edge: one percent-decode, then dot-segment resolution
+
+*2026-08-13.* TMDb's edge percent-decodes the request path **exactly once** and
+*then* resolves `..`, so an encoded separator is **not** inert. Measured with
+`curl --path-as-is` (without it curl normalises the path itself and you measure
+curl, not TMDb); `MOVIE` below means the response was Fight Club's movie payload,
+i.e. the request reached a different endpoint than the one named:
+
+| Path | Result |
+| --- | --- |
+| `/3/credit/abcdefdoesnotexist` | `404` — baseline for an unknown credit |
+| `/3/credit/x/../../movie/550` | `200` MOVIE |
+| `/3/credit/x%2F..%2F..%2Fmovie%2F550` | `200` MOVIE |
+| `/3/credit/x%2f%2e%2e%2f%2e%2e%2fmovie%2f550` | `200` MOVIE — lowercase escapes |
+| `/3/credit/x%252F..%252F..%252Fmovie%252F550` | `404` — double-encoded |
+| `/3/credit/x%5C..%5C..%5Cmovie%5C550` | `404` — backslash |
+| `/3/credit/x%EF%BC%8F..` | `404` — fullwidth solidus, no NFKC folding |
+| `/3/credit/x;a=b` | `404` — no path-parameter handling |
+| `/3/credit/..%00` | `400` — edge rejects NUL |
+| `/3/credit/x%2Fy` | `404` — separator decoded, but no route matches |
+
+Three things follow, and the negatives carry as much weight as the positives:
+
+- **The double-encoded row is the discriminator.** `%252F` decoding to a literal
+  `%2F` rather than to `/` is what proves a *single* decode; every other row is
+  consistent with one decode or several.
+- **The decode is case-insensitive**, so a guard must percent-*decode* and inspect
+  the result — never match on the literal `"%2F"`.
+- **Backslash, fullwidth solidus and semicolon path-params are excluded** from the
+  class by measurement. They are the usual suspects on IIS-ish and Java-ish
+  stacks; they do nothing here, so a guard needn't carry rules for them.
+
+This is why [ADR-0022](decisions/0022-reject-traversal-capable-path-segments.md)
+refuses such a request rather than encoding it: the encoding is undone before
+routing.
+
 ### Credentials and PII live in the URL *path*, not just the query
 
 *2026-07-24.* Where a secret appears differs by kind, which matters for anything

@@ -1,6 +1,6 @@
 # ADR-0008: Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set
 
-- **Status:** Accepted
+- **Status:** Accepted (amended in part by [0022](0022-reject-traversal-capable-path-segments.md))
 - **Date:** 2026-06-24
 - **Deciders:** Adam Young (security-review-driven delivery)
 
@@ -33,14 +33,22 @@ interpolated into a request path.
 - No legitimate identifier is altered: real TMDb IDs (IMDb `tt…`, hex
   credit/episode-group/review IDs, Wikidata `Q…`) are already unreserved, so the
   encoded form is byte-identical to the input.
-- To find all sites needing this, grep for `path = "/…\(stringVar)"` — only
-  `String`-typed interpolations are at risk; `Int` IDs need nothing.
-- End-to-end caveat (not a regression): `TMDbAPIClient.urlFromPath` round-trips
-  the path through `URLComponents`, which re-encodes `?`/`#` but decodes `%2F`
-  back to a literal `/`. Query/fragment injection is fully prevented; an injected
-  `/` only adds path segments within the force-locked `api.themoviedb.org` host
-  (path-only, no SSRF). See `knowledge/gotchas.md` → *URLComponents path
-  round-trip*.
+- To find all sites needing this, enumerate by **type** — every request
+  initialiser taking a `String` that reaches `path` — not by text pattern. The
+  grep this ADR originally prescribed (`path = "/…\(stringVar)"`) is single-line
+  and **missed three sites** whose `let path =` sat on its own line: the sweep
+  recorded four sites and there were eight. The three
+  `GuestSessionRated*Request` builders went unencoded until issue #421.
+  `Int` IDs need nothing.
+- Encoding alone does **not** prevent path traversal end-to-end. TMDb's edge
+  percent-decodes the path and then resolves dot-segments, so `%2F..%2F..` reaches
+  another endpoint exactly as `/../..` does — measured, see
+  [`../tmdb-api-notes.md`](../tmdb-api-notes.md) → *Path handling at the edge*.
+  That residual is closed not by this ADR but by
+  [ADR-0022](0022-reject-traversal-capable-path-segments.md), which refuses such a
+  request at the `TMDbAPIClient` choke point. What this ADR's encoding still buys
+  is the *client-side* break-out: a raw `?` would otherwise be split by
+  `URL(string:)` into a query merged ahead of `api_key`.
 
 ## Alternatives considered
 
@@ -51,3 +59,6 @@ interpolated into a request path.
 - **Encoding centrally in `TMDbAPIClient`** — rejected. The path already contains
   `/` separators that must *not* be encoded, so the client can't blanket-encode;
   encoding the variable segment at the interpolation site is the correct seam.
+  (Note that *validating* centrally is a different proposition, and is what
+  [ADR-0022](0022-reject-traversal-capable-path-segments.md) later does — the
+  client cannot re-encode a path, but it can refuse one.)
