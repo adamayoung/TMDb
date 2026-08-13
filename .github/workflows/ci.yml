@@ -67,8 +67,6 @@ jobs:
       }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
-      # Pin lint tool versions so CI matches local `make lint` exactly and does
-      # not drift when Homebrew publishes a new release.
       SWIFTLINT_VERSION: 0.63.2
       SWIFTFORMAT_VERSION: 0.61.1
     steps:
@@ -106,11 +104,6 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swiftformat --lint .
 
-      # Cross-symbol check that swiftlint cannot express: a public-extension
-      # convenience must not share a requirement's signature, or it silently
-      # becomes that requirement's witness and self-recurses. `make lint` runs
-      # this too, but the Lint job invokes the tools directly rather than via
-      # make — so without this step the guard would never run in CI.
       - name: Defaulted-witness check
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-defaulted-witnesses.py
@@ -169,7 +162,6 @@ jobs:
       - name: Install xcsift
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          # Drop runner-preinstalled taps Homebrew's trust policy warns about.
           brew untap aws/tap azure/bicep 2>/dev/null || true
           brew install xcsift
 
@@ -185,10 +177,6 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
-          # Ask SwiftPM where things are rather than hardcoding paths: Swift 6.4
-          # moved the build products to .build/out/Products/Debug and emits one
-          # .xctest bundle per test target instead of a single merged
-          # <Package>PackageTests.xctest.
           BIN_PATH=$(swift build --show-bin-path)
           PROFDATA="$(dirname "$(swift test --show-codecov-path)")/default.profdata"
 
@@ -205,7 +193,6 @@ jobs:
           xcrun llvm-cov export -format="lcov" "${OBJECTS[@]}" \
             -instr-profile "${PROFDATA}" > info.lcov
 
-          # Fail loudly rather than uploading an empty report as 0% coverage.
           if [ ! -s info.lcov ]; then
             echo "::error::Coverage export produced an empty report"
             exit 1
@@ -235,17 +222,6 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
 
-  # Compile-only sweep of the non-macOS Apple platforms' LIBRARY targets.
-  # `swift build` can only target the host, so without this job nothing in CI
-  # ever compiles for tvOS/watchOS/iOS/visionOS — which is how #416 shipped
-  # green: Xcode 27's tvOS SDK made `canImport(FoundationModels)` true with
-  # every symbol unavailable, and both macOS and Linux stayed happy.
-  #
-  # Build-only is deliberate: this bug class is a compile-time availability
-  # failure, and the unit tests already run on macOS and Linux, so booting four
-  # simulators would only buy a slower rerun of the same assertions. Note the
-  # consequence — `xcodebuild build` (unlike `build-for-testing`) does not
-  # compile the test targets, so this net watches shipped code only.
   build-platforms:
     name: Build (${{ matrix.name }})
     needs: changes
@@ -256,8 +232,6 @@ jobs:
         && 'xcode-27' || 'ubuntu-latest'
       }}
     strategy:
-      # Report every broken platform in one run — availability breakage is
-      # usually per-platform, and failing fast would hide the others.
       fail-fast: false
       matrix:
         include:
@@ -285,16 +259,6 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          # Deliberately NOT hashFiles('**/Package.resolved'): this package has
-          # no external dependencies, so no Package.resolved is ever written and
-          # that key hashes to the empty string — a constant that `actions/cache`
-          # then never re-saves, freezing DerivedData built by an older toolchain.
-          # Hashing ci.yml covers the DEVELOPER_DIR pin, so an Xcode bump
-          # invalidates the cache by itself.
-          # The ci.yml hash is in the restore PREFIX, not just the key: a bare
-          # prefix would re-import the pre-bump DerivedData on the very miss the
-          # key exists to cause. Package.swift stays in the tail so ordinary
-          # manifest churn still restores a warm cache.
           key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
             ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-
@@ -302,15 +266,9 @@ jobs:
       - name: Install xcsift
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          # Drop runner-preinstalled taps Homebrew's trust policy warns about.
           brew untap aws/tap azure/bicep 2>/dev/null || true
           brew install xcsift
 
-      # `TMDb-Package`, never `TMDb`: the `TMDb` scheme builds only the core
-      # target, so it would have compiled cleanly straight through #416 — the
-      # break was in TMDbIntelligence. The generic destination needs the SDK
-      # only (no simulator runtime, no boot), so it does not rot when the runner
-      # image changes its installed device names or OS versions.
       - name: Build
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: set -o pipefail && xcodebuild build -scheme TMDb-Package -destination '${{ matrix.destination }}' 2>&1 | xcsift -f github-actions --Werror
@@ -345,13 +303,6 @@ jobs:
   ci:
     name: CI
     if: always()
-    # `changes` is in this list on purpose. Every other job is `if: always()`,
-    # so when `changes` fails they all still run — but with its outputs empty,
-    # every *work* step's `if:` is false (only the "No changes detected" echo
-    # fires) and each job exits `success`. Without the `changes` result here,
-    # `CI` would then go green having linted, tested and compiled nothing at
-    # all. The window is `pull_request`/`push`; `workflow_dispatch` runs the
-    # work steps via the second disjunct regardless.
     needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux]
     runs-on: ubuntu-latest
     steps:
