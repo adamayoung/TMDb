@@ -26,7 +26,7 @@ case.
 | ``TMDbError/notFound(_:)`` | The requested resource does not exist (HTTP 404). |
 | ``TMDbError/tooManyRequests(_:)`` | The API rate limit was exceeded (HTTP 429). |
 | ``TMDbError/serverError(_:)`` | TMDb reported a server-side failure (HTTP 5xx). |
-| ``TMDbError/invalidURL(_:)`` | A request URL could not be constructed from the given value. |
+| ``TMDbError/invalidURL(_:)`` | A request URL could not be constructed from the given value, or was rejected as unsafe. A path segment that could resolve to a different endpoint — an identifier containing `/` or `..` — is refused on-device, before any request is sent. |
 | ``TMDbError/encode(_:)`` | A request body could not be encoded. The underlying error is attached. |
 | ``TMDbError/network(_:)`` | The request never completed — offline, timed out, or a DNS / connection failure. The underlying error is attached. |
 | ``TMDbError/decode(_:)`` | A response was received but could not be decoded into the expected model. The underlying error is attached. |

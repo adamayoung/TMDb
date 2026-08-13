@@ -13,7 +13,10 @@ import Foundation
 enum TMDbAPIError: Error, Equatable {
 
     ///
-    /// Invalid URL.
+    /// A request URL could not be built from the path, or the path was rejected
+    /// because a segment could resolve to a different endpoint.
+    ///
+    /// The associated value is redacted by ``EndpointPathRedactor``.
     ///
     case invalidURL(String)
 

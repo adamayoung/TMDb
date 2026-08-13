@@ -38,7 +38,15 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     case serverError(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating a request URL could not be constructed from the given
-    /// value.
+    /// value, or was rejected as unsafe before any request was sent.
+    ///
+    /// A path segment is rejected when it could resolve to a *different*
+    /// endpoint — for example an identifier containing `/` or `..`, which the
+    /// API server would decode and then resolve away, redirecting the request
+    /// while it still carries your credentials. Such a value is refused
+    /// on-device rather than sent, so a caller passing an unexpected identifier
+    /// (a pasted URL, say) now receives this error where it would previously
+    /// have reached TMDb and come back as ``TMDbError/notFound(_:)``.
     ///
     /// The associated path is redacted in the same way as
     /// ``TMDbErrorContext/endpointPath``, so it is safe to log.
@@ -162,7 +170,7 @@ public extension TMDbError {
             context.statusMessage ?? "Server error"
 
         case .invalidURL(let url):
-            "Invalid URL: \(url)"
+            "Invalid or unsafe URL: \(url)"
 
         case .encode:
             "Encode error"
