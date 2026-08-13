@@ -25,6 +25,68 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-14 — ✅ Fixture hygiene: strict checker, 9 adoptions, 11 deletions (#TBD) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight (34 files, +654/−1975, a new CI
+  gate, and a reflexive edit to `/pr`). Skills: `review-plan` (3 critics),
+  `implement-plan`, `review-changes` (5-dimension fan-out + adversarial verify),
+  `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *False green* (:10), *No workflow runs `make`* (:93),
+  *The build/test tooling-runner runs in the main checkout* (:292),
+  *A fixture the author invented tests the author's belief* (:855),
+  *An empty-string-guard fixture must come from a real record* (:876),
+  *Model-decode equality tests: build the expected value directly* (:1027);
+  wiki *a-detector-whose-green-looks-the-same-when-it-didn't-run*,
+  *a-fixture-you-invented-tests-your-belief-not-the-api*.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` `.claude/skills/pr/SKILL.md`, `.github/workflows/ci.yml`, `Makefile`
+  → 1 entry rewritten (*No workflow runs `make`*, now recording two mirrored
+  checks and the missing-`outputs:`-key trap).
+
+- **What worked:** building the checker **first** and recording its baseline
+  against the untouched tree. That ordering was a `/review-plan` correction, and
+  it is the only reason "2 parse failures, 4 camelCase files, 20 orphans" is a
+  measurement rather than a claim — three steps later the evidence would have
+  been gone. Falsifying each check against engineered input (including from an
+  empty directory) cost minutes and is what makes the green mean anything.
+
+- **The plan review earned its keep twice.** Two blockers were real: the
+  delete-list used a **type**-level redundancy rule where this repo's rule is
+  decoder-**branch**-level, which would have deleted the only coverage of
+  `AlternativeTitleCollection`'s `results` branch and the only populated
+  `tv_results`. And a unanimous major caught that the planned `fixtures`
+  paths-filter output had no `outputs:` declaration — the gate condition would
+  have been the empty string, so the new check would never have run while the
+  job reported success. A false green inside the check built to stop false
+  greens. Counts moved 6 adopt/14 delete → 9 adopt/11 delete.
+
+- **Friction / self-inflicted:** the independent grader caught what five
+  reviewers and I missed — two `overview` values hand-truncated while trimming
+  captures. Trimming *records* is sanctioned; editing a *retained value* is the
+  exact dishonesty the PR exists to remove, and the Slovak assertion passed only
+  because it used `.contains(…)`. Fixed, then verified mechanically (147 field
+  comparisons against live, 85/85 strings exact) rather than by re-reading, and
+  the weak assertions tightened to exact strings. Lesson: when a change's thesis
+  is "fixtures must be verbatim", verify verbatim-ness with a diff, not an eye.
+
+- **Deviations:** (a) skipped the standalone `/integration-test` — no production
+  code changed and `make ci` at Phase 9 runs the live suite; CLAUDE.md flags
+  re-running it beforehand as a delivery's largest avoidable cost (#401).
+  (b) The run became **reflexive** at Phase 4: a review finding showed `/pr`'s
+  fast gate still classed a fixture-only diff as docs-only, contradicting the
+  rule this PR added to CI, so `.claude/skills/pr/SKILL.md` and CLAUDE.md's
+  paraphrase were updated. That skill edit is **not** exercised by this run —
+  the session loaded its registry from the main checkout — so it is verified by
+  reading only. Not logged in `skill-improvement-log.md`: that file names its
+  two producers, and this was a review-driven fix, not a proposal.
+
+- **One improvement:** the footprint sweep should run when a delivery *changes a
+  rule*, not only when it edits `.claude/`. This PR's rule ("fixtures are
+  test-affecting") had three statements — `ci.yml`, `/pr`, CLAUDE.md — and
+  Phase 0's reflexive check did not fire because the diff started out touching
+  none of `.claude/`. Code review found the third site; a rule-keyed sweep would
+  have found it at plan time.
+
 ## 2026-08-13 — 🔒 Reject traversal-capable URL path segments (#453) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (security-relevant networking
@@ -680,55 +742,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   why no PR existed. The phase summaries are worth writing; ending the turn to
   deliver them is not.
 
-## 2026-07-29 — 🔧 Harden the delivery skills (#407) · full
-
-- **Phases / skills:** 0–9; `review-plan`, `security-review`, `capture-knowledge`,
-  `pr`. Substituted an adversarial *mapping* review for `/review-changes` (it
-  self-gates to nothing on a no-Swift diff) and **deliberately overrode Phase 5's
-  self-skip** — the diff touches `.github/workflows/` and introduces
-  `.claude/workflows/`. `consulted:` gotchas (False green; tooling-runner main-checkout;
-  EnterWorktree branch naming; lint pins), ADR-0009, ADR-0014.
-- **`swept:`** 1 in scope / 0 reclaimed / 0 resumable / 0 reported (this run's own
-  worktree, correctly classified `live` by its lock PID).
-- **What worked:** *review before writing*. Three plan-review rounds (37 + 9 + 11
-  findings) ran before a single file was edited, and they were not cosmetic — round
-  1 blocked v1 outright for **data loss** (the sweep would remove worktrees with
-  unpushed work) and **credential exposure** (this repo is public and the headless
-  job pastes diagnosis text verbatim into an issue). Round 2 caught that the ACs
-  still graded mechanisms the plan had just cut, which would have red-gated Phase 6
-  by construction. Round 3 caught that the *fix* for the sweep had widened its blast
-  radius to the main checkout. Editing first would have shipped all three.
-  **Verifying mechanisms instead of asserting them** also paid: the content-stamp
-  command's first form was a false green (`git ls-tree` has no exclude pathspec, so
-  both hashes were the empty blob and compared equal), and the panel's guard rails
-  were exercised live at `agent_count: 0`.
-- **Friction:** the plan file became a patch note layered over a superseded v1 —
-  the round-2 reviewer flagged the stale normative tail as a defect in itself, and
-  it had to be fully re-issued. Two cut units were then restored by user decision,
-  so scope oscillated mid-review. Context burn was heavy: ~57 findings across three
-  rounds plus a 505-rule inventory.
-- **Deviations:** `/implement-plan` skipped (markdown + JS, no Canon TDD list);
-  `/review-changes` replaced by the mapping review; Phase 5 run despite its
-  self-skip. All three deliberate and recorded above.
-- **`watch:`** declared ready-to-merge with CI green, then a user-requested review
-  of the *newest* code (the two committed JS scripts and the three commits that
-  postdated the mapping review) returned **fix-first** with a **major**: the
-  fan-out validated its `args`/`checks` shape but not the *elements*, so the most
-  likely malformed input spawned agents on `undefined` names and reported full
-  coverage — in the commit whose whole purpose was making those guards
-  executable. Four smaller defects with it, including an over-redaction that
-  would have dead-linked every alert issue. **The readiness call was wrong**: the
-  review chain covered the plan, rule-preservation, security and AC conformance,
-  but nothing had read the last-written code as code. A post-ready review is not
-  redundancy here — it found what five earlier passes structurally could not.
-
-- **One improvement:** the pipeline has no gate for *"this change edits the skills
-  the pipeline itself runs"*. Three separate defects came from that reflexivity —
-  a rewritten `/deliver` grading itself, a plan whose ACs outlived their mechanisms,
-  and a fan-out shipped as prose in the very PR arguing prose isn't a gate. A Phase 0
-  check that flags a self-modifying delivery and pins its verification to the
-  *original* text would have caught all three earlier.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -736,6 +749,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-29 | #407 | full | Hardened the delivery skills themselves. **Review before writing** paid outright: three plan-review rounds (37 + 9 + 11 findings) ran before a file was edited, and round 1 blocked v1 for **data loss** (the worktree sweep would remove unpushed work) and **credential exposure** (a public repo, with a headless job pasting diagnosis text verbatim into an issue); round 2 caught ACs still grading mechanisms the plan had just cut, which would have red-gated Phase 6 by construction. Verifying mechanisms rather than asserting them caught the content-stamp's first form as a false green — `git ls-tree` has no exclude pathspec, so both hashes were git's empty blob and compared equal. Its lasting legacy is the **reflexive-delivery rule**: three defects all came from the pipeline rewriting itself (a rewritten `/deliver` grading its own rewrite, ACs outliving their mechanisms, and a fan-out shipped as prose in the PR arguing prose isn't a gate), and the Phase 0 reflexive flag that pins verification to the original text **shipped** from this entry's one improvement. Also the origin of the post-ready review lesson: a readiness call was declared with CI green, then a review of the newest code returned fix-first with a major — the fan-out validated its args' shape but not their elements, so malformed input spawned agents on `undefined` and reported full coverage. Nothing in five earlier passes had read the last-written code as code. |
 | 2026-07-28 | #404 | full | Made `Company.logoPath` and `originCountry` optional. Two practices worth keeping. **Sample the population, don't spot-check**: one `curl` showed `logo_path: null` and nearly ended the investigation, while sampling 54 companies produced the field/nullability matrix that proved `origin_country` was in scope and `description`/`headquarters` were not — the difference between a correct fix and a subset. And **"consistent within the type" beats "matches the siblings"**: adjudicating a 2–1 critic split toward the lone dissenter left `Company.logoPath` mapping `""` → `nil` while `Company.Parent.logoPath` still threw — the exact bug the delivery existed to remove, one level down, caught by the independent grader. An unobserved value ranks the risk; it does not close the case. Its "one improvement" — run the rubric grader **before** `/capture-knowledge`, since Phase 7 changed a design that had already invalidated a committed Phase 6 entry — **shipped**, and is the ordering `/deliver` uses today. |
 | 2026-07-27 | #401 | full | Cached image URL resolver behind `client.images` (ADR-0013). Two practices worth keeping. **Drive each concurrency hazard out of a genuine red**: the naive memo measured *100 fetches at peak concurrency 76* under 100 concurrent callers and the refresh ABA returned `["first"]` where `["second"]` was expected, which produced evidence those are real regression tests for free. And **plan review caught a bug the plan could not have shipped without** — the cache rules said *what* to memoise but never *who writes state*, so a superseded fetch would clobber a newer `refresh()`, a permanently stale cache that none of the 13 planned tests would have caught; the generation counter came from that, pre-code. Also the source of *a caller that **joins** a shared in-flight fetch is invisible to the mock or gate*, so a gate-based barrier cannot observe coalescing — two tests were wrong by construction, not by observation (0/65 reproductions), fixed with an on-actor entry counter: **after a concurrency fix, re-review the tests, not just the code**. Its real cost was the delivery that made both build-isolation rules concrete: `make build-docs` *mutually invalidates* every other build, because `Package.swift` branches on `SWIFTCI_DOCC` into two different dependency graphs **and** two per-target source lists sharing one `.build` — so interleaving 5 docs runs with unit/release builds while 5–7 review agents built into the same scratch dir produced *cyclical*, not merely slow, work and ~10 `zsh` pipelines pinned at 100% until the user force-quit them. Both improvements shipped: `build-docs` got its own scratch path, and `/deliver` now forbids builds in reviewer/grader prompts and serialises its review phases. Also clarified that the live integration suite is **deliberately serialised** (40 suites on a global `.integrationGate` semaphore), so most of that wall-clock was by design. |
 | 2026-07-24 | #398 | full | Extracted the `TMDbIntelligence` product — ~40 sources, ~110 fixtures and ~30 tests relocated behind new targets. Two lasting rules came out of it. **Run `swift build -c release` before declaring implementation done**: a `@testable import` inside the new *non-test* `TMDbTestFixtures` target broke the release build *only*, while debug, `--build-tests`, 2868 unit and 291 integration tests all passed — now a hard Phase 3 checkpoint and a `gotchas.md` entry. And **share fixtures via a `package`-access target, never a `@testable` one** (now a wiki pattern). The plan critics paid for themselves twice over, catching that `TMDbTestingTests` referenced a symbol that was moving out, and unanimously that the planned `.xctestplan` sweep was **ghost work** — those files are gitignored and untracked. Counting tests rather than trusting green proved the move lossless (2868 → 2868, then 2869 → 2869 after rebasing onto #396/#397, whose `.docc` `exclude` list turned out to be **per target**, so the two new catalogs silently re-introduced the failure that only `make ci` caught). Rubric **self-graded — the independent grader died on a session limit; recorded, not silently passed**. |
