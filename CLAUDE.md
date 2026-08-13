@@ -7,7 +7,7 @@ repository.
 
 TMDb is a Swift Package for The Movie Database API, supporting iOS 16+,
 macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, and Linux. Built with
-Swift 6.0+ and strict concurrency. (Windows is deliberately **not**
+Swift 6.1+ and strict concurrency. (Windows is deliberately **not**
 claimed — no CI job builds it; see PR #374, which dropped the claim.)
 
 ## Knowledge Base

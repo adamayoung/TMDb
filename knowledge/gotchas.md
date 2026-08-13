@@ -577,6 +577,22 @@ GitHub's concurrency cancel and `gh run cancel`. Everything else (`#if os(…)`,
 ordinary portability) fails loudly at compile time and can safely wait for CI.
 Docker down → say so and flag the PR Linux-unverified, don't skip silently.
 
+### `swift-tools-version` is floored by the Linux CI container, not by Xcode
+
+*2026-08-13 (#456).* Raising `Package.swift`'s `swift-tools-version` is
+invisible to every Apple-side gate: `make ci` and all macOS jobs run on
+`xcode-27` (Swift 6.4), which loads any manifest at or below 6.4. The binding
+constraint is the **`build-test-linux`** job's container, pinned to one exact
+toolchain in `.github/workflows/ci.yml` — `swift:6.1-jammy` today. SwiftPM
+refuses a manifest whose tools-version exceeds the toolchain running it, so a
+bump past the container's version fails **only** there, after a fully green
+local run. Since the 6.1 bump the two are **exactly equal, with no headroom**:
+the next `swift-tools-version` raise must bump the container image in the same
+PR, in **both** places it is pinned — `.github/workflows/ci.yml`'s
+`build-test-linux` job and the `Makefile`'s `SWIFT_CONTAINER_IMAGE` (which backs
+`make build-linux` / `make test-linux`). They are parallel implementations, not
+one delegating to the other; see *No workflow runs `make`* above.
+
 ### Edits can land in the main checkout instead of the active worktree
 
 *2026-06-23 / updated 2026-06-24.* Two variants of the same trap when working in a
@@ -655,6 +671,19 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
   the swiftlint pin) from the same URL CI uses:
   `curl -fsSL https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip`,
   unzip, and `install` the binary to `~/.local/bin/swiftformat`.
+
+### `.swift-version` is SwiftFormat's `--swiftversion`, not an inert marker
+
+*2026-08-13 (#456).* The repo-root `.swift-version` file reads like a toolchain
+marker for swiftenv/swiftly, and **nothing** in the `Makefile` or the workflows
+consumes it — but **SwiftFormat picks it up automatically**, logging
+`Reading swift-version file at …/.swift-version (version 6.1)` on every run and
+using it as `--swiftversion`. That value gates version-conditional rules, so
+editing this one-line file changes formatting behaviour across all 1361 files
+even though no build target references it. Treat a change here as a formatting
+change and run `make lint` (`swiftformat --lint .`) before assuming it is
+cosmetic — the 6.0 → 6.1 bump happened to reformat 0 files, but that is a
+property of the rule set, not a guarantee.
 
 ### `make` build/test targets pipe through xcsift — the exit status is the verdict, not the summary
 

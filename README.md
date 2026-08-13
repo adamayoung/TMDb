@@ -5,7 +5,7 @@
 [![CodeQL](https://github.com/adamayoung/TMDb/actions/workflows/codeql.yml/badge.svg)](https://github.com/adamayoung/TMDb/actions/workflows/codeql.yml)
 [![Documentation](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml/badge.svg)](https://github.com/adamayoung/TMDb/actions/workflows/documentation.yml)
 [![codecov](https://codecov.io/gh/adamayoung/TMDb/graph/badge.svg?token=TICHRASF6F)](https://codecov.io/gh/adamayoung/TMDb)
-[![Swift 6.0+](https://img.shields.io/badge/Swift-6.0+-orange.svg)](https://swift.org)
+[![Swift 6.1+](https://img.shields.io/badge/Swift-6.1+-orange.svg)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/Platforms-iOS%20|%20macOS%20|%20watchOS%20|%20tvOS%20|%20visionOS%20|%20Linux-blue.svg)](https://github.com/adamayoung/TMDb)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -93,7 +93,7 @@ for detailed usage.
 
 ## Requirements
 
-* Swift 6.0+
+* Swift 6.1+
 * OS
   * macOS 13+
   * iOS 16+
@@ -110,7 +110,7 @@ Add the TMDb package as a dependency to your `Package.swift` file, and add it
 as a dependency to your target.
 
 ```swift
-// swift-tools-version:6.0
+// swift-tools-version:6.1
 
 import PackageDescription
 
@@ -478,9 +478,15 @@ Documentation and examples of usage can be found at
 
 ### Prerequisites
 
-Xcode 16.0+
-Swift 6.0+
+Xcode 26+ (CI builds on Xcode 27)
+Swift 6.1+
 Homebrew
+
+Note the higher Xcode floor applies to *building this repo*, not to using it:
+`make ci`'s documentation build resolves DocC links to `TMDbIntelligence`'s
+language-model tools, which compile only against the FoundationModels SDK
+(Xcode 26+). Consuming the package needs just Swift 6.1 / Xcode 16.3, as under
+[Requirements](#requirements) above.
 
 #### Homebrew
 
