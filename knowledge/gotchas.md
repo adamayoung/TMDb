@@ -197,6 +197,42 @@ jobs. **Debug-green proves nothing here; run the release build.**
   cascades into member-level access (memberwise inits, nested types) — usually
   not worth it.
 
+### `hashFiles` over a pattern matching nothing returns the empty string
+
+*2026-08-13 (#PLACEHOLDER-PR).* GitHub Actions' `hashFiles(...)` does not error
+when its glob matches no file — it returns `''`. A cache key built from one then
+collapses to a **constant**:
+
+```yaml
+key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}   # -> "macOS-swift-"
+```
+
+This package declares **no external dependencies**, so SwiftPM never writes a
+`Package.resolved` and that key had been constant all along. Because it was also
+byte-identical to its own `restore-keys` prefix, every run was an exact primary-key
+hit — and `actions/cache` **skips the save on an exact hit**, so the cache was
+written once and then never refreshed again. It keeps serving build products from
+whatever toolchain was current the first time, which is a good way to spend an
+afternoon on a "works locally, fails in CI" that is neither.
+
+Hash something that actually exists and actually changes. Hashing the workflow
+file is a useful trick, because it carries the `DEVELOPER_DIR` Xcode pin — so a
+toolchain bump invalidates the cache by itself:
+
+```yaml
+key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-${{ hashFiles('Package.swift') }}
+restore-keys: |
+  ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-
+```
+
+**Put the toolchain-bearing hash in the restore *prefix*, not just the key.** A
+bare prefix re-imports the pre-bump cache on the very miss the key exists to
+cause, so the key's promise is quietly undone one line below it.
+
+Same family as the `git ls-tree` entry below — a hashing primitive that degrades
+to a constant instead of failing. **Sanity-check any computed key against its
+degenerate value before trusting it.**
+
 ### `git ls-tree` doesn't support `:!exclude` — and fails into an empty hash
 
 *2026-07-29.* Building a content stamp over "everything except `knowledge/`",
@@ -381,6 +417,33 @@ rather than assuming the tool honoured the name.
   route. See `/review-pr-threads` §1 and
   [ADR-0009](decisions/0009-github-mcp-over-gh-cli.md).
 
+### The `markdownlint --fix` hook turns a line-leading `#416` into an H1
+
+*2026-08-13 (#PLACEHOLDER-PR).* This repo cites issues and PRs as `#NNN`
+everywhere, and prose is wrapped near 80 columns — so sooner or later a
+reference lands at the **start** of a line. The `PostToolUse` hook then runs
+`markdownlint --fix`, reads `#416 ship.` as a malformed ATX heading, and
+"corrects" it by inserting a space:
+
+```markdown
+which is precisely the gap that let issue
+#416 ship.
+```
+
+becomes a literal `# 416 ship` — a top-level heading in the middle of a
+document. The prose is silently destroyed, and the file then fails the gate on
+`MD025/single-title/single-h1` (plus a knock-on `MD001`) pointing at a heading
+you never wrote.
+
+It fails loudly, which is the saving grace — but the error names a heading
+problem, not the rewrite that caused it, so it reads as nonsense until you look
+at the file.
+
+**Keep an issue reference off the start of a line**: reflow the sentence, or
+write it as "issue 416" in words. Worth a glance at `git diff` after editing a
+`knowledge/` file — the hook edits after you write, so what you wrote is not
+necessarily what landed.
+
 ### A `Write` of a Markdown/DocC file can leak `</content>`/`</invoke>` into the file tail
 
 *2026-06-24.* When creating a `.md` file with the `Write` tool, trailing
@@ -550,30 +613,88 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 - There is **no `GetBuildLog` tool** — for build-error detail inside Xcode use
   `mcp__xcode-tools__XcodeRefreshCodeIssuesInFile` on the flagged file(s).
 
-### FoundationModels can't build for watchOS under Xcode 27 beta (CoreImage)
+### `canImport` is not an availability test — and FoundationModels is unavailable per *symbol*
 
-*Undated original; still open as of 2026-07-28 on Xcode 27.0 build `27A5228h` (a
-seed build). **Transient by nature — re-probe and delete once a GM toolchain
-ships**; a watchOS build is the only way to confirm, so it was not re-run during
-the 2026-07-28 audit.*
+*2026-08-13 (#PLACEHOLDER-PR), from issue #416.* A framework can ship on a
+platform with every one of its symbols marked unavailable. Xcode 27's tvOS SDK
+ships `FoundationModels.framework`, so `#if canImport(FoundationModels)` flipped
+from **false to true** on tvOS — admitting code whose every symbol is
+`@available(tvOS, unavailable)`. 149 errors, on guards that had been correct for
+a year.
 
-- Building the package for a **watchOS** destination
-  (`xcodebuild -scheme TMDb -destination 'generic/platform=watchOS Simulator'`)
-  fails during module resolution:
-  `error: Unable to resolve module dependency: 'CoreImage'` inside the watchOS
-  SDK's own `FoundationModels.swiftinterface`. It is an **SDK/toolchain bug**
-  (Xcode 27.0 beta 2 / watchOS 27 beta), not a problem in this code — it fires for
-  **any** `import FoundationModels` on watchOS, including the existing
-  `LanguageModelTools`.
-- Consequence: you **cannot build- or availability-verify** watchOS-gated
-  FoundationModels code locally yet. The error aborts before type-checking, so it
-  even **masks** genuine `@available` violations (a watchOS availability bug and a
-  clean build look identical — both fail on CoreImage). Verify such changes by
-  reasoning + Apple's documented availability instead, and note the gap.
-- Apple **does** document `SystemLanguageModel` / `LanguageModelSession` as
-  `watchOS 27.0+ (Beta)`, so `watchOS 27` is the correct availability floor; the
-  build failure is transient beta breakage, expected to clear in a later toolchain.
-- `make ci` is unaffected — it builds the macOS host only, never watchOS.
+The `@available` did not save it, and this is the sharp edge: a trailing `*` in
+`@available(iOS 26, macOS 26, visionOS 26, watchOS 27, *)` makes **unlisted
+platforms available**, not excluded. `canImport` + a `*`-terminated `@available`
+is not a platform gate. Use `#if canImport(X) && !os(…)`, or
+`@available(tvOS, unavailable)`.
+
+**The availability is asymmetric, so the right exclusion differs per file**
+(read from the shipped SDK interfaces, not the docs):
+
+| Symbol | tvOS | watchOS |
+| --- | --- | --- |
+| `SystemLanguageModel` | unavailable | **unavailable** |
+| `LanguageModelSession` | unavailable | 27.0+ |
+| `Tool`, `Generable`, `GenerationSchema` | unavailable | 27.0+ |
+
+So tvOS needs the whole framework excluded, while watchOS only breaks where
+`SystemLanguageModel` is touched. That is why `LanguageModelTools/` is correctly
+gated `!os(tvOS)` alone while `NaturalLanguageSearch/` needs
+`!os(tvOS) && !os(watchOS)` — an asymmetry that reads like an oversight and is
+not. On watchOS the only `LanguageModel` conformer is
+`PrivateCloudComputeLanguageModel`, which is not on-device, so a watchOS
+Foundation Models planner is a product decision rather than a fix.
+
+**The SDK's own `.swiftinterface` is the authority**, and Apple's published docs
+lagged it here — they listed `SystemLanguageModel` as watchOS 27+ while the
+shipped SDK marks it watchOS-unavailable. Reading it is cheap and settles
+questions no local build can reach:
+
+```bash
+grep -B6 "class SystemLanguageModel" \
+  "$(xcrun --sdk watchsimulator --show-sdk-path)/System/Library/Frameworks/FoundationModels.framework/Modules/FoundationModels.swiftmodule/"*.swiftinterface
+```
+
+> An earlier entry here recorded a watchOS `Unable to resolve module dependency:
+> 'CoreImage'` failure inside the watchOS SDK's own `FoundationModels
+> .swiftinterface`, and concluded you should verify watchOS availability "by
+> reasoning + Apple's documented availability" instead of building. That bug is
+> **fixed** as of Xcode 27.0 build `27A5237l` (re-probed 2026-08-13: zero
+> occurrences, the build type-checks and succeeds). It had been masking a real
+> `@available` violation exactly as it warned it might — issue #416 *is* that
+> violation, and the reason-instead-of-build advice is a fair description of how
+> #416 shipped.
+
+### `make ci` builds macOS only — the other Apple platforms are gated solely by CI
+
+*2026-08-13 (#PLACEHOLDER-PR).* Sibling to the Linux entry above. `make ci`
+compiles for the **macOS host and nothing else**: `swift build` cannot target
+another platform, so iOS, tvOS, watchOS and visionOS are covered *only* by
+`.github/workflows/ci.yml`'s **`build-platforms`** matrix job. A green `make ci`
+says nothing about the other four — and that gap is precisely what let issue
+416 ship.
+
+To check locally, there is no `make` target; go direct, and **sequentially**
+(one Swift process per worktree):
+
+```bash
+xcodebuild build -scheme TMDb-Package -destination 'generic/platform=tvOS Simulator'
+```
+
+Two things that matter in that command:
+
+- **`-scheme TMDb-Package`, never `-scheme TMDb`.** The `TMDb` scheme builds only
+  the core target, so it compiles cleanly straight through a break in
+  `TMDbIntelligence` — which is what #416 was. The CI job that was deleted in
+  `da96567b` used `-scheme TMDb` and would not have caught it.
+- **`xcodebuild build` does not compile the test targets** (unlike
+  `build-for-testing`). Verified from a build log: exactly four library targets
+  compile — `TMDb`, `TMDbIntelligence`, `TMDbTesting`, `TMDbIntelligenceTesting` —
+  and zero test targets. So the CI matrix watches shipped code only.
+
+Prefer `generic/platform=…` over a pinned `name=iPhone 17,OS=26.2` destination:
+it needs the SDK only — no simulator runtime, no boot — and does not rot when the
+runner image changes its device names.
 
 ### Extraneous `CodingKeys` cases break synthesized `Encodable`
 
