@@ -1,3 +1,9 @@
+<!-- markdownlint-disable-file MD001 -->
+<!-- Entries are dated `###` headings under the H1 with no `##` sections —
+     the flat newest-first log shape documented in README.md and in the
+     format block below. MD001 (heading-increment) would require inventing
+     `##` sections this file does not have. Scoped here, not disabled repo-wide. -->
+
 # Skill-Improvement Log
 
 A durable record of every skill-improvement proposal raised by `/deliver`'s
