@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-14 — ✅ Fixture hygiene: strict checker, 9 adoptions, 11 deletions (#TBD) · full
+## 2026-08-14 — ✅ Fixture hygiene: strict checker, 9 adoptions, 11 deletions (#457) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (34 files, +654/−1975, a new CI
   gate, and a reflexive edit to `/pr`). Skills: `review-plan` (3 critics),

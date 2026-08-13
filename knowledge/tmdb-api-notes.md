@@ -465,7 +465,7 @@ guessed:
 
 ### `/tv/{id}/translations`: `homepage` is `""` on essentially every locale
 
-*2026-08-14, all 68 locales of `/tv/1396/translations` (#TBD).* Every one sends
+*2026-08-14, all 68 locales of `/tv/1396/translations` (#457).* Every one sends
 `"homepage": ""`, and most send `"name": ""` for the original-language row —
 empty strings, not `null` and not absent. `TVSeriesTranslationData` types
 `homepage` as `String?`, so `""` decodes as `""`, **not** `nil`: this is not a
@@ -481,7 +481,7 @@ empty strings, not `null` and not absent. `TVSeriesTranslationData` types
 
 ## Response shapes
 
-*All three measured 2026-08-14 while re-capturing orphaned fixtures (#TBD).*
+*All three measured 2026-08-14 while re-capturing orphaned fixtures (#457).*
 
 ### `/tv/{id}/watch/providers` keys `results` by country — an object, not an array
 

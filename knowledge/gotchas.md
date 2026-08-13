@@ -92,7 +92,7 @@ reach CI, let alone merge.
 
 ### The TMDb MCP's two network tools are swapped
 
-*2026-08-14, verified live on network 49 (#TBD).* The names lie:
+*2026-08-14, verified live on network 49 (#457).* The names lie:
 
 | Tool | Actually returns |
 | --- | --- |
@@ -876,7 +876,7 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ### A camelCase key in a fixture is invisible — `.convertFromSnakeCase` accepts both
 
-*2026-08-14 (#TBD).* `JSONDecoder.theMovieDatabase` sets
+*2026-08-14 (#457).* `JSONDecoder.theMovieDatabase` sets
 `.convertFromSnakeCase`, which rewrites `original_name` → `originalName` and
 leaves a key **with no underscore unchanged**. So a hand-written `"originalName"`
 lands on the same lookup key as the `"original_name"` TMDb actually sends: the
@@ -898,7 +898,7 @@ not a one-off, because nothing could see it.
 
 ### "Redundant fixture" is a decoder-branch question, not a type question
 
-*2026-08-14 (#TBD).* Deciding a fixture is safe to delete because "that model is
+*2026-08-14 (#457).* Deciding a fixture is safe to delete because "that model is
 decode-tested somewhere else" is the wrong rule, and it is wrong in the direction
 that loses coverage silently. `CLAUDE.md`'s fixture-completeness rule is
 **branch**-level.
