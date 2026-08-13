@@ -81,8 +81,9 @@ two fields the dedup step keys on.
   tier when a plan is "complex", keeping Opus otherwise — raised alongside the
   audit-tier change above, and reviewed by the three-critic pass.
 - **Decision:** **deferred**, before implementation. `/review-plan` and
-  `/deliver` Phase 2 were left untouched; filed as a GitHub issue against
-  ADR-0014's existing revisit trigger.
+  `/deliver` Phase 2 were left untouched; filed as issue
+  [#450](https://github.com/adamayoung/TMDb/issues/450) against ADR-0014's
+  existing revisit trigger.
 - **Rationale:** three independent failures. (1) It delivers none of the stated
   goal — the default path is today's behaviour and the escalated path costs
   *more*. (2) The trigger, expressed in the lite/full rule's risky-surface

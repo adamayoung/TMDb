@@ -57,19 +57,25 @@ DocC quality ever regresses, the Sonnet pin is the first suspect").
   which is the price of keeping the top tier where a mistake is permanent.
 - **One variable moved**, so a regression in audit quality has exactly one
   suspect: the Opus audit pin.
-- **The tier split is now load-bearing and easy to "tidy" away.** Both the
-  skill's contract and a comment beside the cross-examine `agent()` call say why
-  the rounds differ and point here, because the natural instinct on reading a
-  two-tier workflow is to unify it.
+- **The tier split is now load-bearing and easy to "tidy" away.** The skill's
+  contract, the block comment above the cross-examination section, and a
+  one-line note on the `agent()` options object itself all say why the rounds
+  differ and point here — because the natural instinct on reading a two-tier
+  workflow is to unify it, and the reader doing that greps `model:` and lands on
+  the call site, not on the prose.
 - **The saving is projected, not measured** — no run at the new tier exists yet.
-  The first post-merge `/review-knowledge` run should have its agent count and
-  token usage recorded in the retro, so the next reviewer has a baseline.
+  So the skill's report contract now requires **every** run to record its agent
+  count, total tokens, and consensus findings by severity in
+  [`skill-improvement-log.md`](../skill-improvement-log.md) — the skill's own
+  memory, and the reader of the trigger below.
 
-**Revisit when** (deliberately observable, unlike "starts missing staleness",
-which is only visible once a bug ships): two consecutive `/review-knowledge`
-runs return **zero** `major`-or-`critical` consensus findings while the tree has
-demonstrably moved — check `delivery-retros.md` for deliveries that changed
-build config, target layout or the skills in between.
+**Revisit when** two consecutive `/review-knowledge` runs record **zero**
+`major`-or-`critical` consensus findings while the tree has demonstrably moved
+(intervening deliveries that changed build config, target layout or the skills —
+`delivery-retros.md` lists them). That is checkable from the log rather than
+only after a bug ships, which is *why* the run-record line above is part of this
+decision rather than a nicety: without it a zero-finding run leaves no trace and
+the trigger has nothing to read.
 
 ## Alternatives considered
 
@@ -97,5 +103,6 @@ they start missing blockers"*. A conditional variant of that escalation was
 drafted alongside this change and **dropped before implementation**: it delivered
 no cost saving, its trigger could never fire for the reflexive `.claude/` changes
 this repo's defect record is made of, and it collided with the recorded decision
-that the delivery-weight vocabulary stays binary. It is filed as an issue against
-ADR-0014's existing revisit trigger instead.
+that the delivery-weight vocabulary stays binary. It is filed instead as issue
+[#450](https://github.com/adamayoung/TMDb/issues/450), against ADR-0014's
+existing revisit trigger.

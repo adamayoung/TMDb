@@ -107,7 +107,7 @@ export const meta = {
   description: 'Four adversarial Opus auditors (2 lenses x 2 trees), then a Fable cross-examination',
   phases: [
     { title: 'Audit', detail: 'four opus/high auditors: each lens over each tree' },
-    { title: 'Cross-examine', detail: 'lenses refute each other, paired within a tree', model: 'fable' },
+    { title: 'Cross-examine', detail: 'four fable/high refuters: lenses refute each other, paired within a tree', model: 'fable' },
   ],
   model: 'opus',
 }
@@ -243,6 +243,7 @@ const rebuttals = await parallel(
         `Default to REFUTE when the evidence is thin. A finding that cannot be independently reproduced from the tree should not survive into the consensus. Do not confirm out of collegiality.\n\n` +
         `${READONLY}\n\n` +
         `Finally, in "missedByBoth", note anything their report made you realise you BOTH missed.`,
+        // `fable` is deliberate and load-bearing — refutations are permanent. See ADR-0020.
         { label: `cross:${g.tree.key}:${mine.key}`, phase: 'Cross-examine', model: 'fable', effort: 'high', schema: REBUTTAL_SCHEMA }
       ).then((r) => r && { by: mine.lens, tree: g.tree.key, ...r })
     })
@@ -284,6 +285,15 @@ The critics have already done the reconciling work — read it, don't redo it:
 Present a consensus table: finding · severity · agreement (confirmed / adjudicated
 / refuted) · the fix. Then state the **verdict for the base as a whole**, and be
 willing to conclude *no changes needed*.
+
+**Record the run — even a clean one.** Append a dated line to
+[`skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md) giving
+the run's **agent count, total tokens, and consensus findings by severity**. A
+run that finds nothing otherwise leaves no trace at all, and
+[ADR-0020](../../../knowledge/decisions/0020-review-knowledge-audit-tier.md)'s
+revisit trigger reads exactly that number — two consecutive zero-finding runs
+over a tree that has demonstrably moved means the audit tier has stopped earning
+its keep. This line is written whatever the verdict; it is the only one that is.
 
 ## Apply — only after the user agrees
 
