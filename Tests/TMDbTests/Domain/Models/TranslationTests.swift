@@ -57,14 +57,33 @@ struct TranslationTests {
         #expect(enTranslation.name == "English")
         #expect(enTranslation.englishName == "English")
         #expect(enTranslation.data.name == "")
-        #expect(enTranslation.data.overview.contains("chemistry teacher"))
         #expect(enTranslation.data.tagline == "Change the equation.")
+
+        // Asserted in full rather than with `contains`: a substring match is
+        // what let a hand-truncated overview into this fixture in the first
+        // place, and it would not catch the next one.
+        #expect(
+            enTranslation.data.overview == """
+            Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a \
+            prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an \
+            unrelenting desire to secure his family's financial future at any cost as he enters the \
+            dangerous world of drugs and crime.
+            """
+        )
 
         let skTranslation = try #require(result.translations.first { $0.languageCode == "sk" })
         #expect(skTranslation.countryCode == "SK")
         #expect(skTranslation.englishName == "Slovak")
         #expect(skTranslation.data.name == "Perníkový tatko")
         #expect(skTranslation.data.tagline == "")
+        #expect(
+            skTranslation.data.overview == """
+            Stredoškolskému učiteľovi chémie je diagnostikovaná rakovina a tak sa rozhodne pred svojou \
+            smrťou zaopatriť výrobou metam\u{00AD}fetamínu svoju rodinu. Seriál vyniká úplne famóznou \
+            premenou hlavnej postavy z obyčajného človeka na kľúčovú postavu drogového obchodu a \
+            skutočného bossa.
+            """
+        )
 
         // `homepage` is an empty string on every TV translation TMDb returns —
         // it is typed String?, so it decodes as "" rather than nil.
