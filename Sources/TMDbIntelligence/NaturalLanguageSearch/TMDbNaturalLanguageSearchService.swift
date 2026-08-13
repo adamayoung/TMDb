@@ -75,10 +75,18 @@ final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
         } catch is CancellationError {
             throw .cancelled
         } catch TMDbError.cancelled {
-            // Raised by `executor.execute`'s service calls. Without this arm it
-            // would be re-labelled a planning failure — the same misreporting
-            // this change exists to remove.
+            // Distinguishes "the caller withdrew" from "TMDb failed". MUST stay
+            // above the `as TMDbError` arm below, which matches every TMDbError
+            // including `.cancelled` — reversed, a cancelled search would report
+            // as `.searchFailed(.cancelled)`. Reversing it is a compile error
+            // ("case will never be executed"), so this ordering is enforced.
             throw .cancelled
+        } catch let error as TMDbError {
+            // Raised by the TMDb service calls behind `executor.execute` and behind
+            // the literal-search fallback. The prompt was understood; it is the
+            // request that failed, so reporting a planning failure here would hide
+            // a retryable condition such as a rate limit.
+            throw .searchFailed(error)
         } catch {
             throw .planningFailed(underlying: error)
         }
@@ -106,6 +114,11 @@ extension TMDbNaturalLanguageSearchService {
         case .cancelled:
             // Falling back would issue fresh searches on a task the caller has
             // already abandoned — doing the very work they cancelled.
+            return false
+        case .searchFailed:
+            // The TMDb request just failed; the fallback issues more requests
+            // against the same API, and under a 429 that worsens the limit we
+            // have already hit. Keeps the fallback-failure path terminal.
             return false
         }
     }

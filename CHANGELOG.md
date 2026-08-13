@@ -27,6 +27,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   models, plus `MockV4ListService` and samples in `TMDbTesting`. See the
   *Authenticating with the v4 API* article.
 
+- `NaturalLanguageSearchError.searchFailed(TMDbError)` (in `TMDbIntelligence`) —
+  a TMDb request that fails while a natural-language search is being carried out
+  now reports as itself, carrying the underlying `TMDbError`. Unlike
+  `.planningFailed`, it compares by cause, so a rate limit can be told from a
+  network drop.
+
+- **Breaking:** `SearchDegradation` (in `TMDbIntelligence`) gains an
+  `.other(String)` case. This only affects you if you switch **exhaustively** over
+  it — add an `.other` branch, or a `default`.
+
+  It is a reserved growth slot carrying a stable identifier. From here on, new
+  kinds of degradation ship as `.other` in a **minor** release rather than as new
+  cases, so a `switch` written against 20.0.0 keeps compiling. Render `.other` the
+  way you would render a degradation you do not recognise.
+
+- `NaturalLanguageSearchAvailability.Reason.unknown` (in `TMDbIntelligence`) — an
+  availability reason or state added by a future OS now surfaces here. It was
+  previously reported as `.modelNotReady` (an unrecognised unavailability reason)
+  or `.unsupportedOS` (an unrecognised availability state), so a caller would
+  either wait for a model download that was never pending, or tell the user to
+  upgrade an OS that is already current.
+
 ### Fixed
 
 - **Breaking:** cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
@@ -55,12 +77,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   literal-search fallback, so the library did the very work the caller had
   cancelled.
 
+- **Breaking:** a TMDb request failure during a natural-language search
+  (`TMDbIntelligence`) no longer reports as
+  `NaturalLanguageSearchError.planningFailed`, whose description claims the prompt
+  could not be interpreted. A rate limit or network drop — during plan execution
+  **or** during the literal-search fallback — now throws
+  `NaturalLanguageSearchError.searchFailed` carrying the real `TMDbError`, so a
+  caller branching on TMDb's 429 can see it. If you branch on `.planningFailed`
+  to show "couldn't interpret that", add a `.searchFailed` branch. A
+  `.searchFailed` is never rescued by the literal-search fallback, which would
+  otherwise retry against the API that just failed.
+
 ### Changed
 
 - **Breaking:** `TMDbError` gains a `.cancelled` case, and
   `NaturalLanguageSearchError` (in `TMDbIntelligence`) gains one too. This only
   affects you if you switch **exhaustively** over either — add a `.cancelled`
   branch, or a `default`.
+
+- **Breaking:** `SearchPlan.Intent`, `SearchPlan.ListKind` and
+  `NaturalLanguageSearchAvailability.Reason` (all in `TMDbIntelligence`) change
+  from enums to structs with static members. These vocabularies grow as the
+  planner learns new requests and as Apple and TMDb add their own, and as public
+  enums each addition broke every exhaustive `switch` downstream. As structs they
+  can grow in a **minor** release instead.
+
+  Almost nothing changes at the call site: construction (`SearchPlan(intent:
+  .find)`), `==`, `if case .find = plan.intent`, and a `switch` with a `default:`
+  all compile unchanged, and `Hashable` is **retained** so `Set` and dictionary
+  use is unaffected. What no longer compiles is an **exhaustive** `switch` — add
+  a `default:`. Should you have written your own `Hashable` or
+  `CustomStringConvertible` conformance for one of these, remove it: they now
+  conform themselves.
+
+  `SearchPlan.MediaType` and `SearchPlan.RelativeDate` are deliberately unchanged.
+  `MediaType` is bounded by this feature's **result surface** rather than by TMDb's
+  media taxonomy — `NaturalLanguageSearchResult` exposes exactly `movies`,
+  `tvSeries` and `people`, so a fourth media type could not be returned without a
+  larger change than adding a member. (TMDb itself models more, including
+  collections and TV episodes; should the result surface ever grow, `MediaType`
+  should be converted too.) `RelativeDate` carries payloads the executor computes
+  year bounds from, where a catch-all member would mean nothing.
 
 - **Breaking:** a cancelled auto-pagination scan now throws `TMDbError.cancelled`
   rather than `CancellationError`, and stops at the next element even while

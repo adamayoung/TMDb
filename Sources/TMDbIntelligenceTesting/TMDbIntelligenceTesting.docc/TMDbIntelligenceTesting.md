@@ -31,7 +31,7 @@ import TMDbIntelligenceTesting
 let service = MockNaturalLanguageSearchService()
 
 // Zero-config: returns NaturalLanguageSearchResult.sample.
-let result = try await service.search("movies with Tom Hanks")
+let result = try await service.search(matching: "movies with Tom Hanks")
 
 // Inject a specific outcome.
 service.searchResult = .failure(.outOfScope)

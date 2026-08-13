@@ -23,31 +23,71 @@ public struct SearchPlan: Sendable, Equatable {
     ///
     /// The kind of search the prompt describes.
     ///
-    public enum Intent: Sendable, Equatable {
+    /// This vocabulary grows as the planner learns to recognise new kinds of
+    /// request, so it is a struct with static members rather than an enum: a new
+    /// intent can ship in a **minor** release without breaking a `switch` you
+    /// have already written. Match the intents you handle and cover the rest with
+    /// a `default:`.
+    ///
+    public struct Intent: Sendable, Equatable, Hashable, CustomStringConvertible {
+
+        enum Kind: Hashable {
+            case find
+            case browse
+            case byPerson
+            case castOf
+            case crewRole
+            case similar
+            case list
+            case mood
+        }
+
+        let kind: Kind
+
+        private init(kind: Kind) {
+            self.kind = kind
+        }
 
         /// Look up a title or name directly (a bare query, like a normal search).
-        case find
+        public static let find = Intent(kind: .find)
 
         /// Browse/filter movies or TV series by attributes.
-        case browse
+        public static let browse = Intent(kind: .browse)
 
         /// Movies or TV series featuring particular people.
-        case byPerson
+        public static let byPerson = Intent(kind: .byPerson)
 
         /// The cast of a particular title.
-        case castOf
+        public static let castOf = Intent(kind: .castOf)
 
         /// People in a particular crew role for a title.
-        case crewRole
+        public static let crewRole = Intent(kind: .crewRole)
 
         /// Titles similar to a particular title.
-        case similar
+        public static let similar = Intent(kind: .similar)
 
         /// A top-level curated list (trending, popular, and so on).
-        case list
+        public static let list = Intent(kind: .list)
 
         /// A subjective mood mapped to genres.
-        case mood
+        public static let mood = Intent(kind: .mood)
+
+        ///
+        /// A textual representation of the intent.
+        ///
+        public var description: String {
+            switch kind {
+            case .find: "find"
+            case .browse: "browse"
+            case .byPerson: "byPerson"
+            case .castOf: "castOf"
+            case .crewRole: "crewRole"
+            case .similar: "similar"
+            case .list: "list"
+            case .mood: "mood"
+            }
+        }
+
     }
 
     ///
@@ -95,25 +135,60 @@ public struct SearchPlan: Sendable, Equatable {
     ///
     /// A top-level curated list.
     ///
-    public enum ListKind: Sendable, Equatable {
+    /// TMDb adds curated lists over time, so this is a struct with static members
+    /// rather than an enum: a new list kind can ship in a **minor** release
+    /// without breaking a `switch` you have already written. Match the kinds you
+    /// handle and cover the rest with a `default:`.
+    ///
+    public struct ListKind: Sendable, Equatable, Hashable, CustomStringConvertible {
+
+        enum Kind: Hashable {
+            case trending
+            case popular
+            case topRated
+            case nowPlaying
+            case upcoming
+            case airingToday
+        }
+
+        let kind: Kind
+
+        private init(kind: Kind) {
+            self.kind = kind
+        }
 
         /// Trending titles.
-        case trending
+        public static let trending = ListKind(kind: .trending)
 
         /// Popular titles.
-        case popular
+        public static let popular = ListKind(kind: .popular)
 
         /// Top-rated titles.
-        case topRated
+        public static let topRated = ListKind(kind: .topRated)
 
         /// Movies now playing in cinemas.
-        case nowPlaying
+        public static let nowPlaying = ListKind(kind: .nowPlaying)
 
         /// Upcoming movie releases.
-        case upcoming
+        public static let upcoming = ListKind(kind: .upcoming)
 
         /// TV series airing today.
-        case airingToday
+        public static let airingToday = ListKind(kind: .airingToday)
+
+        ///
+        /// A textual representation of the list kind.
+        ///
+        public var description: String {
+            switch kind {
+            case .trending: "trending"
+            case .popular: "popular"
+            case .topRated: "topRated"
+            case .nowPlaying: "nowPlaying"
+            case .upcoming: "upcoming"
+            case .airingToday: "airingToday"
+            }
+        }
+
     }
 
     ///

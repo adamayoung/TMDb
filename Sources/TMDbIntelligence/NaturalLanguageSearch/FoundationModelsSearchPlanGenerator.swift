@@ -37,7 +37,8 @@
             case .unavailable(let reason):
                 .unavailable(Self.mapReason(reason))
             @unknown default:
-                .unavailable(.unsupportedOS)
+                // A future availability state, not a known-unsupported OS.
+                .unavailable(.unknown)
             }
         }
 
@@ -156,7 +157,9 @@
             case .appleIntelligenceNotEnabled: .notEnabled
             case .deviceNotEligible: .deviceNotEligible
             case .modelNotReady: .modelNotReady
-            @unknown default: .modelNotReady
+            // Not `.modelNotReady`: reporting an unrecognised reason as a pending
+            // download makes a caller wait for something that will never arrive.
+            @unknown default: .unknown
             }
         }
 

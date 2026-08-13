@@ -45,7 +45,10 @@ We will apply one policy, in three limbs:
    enclosing tolerant array**, and **counted** there.
 2. An unmodelled value of a closed-vocabulary **value enum** (`Status`,
    `Gender`, `ShowType`, `CreditType`, …) decodes to `.unknown` — the existing
-   codebase-wide idiom. No count; the value is usable as-is.
+   codebase-wide idiom **for wire-decoded vocabularies**. No count; the value is
+   usable as-is. This limb is scoped to types decoded from an untrusted payload;
+   an in-process vocabulary that merely needs room to grow takes a different
+   shape — see [ADR-0021](0021-extensible-public-vocabularies.md).
 3. **Everything else throws.**
 
 Mechanically:

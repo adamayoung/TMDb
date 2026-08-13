@@ -38,6 +38,7 @@ always fair game.
 | [0018](0018-cancellation-as-tmdberror-case.md) | Surface task cancellation as `TMDbError.cancelled` | 2026-08-12 | Accepted (in 20.0.0, unreleased) |
 | [0019](0019-decode-tolerance-policy.md) | One decode-tolerance policy: skip an unmodelled `media_type`, stay loud otherwise | 2026-08-12 | Accepted (in 20.0.0, unreleased) |
 | [0020](0020-review-knowledge-audit-tier.md) | `/review-knowledge` audits on Opus; cross-examination stays on Fable | 2026-08-13 | Accepted (unreleased — tooling only) |
+| [0021](0021-extensible-public-vocabularies.md) | Three shapes for a growable public vocabulary | 2026-08-13 | Accepted (in 20.0.0, unreleased) |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes
