@@ -176,6 +176,26 @@ implementation = separate `/deliver` sessions.)
      (#407 shipped three defects from exactly this: a rewritten `/deliver`
      grading itself, ACs that outlived the mechanisms they graded, and a
      fan-out shipped as prose in the PR arguing prose isn't a gate.)
+  3. **Sweep the rule's whole footprint, not the file you opened.** Changing a
+     rule in a `SKILL.md` is not done until you have grepped its own
+     `references/`, the skills that delegate to it, and `CLAUDE.md` for the old
+     wording — a reference is not a copy of the skill, it is where the skill
+     sends you for the procedure, so a stale one is followed rather than
+     ignored. Grep for the *old* term, not the new one:
+
+     ```bash
+     git diff --name-only origin/main...HEAD | grep '^\.claude/skills/' \
+       | sed 's|/[^/]*$||' | sort -u        # every skill dir you touched
+     grep -rn '<the old wording>' .claude/ CLAUDE.md .github/CODE_REVIEW.md
+     ```
+
+     This has now recurred twice. #441–#443 each fixed `deliver/SKILL.md` and
+     left `deliver/references/worktree-lifecycle.md` — the file `SKILL.md`
+     points at — still teaching the forbidden `swept:` key, the superseded
+     "copy the settings file in" procedure, and a run-file schema missing the
+     field Phase 0 had just been told to write. Same shape as #444's
+     "the rule landed in `/capture-knowledge`; the sweep was scoped to the
+     instances in front of it".
   Phase 4 and Phase 5 both self-skip on a no-Swift diff — **override that here**
   and review the change on its own terms; the diff being markdown is not
   evidence it is low-risk.

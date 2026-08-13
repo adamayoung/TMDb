@@ -50,8 +50,13 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    Rows 2 and 6 make this total: **nothing can fail to classify**, so the sweep
    can never brick the pipeline on an unrecognised state.
 
-3. Record one ledger line: `swept: <n> in scope / <k> reclaimed / <r> resumable
-   / <o> reported`.
+3. Record one ledger line: `reconciled: <n> in scope / <k> reclaimed / <r>
+   resumable / <o> reported`, and carry it into the retro (Phase 8).
+   **The key is `reconciled:`, never `swept:`** — `swept:` belongs to Phase 7's
+   knowledge-retirement sweep, and when both wrote the same key the Phase 7 form
+   occupied the slot for four consecutive deliveries while this tripwire went
+   missing unnoticed. A filled slot looked identical to the right one. See
+   `SKILL.md` Phase 1 and `references/wrap-up.md`'s retro format.
 
 ### Liveness is a fact, not a timeout
 
@@ -142,6 +147,8 @@ PR body is required to say so.
 {
   "id": "harden-delivery-skills-2026-07-29T19:28:23Z",
   "goal": "…", "weight": "full",
+  "reflexive": false,
+  "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
   "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
   "deliverables": [{
     "title": "…", "dependsOn": [],
@@ -161,6 +168,15 @@ PR body is required to say so.
 A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
+
+Two run-scoped fields sit outside `deliverables[]` because they describe the
+run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
+the ledger that would otherwise hold it does not survive `EnterWorktree`, so
+this is its durable home, and Phase 8 copies it into the retro.
+**`reflexive`** is true when the diff touches `.claude/skills/**`,
+`.claude/agents/**` or `.github/CODE_REVIEW.md`, which changes what Phases 4
+and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
+this schema is a field nothing ends up writing.
 
 ### Stamps: hash content, never a commit
 
@@ -220,27 +236,29 @@ must never destroy unpushed commits.
   create the branch in it (`git checkout -b feature/<slug>`). `EnterWorktree`
   refuses to nest anyway.
 
-## Restore the permission allowlist
+## Confirm `.claude/settings.local.json` arrived
 
-Credentials are **not** the concern — `TMDB_API_KEY` / `USERNAME` / `PASSWORD`
-are injected into the session's **process environment** at startup
-(CWD-independent), and `make ci` / `make integration-test` read them straight
-from the environment. What a fresh worktree lacks is the **gitignored
-`.claude/settings.local.json`**, which holds the **permission allowlist** —
-without it an autonomous run could stall on permission prompts. Copy it in as
-cheap insurance:
+**`.worktreeinclude` copies it in.** The repo-root `.worktreeinclude` lists this
+file (and `*.xctestplan`), and Claude Code copies every gitignored file it names
+into each worktree it creates. So this is a **verification, not a copy**:
 
 ```bash
-# CWD is the worktree; the main checkout is the first entry of `git worktree list`.
-main_root=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
-mkdir -p .claude
-cp "$main_root/.claude/settings.local.json" .claude/settings.local.json 2>/dev/null || true
+test -f .claude/settings.local.json || echo "MISSING — copy from the main checkout"
 ```
 
-It stays gitignored in the worktree, so it won't be committed. If `make ci`'s
-integration leg fails on **credentials**, the cause is the *env* not being
-inherited by whatever spawned the subshell — **not** this file; check the
-environment first.
+Missing → copy it from the main checkout and say so in the ledger, because a
+worktree without it is a worktree that cannot authenticate.
+
+**It carries the credentials, not just permissions.** `TMDB_API_KEY`,
+`TMDB_USERNAME`, `TMDB_PASSWORD` and the two v4 tokens live in its `env` block
+(`CLAUDE.md` → *Shell Environment*), and a fresh checkout has none of them — so
+without this file `make integration-test` fails at `.check-env-vars` and the v4
+suites skip. Treat it as credential-bearing: never paste its contents, never
+commit it. It stays gitignored inside the worktree.
+
+Permission *approvals* no longer need copying at all: since Claude Code
+v2.1.211 an approval granted in a worktree saves to the **main checkout's** copy
+and applies across every worktree of the repo.
 
 ## The main-checkout path trap
 

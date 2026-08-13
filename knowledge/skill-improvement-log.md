@@ -6,33 +6,72 @@
 
 # Skill-Improvement Log
 
-A durable record of every skill-improvement proposal raised by `/deliver`'s
-**wrap-up recurring-pattern scan**, and the decision on it. Newest at the top.
+A durable record of every proposal raised against this repo's own tooling, and
+the decision on it. Newest at the top. Two producers write here:
 
-**Why this exists:** the scan surfaces proposals and waits for approval.
-Without a memory of past decisions, it would re-propose ideas already **applied**
-or deliberately **deferred/rejected** — wasting attention and re-litigating
-settled calls. The scan **consults this log before proposing** and skips any
-pattern already decided here. Record both the *yes* and the *no* (with rationale)
-— the *no*s are what stop the loop repeating itself.
+- **`/deliver`'s wrap-up recurring-pattern scan** — proposals to change a skill.
+- **`/review-knowledge`** — audit findings that were **refuted**, and any
+  finding accepted as a standing exception rather than fixed.
 
-Status values: **applied** · **deferred** · **rejected**.
+**Why this exists:** both producers surface candidates and wait for approval.
+Without a memory of past decisions they re-raise what is already **applied** or
+deliberately **deferred/rejected/refuted** — wasting attention and re-litigating
+settled calls. Both **consult this log before raising** and skip anything
+already decided here. Record the *no*s with their evidence: the *no*s are what
+stop the loop repeating itself.
+
+**Refutations must live here, not in a PR body.** A refutation recorded only in
+a PR description is invisible to the next audit, which then re-raises it cold —
+observed on 2026-08-13, when a finding refuted in #444 came back on the very
+next run because `grep -rn "refut" knowledge/` found nothing.
+
+Status values: **applied** · **deferred** · **rejected** · **refuted**.
 
 Format per entry:
 
 ```text
-### <date> — <short title> · <applied|deferred|rejected>
-- **Pattern:** what kept recurring (and the retro entries it appeared in).
+### <date> — <short title> · <applied|deferred|rejected|refuted>
+- **Pattern:** what kept recurring (and the retro entries it appeared in), or —
+  for a refutation — what was claimed and where.
 - **Decision:** what was agreed, and where it landed (skill + commit/PR) if applied.
-- **Rationale:** one or two sentences — why this call.
-- **Reconsider when:** (deferred/rejected only) the condition under which the scan
-  should resurface this — or `n/a` for applied entries. The scan reads this
-  field to decide whether a settled *no* may be re-proposed.
+- **Rationale:** one or two sentences — why this call. For a refutation, the
+  evidence from the tree that disproves the claim, not an opinion.
+- **Reconsider when:** (deferred/rejected/refuted only) the condition under which
+  the producer may resurface this — or `n/a` for applied entries. Both the
+  wrap-up scan and `/review-knowledge` read this field to decide whether a
+  settled *no* may be raised again.
 ```
 
 Keep this five-field shape on every entry so the scan can parse the log
 consistently — in particular **Decision** (status) and **Reconsider when** are the
 two fields the dedup step keys on.
+
+---
+
+### 2026-08-13 — `/review-knowledge` findings refuted on evidence · refuted
+
+- **Pattern:** two findings raised by the audit behind #444 were refuted after
+  verification, and the refutations were recorded **only in the PR body**. The
+  next run of the skill re-raised one of them cold, because nothing under
+  `knowledge/` carried the decision. The skill's own contract says to record a
+  refuted finding "so the next audit doesn't re-raise them cold" — it had no
+  place to record it.
+- **Decision:** **refuted**, both, and recorded here so they are dedup memory
+  rather than PR archaeology:
+  1. *"`delivery-retros.md` is over its ~12-entry rolling window (13 entries)."*
+     The policy at `knowledge/README.md` is doubly hedged — "roughly … ~12" —
+     and three of the 13 landed on one day. In spec.
+  2. *"`next-major.md` cites issue #419 where the rule requires the PR (#433)."*
+     The text writes the word **issue** before `#419`, which is exactly the
+     carve-out the cite-the-PR rule allows and which #442 deliberately kept for
+     "issue #417". Adding `#433` would be cosmetic.
+- **Rationale:** both refutations rest on the audited file's own stated policy,
+  not on taste, and the 2026-08-13 run independently reached the same verdict on
+  (1) — a re-derivation that cost a full audit cycle to buy nothing.
+- **Reconsider when:** (1) if `delivery-retros.md` reaches ~15 full prose entries,
+  or the README's hedge is tightened to a hard number — then it is a real
+  overflow, not a rounding argument. (2) if the entry is ever reworded to drop
+  the literal word "issue" before the number.
 
 ---
 
