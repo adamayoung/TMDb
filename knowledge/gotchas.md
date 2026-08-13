@@ -199,7 +199,7 @@ jobs. **Debug-green proves nothing here; run the release build.**
 
 ### `hashFiles` over a pattern matching nothing returns the empty string
 
-*2026-08-13 (#PLACEHOLDER-PR).* GitHub Actions' `hashFiles(...)` does not error
+*2026-08-13 (#449).* GitHub Actions' `hashFiles(...)` does not error
 when its glob matches no file — it returns `''`. A cache key built from one then
 collapses to a **constant**:
 
@@ -419,7 +419,7 @@ rather than assuming the tool honoured the name.
 
 ### The `markdownlint --fix` hook turns a line-leading `#416` into an H1
 
-*2026-08-13 (#PLACEHOLDER-PR).* This repo cites issues and PRs as `#NNN`
+*2026-08-13 (#449).* This repo cites issues and PRs as `#NNN`
 everywhere, and prose is wrapped near 80 columns — so sooner or later a
 reference lands at the **start** of a line. The `PostToolUse` hook then runs
 `markdownlint --fix`, reads `#416 ship.` as a malformed ATX heading, and
@@ -615,7 +615,7 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 
 ### `canImport` is not an availability test — and FoundationModels is unavailable per *symbol*
 
-*2026-08-13 (#PLACEHOLDER-PR), from issue #416.* A framework can ship on a
+*2026-08-13 (#449), from issue #416.* A framework can ship on a
 platform with every one of its symbols marked unavailable. Xcode 27's tvOS SDK
 ships `FoundationModels.framework`, so `#if canImport(FoundationModels)` flipped
 from **false to true** on tvOS — admitting code whose every symbol is
@@ -667,7 +667,7 @@ grep -B6 "class SystemLanguageModel" \
 
 ### `make ci` builds macOS only — the other Apple platforms are gated solely by CI
 
-*2026-08-13 (#PLACEHOLDER-PR).* Sibling to the Linux entry above. `make ci`
+*2026-08-13 (#449).* Sibling to the Linux entry above. `make ci`
 compiles for the **macOS host and nothing else**: `swift build` cannot target
 another platform, so iOS, tvOS, watchOS and visionOS are covered *only* by
 `.github/workflows/ci.yml`'s **`build-platforms`** matrix job. A green `make ci`

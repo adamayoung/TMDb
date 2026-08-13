@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-13 — 🐛 Exclude tvOS/watchOS from the FoundationModels planner (`fix/foundationmodels-platform-guards`) · full
+## 2026-08-13 — 🐛 Exclude tvOS/watchOS from the FoundationModels planner (#449) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight, but with two pieces of machinery
   deliberately not used (below): `/review-plan`'s critics and
