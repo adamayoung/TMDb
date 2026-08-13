@@ -25,6 +25,68 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-13 — 🔒 Reject traversal-capable URL path segments (`fix/421-reject-traversal-path-segments`) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight (security-relevant networking
+  change, new type, public DocC, 8 commits, +900/−30). Skills: `review-plan`
+  (3 critics), `implement-plan`, `review-changes` (6-dimension fan-out +
+  adversarial verify), `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *URLComponents path round-trip decodes `%2F`* (:1209),
+  *`URL(string:)` on Apple platforms rejects almost nothing* (:1191),
+  *False green* (:10), *The build/test tooling-runner runs in the main checkout*
+  (:292), *In a worktree session, Bash refuses commands it can't prove stay
+  inside it* (:376), *A `#expect(throws:)` test is a false green twice over*
+  (:872); tmdb-api-notes *Credentials and PII live in the URL path* (:177);
+  ADR-0008.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` no infra files in the diff → the one `urlFromPath` citation is in
+  this file, a dated log whose technical claim remains accurate, left as
+  history; ADR-0008 and the rewritten gotcha carry the correction.
+
+- **What worked — probing the issue's own premise before planning around it.**
+  Issue #421 stated the fix was one line (compose via `percentEncodedPath`).
+  Ten minutes of `curl --path-as-is` showed that line does **not** close the
+  class: TMDb's edge percent-decodes the path and *then* resolves `..`, so the
+  encoded payload reaches the `movie` endpoint exactly as the raw one does. A
+  delivery that had trusted the issue would have shipped a fix, closed #421, and
+  left the vulnerability open — with an ADR newly asserting it was closed.
+
+- **What worked — the red steps named the leaked URLs.** Writing the reproducing
+  tests to assert `performCount == 0` *and* `lastRequest?.url == nil` meant the
+  red output printed
+  `…/credit/x/../../movie/550?api_key=abc123` and
+  `…/guest_session/x?foo=1/rated/movies&api_key=abc123`. The second is a
+  **query-injection** vector — items landing *ahead* of `api_key` — that neither
+  the issue nor the plan had identified.
+
+- **Friction — the adversarial reviewers each found a different subset, again.**
+  `/review-plan` found the three unencoded guest-session builders; the fan-out
+  found the fail-open decode and the forwarded authority fields; the security
+  review found the grapheme-cluster `contains("/")` gap; the rubric grader found
+  the gratuitous public-string change. No single pass would have found all four.
+
+- **Deviation — the plan's "no integration test" call was wrong, and review
+  caught it.** The plan argued a live test was pointless because the fix
+  short-circuits before the network. But
+  `FindIntegrationTests.findWithEmptyExternalIDThrowsBadRequest` is exactly that
+  shape, so the convention already existed. Three integration tests added.
+
+- **Deviation — a rubric AC was failed and fixed rather than reinterpreted.**
+  AC5 ("every pre-existing unit test still passes, unmodified") came back *not
+  met*: widening `errorDescription` had forced an edit to `TMDbErrorTests`. The
+  string change was an advisory nit with no security value, so it was reverted;
+  `TMDbErrorTests.swift` is byte-identical to `main` again.
+
+- **One improvement — a sweep recipe recorded in an ADR is a liability if it is
+  a text pattern.** ADR-0008 prescribed `grep 'path = "/…\(stringVar)"'`. Three
+  builders wrote `let path =` on its own line, so the sweep recorded four sites
+  when there were eight, and the three it missed carried a *bearer-like
+  credential*. The #364 retro (below, 2026-06-24) had already recorded the
+  lesson — "do **one type-driven enumeration of all sites up front**" — and the
+  ADR still shipped a grep. **Recording a lesson in a retro does not enforce
+  it; encoding it in the artifact the next person actually follows does.**
+  ADR-0008's recipe is now type-driven.
+
 ## 2026-08-13 — ♻️ TMDbIntelligence vocabulary growth valves + `searchFailed` (#452) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (new + breaking public API, error
@@ -667,56 +729,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   check that flags a self-modifying delivery and pins its verification to the
   *original* text would have caught all three earlier.
 
-## 2026-07-28 — 🐛 Company logo path & origin country optional (#404) · full
-
-- **Phases / skills:** 0–8 pre-PR; full weight (breaking public API +
-  `Decodable`). `consulted:` next-major.md (the source), tmdb-api-notes
-  *Company.logoPath required decode*, gotchas *False green*. `/review-plan`
-  (3 Opus critics) → **1 blocker + 9 findings**. `/implement-plan` inline,
-  test-first. `/review-changes` 5-dimension fan-out + adversarial verify →
-  **0 Critical/High/Medium, 2 Low**, both applied, 0 dropped by verification.
-  `/security-review` → 0 findings ≥ conf-8. Independent grader → **6/7 ACs,
-  AC6 not met**, fixed and re-graded to met.
-- **Worked — the queue fired on its first real use.** `next-major.md` was
-  written on 2026-07-27 and consulted on 2026-07-28; the fix reached the
-  still-untagged 19.0.0 window instead of waiting for 20.0.0. The whole point
-  of that file, validated one day later.
-- **Worked — two independent checks each caught something the other didn't.**
-  My type-driven sweep found `Company.Parent.logoPath` (a second instance,
-  invisible because `Parent`'s decode is synthesized). The plan critics found
-  the **blocker**: `Company.originCountry` is the same bug on the same records,
-  so shipping `logoPath` alone would have left Time Warner throwing — and my
-  own AC1 integration test failing. Verified independently before accepting:
-  5 of 54 sampled companies.
-- **Worked — sampling beat spot-checking.** One `curl` showed
-  `logo_path: null` and nearly ended the investigation. Sampling 54 companies
-  took a minute and produced the field/nullability matrix that proved
-  `origin_country` was in scope and `description`/`headquarters` were not —
-  the difference between a correct fix and a subset.
-- **Friction — I adjudicated a 2–1 critic split wrongly, and the grader caught
-  it.** Two critics wanted `Company.Parent` to guard empty strings; one called
-  it speculative. I sided with the one, citing 0/54 observed empty strings.
-  That produced an asymmetry *inside one type* — `Company.logoPath` mapped
-  `""` → `nil` while `Company.Parent.logoPath` still threw — i.e. the exact
-  bug this delivery exists to remove, one level down. **Lesson: "matches the
-  siblings" and "consistent within the type" can conflict, and within-the-type
-  wins;** an unobserved value ranks the risk, it doesn't close the case.
-- **Friction — I nearly shipped a knowledge entry contradicting my own code.**
-  The api-note written in Phase 6 argued *against* guarding `Parent`; the
-  Phase 7 fix reversed that, and the note had to be rewritten in the same
-  delivery. Capture-before-grade is the wrong order when grading can still
-  change the design.
-- **Deviations:** (a) scope grew from one field to three plus a
-  `LogoImageProviding` conformance — the blocker forced two, and all three
-  critics independently asked for the conformance (it was blocked *only* by
-  the non-optional type). (b) Fixtures for the empty/absent cases are
-  hand-built, not live captures: TMDb always sends these keys, so those
-  decoder branches have no real-world sample. Flagged in-test.
-- **One improvement:** **`/deliver` should run the rubric grader before
-  `/capture-knowledge`, not after.** Phase 7 changed the design this run, which
-  invalidated a Phase 6 entry that had already been committed. Ordering
-  capture after grading costs nothing and removes the rewrite.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -724,6 +736,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-28 | #404 | full | Made `Company.logoPath` and `originCountry` optional. Two practices worth keeping. **Sample the population, don't spot-check**: one `curl` showed `logo_path: null` and nearly ended the investigation, while sampling 54 companies produced the field/nullability matrix that proved `origin_country` was in scope and `description`/`headquarters` were not — the difference between a correct fix and a subset. And **"consistent within the type" beats "matches the siblings"**: adjudicating a 2–1 critic split toward the lone dissenter left `Company.logoPath` mapping `""` → `nil` while `Company.Parent.logoPath` still threw — the exact bug the delivery existed to remove, one level down, caught by the independent grader. An unobserved value ranks the risk; it does not close the case. Its "one improvement" — run the rubric grader **before** `/capture-knowledge`, since Phase 7 changed a design that had already invalidated a committed Phase 6 entry — **shipped**, and is the ordering `/deliver` uses today. |
 | 2026-07-27 | #401 | full | Cached image URL resolver behind `client.images` (ADR-0013). Two practices worth keeping. **Drive each concurrency hazard out of a genuine red**: the naive memo measured *100 fetches at peak concurrency 76* under 100 concurrent callers and the refresh ABA returned `["first"]` where `["second"]` was expected, which produced evidence those are real regression tests for free. And **plan review caught a bug the plan could not have shipped without** — the cache rules said *what* to memoise but never *who writes state*, so a superseded fetch would clobber a newer `refresh()`, a permanently stale cache that none of the 13 planned tests would have caught; the generation counter came from that, pre-code. Also the source of *a caller that **joins** a shared in-flight fetch is invisible to the mock or gate*, so a gate-based barrier cannot observe coalescing — two tests were wrong by construction, not by observation (0/65 reproductions), fixed with an on-actor entry counter: **after a concurrency fix, re-review the tests, not just the code**. Its real cost was the delivery that made both build-isolation rules concrete: `make build-docs` *mutually invalidates* every other build, because `Package.swift` branches on `SWIFTCI_DOCC` into two different dependency graphs **and** two per-target source lists sharing one `.build` — so interleaving 5 docs runs with unit/release builds while 5–7 review agents built into the same scratch dir produced *cyclical*, not merely slow, work and ~10 `zsh` pipelines pinned at 100% until the user force-quit them. Both improvements shipped: `build-docs` got its own scratch path, and `/deliver` now forbids builds in reviewer/grader prompts and serialises its review phases. Also clarified that the live integration suite is **deliberately serialised** (40 suites on a global `.integrationGate` semaphore), so most of that wall-clock was by design. |
 | 2026-07-24 | #398 | full | Extracted the `TMDbIntelligence` product — ~40 sources, ~110 fixtures and ~30 tests relocated behind new targets. Two lasting rules came out of it. **Run `swift build -c release` before declaring implementation done**: a `@testable import` inside the new *non-test* `TMDbTestFixtures` target broke the release build *only*, while debug, `--build-tests`, 2868 unit and 291 integration tests all passed — now a hard Phase 3 checkpoint and a `gotchas.md` entry. And **share fixtures via a `package`-access target, never a `@testable` one** (now a wiki pattern). The plan critics paid for themselves twice over, catching that `TMDbTestingTests` referenced a symbol that was moving out, and unanimously that the planned `.xctestplan` sweep was **ghost work** — those files are gitignored and untracked. Counting tests rather than trusting green proved the move lossless (2868 → 2868, then 2869 → 2869 after rebasing onto #396/#397, whose `.docc` `exclude` list turned out to be **per target**, so the two new catalogs silently re-introduced the failure that only `make ci` caught). Rubric **self-graded — the independent grader died on a session limit; recorded, not silently passed**. |
 | 2026-07-24 | #397 | full | Enriched `TMDbError` with structured context (ADR-0012). The plan review paid for the delivery on its own: a critic caught, before a line was written, that the new public `endpointPath` would carry `guest_session_id` (a bearer-like credential) and `account_id` (PII) into a loggable field — the redactor and its tests came from that finding, and `security-review` later confirmed the control covers all 137 request-path templates. Now the wiki pattern *a-diagnostic-field-added-for-logging-is-a-publishing-surface*. Capturing **real** error bodies from the live API while planning (`curl -D-`) beat the plan's guesses: 400/code 22 and 422/code 20, not the invented 422/code 5. Environmental friction was severe — the Xcode 27 / Swift 6.4 `.docc` trap made `make ci` unrunnable, and the first attribution (xcsift `--Werror`) was **wrong**: `pipestatus` showed `swift build` exiting 1 and xcsift 0, which is why the build/test skills now say the exit status is the verdict, not the summary. |
