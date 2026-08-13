@@ -95,6 +95,22 @@ struct URLPathSegmentValidatorTests {
         #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
+    /// `String.contains` compares grapheme clusters, so a `/` or `%` followed by a
+    /// combining mark is one Character and does not match — while the peer, which
+    /// reads bytes, still sees the separator. The check is therefore scalar-based,
+    /// and these pin that: `%CC%81` is U+0301 COMBINING ACUTE ACCENT.
+    @Test(
+        "isSafe is false for a separator hidden inside a grapheme cluster",
+        arguments: [
+            "/credit/x%2F%CC%81..%2F%CC%81..%2Fmovie",
+            "/credit/x%2F%E2%80%8Dy",
+            "/credit/x%25%CC%81y"
+        ]
+    )
+    func isSafeIsFalseForSeparatorInGraphemeCluster(path: String) {
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
+    }
+
     @Test(
         "isSafe is false for a segment containing a control character",
         arguments: ["/credit/..%00", "/credit/a%0Ab", "/credit/a%09b", "/credit/a%7Fb"]

@@ -55,21 +55,21 @@ enum URLPathSegmentValidator {
             return false
         }
 
-        // A decoded separator is a real path boundary to the peer, whatever case
-        // the escape was written in — `%2f` decodes exactly as `%2F` does.
-        guard !segment.contains("/") else {
-            return false
+        // Compared per Unicode *scalar*, not per `Character`. `String.contains`
+        // works on grapheme clusters, so `/` followed by a combining mark is a
+        // single Character and would NOT match — while the peer, which reads
+        // bytes, still sees a separator. Matching the peer's unit of comparison
+        // is the whole point of this type.
+        //
+        // - a decoded separator is a real path boundary, whatever case the
+        //   escape was written in (`%2f` decodes exactly as `%2F` does);
+        // - a `%` surviving one decode means the value was encoded more than
+        //   once — inert at TMDb's edge, which decodes once, but rejecting it
+        //   keeps this guard independent of how many times any peer decodes;
+        // - a control character can split or truncate the path at the peer.
+        return !segment.unicodeScalars.contains { scalar in
+            scalar == "/" || scalar == "%" || scalar.value < 0x20 || scalar.value == 0x7F
         }
-
-        // A `%` surviving one decode means the value was encoded more than once.
-        // TMDb's edge decodes exactly once today, so such a payload is already
-        // inert there; rejecting it anyway keeps this guard independent of how
-        // many times any peer chooses to decode.
-        guard !segment.contains("%") else {
-            return false
-        }
-
-        return !segment.unicodeScalars.contains { $0.value < 0x20 || $0.value == 0x7F }
     }
 
 }
