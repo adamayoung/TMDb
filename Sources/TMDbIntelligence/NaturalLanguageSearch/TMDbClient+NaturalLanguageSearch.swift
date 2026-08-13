@@ -23,6 +23,11 @@ import TMDb
         /// compositional prompts. On platforms without either, the prompt runs as a
         /// plain multi-search.
         ///
+        /// - Note: The Foundation Models tier is unavailable on tvOS and watchOS —
+        ///   Apple ships no on-device system language model there — so
+        ///   interpretation on those platforms is always deterministic, regardless
+        ///   of the device's Apple Intelligence support.
+        ///
         /// - Note: Each access constructs a new service instance. When checking
         ///   ``NaturalLanguageSearchService/availability`` and then searching, store
         ///   it in a local first — `let search = client.naturalLanguageSearch` — rather

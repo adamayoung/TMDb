@@ -235,14 +235,17 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
 
-  # Compile-only sweep of the non-macOS Apple platforms. `swift build` can only
-  # target the host, so without this job nothing in CI ever compiles for
-  # tvOS/watchOS/iOS/visionOS — which is how #416 shipped green: Xcode 27's tvOS
-  # SDK made `canImport(FoundationModels)` true with every symbol unavailable,
-  # and both macOS and Linux stayed happy. Build-only is deliberate: this bug
-  # class is a compile-time availability failure, and the unit tests already run
-  # on macOS and Linux, so booting four simulators would only buy a slower rerun
-  # of the same assertions.
+  # Compile-only sweep of the non-macOS Apple platforms' LIBRARY targets.
+  # `swift build` can only target the host, so without this job nothing in CI
+  # ever compiles for tvOS/watchOS/iOS/visionOS — which is how #416 shipped
+  # green: Xcode 27's tvOS SDK made `canImport(FoundationModels)` true with
+  # every symbol unavailable, and both macOS and Linux stayed happy.
+  #
+  # Build-only is deliberate: this bug class is a compile-time availability
+  # failure, and the unit tests already run on macOS and Linux, so booting four
+  # simulators would only buy a slower rerun of the same assertions. Note the
+  # consequence — `xcodebuild build` (unlike `build-for-testing`) does not
+  # compile the test targets, so this net watches shipped code only.
   build-platforms:
     name: Build (${{ matrix.name }})
     needs: changes
@@ -282,7 +285,13 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.resolved') }}
+          # Deliberately NOT hashFiles('**/Package.resolved'): this package has
+          # no external dependencies, so no Package.resolved is ever written and
+          # that key hashes to the empty string — a constant that `actions/cache`
+          # then never re-saves, freezing DerivedData built by an older toolchain.
+          # Hashing ci.yml covers the DEVELOPER_DIR pin, so an Xcode bump
+          # invalidates the cache by itself.
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('Package.swift', '.github/workflows/ci.yml') }}
           restore-keys: |
             ${{ runner.os }}-xcode-${{ matrix.name }}-
 
@@ -332,12 +341,18 @@ jobs:
   ci:
     name: CI
     if: always()
-    needs: [lint, lint-markdown, build-test, build-platforms, build-test-linux]
+    # `changes` is in this list on purpose. Every other job is `if: always()`,
+    # so when `changes` fails they all still run — but with its outputs empty,
+    # every step's `if:` is false and each job exits `success`. Without the
+    # `changes` result here, `CI` would then go green having linted, tested and
+    # compiled nothing at all.
+    needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
         run: |
           results=( \
+            "${{ needs.changes.result }}" \
             "${{ needs.lint.result }}" \
             "${{ needs.lint-markdown.result }}" \
             "${{ needs.build-test.result }}" \
