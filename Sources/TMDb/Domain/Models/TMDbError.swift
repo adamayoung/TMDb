@@ -174,7 +174,7 @@ public extension TMDbError {
             context.statusMessage ?? "Server error"
 
         case .invalidURL(let url):
-            "Invalid or unsafe URL: \(url)"
+            "Invalid URL: \(url)"
 
         case .encode:
             "Encode error"

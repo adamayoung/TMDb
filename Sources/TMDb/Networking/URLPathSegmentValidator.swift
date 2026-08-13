@@ -21,8 +21,14 @@ import Foundation
 ///
 /// A segment is rejected when, after a single percent-decode, it is a
 /// dot-segment, contains a separator, still contains a `%`, or contains a
-/// control character. No legitimate TMDb identifier is affected — they are all
-/// drawn from the RFC 3986 *unreserved* set, so they decode to themselves.
+/// control character.
+///
+/// TMDb's own identifiers are unaffected: credit, review, episode-group and
+/// account-object ids are drawn from the RFC 3986 *unreserved* set, so they
+/// decode to themselves. The one caller-supplied value not under TMDb's control
+/// is `FindByIDRequest`'s external id, which carries third-party identifiers
+/// (IMDb, Wikidata, and social handles) — a handle containing a separator would
+/// be refused here rather than sent, which is the intended trade.
 ///
 enum URLPathSegmentValidator {
 

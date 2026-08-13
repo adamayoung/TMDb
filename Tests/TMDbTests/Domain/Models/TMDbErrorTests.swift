@@ -123,7 +123,7 @@ struct TMDbErrorTests {
 
     @Test("invalidURL error description includes the url")
     func invalidURLErrorDescriptionIncludesURL() {
-        #expect(TMDbError.invalidURL("/movie/1").errorDescription == "Invalid or unsafe URL: /movie/1")
+        #expect(TMDbError.invalidURL("/movie/1").errorDescription == "Invalid URL: /movie/1")
     }
 
     @Test("invalidRating error description is correct")
