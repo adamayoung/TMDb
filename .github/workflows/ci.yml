@@ -11,6 +11,7 @@ on:
       - ".github/workflows/ci.yml"
       - ".swiftformat"
       - ".swiftlint.yml"
+      - ".swift-version"
       - "**/*.swift"
       - "**/*.md"
       - "Scripts/**"
@@ -43,6 +44,7 @@ jobs:
               - '**/*.swift'
               - '.swiftformat'
               - '.swiftlint.yml'
+              - '.swift-version'
               - 'Package.swift'
               - 'Package.resolved'
               - 'Scripts/**'

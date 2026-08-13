@@ -587,7 +587,11 @@ toolchain in `.github/workflows/ci.yml` — `swift:6.1-jammy` today. SwiftPM
 refuses a manifest whose tools-version exceeds the toolchain running it, so a
 bump past the container's version fails **only** there, after a fully green
 local run. Since the 6.1 bump the two are **exactly equal, with no headroom**:
-the next `swift-tools-version` raise must bump the container in the same PR.
+the next `swift-tools-version` raise must bump the container image in the same
+PR, in **both** places it is pinned — `.github/workflows/ci.yml`'s
+`build-test-linux` job and the `Makefile`'s `SWIFT_CONTAINER_IMAGE` (which backs
+`make build-linux` / `make test-linux`). They are parallel implementations, not
+one delegating to the other; see *No workflow runs `make`* above.
 
 ### Edits can land in the main checkout instead of the active worktree
 

@@ -478,9 +478,15 @@ Documentation and examples of usage can be found at
 
 ### Prerequisites
 
-Xcode 16.3+
+Xcode 26+ (CI builds on Xcode 27)
 Swift 6.1+
 Homebrew
+
+Note the higher Xcode floor applies to *building this repo*, not to using it:
+`make ci`'s documentation build resolves DocC links to `TMDbIntelligence`'s
+language-model tools, which compile only against the FoundationModels SDK
+(Xcode 26+). Consuming the package needs just Swift 6.1 / Xcode 16.3, as under
+[Requirements](#requirements) above.
 
 #### Homebrew
 

@@ -90,6 +90,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** the minimum Swift toolchain is now **6.1** (Xcode 16.3), raised
+  from 6.0. `Package.swift` declares `// swift-tools-version:6.1`, so SwiftPM
+  running an older toolchain will not resolve this version — rather than
+  failing, it silently falls back to the newest release still on tools-version
+  6.0, so a dependency on `from: "19.0.0"` stays pinned to 19.x with no
+  diagnostic. Upgrade to Xcode 16.3+, or a Swift 6.1+ toolchain on Linux, to
+  take 20.0.0.
+
 - **Breaking:** `TMDbError` gains a `.cancelled` case, and
   `NaturalLanguageSearchError` (in `TMDbIntelligence`) gains one too. This only
   affects you if you switch **exhaustively** over either — add a `.cancelled`
