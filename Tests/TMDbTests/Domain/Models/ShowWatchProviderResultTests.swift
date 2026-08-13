@@ -25,7 +25,8 @@ struct ShowWatchProviderResultTests {
         #expect(result.id == 1396)
         #expect(Set(result.results.keys) == ["JP", "NZ", "RU"])
 
-        // Japan is the one region carrying every provider category at once.
+        // Japan carries four of the five categories at once; `ads` appears
+        // only on Russia below, which is why both regions are in the fixture.
         let japan = try #require(result.results["JP"])
         #expect(japan.link == URL(string: "https://www.themoviedb.org/tv/1396-breaking-bad/watch?locale=JP"))
         #expect(japan.buy?.map(\.name) == ["Amazon Video"])

@@ -13,7 +13,7 @@ import Testing
 /// covered, but the response wrappers these two endpoints actually return were
 /// not — the service tests build them directly against a mock API client and
 /// never parse JSON.
-@Suite(.tags(.models, .decoding))
+@Suite(.tags(.requests, .network, .decoding))
 struct NetworkResponseDecodingTests {
 
     @Test("JSON decoding of NetworkAlternativeNamesResponse")

@@ -117,6 +117,18 @@ def main():
         literals.update(SWIFT_LITERAL.findall(text))
         referenced.update(FROM_RESOURCE.findall(text))
 
+    # The forward direction fails loudly if `literals` comes back empty (every
+    # fixture would read as an orphan), but the reverse direction would not: an
+    # empty `referenced` yields an empty `missing` and a silent pass. Rename the
+    # `fromResource:` label or the loader helpers and this check would quietly
+    # stop measuring anything, which is the one thing this script must not do.
+    if not referenced:
+        print(
+            "error: no `fromResource:` references found under %s — has the fixture "
+            "loader been renamed?" % SWIFT_DIR
+        )
+        sys.exit(1)
+
     names = {path.stem: path for path in fixtures}
     orphans = sorted(set(names) - literals)
     missing = sorted(referenced - set(names))
@@ -157,8 +169,9 @@ def main():
         sys.exit(1)
 
     print(
-        "fixture check: %d fixtures valid, snake_case and referenced (%d Swift files scanned)."
-        % (len(fixtures), len(swift_files))
+        "fixture check: %d fixtures valid, snake_case and referenced "
+        "(%d Swift files scanned, %d fromResource: references resolved)."
+        % (len(fixtures), len(swift_files), len(referenced))
     )
 
 
