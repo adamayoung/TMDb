@@ -25,7 +25,7 @@ always fair game.
 | [0005](0005-authenticated-session-additive-overloads.md) | `AuthenticatedSession` via additive extension overloads | 2026-06-18 | Accepted |
 | [0006](0006-tmdbtesting-public-target.md) | Ship a public `TMDbTesting` target (spy+stub mocks + real-data samples) | 2026-06-23 | Accepted (amended in part by [0010](0010-tmdb-intelligence-product.md)) |
 | [0007](0007-document-existing-response-caching.md) | Document existing response caching instead of building a custom on-disk cache | 2026-06-24 | Accepted |
-| [0008](0008-percent-encode-url-path-segments.md) | Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set | 2026-06-24 | Accepted |
+| [0008](0008-percent-encode-url-path-segments.md) | Percent-encode user-supplied URL path segments with the RFC 3986 unreserved set | 2026-06-24 | Accepted (amended in part by [0022](0022-reject-traversal-capable-path-segments.md)) |
 | [0009](0009-github-mcp-over-gh-cli.md) | Use the GitHub MCP (not the `gh` CLI) in the local skills | 2026-06-25 | Accepted |
 | [0010](0010-tmdb-intelligence-product.md) | Extract on-device intelligence into a `TMDbIntelligence` product | 2026-07-06 | Accepted (shipped in 19.0.0) |
 | [0011](0011-duration-for-runtime.md) | Represent runtimes as `Duration`, bridging integer minutes at the wire boundary | 2026-07-24 | Accepted (shipped in 19.0.0) |
@@ -39,6 +39,7 @@ always fair game.
 | [0019](0019-decode-tolerance-policy.md) | One decode-tolerance policy: skip an unmodelled `media_type`, stay loud otherwise | 2026-08-12 | Accepted (in 20.0.0, unreleased) |
 | [0020](0020-review-knowledge-audit-tier.md) | `/review-knowledge` audits on Opus; cross-examination stays on Fable | 2026-08-13 | Accepted (unreleased — tooling only) |
 | [0021](0021-extensible-public-vocabularies.md) | Three shapes for a growable public vocabulary | 2026-08-13 | Accepted (in 20.0.0, unreleased) |
+| [0022](0022-reject-traversal-capable-path-segments.md) | Reject traversal-capable path segments at the `TMDbAPIClient` choke point | 2026-08-13 | Accepted (in 20.0.0, unreleased) |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

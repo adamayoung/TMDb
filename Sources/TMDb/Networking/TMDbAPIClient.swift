@@ -68,11 +68,10 @@ final class TMDbAPIClient: UnmappedAPIClient {
 extension TMDbAPIClient {
 
     private func buildHTTPRequest(from request: some APIRequest) async throws -> HTTPRequest {
-        guard let path = URL(string: request.path) else {
-            // Redacted for the same reason as `TMDbErrorContext.endpointPath`: this
-            // value reaches a public error a caller may log.
-            throw TMDbAPIError.invalidURL(EndpointPathRedactor.redact(request.path))
-        }
+        // Redacted for the same reason as `TMDbErrorContext.endpointPath`: this
+        // value reaches a public error a caller may log.
+        let redactedPath = EndpointPathRedactor.redact(request.path)
+        let pathComponents = try Self.pathComponents(for: request.path, redactedAs: redactedPath)
 
         var queryItems = request.queryItems
         var headers = request.headers
@@ -108,7 +107,7 @@ extension TMDbAPIClient {
             }
         }
 
-        let url = urlFromPath(path, queryItems: queryItems)
+        let url = try url(from: pathComponents, queryItems: queryItems, redactedAs: redactedPath)
 
         let method = Self.method(from: request.method)
 
@@ -133,18 +132,74 @@ extension TMDbAPIClient {
         )
     }
 
-    private func urlFromPath(
-        _ path: URL,
-        queryItems requestQueryItems: [String: String] = [:]
-    ) -> URL {
-        guard var urlComponents = URLComponents(url: path, resolvingAgainstBaseURL: true) else {
-            return path
+    ///
+    /// Parses a request path and refuses it unless every segment stays inert.
+    ///
+    /// The path is parsed **once**, here, and the parsed value is what both the
+    /// validation and the eventual request are built from. Validating one parse
+    /// while sending another is the shape that produced #421 in the first place:
+    /// the request builders wrote `%2F` and `urlFromPath` read the decoded
+    /// `path` getter, so the two disagreed about the same string.
+    ///
+    private static func pathComponents(
+        for path: String,
+        redactedAs redactedPath: String
+    ) throws -> URLComponents {
+        guard let url = URL(string: path),
+              let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        else {
+            throw TMDbAPIError.invalidURL(redactedPath)
         }
 
+        // A request path is a path and nothing else. Anything else surviving the
+        // parse means a caller-supplied segment broke out of itself:
+        //
+        // - a raw `?`/`#` yields a query or fragment, and those items would
+        //   otherwise be merged *ahead* of the credential added below;
+        // - a leading `//` yields an authority, and `user`/`password`/`port` are
+        //   fields of their own that overriding `scheme` and `host` would not
+        //   displace.
+        //
+        // No current builder can emit any of these, so this guards the shape
+        // rather than a live vector — but validating only part of what is parsed
+        // is how the two representations drifted apart in the first place.
+        guard urlComponents.query == nil, urlComponents.fragment == nil,
+              urlComponents.scheme == nil, urlComponents.host == nil,
+              urlComponents.user == nil, urlComponents.password == nil,
+              urlComponents.port == nil
+        else {
+            throw TMDbAPIError.invalidURL(redactedPath)
+        }
+
+        guard URLPathSegmentValidator.isSafe(path: urlComponents.percentEncodedPath) else {
+            throw TMDbAPIError.invalidURL(redactedPath)
+        }
+
+        return urlComponents
+    }
+
+    private func url(
+        from pathComponents: URLComponents,
+        queryItems requestQueryItems: [String: String] = [:],
+        redactedAs redactedPath: String
+    ) throws -> URL {
+        var urlComponents = pathComponents
         urlComponents.scheme = baseURL.scheme
         urlComponents.host = baseURL.host
-        urlComponents.path = "\(baseURL.path)\(urlComponents.path)"
-        var queryItems = urlComponents.queryItems ?? []
+
+        // Composed through the *percent-encoded* views so the client cannot undo
+        // its own encoding. The `path` getter decodes, turning an encoded `%2F`
+        // back into a real separator (#421); `baseURL.path` is safe to
+        // concatenate unencoded because it is library-owned (`/3` or `/4`) and no
+        // public initialiser accepts a base URL. This setter traps on a
+        // badly-encoded string, which `pathComponents(for:redactedAs:)` has
+        // already ruled out by rejecting malformed escapes.
+        urlComponents.percentEncodedPath = "\(baseURL.path)\(urlComponents.percentEncodedPath)"
+
+        // Starts empty rather than from `urlComponents.queryItems`: the path is
+        // guaranteed to carry no query of its own, so there is nothing of the
+        // caller's to preserve — and nothing that could precede `api_key`.
+        var queryItems: [URLQueryItem] = []
         // Append query items in a deterministic, name-sorted order so the same
         // logical request always serialises to an identical URL. The unordered
         // `[String: String]` dictionary would otherwise iterate in an arbitrary
@@ -158,7 +213,13 @@ extension TMDbAPIClient {
 
         urlComponents.queryItems = queryItems
 
-        return urlComponents.url ?? path
+        // Never fall back to an unvalidated URL: the previous `?? path` returned
+        // the caller's own string, which is precisely the value under suspicion.
+        guard let url = urlComponents.url else {
+            throw TMDbAPIError.invalidURL(redactedPath)
+        }
+
+        return url
     }
 
     private static func method(from apiMethod: APIRequestMethod) -> HTTPRequest.Method {

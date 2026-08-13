@@ -98,4 +98,25 @@ struct GuestSessionIntegrationTests {
         }
     }
 
+    /// The guest session id is a bearer-like credential, so a traversal here
+    /// would have re-pointed a credentialed request at another endpoint. Both of
+    /// these are refused on-device, before any request is sent.
+    @Test("ratedMovies with an empty guest session ID is refused")
+    func ratedMoviesWithEmptyGuestSessionIDIsRefused() async throws {
+        let client = CredentialHelper.shared.makeClient()
+
+        await #expect(throws: TMDbError.self) {
+            _ = try await client.guestSessions.ratedMovies(guestSessionID: "")
+        }
+    }
+
+    @Test("ratedMovies with a traversal guest session ID is refused")
+    func ratedMoviesWithTraversalGuestSessionIDIsRefused() async throws {
+        let client = CredentialHelper.shared.makeClient()
+
+        await #expect(throws: TMDbError.self) {
+            _ = try await client.guestSessions.ratedMovies(guestSessionID: "x/../../movie/550")
+        }
+    }
+
 }

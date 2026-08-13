@@ -38,7 +38,19 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     case serverError(TMDbErrorContext = TMDbErrorContext())
 
     /// An error indicating a request URL could not be constructed from the given
-    /// value.
+    /// value, or was rejected as unsafe before any request was sent.
+    ///
+    /// A path segment is rejected when it cannot be certified inert: when it is
+    /// the dot-segment `.` or `..`, when it decodes to contain a `/`, when it
+    /// still contains a `%` after one decode, or when it contains a control
+    /// character. The first two are the traversal cases — the API server decodes
+    /// the path and resolves the dot-segments, so such an identifier would
+    /// redirect the request to a *different* endpoint while it still carries
+    /// your credentials.
+    ///
+    /// Such a value is refused on-device rather than sent. A caller passing an
+    /// identifier of an unexpected shape — a pasted URL, say — receives this
+    /// error rather than a response describing some other resource.
     ///
     /// The associated path is redacted in the same way as
     /// ``TMDbErrorContext/endpointPath``, so it is safe to log.
