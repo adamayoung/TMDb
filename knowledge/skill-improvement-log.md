@@ -11,7 +11,8 @@ the decision on it. Newest at the top. Two producers write here:
 
 - **`/deliver`'s wrap-up recurring-pattern scan** — proposals to change a skill.
 - **`/review-knowledge`** — audit findings that were **refuted**, and any
-  finding accepted as a standing exception rather than fixed.
+  finding accepted as a standing exception rather than fixed. It also appends a
+  one-line **run record** per audit (see below) — telemetry, not a proposal.
 
 **Why this exists:** both producers surface candidates and wait for approval.
 Without a memory of past decisions they re-raise what is already **applied** or
@@ -46,7 +47,73 @@ Keep this five-field shape on every entry so the scan can parse the log
 consistently — in particular **Decision** (status) and **Reconsider when** are the
 two fields the dedup step keys on.
 
+**One sanctioned exception — `/review-knowledge` run records.** Every audit
+appends a single dated line, whatever it found:
+
+```text
+### <date> — /review-knowledge run · <N> agents · <T> tokens · <c> critical / <m> major / <n> minor
+```
+
+It carries no **Decision** and no **Reconsider when**, so **the dedup scan skips
+it**: it is telemetry, not a settled call, and there is nothing for a producer to
+re-raise. It exists because
+[ADR-0020](decisions/0020-review-knowledge-audit-tier.md)'s revisit trigger
+compares the finding counts of two *consecutive* runs — and a run that finds
+nothing would otherwise leave no trace at all. The shape is fixed precisely so
+those two runs stay comparable.
+
 ---
+
+### 2026-08-13 — `/review-knowledge` audit tier drops to Opus; cross-examination stays Fable · applied
+
+- **Pattern:** the 2026-08-07 addendum to ADR-0014 pinned `/review-knowledge`'s
+  auditors to a Fable-class model on *expected* verification depth, never on
+  measured yield. At $10/$50 per MTok against Opus's $5/$25, and with eight
+  agents per run (four auditors plus a four-agent cross-examination), a periodic
+  prose audit had become the most expensive configuration in `.claude/`.
+- **Decision:** **applied** (user-approved). Audit round → `opus`; the
+  cross-examination round **stays** Fable-class. `effort` unchanged at `high` on
+  both. Recorded as [ADR-0020](decisions/0020-review-knowledge-audit-tier.md),
+  which amends ADR-0014 *in part* — the Haiku/Sonnet/Opus mappings and the
+  rejection of Fable `/review-plan` critics are untouched. The addendum's
+  "two audit critics" miscount was corrected in place as a factual error.
+- **Rationale:** the rounds are not symmetric. A missed finding is re-derived
+  next run; a wrong *refutation* is written to this log and makes every later
+  audit drop that finding without re-deriving it — durable, self-concealing
+  suppression. So the cheap tier goes where mistakes are recoverable, and the
+  top tier stays where they are not. Three plan critics separately killed an
+  earlier draft that also moved `high → xhigh`: thinking bills as output at 5×
+  input, so moving two variables at once would have made the saving
+  unmeasurable and left a regression with two suspects.
+- **Reconsider when:** two consecutive `/review-knowledge` runs return zero
+  `major`-or-`critical` consensus findings while the tree has demonstrably moved
+  (check `delivery-retros.md` for intervening deliveries that changed build
+  config, target layout or the skills). Also revisit if the projected ~25% saving
+  fails to appear once a run at the new tier is recorded.
+
+### 2026-08-13 — Conditional Fable escalation for `/review-plan` critics · deferred
+
+- **Pattern:** proposal to give `/review-plan`'s three critics a Fable-class
+  tier when a plan is "complex", keeping Opus otherwise — raised alongside the
+  audit-tier change above, and reviewed by the three-critic pass.
+- **Decision:** **deferred**, before implementation. `/review-plan` and
+  `/deliver` Phase 2 were left untouched; filed as issue
+  [#450](https://github.com/adamayoung/TMDb/issues/450) against ADR-0014's
+  existing revisit trigger.
+- **Rationale:** three independent failures. (1) It delivers none of the stated
+  goal — the default path is today's behaviour and the escalated path costs
+  *more*. (2) The trigger, expressed in the lite/full rule's risky-surface
+  vocabulary, is Swift-only, so it could never fire for a reflexive `.claude/`
+  change — the very class this repo's defect record is made of (see the Phase 0
+  reflexive rule and PRs #441-#447). (3) Splitting `full` into
+  full-because-risky and full-because-large is a third scaling shape, colliding
+  with the 2026-08-07 decision that the weight vocabulary stays binary. A fourth,
+  smaller point: the flag defaulted silently, so a forgotten escalation would
+  have been indistinguishable from a correct cheap run.
+- **Reconsider when:** ADR-0014's own trigger fires — an Opus critic pass misses
+  a blocker that later ships as a defect — *and* the escalation is expressed as
+  a pointer to the weight rule rather than a copy of it, with the selected tier
+  logged and recorded in the run file so a missed escalation is visible.
 
 ### 2026-08-13 — Full pipeline audit: 39 findings across five PRs (#441-#446) · applied
 

@@ -360,6 +360,10 @@ so it also blocks commands that were never leaving. Seen refusing:
   outside the worktree path by design.
 - Multi-stage pipelines with `$(…)` substitution, `for`/`while` loops over
   `curl`, and `cd "$SOMEWHERE"` followed by a redirect.
+- *2026-08-13:* **ANSI-C quoting** — `grep -v $'\tknowledge/' in.txt > out.txt`
+  was refused although both paths are worktree-relative. Any `$'…'` word seems to
+  defeat the static check. Rewrite the pattern without it (here,
+  `awk '$4 !~ /^knowledge\//'` over `git ls-tree`'s tab-separated output).
 
 Workarounds, in order of preference: keep each command **single-purpose with
 fully literal paths** (`sed -i '' 's/…/…/' /abs/literal/path` succeeded where the
@@ -378,11 +382,53 @@ also accepts a **repo-relative path** — `Workflow({ scriptPath:
 makes a committed, version-controlled workflow script viable rather than
 re-authored prose.
 
-Two testing notes: a script's **argument-validation `throw`s run before any
+Three testing notes. A script's **argument-validation `throw`s run before any
 agent spawns**, so guard rails can be exercised for free (the run fails with
-`agent_count: 0`); and such a script **cannot be run standalone** with `node` —
-it uses harness globals (`agent`, `parallel`, `phase`, `log`, `args`) and a
-top-level `return`. Test it by extracting the body and supplying stubs.
+`agent_count: 0`). Such a script **cannot be run standalone** with `node` — it
+uses harness globals (`agent`, `parallel`, `phase`, `log`, `args`) and a
+top-level `return`; run it by extracting the body and supplying stubs.
+
+And to **parse-check** one without running it — the only pre-merge verification
+available for a reflexive delivery, since the skill registry loads from the main
+checkout and the edited script is never what executes — wrap it first. A bare
+`node --check script.mjs` reports `SyntaxError: Illegal return statement` on the
+harness's legal top-level `return`, which reads exactly like a real defect:
+
+```bash
+awk '/^```javascript$/{f=1;next} /^```$/{f=0} f' <skill>/SKILL.md > .build/s.mjs
+sed -i '' 's/^export const meta/const meta/' .build/s.mjs   # export is illegal once wrapped
+printf '(async () => {\n' > .build/w.mjs
+cat .build/s.mjs >> .build/w.mjs
+printf '})()\n' >> .build/w.mjs
+node --check .build/w.mjs
+```
+
+The async IIFE reproduces the harness's async context, making both top-level
+`return` and top-level `await` legal. Keep each command separate — the worktree
+Bash guard refuses the `{ …; } > file` one-liner (see the entry above).
+
+### The `Workflow` tool's contract is the schema authority — the sibling scripts are not
+
+*2026-08-13.* `/review-knowledge` became the first workflow here to need a
+**per-phase** model, and used the documented field for it:
+`phases: [{ title, detail, model: 'fable' }]` — the `Workflow` contract says
+plainly *"Add `model` to a phase entry when that phase uses a specific model
+override."* No other script in `.claude/` had ever set it, because none had ever
+had a per-phase split (`fix-pr-checks` varies model *per agent within one
+phase*, where a phase-level key cannot apply).
+
+The review agent flagged it **High** as an invented key that would either be
+ignored — leaving the file asserting a mechanism that does not exist — or throw
+at load. That was the right call from where it sat: the `code-reviewer` agent
+has no `Workflow` tool, and the tool's `meta` schema is documented **nowhere in
+this tree**, so it reasoned from the only evidence it had (four siblings, none
+using the field) and read absence-of-the-situation as avoidance-of-the-field.
+The finding was withdrawn once the contract was quoted back to it.
+
+So: when a review disputes a `Workflow` schema question, settle it by quoting
+the tool contract, not by surveying `.claude/`. And expect to have to — a
+reviewer cannot verify these fields, so **the first use of any `Workflow` field
+in this repo will read as fabricated**.
 
 ### `EnterWorktree` no longer uses the requested name as the branch name
 

@@ -1,6 +1,7 @@
 # ADR-0014: Model-tier policy for skills and subagents
 
-- **Status:** Accepted
+- **Status:** Accepted (amended in part by
+  [ADR-0020](0020-review-knowledge-audit-tier.md))
 - **Date:** 2026-07-06
 - **Deciders:** Adam Young, Claude
 
@@ -61,9 +62,15 @@ re-diagnoses only where judgment demonstrably matters.
   model family shift (e.g. pinning the top judgment calls to a Fable-class
   model) revisits this ADR — the *shape → tier* mapping is the durable part,
   not the model names.
-- *Addendum (2026-08-07):* `/review-knowledge` (added after this ADR) pins its
-  two audit critics to a **Fable-class** model — the first judgment role above
-  the Opus floor, chosen for verification depth on the knowledge audit. The
+- *Addendum (2026-08-07; amended 2026-08-13 by
+  [ADR-0020](0020-review-knowledge-audit-tier.md)):* `/review-knowledge` (added
+  after this ADR) pinned its auditors to a **Fable-class** model — the first
+  judgment role above the Opus floor, chosen for verification depth on the
+  knowledge audit. It fans out **four** auditors (two lenses over two trees)
+  plus a four-agent cross-examination round; "two audit critics" as originally
+  written was a miscount, corrected here. **ADR-0020 splits that pin by round**
+  — the audit round moved to Opus, the cross-examination round stays
+  Fable-class because its refutations are written to permanent memory. The
   shape → tier mapping is unchanged, and the trigger for revisiting the
   remaining Opus pins (the `/review-plan` critics, the `/deliver` panel) stays
   "critics start missing blockers".

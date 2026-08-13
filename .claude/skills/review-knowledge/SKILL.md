@@ -27,11 +27,17 @@ The point of this skill: do these by default, without being reminded.
 
 1. **Two lenses × two trees, one Workflow.** Run the embedded `Workflow` below.
    It fans out **four** auditors in parallel — each lens against each tree —
-   every one pinned to the **`fable`** model, then runs a **cross-examination**
+   every one pinned to the **`opus`** model, then runs a **cross-examination**
    round **paired within each tree**, so the two lenses challenge each other on
    the same material. Invoking this skill is itself the opt-in to call
    `Workflow`. A tree whose pair doesn't both return is reported
    `unreconciled`, never as consensus.
+   **The cross-examination stays on `fable` — do not unify the two tiers.**
+   The rounds are not symmetric: a refutation is written to the *permanent*
+   refutation memory (item 2) and silently suppresses that finding on every
+   later audit, so a weak refuter costs far more than a weak auditor. An audit
+   miss, by contrast, is re-derivable next run. See
+   [ADR-0020](../../../knowledge/decisions/0020-review-knowledge-audit-tier.md).
 2. **Consult the refutation memory first.** Before reporting, grep
    [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
    for `· refuted` entries and drop any finding already settled there whose
@@ -89,19 +95,21 @@ propagated it upstream.
 
 ## Run the audit (Workflow)
 
-Four auditors run as a single `Workflow` so the **`fable`** model is guaranteed
-per agent and each verdict is schema-validated rather than free-text. No `args`
-are needed — the scope is the repository itself.
+Four auditors run as a single `Workflow` so the **model and effort are
+guaranteed per agent** — `opus` for the audit round, `fable` for the
+cross-examination (Agent Behaviour Contract item 1) — and each verdict is
+schema-validated rather than free-text. No `args` are needed — the scope is the
+repository itself.
 
 ```javascript
 export const meta = {
   name: 'review-knowledge-critics',
-  description: 'Four adversarial Fable auditors (2 lenses x 2 trees), then cross-examine',
+  description: 'Four adversarial Opus auditors (2 lenses x 2 trees), then a Fable cross-examination',
   phases: [
-    { title: 'Audit', detail: 'four fable auditors: each lens over each tree' },
-    { title: 'Cross-examine', detail: 'lenses refute each other, paired within a tree' },
+    { title: 'Audit', detail: 'four opus/high auditors: each lens over each tree' },
+    { title: 'Cross-examine', detail: 'four fable/high refuters: lenses refute each other, paired within a tree', model: 'fable' },
   ],
-  model: 'fable',
+  model: 'opus',
 }
 
 const SEVERITY = `Grade by CONSEQUENCE IF THE ENTRY IS TRUSTED AS WRITTEN, not by your confidence:
@@ -202,7 +210,7 @@ const audits = await parallel(JOBS.map(({ tree, lens }) => () =>
     `${READONLY}\n\n` +
     `EVERY finding must be VERIFIED against the current tree and cite the evidence that proves it — the file:line or command output that contradicts the text. A finding derived only from reading the documentation is inadmissible; that credulity is the exact failure mode you are auditing. Equally: do NOT manufacture findings to look thorough. If a file is accurate, say so in "verifiedAccurate" and name what you checked.\n\n` +
     `SEVERITY RUBRIC:\n${SEVERITY}`,
-    { label: `audit:${tree.key}:${lens.key}`, phase: 'Audit', model: 'fable', effort: 'high', schema: FINDING_SCHEMA }
+    { label: `audit:${tree.key}:${lens.key}`, phase: 'Audit', model: 'opus', effort: 'high', schema: FINDING_SCHEMA }
   ).then((v) => v && { ...v, lens: lens.title, key: lens.key, tree: tree.key, treeTitle: tree.title })
 ))
 
@@ -211,6 +219,12 @@ const live = audits.filter(Boolean)
 // Cross-examine WITHIN each tree, so the two lenses challenge each other on the
 // same material. A tree with fewer than two survivors is reported UNRECONCILED
 // rather than passed off as consensus — a dead auditor is not a clean bill.
+//
+// This round stays on `fable` while the audit round above runs on `opus`, and
+// the asymmetry is deliberate: a refutation here is written to the PERMANENT
+// refutation memory in skill-improvement-log.md and suppresses that finding on
+// every later audit, whereas a missed finding upstream is re-derived next run.
+// Do not unify the two tiers without reading ADR-0020.
 const groups = TREES.map((tree) => ({ tree, members: live.filter((a) => a.tree === tree.key) }))
 const unreconciled = groups.filter((g) => g.members.length < 2).map((g) => g.tree.key)
 unreconciled.forEach((k) => log(`WARNING: ${k} had fewer than 2 auditors return — its findings are UNRECONCILED, not consensus`))
@@ -229,6 +243,7 @@ const rebuttals = await parallel(
         `Default to REFUTE when the evidence is thin. A finding that cannot be independently reproduced from the tree should not survive into the consensus. Do not confirm out of collegiality.\n\n` +
         `${READONLY}\n\n` +
         `Finally, in "missedByBoth", note anything their report made you realise you BOTH missed.`,
+        // `fable` is deliberate and load-bearing — refutations are permanent. See ADR-0020.
         { label: `cross:${g.tree.key}:${mine.key}`, phase: 'Cross-examine', model: 'fable', effort: 'high', schema: REBUTTAL_SCHEMA }
       ).then((r) => r && { by: mine.lens, tree: g.tree.key, ...r })
     })
@@ -270,6 +285,20 @@ The critics have already done the reconciling work — read it, don't redo it:
 Present a consensus table: finding · severity · agreement (confirmed / adjudicated
 / refuted) · the fix. Then state the **verdict for the base as a whole**, and be
 willing to conclude *no changes needed*.
+
+**Record the run — even a clean one.** Append a one-line **run record** to
+[`skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md), in the
+fixed shape that file's header defines: agent count, total tokens, and consensus
+findings by severity. Like the `· refuted` entries above, it is written in
+**Apply**, after the user's go-ahead — and, unlike them, it is written **even
+when there is nothing else to apply**, so a clean run's Apply step is this line
+alone. If the user declines outright, record the decline in the line rather than
+omitting it.
+
+A run that finds nothing otherwise leaves no trace at all, and
+[ADR-0020](../../../knowledge/decisions/0020-review-knowledge-audit-tier.md)'s
+revisit trigger compares the counts of **two consecutive** runs — so a missing
+line, or one in a different shape, breaks the comparison that decision rests on.
 
 ## Apply — only after the user agrees
 

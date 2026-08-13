@@ -60,9 +60,9 @@ Both guards were verified live: each throws with **zero agents spawned**.
 
 ### The script lives in `.claude/workflows/`, not embedded
 
-The three existing Workflow scripts (`review-plan`, `review-knowledge`,
-`review-changes`) are embedded in their `SKILL.md`, and each runs **once per
-skill invocation**, so re-authoring costs nothing. The panel runs at **six
+The other Workflow scripts (`review-plan`, `review-knowledge`, `review-changes`
+and `fix-pr-checks` — four as of 2026-08-13) are embedded in their `SKILL.md`,
+and each runs **once per skill invocation**, so re-authoring costs nothing. The panel runs at **six
 decision points per run**, from a context that has been compacting for hours.
 
 An embedded script is **re-authored** each time; a file is **executed**. Drift
