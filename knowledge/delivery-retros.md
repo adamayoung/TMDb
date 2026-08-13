@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (`chore/review-skill-model-tiers`) · full
+## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (#451) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight and reflexive (`.claude/skills/**`),
   so Phases 4 and 5 ran with their no-Swift self-skip overridden. Skills:
