@@ -25,6 +25,86 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-13 — ♻️ TMDbIntelligence vocabulary growth valves + `searchFailed` (`feature/tmdbintelligence-enum-valves`) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight (new + breaking public API, error
+  paths, 15 Swift files, +664/−36), **with `/review-plan`'s critics skipped** —
+  the plan had already taken an adversarial pass this session whose findings were
+  applied. Skills: `implement-plan`, `review-changes` (5-dimension fan-out),
+  `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *Public enums are not implicitly `Sendable`* (:1429),
+  *DocC symbol links don't resolve across modules* (:504 + its 2026-07-24
+  update), *A `package` symbol cannot be referenced by a DocC link* (:761),
+  *The build/test tooling-runner runs in the main checkout* (:265),
+  *A `RawRepresentable` enum … gets rawValue equality* (:1001),
+  *`NaturalLanguageSearchService` is not platform-gated* (:1018),
+  *Renaming a method's internal parameter name* (:1116); **ADR-0018**,
+  **ADR-0019** (both governing), ADR-0010; wiki
+  *treat-review-findings-as-hypotheses-not-approved-work*.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` n/a (no infra files in the diff) → fell back to neighbouring entries:
+  ADR-0019 limb 2 rewritten (its "existing codebase-wide idiom" claim was going
+  stale), ADR-0018 read in full and verified still true, gotchas :504/:761/:1001/
+  :1018 re-read, still true.
+- **Worked — verifying the issue's premises before planning changed the plan.**
+  Per the wiki heuristic, all three of issue #420's load-bearing claims were
+  checked and **three were wrong**: ADR-0019's `.unknown` idiom does not transfer
+  (every instance exists because the value is wire-decoded; none of these types
+  are `Codable`), Half 2 was already half-landed by ADR-0018's
+  `catch TMDbError.cancelled`, and — the one that mattered — **a catch-all case
+  does not on its own prevent the source break**. The issue's literal fix would
+  have shipped a valve that didn't valve: adding `.other` stops nothing unless all
+  future growth is routed through it. That reframing is what turned the change
+  into extensible structs, and became ADR-0021.
+- **Worked — the plan's adversarial pass caught two *silent* breaks.** A
+  payload-free enum is implicitly `Hashable`, and an enum interpolates as its bare
+  case name; a struct is neither. Neither loss produces a diagnostic at the
+  conversion site, and the interpolation one would have compiled while silently
+  destroying the dictionary keys and column alignment of
+  `NaturalLanguageSearchPlannerEvalTests`' accuracy report. Both are now declared,
+  tested, and recorded in `gotchas.md`.
+- **Worked — spending one 30s gate on the biggest unknown first.** Converting
+  `Reason` alone (4 statics) and running `make build-docs` settled whether
+  `` ``Intent/byPerson`` ``-style links survive against a `public static let`
+  before the bulk conversion multiplied the cost of a wrong answer. They do, so
+  zero doc-link churn was needed — evidence rather than the `RetryableErrors`
+  precedent's promise.
+- **Friction — I asserted a compiler behaviour I had not verified, and two agents
+  then disagreed about it.** I told the user the catch-arm ordering was gated by
+  *"case will never be executed"*; the security reviewer said it was unenforced
+  and rested only on a comment. Settled by reversing the two arms and building: it
+  **is** gated, as a hard error under `--Werror`. Cheap to check, expensive to be
+  wrong about — a claim about *what enforces an invariant* deserves the same
+  evidence bar as a claim about behaviour.
+- **Friction — fixed a stale string in one file and didn't sweep for its
+  siblings.** `README.md:154` called `search("…")` where the label is
+  `search(matching:)`; the review found the **identical** call in
+  `TMDbIntelligence.docc` and `TMDbIntelligenceTesting.docc`. DocC code fences
+  aren't compiled, so no gate catches them. Same shape as the recurring
+  "sweep the rule's whole footprint, not the file you opened" defect.
+- **Friction — a test comment claimed to pin an invariant it never reached.** My
+  execution-failure test asserted `searchAllQueries.isEmpty` and commented "pins
+  `canFallBack` → false", but `canFallBack` is only consulted for errors from
+  `planner.plan(for:)`; that failure comes from `executor.execute`, outside the
+  inner `do`. The new arm could have been flipped to `true` with nothing failing.
+  Fixed by raising `.searchFailed` from the *planning* stage instead. **A comment
+  asserting coverage is not coverage** — the reviewer had to catch it because the
+  green suite looked identical either way (**False green**).
+- **Deviations:** (1) Phase 2 critics skipped, as above — recorded as full with
+  the skipped machinery noted. (2) The plan sequenced `ListKind` and `Intent` as
+  separate build cycles; both were done in one, since their switch sites live in
+  *different* files so an error stayed attributable — one build saved, and it
+  compiled clean first time. (3) The `reviewedClean` stamp used the `Sources`/
+  `Tests` **tree hashes** rather than the documented
+  `git ls-tree … | git hash-object` pipe, which the worktree Bash guard refuses as
+  unverifiable; same property, no pipe.
+- **One improvement:** `swept:` disciplines `knowledge/`, but both of this
+  delivery's doc misses were **source-tree** sweep failures a reviewer caught, not
+  the author. Worth a one-line check in `/implement-plan` or the
+  `/review-changes` brief: *changed a literal string, symbol name or code sample?
+  grep the repo for its siblings before calling it done* — the `.docc` catalogs
+  and `README.md` are the habitual blind spot because no gate compiles them.
+
 ## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (#451) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight and reflexive (`.claude/skills/**`),
@@ -633,80 +713,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   invalidated a Phase 6 entry that had already been committed. Ordering
   capture after grading costs nothing and removes the rewrite.
 
-## 2026-07-27 — ✨ Cached image URL resolver, `client.images` (#401) · full
-
-- **Phases / skills:** 0–8 pre-PR; full weight (new public service + actor,
-  8 commits). `/plan` → adversarial review by a Fable reviewer **plus** an
-  independent Swift-6 design pass, which converged on the same critical flaw, so
-  `/review-plan` was skipped as already-reviewed. `implement-plan` in 4
-  checkpoints. `review-changes` ×2 (5-dimension fan-out) → **0 Critical, 0 High
-  both rounds**, 15 then 7 advisory, all applied. `security-review` → 0 findings.
-  `capture-knowledge` → ADR-0013 + 3 gotchas + 1 correction to an existing entry.
-  Rubric: **6/6 ACs met**, independently graded.
-- **Worked — driving each mechanism out of a genuine red.** Rather than writing
-  the final actor from the plan, each hazard got its own failing test first: the
-  naive memo measured **100 fetches at peak concurrency 76** under 100 concurrent
-  callers, and the refresh ABA returned `["first"]` where `["second"]` was
-  expected. That produced *evidence* those are real regression tests, for free —
-  the plan had asked for a deliberate "revert and watch it fail" step, and this
-  made it unnecessary.
-- **Worked — plan review caught a bug the plan could not have shipped without.**
-  Both plan reviewers independently found that the cache rules said *what* to
-  memoise but never *who writes state*, so a superseded fetch would clobber a
-  newer `refresh()` — a permanently stale cache that **none of the 13 planned
-  tests would have caught**. The generation counter came from that, pre-code.
-- **Friction — I introduced two flaky tests while fixing review round 1, and only
-  round 2 caught them.** A caller that *joins* a shared in-flight fetch never
-  reaches the mock or gate, so a gate-based barrier cannot observe it; both new
-  tests opened the gate and then asserted on coalescing. Neither ever failed
-  locally (one reviewer measured 0/65 reproductions, 25 under load) — they were
-  wrong by construction, not by observation. Fixed with an on-actor entry
-  counter. **Lesson: after a concurrency fix, re-review the tests, not just the
-  code.**
-- **Friction — the one that actually cost the user: ~10 zsh pipelines pinned at
-  100% until they force-quit them.** My first explanation ("parallel agents,
-  build contention") was only half of it, and the smaller half. The real
-  amplifier is **`make build-docs` mutually invalidating every other build**:
-  `Package.swift` branches on `SWIFTCI_DOCC`, and the `=1` path *adds* the
-  swift-docc-plugin dependency while the else path *sets `exclude`* on four
-  targets — two different dependency graphs and two different per-target source
-  lists, sharing **one** `SCRATCH_PATH` (default `.build`). `Makefile:61` even
-  runs a bare `swift package resolve` after the docs build purely to undo the
-  first line's resolution, which is the Makefile conceding the point. Evidence:
-  `Package.resolved` is gitignored (the package normally has *no* dependencies)
-  yet exists, and `.build/checkouts/` holds `swift-docc-plugin` +
-  `swift-docc-symbolkit`.
-  So when I interleaved `build-docs` (×5) with `make test` / `build-release`
-  **while 5–7 review agents were independently building into the same
-  `.build`**, each docs run re-resolved the manifest out from under an in-flight
-  build; they then fought over `.build/.lock` and repeatedly redid work the other
-  had invalidated. Not slow work — *cyclical* work.
-  Two things I had wrongly folded into "CPU": the live integration suite is
-  **deliberately serialised** (40 suites carry `.integrationGate`, a global
-  semaphore), so 300 live tests run one at a time — that is most of the 69- and
-  72-minute wall-clock, and it is by design; and sheer redundancy (full unit
-  suite ×7, `build-docs` ×5, release ×3, a 12× filtered loop, plus a grader that
-  re-ran all of `make ci` unbidden, plus the real `make ci`).
-  `CLAUDE.md` mandates sequential builds within a worktree, but **subagents
-  cannot see each other**, so nothing could enforce it.
-- **Deviations:** (a) `TMDbFactory` was not touched — the issue's AC says
-  "registered in `TMDbFactory.swift`", but the factory vends only plumbing and
-  every service is built in `TMDbClient`'s private init; the grader independently
-  confirmed the criterion is stale. (b) `APIConfigurationStore` carries an
-  internal `entryCount` that exists only so tests can observe joining callers —
-  production state for the test suite, accepted deliberately and flagged by the
-  grader. (c) The ten URL methods are protocol-*extension* members, not
-  requirements, to kill the same-signature default-witness recursion hazard.
-- **Improvement (two, in priority order):** (1) **Give `build-docs` its own
-  scratch path** — `SCRATCH_PATH ?= .build/docs` for that target alone — so the
-  docc manifest never touches the directory every other target builds into. One
-  line, and it removes the invalidation cycle at the source rather than relying
-  on nobody ever running two things at once. (2) `/deliver` should forbid builds
-  in reviewer/grader subagent prompts and serialise its review phases: reviewers
-  have the diff and the conductor has already run every gate, so a reviewer
-  running `make ci` is duplicate CPU — and with N parallel agents on a shared
-  scratch path it is not merely N×, it is cyclical.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -714,6 +720,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-27 | #401 | full | Cached image URL resolver behind `client.images` (ADR-0013). Two practices worth keeping. **Drive each concurrency hazard out of a genuine red**: the naive memo measured *100 fetches at peak concurrency 76* under 100 concurrent callers and the refresh ABA returned `["first"]` where `["second"]` was expected, which produced evidence those are real regression tests for free. And **plan review caught a bug the plan could not have shipped without** — the cache rules said *what* to memoise but never *who writes state*, so a superseded fetch would clobber a newer `refresh()`, a permanently stale cache that none of the 13 planned tests would have caught; the generation counter came from that, pre-code. Also the source of *a caller that **joins** a shared in-flight fetch is invisible to the mock or gate*, so a gate-based barrier cannot observe coalescing — two tests were wrong by construction, not by observation (0/65 reproductions), fixed with an on-actor entry counter: **after a concurrency fix, re-review the tests, not just the code**. Its real cost was the delivery that made both build-isolation rules concrete: `make build-docs` *mutually invalidates* every other build, because `Package.swift` branches on `SWIFTCI_DOCC` into two different dependency graphs **and** two per-target source lists sharing one `.build` — so interleaving 5 docs runs with unit/release builds while 5–7 review agents built into the same scratch dir produced *cyclical*, not merely slow, work and ~10 `zsh` pipelines pinned at 100% until the user force-quit them. Both improvements shipped: `build-docs` got its own scratch path, and `/deliver` now forbids builds in reviewer/grader prompts and serialises its review phases. Also clarified that the live integration suite is **deliberately serialised** (40 suites on a global `.integrationGate` semaphore), so most of that wall-clock was by design. |
 | 2026-07-24 | #398 | full | Extracted the `TMDbIntelligence` product — ~40 sources, ~110 fixtures and ~30 tests relocated behind new targets. Two lasting rules came out of it. **Run `swift build -c release` before declaring implementation done**: a `@testable import` inside the new *non-test* `TMDbTestFixtures` target broke the release build *only*, while debug, `--build-tests`, 2868 unit and 291 integration tests all passed — now a hard Phase 3 checkpoint and a `gotchas.md` entry. And **share fixtures via a `package`-access target, never a `@testable` one** (now a wiki pattern). The plan critics paid for themselves twice over, catching that `TMDbTestingTests` referenced a symbol that was moving out, and unanimously that the planned `.xctestplan` sweep was **ghost work** — those files are gitignored and untracked. Counting tests rather than trusting green proved the move lossless (2868 → 2868, then 2869 → 2869 after rebasing onto #396/#397, whose `.docc` `exclude` list turned out to be **per target**, so the two new catalogs silently re-introduced the failure that only `make ci` caught). Rubric **self-graded — the independent grader died on a session limit; recorded, not silently passed**. |
 | 2026-07-24 | #397 | full | Enriched `TMDbError` with structured context (ADR-0012). The plan review paid for the delivery on its own: a critic caught, before a line was written, that the new public `endpointPath` would carry `guest_session_id` (a bearer-like credential) and `account_id` (PII) into a loggable field — the redactor and its tests came from that finding, and `security-review` later confirmed the control covers all 137 request-path templates. Now the wiki pattern *a-diagnostic-field-added-for-logging-is-a-publishing-surface*. Capturing **real** error bodies from the live API while planning (`curl -D-`) beat the plan's guesses: 400/code 22 and 422/code 20, not the invented 422/code 5. Environmental friction was severe — the Xcode 27 / Swift 6.4 `.docc` trap made `make ci` unrunnable, and the first attribution (xcsift `--Werror`) was **wrong**: `pipestatus` showed `swift build` exiting 1 and xcsift 0, which is why the build/test skills now say the exit status is the verdict, not the summary. |
 | 2026-07-24 | #390 | full | Migrated model runtimes from `Int` minutes to `Duration` (ADR-0011). The lasting pattern is store-the-raw / expose-the-computed: keep the integer-minute wire value in a private stored property and expose `Duration` as a computed one, so `Codable` stays synthesized and the wire format cannot silently drift — no hand-written 30-property `encode` to maintain. Now the wiki entry *bridge-a-wire-type-to-a-domain-type-inside-the-model*. The `.convertFromSnakeCase` → camelCase-`CodingKeys` check caught the `episodeRunTime` rawValue trap before it broke decode. Its "one improvement" — run the tooling-runner in the *active worktree* rather than the main checkout — recurred verbatim in #397 one delivery later and shipped in #399. |
