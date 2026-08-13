@@ -48,7 +48,7 @@ import TMDb
             // Foundation Models is an optional fallback for the fuzzy tail, only on
             // capable OS versions. The NaturalLanguage planner is always the default.
             var fallback: (any SearchPlanGenerating)?
-            #if canImport(FoundationModels)
+            #if canImport(FoundationModels) && !os(tvOS) && !os(watchOS)
                 if #available(iOS 26, macOS 26, visionOS 26, watchOS 27, *) {
                     fallback = FoundationModelsSearchPlanGenerator()
                 }

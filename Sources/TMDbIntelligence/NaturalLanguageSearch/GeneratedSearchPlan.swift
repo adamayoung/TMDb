@@ -5,7 +5,7 @@
 //  Copyright © 2026 Adam Young.
 //
 
-#if canImport(FoundationModels)
+#if canImport(FoundationModels) && !os(tvOS) && !os(watchOS)
     import Foundation
     import FoundationModels
     import TMDb
