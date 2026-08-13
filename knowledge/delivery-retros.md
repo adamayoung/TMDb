@@ -25,6 +25,80 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (`chore/review-skill-model-tiers`) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight and reflexive (`.claude/skills/**`),
+  so Phases 4 and 5 ran with their no-Swift self-skip overridden. Skills:
+  `review-plan`, `review-changes` (`force-review`), `security-review`,
+  `capture-knowledge`.
+  `consulted:` gotchas *False green*, *Edits can land in the main checkout*,
+  *In a worktree session Bash refuses commands it can't prove stay inside it*,
+  *EnterWorktree branch name*, *Workflow resolves a repo-relative scriptPath*,
+  *git ls-tree empty hash*, *markdownlint line-leading number-sign*;
+  **ADR-0014** (governing — both proposed changes contradicted it), ADR-0016;
+  wiki *keep-adversarial-reviewers-independent*,
+  *a-detector-whose-green-looks-the-same-when-it-didnt-run*,
+  *an-unenforceable-process-rule-gets-silently-skipped*.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` `.claude/skills/review-knowledge/SKILL.md` → 3 `gotchas.md` entries
+  written or extended, 1 factual correction in `decisions/0016` (embedded-script
+  count 3 → 4); historical `skill-improvement-log.md` entries left untouched
+  (append-only decision memory); `gotchas.md:59` re-read, still true.
+- **Worked — Phase 0's knowledge consult caught that the whole plan was
+  ADR-governed.** ADR-0014 pins every model tier in `.claude/`, and both proposed
+  changes contradicted it: one reversed its six-day-old addendum, the other
+  partially re-opened an alternative it had explicitly rejected with a revisit
+  trigger that had not fired. Without that read this would have shipped as a
+  config tweak that silently reversed a recorded decision.
+- **Worked — the plan critics changed the shape of the delivery, not just its
+  details.** They killed `effort: high → xhigh` (thinking bills as output at 5×
+  input, so moving two variables would have made the saving unmeasurable and left
+  a regression with two suspects); caught that a conditional `meta.model` would be
+  a temporal-dead-zone `ReferenceError` shipping unexercised, since a reflexive
+  delivery cannot dogfood; and showed the second change's trigger could never fire
+  for reflexive `.claude/` diffs — the class this repo's defect record is made of.
+  Scope went from two changes to one on that evidence; the dropped one is issue
+  #450.
+- **Worked — the code reviewer caught a falsehood in the durable record.**
+  ADR-0020 and the log both claimed *in the past tense* that a GitHub issue had
+  been filed. None had. In a delivery specifically about sharpening the audit that
+  hunts exactly that class of claim.
+- **Worked — a reviewer conceding cleanly on evidence it lacked.** It flagged
+  `meta.phases[].model` as an invented key (High, correctly, from where it sat —
+  the `code-reviewer` agent has no `Workflow` tool and the schema is documented
+  nowhere in the tree). Given the contract it withdrew in full and named its own
+  reasoning error: it had read *absence of the situation* as *avoidance of the
+  field*. Captured as a gotcha.
+- **Friction — the review machinery cost far more than the change saves.**
+  ~1.36M subagent tokens on the plan review, ~284k across two code-review rounds,
+  ~74k grading — for a 6-file markdown diff whose benefit is roughly a quarter off
+  one periodic skill's run. Full weight was the right call for a reflexive change;
+  the problem is that full weight currently means the same machinery for a
+  6-file prose diff as for a multi-service Swift feature.
+- **Friction — the worktree `Bash` guard cost ~8 extra round trips.** Every
+  run-file update, the content stamp and the script parse-check had to be
+  decomposed into single-purpose commands; `$'\t'` quoting was refused outright.
+  Captured.
+- **Deviations:** (1) the ADR was authored in **Phase 3, inside the diff**, not
+  Phase 7 — on the critics' finding that Phase 7's contract permits writing
+  nothing, so a governance record deferred to it is unenforced. This is the
+  sanctioned inline-capture exception. (2) Phase 5 was analysed directly rather
+  than fanned out: every changed file is markdown and the skill's own rule 16
+  excludes documentation findings, so a fan-out was structurally guaranteed
+  empty. Recorded as a visible choice rather than a silent narrowing.
+- **One improvement:** scale Phase 2 and Phase 4 by **diff shape**, not weight
+  alone. `full` currently fixes both risk *and* machinery, so a reflexive prose
+  change — which genuinely needs the adversarial lens — pays for fan-out breadth
+  sized for a multi-service Swift diff. A reflexive-but-small shape wants the
+  critics (they earned their keep here) at a smaller fan-out. Raise against the
+  binary-weight decision deliberately, since that vocabulary is itself a recorded
+  narrowing.
+- **Also noted:** my own AC3 was written too literally — its second clause
+  required *every* `fable` hit to sit in one of two named buckets, which would
+  have demanded deleting true, unrelated history. The independent grader graded
+  the reasonable reading and disclosed the strict one rather than silently
+  passing. Write rubric clauses that scope to the change, not to the whole tree.
+
 ## 2026-08-13 — 🐛 Exclude tvOS/watchOS from the FoundationModels planner (#449) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight, but with two pieces of machinery
@@ -633,56 +707,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   running `make ci` is duplicate CPU — and with N parallel agents on a shared
   scratch path it is not merely N×, it is cyclical.
 
-## 2026-07-24 — 📦 Extract the `TMDbIntelligence` product (#398) · full
-
-- **Phases / skills:** phases 0–8 pre-PR; full weight (~40 sources + ~110
-  fixtures + ~30 tests relocated, new targets, CI/docs infra). `/plan` refreshed
-  the pre-existing `plans/tmdb-intelligence-product-extraction.md` after a
-  3-agent drift check. `review-plan` (3 Opus critics) → **2 blockers + 6
-  findings, all applied**. `implement-plan` in 4 checkpoints.
-  `review-changes` → **1 Critical**, 3 Medium, 2 Low. `security-review` → 0
-  findings ≥ conf-8. `capture-knowledge` → 1 new gotcha + **2 corrections to
-  existing ones**. Rubric: 7/7 ACs met (**self-graded — the independent grader
-  subagent died on a session limit; recorded, not silently passed**).
-- **Worked:** the plan critics paid for themselves twice over — they caught that
-  `TMDbTestingTests` tests `SearchPlan.sample` (which moves out, so the target
-  would not compile), that the integration inventory was 5 files not 3, and
-  unanimously that the **`.xctestplan` sweep was ghost work** (the files are
-  gitignored and untracked — the plan would have had me edit non-existent
-  files). Counting tests rather than trusting green proved the move lossless:
-  **2868 before, 2868 after**, reconciled against the true base `c22a336`.
-- **Friction — the one that mattered:** `@testable import TMDb` inside the new
-  **non-test** `TMDbTestFixtures` target broke `swift build -c release` *only*.
-  Debug builds, `--build-tests`, all 2868 unit tests and 291 integration tests
-  passed while `make build-release` — i.e. `make ci` and both CI release jobs —
-  was red. I never ran a release build before declaring implementation
-  complete; the code reviewer caught it. Whole-module-optimization then
-  misreported the culprit file, so the grep for `@testable` mattered more than
-  the compiler's own pointer.
-- **Deviations:** (a) the shared-fixtures target was **not** in the plan — the
-  review blocker forced a decision between duplicating ~100 fixtures, keeping
-  tests in place, or a shared target; the user chose the shared target after I
-  corrected my own under-estimate of the blast radius (494 of 572 files touch
-  those fixtures). (b) `make ci` could not pass locally for most of the
-  delivery — the Xcode 27 `.docc` trap, verified to fail **identically on
-  `origin/main`**, so every stage was run individually instead; **#396 fixed it
-  upstream mid-delivery**, and the rebase onto it made `make ci` green once the
-  two new catalogs were added to its `exclude` list. (c) M3 left as documented
-  duplication rather than promoting two internal DTOs, which cascades into
-  member-level access.
-- **Rebase (onto `cea296c`):** picked up #396 (Xcode 27) and #397 (`TMDbError`
-  context — the 19.0.0 train partner, now merged). Two conflicts, both in
-  append-at-top files (CHANGELOG, retros). The load-bearing catch was silent:
-  #396's `.docc` `exclude` list is **per target**, so the two new catalogs
-  re-introduced the build failure — a clean textual rebase and a green
-  `swift build` both missed it; only `make ci` caught it. Tests reconciled
-  again: **2869 on the new base, 2869 after**.
-- **Improvement:** **`/deliver` Phase 3 should run `swift build -c release`
-  before declaring implementation done.** Debug + tests green is not evidence
-  the release gate passes, and the two diverge precisely on access-level and
-  `@testable` mistakes — exactly what a target-extraction PR is made of. Cheap
-  check, would have caught the only Critical in this delivery.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -690,6 +714,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-24 | #398 | full | Extracted the `TMDbIntelligence` product — ~40 sources, ~110 fixtures and ~30 tests relocated behind new targets. Two lasting rules came out of it. **Run `swift build -c release` before declaring implementation done**: a `@testable import` inside the new *non-test* `TMDbTestFixtures` target broke the release build *only*, while debug, `--build-tests`, 2868 unit and 291 integration tests all passed — now a hard Phase 3 checkpoint and a `gotchas.md` entry. And **share fixtures via a `package`-access target, never a `@testable` one** (now a wiki pattern). The plan critics paid for themselves twice over, catching that `TMDbTestingTests` referenced a symbol that was moving out, and unanimously that the planned `.xctestplan` sweep was **ghost work** — those files are gitignored and untracked. Counting tests rather than trusting green proved the move lossless (2868 → 2868, then 2869 → 2869 after rebasing onto #396/#397, whose `.docc` `exclude` list turned out to be **per target**, so the two new catalogs silently re-introduced the failure that only `make ci` caught). Rubric **self-graded — the independent grader died on a session limit; recorded, not silently passed**. |
 | 2026-07-24 | #397 | full | Enriched `TMDbError` with structured context (ADR-0012). The plan review paid for the delivery on its own: a critic caught, before a line was written, that the new public `endpointPath` would carry `guest_session_id` (a bearer-like credential) and `account_id` (PII) into a loggable field — the redactor and its tests came from that finding, and `security-review` later confirmed the control covers all 137 request-path templates. Now the wiki pattern *a-diagnostic-field-added-for-logging-is-a-publishing-surface*. Capturing **real** error bodies from the live API while planning (`curl -D-`) beat the plan's guesses: 400/code 22 and 422/code 20, not the invented 422/code 5. Environmental friction was severe — the Xcode 27 / Swift 6.4 `.docc` trap made `make ci` unrunnable, and the first attribution (xcsift `--Werror`) was **wrong**: `pipestatus` showed `swift build` exiting 1 and xcsift 0, which is why the build/test skills now say the exit status is the verdict, not the summary. |
 | 2026-07-24 | #390 | full | Migrated model runtimes from `Int` minutes to `Duration` (ADR-0011). The lasting pattern is store-the-raw / expose-the-computed: keep the integer-minute wire value in a private stored property and expose `Duration` as a computed one, so `Codable` stays synthesized and the wire format cannot silently drift — no hand-written 30-property `encode` to maintain. Now the wiki entry *bridge-a-wire-type-to-a-domain-type-inside-the-model*. The `.convertFromSnakeCase` → camelCase-`CodingKeys` check caught the `episodeRunTime` rawValue trap before it broke decode. Its "one improvement" — run the tooling-runner in the *active worktree* rather than the main checkout — recurred verbatim in #397 one delivery later and shipped in #399. |
 | 2026-07-08 | #387 | lite | Bumped the CI workflows to Xcode 26.6. The lasting practice: a plan-time `WebFetch` of the `macos-26` runner-image README confirmed `/Applications/Xcode_26.6.app` exists (build 17F113) **before** pinning it — retiring the one real risk of a toolchain-version bump, pinning a version the runner does not ship, at plan time rather than in CI. Now the wiki heuristic *before-bumping-a-pinned-ci-toolchain-version-verify-the-runner-image-ships-it*. `security-review` ran (workflows are security-relevant) and returned 0 findings. |
