@@ -579,7 +579,7 @@ Docker down → say so and flag the PR Linux-unverified, don't skip silently.
 
 ### `swift-tools-version` is floored by the Linux CI container, not by Xcode
 
-*2026-08-13 (#NNN).* Raising `Package.swift`'s `swift-tools-version` is
+*2026-08-13 (#456).* Raising `Package.swift`'s `swift-tools-version` is
 invisible to every Apple-side gate: `make ci` and all macOS jobs run on
 `xcode-27` (Swift 6.4), which loads any manifest at or below 6.4. The binding
 constraint is the **`build-test-linux`** job's container, pinned to one exact
@@ -674,7 +674,7 @@ members). Every time, `swift build` / `make build-tests` reported **0 errors /
 
 ### `.swift-version` is SwiftFormat's `--swiftversion`, not an inert marker
 
-*2026-08-13 (#NNN).* The repo-root `.swift-version` file reads like a toolchain
+*2026-08-13 (#456).* The repo-root `.swift-version` file reads like a toolchain
 marker for swiftenv/swiftly, and **nothing** in the `Makefile` or the workflows
 consumes it — but **SwiftFormat picks it up automatically**, logging
 `Reading swift-version file at …/.swift-version (version 6.1)` on every run and
