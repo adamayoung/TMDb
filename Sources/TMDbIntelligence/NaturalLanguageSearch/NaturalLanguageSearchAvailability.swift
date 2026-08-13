@@ -67,7 +67,9 @@ public enum NaturalLanguageSearchAvailability: Sendable, Equatable {
         ///
         public static let unknown = Reason(kind: .unknown)
 
+        ///
         /// A textual representation of the reason.
+        ///
         public var description: String {
             switch kind {
             case .deviceNotEligible: "deviceNotEligible"

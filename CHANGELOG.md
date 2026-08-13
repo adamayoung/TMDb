@@ -33,15 +33,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.planningFailed`, it compares by cause, so a rate limit can be told from a
   network drop.
 
-- `SearchDegradation.other(String)` (in `TMDbIntelligence`) — a reserved growth
-  slot carrying a stable identifier. New kinds of degradation ship here in a
-  **minor** release and are promoted to a case of their own at the next major, so
-  a `switch` over `SearchDegradation` keeps compiling.
+- **Breaking:** `SearchDegradation` (in `TMDbIntelligence`) gains an
+  `.other(String)` case. This only affects you if you switch **exhaustively** over
+  it — add an `.other` branch, or a `default`.
+
+  It is a reserved growth slot carrying a stable identifier. From here on, new
+  kinds of degradation ship as `.other` in a **minor** release rather than as new
+  cases, so a `switch` written against 20.0.0 keeps compiling. Render `.other` the
+  way you would render a degradation you do not recognise.
 
 - `NaturalLanguageSearchAvailability.Reason.unknown` (in `TMDbIntelligence`) — an
-  availability reason added by a future OS now surfaces here. It was previously
-  reported as `.modelNotReady`, so a caller would wait for a model download that
-  was never pending.
+  availability reason or state added by a future OS now surfaces here. It was
+  previously reported as `.modelNotReady` (an unrecognised unavailability reason)
+  or `.unsupportedOS` (an unrecognised availability state), so a caller would
+  either wait for a model download that was never pending, or tell the user to
+  upgrade an OS that is already current.
 
 ### Fixed
 
@@ -104,10 +110,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `CustomStringConvertible` conformance for one of these, remove it: they now
   conform themselves.
 
-  `SearchPlan.MediaType` and `SearchPlan.RelativeDate` are deliberately unchanged
-  — the first is a closed vocabulary (TMDb has exactly movies, TV series and
-  people), and the second carries payloads the executor must compute year bounds
-  from, where a catch-all member would mean nothing.
+  `SearchPlan.MediaType` and `SearchPlan.RelativeDate` are deliberately unchanged.
+  `MediaType` is bounded by this feature's **result surface** rather than by TMDb's
+  media taxonomy — `NaturalLanguageSearchResult` exposes exactly `movies`,
+  `tvSeries` and `people`, so a fourth media type could not be returned without a
+  larger change than adding a member. (TMDb itself models more, including
+  collections and TV episodes; should the result surface ever grow, `MediaType`
+  should be converted too.) `RelativeDate` carries payloads the executor computes
+  year bounds from, where a catch-all member would mean nothing.
 
 - **Breaking:** a cancelled auto-pagination scan now throws `TMDbError.cancelled`
   rather than `CancellationError`, and stops at the next element even while

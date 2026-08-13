@@ -23,7 +23,7 @@ import TMDb
 import TMDbIntelligence
 
 let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
-let results = try await tmdbClient.naturalLanguageSearch.search("movies with Tom Hanks")
+let results = try await tmdbClient.naturalLanguageSearch.search(matching: "movies with Tom Hanks")
 ```
 
 - Important: This is an **Apple-platforms** library. Its features are built on

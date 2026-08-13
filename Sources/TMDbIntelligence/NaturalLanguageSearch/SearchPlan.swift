@@ -72,7 +72,9 @@ public struct SearchPlan: Sendable, Equatable {
         /// A subjective mood mapped to genres.
         public static let mood = Intent(kind: .mood)
 
+        ///
         /// A textual representation of the intent.
+        ///
         public var description: String {
             switch kind {
             case .find: "find"
@@ -173,7 +175,9 @@ public struct SearchPlan: Sendable, Equatable {
         /// TV series airing today.
         public static let airingToday = ListKind(kind: .airingToday)
 
+        ///
         /// A textual representation of the list kind.
+        ///
         public var description: String {
             switch kind {
             case .trending: "trending"

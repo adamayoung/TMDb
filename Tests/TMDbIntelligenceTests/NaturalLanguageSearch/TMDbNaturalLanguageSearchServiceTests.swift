@@ -170,8 +170,7 @@ struct TMDbNaturalLanguageSearchServiceTests {
         #expect(dataSource.searchAllQueries.isEmpty)
     }
 
-    /// 18 + 22. a TMDb failure during plan execution surfaces as `.searchFailed`,
-    /// and is never rescued by the fallback
+    /// 18. a TMDb failure during plan execution surfaces as `.searchFailed`
     @Test("a TMDb failure during plan execution surfaces as searchFailed")
     func tmdbFailureDuringExecutionSurfacesAsSearchFailed() async throws {
         // The bug: a TMDb 429 during execution was reported as `.planningFailed`,
@@ -184,8 +183,25 @@ struct TMDbNaturalLanguageSearchServiceTests {
             try await makeService().search(matching: "popular movies")
         }
 
-        // Pins `canFallBack` → false: the fallback would issue more requests
-        // against the API that just rate-limited us.
+        // No fallback is attempted after an execution failure. Note this does NOT
+        // exercise `canFallBack`, which is only consulted for errors thrown by
+        // `planner.plan(for:)` — see `searchFailedPlanIsNotRescuedByFallback`.
+        #expect(dataSource.searchAllQueries.isEmpty)
+    }
+
+    /// 22. a `.searchFailed` is never rescued by the literal-search fallback
+    @Test("a searchFailed plan is never rescued by the literal-search fallback")
+    func searchFailedPlanIsNotRescuedByFallback() async throws {
+        // Raised from the PLANNING stage, so `canFallBack(from:)` really is
+        // consulted. Were its `.searchFailed` arm to return true, the fallback
+        // would run and this would return results instead of throwing — retrying
+        // against the API that just failed.
+        planner.planError = .searchFailed(.tooManyRequests())
+
+        await #expect(throws: NaturalLanguageSearchError.searchFailed(.tooManyRequests())) {
+            try await makeService().search(matching: "Kill Bill")
+        }
+
         #expect(dataSource.searchAllQueries.isEmpty)
     }
 
@@ -225,6 +241,11 @@ struct TMDbNaturalLanguageSearchServiceTests {
         await #expect(throws: NaturalLanguageSearchError.planningFailed(underlying: nil)) {
             try await makeService().search(matching: "x")
         }
+
+        // An untyped planning error bypasses the fallback: the inner catch only
+        // matches `NaturalLanguageSearchError`, so it never reaches `canFallBack`
+        // — even though a *typed* `.planningFailed` from the planner is eligible.
+        #expect(dataSource.searchAllQueries.isEmpty)
     }
 
 }
