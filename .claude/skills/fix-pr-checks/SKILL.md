@@ -247,8 +247,9 @@ note it for the user, and move on.
 ## 4. Push once, then finish
 
 After all failing checks are handled, if you committed any fixes, `git push` once
-(it re-triggers CI — expected). Every commit fires the pre-commit `make lint`
-hook; fix lint before retrying.
+(it re-triggers CI — expected). **There is no pre-commit hook** (`.git/hooks/`
+holds only `*.sample`), so nothing lints on your behalf — run `/lint` before
+committing, or a lint fix can itself land a lint failure.
 
 ## Return: sweep summary
 

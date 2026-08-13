@@ -1,10 +1,8 @@
-# 17. A third `TMDbAPIClient` instance for the v4 API
+# ADR-0017: A third `TMDbAPIClient` instance for the v4 API
 
-Date: 2026-08-07
-
-## Status
-
-Accepted
+- **Status:** Accepted (in 20.0.0, unreleased)
+- **Date:** 2026-08-07
+- **Deciders:** Adam Young
 
 ## Context
 
