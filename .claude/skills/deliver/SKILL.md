@@ -329,7 +329,11 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
 - **"Fix every instance of pattern X" → enumerate ALL sites up front** with a
   single **type-driven sweep**, listed in the test list before implementing —
   piecemeal discovery ships subsets (incidents:
-  [`references/review-loops.md`](references/review-loops.md)).
+  [`references/review-loops.md`](references/review-loops.md)). Do that sweep
+  with the **LSP** (`ToolSearch("select:LSP")` → `findReferences`,
+  `incomingCalls`, `goToImplementation`), not `grep`: a text pattern
+  under-reports silently — ADR-0008's grep recipe found four of eight path
+  interpolation sites, and the three it missed carried a credential (#421).
 - **Consult the specialist skills — mandatory, topic-triggered, including for
   fanned-out subagents.** `swift-concurrency` the moment actors,
   `@MainActor`, `Sendable`/`@unchecked Sendable`, locks, `Task`/task groups,
