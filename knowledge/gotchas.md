@@ -63,6 +63,33 @@ retired; the family heading stays.
 
 ## Tooling
 
+### An unreachable `catch` arm is a compile **error** under `--Werror` — ordering is enforced, not conventional
+
+*2026-08-13 (#TBD).* When a `do`/`catch` chain needs a specific-case arm ahead of
+a broad type arm — `catch TMDbError.cancelled` before
+`catch let error as TMDbError`, because the latter matches **every** `TMDbError`
+including `.cancelled` — that ordering looks like a convention a comment has to
+defend. It isn't. Reverse the two and the compiler reports:
+
+```text
+error: case will never be executed
+```
+
+Verified empirically by reversing the arms and building (two reviewers had
+disagreed about whether the compiler noticed). It surfaces as a *warning* in
+SourceKit live diagnostics but as an **error** through
+`swift build -Xswiftc -warnings-as-errors`, which is what `make build`,
+`make build-tests` and `make build-release` all pass — so a mis-ordering cannot
+reach CI, let alone merge.
+
+- **Why it matters:** ordering here is load-bearing for correctness, not style. In
+  `TMDbNaturalLanguageSearchService.search(matching:)` a reversal would report a
+  *cancelled* search as `.searchFailed(.cancelled)` — re-breaking the
+  cancellation semantics of [ADR-0018](decisions/0018-cancellation-as-tmdberror-case.md).
+- **Still keep the behavioural test.** The compiler catches a reversal of two
+  arms that overlap; it does not catch someone *deleting* the specific arm, which
+  is a silent behaviour change. Belt and braces.
+
 ### No workflow runs `make` — a check added to a `make` target does not reach CI
 
 *2026-08-07.* The `Makefile` and CI are **parallel implementations**, not one
@@ -998,6 +1025,34 @@ fields.
 
 ## Public API
 
+### Converting a payload-free public enum to a struct silently drops two implicit conformances
+
+*2026-08-13 (#TBD).* Making a public vocabulary extensible by replacing
+`public enum X { case a, b }` with a struct + `public static let` members (see
+[ADR-0021](decisions/0021-extensible-public-vocabularies.md)) is *almost*
+source-compatible: construction, `==`, `if case .a = x` and a `switch` with a
+`default:` all keep compiling. Two things do **not** carry over, and neither
+produces a diagnostic at the conversion site:
+
+- **`Hashable`.** An enum with **no associated values** is implicitly `Hashable`
+  even when it declares only `Equatable`, so `Set<X>` and `[X: T]` compile
+  against it. A struct is not, so consumer code keying off the value breaks —
+  with nothing at the declaration hinting the loss was deliberate.
+- **`CustomStringConvertible`.** An enum interpolates as its bare case name; a
+  struct interpolates as a **reflection dump**
+  (`Intent(kind: TMDbIntelligence.SearchPlan.Intent.Kind.find)` instead of
+  `find`). This one is worse than a compile break because it *compiles*:
+  `NaturalLanguageSearchPlannerEvalTests` interpolates a `SearchPlan.Intent`
+  into a **dictionary key** for its accuracy report, so the conversion would
+  have silently destroyed that report's keys and its `%-12@` column alignment.
+
+**Declare both explicitly on the struct, and treat them as compatibility
+requirements rather than polish.** Pin each with a test — a `Set`/dictionary
+round-trip, and a table asserting every member's `description` — because nothing
+else will notice if they regress. Note this is a *conversion* hazard, not a
+general one: a payload-**carrying** enum was never implicitly `Hashable`, so it
+loses nothing.
+
 ### A `RawRepresentable` enum with an associated-value case gets **rawValue** equality, not structural
 
 *2026-07-24.* `TMDbStatusCode` is a hand-rolled
@@ -1441,3 +1496,15 @@ in a '@Sendable' closure"*.
 - **Lesson:** before wrapping a service method in any `@Sendable` closure
   (auto-pagination, `Task {}`, etc.), check that every captured **public** type is
   `Sendable`; don't assume a simple value enum already is.
+
+**The inverse half, and it is a lint failure rather than a build failure**
+(*2026-08-13, #TBD*): because that inference rule is "non-`public` types only", a
+**non-public** type that declares `: Sendable` is redundantly annotated, and
+swiftformat's `redundantSendable` rule fails `make lint` on it — *"Remove
+redundant explicit Sendable conformance from non-public structs and enums."* So
+the two halves point opposite ways and both are enforced: an internal nested type
+(e.g. the `enum Kind` backing an extensible-struct vocabulary — see
+[ADR-0021](decisions/0021-extensible-public-vocabularies.md)) must **omit**
+`Sendable` and inherit it implicitly, while its enclosing `public` struct must
+**declare** it. Declaring it on the internal type passes the build and then fails
+the gate.
