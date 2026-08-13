@@ -65,7 +65,7 @@ retired; the family heading stays.
 
 ### An unreachable `catch` arm is a compile **error** under `--Werror` — ordering is enforced, not conventional
 
-*2026-08-13 (#TBD).* When a `do`/`catch` chain needs a specific-case arm ahead of
+*2026-08-13 (#452).* When a `do`/`catch` chain needs a specific-case arm ahead of
 a broad type arm — `catch TMDbError.cancelled` before
 `catch let error as TMDbError`, because the latter matches **every** `TMDbError`
 including `.cancelled` — that ordering looks like a convention a comment has to
@@ -1027,7 +1027,7 @@ fields.
 
 ### Converting a payload-free public enum to a struct silently drops two implicit conformances
 
-*2026-08-13 (#TBD).* Making a public vocabulary extensible by replacing
+*2026-08-13 (#452).* Making a public vocabulary extensible by replacing
 `public enum X { case a, b }` with a struct + `public static let` members (see
 [ADR-0021](decisions/0021-extensible-public-vocabularies.md)) is *almost*
 source-compatible: construction, `==`, `if case .a = x` and a `switch` with a
@@ -1498,7 +1498,7 @@ in a '@Sendable' closure"*.
   `Sendable`; don't assume a simple value enum already is.
 
 **The inverse half, and it is a lint failure rather than a build failure**
-(*2026-08-13, #TBD*): because that inference rule is "non-`public` types only", a
+(*2026-08-13, #452*): because that inference rule is "non-`public` types only", a
 **non-public** type that declares `: Sendable` is redundantly annotated, and
 swiftformat's `redundantSendable` rule fails `make lint` on it — *"Remove
 redundant explicit Sendable conformance from non-public structs and enums."* So

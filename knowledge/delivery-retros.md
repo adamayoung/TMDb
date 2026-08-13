@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-13 — ♻️ TMDbIntelligence vocabulary growth valves + `searchFailed` (`feature/tmdbintelligence-enum-valves`) · full
+## 2026-08-13 — ♻️ TMDbIntelligence vocabulary growth valves + `searchFailed` (#452) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (new + breaking public API, error
   paths, 15 Swift files, +664/−36), **with `/review-plan`'s critics skipped** —
