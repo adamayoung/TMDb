@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-13 — 🔒 Reject traversal-capable URL path segments (`fix/421-reject-traversal-path-segments`) · full
+## 2026-08-13 — 🔒 Reject traversal-capable URL path segments (#453) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (security-relevant networking
   change, new type, public DocC, 8 commits, +900/−30). Skills: `review-plan`
