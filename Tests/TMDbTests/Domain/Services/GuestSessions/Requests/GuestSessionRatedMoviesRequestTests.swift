@@ -24,6 +24,18 @@ struct GuestSessionRatedMoviesRequestTests {
         )
     }
 
+    @Test("path percent-encodes a guest session ID containing unsafe characters")
+    func pathPercentEncodesUnsafeGuestSessionID() {
+        let request = GuestSessionRatedMoviesRequest(
+            guestSessionID: "abc/def?x=y"
+        )
+
+        #expect(
+            request.path
+                == "/guest_session/abc%2Fdef%3Fx%3Dy/rated/movies"
+        )
+    }
+
     @Test("queryItems is empty when no sort or page")
     func queryItemsIsEmptyWhenNoSortOrPage() {
         let request = GuestSessionRatedMoviesRequest(

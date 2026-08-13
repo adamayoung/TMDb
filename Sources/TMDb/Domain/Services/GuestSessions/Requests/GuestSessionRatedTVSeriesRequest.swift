@@ -15,8 +15,11 @@ DecodableAPIRequest<TVSeriesPageableList> {
         page: Int? = nil,
         guestSessionID: String
     ) {
+        // Percent-encoded per ADR-0008: a guest session id is caller-supplied,
+        // and a raw `/` or `?` here would otherwise inject path segments or a
+        // query string into a request that carries the session as a credential.
         let path =
-            "/guest_session/\(guestSessionID)/rated/tv"
+            "/guest_session/\(guestSessionID.urlPathSegmentEncoded)/rated/tv"
         let queryItems = APIRequestQueryItems(
             sortedBy: sortedBy, page: page
         )
