@@ -151,15 +151,27 @@ extension TMDbAPIClient {
             throw TMDbAPIError.invalidURL(redactedPath)
         }
 
-        // No request builder puts a query or fragment in its path — query items
-        // travel separately as `APIRequest.queryItems`. One appearing here means
-        // a raw `?` or `#` broke out of a caller-supplied segment, and those
-        // items would otherwise be merged *ahead* of the credential below.
-        guard urlComponents.query == nil, urlComponents.fragment == nil else {
+        // A request path is a path and nothing else. Anything else surviving the
+        // parse means a caller-supplied segment broke out of itself:
+        //
+        // - a raw `?`/`#` yields a query or fragment, and those items would
+        //   otherwise be merged *ahead* of the credential added below;
+        // - a leading `//` yields an authority, and `user`/`password`/`port` are
+        //   fields of their own that overriding `scheme` and `host` would not
+        //   displace.
+        //
+        // No current builder can emit any of these, so this guards the shape
+        // rather than a live vector — but validating only part of what is parsed
+        // is how the two representations drifted apart in the first place.
+        guard urlComponents.query == nil, urlComponents.fragment == nil,
+              urlComponents.scheme == nil, urlComponents.host == nil,
+              urlComponents.user == nil, urlComponents.password == nil,
+              urlComponents.port == nil
+        else {
             throw TMDbAPIError.invalidURL(redactedPath)
         }
 
-        guard URLPathSegmentValidator.isSafe(urlComponents.percentEncodedPath) else {
+        guard URLPathSegmentValidator.isSafe(path: urlComponents.percentEncodedPath) else {
             throw TMDbAPIError.invalidURL(redactedPath)
         }
 

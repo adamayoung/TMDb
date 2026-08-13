@@ -22,6 +22,28 @@ struct TMDbGuestSessionServiceTests {
         )
     }
 
+    @Test(
+        "rated methods with an empty guest session ID throw bad request and perform no request",
+        arguments: ["", "  \n "]
+    )
+    func ratedMethodsWithEmptyGuestSessionIDThrowBadRequest(guestSessionID: String) async throws {
+        let expectedError = TMDbError.badRequest(
+            TMDbErrorContext(statusMessage: "Guest session ID must not be empty")
+        )
+
+        await #expect(throws: expectedError) {
+            _ = try await service.ratedMovies(sortedBy: nil, page: nil, guestSessionID: guestSessionID)
+        }
+        await #expect(throws: expectedError) {
+            _ = try await service.ratedTVSeries(sortedBy: nil, page: nil, guestSessionID: guestSessionID)
+        }
+        await #expect(throws: expectedError) {
+            _ = try await service.ratedTVEpisodes(sortedBy: nil, page: nil, guestSessionID: guestSessionID)
+        }
+
+        #expect(apiClient.requests.isEmpty)
+    }
+
     @Test("ratedMovies returns movie pageable list")
     func ratedMoviesReturnsMoviePageableList() async throws {
         let guestSessionID = "abc123"

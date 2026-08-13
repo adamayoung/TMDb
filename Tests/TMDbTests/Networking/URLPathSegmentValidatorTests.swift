@@ -26,7 +26,7 @@ struct URLPathSegmentValidatorTests {
         ]
     )
     func isSafeForRealIdentifiers(path: String) {
-        #expect(URLPathSegmentValidator.isSafe(path))
+        #expect(URLPathSegmentValidator.isSafe(path: path))
     }
 
     @Test(
@@ -34,7 +34,7 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/..", "/account/../lists", "/credit/.", "/account/./lists"]
     )
     func isSafeIsFalseForLiteralDotSegment(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     /// The TMDb edge percent-decodes the path before routing, and that decode is
@@ -45,7 +45,7 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/x%2Fy", "/credit/x%2fy", "/account/a%2Fb/lists"]
     )
     func isSafeIsFalseForEncodedSeparator(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     @Test(
@@ -53,13 +53,13 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/%2E%2E", "/credit/%2e%2e", "/credit/%2E"]
     )
     func isSafeIsFalseForEncodedDotSegment(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     @Test("isSafe is false for the reported traversal payload")
     func isSafeIsFalseForReportedTraversalPayload() {
-        #expect(!URLPathSegmentValidator.isSafe("/credit/x%2F..%2F..%2Fmovie%2F550"))
-        #expect(!URLPathSegmentValidator.isSafe("/credit/x%2f%2e%2e%2f%2e%2e%2fmovie%2f550"))
+        #expect(!URLPathSegmentValidator.isSafe(path: "/credit/x%2F..%2F..%2Fmovie%2F550"))
+        #expect(!URLPathSegmentValidator.isSafe(path: "/credit/x%2f%2e%2e%2f%2e%2e%2fmovie%2f550"))
     }
 
     /// TMDb's edge decodes exactly once today (a double-encoded payload 404s), so
@@ -70,7 +70,7 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/x%252F..%252F..%252Fmovie%252F550", "/credit/%252E%252E"]
     )
     func isSafeIsFalseForDoubleEncodedPayload(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     /// Fail closed: a segment the library cannot decode is a segment whose meaning
@@ -80,7 +80,19 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/a%zz", "/credit/a%2", "/credit/100%", "/credit/%"]
     )
     func isSafeIsFalseForMalformedEscape(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
+    }
+
+    /// A distinct branch of the same fail-closed rule: these escapes are
+    /// syntactically well-formed, so they get past the parse and fail on the
+    /// *UTF-8* decode instead. `%C0%AF` is an overlong-encoded `/` — the shape the
+    /// validator's own documentation cites — and it must not survive.
+    @Test(
+        "isSafe is false for a segment that decodes to invalid UTF-8",
+        arguments: ["/credit/%C0%AF", "/credit/a%C0%AFb", "/credit/%E0%80%AF", "/credit/%ED%A0%80", "/credit/%FF"]
+    )
+    func isSafeIsFalseForInvalidUTF8(path: String) {
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     @Test(
@@ -88,7 +100,7 @@ struct URLPathSegmentValidatorTests {
         arguments: ["/credit/..%00", "/credit/a%0Ab", "/credit/a%09b", "/credit/a%7Fb"]
     )
     func isSafeIsFalseForControlCharacter(path: String) {
-        #expect(!URLPathSegmentValidator.isSafe(path))
+        #expect(!URLPathSegmentValidator.isSafe(path: path))
     }
 
     @Test(
@@ -96,7 +108,7 @@ struct URLPathSegmentValidatorTests {
         arguments: ["", "/", "//", "/credit/", "//credit//550//"]
     )
     func isSafeForDegeneratePath(path: String) {
-        #expect(URLPathSegmentValidator.isSafe(path))
+        #expect(URLPathSegmentValidator.isSafe(path: path))
     }
 
 }

@@ -40,13 +40,17 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An error indicating a request URL could not be constructed from the given
     /// value, or was rejected as unsafe before any request was sent.
     ///
-    /// A path segment is rejected when it could resolve to a *different*
-    /// endpoint — for example an identifier containing `/` or `..`, which the
-    /// API server would decode and then resolve away, redirecting the request
-    /// while it still carries your credentials. Such a value is refused
-    /// on-device rather than sent, so a caller passing an unexpected identifier
-    /// (a pasted URL, say) now receives this error where it would previously
-    /// have reached TMDb and come back as ``TMDbError/notFound(_:)``.
+    /// A path segment is rejected when it cannot be certified inert: when it is
+    /// the dot-segment `.` or `..`, when it decodes to contain a `/`, when it
+    /// still contains a `%` after one decode, or when it contains a control
+    /// character. The first two are the traversal cases — the API server decodes
+    /// the path and resolves the dot-segments, so such an identifier would
+    /// redirect the request to a *different* endpoint while it still carries
+    /// your credentials.
+    ///
+    /// Such a value is refused on-device rather than sent. A caller passing an
+    /// identifier of an unexpected shape — a pasted URL, say — receives this
+    /// error rather than a response describing some other resource.
     ///
     /// The associated path is redacted in the same way as
     /// ``TMDbErrorContext/endpointPath``, so it is safe to log.

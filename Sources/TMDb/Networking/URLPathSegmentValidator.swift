@@ -35,7 +35,7 @@ enum URLPathSegmentValidator {
     /// - Returns: `true` when the path is safe to send; `false` when any segment
     ///   could resolve to a different endpoint.
     ///
-    static func isSafe(_ percentEncodedPath: String) -> Bool {
+    static func isSafe(path percentEncodedPath: String) -> Bool {
         percentEncodedPath
             .split(separator: "/", omittingEmptySubsequences: true)
             .allSatisfy { isSafeSegment(String($0)) }

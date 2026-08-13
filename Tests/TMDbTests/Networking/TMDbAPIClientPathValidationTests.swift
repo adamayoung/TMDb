@@ -69,7 +69,9 @@ struct TMDbAPIClientPathValidationTests {
 
         let error = await performExpectingThrow(path: path)
 
-        #expect(error == .invalidURL(EndpointPathRedactor.redact(path)))
+        // Expectation hardcoded rather than computed with `EndpointPathRedactor`,
+        // so a regression in the redactor fails here instead of cancelling out.
+        #expect(error == .invalidURL("/guest_session/{guest_session_id}/rated/movies"))
         #expect(httpClient.performCount == 0)
         #expect(httpClient.lastRequest?.url.absoluteString == nil)
     }
@@ -81,8 +83,33 @@ struct TMDbAPIClientPathValidationTests {
 
         let error = await performExpectingThrow(path: path)
 
-        #expect(error == .invalidURL(EndpointPathRedactor.redact(path)))
+        #expect(error == .invalidURL("/guest_session/{guest_session_id}/rated/movies"))
         #expect(httpClient.performCount == 0)
+    }
+
+    /// A leading `//` makes `URL(string:)` parse an authority, and `URLComponents`
+    /// then carries `user`, `password` and `port` as fields of their own — which
+    /// overriding `scheme` and `host` alone would not displace. No current builder
+    /// can emit such a path, so this guards the shape rather than a live vector.
+    @Test(
+        "perform when path carries an authority throws and sends nothing",
+        arguments: [
+            "//u:p@evil.example.com:8443/credit/550",
+            "//evil.example.com/credit/550",
+            "https://evil.example.com/credit/550"
+        ]
+    )
+    @MainActor
+    func performWhenPathCarriesAnAuthorityThrowsAndSendsNothing(path: String) async {
+        let error = await performExpectingThrow(path: path)
+
+        guard case .invalidURL = error else {
+            Issue.record("Expected invalidURL but got \(String(describing: error))")
+            return
+        }
+
+        #expect(httpClient.performCount == 0)
+        #expect(httpClient.lastRequest?.url.absoluteString == nil)
     }
 
     /// `URLComponents.percentEncodedPath`'s setter traps on a badly-encoded

@@ -86,4 +86,15 @@ struct CreditIntegrationTests {
         #expect(tvSeries.id == 6227)
     }
 
+    /// Asserts against the live client that a traversal identifier is refused
+    /// before any request is made. Without the guard this reaches TMDb, which
+    /// percent-decodes the path, resolves the dot-segments, and answers 200 with
+    /// the *movie* resource — carrying the api_key of whoever ran it.
+    @Test("details with a traversal ID is refused before any request is sent")
+    func detailsWithTraversalIDIsRefused() async throws {
+        await #expect(throws: TMDbError.self) {
+            _ = try await creditService.details(forCredit: "x/../../movie/550")
+        }
+    }
+
 }
