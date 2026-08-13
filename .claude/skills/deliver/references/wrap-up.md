@@ -26,7 +26,10 @@ not a ceremony (a handful of bullets):
   `swept: Makefile, ci.yml → 1 entry rewritten`, or `swept: n/a`.
 - **All three are tripwires. A missing line means that step did not run** —
   and the retro is where they bite, because it is committed and goes through
-  PR review, so a human sees the omission. (`consulted:` and `reconciled:` also
+  PR review, so a human sees the omission. **This applies to entries written
+  from 2026-08-13 on**, when the three keys were separated; earlier entries
+  predate the rule and a missing line there says nothing about whether the step
+  ran. Don't read the archive as a record of skipped phases. (`consulted:` and `reconciled:` also
   live in the run file, which is durable but never reviewed; `.git/` is not a
   diff.) **They are three separate keys on purpose:** when Phase 1 and Phase 7
   both wrote `swept:`, the Phase 7 form filled the slot for four consecutive

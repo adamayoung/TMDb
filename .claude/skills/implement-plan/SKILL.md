@@ -279,6 +279,9 @@ A `PostToolUse` hook matches `Edit|Write` and, for any `.swift` file, runs
 When every item is checked off:
 
 1. Run `/test` and `/integration-test` — both must pass (`CLAUDE.md` requires it).
+   Then run `make build-release`: debug-green and release-red diverge exactly on
+   access-level and `@testable` mistakes, and #398 passed 2868 unit tests, 291
+   integration tests and `--build-tests` while the release build was broken.
 2. Run `/lint` (and `/format` if needed); run `make build-docs` and
    `/lint`-markdown only if public API or docs changed.
 3. Print the final, fully-checked test list and a short summary of what was

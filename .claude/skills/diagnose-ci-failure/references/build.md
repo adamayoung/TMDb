@@ -41,7 +41,7 @@ surface as GitHub `::error::` annotations with `file:line`.
 ## Reproduce locally
 
 - `/build-for-testing` — builds the package + all test targets with `--Werror`
-  (Haiku subagent, logs to `.build/last-build-for-testing.log`). This is the
+  (Haiku subagent, logs to `.build/last-build-tests.log`). This is the
   closest match to the failing CI step.
 - For the release step specifically: `make build-release`.
 

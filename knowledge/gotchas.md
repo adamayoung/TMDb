@@ -133,8 +133,8 @@ Consequences:
   own flags.
 
 Related and often mistaken for this: the live integration suite is *deliberately*
-serialised (40 suites carry `.integrationGate`, a global semaphore), so 300 live
-tests run one at a time. That is long wall-clock by design, not contention —
+serialised — every integration suite carries `.integrationGate`, a global
+semaphore, so the live tests run one at a time. That is long wall-clock by design, not contention —
 don't "fix" it.
 
 ### A new target with a `.docc` catalog must be added to `Package.swift`'s exclude list
@@ -375,9 +375,11 @@ rather than assuming the tool honoured the name.
   from `gh pr view --json mergeStateStatus` (e.g. `/watch-pr` merge-readiness, the
   BLOCKED→CLEAN lag) must key off the REST field and lowercase values.
 - The MCP reply tool (`add_reply_to_pull_request_comment`) needs a numeric REST
-  comment id, but `get_review_comments` returns only GraphQL node ids — so posting a
-  thread **reply** stays on `gh api graphql` even though resolving threads is on the
-  MCP.
+  comment id, which `get_review_comments` does not return as a field. **Solved
+  2026-08-07 — replies are on the MCP now**: the id is the `#discussion_r<id>`
+  anchor of each comment's `html_url`. `gh api graphql` is the fallback, not the
+  route. See `/review-pr-threads` §1 and
+  [ADR-0009](decisions/0009-github-mcp-over-gh-cli.md).
 
 ### A `Write` of a Markdown/DocC file can leak `</content>`/`</invoke>` into the file tail
 
@@ -1100,7 +1102,7 @@ Testing the forward is subtle: a naive test asserting the consumer throws
 *pre-await* cancellation guard also throws. To prove the forward
 actually fired:
 
-> *Updated 2026-08-12 (#419):* that pre-await guard is now
+> *Updated 2026-08-12 (#419/#433):* that pre-await guard is now
 > `guard !Task.isCancelled else { throw TMDbError.cancelled }`, not
 > `try Task.checkCancellation()`, so the two paths are no longer the *same*
 > error type — the guard throws `TMDbError.cancelled` while a forwarded cancel

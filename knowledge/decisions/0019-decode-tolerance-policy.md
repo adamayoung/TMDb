@@ -1,6 +1,6 @@
 # ADR-0019: One decode-tolerance policy — skip an unmodelled media type, stay loud otherwise
 
-- **Status:** Accepted
+- **Status:** Accepted (in 20.0.0, unreleased)
 - **Date:** 2026-08-12
 - **Deciders:** Adam Young
 
