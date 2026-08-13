@@ -151,7 +151,7 @@ cross-platform. Add the product and import it alongside `TMDb`:
 import TMDb
 import TMDbIntelligence
 
-let results = try await tmdbClient.naturalLanguageSearch.search("movies with Tom Hanks")
+let results = try await tmdbClient.naturalLanguageSearch.search(matching: "movies with Tom Hanks")
 ```
 
 `TMDbIntelligence` is an Apple-platforms library — it builds on Apple's

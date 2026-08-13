@@ -27,6 +27,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   models, plus `MockV4ListService` and samples in `TMDbTesting`. See the
   *Authenticating with the v4 API* article.
 
+- `NaturalLanguageSearchError.searchFailed(TMDbError)` (in `TMDbIntelligence`) —
+  a TMDb request that fails while a natural-language search is being carried out
+  now reports as itself, carrying the underlying `TMDbError`. Unlike
+  `.planningFailed`, it compares by cause, so a rate limit can be told from a
+  network drop.
+
+- `SearchDegradation.other(String)` (in `TMDbIntelligence`) — a reserved growth
+  slot carrying a stable identifier. New kinds of degradation ship here in a
+  **minor** release and are promoted to a case of their own at the next major, so
+  a `switch` over `SearchDegradation` keeps compiling.
+
+- `NaturalLanguageSearchAvailability.Reason.unknown` (in `TMDbIntelligence`) — an
+  availability reason added by a future OS now surfaces here. It was previously
+  reported as `.modelNotReady`, so a caller would wait for a model download that
+  was never pending.
+
 ### Fixed
 
 - **Breaking:** cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
@@ -55,12 +71,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   literal-search fallback, so the library did the very work the caller had
   cancelled.
 
+- **Breaking:** a TMDb request failure during a natural-language search
+  (`TMDbIntelligence`) no longer reports as
+  `NaturalLanguageSearchError.planningFailed`, whose description claims the prompt
+  could not be interpreted. A rate limit or network drop — during plan execution
+  **or** during the literal-search fallback — now throws
+  `NaturalLanguageSearchError.searchFailed` carrying the real `TMDbError`, so a
+  caller branching on TMDb's 429 can see it. If you branch on `.planningFailed`
+  to show "couldn't interpret that", add a `.searchFailed` branch. A
+  `.searchFailed` is never rescued by the literal-search fallback, which would
+  otherwise retry against the API that just failed.
+
 ### Changed
 
 - **Breaking:** `TMDbError` gains a `.cancelled` case, and
   `NaturalLanguageSearchError` (in `TMDbIntelligence`) gains one too. This only
   affects you if you switch **exhaustively** over either — add a `.cancelled`
   branch, or a `default`.
+
+- **Breaking:** `SearchPlan.Intent`, `SearchPlan.ListKind` and
+  `NaturalLanguageSearchAvailability.Reason` (all in `TMDbIntelligence`) change
+  from enums to structs with static members. These vocabularies grow as the
+  planner learns new requests and as Apple and TMDb add their own, and as public
+  enums each addition broke every exhaustive `switch` downstream. As structs they
+  can grow in a **minor** release instead.
+
+  Almost nothing changes at the call site: construction (`SearchPlan(intent:
+  .find)`), `==`, `if case .find = plan.intent`, and a `switch` with a `default:`
+  all compile unchanged, and `Hashable` is **retained** so `Set` and dictionary
+  use is unaffected. What no longer compiles is an **exhaustive** `switch` — add
+  a `default:`. Should you have written your own `Hashable` or
+  `CustomStringConvertible` conformance for one of these, remove it: they now
+  conform themselves.
+
+  `SearchPlan.MediaType` and `SearchPlan.RelativeDate` are deliberately unchanged
+  — the first is a closed vocabulary (TMDb has exactly movies, TV series and
+  people), and the second carries payloads the executor must compute year bounds
+  from, where a catch-all member would mean nothing.
 
 - **Breaking:** a cancelled auto-pagination scan now throws `TMDbError.cancelled`
   rather than `CancellationError`, and stops at the next element even while
