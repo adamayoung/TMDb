@@ -235,6 +235,73 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
 
+  # Compile-only sweep of the non-macOS Apple platforms. `swift build` can only
+  # target the host, so without this job nothing in CI ever compiles for
+  # tvOS/watchOS/iOS/visionOS — which is how #416 shipped green: Xcode 27's tvOS
+  # SDK made `canImport(FoundationModels)` true with every symbol unavailable,
+  # and both macOS and Linux stayed happy. Build-only is deliberate: this bug
+  # class is a compile-time availability failure, and the unit tests already run
+  # on macOS and Linux, so booting four simulators would only buy a slower rerun
+  # of the same assertions.
+  build-platforms:
+    name: Build (${{ matrix.name }})
+    needs: changes
+    if: always()
+    runs-on: >-
+      ${{
+        (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
+        && 'xcode-27' || 'ubuntu-latest'
+      }}
+    strategy:
+      # Report every broken platform in one run — availability breakage is
+      # usually per-platform, and failing fast would hide the others.
+      fail-fast: false
+      matrix:
+        include:
+          - name: iOS
+            destination: generic/platform=iOS Simulator
+          - name: tvOS
+            destination: generic/platform=tvOS Simulator
+          - name: watchOS
+            destination: generic/platform=watchOS Simulator
+          - name: visionOS
+            destination: generic/platform=visionOS Simulator
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping ${{ matrix.name }} build"
+
+      - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v7
+
+      - name: Cache Xcode DerivedData
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache@v6
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-${{ matrix.name }}-
+
+      - name: Install xcsift
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          # Drop runner-preinstalled taps Homebrew's trust policy warns about.
+          brew untap aws/tap azure/bicep 2>/dev/null || true
+          brew install xcsift
+
+      # `TMDb-Package`, never `TMDb`: the `TMDb` scheme builds only the core
+      # target, so it would have compiled cleanly straight through #416 — the
+      # break was in TMDbIntelligence. The generic destination needs the SDK
+      # only (no simulator runtime, no boot), so it does not rot when the runner
+      # image changes its installed device names or OS versions.
+      - name: Build
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: set -o pipefail && xcodebuild build -scheme TMDb-Package -destination '${{ matrix.destination }}' 2>&1 | xcsift -f github-actions --Werror
+
   build-test-linux:
     name: Build and Test (Linux)
     needs: changes
@@ -265,7 +332,7 @@ jobs:
   ci:
     name: CI
     if: always()
-    needs: [lint, lint-markdown, build-test, build-test-linux]
+    needs: [lint, lint-markdown, build-test, build-platforms, build-test-linux]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
@@ -274,6 +341,7 @@ jobs:
             "${{ needs.lint.result }}" \
             "${{ needs.lint-markdown.result }}" \
             "${{ needs.build-test.result }}" \
+            "${{ needs.build-platforms.result }}" \
             "${{ needs.build-test-linux.result }}" \
           )
           for result in "${results[@]}"; do
