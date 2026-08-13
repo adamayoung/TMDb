@@ -78,7 +78,8 @@ final class TMDbNaturalLanguageSearchService: NaturalLanguageSearchService {
             // Distinguishes "the caller withdrew" from "TMDb failed". MUST stay
             // above the `as TMDbError` arm below, which matches every TMDbError
             // including `.cancelled` — reversed, a cancelled search would report
-            // as `.searchFailed(.cancelled)`.
+            // as `.searchFailed(.cancelled)`. Reversing it is a compile error
+            // ("case will never be executed"), so this ordering is enforced.
             throw .cancelled
         } catch let error as TMDbError {
             // Raised by the TMDb service calls behind `executor.execute` and behind
