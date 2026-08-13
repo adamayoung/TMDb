@@ -67,8 +67,6 @@ jobs:
       }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
-      # Pin lint tool versions so CI matches local `make lint` exactly and does
-      # not drift when Homebrew publishes a new release.
       SWIFTLINT_VERSION: 0.63.2
       SWIFTFORMAT_VERSION: 0.61.1
     steps:
@@ -106,11 +104,6 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swiftformat --lint .
 
-      # Cross-symbol check that swiftlint cannot express: a public-extension
-      # convenience must not share a requirement's signature, or it silently
-      # becomes that requirement's witness and self-recurses. `make lint` runs
-      # this too, but the Lint job invokes the tools directly rather than via
-      # make — so without this step the guard would never run in CI.
       - name: Defaulted-witness check
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-defaulted-witnesses.py
@@ -169,7 +162,6 @@ jobs:
       - name: Install xcsift
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
-          # Drop runner-preinstalled taps Homebrew's trust policy warns about.
           brew untap aws/tap azure/bicep 2>/dev/null || true
           brew install xcsift
 
@@ -185,10 +177,6 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
-          # Ask SwiftPM where things are rather than hardcoding paths: Swift 6.4
-          # moved the build products to .build/out/Products/Debug and emits one
-          # .xctest bundle per test target instead of a single merged
-          # <Package>PackageTests.xctest.
           BIN_PATH=$(swift build --show-bin-path)
           PROFDATA="$(dirname "$(swift test --show-codecov-path)")/default.profdata"
 
@@ -205,7 +193,6 @@ jobs:
           xcrun llvm-cov export -format="lcov" "${OBJECTS[@]}" \
             -instr-profile "${PROFDATA}" > info.lcov
 
-          # Fail loudly rather than uploading an empty report as 0% coverage.
           if [ ! -s info.lcov ]; then
             echo "::error::Coverage export produced an empty report"
             exit 1
@@ -234,6 +221,57 @@ jobs:
       - name: Build for Release
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: set -o pipefail && swift build -c release -Xswiftc -warnings-as-errors 2>&1 | xcsift -f github-actions --Werror
+
+  build-platforms:
+    name: Build (${{ matrix.name }})
+    needs: changes
+    if: always()
+    runs-on: >-
+      ${{
+        (needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch')
+        && 'xcode-27' || 'ubuntu-latest'
+      }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: iOS
+            destination: generic/platform=iOS Simulator
+          - name: tvOS
+            destination: generic/platform=tvOS Simulator
+          - name: watchOS
+            destination: generic/platform=watchOS Simulator
+          - name: visionOS
+            destination: generic/platform=visionOS Simulator
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping ${{ matrix.name }} build"
+
+      - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v7
+
+      - name: Cache Xcode DerivedData
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache@v6
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-${{ hashFiles('Package.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-
+
+      - name: Install xcsift
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          brew untap aws/tap azure/bicep 2>/dev/null || true
+          brew install xcsift
+
+      - name: Build
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: set -o pipefail && xcodebuild build -scheme TMDb-Package -destination '${{ matrix.destination }}' 2>&1 | xcsift -f github-actions --Werror
 
   build-test-linux:
     name: Build and Test (Linux)
@@ -265,15 +303,17 @@ jobs:
   ci:
     name: CI
     if: always()
-    needs: [lint, lint-markdown, build-test, build-test-linux]
+    needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
         run: |
           results=( \
+            "${{ needs.changes.result }}" \
             "${{ needs.lint.result }}" \
             "${{ needs.lint-markdown.result }}" \
             "${{ needs.build-test.result }}" \
+            "${{ needs.build-platforms.result }}" \
             "${{ needs.build-test-linux.result }}" \
           )
           for result in "${results[@]}"; do

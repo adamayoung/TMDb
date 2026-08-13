@@ -83,7 +83,9 @@ extensions, both **Apple-platforms only**:
   rule-based intent classifier plus `NLTagger` person-name extraction) and, on
   capable devices, an optional `FoundationModelsSearchPlanGenerator` fallback
   for fuzzier prompts — degrading to a plain multi-search where neither is
-  available.
+  available. That fallback is additionally gated
+  `&& !os(tvOS) && !os(watchOS)`: Apple ships no on-device system language
+  model on those two platforms, so they are always deterministic.
 - `languageModelTools` / `TMDbToolbox` — see *Language Model Tools* below.
 
 Consumers add the `TMDbIntelligence` product and `import TMDbIntelligence`

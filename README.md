@@ -44,7 +44,8 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
   search" — type a prompt, get movies, TV series, and people.
   Deterministic interpretation via Apple's Natural Language framework on
   every Apple platform, with Foundation Models handling fuzzier prompts on
-  devices with Apple Intelligence
+  devices with Apple Intelligence (iOS/macOS/visionOS only — tvOS and
+  watchOS stay deterministic)
 * **Language Model Tools** (`TMDbIntelligence`): Drop-in Foundation Models
   `Tool`s for a conversational movie assistant — add them to a
   `LanguageModelSession` and the model searches, fetches details, and finds
@@ -84,7 +85,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
 | **images** | Fully qualified image URLs from model image paths, with the image configuration fetched once and cached |
-| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence) — requires `import TMDbIntelligence` |
+| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence on iOS/macOS/visionOS 26) — requires `import TMDbIntelligence` |
 | **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) — requires `import TMDbIntelligence` |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)

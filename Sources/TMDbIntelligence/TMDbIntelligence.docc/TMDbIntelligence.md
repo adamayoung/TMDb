@@ -42,6 +42,10 @@ Intelligence, Foundation Models additionally handles fuzzier, compositional
 prompts; where neither is available the prompt degrades to a plain
 multi-search.
 
+The Foundation Models tier is available on iOS, macOS and visionOS only. Apple
+ships no on-device system language model for tvOS or watchOS, so interpretation
+there is always deterministic — the search itself works on all five platforms.
+
 Check ``NaturalLanguageSearchService/availability`` before searching to find
 out which level of interpretation the current device offers.
 

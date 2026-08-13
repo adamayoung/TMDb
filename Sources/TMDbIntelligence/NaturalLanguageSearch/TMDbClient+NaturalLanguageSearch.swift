@@ -23,6 +23,11 @@ import TMDb
         /// compositional prompts. On platforms without either, the prompt runs as a
         /// plain multi-search.
         ///
+        /// - Important: The Foundation Models tier is unavailable on tvOS and watchOS —
+        ///   Apple ships no on-device system language model there — so
+        ///   interpretation on those platforms is always deterministic, regardless
+        ///   of the device's Apple Intelligence support.
+        ///
         /// - Note: Each access constructs a new service instance. When checking
         ///   ``NaturalLanguageSearchService/availability`` and then searching, store
         ///   it in a local first — `let search = client.naturalLanguageSearch` — rather
@@ -48,7 +53,7 @@ import TMDb
             // Foundation Models is an optional fallback for the fuzzy tail, only on
             // capable OS versions. The NaturalLanguage planner is always the default.
             var fallback: (any SearchPlanGenerating)?
-            #if canImport(FoundationModels)
+            #if canImport(FoundationModels) && !os(tvOS) && !os(watchOS)
                 if #available(iOS 26, macOS 26, visionOS 26, watchOS 27, *) {
                     fallback = FoundationModelsSearchPlanGenerator()
                 }
