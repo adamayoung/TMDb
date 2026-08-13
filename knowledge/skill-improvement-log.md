@@ -64,6 +64,46 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-13 — Enumerate Swift sites with the LSP, not `grep` · applied
+
+- **Pattern:** the fourth instance of the partial-sweep family, and the one the
+  three existing rules cannot reach — the sweep was performed with the **wrong
+  instrument**. ADR-0008 recorded a discovery recipe for future readers:
+  `grep 'path = "/…\(stringVar)"'`. That pattern is single-line, so it missed
+  three request builders whose `let path =` sat on its own line — four sites
+  recorded, **eight** actual, and the three it missed interpolated a
+  bearer-like guest session id raw for two months (issue #421, fixed in #453).
+  The #364 retro had already recorded the right lesson ("one type-driven
+  enumeration up front") and it *was* applied to `/implement-plan` — but the
+  ADR, which is the artifact the next person actually opens, kept the grep.
+  Adam then asked whether anything instructs using the Swift LSP: the
+  preference existed only in session **memory**
+  (`feedback-prefer-lsp-swift-navigation`, recorded 2026-08-11 at his request)
+  and appeared in no `CLAUDE.md`, skill or knowledge file — so it went unused
+  for an entire delivery, including for the very sweep it would have fixed.
+- **Decision:** **applied**, at Adam's explicit request, in three places so the
+  rule sits where it is executed rather than where it is remembered:
+  `CLAUDE.md` → *Navigating Swift: prefer the LSP over `grep`* (read by every
+  session and every subagent); `/implement-plan` Step 1 → *Enumerate by symbol,
+  not by text*, adjacent to the existing type-driven-sweep guidance; and
+  `/deliver` Phase 3's "fix every instance of pattern X" checkpoint, so the two
+  copies of that rule do not drift.
+- **Rationale:** `grep` answers "what text appears where"; the LSP answers "what
+  does the compiler think this is" — and for "find every site that does X" only
+  the second is trustworthy. The failure mode is the **False green** family: a
+  text sweep that under-reports looks exactly like a clean one. Memory was the
+  wrong home because memory surfaces as background context while a skill step is
+  a thing that gets followed; the same "recorded somewhere other than the
+  artifact people follow" shape as the ADR-0008 grep itself.
+- **Reconsider when:** n/a (applied). Note it is prose, not an enforced gate —
+  nothing fails if a future sweep uses `grep` anyway. If a text-pattern sweep
+  under-reports a **fourth** time, the enforceable version is narrower than a
+  general rule: for a named "every instance of X" task, require the enumeration
+  to be pasted into the test list with its source (LSP query vs grep), so the
+  instrument is visible in review rather than inferred.
+
+---
+
 ### 2026-08-13 — Grep for a changed string's siblings before calling it done · applied
 
 - **Pattern:** partial sweeps keep recurring, but **outside the scope of the two

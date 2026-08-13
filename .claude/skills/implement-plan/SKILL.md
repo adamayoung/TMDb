@@ -114,6 +114,23 @@ Test list — <plan goal>
 It is a living list — you will add cases as implementation reveals them. Confirm
 it with the user (or state it explicitly) before proceeding.
 
+**Enumerate by symbol, not by text — use the LSP.** When the list needs "every
+site that does X" (every caller of a helper, every conformer to a protocol,
+every construction of a request type), ask the compiler, not `grep`. Load the
+tool once with `ToolSearch("select:LSP")`, then use `findReferences` /
+`incomingCalls` for call sites, `goToImplementation` for conformers, and `hover`
+for a symbol's real type behind `any`, a generic, or a typealias. Expect a cold
+start — the first call can fail with *server is starting*; retry once. Positions
+are 1-based and the character must land **on** the symbol.
+
+A text pattern silently under-reports, and that is not hypothetical: ADR-0008
+prescribed `grep 'path = "/…\(stringVar)"'` to find every path interpolation. It
+missed three builders whose `let path =` sat on its own line — four sites
+recorded, eight actual, and the three it missed carried a bearer-like credential
+for two months (issue #421). `findReferences` on the request initialiser would
+have listed all eight. Keep `grep` for exact strings, JSON fixtures, Markdown,
+and non-Swift files, where it is the better tool.
+
 **Mirror the family — probe the nearest siblings first.** When an item adds a
 *sibling* to an existing family (another service method, another model, another
 `addRating`-style guarded method, another `@Suite` test), **read the 1–2 closest

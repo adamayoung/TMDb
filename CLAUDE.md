@@ -295,6 +295,32 @@ then fall back to `make -C <dir>` and say that you did.
 `/lint` and `/format` run `make` directly (they are fast and low-output), and
 `make ci` is run directly before a PR.
 
+### Navigating Swift: prefer the LSP over `grep`
+
+For **symbol-level** questions, ask SourceKit-LSP rather than searching text.
+`LSP` is a *deferred* tool, so load it once per session with
+`ToolSearch("select:LSP")` — until then `Grep` is the reflex and the LSP simply
+goes unused.
+
+- `findReferences` / `incomingCalls` — who actually calls this. Grep hits here
+  are polluted by mocks, DocC comments and string literals.
+- `goToImplementation` — what conforms to this protocol (28 protocol-backed
+  services make this the common question).
+- `hover` — a symbol's real type behind `any`, a generic, or a typealias.
+- `workspaceSymbol` fuzzy-matches **very** loosely (`MovieService` returned 1161
+  symbols); treat it as candidate generation, not lookup.
+
+Two practical notes: the first call can fail with *server is starting* — that is
+a cold start, retry once; and positions are 1-based with the character landing
+**on** the symbol, or you get a silent "no hover information".
+
+**Keep `grep` for** exact strings, JSON fixtures, Markdown, and non-Swift files.
+The distinction that matters: grep answers *"what text appears where"*, the LSP
+answers *"what does the compiler think this is"* — and for "find every site that
+does X", only the second is trustworthy. ADR-0008 prescribed a grep to find
+every path interpolation; it found four of eight, and the three it missed
+carried a bearer-like credential for two months (issue #421).
+
 ### Inside Xcode vs. terminal
 
 Outside Xcode (terminal Claude Code), the skills fall back to `make`
