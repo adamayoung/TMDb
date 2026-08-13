@@ -42,7 +42,13 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
     case unsupportedLanguage
 
     ///
-    /// The session was rate limited. The request may be retried later.
+    /// The on-device model's session was rate limited. The request may be retried
+    /// later.
+    ///
+    /// This is the **on-device model's** own limit, not TMDb's. A TMDb HTTP 429
+    /// arrives as ``searchFailed(_:)`` carrying `TMDbError.tooManyRequests`,
+    /// whose context carries any `Retry-After` delay. The two have different
+    /// remedies, so a caller that retries should branch on which it received.
     ///
     case rateLimited
 
@@ -50,6 +56,22 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
     /// Planning failed for another reason, such as malformed model output.
     ///
     case planningFailed(underlying: (any Error)?)
+
+    ///
+    /// A request to TMDb failed while the search was being carried out.
+    ///
+    /// Covers both plan execution and the literal-search fallback. It is distinct
+    /// from the planning cases because the prompt was understood — it was the
+    /// TMDb request that failed — so ``planningFailed(underlying:)``'s "could not
+    /// be interpreted" would misreport the cause and hide a retryable condition
+    /// such as a rate limit.
+    ///
+    /// - Note: When the literal-search fallback is what failed, the planning
+    ///   error that triggered the fallback is not carried here. The TMDb failure
+    ///   is the actionable one: had planning succeeded, execution would have
+    ///   issued the same request and hit the same failure.
+    ///
+    case searchFailed(TMDbError)
 
     ///
     /// The task performing the search was cancelled.
@@ -81,6 +103,11 @@ public enum NaturalLanguageSearchError: Error, Equatable, Sendable {
             // The underlying error is not `Equatable`, so any two `.planningFailed`
             // values compare equal regardless of their wrapped cause.
             true
+        case (.searchFailed(let lhsError), .searchFailed(let rhsError)):
+            // `TMDbError` *is* `Equatable`, so unlike `.planningFailed` this
+            // discriminates by cause. Omitting this arm would fall through to
+            // `default: false` below and silently make a value unequal to itself.
+            lhsError == rhsError
         case (.cancelled, .cancelled):
             true
         default:
@@ -108,6 +135,8 @@ extension NaturalLanguageSearchError: LocalizedError {
             "The on-device model is rate limited. Try again shortly."
         case .planningFailed:
             "The request could not be interpreted."
+        case .searchFailed(let error):
+            error.errorDescription ?? "The search request to TMDb failed."
         case .cancelled:
             "The search was cancelled."
         }

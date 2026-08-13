@@ -37,6 +37,14 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
     /// *execution* rather than by planning.
     var curatedMoviesError: (any Error)?
 
+    /// Thrown from `searchAll(query:)`, for exercising failures raised by the
+    /// literal-search fallback.
+    ///
+    /// One mock instance backs both the executor and the fallback, so this also
+    /// fires on the `find` execution path — distinguish the two by whether
+    /// `MockSearchPlanGenerator.planError` is set.
+    var searchAllError: (any Error)?
+
     // Captured inputs.
     private(set) var lastMovieFilter: DiscoverMovieFilter?
     private(set) var lastTVFilter: DiscoverTVSeriesFilter?
@@ -92,7 +100,12 @@ final class MockNaturalLanguageSearchDataSource: NaturalLanguageSearchDataSource
     func searchAll(
         query: String
     ) async throws -> (movies: [MovieListItem], tvSeries: [TVSeriesListItem], people: [PersonListItem]) {
+        // Recorded before throwing, so a test can prove the fallback was
+        // attempted and then failed.
         searchAllQueries.append(query)
+        if let searchAllError {
+            throw searchAllError
+        }
         return searchAllResult
     }
 
