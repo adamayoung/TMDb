@@ -1,6 +1,6 @@
 ---
 name: review-knowledge
-description: Audit the knowledge/ base and the .claude/ skills, agents and workflows for staleness, self-contradiction, and drift from their own stated rules — two independent adversarial critics verify every load-bearing claim against the current tree, cross-examine each other, and reach a consensus on if/what needs changing. Use periodically, after a run of deliveries that changed build config, target layout or the skills themselves, or whenever you suspect the docs have aged out of true.
+description: Audit the knowledge/ base and the .claude/ skills, agents and workflows for staleness, self-contradiction, and drift from their own stated rules — four independent adversarial auditors (two lenses over two trees) verify every load-bearing claim against the current tree, cross-examine each other within their tree, and reach a consensus on if/what needs changing. Use periodically, after a run of deliveries that changed build config, target layout or the skills themselves, or whenever you suspect the docs have aged out of true.
 ---
 
 # Review Knowledge
@@ -12,8 +12,10 @@ phase) but retirements are not, so truth decays exactly where the code moves
 fastest — `Makefile`, `.github/workflows/ci.yml`, `Package.swift`, target layout,
 toolchain pins.
 
-Two independent adversarial critics audit it, cross-examine each other's findings,
-and converge on a consensus. You adjudicate only what survives disputed.
+Four independent adversarial auditors — an accuracy lens and a structure lens over
+each of the two trees — audit them, cross-examine each other's findings within
+their tree, and converge on a consensus. You adjudicate only what survives
+disputed.
 
 > The base's own entries are the thing under suspicion. An entry that reads
 > confidently and cites a file is exactly the kind that goes stale unnoticed —
@@ -23,24 +25,33 @@ and converge on a consensus. You adjudicate only what survives disputed.
 
 The point of this skill: do these by default, without being reminded.
 
-1. **Two critics, two lenses, one Workflow.** Run the embedded `Workflow` below.
-   It fans out exactly two auditors in parallel, each pinned to the **`fable`**
-   model, then runs a **cross-examination** round where each sees the other's
-   findings. Invoking this skill is itself the opt-in to call `Workflow`.
-2. **Verify, never trust the prose.** Every finding must be checked against the
+1. **Two lenses × two trees, one Workflow.** Run the embedded `Workflow` below.
+   It fans out **four** auditors in parallel — each lens against each tree —
+   every one pinned to the **`fable`** model, then runs a **cross-examination**
+   round **paired within each tree**, so the two lenses challenge each other on
+   the same material. Invoking this skill is itself the opt-in to call
+   `Workflow`. A tree whose pair doesn't both return is reported
+   `unreconciled`, never as consensus.
+2. **Consult the refutation memory first.** Before reporting, grep
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
+   for `· refuted` entries and drop any finding already settled there whose
+   *Reconsider when* condition is unmet. Say in the report how many you dropped
+   this way. Re-deriving a settled refutation costs a full audit cycle and buys
+   nothing.
+3. **Verify, never trust the prose.** Every finding must be checked against the
    actual tree (`Read`/`Grep`/`Bash`) and cite `file:line`. A finding sourced only
    from reading the knowledge base itself is inadmissible — that is the failure
    mode being audited.
-3. **Critics are read-only.** They audit and report. They do not edit `knowledge/`,
+4. **Critics are read-only.** They audit and report. They do not edit `knowledge/`,
    do not fix anything, and do not open PRs. Applying is the conductor's job, after
    the user approves.
-4. **"Nothing needs changing" is a real, respectable outcome.** A critic that
+5. **"Nothing needs changing" is a real, respectable outcome.** A critic that
    finds a file accurate must say so and name what it checked. Do not manufacture
    findings to look thorough — a padded audit trains the next one to be ignored.
-5. **Adjudicate only genuine deadlock.** After cross-examination, findings both
+6. **Adjudicate only genuine deadlock.** After cross-examination, findings both
    critics confirm are consensus and need no debate from you. Resolve only what
    remains disputed, with a stated rationale grounded in the tree.
-6. **Report before you fix.** Present the consensus, get the user's go-ahead, then
+7. **Report before you fix.** Present the consensus, get the user's go-ahead, then
    apply. Never silently rewrite the knowledge base on the strength of an audit.
 
 ## Scope
@@ -78,17 +89,17 @@ propagated it upstream.
 
 ## Run the audit (Workflow)
 
-Two auditors run as a single `Workflow` so the **`fable`** model is guaranteed per
-agent and each verdict is schema-validated rather than free-text. No `args` are
-needed — the scope is the repository itself.
+Four auditors run as a single `Workflow` so the **`fable`** model is guaranteed
+per agent and each verdict is schema-validated rather than free-text. No `args`
+are needed — the scope is the repository itself.
 
 ```javascript
 export const meta = {
   name: 'review-knowledge-critics',
-  description: 'Two adversarial Fable critics audit the knowledge base, then cross-examine',
+  description: 'Four adversarial Fable auditors (2 lenses x 2 trees), then cross-examine',
   phases: [
-    { title: 'Audit', detail: 'two fable critics, one per lens' },
-    { title: 'Cross-examine', detail: 'each critic tries to refute the other' },
+    { title: 'Audit', detail: 'four fable auditors: each lens over each tree' },
+    { title: 'Cross-examine', detail: 'lenses refute each other, paired within a tree' },
   ],
   model: 'fable',
 }
@@ -237,9 +248,17 @@ The critics have already done the reconciling work — read it, don't redo it:
 1. **Consensus findings** — raised by one critic and **confirmed** by the other.
    These are settled. Do not re-litigate them; carry them at the confirmed
    severity (or the amended one, if the cross-examiner amended and justified it).
-2. **Refuted findings** — dropped. Record them in the report as *raised and
-   refuted*, with the refutation's reasoning, so the next audit doesn't re-raise
-   them cold.
+2. **Refuted findings** — dropped. Report them as *raised and refuted* with the
+   refutation's reasoning **and write them into
+   [`knowledge/skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md)
+   as `· refuted` entries** (its five-field shape; the *Rationale* carries the
+   tree evidence, the *Reconsider when* the condition that would revive the
+   claim). **A refutation recorded only in a PR body does not exist**: the next
+   audit greps `knowledge/`, finds nothing, and re-raises it cold — observed on
+   2026-08-13, when a finding refuted in #444 came back on the very next run.
+   Like every other edit, these entries are written in **Apply**, after the
+   user's go-ahead — and they are worth writing even when the user declines
+   every fix, because the memory is what stops the next run re-deriving them.
 3. **Disputed** — a finding whose rebuttal is itself unconvincing (asserts rather
    than evidences). **This is the only place you adjudicate.** Verify it yourself
    against the tree and make the call, stating what you checked.
