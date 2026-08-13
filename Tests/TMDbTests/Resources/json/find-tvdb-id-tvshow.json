@@ -8,15 +8,21 @@
       "id": 1396,
       "name": "Breaking Bad",
       "original_name": "Breaking Bad",
-      "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
-      "poster_path": "/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg",
+      "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live.",
+      "poster_path": "/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+      "media_type": "tv",
       "original_language": "en",
-      "genre_ids": [18, 80],
-      "popularity": 120.676,
+      "genre_ids": [
+        18,
+        80
+      ],
+      "popularity": 157.2437,
       "first_air_date": "2008-01-20",
-      "vote_average": 8.936,
-      "vote_count": 16928,
-      "origin_country": ["US"]
+      "vote_average": 8.948,
+      "vote_count": 18371,
+      "origin_country": [
+        "US"
+      ]
     }
   ],
   "tv_episode_results": [],

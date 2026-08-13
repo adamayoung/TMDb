@@ -14,15 +14,15 @@
       }
     },
     {
-      "iso_3166_1": "FR",
-      "iso_639_1": "fr",
-      "name": "Français",
-      "english_name": "French",
+      "iso_3166_1": "SK",
+      "iso_639_1": "sk",
+      "name": "Slovenčina",
+      "english_name": "Slovak",
       "data": {
-        "name": "",
-        "overview": "Un professeur de chimie atteint d'un cancer s'associe à un ancien élève pour fabriquer et vendre de la méthamphétamine afin d'assurer l'avenir financier de sa famille.",
+        "name": "Perníkový tatko",
+        "overview": "Stredoškolskému učiteľovi chémie je diagnostikovaná rakovina a tak sa rozhodne pred svojou smrťou zaopatriť výrobou metamfetamínu svoju rodinu.",
         "homepage": "",
-        "tagline": "Souviens-toi de mon nom."
+        "tagline": ""
       }
     }
   ]

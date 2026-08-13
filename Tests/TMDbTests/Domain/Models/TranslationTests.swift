@@ -39,4 +39,37 @@ struct TranslationTests {
         #expect(frTranslation.data.tagline == nil)
     }
 
+    /// The TV variant differs from the movie one by carrying `name` where the
+    /// movie carries `title`, and nothing decoded it from JSON until now.
+    @Test("JSON decoding of TranslationCollection for TV series", .tags(.decoding))
+    func decodeTVSeriesTranslationCollection() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TranslationCollection<TVSeriesTranslationData>.self,
+            fromResource: "tv-series-translations"
+        )
+
+        #expect(result.id == 1396)
+        #expect(result.translations.count == 2)
+
+        // TMDb leaves `name` empty for the original-language translation.
+        let enTranslation = try #require(result.translations.first { $0.languageCode == "en" })
+        #expect(enTranslation.countryCode == "US")
+        #expect(enTranslation.name == "English")
+        #expect(enTranslation.englishName == "English")
+        #expect(enTranslation.data.name == "")
+        #expect(enTranslation.data.overview.contains("chemistry teacher"))
+        #expect(enTranslation.data.tagline == "Change the equation.")
+
+        let skTranslation = try #require(result.translations.first { $0.languageCode == "sk" })
+        #expect(skTranslation.countryCode == "SK")
+        #expect(skTranslation.englishName == "Slovak")
+        #expect(skTranslation.data.name == "Perníkový tatko")
+        #expect(skTranslation.data.tagline == "")
+
+        // `homepage` is an empty string on every TV translation TMDb returns —
+        // it is typed String?, so it decodes as "" rather than nil.
+        #expect(enTranslation.data.homepage == "")
+        #expect(skTranslation.data.homepage == "")
+    }
+
 }
