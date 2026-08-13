@@ -60,7 +60,7 @@ inflate nitpicks to Critical.
 
 ## Project context & architecture (keep current)
 
-- A **library** (not an app) — no UI frameworks. Swift 6.0+ strict concurrency.
+- A **library** (not an app) — no UI frameworks. Swift 6.1+ strict concurrency.
   No external dependencies (stdlib + Foundation only).
 - Platforms: iOS 16+, macOS 13+, watchOS 9+, tvOS 16+, visionOS 1+, Linux.
 - The per-domain services behind `TMDbClient`, each a public `protocol` + an
