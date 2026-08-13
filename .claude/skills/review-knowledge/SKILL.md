@@ -286,14 +286,19 @@ Present a consensus table: finding · severity · agreement (confirmed / adjudic
 / refuted) · the fix. Then state the **verdict for the base as a whole**, and be
 willing to conclude *no changes needed*.
 
-**Record the run — even a clean one.** Append a dated line to
-[`skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md) giving
-the run's **agent count, total tokens, and consensus findings by severity**. A
-run that finds nothing otherwise leaves no trace at all, and
+**Record the run — even a clean one.** Append a one-line **run record** to
+[`skill-improvement-log.md`](../../../knowledge/skill-improvement-log.md), in the
+fixed shape that file's header defines: agent count, total tokens, and consensus
+findings by severity. Like the `· refuted` entries above, it is written in
+**Apply**, after the user's go-ahead — and, unlike them, it is written **even
+when there is nothing else to apply**, so a clean run's Apply step is this line
+alone. If the user declines outright, record the decline in the line rather than
+omitting it.
+
+A run that finds nothing otherwise leaves no trace at all, and
 [ADR-0020](../../../knowledge/decisions/0020-review-knowledge-audit-tier.md)'s
-revisit trigger reads exactly that number — two consecutive zero-finding runs
-over a tree that has demonstrably moved means the audit tier has stopped earning
-its keep. This line is written whatever the verdict; it is the only one that is.
+revisit trigger compares the counts of **two consecutive** runs — so a missing
+line, or one in a different shape, breaks the comparison that decision rests on.
 
 ## Apply — only after the user agrees
 

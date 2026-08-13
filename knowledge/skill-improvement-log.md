@@ -11,7 +11,8 @@ the decision on it. Newest at the top. Two producers write here:
 
 - **`/deliver`'s wrap-up recurring-pattern scan** — proposals to change a skill.
 - **`/review-knowledge`** — audit findings that were **refuted**, and any
-  finding accepted as a standing exception rather than fixed.
+  finding accepted as a standing exception rather than fixed. It also appends a
+  one-line **run record** per audit (see below) — telemetry, not a proposal.
 
 **Why this exists:** both producers surface candidates and wait for approval.
 Without a memory of past decisions they re-raise what is already **applied** or
@@ -45,6 +46,21 @@ Format per entry:
 Keep this five-field shape on every entry so the scan can parse the log
 consistently — in particular **Decision** (status) and **Reconsider when** are the
 two fields the dedup step keys on.
+
+**One sanctioned exception — `/review-knowledge` run records.** Every audit
+appends a single dated line, whatever it found:
+
+```text
+### <date> — /review-knowledge run · <N> agents · <T> tokens · <c> critical / <m> major / <n> minor
+```
+
+It carries no **Decision** and no **Reconsider when**, so **the dedup scan skips
+it**: it is telemetry, not a settled call, and there is nothing for a producer to
+re-raise. It exists because
+[ADR-0020](decisions/0020-review-knowledge-audit-tier.md)'s revisit trigger
+compares the finding counts of two *consecutive* runs — and a run that finds
+nothing would otherwise leave no trace at all. The shape is fixed precisely so
+those two runs stay comparable.
 
 ---
 
