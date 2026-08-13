@@ -40,6 +40,7 @@ always fair game.
 | [0020](0020-review-knowledge-audit-tier.md) | `/review-knowledge` audits on Opus; cross-examination stays on Fable | 2026-08-13 | Accepted (unreleased — tooling only) |
 | [0021](0021-extensible-public-vocabularies.md) | Three shapes for a growable public vocabulary | 2026-08-13 | Accepted (in 20.0.0, unreleased) |
 | [0022](0022-reject-traversal-capable-path-segments.md) | Reject traversal-capable path segments at the `TMDbAPIClient` choke point | 2026-08-13 | Accepted (in 20.0.0, unreleased) |
+| [0023](0023-python-strict-parser-for-fixture-hygiene.md) | Enforce fixture hygiene with an independent strict parser, not a Swift test | 2026-08-14 | Accepted (unreleased — tooling only) |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

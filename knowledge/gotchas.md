@@ -90,6 +90,21 @@ reach CI, let alone merge.
   arms that overlap; it does not catch someone *deleting* the specific arm, which
   is a silent behaviour change. Belt and braces.
 
+### The TMDb MCP's two network tools are swapped
+
+*2026-08-14, verified live on network 49 (#TBD).* The names lie:
+
+| Tool | Actually returns |
+| --- | --- |
+| `mcp__tmdb__details_copy` | `/network/{id}/alternative_names` → `{id, results}` |
+| `mcp__tmdb__alternative_names_copy` | `/network/{id}/images` → `{id, logos}` |
+
+Follow the names and you overwrite an alternative-names fixture with a logos
+payload — a fixture that lies about the wire format, decoding to an empty
+collection rather than failing. Both wrapper types are distinguishable by their
+key (`results` vs `logos`), so assert on that key in any test built from these,
+and a mis-capture fails loudly instead of passing empty.
+
 ### No workflow runs `make` — a check added to a `make` target does not reach CI
 
 *2026-08-07.* The `Makefile` and CI are **parallel implementations**, not one
@@ -108,6 +123,13 @@ shipped this way for one review round before it was caught.
 **Wire a new check in both places**, and add its inputs to the `changes`
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
+
+Two checks are mirrored this way today — `check-defaulted-witnesses.py` and
+`check-fixtures.py`, each a `make lint` prerequisite *and* its own step in the
+CI `Lint` job. When adding a third, prefer an **existing** paths-filter key over
+a new `outputs:` entry: a filter key with no matching line under `outputs:`
+makes `needs.changes.outputs.<key>` the empty string, so the step never runs
+while the job reports success — the same false green one level down.
 
 ### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
 
@@ -851,6 +873,51 @@ any question about whether a custom error survives a given platform's
 because Linux uses swift-corelibs-foundation's separate implementation.
 
 ## Testing
+
+### A camelCase key in a fixture is invisible — `.convertFromSnakeCase` accepts both
+
+*2026-08-14 (#TBD).* `JSONDecoder.theMovieDatabase` sets
+`.convertFromSnakeCase`, which rewrites `original_name` → `originalName` and
+leaves a key **with no underscore unchanged**. So a hand-written `"originalName"`
+lands on the same lookup key as the `"original_name"` TMDb actually sends: the
+test passes either way, and proves nothing about the wire format. Four fixtures
+carried this (`media-pageable-list`, `media`, `cast-role`, `crew-job`) — a class,
+not a one-off, because nothing could see it.
+
+`Scripts/check-fixtures.py` now fails the lint on any fixture key matching
+`^[a-z0-9]+[A-Z]`. Two design points worth keeping if it is ever rewritten:
+
+- **A parse failure must not mask a key defect in the same file.** Check the
+  parsed structure when parsing succeeds, and fall back to a raw-text key scan
+  when it does not. `media-pageable-list.json` had both defects at once; a
+  parse-then-walk checker reports 3 camelCase files where the truth is 4, and the
+  fourth survives the PR that was fixing exactly this.
+- **No allowlist.** An always-empty allowlist is untested code and a one-line
+  bypass. Add one only when TMDb genuinely sends a camelCase key, and give it the
+  staleness check `DEFERRED` has in `check-defaulted-witnesses.py`.
+
+### "Redundant fixture" is a decoder-branch question, not a type question
+
+*2026-08-14 (#TBD).* Deciding a fixture is safe to delete because "that model is
+decode-tested somewhere else" is the wrong rule, and it is wrong in the direction
+that loses coverage silently. `CLAUDE.md`'s fixture-completeness rule is
+**branch**-level.
+
+Three of fourteen deletion candidates were caught by re-classifying that way:
+
+- `tv-series-alternative-titles.json` was the **only** fixture using the
+  `results` key — a distinct arm of `AlternativeTitleCollection.init(from:)`
+  (`titles` / `results` / `[]`) carrying the whole TV alternative-titles
+  endpoint. The retained fixture exercises the `titles` arm only.
+- `find-tvdb-id-tvshow.json` was the only fixture with a populated `tv_results`;
+  the retained `find-results.json` has all four non-movie arrays empty.
+- `find-imdb-id-movie.json` is `/find`-shaped where the retained fixture is
+  details-shaped.
+
+Before deleting a fixture, check two things: does its decode target have a
+hand-written `init(from:)` whose branch this fixture is the only user of, and is
+every key-path it contains **present and populated** in something a test actually
+reads? An empty array in the retained fixture covers nothing.
 
 ### A fixture the author invented tests the author's belief, not the API
 
