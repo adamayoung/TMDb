@@ -85,7 +85,7 @@ A Swift Package for The Movie Database (TMDb) <https://www.themoviedb.org>
 | **tvEpisodeGroups** | TV episode group details and episode organization |
 | **guestSessions** | Guest session rated movies, TV series, and episodes |
 | **images** | Fully qualified image URLs from model image paths, with the image configuration fetched once and cached |
-| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence on iOS/macOS/visionOS) — requires `import TMDbIntelligence` |
+| **naturalLanguageSearch** | On-device natural-language search (all Apple platforms; enhanced by Foundation Models with Apple Intelligence on iOS/macOS/visionOS 26) — requires `import TMDbIntelligence` |
 | **languageModelTools** | Foundation Models tools for a `LanguageModelSession` movie assistant (iOS/macOS/visionOS 26, watchOS 27) — requires `import TMDbIntelligence` |
 
 See the [full API documentation](https://adamayoung.github.io/TMDb/documentation/tmdb/)

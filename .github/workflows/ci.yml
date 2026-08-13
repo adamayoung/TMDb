@@ -291,9 +291,13 @@ jobs:
           # then never re-saves, freezing DerivedData built by an older toolchain.
           # Hashing ci.yml covers the DEVELOPER_DIR pin, so an Xcode bump
           # invalidates the cache by itself.
-          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('Package.swift', '.github/workflows/ci.yml') }}
+          # The ci.yml hash is in the restore PREFIX, not just the key: a bare
+          # prefix would re-import the pre-bump DerivedData on the very miss the
+          # key exists to cause. Package.swift stays in the tail so ordinary
+          # manifest churn still restores a warm cache.
+          key: ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
-            ${{ runner.os }}-xcode-${{ matrix.name }}-
+            ${{ runner.os }}-xcode-${{ matrix.name }}-${{ hashFiles('.github/workflows/ci.yml') }}-
 
       - name: Install xcsift
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
@@ -343,9 +347,11 @@ jobs:
     if: always()
     # `changes` is in this list on purpose. Every other job is `if: always()`,
     # so when `changes` fails they all still run — but with its outputs empty,
-    # every step's `if:` is false and each job exits `success`. Without the
-    # `changes` result here, `CI` would then go green having linted, tested and
-    # compiled nothing at all.
+    # every *work* step's `if:` is false (only the "No changes detected" echo
+    # fires) and each job exits `success`. Without the `changes` result here,
+    # `CI` would then go green having linted, tested and compiled nothing at
+    # all. The window is `pull_request`/`push`; `workflow_dispatch` runs the
+    # work steps via the second disjunct regardless.
     needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux]
     runs-on: ubuntu-latest
     steps:

@@ -23,7 +23,7 @@ import TMDb
         /// compositional prompts. On platforms without either, the prompt runs as a
         /// plain multi-search.
         ///
-        /// - Note: The Foundation Models tier is unavailable on tvOS and watchOS —
+        /// - Important: The Foundation Models tier is unavailable on tvOS and watchOS —
         ///   Apple ships no on-device system language model there — so
         ///   interpretation on those platforms is always deterministic, regardless
         ///   of the device's Apple Intelligence support.
