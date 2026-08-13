@@ -98,12 +98,16 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   `Tests` **tree hashes** rather than the documented
   `git ls-tree … | git hash-object` pipe, which the worktree Bash guard refuses as
   unverifiable; same property, no pipe.
-- **One improvement:** `swept:` disciplines `knowledge/`, but both of this
-  delivery's doc misses were **source-tree** sweep failures a reviewer caught, not
-  the author. Worth a one-line check in `/implement-plan` or the
-  `/review-changes` brief: *changed a literal string, symbol name or code sample?
-  grep the repo for its siblings before calling it done* — the `.docc` catalogs
-  and `README.md` are the habitual blind spot because no gate compiles them.
+- **One improvement — applied in this PR.** `swept:` disciplines `knowledge/`, but
+  both of this delivery's doc misses were **source-tree** sweep failures a
+  reviewer caught, not the author. `/implement-plan`'s *Done* checklist gained a
+  step 3: *changed a literal string, symbol name or code sample? grep the tree for
+  the old text before calling it done* — the `.docc` catalogs and `README.md`
+  being the habitual blind spot because **no gate compiles a code sample**. The
+  gap it fills is the *incidental* fix: the reflexivity footprint sweep covers
+  `.claude/` diffs and the type-driven enumeration covers tasks framed as sweeps,
+  but neither covers a one-liner changed in passing. Logged in
+  `skill-improvement-log.md`.
 
 ## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (#451) · full
 

@@ -64,6 +64,38 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-13 — Grep for a changed string's siblings before calling it done · applied
+
+- **Pattern:** partial sweeps keep recurring, but **outside the scope of the two
+  rules that already address them**. The reflexivity gate's footprint sweep
+  covers `.claude/` diffs (#441-#446, the entry below); `/implement-plan`'s
+  type-driven enumeration covers a task *framed* as "fix every instance of X"
+  (#364, #410). Neither covers an **incidental** one-line fix in ordinary feature
+  work: #452 corrected a stale `search("…")` → `search(matching:)` sample in
+  `README.md` and left the identical call in `TMDbIntelligence.docc` **and**
+  `TMDbIntelligenceTesting.docc`, both found by code review rather than the
+  author. #359 is the same shape caught earlier (a cross-module DocC break found
+  pre-replication).
+- **Decision:** **applied** — a new step 3 in `/implement-plan`'s *Done — when
+  the test list is empty* checklist: changed a literal string, symbol name or
+  code sample, grep the tree for the **old** text before declaring done, with
+  `**/*.docc/**` and `README.md` named as the blind spot. Shipped in #452
+  alongside the delivery that surfaced it.
+- **Rationale:** the mechanism is that **no gate compiles a code sample** —
+  `make build-docs` compiles the DocC catalog, not the Swift inside a fence, and
+  `markdownlint` does not read it either — so a stale sample is invisible to CI
+  by construction and only a reader or a reviewer ever finds it. The two existing
+  rules are both scoped to work the author already knows is a sweep; this class
+  is the one where they *don't* know it, which is why a third, cheaper check
+  earns its place rather than widening either of the others.
+- **Reconsider when:** n/a (applied). Note it is prose in a checklist, not an
+  enforced gate — the honest reason being that a general "did you grep?" check is
+  not mechanisable without knowing what changed semantically. If this recurs a
+  third time, the enforceable version is narrower: a CI step that extracts every
+  ```` ```swift ```` fence from `README.md` and `**/*.docc/**` and compiles them.
+
+---
+
 ### 2026-08-13 — `/review-knowledge` audit tier drops to Opus; cross-examination stays Fable · applied
 
 - **Pattern:** the 2026-08-07 addendum to ADR-0014 pinned `/review-knowledge`'s

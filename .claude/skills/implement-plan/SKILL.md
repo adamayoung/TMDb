@@ -284,9 +284,25 @@ When every item is checked off:
    integration tests and `--build-tests` while the release build was broken.
 2. Run `/lint` (and `/format` if needed); run `make build-docs` and
    `/lint`-markdown only if public API or docs changed.
-3. Print the final, fully-checked test list and a short summary of what was
+3. **Changed a literal string, symbol name or code sample? Grep for its
+   siblings before calling it done.** Fixing the one occurrence in front of you
+   and leaving its twins is this repo's commonest half-fix, and `**/*.docc/**`
+   and `README.md` are the habitual blind spot: **no gate compiles a code
+   sample** — `make build-docs` compiles the DocC *catalog*, not the Swift
+   inside a fence. Grep the whole tree for the **old** text, not the new:
+
+   ```bash
+   grep -rn '<the old spelling>' README.md Sources/ Tests/ knowledge/
+   ```
+
+   This applies to an *incidental* one-line fix, which is the gap: a task
+   framed as "fix every instance of X" is already covered by the type-driven
+   enumeration above, and a reflexive `.claude/` change by `/deliver`'s
+   footprint sweep. #452 fixed a stale `search("…")` call in `README.md` and
+   left the identical call in **two** `.docc` catalogs for code review to find.
+4. Print the final, fully-checked test list and a short summary of what was
    implemented.
-4. If a `/goal` was set, it clears automatically once the condition is confirmed.
+5. If a `/goal` was set, it clears automatically once the condition is confirmed.
 
 Do not declare the plan implemented while any test-list item is unchecked or any
 required suite is red. An empty list with green suites — that is the finish line.
