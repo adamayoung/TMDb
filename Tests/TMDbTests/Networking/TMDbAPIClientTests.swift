@@ -54,6 +54,134 @@ struct TMDbAPIClientTests {
         #expect(error == .invalidURL(path))
     }
 
+    /// A caller-supplied identifier that decodes to a traversal must never be
+    /// sent. TMDb's edge percent-decodes the path and then resolves `..`, so
+    /// before this guard `/credit/x%2F..%2F..%2Fmovie%2F550` was dispatched as
+    /// `…/path/credit/x/../../movie/550` and reached the `movie` endpoint with
+    /// the caller's `api_key` attached.
+    @Test("perform when path decodes to a traversal throws and sends nothing")
+    @MainActor
+    func performWhenPathDecodesToTraversalThrowsAndSendsNothing() async throws {
+        let path = "/credit/x%2F..%2F..%2Fmovie%2F550"
+        let stubRequest = APIStubRequest<String, String>(path: path)
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        #expect(error == .invalidURL(path))
+        #expect(httpClient.performCount == 0)
+        // Asserted on the URL itself so a regression names the endpoint it leaked to.
+        #expect(httpClient.lastRequest?.url.absoluteString == nil)
+    }
+
+    // `URL(string:)` splits a raw `?` in a caller-supplied segment into the query
+    // component, and `urlFromPath` seeds its query items from there — ahead of
+    // `api_key`. So this is a query-injection vector, not merely a path one.
+    @Test("perform when path breaks out into a query throws and sends nothing")
+    @MainActor
+    func performWhenPathBreaksOutIntoQueryThrowsAndSendsNothing() async throws {
+        let path = "/guest_session/x?foo=1/rated/movies"
+        let stubRequest = APIStubRequest<String, String>(path: path)
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        #expect(error == .invalidURL(EndpointPathRedactor.redact(path)))
+        #expect(httpClient.performCount == 0)
+        #expect(httpClient.lastRequest?.url.absoluteString == nil)
+    }
+
+    @Test("perform when path breaks out into a fragment throws and sends nothing")
+    @MainActor
+    func performWhenPathBreaksOutIntoFragmentThrowsAndSendsNothing() async throws {
+        let path = "/guest_session/x#frag/rated/movies"
+        let stubRequest = APIStubRequest<String, String>(path: path)
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        #expect(error == .invalidURL(EndpointPathRedactor.redact(path)))
+        #expect(httpClient.performCount == 0)
+    }
+
+    /// `URLComponents.percentEncodedPath`'s setter traps on a badly-encoded
+    /// string ("Attempting to set percentEncodedPath with invalid characters"),
+    /// which in a library means aborting the host app. Rejecting a malformed
+    /// escape here is what keeps that setter unreachable — and because a trap
+    /// would take the whole suite down, reaching these assertions at all is
+    /// itself the detector, on Linux as well as Apple.
+    @Test(
+        "perform when path contains a malformed escape throws and sends nothing",
+        arguments: ["/credit/a%zz", "/credit/a%2", "/credit/100%", "/credit/%"]
+    )
+    @MainActor
+    func performWhenPathContainsMalformedEscapeThrowsAndSendsNothing(path: String) async throws {
+        let stubRequest = APIStubRequest<String, String>(path: path)
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        #expect(error == .invalidURL(path))
+        #expect(httpClient.performCount == 0)
+    }
+
+    /// `EndpointPathRedactor` splits on a literal `/`, so the injected `%2F` sits
+    /// inside segment 1 and the whole of it is replaced — the trailing `lists`
+    /// does not survive as its own segment.
+    @Test("perform when a rejected path carries an account id redacts it in the error")
+    @MainActor
+    func performWhenRejectedPathCarriesAccountIDRedactsItInTheError() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/account/..%2Flists")
+        httpClient.result = .success(HTTPResponse())
+
+        var error: TMDbAPIError?
+        do {
+            _ = try await apiClient.perform(stubRequest)
+        } catch let err {
+            error = err as? TMDbAPIError
+        }
+
+        #expect(error == .invalidURL("/account/{account_id}"))
+        #expect(httpClient.performCount == 0)
+    }
+
+    /// Regression for the round-trip this fix removes: reading the decoded
+    /// `URLComponents.path` and reassigning it turned `%3D` back into a literal
+    /// `=`, undoing the request builder's own encoding.
+    @Test("perform preserves percent-encoding that is safe to send")
+    @MainActor
+    func performPreservesPercentEncodingThatIsSafeToSend() async throws {
+        let stubRequest = APIStubRequest<String, String>(path: "/credit/abc%3Dy")
+        httpClient.result = .success(HTTPResponse())
+
+        _ = try? await apiClient.perform(stubRequest)
+
+        let request = try #require(httpClient.lastRequest)
+
+        #expect(request.url.absoluteString.contains("/credit/abc%3Dy"))
+        #expect(!request.url.absoluteString.contains("/credit/abc=y"))
+    }
+
     @Test("perform has correct URL")
     @MainActor
     func performHasCorrectURL() async throws {
