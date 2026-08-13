@@ -48,6 +48,39 @@ two fields the dedup step keys on.
 
 ---
 
+### 2026-08-13 — Full pipeline audit: 39 findings across five PRs (#441-#446) · applied
+
+- **Pattern:** a full review of `CLAUDE.md`, all 21 skills, the 3 agents and
+  `knowledge/` — then a `/review-knowledge` run over the result. The recurring
+  shape was not any one defect but **a fix scoped to the file in front of it**:
+  a rule changed in a `SKILL.md` while the `references/` that `SKILL.md` points
+  at kept teaching the superseded version. `deliver/references/worktree-lifecycle.md`
+  absorbed three of those (the forbidden `swept:` key, the superseded
+  settings-file copy, a schema missing the field Phase 0 was told to write), and
+  `/review-knowledge` itself shipped widened in prose with its Workflow still
+  scoped to `knowledge/` alone.
+- **Decision:** **applied** across #441 (5), #442 (11), #443 (P3s +
+  `.worktreeinclude`), #444 (13, three of them regressions of #441-#443), #445
+  (agent denylists + `knowledge/` markdown lint) and #446 (the
+  worktree-lifecycle drift + a refutation memory). Durable countermeasures, as
+  opposed to the individual fixes: the reflexivity gate's third consequence
+  (**sweep the rule's whole footprint by grepping the *old* wording**), the
+  `consulted:`/`reconciled:`/`swept:` key split, `force-review` so a
+  skills-only diff is still reviewed, `disallowedTools` on `code-reviewer` and
+  `tooling-runner`, and `knowledge/**` under the markdown gate.
+- **Rationale:** the individual defects were cheap; the *class* was not. Three
+  consecutive audits each found the previous one's fix incomplete in the same
+  way, which is why the countermeasure is a sweep rule rather than more fixes.
+  Logged here because the 2026-07-08 and 2026-08-07 external reviews set the
+  precedent, and because a future scan reading the retros will otherwise
+  re-derive the whole chain.
+- **Reconsider when:** n/a (applied). Still open and deliberately not done:
+  ~19 minor findings are cleared in the follow-up to #446, and **credential
+  rotation** — the API key and password in public git history since 2023 —
+  is outside the scope of any of these PRs and remains outstanding.
+
+---
+
 ### 2026-08-13 — `/review-knowledge` findings refuted on evidence · refuted
 
 - **Pattern:** two findings raised by the audit behind #444 were refuted after
@@ -85,8 +118,8 @@ two fields the dedup step keys on.
   knowledge/` **empty** — correctly, and for no reason but the ordering. The
   other seven ACs passed. Second entry touching the capture-vs-grading seam,
   after the 2026-07-28 swap below.
-- **Decision:** **applied.** `.claude/skills/deliver/SKILL.md` Phase 0's entry
-  gate gains a sub-bullet: extract the ACs as now, but **drop** any whose
+- **Decision:** **applied** in **#439**. `.claude/skills/deliver/SKILL.md` Phase 0's
+  entry gate gains a sub-bullet: extract the ACs as now, but **drop** any whose
   evidence is a `knowledge/` artifact, and say which were dropped and why rather
   than silently reshaping the user's criteria. Phase 7 gains a reciprocal
   sentence so the rule is visible from either end. No new **Auto:** marker — the

@@ -58,8 +58,11 @@ Non-negotiable. Do these by default, without being reminded.
    it on convergence** (`stamps.reviewedClean` / `securityClean` — that is what
    makes a resume able to skip a pass already done), and **Phase 6 reads the
    rubric from it** — so a skipped step fails loudly at a later phase instead of
-   silently. This list is exhaustive: if a phase isn't named here, nothing
-   writes on its behalf. Location and schema:
+   silently. **Every phase that writes is named here**, so if a phase you are in
+   is absent, nothing writes on its behalf and you must not assume something
+   else did. (Two non-phase writers exist and are documented where they apply:
+   an async run writes the file **before** any `ScheduleWakeup`, and Phase 1's
+   adopt path flips `entry` before re-locking — see `references/`.) Location and schema:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md). A
    template→replicate delivery adds the **`Phase 4a — reference-unit
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
@@ -308,6 +311,10 @@ history. Don't advance until `/test` **and** `/integration-test` pass and the
 work is committed; re-confirm the weight from the diff. Three hard checkpoints:
 
 - **Run `swift build -c release` before declaring implementation done** —
+  **directly via `Bash`, not `/build`**: `tooling-runner` exposes only
+  `build`, `build-tests`, `test` and `integration-test`, so there is no
+  delegated runner for the release build and asking for one silently gets
+  you a debug build. Use `make build-release`.
   debug-green is not evidence the release gate passes. `swift build`,
   `--build-tests` and both suites all compile the package with
   `-enable-testing`; the release build does not, so **access-level and

@@ -40,8 +40,10 @@ release binaries). Local versions must match (the local pin lives at
 
 ## Reproduce locally
 
-- `/lint` — checks SwiftLint + SwiftFormat compliance (Haiku subagent, logs to
-  `.build/last-*.log`).
+- `/lint` — runs `make lint` **directly** (not via a subagent, and it writes no
+  log file): `swiftlint --strict .`, `swiftformat --lint .`, and the
+  `lint-witnesses` script. It is fast and low-output, so the output you need is
+  on stdout.
 - `/format` — auto-fixes, then re-run `/lint`.
 
 ## Output

@@ -66,7 +66,7 @@ Repeat the pass below until the PR is **ready** (§3) or **stuck** (§2).
 
 Delegate the thread sweep to **`/review-pr-threads <number>`** — **always pass
 the PR number.** Without it the skill falls back to "the current branch's PR"
-(`review-pr-threads` §1), re-introducing exactly the dependency §0 forbids. It resolves the
+(`review-pr-threads` §0), re-introducing exactly the dependency §0 forbids. It resolves the
 currently-unresolved threads in one pass (assess → fix+verify / reply-only →
 reply → resolve), reusing **this run's ledger** so a topic you already fixed isn't
 re-edited, and returns a summary (fixed w/ SHAs, replied-only, left-for-user,
