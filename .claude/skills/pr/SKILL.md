@@ -13,12 +13,19 @@ and fixed its findings (e.g. `/deliver`'s code-review phase via
 `/review-changes`), so **skip steps 5–7** to avoid reviewing identical code
 twice. Otherwise (standalone `/pr`), run the internal review as normal.
 
-**Also skip steps 5–7 when the branch changes no Swift** — code review is for
-Swift, so a docs-only / config-only PR needs none:
+**Also skip steps 5–7 when the branch changes no reviewable code.** Use
+`/review-changes`' own gate set, not a narrower one — committed scripts under
+`.claude/workflows/` and `Scripts/` are reviewable too, and a PR editing only
+`Scripts/check-defaulted-witnesses.py` changes a CI gate:
 
 ```bash
-git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift → skip review"
+git diff --name-only origin/main...HEAD \
+  | grep -qE '\.swift$|^\.claude/workflows/|^Scripts/' \
+  || echo "no reviewable code → skip review"
 ```
+
+(If the change rewrites the pipeline's own skills, don't skip — pass
+`force-review` to `/review-changes`; see its §0.)
 
 1. Run `/format` to format code
 2. **Commit all outstanding work.** Run `git status`. If the working tree has **any** uncommitted or unstaged changes (the feature work, plus the formatting from step 1), stage and commit them — the PR reflects **committed history only**, so anything left uncommitted will be **missing from the PR**. First **verify no secrets, `.env`, or build artifacts** are included (per CLAUDE.md — `.env` must stay gitignored; check `git status` before `git add`). Use a descriptive gitmoji message (or several logical commits if the work spans concerns); formatting-only changes can use "🎨 apply code formatting". If the tree is already clean (e.g. work was committed during `/deliver`), this is a no-op.
@@ -52,12 +59,12 @@ git diff --name-only origin/main...HEAD | grep -qE '\.swift$' || echo "no-swift 
         ```
 
         Fix anything it flags (oversized files: split, or add a `// swiftlint:disable` directive matching the `AccountService+Pagination.swift` precedent) and re-run. This catches file-size violations locally instead of on a CI round-trip.
-5. *(skip in `reviewed` mode or when no Swift changed)* Run the **`/review-changes`** skill — it scales the review to the diff (a single `code-reviewer` for a small change, the fan-out + adversarial-verify Workflow for a large one), follows `.github/CODE_REVIEW.md`, and returns a severity-graded report
-6. *(skip in `reviewed` mode or when no Swift changed)* Summarize the code review findings:
+5. *(skip in `reviewed` mode or when no reviewable code changed)* Run the **`/review-changes`** skill — it scales the review to the diff (a single `code-reviewer` for a small change, the fan-out + adversarial-verify Workflow for a large one), follows `.github/CODE_REVIEW.md`, and returns a severity-graded report
+6. *(skip in `reviewed` mode or when no reviewable code changed)* Summarize the code review findings:
     - List any critical or high-severity issues that should be addressed
     - List any medium-severity suggestions for improvement
     - Note any low-severity or stylistic recommendations
-7. *(skip in `reviewed` mode or when no Swift changed)* If there are critical/high-severity issues:
+7. *(skip in `reviewed` mode or when no reviewable code changed)* If there are critical/high-severity issues:
     - Recommend specific changes needed
     - Ask user for confirmation before proceeding (fix issues or continue anyway)
     - If user wants to fix issues, stop and let them address the feedback

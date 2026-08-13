@@ -575,7 +575,7 @@ the 2026-07-28 audit.*
 
 ### Extraneous `CodingKeys` cases break synthesized `Encodable`
 
-*2026-08-12 (#418).* Adding a `CodingKeys` case with **no matching stored
+*2026-08-12 (#440).* Adding a `CodingKeys` case with **no matching stored
 property** — the normal way to decode a second key spelling, e.g. `name` alongside
 `title` — stops `Encodable` synthesising, because nothing can produce a value for
 that key. The compiler error names the conformance, not the extra case, so it
@@ -591,7 +591,7 @@ from `CodingKeys` is simply not encoded.
 
 ### A `package` symbol cannot be referenced by a DocC link
 
-*2026-08-12 (#418).* ` ``droppedItemCount`` ` in a doc comment fails
+*2026-08-12 (#440).* ` ``droppedItemCount`` ` in a doc comment fails
 `make build-docs` with `error: 'droppedItemCount' doesn't exist at '/TMDb/…'`
 when the symbol is `package` or `internal` — DocC resolves public API only, and
 the build is warnings-as-errors. Describe it in prose or use a code span. Same
@@ -599,7 +599,7 @@ family as the cross-module link trap.
 
 ### Check how a page is *built* before reasoning about its decode tolerance
 
-*2026-08-12 (#418).* Three `PageableListResult` specialisations are never decoded
+*2026-08-12 (#440).* Three `PageableListResult` specialisations are never decoded
 at all — `<MediaListItem>`, `<V4ListItem>` and `<ChangedID>` are assembled in
 Swift from an already-decoded model (`TMDbListService`, `TMDbV4ListService`,
 `ChangesService+Pagination`). The page type's decode behaviour, tolerant or
@@ -613,7 +613,7 @@ the *request* type (`DecodableAPIRequest<…>`) answers it in one step.
 
 ### Carry a decode marker inside a `DecodingError`, not as a bare custom error
 
-*2026-08-12 (#418).* To let a container skip one specific decode failure and stay
+*2026-08-12 (#440).* To let a container skip one specific decode failure and stay
 loud for the rest, you need to mark that failure. Throwing a custom `Error` from
 `init(from:)` works, but leaks: every model's `init(from:)` is **public**, so a
 consumer decoding their own cached JSON gets a type they cannot name, and
@@ -629,7 +629,7 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ### A fixture the author invented tests the author's belief, not the API
 
-*2026-08-12 (#418).* Two bugs in one delivery were hidden by hand-written
+*2026-08-12 (#440).* Two bugs in one delivery were hidden by hand-written
 fixtures that could not fail:
 
 - `tv-series-details-append-response.json` gave the appended `lists` section

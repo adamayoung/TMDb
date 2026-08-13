@@ -103,12 +103,28 @@ const LENSES = [
   {
     key: 'accuracy',
     title: 'Accuracy & Staleness',
-    brief: `Assume the knowledge base is lying to you. For every load-bearing factual claim, check it against the CURRENT tree and flag what no longer holds. Prioritise claims about things that move: Makefile targets and variables, .github/workflows/ci.yml (toolchain pins, job names, lint scopes, test filters), Package.swift (targets, dependencies, exclude lists), test-target layout and file locations, swiftlint/swiftformat pins, and live-API behaviours. Hunt specifically for: entries describing a FIXED problem as still live; entries that contradict EACH OTHER; entries that contradict CLAUDE.md; and entries that have accreted several generations of truth instead of being rewritten to the present. Read git log for the PRs an entry cites — an entry whose fix shipped should have been retired.`,
+    brief: `Assume the text is lying to you. For every load-bearing factual claim, check it against the CURRENT tree and flag what no longer holds. Prioritise claims about things that move: Makefile targets and variables, .github/workflows/ci.yml (toolchain pins, job names, lint scopes, test filters), Package.swift (targets, dependencies, exclude lists), test-target layout and file locations, swiftlint/swiftformat pins, skill and tool names, and live-API behaviours. Hunt specifically for: text describing a FIXED problem as still live; passages that contradict EACH OTHER; passages that contradict CLAUDE.md; and text that has accreted several generations of truth instead of being rewritten to the present. Read git log for the PRs a passage cites — one whose fix shipped should have been retired. A cited file:line that no longer points at what it claims is itself a defect, and so is a claimed mechanism (a git hook, a make target, a tool, a skill) that does not exist — verify a mechanism by looking for it, never by trusting the sentence.`,
   },
   {
     key: 'structure',
     title: 'Structure, Policy Compliance & Gaps',
-    brief: `Audit the base against its OWN stated rules in knowledge/README.md (rolling windows, retire-what-is-untrue, ADR immutability and superseding, do-not-pre-split, dated grep-friendly headings) and against knowledge/decisions/README.md (numbering, status upkeep). Hunt for: duplicate or out-of-order headings, numbering collisions, index drift, broken or missing cross-references, orphaned files, statuses that lag reality, entries filed under the wrong file, and windows that have drifted. Then ask what is MISSING: a decision made but never recorded as an ADR, a recurring trap with no entry, a deferred item with no trigger that would ever surface it. Check the base applies its own hygiene rules TO ITSELF.`,
+    brief: `Audit the tree against its OWN stated rules, and against what its siblings say about it. Hunt for: duplicate or out-of-order headings, numbering collisions, index drift, broken or missing cross-references, orphaned files, statuses that lag reality, content filed in the wrong place, and windows that have drifted. Then ask what is MISSING: a decision made but never recorded, a recurring trap with no entry, a deferred item with no trigger that would ever surface it, a rule stated where nothing enforces it. Check the tree applies its own hygiene rules TO ITSELF.`,
+  },
+]
+
+// Both lenses run against BOTH trees — four audits. Widening the scope prose
+// without widening these briefs is how this skill silently audited only half
+// the repo while its own scope table claimed otherwise (#443).
+const TREES = [
+  {
+    key: 'knowledge',
+    title: 'the engineering knowledge base at knowledge/',
+    scope: `Everything under knowledge/: gotchas.md, tmdb-api-notes.md, decisions/ (the ADRs, their README index, and 0000-template.md), delivery-retros.md, skill-improvement-log.md, next-major.md, README.md. Its own rules live in knowledge/README.md — rolling windows, retire-what-is-no-longer-true, ADR immutability and superseding, do-not-pre-split, dated grep-friendly headings, and CITE THE PR THAT DID THE WORK, NOT THE ISSUE (this repo's numbers interleave issues and PRs, so check each cited number with \`gh api\`) — and in knowledge/decisions/README.md: numbering, the 0000-template shape, and status upkeep, where an unreleased CHANGELOG section is NOT a release, only a tag is.`,
+  },
+  {
+    key: 'claude',
+    title: 'the operating instructions in CLAUDE.md, .claude/ and .github/CODE_REVIEW.md',
+    scope: `CLAUDE.md, every SKILL.md and reference file under .claude/skills/, .claude/agents/*.md, .claude/workflows/*.js, .claude/settings.json, and .github/CODE_REVIEW.md. This tree is LARGER and MORE NORMATIVE than knowledge/ and decays the same way. Its decay modes, in the order they have actually bitten this repo: a rule stated in two or three places where the copies drift apart; a rule stated as advice where a gate, hook or frontmatter tools-allowlist could enforce it; a precedence clause ("if your memory and the file disagree, the file wins") pointing at a file that no longer says what the caller assumes, leaving the rule inert; two rules sharing one key, so the loser vanishes while the slot still looks filled; a skill delegating to another without passing the argument that skill needs, so it silently falls back to a default the caller just forbade; a phase mandated to write state that no phase actually writes; and a claimed mechanism that does not exist.`,
   },
 ]
 
@@ -128,11 +144,11 @@ const FINDING_SCHEMA = {
           severity: { type: 'string', enum: ['critical', 'major', 'minor'] },
           confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
           claim: { type: 'string', description: 'one-line statement of the defect' },
-          knowledgeLocation: { type: 'string', description: 'the knowledge/ file:line at fault' },
+          location: { type: 'string', description: 'the file:line at fault (in either audited tree)' },
           evidence: { type: 'string', description: 'how you VERIFIED it against the tree — the file:line or command whose output proves the entry wrong' },
           fix: { type: 'string', description: 'the concrete change: rewrite / retire / renumber / relocate, and to what' },
         },
-        required: ['id', 'severity', 'confidence', 'claim', 'knowledgeLocation', 'evidence', 'fix'],
+        required: ['id', 'severity', 'confidence', 'claim', 'location', 'evidence', 'fix'],
       },
     },
     verifiedAccurate: { type: 'string', description: 'load-bearing claims you checked that ARE still true — say what you checked and how' },
@@ -166,39 +182,49 @@ const REBUTTAL_SCHEMA = {
 const READONLY = `You are READ-ONLY. Read the repo freely (Read/Grep/Bash for git log, grep, ls) but do NOT edit any file, do not fix anything, and do not run builds or tests (slow and unnecessary). `
 
 phase('Audit')
-const audits = await parallel(LENSES.map((lens) => () =>
+const JOBS = TREES.flatMap((tree) => LENSES.map((lens) => ({ tree, lens })))
+const audits = await parallel(JOBS.map(({ tree, lens }) => () =>
   agent(
-    `You are an ADVERSARIAL auditor of the engineering knowledge base at knowledge/ in this repo, working the "${lens.title}" lens.\n\n` +
-    `${lens.brief}\n\n` +
+    `You are an ADVERSARIAL auditor of ${tree.title} in this repo, working the "${lens.title}" lens.\n\n` +
+    `SCOPE — audit ONLY this tree, and cite every finding inside it:\n${tree.scope}\n\n` +
+    `LENS:\n${lens.brief}\n\n` +
     `${READONLY}\n\n` +
-    `EVERY finding must be VERIFIED against the current tree and cite the evidence that proves it — the file:line or command output that contradicts the entry. A finding derived only from reading the knowledge base is inadmissible; that credulity is the exact failure mode you are auditing. Equally: do NOT manufacture findings to look thorough. If a file is accurate, say so in "verifiedAccurate" and name what you checked.\n\n` +
+    `EVERY finding must be VERIFIED against the current tree and cite the evidence that proves it — the file:line or command output that contradicts the text. A finding derived only from reading the documentation is inadmissible; that credulity is the exact failure mode you are auditing. Equally: do NOT manufacture findings to look thorough. If a file is accurate, say so in "verifiedAccurate" and name what you checked.\n\n` +
     `SEVERITY RUBRIC:\n${SEVERITY}`,
-    { label: `audit:${lens.key}`, phase: 'Audit', model: 'fable', effort: 'high', schema: FINDING_SCHEMA }
-  ).then((v) => v && { ...v, lens: lens.title, key: lens.key })
+    { label: `audit:${tree.key}:${lens.key}`, phase: 'Audit', model: 'fable', effort: 'high', schema: FINDING_SCHEMA }
+  ).then((v) => v && { ...v, lens: lens.title, key: lens.key, tree: tree.key, treeTitle: tree.title })
 ))
 
 const live = audits.filter(Boolean)
-if (live.length < 2) {
-  log(`WARNING: only ${live.length} of 2 auditors returned — cross-examination skipped, treat the result as unreconciled`)
-  return { audits: live, rebuttals: [], degraded: true }
-}
+
+// Cross-examine WITHIN each tree, so the two lenses challenge each other on the
+// same material. A tree with fewer than two survivors is reported UNRECONCILED
+// rather than passed off as consensus — a dead auditor is not a clean bill.
+const groups = TREES.map((tree) => ({ tree, members: live.filter((a) => a.tree === tree.key) }))
+const unreconciled = groups.filter((g) => g.members.length < 2).map((g) => g.tree.key)
+unreconciled.forEach((k) => log(`WARNING: ${k} had fewer than 2 auditors return — its findings are UNRECONCILED, not consensus`))
+if (live.length === 0) return { audits: [], rebuttals: [], unreconciled, degraded: true }
 
 phase('Cross-examine')
-const rebuttals = await parallel(live.map((mine, i) => () => {
-  const theirs = live[1 - i]
-  return agent(
-    `An audit of this knowledge base was run through the "${mine.lens}" lens — those findings are YOURS, reproduced below. Another independent auditor worked the "${theirs.lens}" lens. Your job now is to CROSS-EXAMINE their findings — try to refute each one.\n\n` +
-    `YOUR findings (the "${mine.lens}" lens):\n${JSON.stringify(mine.findings, null, 2)}\n\n` +
-    `THEIR findings (the "${theirs.lens}" lens), which you must assess:\n${JSON.stringify(theirs.findings, null, 2)}\n\n` +
-    `For each, independently verify it against the tree and take a position: "confirm" (you checked, it holds), "refute" (you checked, it is wrong or the entry is actually fine — say what they misread), or "amend" (real, but the severity or the proposed fix is wrong — give the corrected one).\n\n` +
-    `Default to REFUTE when the evidence is thin. A finding that cannot be independently reproduced from the tree should not survive into the consensus. Do not confirm out of collegiality.\n\n` +
-    `${READONLY}\n\n` +
-    `Finally, in "missedByBoth", note anything their report made you realise you BOTH missed.`,
-    { label: `cross:${mine.key}`, phase: 'Cross-examine', model: 'fable', effort: 'high', schema: REBUTTAL_SCHEMA }
-  ).then((r) => r && { by: mine.lens, ...r })
-}))
+const rebuttals = await parallel(
+  groups.filter((g) => g.members.length === 2).flatMap((g) =>
+    g.members.map((mine, i) => () => {
+      const theirs = g.members[1 - i]
+      return agent(
+        `An audit of ${g.tree.title} was run through the "${mine.lens}" lens — those findings are YOURS, reproduced below. Another independent auditor worked the "${theirs.lens}" lens over the same tree. Your job now is to CROSS-EXAMINE their findings — try to refute each one.\n\n` +
+        `YOUR findings (the "${mine.lens}" lens):\n${JSON.stringify(mine.findings, null, 2)}\n\n` +
+        `THEIR findings (the "${theirs.lens}" lens), which you must assess:\n${JSON.stringify(theirs.findings, null, 2)}\n\n` +
+        `For each, independently verify it against the tree and take a position: "confirm" (you checked, it holds), "refute" (you checked, it is wrong or the text is actually fine — say what they misread), or "amend" (real, but the severity or the proposed fix is wrong — give the corrected one).\n\n` +
+        `Default to REFUTE when the evidence is thin. A finding that cannot be independently reproduced from the tree should not survive into the consensus. Do not confirm out of collegiality.\n\n` +
+        `${READONLY}\n\n` +
+        `Finally, in "missedByBoth", note anything their report made you realise you BOTH missed.`,
+        { label: `cross:${g.tree.key}:${mine.key}`, phase: 'Cross-examine', model: 'fable', effort: 'high', schema: REBUTTAL_SCHEMA }
+      ).then((r) => r && { by: mine.lens, tree: g.tree.key, ...r })
+    })
+  )
+)
 
-return { audits: live, rebuttals: rebuttals.filter(Boolean) }
+return { audits: live, rebuttals: rebuttals.filter(Boolean), unreconciled, degraded: unreconciled.length > 0 }
 ```
 
 To iterate on the script, edit the file path the `Workflow` tool returns and

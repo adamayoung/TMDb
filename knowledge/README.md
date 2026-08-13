@@ -69,9 +69,15 @@ age differently:
   that lingers past a major bump is a bug in the process, not a backlog item.
 - **Don't pre-split a file.** Split a section into its own file only when it
   genuinely dominates (e.g. `gotchas.md` → `gotchas/tooling.md`), mirroring the
-  project's "promote a boundary only when the pain shows up" rule. The dated `###`
-  headings (newest at top) are the index — keep them grep-friendly so a reader can
-  pull one entry without reading the whole file.
+  project's "promote a boundary only when the pain shows up" rule. **The entry
+  headings are the index** — keep them grep-friendly so a reader can pull one
+  entry without reading the whole file. The shape differs by file, deliberately:
+  `gotchas.md` and `tmdb-api-notes.md` group `###` *topic* headings under `##`
+  sections and carry the date in the entry's first line (`*2026-08-12 (#440).*`),
+  because you grep them by symptom; `skill-improvement-log.md` uses dated `###`
+  headings newest-first and `delivery-retros.md` dated `##` ones, because you
+  read those chronologically. Match the file you are writing into rather than
+  imposing one scheme.
 
 ## Relationship to other stores
 

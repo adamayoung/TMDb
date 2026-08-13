@@ -1,7 +1,8 @@
 # ADR-0016: Auto-mode panel as three independent jurors, in `.claude/workflows/`
 
-**Date:** 2026-07-29
-**Status:** Accepted (unreleased — tooling only, no library impact)
+- **Status:** Accepted (unreleased — tooling only, no library impact)
+- **Date:** 2026-07-29
+- **Deciders:** Adam Young
 
 ## Context
 

@@ -109,7 +109,8 @@ After every thread is handled, if you committed any fixes, `git push` once (it
 re-triggers CI and the `claude-review` bot — expected). Then post the deferred
 replies + resolves for the fixed threads.
 
-Every commit fires the pre-commit `make lint` hook; fix lint before retrying.
+**There is no pre-commit hook** (`.git/hooks/` holds only `*.sample`), so nothing
+lints on your behalf — run `/lint` before committing.
 
 ## Guardrails
 

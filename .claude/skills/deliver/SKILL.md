@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take the current plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (e.g. from /plan) and want the rest of the feature pipeline run end-to-end. Invoking it is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
+description: Take the current plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent) and want the rest of the feature pipeline run end-to-end. Invoking it is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -13,7 +13,8 @@ approval) to a single hard stop — **ready-to-merge** — auto-scaling its
 machinery to the change's risk, and writing a short **retrospective** that
 rides the delivery's own PR. Every run happens in its **own git worktree**
 (Phase 1; torn down on merge, Phase 12) so the user's main checkout stays
-free. The plan is created first with `/plan` (or plan mode) — `/deliver`
+free. The plan is created first in **plan mode** (or with the `Plan` agent;
+there is no `/plan` skill) — `/deliver`
 picks up from there.
 
 ```text
@@ -145,7 +146,7 @@ implementation = separate `/deliver` sessions.)
 ## Phase 0 — Preconditions
 
 - **A plan must exist** (named target → plan-mode plan → most recent in
-  conversation). None → stop; point at `/plan`. Never invent one.
+  conversation). None → stop; ask for one in plan mode. Never invent one.
 - **A plan born from a review finding is a hypothesis** — verify against the
   code (quick `Explore`) *before* planning or asking strategy questions.
 - **State the goal** in a sentence; **judge the weight**; open the ledger.
@@ -312,8 +313,13 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
 
 ## Phase 4 — Code review + fix loop
 
-**Skip entirely if the diff has no reviewable code — no Swift and no
-`.claude/workflows/` script** (`/review-changes` self-gates). Review
+**Skip entirely if the diff has no reviewable code — no Swift, no
+`.claude/workflows/` script and nothing under `Scripts/`** (`/review-changes`
+self-gates on the same set). **Exception — a reflexive delivery** (Phase 0 set
+`reflexive: true`): do **not** skip. Run `/review-changes` with
+`force-review` so it reviews the change on its own terms; a diff being
+markdown is not evidence it is low-risk, and this is the case #407 shipped
+three defects through. Review
 **stable** code once the design settles — not per TDD item. Granularity by
 weight:
 

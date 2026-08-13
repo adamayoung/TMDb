@@ -735,9 +735,11 @@ two fields the dedup step keys on.
   `Network.logoPath` is correctly `URL?` because the API omits it; forcing
   non-optional would make decoding throw. The valuable, non-breaking piece (give
   `Network.homepage` the empty-string→nil guard `Company` already has) is split
-  into its own delivery. The opposite latent issue — `Company.logoPath` is a
-  *required* decode that throws if `logo_path` is absent — is captured in
-  `knowledge/tmdb-api-notes.md` and deferred (fixing it is breaking).
+  into its own delivery. The opposite latent issue — `Company.logoPath` was a
+  *required* decode that threw if `logo_path` was absent — was deferred here as
+  breaking, then **fixed in #404 and released in 19.0.0**: it is now `URL?`
+  decoded with `decodeNonEmptyURLIfPresent` (`Company.swift:48,131`), and so is
+  the nested `Company.Parent.logoPath` (`:163,213`).
 - **Rationale:** "make them consistent" would break public API and degrade decode
   resilience; only the non-breaking robustness improvement is worth doing now.
 - **Reconsider when:** **n/a for the `homepage` rename — it shipped.** The
@@ -745,9 +747,9 @@ two fields the dedup step keys on.
   `homepageURL` was merged in **#412** (2026-08-07) via `next-major.md`, which is
   exactly the route this entry anticipated. (Merged, not released: 20.0.0 is
   still untagged.) The rejection stands only for the *aligning* direction it was
-  written about — forcing `Network.logoPath` non-optional remains wrong, and the
-  open item is a major-version bump letting `Company.logoPath` become optional so
-  the two models can be aligned deliberately.
+  written about — forcing `Network.logoPath` non-optional remains wrong. **The
+  entry is now fully settled**: the `Company.logoPath` half it left open shipped
+  in #404, so there is nothing here for the dedup scan to resurface.
 
 ### 2026-06-24 — "Fix every instance of X" deliveries: enumerate all sites up front · applied
 
@@ -879,12 +881,14 @@ two fields the dedup step keys on.
   now, in opposite directions. #347: local SwiftLint cached a **false green** on
   new files that CI's clean checkout failed. #349: local `make lint-markdown`
   lints `.claude/**` and went **red** on `.claude/skills/deliver/SKILL.md:347`
-  (MD028), but CI's markdown job (`ci.yml:120`) lints only `README.md` + docc, so
+  (MD028), but CI's markdown job then lints only `README.md` + docc, so
   CI is green on it. Both stem from the two gates having different scopes/caches.
 - **Decision:** originally **deferred** (the fix was a repo-config change, outside
   the Phase-6 scan's remit) and **closed as applied on 2026-07-28** — the two
-  scopes are now identical: `Makefile:47–49` and `.github/workflows/ci.yml:122`
-  both lint `README.md`, `CLAUDE.md`, `**/*.docc/**/*.md`, `.claude/**/*.md`.
+  scopes are now identical: the `lint-markdown` target in `Makefile` and the
+  `Lint Markdown` job's run step in `.github/workflows/ci.yml` both lint
+  `README.md`, `CLAUDE.md`, `**/*.docc/**/*.md`, `.claude/**/*.md`. (Named by
+  target and job rather than line number — the numbers rot.)
   The #347 half was already mitigated in `/pr` (the `--no-cache` re-lint step).
 - **Rationale:** a green CI sitting behind a red local `make ci` repeatedly cost
   a triage detour and risked a real local failure being dismissed as "just the

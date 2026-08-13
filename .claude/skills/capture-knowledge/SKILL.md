@@ -130,4 +130,9 @@ Report concisely what you captured: each entry → which file (and ADR number fo
 decisions), and note anything you deliberately skipped as not durable. If nothing
 met the bar, say so plainly — capturing nothing is a valid outcome.
 
+**Always end with the `swept:` line from step 5.4** — `swept: <infra files> →
+<entries rewritten/deleted | none cited>`, or `swept: n/a`. It is not optional
+prose: `/deliver` copies it into the retro and treats its **absence as proof the
+retirement sweep never ran**. A report without it reads as a skipped step.
+
 Arguments: $ARGUMENTS

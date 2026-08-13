@@ -210,6 +210,8 @@ coupling unrelated work.
 - If a requested change is ambiguous or risky, reply on the thread with your
   assessment and leave it for the user (note it in the final summary) rather than
   guessing.
-- Every commit fires the pre-commit `make lint` hook; fix lint before retrying.
+- **There is no pre-commit hook** (`.git/hooks/` holds only `*.sample`). Nothing
+  lints on your behalf — run `/lint` before committing, or the PR's `Lint` job is
+  the first thing that tells you.
 
 Arguments: $ARGUMENTS

@@ -266,8 +266,10 @@ verifies with the targeted suite (not full `make ci`) and opens the PR via
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
 **run only when the change touches reviewable code** — Swift for both
-reviewers, plus committed `.claude/workflows/` scripts for the local one
-(docs/prose-only changes are not reviewed). Three subagents back the pipeline:
+reviewers, plus committed `.claude/workflows/` and `Scripts/` for the local one
+(docs/prose-only changes are not reviewed, unless the caller passes
+`force-review` — `/deliver` does for a delivery that rewrites the pipeline's own
+skills). Three subagents back the pipeline:
 `code-reviewer` (deep Swift/TMDb review, pinned to Opus),
 `documentation-writer` (bulk DocC generation, pinned to Sonnet), and
 `tooling-runner` (build/test execution, pinned to Haiku).
@@ -486,7 +488,9 @@ before it**: the live integration suite is deliberately serialised, and
 re-running it is the largest avoidable cost in a delivery (#401). `/pr`
 documents the one sanctioned narrowing — a diff touching no `*.swift`,
 `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan` or
-`.github/workflows/**` runs `make lint && make lint-markdown` instead.
+`.github/workflows/**` runs `make lint && make lint-markdown && make build-docs`
+instead (drop `build-docs` only if no `*.docc/**` changed). `/pr` owns that rule;
+if this paraphrase and `/pr` ever disagree, `/pr` is right.
 
 **The one thing `make ci` cannot check is `README.md`** — `build-docs` compiles
 DocC but cannot see a stale README. If the public API changed, keep it in sync
@@ -539,4 +543,7 @@ headless Actions). The MCP registration command, the `/x/all`
 path rationale, the owner/repo derivation, and the full `gh`-only exceptions are in
 [ADR-0009](knowledge/decisions/0009-github-mcp-over-gh-cli.md).
 
-**`make ci` must pass before pushing or opening a PR — no exceptions.**
+**The pre-PR gate must pass before pushing or opening a PR — no exceptions.**
+That is full `make ci`, or `/pr`'s docs/config-only narrowing above when the
+diff qualifies. "Narrowed" is not "skipped": one of the two must run and be
+green.
