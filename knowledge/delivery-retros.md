@@ -25,6 +25,74 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-13 — 🐛 Exclude tvOS/watchOS from the FoundationModels planner (`fix/foundationmodels-platform-guards`) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight, but with two pieces of machinery
+  deliberately not used (below): `/review-plan`'s critics and
+  `/review-changes`'s fan-out. Skills: `implement-plan`, `review-changes`,
+  `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *No workflow runs make*, *tooling-runner runs in the main
+  checkout*, *Bash refuses commands it can't prove stay inside the worktree*,
+  *Edits can land in the main checkout*, *EnterWorktree branch name*,
+  *FoundationModels/CoreImage watchOS* (retired by this delivery),
+  *NaturalLanguageSearchService is not platform-gated*, *git ls-tree empty
+  hash*; wiki *before-bumping-a-pinned-ci-toolchain-version-verify-the-runner-
+  image-ships-it*, *a-detector-whose-green-looks-the-same-when-it-didnt-run*,
+  *fix-orphaned-platform-gated-api* (ADR-0010 background).
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` `.github/workflows/ci.yml` → 1 entry retired, 2 rewritten; 5 citing
+  entries re-read and left unchanged.
+- **Worked — probing the platforms before accepting the reported fix found a
+  second break.** The issue proposed `&& !os(tvOS)` at four sites and had
+  verified it on 18.2.0. Building the *unfixed* tree for all five Apple
+  platforms first showed watchOS was also red, and `!os(tvOS)` does not fix it:
+  the SDK's availability is asymmetric per symbol, so only the file touching
+  `SystemLanguageModel` breaks there. Shipping the reported patch verbatim
+  would have left watchOS broken and looked like a complete fix.
+- **Worked — the reviewer found a pre-existing false green two lines from the
+  diff.** The aggregate `ci` job never checked the `changes` job's result, and
+  every job is `if: always()` — so a failed paths-filter left all five jobs
+  exiting `success` having done nothing, on a ruleset that requires `CI`. Fixed
+  here because it is the same failure family the delivery exists to close.
+- **Worked — settling a finding by executing it rather than arguing it.** The
+  reviewer flagged that `xcsift --Werror` on a four-SDK `xcodebuild` might fail
+  on Apple's own header warnings — a false *red*, and explicitly "cannot be
+  settled by reading". One cold piped build per new platform answered it (exit
+  0), which is cheaper than the paragraph of speculation it replaced.
+- **Friction — the weight vocabulary did not fit the diff.** Full weight
+  prescribes the fan-out `/review-changes`, but its five dimensions are all
+  Swift lenses (correctness, concurrency, architecture, testing, api-docs) and
+  the risk in this diff was 74 lines of GitHub Actions YAML. A fan-out would
+  have spent four lenses on a five-line Swift change and still had nobody
+  reviewing the workflow. Took the single-reviewer path with a targeted brief.
+- **Friction — the `markdownlint --fix` hook silently corrupted a knowledge
+  entry** by rewriting a line-leading `#416` into an H1, destroying the
+  sentence and then failing the gate on a heading I never wrote. Captured as a
+  gotcha; it will recur, because this repo cites `#NNN` constantly and wraps
+  prose at 80 columns.
+- **Friction (self-inflicted) — ran `make lint` three times** for a diff of five
+  one-line `#if` changes and a doc comment. The `PostToolUse` hook already
+  formats each file on write; `--strict` is the gate and `make ci` runs it. The
+  user pointed this out mid-run.
+- **Deviations:** (1) skipped `/review-plan`'s critics — the plan had been
+  adversarially verified empirically before `/deliver` was invoked, by testing
+  the reporter's proposed fix and finding it insufficient; (2) single-reviewer
+  `/review-changes` at full weight, per the friction above; (3) skipped the
+  standalone `/integration-test` at Phase 3 — the diff is compile-time-only and
+  a provable macOS no-op, the integration target's *compilation* is proven by
+  `--build-tests`, and `make ci` runs the live suite at Phase 9 anyway (the
+  #401 economy); (4) ran `/security-review` inline rather than via sub-tasks,
+  the surface being one workflow file; (5) let the Phase 6 grader run its own
+  platform builds, against the skill's execution cap — the rubric was
+  build-shaped, so having it trust my logs would have made it non-independent
+  on exactly the criteria that mattered.
+- **One improvement:** `/review-changes`'s fan-out has no dimension for CI /
+  workflow changes, so any diff whose risk is in `.github/workflows/` is either
+  reviewed by five Swift lenses or, as here, routed to the single-reviewer path
+  by hand. A sixth `ci-workflow` dimension (gate integrity, false-green paths,
+  secret exposure, cache keys) would make the fan-out usable for
+  infrastructure diffs instead of only Swift ones.
+
 ## 2026-08-12 — 🐛 Surface task cancellation as `TMDbError.cancelled` (#433) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight: three-critic `/review-plan`, the
@@ -615,87 +683,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   `@testable` mistakes — exactly what a target-extraction PR is made of. Cheap
   check, would have caught the only Critical in this delivery.
 
-## 2026-07-24 — ✨ Enrich `TMDbError` with structured context (#397) · full
-
-- **Phases / skills:** phases 0–8 pre-PR; full weight (reshapes the package's
-  most load-bearing public enum + networking + new public API). `review-plan`
-  (3 critics) → **1 blocker**, 3 majors, 4 minors; all applied, none rejected.
-  `implement-plan`/`canon-tdd` in 4 committed increments (additive types →
-  atomic reshape + 15-file test migration → fixtures/integration → docs/ADR).
-  `review-changes` fan-out (5 dims + adversarial verify) → 0 Critical/High, 2
-  Medium, 3 Low; fixed 4, rejected 1 (`Codable` on the new value types —
-  speculative, `TMDbError` itself isn't `Codable`). `security-review` → 0
-  vulnerabilities, 1 consistency hardening applied. `capture-knowledge` → 2
-  API notes + 3 gotchas + ADR-0012. Independent grader: **5/5 ACs met**.
-- **Worked:** the plan review paid for the whole delivery — a critic caught that
-  `endpointPath` would carry `guest_session_id` (a bearer-like credential) and
-  `account_id` (PII) into a **public, loggable** field, before a line was
-  written; the redactor and its tests came from that finding, and the security
-  review later confirmed the control covers all 137 request-path templates.
-  Capturing **real** error bodies from the live API during planning (`curl -D-`)
-  beat the plan's guesses: the fixtures became 400/code 22 and 422/code 20 as
-  the API actually returns them, not the invented 422/code 5. Keeping the six
-  cases semantic and putting transport detail in context (wiki: *semantic
-  errors, not transport codes*) un-collapsed the fidelity without exporting 13
-  HTTP-shaped public cases.
-- **Friction (environmental):** the Xcode 27 / Swift 6.4 `.docc` trap that #390
-  logged as annoying became **blocking** — `make ci` cannot run at all. My first
-  attribution (xcsift `--Werror`) was **wrong**; `pipestatus` showed `swift
-  build` exiting 1 and xcsift 0, and the failure reproduced on a pristine
-  `origin/main` worktree, proving toolchain drift rather than a branch defect.
-  The tooling-runner CWD trap recurred with a new symptom: a delegated
-  `swift test` ran in the **main** checkout and reported "no matching test cases
-  found" for suites that plainly exist. Web tools hit a session rate limit
-  mid-task; the GitHub API (`runner-images` README + announcement issue) served
-  as the substitute source.
-- **Deviations:** ran every build/test **directly via `Bash`** in the worktree
-  again; verified the delivery against CI's own commands rather than `make ci`.
-  Mid-delivery the user asked for Xcode 27 adoption, so that work went to its
-  own worktree/branch (**#396**) to keep this PR scoped — its CI then caught a
-  real regression (Swift 6.4 moved build products and split the test bundle per
-  target, so the hardcoded coverage export silently uploaded 0%).
-- **One improvement:** the tooling-runner CWD fix was **already** this file's
-  "one improvement" for #390 and it recurred verbatim one delivery later — two
-  consecutive full deliveries lost time to it. It should stop being a retro line
-  and become a skill change: either pin the tooling-runner's CWD to the active
-  worktree, or have `/build`/`/test` refuse to run when their CWD isn't the
-  conductor's. Second candidate: `Package.swift` should declare the `.docc`
-  catalogs so `-warnings-as-errors` can't fatally trip on them (shipped in #396).
-
-## 2026-07-24 — ♻️ Represent model runtimes as `Duration` instead of `Int` (#390) · full
-
-- **Phases / skills:** phases 0–8 pre-PR; full weight (breaking public API,
-  `Codable`/`CodingKeys`). `review-plan` skipped (`ExitPlanMode` approval this
-  session). `implement-plan`/`canon-tdd`: TDD'd the `RuntimeMinutes` converter,
-  then did the type migration as one **atomic** increment (a breaking type
-  change doesn't compile in partial states). `review-changes` fan-out (5 dims +
-  adversarial verify) → 0 Critical/High/Medium, 2 Low (both fixed).
-  `security-review` → 0 findings. `capture-knowledge` → 3 tooling gotchas +
-  ADR-0011 (inline). Independent grader: 6/6 ACs MET.
-- **Worked:** the stored-minutes / computed-`Duration` design keeps `encode`
-  synthesized, so the integer-minute wire format can't silently drift — no
-  hand-written 30-property encode to maintain — and per-model encode
-  round-trip tests lock it. Two plan-time Explore agents pre-mapped the whole
-  consume/format + test surface, making the migration mechanical. The
-  `.convertFromSnakeCase` → camelCase-`CodingKeys` check (wiki/gotcha) caught
-  the `episodeRunTime` rawValue trap before it silently broke decode.
-- **Friction (environmental, not the change):** the beta Swift 6.4 / macOS 27
-  toolchain makes `-Werror` promote the `.docc` "unhandled file" false alarm to
-  a **fatal** error, so `make test` / `make build-tests` / `make ci` fail
-  locally — and the tooling-runner (Haiku, running in the **main** checkout)
-  misreported the very first build as a failure. Homebrew had also drifted
-  swiftformat to 0.62.1 vs the 0.61.1 pin, flagging unchanged files and
-  reshaping edits. Both cost real diagnosis time.
-- **Deviations:** ran every build/test **directly via `Bash`** in the worktree
-  (the tooling-runner runs in `main` and never saw the worktree diff); built
-  tests without `-Werror` to run them, with `-Werror` + a grep-filter to catch
-  real warnings; reinstalled pinned swiftformat 0.61.1 to `~/.local/bin`.
-- **One improvement:** the tooling-runner / `/deliver` skills should run the
-  tooling-runner **in the active worktree** (or explicitly require builds to go
-  direct-via-`Bash` there) — the CWD mismatch silently builds/reviews the wrong
-  tree. Captured as a gotcha this delivery; a skill fix would stop the next
-  worktree run hitting it cold.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -703,6 +690,8 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-07-24 | #397 | full | Enriched `TMDbError` with structured context (ADR-0012). The plan review paid for the delivery on its own: a critic caught, before a line was written, that the new public `endpointPath` would carry `guest_session_id` (a bearer-like credential) and `account_id` (PII) into a loggable field — the redactor and its tests came from that finding, and `security-review` later confirmed the control covers all 137 request-path templates. Now the wiki pattern *a-diagnostic-field-added-for-logging-is-a-publishing-surface*. Capturing **real** error bodies from the live API while planning (`curl -D-`) beat the plan's guesses: 400/code 22 and 422/code 20, not the invented 422/code 5. Environmental friction was severe — the Xcode 27 / Swift 6.4 `.docc` trap made `make ci` unrunnable, and the first attribution (xcsift `--Werror`) was **wrong**: `pipestatus` showed `swift build` exiting 1 and xcsift 0, which is why the build/test skills now say the exit status is the verdict, not the summary. |
+| 2026-07-24 | #390 | full | Migrated model runtimes from `Int` minutes to `Duration` (ADR-0011). The lasting pattern is store-the-raw / expose-the-computed: keep the integer-minute wire value in a private stored property and expose `Duration` as a computed one, so `Codable` stays synthesized and the wire format cannot silently drift — no hand-written 30-property `encode` to maintain. Now the wiki entry *bridge-a-wire-type-to-a-domain-type-inside-the-model*. The `.convertFromSnakeCase` → camelCase-`CodingKeys` check caught the `episodeRunTime` rawValue trap before it broke decode. Its "one improvement" — run the tooling-runner in the *active worktree* rather than the main checkout — recurred verbatim in #397 one delivery later and shipped in #399. |
 | 2026-07-08 | #387 | lite | Bumped the CI workflows to Xcode 26.6. The lasting practice: a plan-time `WebFetch` of the `macos-26` runner-image README confirmed `/Applications/Xcode_26.6.app` exists (build 17F113) **before** pinning it — retiring the one real risk of a toolchain-version bump, pinning a version the runner does not ship, at plan time rather than in CI. Now the wiki heuristic *before-bumping-a-pinned-ci-toolchain-version-verify-the-runner-image-ships-it*. `security-review` ran (workflows are security-relevant) and returned 0 findings. |
 | 2026-07-06 | #385 | lite | Consolidated the build/test runners into a single `tooling-runner` agent (ADR-0014, model tiers). The plan-time Explore cross-reference sweep pre-scoped the prose blast radius and cut the edit list to 11 files — noticing that "delegates to a Haiku subagent" stays *true* after the refactor, since the runner agent **is** Haiku. Lasting caveat: a freshly added `.claude/agents/*.md` may not register as a spawnable `subagent_type` until a new session, so a consolidation like this cannot be smoke-tested end-to-end inside the delivering session; the first post-merge `/build` is the real verification. |
 | 2026-07-05 | #384 | lite | Added the Phase 0 knowledge-consult step and the independent Phase 6 rubric grader — the two gates that make captured knowledge compound and stop the maker grading its own homework. Smallest delivery to date (+49/−8), and the plan arrived with ACs already in Given/When/Then form, so the entry gate extracted the rubric with zero friction. Its own knowledge-consult was done implicitly (the design phase had already read the relevant material); the `consulted:` ledger line is what made it explicit from the next run on. Its "one improvement" — extend the consult step to standalone `/implement-plan` invocations — **shipped in #443**, which added `/implement-plan`'s *Step 0 — Consult the knowledge base*. |
