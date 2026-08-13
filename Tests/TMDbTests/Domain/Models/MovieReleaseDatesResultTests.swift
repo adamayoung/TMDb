@@ -24,10 +24,10 @@ struct MovieReleaseDatesResultTests {
         #expect(result.id == 550)
         #expect(result.results.count == 3)
 
-        let gb = try #require(result.results.first { $0.countryCode == "GB" })
-        #expect(gb.releaseDates.count == 2)
-        #expect(gb.releaseDates.map(\.certification) == ["18", "18"])
-        #expect(gb.releaseDates.map(\.note) == ["", "Blu-ray"])
+        let unitedKingdom = try #require(result.results.first { $0.countryCode == "GB" })
+        #expect(unitedKingdom.releaseDates.count == 2)
+        #expect(unitedKingdom.releaseDates.map(\.certification) == ["18", "18"])
+        #expect(unitedKingdom.releaseDates.map(\.note) == ["", "Blu-ray"])
 
         // `descriptors` is populated only on some certifications.
         let turkey = try #require(result.results.first { $0.countryCode == "TR" })
