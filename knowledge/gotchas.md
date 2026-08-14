@@ -1281,7 +1281,7 @@ error.
 **The idiom was repo-wide, not a one-off.** A census found **91 sites across 15
 public protocols**. 37 had exactly one defaulted parameter and were fixed in
 PR #410 by dropping it. The remaining **54 had 2–4 defaults**, and were fixed in
-PR #458 (issue #431) by generating the **power set** of no-default overloads —
+PR #459 (issue #431) by generating the **power set** of no-default overloads —
 2ⁿ−1 per site, **306** in all — which keeps every existing call form compiling,
 so it shipped as a *minor* rather than waiting for a major.
 
