@@ -63,6 +63,59 @@ retired; the family heading stays.
 
 ## Tooling
 
+### `build-docs` cannot see a *missing* curation line — only a broken or ambiguous one
+
+*2026-08-14 (#PLACEHOLDER-PR).* `make build-docs` runs
+`--warnings-as-errors`, which catches a `- ``method(a:b:)``` line pointing at
+nothing and a line that resolves to two symbols. It does **not** catch an
+omission: DocC folds an uncurated symbol into a default topic group silently, so
+a forgotten line ships green and the only symptom is the method appearing under
+"Instance Methods" instead of its topic.
+
+`Scripts/check-docc-curation.py` closes it (from `make lint` and its own CI Lint
+step). Two things keep it honest, and both were review findings rather than
+foresight: an `EXPECTED_PAGES` census, because deleting an `Extensions/*.md`
+page otherwise drops every method it covered out of the scan while the summary
+stays cheerful; and counting declarations against curation lines rather than
+comparing sets, because two overloads sharing a name and labels need **two**
+lines and a set comparison is satisfied by either one.
+
+### Two symbols with the same name and labels collide in DocC — disambiguate with the return type
+
+*2026-08-14 (#PLACEHOLDER-PR).* A DocC symbol link is name-plus-argument-labels
+and nothing else, so a sync/async overload pair occupies one link path. Adding
+`allTrending(inTimeWindow:language:) async throws -> TrendingPageableList`
+alongside the existing synchronous
+`allTrending(inTimeWindow:language:) -> PagedAsyncSequence<TrendingItem>` broke
+the build on the *pre-existing* curation line:
+
+```text
+error: 'allTrending(inTimeWindow:language:)' is ambiguous at '/TMDb/TrendingService'
+   ╰─suggestion: Insert '->TrendingPageableList' for 'func allTrending(…)'
+```
+
+Both lines then need a suffix — ``allTrending(inTimeWindow:language:)->TrendingPageableList``
+and ``allTrending(inTimeWindow:language:)->PagedAsyncSequence<TrendingItem>``.
+**Take the syntax from the diagnostic**, which spells out the exact string; the
+repo had no disambiguated link before this, so there was nothing to copy.
+
+The trap is that the *new* symbol is not what fails — the old curation line is,
+in a file you may not otherwise be touching. Requirement/default-implementation
+pairs do **not** collide (DocC folds them into one page), which is why 54 such
+pairs coexisted for months; the collision starts the moment the second symbol
+stops being the first one's witness.
+
+### `make test` compiles with `-warnings-as-errors`; a bare `swift build --build-tests` does not
+
+*2026-08-14 (#PLACEHOLDER-PR).* The `Makefile` test targets pass
+`-Xswiftc -warnings-as-errors`, so a warning — an unmutated `var`, an unused
+result — fails them. Running `swift build --build-tests` by hand omits that
+flag, compiles clean, and invites the conclusion that a `make test` failure is
+fixed when it is not.
+
+Reach for the direct build only to *read* an error `xcsift` has truncated, and
+re-confirm the fix with the `make` target (or `/test`).
+
 ### An unreachable `catch` arm is a compile **error** under `--Werror` — ordering is enforced, not conventional
 
 *2026-08-13 (#452).* When a `do`/`catch` chain needs a specific-case arm ahead of
@@ -124,12 +177,15 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Two checks are mirrored this way today — `check-defaulted-witnesses.py` and
-`check-fixtures.py`, each a `make lint` prerequisite *and* its own step in the
-CI `Lint` job. When adding a third, prefer an **existing** paths-filter key over
-a new `outputs:` entry: a filter key with no matching line under `outputs:`
-makes `needs.changes.outputs.<key>` the empty string, so the step never runs
-while the job reports success — the same false green one level down.
+Three checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py` and `check-docc-curation.py`, each a `make lint`
+prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
+paths-filter key over a new `outputs:` entry: a filter key with no matching line
+under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the
+step never runs while the job reports success — the same false green one level
+down. The curation check reuses the `swift` key for that reason, and its input
+(`Sources/TMDb/TMDb.docc/**`) had to be added to that key — a PR deleting only a
+curation line would otherwise skip the job that would catch it.
 
 ### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
 
@@ -141,8 +197,14 @@ under which **`superfluous_disable_command` is an error**. The build and the
 whole test suite stay green — this fails only at the lint gate.
 
 **When you delete a `!` or a `try!`, delete its `disable` comment in the same
-edit**, and grep the file for orphans (`grep -n "disable:next" <file>`). Same
-applies in reverse to `file_length` / `type_body_length` disables after a split.
+edit**, and grep the file for orphans (`grep -n "disable:next" <file>`).
+
+**The same trap fires on `file_length` when a file *shrinks*.** Moving
+`ChangesService.swift`'s conveniences into a sibling file took it from 421 lines
+to 192 (#PLACEHOLDER-PR), leaving the `// swiftlint:disable file_length` at line 8
+suppressing nothing — a `superfluous_disable_command` error. It is easy to miss
+because the rule is normally reasoned about in the growth direction only: check
+the line count of every file a split *empties*, not just the one it fills.
 
 ### Docs builds need their own scratch path — sharing one invalidates the other
 
