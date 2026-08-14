@@ -84,6 +84,17 @@ Judge size (heuristic, not a rigid count):
 When unsure, prefer **small** — escalate to the fan-out only when the diff is
 genuinely broad.
 
+**Risk overrides size.** Take **§2b** however small the diff is when either the
+caller states the change is **`full` weight**, or the diff touches a risky
+surface — concurrency (actors, `Sendable`, locks, `Task`), networking /
+`HTTPClient`, `Decodable` / `CodingKeys`, or new public API. Size decides how
+much there is to read; the **risk surface decides how many lenses have to read
+it**, and a cohesive one-file concurrency change is the shape whose defects most
+reliably survive a single pass (#401, #433, #461 each had one found late, by a
+second lens or a second platform). A caller that passes `full` has already made
+this judgement from the plan — do not re-derive it from `--stat` and quietly
+overrule it.
+
 ## 2a. Small change → single agent
 
 Spawn the **`code-reviewer`** agent on `git diff origin/main...HEAD`, telling it

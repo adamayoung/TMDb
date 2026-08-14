@@ -64,6 +64,38 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-14 — Review granularity keys on risk surface, not diff shape · applied
+
+- **Pattern:** two entries raised the same conflict from opposite directions.
+  #451 (2026-08-13) asked to "scale Phase 2 and Phase 4 by **diff shape**, not
+  weight alone" — a reflexive prose change paid for fan-out breadth sized for a
+  multi-service Swift diff. #461 (2026-08-14) hit the converse: `/deliver`
+  Phase 4's "**Lite / single-unit** → one review of the full diff" would have
+  routed a single-unit **concurrency** fix to one reviewer despite `full`
+  weight, and `/review-changes` §1 independently decides on size alone with
+  "when unsure, prefer small". The two clauses disagree precisely on the
+  small-but-risky diff, which is the dangerous case.
+- **Decision:** applied. `deliver/SKILL.md` Phase 4 now reads **Lite** (not
+  "Lite / single-unit") and states that a small diff does not downgrade a `full`
+  review, since "single-unit" is one of lite's *conjunctive* conditions rather
+  than an alternative to it; it also tells the conductor to pass the weight to
+  `/review-changes`. `review-changes/SKILL.md` §1 gains a **Risk overrides
+  size** rule: take the fan-out however small the diff is when the caller says
+  `full` or the diff touches concurrency, networking/`HTTPClient`,
+  `Decodable`/`CodingKeys`, or new public API — and never re-derive from
+  `--stat` a judgement the caller already made.
+- **Rationale:** size decides how much there is to read; the risk surface
+  decides how many lenses have to read it. This repo's concurrency defects are
+  the ones that survived a single pass — #401's two tests were wrong by
+  construction and found by review after green, #433's UB passed everything on
+  macOS and segfaulted on Linux, and #461's residual gate hang was found by a
+  second lens after three deliberate precautions. #451's direction is served by
+  the same rule: weight already keys on risk, so a small reflexive change keeps
+  the critics without inheriting a Swift-sized fan-out.
+- **Reconsider when:** n/a (applied). If the fan-out starts firing on small
+  low-risk diffs, the fix is the risky-surface *list*, not a return to sizing by
+  diff shape.
+
 ### 2026-08-14 — Gate the code samples: a prose call-form checker · applied
 
 - **Pattern:** a stale API call in an uncompiled code sample, for the **third**

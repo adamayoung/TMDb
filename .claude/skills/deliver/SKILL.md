@@ -354,14 +354,23 @@ three defects through. Review
 **stable** code once the design settles — not per TDD item. Granularity by
 weight:
 
-- **Lite / single-unit** → one review of the full diff (single-reviewer
-  path).
+- **Lite** → one review of the full diff (single-reviewer path).
 - **Full, template→replicate** (one pattern across N≥3 cohesive units) →
   **review the reference unit before the rest are generated**: the hard
   `Phase 4a — reference-unit review @ <sha>` ledger task **blocks Phase 9**
   (procedure: [`references/review-loops.md`](references/review-loops.md)).
 - **Full, otherwise** → one review of the full end diff via the fan-out
   path; do **not** interleave per unit.
+
+**A small diff does not downgrade a `full` review.** Weight is decided by the
+*risk surface* (§*Delivery weight*), and "single-unit" is one of lite's
+conjunctive conditions, not an alternative to it — so a cohesive 200-line
+concurrency fix is still `full`, and still takes the fan-out. That is the case
+the multi-dimension lenses exist for: this repo's concurrency defects are
+precisely the ones that survived a single reviewer and were caught later, or
+on another platform (#401, #433, #461). **Tell `/review-changes` the weight**
+when you invoke it, so its own size heuristic cannot silently re-decide what
+Phase 0 already judged.
 
 Converge via **`/review-changes`**: read the severity-graded report; fix each
 **Critical/High** test-first, re-run `/test` (+ `/integration-test` if
