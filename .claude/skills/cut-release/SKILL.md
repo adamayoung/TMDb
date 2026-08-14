@@ -162,6 +162,20 @@ but `/pr` owns that call; do not pre-empt it.
 
 Merge once green.
 
+**Then wait for `main`'s own run.** `ci.yml` triggers on push to `main` with
+`**/*.md` among its paths, so the squashed merge commit gets a CI run of its
+own — a *different* commit from the PR head, and the one the tag will point at.
+Phase 1's "green on the exact commit being tagged" means this run, not the PR's.
+Poll it:
+
+```bash
+gh api repos/adamayoung/TMDb/commits/$(git rev-parse HEAD)/check-runs \
+  --jq '[.check_runs[] | {name, status, conclusion}]'
+```
+
+Red or still running → do not tag. This is the cheapest place in the whole skill
+to be patient.
+
 ## Phase 8 — Tag
 
 On the merged `main`, at the housekeeping commit:
@@ -197,7 +211,12 @@ shipped, name them — that is the moment someone can still object.
 
 - **A red tag.** Tagging a commit whose CI never passed. Phase 1 exists for this;
   do not skip it because "the PR was green" — the merge commit is a different
-  commit.
+  commit, and it gets its own run.
+- **Assuming a bad tag is cheap to undo.** Two active tag rulesets cover `~ALL`
+  tags with `creation`, `update` and `deletion` rules. The repository-role bypass
+  means the owner *can* force it, but nothing here is a casual `git push --delete`
+  — and SwiftPM consumers who already resolved the version are unaffected by any
+  of it. Get it right going in.
 - **A frozen "unreleased".** Skipping Phase 3 ships ADRs and a `next-major.md`
   that insist, inside the release, that the release has not happened.
 - **A README nobody can follow.** The `from:` bump is invisible in testing and
