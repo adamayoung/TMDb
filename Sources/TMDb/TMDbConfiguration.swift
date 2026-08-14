@@ -68,7 +68,9 @@ public struct TMDbConfiguration: Sendable, Equatable {
     ///
     /// When set, successful GET responses are automatically cached in memory.
     /// User-specific requests (with session IDs) bypass the cache. Any
-    /// successful POST or DELETE request invalidates the entire cache.
+    /// successful POST, PUT or DELETE request — or a state-changing GET such as
+    /// clearing a list — invalidates the entire cache, including reads that were
+    /// already in flight.
     ///
     /// When `nil` (the default), no in-memory response caching is performed.
     /// Note that on Apple platforms the default `URLSession` adapter already
