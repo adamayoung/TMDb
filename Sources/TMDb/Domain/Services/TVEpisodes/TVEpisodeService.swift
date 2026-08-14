@@ -436,35 +436,4 @@ public extension TVEpisodeService {
             filter: nil
         )
     }
-
-    ///
-    /// Returns change history for a TV episode.
-    ///
-    /// [TMDb API - TV Episode:
-    /// Changes](https://developer.themoviedb.org/reference/tv-episode-changes-by-id)
-    ///
-    /// - Parameters:
-    ///   - episodeID: The identifier of the TV episode.
-    ///   - startDate: The start date for changes.
-    ///   - endDate: The end date for changes.
-    ///   - page: The page of results to return.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: A collection of changes for the TV episode.
-    ///
-    func changes(
-        forEpisode episodeID: Int,
-        startDate: Date? = nil,
-        endDate: Date? = nil,
-        page: Int? = nil
-    ) async throws(TMDbError) -> ChangeCollection {
-        try await changes(
-            forEpisode: episodeID,
-            startDate: startDate,
-            endDate: endDate,
-            page: page
-        )
-    }
-
 }

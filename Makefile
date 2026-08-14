@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses lint-fixtures
+lint: lint-witnesses lint-fixtures lint-curation
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -64,6 +64,15 @@ lint-witnesses:
 .PHONY: lint-fixtures
 lint-fixtures:
 	@python3 Scripts/check-fixtures.py
+
+# DocC curation completeness, which build-docs genuinely cannot check: DocC
+# auto-curates an uncurated symbol into a default topic group with no
+# diagnostic, so --warnings-as-errors sees a forgotten `- ``method(a:b:)``` line
+# as nothing at all. Mirrored as the `DocC curation check` step in
+# .github/workflows/ci.yml — see the note above lint-witnesses.
+.PHONY: lint-curation
+lint-curation:
+	@python3 Scripts/check-docc-curation.py
 
 .PHONY: lint-markdown
 lint-markdown:

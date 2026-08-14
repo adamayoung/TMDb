@@ -5,11 +5,15 @@ description: Lint code with swiftlint and swiftformat
 
 # Lint code
 
-Run `make lint` from the project root to check code style. It runs **three**
-checks, in order: the `lint-witnesses` script
-(`Scripts/check-defaulted-witnesses.py`, a cross-symbol rule swiftlint cannot
-express), then `swiftlint --strict .`, then `swiftformat --lint .`. A failure in
-the first is not a formatting problem and `/format` will not fix it.
+Run `make lint` from the project root to check code style. It runs **five**
+checks, in order: three Python scripts under `Scripts/` — `lint-witnesses`
+(`check-defaulted-witnesses.py`, protocol conveniences that would witness their
+own requirement), `lint-fixtures` (`check-fixtures.py`, JSON fixture hygiene)
+and `lint-curation` (`check-docc-curation.py`, public methods missing from their
+DocC page) — then `swiftlint --strict .`, then `swiftformat --lint .`.
+
+Each script enforces something no single-file linter can see, and a failure in
+any of them is **not** a formatting problem: `/format` will not fix it.
 
 Run this directly — it is fast and low-output, so delegating to a subagent would
 cost more (subagent overhead) than it saves.

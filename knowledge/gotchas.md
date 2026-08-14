@@ -63,6 +63,59 @@ retired; the family heading stays.
 
 ## Tooling
 
+### `build-docs` cannot see a *missing* curation line — only a broken or ambiguous one
+
+*2026-08-14 (#459).* `make build-docs` runs
+`--warnings-as-errors`, which catches a `- ``method(a:b:)``` line pointing at
+nothing and a line that resolves to two symbols. It does **not** catch an
+omission: DocC folds an uncurated symbol into a default topic group silently, so
+a forgotten line ships green and the only symptom is the method appearing under
+"Instance Methods" instead of its topic.
+
+`Scripts/check-docc-curation.py` closes it (from `make lint` and its own CI Lint
+step). Two things keep it honest, and both were review findings rather than
+foresight: an `EXPECTED_PAGES` census, because deleting an `Extensions/*.md`
+page otherwise drops every method it covered out of the scan while the summary
+stays cheerful; and counting declarations against curation lines rather than
+comparing sets, because two overloads sharing a name and labels need **two**
+lines and a set comparison is satisfied by either one.
+
+### Two symbols with the same name and labels collide in DocC — disambiguate with the return type
+
+*2026-08-14 (#459).* A DocC symbol link is name-plus-argument-labels
+and nothing else, so a sync/async overload pair occupies one link path. Adding
+`allTrending(inTimeWindow:language:) async throws -> TrendingPageableList`
+alongside the existing synchronous
+`allTrending(inTimeWindow:language:) -> PagedAsyncSequence<TrendingItem>` broke
+the build on the *pre-existing* curation line:
+
+```text
+error: 'allTrending(inTimeWindow:language:)' is ambiguous at '/TMDb/TrendingService'
+   ╰─suggestion: Insert '->TrendingPageableList' for 'func allTrending(…)'
+```
+
+Both lines then need a suffix — ``allTrending(inTimeWindow:language:)->TrendingPageableList``
+and ``allTrending(inTimeWindow:language:)->PagedAsyncSequence<TrendingItem>``.
+**Take the syntax from the diagnostic**, which spells out the exact string; the
+repo had no disambiguated link before this, so there was nothing to copy.
+
+The trap is that the *new* symbol is not what fails — the old curation line is,
+in a file you may not otherwise be touching. Requirement/default-implementation
+pairs do **not** collide (DocC folds them into one page), which is why 54 such
+pairs coexisted for months; the collision starts the moment the second symbol
+stops being the first one's witness.
+
+### `make test` compiles with `-warnings-as-errors`; a bare `swift build --build-tests` does not
+
+*2026-08-14 (#459).* The `Makefile` test targets pass
+`-Xswiftc -warnings-as-errors`, so a warning — an unmutated `var`, an unused
+result — fails them. Running `swift build --build-tests` by hand omits that
+flag, compiles clean, and invites the conclusion that a `make test` failure is
+fixed when it is not.
+
+Reach for the direct build only to *read* an error `xcsift` has truncated, and
+re-confirm the fix with the `make` target (or `/test`).
+
 ### An unreachable `catch` arm is a compile **error** under `--Werror` — ordering is enforced, not conventional
 
 *2026-08-13 (#452).* When a `do`/`catch` chain needs a specific-case arm ahead of
@@ -124,12 +177,15 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Two checks are mirrored this way today — `check-defaulted-witnesses.py` and
-`check-fixtures.py`, each a `make lint` prerequisite *and* its own step in the
-CI `Lint` job. When adding a third, prefer an **existing** paths-filter key over
-a new `outputs:` entry: a filter key with no matching line under `outputs:`
-makes `needs.changes.outputs.<key>` the empty string, so the step never runs
-while the job reports success — the same false green one level down.
+Three checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py` and `check-docc-curation.py`, each a `make lint`
+prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
+paths-filter key over a new `outputs:` entry: a filter key with no matching line
+under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the
+step never runs while the job reports success — the same false green one level
+down. The curation check reuses the `swift` key for that reason, and its input
+(`Sources/TMDb/TMDb.docc/**`) had to be added to that key — a PR deleting only a
+curation line would otherwise skip the job that would catch it.
 
 ### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
 
@@ -141,8 +197,14 @@ under which **`superfluous_disable_command` is an error**. The build and the
 whole test suite stay green — this fails only at the lint gate.
 
 **When you delete a `!` or a `try!`, delete its `disable` comment in the same
-edit**, and grep the file for orphans (`grep -n "disable:next" <file>`). Same
-applies in reverse to `file_length` / `type_body_length` disables after a split.
+edit**, and grep the file for orphans (`grep -n "disable:next" <file>`).
+
+**The same trap fires on `file_length` when a file *shrinks*.** Moving
+`ChangesService.swift`'s conveniences into a sibling file took it from 421 lines
+to 192 (#459), leaving the `// swiftlint:disable file_length` at line 8
+suppressing nothing — a `superfluous_disable_command` error. It is easy to miss
+because the rule is normally reasoned about in the growth direction only: check
+the line count of every file a split *empties*, not just the one it fills.
 
 ### Docs builds need their own scratch path — sharing one invalidates the other
 
@@ -894,7 +956,9 @@ not a one-off, because nothing could see it.
   fourth survives the PR that was fixing exactly this.
 - **No allowlist.** An always-empty allowlist is untested code and a one-line
   bypass. Add one only when TMDb genuinely sends a camelCase key, and give it the
-  staleness check `DEFERRED` has in `check-defaulted-witnesses.py`.
+  staleness check `check-defaulted-witnesses.py` applies to its census table —
+  every recorded entry must still be found in the tree, so an entry that was
+  fixed or removed fails the run rather than sitting there unexercised.
 
 ### "Redundant fixture" is a decoder-branch question, not a type question
 
@@ -1215,17 +1279,47 @@ Call sites (`f()`) are unchanged, and omitting the requirement is now a compile
 error.
 
 **The idiom was repo-wide, not a one-off.** A census found **91 sites across 15
-public protocols**. 37 had exactly one defaulted parameter and were fixed — the
-fix costs a single dropped-parameter overload and no call site changes. The
-remaining **54 have 2–4 defaults**, where preserving every existing call form
-needs the *power set* of overloads (4, 8 or 16 each), so they are deferred to
-`next-major.md`. `Scripts/check-defaulted-witnesses.py` holds both invariants — zero
-single-default sites, and the multi-default sites must match its `DEFERRED`
-allowlist exactly (a set, not a count, so a fix and a regression cannot cancel
-out and an empty scan cannot pass green). It runs from `make lint` **and** as
-its own step in the CI `Lint` job: that job invokes swiftlint and swiftformat
-directly rather than through `make`, so wiring it only into the Makefile would
-have left it invisible to CI.
+public protocols**. 37 had exactly one defaulted parameter and were fixed in
+PR #410 by dropping it. The remaining **54 had 2–4 defaults**, and were fixed in
+PR #459 (issue #431) by generating the **power set** of no-default overloads —
+2ⁿ−1 per site, **306** in all — which keeps every existing call form compiling,
+so it shipped as a *minor* rather than waiting for a major.
+
+*2026-08-14.* Three things that sweep learned, none of which the original
+framing anticipated:
+
+- **A duplicate with ZERO defaults is the same hazard, and the worst kind.**
+  `MovieService.releaseDates(forMovie:)` had a `public extension` twin with an
+  identical signature whose body called itself; it had been in the tree since
+  PR #259 and survived #410's sweep because the checker filtered on the default
+  *count* being truthy. The failure class is "parameter list matches after
+  erasing defaults" — and erasing *none* still matches.
+- **Not every default is `nil`.** `TrendingService`'s `inTimeWindow` is a
+  non-optional `TrendingTimeWindowFilterType = .day`, so a dropped-parameter
+  rewrite must forward each parameter's own default expression; `nil` there does
+  not even compile.
+- **A defaulted helper is callable under every subset of its defaults**, so a
+  collision scan comparing *declarations* under-reports. Trending's synchronous
+  `allTrending(inTimeWindow:language:)` pagination helper overlaps **four**
+  generated async call forms, not one.
+
+`Scripts/check-defaulted-witnesses.py` now enforces four invariants rather than
+an allowlist: no convenience may share a requirement's argument labels at any
+default count; a not-yet-rewritten site must still carry exactly the defaults
+recorded for it (which is what keeps the table honest while the tree can still
+prove it); a rewritten site must expose its **whole** power set; and the census
+is closed at `TOTAL_SITES`. The third is the one that matters most, because
+every other gate is deletion-side: once a defaulted convenience is gone, nothing
+else notices whether 7 replacements were written or 6, and a missing one is a
+silent **source break** that passes lint, build, test and CI. A `SELF_TEST`
+fixture keeps the detector, the default detection and the subset generator
+exercised now that no witness remains in the tree — a *count* floor cannot do
+that, since requirements and conveniences both stay non-zero when default
+detection breaks.
+
+It runs from `make lint` **and** as its own step in the CI `Lint` job: that job
+invokes swiftlint and swiftformat directly rather than through `make`, so wiring
+it only into the Makefile would have left it invisible to CI.
 
 **The first census came out 17 short, and the reason generalises.** It grepped
 the *protocol declaration* files. But `AccountService` and `PersonService` keep

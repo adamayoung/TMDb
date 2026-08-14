@@ -37,4 +37,11 @@
 
 ### Changes
 
+- ``changes(forEpisode:)``
+- ``changes(forEpisode:startDate:)``
+- ``changes(forEpisode:endDate:)``
+- ``changes(forEpisode:page:)``
+- ``changes(forEpisode:startDate:endDate:)``
+- ``changes(forEpisode:startDate:page:)``
+- ``changes(forEpisode:endDate:page:)``
 - ``changes(forEpisode:startDate:endDate:page:)``

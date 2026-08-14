@@ -126,29 +126,6 @@ public extension PersonService {
     }
 
     ///
-    /// Returns the list of popular people.
-    ///
-    /// [TMDb API - People Lists: Popular](https://developer.themoviedb.org/reference/person-popular-list)
-    ///
-    /// - Precondition: `page` can be between `1` and `1000`.
-    ///
-    /// - Parameters:
-    ///    - page: The page of results to return.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: Current popular people as a pageable list.
-    ///
-    func popular(
-        page: Int? = nil,
-        language: String? = nil
-    ) async throws(TMDbError) -> PersonPageableList {
-        try await popular(page: page, language: language)
-    }
-
-    ///
     /// Returns the tagged images for a person.
     ///
     /// [TMDb API - People: Tagged Images](https://developer.themoviedb.org/reference/person-tagged-images)
@@ -169,61 +146,6 @@ public extension PersonService {
     ) async throws(TMDbError) -> TaggedImagePageableList {
         try await taggedImages(
             forPerson: personID, page: nil
-        )
-    }
-
-    ///
-    /// Returns the recent changes for a person.
-    ///
-    /// [TMDb API - People: Changes](https://developer.themoviedb.org/reference/person-changes)
-    ///
-    /// - Parameters:
-    ///    - personID: The identifier of the person.
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
-    ///    - page: The page of results to return.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: A collection of changes for the person.
-    ///
-    func changes(
-        forPerson personID: Person.ID,
-        startDate: Date? = nil,
-        endDate: Date? = nil,
-        page: Int? = nil
-    ) async throws(TMDbError) -> ChangeCollection {
-        try await changes(
-            forPerson: personID,
-            startDate: startDate,
-            endDate: endDate,
-            page: page
-        )
-    }
-
-    ///
-    /// Returns a list of person IDs that have changed.
-    ///
-    /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
-    ///
-    /// - Parameters:
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
-    ///    - page: The page of results to return.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: A collection of person IDs that have changed.
-    ///
-    func changes(
-        startDate: Date? = nil,
-        endDate: Date? = nil,
-        page: Int? = nil
-    ) async throws(TMDbError) -> ChangedIDCollection {
-        try await changes(
-            startDate: startDate,
-            endDate: endDate,
-            page: page
         )
     }
 

@@ -25,6 +25,82 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-14 — 🐛 Power-set overloads for the last 54 defaulted witnesses (#459) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight (56 files, +11.8k/−1.6k, 306 new
+  public overloads, two lint gates). Skills: `review-plan` (3 critics),
+  `review-changes` (reference-unit review, then a 4-dimension fan-out +
+  adversarial verify), `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *A protocol-extension convenience that differs only by a
+  default argument becomes the requirement's witness*, *swiftlint file_length /
+  type_body_length*, *Removing a force-unwrap orphans its `swiftlint:disable`*,
+  *No workflow runs `make`*, *Docs builds need their own scratch path*,
+  *Edits can land in the main checkout*; ADR-0004, ADR-0005, ADR-0006, ADR-0023;
+  wiki *a-protocol-extension-convenience-must-differ-from-the-requirement-by-more-than-a*,
+  *a-detector-whose-green-looks-the-same-when-it-didnt-run-is-not-a-detector*.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` `Makefile`, `.github/workflows/ci.yml`,
+  `.claude/skills/{lint,capture-knowledge}/SKILL.md` → 3 entries rewritten
+  (*No workflow runs `make`* two checks → three; the `DEFERRED` staleness
+  citation; the census paragraph), 1 backlog entry deleted, 2 skill files
+  corrected.
+
+- **Generating the 306 overloads is what made the fixes cheap.** Every doc
+  block, forwarding body and curation line came from one script driven off the
+  parsed signatures, so each defect was fixed once rather than 306 times — and
+  three were: the non-`nil` default, a `- Precondition` about a `page` the
+  overload no longer takes, and the trimmed parameter lists. Hand-writing would
+  have made each a search-and-replace with no way to know it was complete.
+
+- **Every review round found something, and none of it was in the Swift.** The
+  three plan critics found a **live self-recursing duplicate already on `main`**
+  (`MovieService.releaseDates(forMovie:)`, there since #259 and skipped by the
+  guard's own default-*count* filter); that the Trending overlap was four call
+  forms, not one, because a defaulted helper is callable under every subset of
+  its defaults; and that `build-docs` cannot catch a *missing* curation line, so
+  the plan's stated safety net for 306 of them did not exist. The fan-out then
+  found four more, all of the same shape: ways a gate could stay green while
+  measuring nothing. The final grader's verdict is the fair summary — the code
+  was right, the *guards* were not yet.
+
+- **The lesson worth keeping is about direction.** An allowlist-shaped check
+  only ever asks whether the count went down. Once the sites were rewritten, the
+  thing that mattered was whether the replacements were *written* — and nothing
+  else in the repo could tell: a missing overload is a silent source break that
+  passes lint, build, test and CI. Reproduced before fixing, then fixed twice
+  more, because my first fix derived its filter from the very table it audited
+  (self-consistent with a corrupted table) and my second attributed overloads by
+  labels alone (so a *defaulted* declaration stood in for a missing one). Ten
+  mutation tests now hold it. See [ADR-0024](decisions/0024-two-way-witness-guard.md).
+
+- **Friction: the generator learned the codebase by failing.** Five build/lint
+  cycles went on facts a human looks up once — mocks recording under
+  `changesForPersonCalls`, `TVSeriesWatchlist` not `TvSeriesWatchlist`, sort
+  enums carrying `createdAt(descending:)` and not being `Equatable`, filters
+  whose only member is `includeAdult`. What stuck was to stop guessing: the
+  calls-property is now resolved by matching each mock call struct's stored
+  properties against the site's parameters. The sentinel table stayed
+  hand-maintained, and every remaining round-trip came from there.
+
+- **Friction: regenerating wiped hand-written tests twice.** Resetting the test
+  files to regenerate them took the Trending resolution pins and the
+  `releaseDates` smoke test with them. Fixed by making the hand-written parts an
+  idempotent post-pass instead of manual re-application — the same shape as the
+  generator itself.
+
+- **Deviations:** the guard rework was pulled forward into the reference unit so
+  the completeness oracle protected the other ten services as they landed. Two
+  items were taken on beyond the issue: deleting the `releaseDates` duplicate
+  (same failure class, surfaced by the widened invariant, and it would have kept
+  `make lint` red otherwise) and adding `Scripts/check-docc-curation.py`. A
+  pre-existing README bug found by the same sweep was filed as issue #458 rather
+  than fixed here.
+
+- **One improvement:** add `make build-docs` to the per-unit gate for any change
+  that adds public API. The plan critics put it there for this delivery and it
+  caught the DocC ambiguity on commit two of eleven, rather than after the live
+  integration suite on the eleventh.
+
 ## 2026-08-14 — ✅ Fixture hygiene: strict checker, 9 adoptions, 11 deletions (#457) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (34 files, +654/−1975, a new CI

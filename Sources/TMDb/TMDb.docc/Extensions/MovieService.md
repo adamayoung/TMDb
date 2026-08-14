@@ -16,6 +16,9 @@
 
 ### Reviews
 
+- ``reviews(forMovie:)``
+- ``reviews(forMovie:page:)``
+- ``reviews(forMovie:language:)``
 - ``reviews(forMovie:page:language:)``
 
 ### Media
@@ -52,23 +55,77 @@
 
 ### Lists and Related Content
 
+- ``recommendations(forMovie:)``
+- ``recommendations(forMovie:page:)``
+- ``recommendations(forMovie:language:)``
 - ``recommendations(forMovie:page:language:)``
+- ``similar(toMovie:)``
+- ``similar(toMovie:page:)``
+- ``similar(toMovie:language:)``
 - ``similar(toMovie:page:language:)``
+- ``lists(forMovie:)``
+- ``lists(forMovie:page:)``
+- ``lists(forMovie:language:)``
 - ``lists(forMovie:page:language:)``
+- ``nowPlaying()``
+- ``nowPlaying(page:)``
+- ``nowPlaying(country:)``
+- ``nowPlaying(language:)``
+- ``nowPlaying(page:country:)``
+- ``nowPlaying(page:language:)``
+- ``nowPlaying(country:language:)``
 - ``nowPlaying(page:country:language:)``
+- ``popular()``
+- ``popular(page:)``
+- ``popular(country:)``
+- ``popular(language:)``
+- ``popular(page:country:)``
+- ``popular(page:language:)``
+- ``popular(country:language:)``
 - ``popular(page:country:language:)``
+- ``topRated()``
+- ``topRated(page:)``
+- ``topRated(country:)``
+- ``topRated(language:)``
+- ``topRated(page:country:)``
+- ``topRated(page:language:)``
+- ``topRated(country:language:)``
 - ``topRated(page:country:language:)``
+- ``upcoming()``
+- ``upcoming(page:)``
+- ``upcoming(country:)``
+- ``upcoming(language:)``
+- ``upcoming(page:country:)``
+- ``upcoming(page:language:)``
+- ``upcoming(country:language:)``
 - ``upcoming(page:country:language:)``
 
 ### Content Discovery
 
 - ``keywords(forMovie:)``
+- ``alternativeTitles(forMovie:)``
+- ``alternativeTitles(forMovie:country:)``
+- ``alternativeTitles(forMovie:language:)``
 - ``alternativeTitles(forMovie:country:language:)``
 - ``translations(forMovie:)``
 
 ### Change Tracking
 
+- ``changes(forMovie:)``
+- ``changes(forMovie:startDate:)``
+- ``changes(forMovie:endDate:)``
+- ``changes(forMovie:page:)``
+- ``changes(forMovie:startDate:endDate:)``
+- ``changes(forMovie:startDate:page:)``
+- ``changes(forMovie:endDate:page:)``
 - ``changes(forMovie:startDate:endDate:page:)``
+- ``changes()``
+- ``changes(startDate:)``
+- ``changes(endDate:)``
+- ``changes(page:)``
+- ``changes(startDate:endDate:)``
+- ``changes(startDate:page:)``
+- ``changes(endDate:page:)``
 - ``changes(startDate:endDate:page:)``
 - ``latest()``
 

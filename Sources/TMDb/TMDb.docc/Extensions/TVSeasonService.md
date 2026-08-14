@@ -41,4 +41,11 @@
 
 ### Changes
 
+- ``changes(forSeason:)``
+- ``changes(forSeason:startDate:)``
+- ``changes(forSeason:endDate:)``
+- ``changes(forSeason:page:)``
+- ``changes(forSeason:startDate:endDate:)``
+- ``changes(forSeason:startDate:page:)``
+- ``changes(forSeason:endDate:page:)``
 - ``changes(forSeason:startDate:endDate:page:)``

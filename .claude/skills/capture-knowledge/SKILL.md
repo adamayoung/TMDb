@@ -52,12 +52,18 @@ do X", "3 models still decode Y unsafely" — stop and ask the follow-up:
 promise with nothing behind it; it silently goes stale as sites are fixed *or*
 regressed, and the two cancel out.
 
-Prefer a committed check with an **explicit set**, not a count (an exact
-allowlist so a fix and a regression can't cancel, and an empty scan can't pass),
-wired into **both** `make lint` and CI — no workflow runs `make`, so one alone
-is invisible. `Scripts/check-defaulted-witnesses.py` is the worked example. If a
-guard isn't worth building, say so in the entry, so the number reads as an
-observation rather than an invariant.
+Prefer a committed check with an **explicit set**, not a count (so a fix and a
+regression can't cancel, and an empty scan can't pass), wired into **both**
+`make lint` and CI — no workflow runs `make`, so one alone is invisible.
+`Scripts/check-defaulted-witnesses.py` is the worked example, and its history is
+the lesson: it began as an allowlist of sites still to fix, which checked only
+that the count went *down*. Once those sites were rewritten it had to also
+assert that each one's replacements were actually written, because every other
+gate is deletion-side — a missing replacement is a silent source break that
+passes lint, build, test and CI. **Ask which direction your check runs in**, and
+whether its green would look any different if the scan had matched nothing at
+all. If a guard isn't worth building, say so in the entry, so the number reads
+as an observation rather than an invariant.
 
 ## Steps
 

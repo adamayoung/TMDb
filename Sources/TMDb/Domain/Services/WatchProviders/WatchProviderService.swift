@@ -90,47 +90,4 @@ public extension WatchProviderService {
         try await countries(language: nil)
     }
 
-    ///
-    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for movies.
-    ///
-    /// [TMDb API - Watch Providers: Movie
-    /// Providers](https://developer.themoviedb.org/reference/watch-providers-movie-list)
-    ///
-    /// - Parameters:
-    ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: Watch providers for movies.
-    ///
-    func movieWatchProviders(
-        filter: WatchProviderFilter? = nil,
-        language: String? = nil
-    ) async throws(TMDbError) -> [WatchProvider] {
-        try await movieWatchProviders(filter: filter, language: language)
-    }
-
-    ///
-    /// Returns a list of the watch provider (OTT/streaming) data TMDb have available for TV series.
-    ///
-    /// [TMDb API - Watch Providers: TV Providers](https://developer.themoviedb.org/reference/watch-provider-tv-list)
-    ///
-    /// - Parameters:
-    ///    - filter: Watch provider filter.
-    ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
-    /// language.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: Watch providers for TV series.
-    ///
-    func tvSeriesWatchProviders(
-        filter: WatchProviderFilter? = nil,
-        language: String? = nil
-    ) async throws(TMDbError) -> [WatchProvider] {
-        try await tvSeriesWatchProviders(filter: filter, language: language)
-    }
-
 }
