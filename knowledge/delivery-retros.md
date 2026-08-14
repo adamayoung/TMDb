@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-14 — 🐛 Generation guard for the cache invalidation race (fix/cache-epoch-invalidation-race) · full
+## 2026-08-14 — 🐛 Generation guard for the cache invalidation race (#461) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — small diff (~270 lines,
   4 files at review time) but a concurrency + `HTTPClient` surface, which is

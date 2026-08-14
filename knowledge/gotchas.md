@@ -938,7 +938,7 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ### A mock that traps on queue exhaustion turns a regression into a process abort
 
-*2026-08-14 (#PR).* `SequencingHTTPMockClient` calls `preconditionFailure` when a
+*2026-08-14 (#461).* `SequencingHTTPMockClient` calls `preconditionFailure` when a
 request arrives with no result left enqueued. That is a *process*-level trap, so
 under Swift Testing's parallel execution it takes unrelated suites down with it
 and attributes the failure to nothing in particular.
@@ -1477,7 +1477,7 @@ whole comparison in one scalar pass for this reason.
 
 ### The in-memory cache contract is stated in four places
 
-*2026-08-14 (#PR).* Change what invalidates `CacheHTTPClient`'s cache and four
+*2026-08-14 (#461).* Change what invalidates `CacheHTTPClient`'s cache and four
 documents go stale together:
 
 - `CacheConfiguration`'s type doc (`Domain/Models/CacheConfiguration.swift`)
@@ -1530,7 +1530,7 @@ would silently reach the live network, and the bypass would be untestable.
 
 ### Gate-driven interleaving tests: park inside the transport, open on every path
 
-*2026-08-14 (#PR).* Three traps when holding one request in flight with
+*2026-08-14 (#461).* Three traps when holding one request in flight with
 `FetchGate` to pin down an ordering property (issue #423's cache-invalidation
 race).
 
@@ -1559,7 +1559,7 @@ are invisible in a green run: each was found by reading, not by running.
 
 ### Return a generation from the same call that makes the decision it guards
 
-*2026-08-14 (#PR).* When a guard compares a snapshot taken before a suspension
+*2026-08-14 (#461).* When a guard compares a snapshot taken before a suspension
 point against a counter an invalidation bumps (ADR-0013's `generation` pattern,
 now used by `APIConfigurationStore` and `ResponseCache`), take that snapshot from
 the **same actor call** that makes the decision it guards —
