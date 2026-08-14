@@ -251,6 +251,9 @@ Key skills (the README's *Claude Code Skills* tables list them all):
 - **`/capture-knowledge`** — record durable learnings into `knowledge/`.
 - **`/triage-issues`** — groom the project board's Backlog against current
   `main`; owns the Ready test and the priority/size rubrics.
+- **`/cut-release`** — work out the next SemVer version, do the pre-tag
+  housekeeping, draft the notes, tag and publish. **Never headless**: it stops
+  for approval before anything is tagged or published.
 - **`/pr`**, **`/watch-pr`**, **`/review-pr-threads`**, **`/fix-pr-checks`** —
   open and shepherd the pull request.
 - **`/document-swift`** — the canonical DocC conventions for public API.
