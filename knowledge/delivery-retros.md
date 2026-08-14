@@ -80,11 +80,14 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 - **Deviations:** put the new tests in their own file rather than appending to
   `CacheHTTPClientInvalidationTests.swift` (per the plan), so the pre-existing
   suite stays byte-untouched and AC3 is trivially checkable, and so the new
-  suite can carry its own `.timeLimit`. `make test-linux` **not run** — Docker
-  was not running; the PR is flagged Linux-unverified and CI's
-  `build-test-linux` job is the gate. Re-stamped `reviewedClean` after a
-  post-review commit that only rewrapped a doc comment the security reviewer
-  itself had flagged.
+  suite can carry its own `.timeLimit`. The Linux run happened **after** the PR
+  opened, not before it: Docker was down at Phase 9, so the PR opened flagged
+  Linux-unverified; once the user started Docker the suite passed (3309 tests),
+  and a scoped re-run confirmed **by name** that both new race tests executed
+  there — the count alone would not have. Worth the second run: the interleaving
+  is scheduler-dependent and Linux's cooperative pool differs from Darwin's.
+  Re-stamped `reviewedClean` after a post-review commit that only rewrapped a
+  doc comment the security reviewer itself had flagged.
 
 - **One improvement:** `/deliver` Phase 4 reads "**Lite / single-unit** → one
   review of the full diff", which would have sent this single-unit diff down the
