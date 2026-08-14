@@ -894,7 +894,9 @@ not a one-off, because nothing could see it.
   fourth survives the PR that was fixing exactly this.
 - **No allowlist.** An always-empty allowlist is untested code and a one-line
   bypass. Add one only when TMDb genuinely sends a camelCase key, and give it the
-  staleness check `DEFERRED` has in `check-defaulted-witnesses.py`.
+  staleness check `check-defaulted-witnesses.py` applies to its census table —
+  every recorded entry must still be found in the tree, so an entry that was
+  fixed or removed fails the run rather than sitting there unexercised.
 
 ### "Redundant fixture" is a decoder-branch question, not a type question
 
