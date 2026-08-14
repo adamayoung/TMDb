@@ -15,7 +15,9 @@ extension Tag {
 
     @Tag static var account: Self
     @Tag static var authentication: Self
+    @Tag static var changes: Self
     @Tag static var configuration: Self
+    @Tag static var discover: Self
     @Tag static var find: Self
     @Tag static var genre: Self
     @Tag static var images: Self
@@ -26,6 +28,7 @@ extension Tag {
     @Tag static var tvEpisode: Self
     @Tag static var tvSeason: Self
     @Tag static var tvSeries: Self
+    @Tag static var trending: Self
     @Tag static var watchProvider: Self
 
 }

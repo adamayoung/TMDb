@@ -171,6 +171,10 @@ TOTAL_SITES = 54
 # Sites already replaced by explicit no-default power-set overloads. Fix a site
 # by adding its key here — the label tuples are never retyped.
 REWRITTEN = frozenset({
+    ("TrendingService", "allTrending", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "movies", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "people", ("inTimeWindow", "page", "language")),
+    ("TrendingService", "tvSeries", ("inTimeWindow", "page", "language")),
     ("WatchProviderService", "movieWatchProviders", ("filter", "language")),
     ("WatchProviderService", "tvSeriesWatchProviders", ("filter", "language")),
 })
