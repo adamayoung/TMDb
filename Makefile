@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses lint-fixtures lint-curation
+lint: lint-witnesses lint-fixtures lint-curation lint-prose
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -73,6 +73,15 @@ lint-fixtures:
 .PHONY: lint-curation
 lint-curation:
 	@python3 Scripts/check-docc-curation.py
+
+# Code samples in README.md and the DocC articles: nothing compiles them, so a
+# call that drifts out of date is invisible to CI and only a reader finds it.
+# Resolves every `<service>.<method>(<labels>)` sample against the real API.
+# Mirrored as the `Prose call-form check` step in .github/workflows/ci.yml — see
+# the note above lint-witnesses.
+.PHONY: lint-prose
+lint-prose:
+	@python3 Scripts/check-prose-call-forms.py
 
 .PHONY: lint-markdown
 lint-markdown:

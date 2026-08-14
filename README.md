@@ -224,7 +224,7 @@ if let voteAverage = fightClub.voteAverage {
 }
 
 // Search across movies, TV shows, and people
-let searchResults = try await tmdbClient.search.multi(query: "Breaking Bad")
+let searchResults = try await tmdbClient.search.searchAll(query: "Breaking Bad")
 
 // Get trending movies today
 let trendingMovies = try await tmdbClient.trending.movies(inTimeWindow: .day)
