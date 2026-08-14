@@ -171,9 +171,23 @@ TOTAL_SITES = 54
 # Sites already replaced by explicit no-default power-set overloads. Fix a site
 # by adding its key here — the label tuples are never retyped.
 REWRITTEN = frozenset({
+    ("AccountService", "favouriteMovies", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "favouriteTVSeries", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "movieWatchlist", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedMovies", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedTVEpisodes", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "ratedTVSeries", ("sortedBy", "page", "accountID", "session")),
+    ("AccountService", "tvSeriesWatchlist", ("sortedBy", "page", "accountID", "session")),
+    ("DiscoverService", "movies", ("filter", "sortedBy", "page", "language")),
+    ("DiscoverService", "tvSeries", ("filter", "sortedBy", "page", "language")),
     ("PersonService", "changes", ("forPerson", "startDate", "endDate", "page")),
     ("PersonService", "changes", ("startDate", "endDate", "page")),
     ("PersonService", "popular", ("page", "language")),
+    ("SearchService", "searchAll", ("query", "filter", "page", "language")),
+    ("SearchService", "searchCollections", ("query", "page", "language")),
+    ("SearchService", "searchMovies", ("query", "filter", "page", "language")),
+    ("SearchService", "searchPeople", ("query", "filter", "page", "language")),
+    ("SearchService", "searchTVSeries", ("query", "filter", "page", "language")),
     ("TVEpisodeService", "changes", ("forEpisode", "startDate", "endDate", "page")),
     ("TVSeasonService", "changes", ("forSeason", "startDate", "endDate", "page")),
     ("TrendingService", "allTrending", ("inTimeWindow", "page", "language")),
