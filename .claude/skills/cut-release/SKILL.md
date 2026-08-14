@@ -77,6 +77,14 @@ optional, and all of them were needed for 19.0.0 (PR #406):
    `>=prev, <prev+1` — on a **major**, readers following the README would never
    resolve to the new version at all. Bump it. (This is the one with real user
    impact; the other three are hygiene.)
+
+   `Scripts/check-readme-version.py` enforces this from `make lint` and CI: the
+   snippet must match either the newest **dated** CHANGELOG section (the last
+   release) or the newest **undated** one (the release being prepared). That
+   second arm exists so this housekeeping PR is not blocked by the tag it is
+   preparing — bump the snippet and date the section in the same commit and both
+   arms stay satisfied. Forget the bump entirely and the check goes red on the
+   next PR after the release.
 2. **`CHANGELOG.md`.** Date the section — `## [X.Y.Z] - YYYY-MM-DD` — and add
    the link definition at the foot:
    `[X.Y.Z]: https://github.com/adamayoung/TMDb/releases/tag/X.Y.Z`. Check the
