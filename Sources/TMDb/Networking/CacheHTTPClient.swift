@@ -106,9 +106,8 @@ private actor ResponseCache {
 ///
 /// Invalidation covers reads that were already in flight: a response fetched
 /// before a mutation landed carries pre-mutation state, so it is still returned
-/// to its caller but is not written to the cache. Each read captures the
-/// cache's generation when it looks
-/// up, and a mutation bumps that generation — see
+/// to its caller but is not written to the cache. Each read captures the cache's
+/// generation when it looks up, and a mutation bumps that generation — see
 /// `ResponseCache.setResponse(_:forKey:ifGeneration:)`.
 ///
 final class CacheHTTPClient: HTTPClient, Sendable {
