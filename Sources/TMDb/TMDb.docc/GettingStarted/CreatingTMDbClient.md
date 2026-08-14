@@ -114,9 +114,10 @@ On Apple platforms the default client already caches responses on disk via
 `URLCache`, so repeated requests are served without hitting the network. You can
 additionally enable an in-memory cache to reduce redundant requests. All
 successful GET responses are cached automatically. User-specific requests (with
-session IDs) bypass the cache, and any successful POST or DELETE invalidates the
-entire cache. See <doc:CachingResponses> for the full picture, including how to
-tune or disable the on-disk cache.
+session IDs) bypass the cache, and any successful POST, PUT or DELETE — or a
+state-changing GET such as clearing a list — invalidates the entire cache,
+including reads that were already in flight. See <doc:CachingResponses> for the
+full picture, including how to tune or disable the on-disk cache.
 
 ```swift
 let configuration = TMDbConfiguration(

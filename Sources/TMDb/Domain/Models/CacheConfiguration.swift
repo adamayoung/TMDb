@@ -12,8 +12,9 @@ import Foundation
 ///
 /// Use this to configure automatic caching of GET responses. All successful
 /// GET requests are cached; user-specific requests (with session IDs) are
-/// excluded. Any successful POST or DELETE request invalidates the entire
-/// cache.
+/// excluded. Any successful POST, PUT or DELETE request — or a state-changing
+/// GET such as clearing a list — invalidates the entire cache, including reads
+/// that were already in flight.
 ///
 /// This is an optional in-memory layer that sits above the default on-disk
 /// `URLCache` (enabled automatically on Apple platforms). It is cleared when

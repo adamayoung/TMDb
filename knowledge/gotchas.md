@@ -936,6 +936,23 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ## Testing
 
+### A mock that traps on queue exhaustion turns a regression into a process abort
+
+*2026-08-14 (#461).* `SequencingHTTPMockClient` calls `preconditionFailure` when a
+request arrives with no result left enqueued. That is a *process*-level trap, so
+under Swift Testing's parallel execution it takes unrelated suites down with it
+and attributes the failure to nothing in particular.
+
+It fires on exactly the regression such a test exists to catch. If a cache guard
+wrongly drops a write, the follow-up read goes to the network instead of hitting
+the cache — consuming one slot more than the passing run does.
+
+So **enqueue one response more than a passing run consumes**, with a body that
+names itself (`"should-not-be-refetched"`). The regression then fails as an
+`#expect` mismatch naming the wrong body — legible and correctly attributed —
+rather than aborting the run. Keep asserting the exact `performCount`, so the
+spare slot cannot hide a genuine extra fetch.
+
 ### A camelCase key in a fixture is invisible — `.convertFromSnakeCase` accepts both
 
 *2026-08-14 (#457).* `JSONDecoder.theMovieDatabase` sets
@@ -1458,6 +1475,25 @@ string is safe to send must compare `unicodeScalars`, not Characters. Found by
 the `/deliver` security review of issue #421; `URLPathSegmentValidator` does its
 whole comparison in one scalar pass for this reason.
 
+### The in-memory cache contract is stated in four places
+
+*2026-08-14 (#461).* Change what invalidates `CacheHTTPClient`'s cache and four
+documents go stale together:
+
+- `CacheConfiguration`'s type doc (`Domain/Models/CacheConfiguration.swift`)
+- `TMDbConfiguration.cache`'s property doc
+- `TMDb.docc/GettingStarted/CreatingTMDbClient.md`
+- `TMDb.docc/HowTos/CachingResponses.md`
+
+The first two are public API docs a consumer reads in Quick Help, so a stale one
+promises *less* than the code delivers. `make ci` cannot catch the drift —
+`build-docs` compiles DocC but has no idea whether the prose is true — so this is
+a manual checklist, and correcting only one of the four actively **widens** the
+divergence.
+
+Three of them still said "POST or DELETE" long after `PUT` and the state-changing
+`GET /4/list/{id}/clear` began routing through `performMutation`.
+
 ### Caching a credentialed response: the predicate is "needs a user", not "has a header"
 
 *Rewritten 2026-08-07, when v4 lists made this real.* Both caches key on the URL
@@ -1491,6 +1527,48 @@ building a fresh one — otherwise tests injecting a `MockURLProtocol` session
 would silently reach the live network, and the bypass would be untestable.
 
 ## Swift concurrency
+
+### Gate-driven interleaving tests: park inside the transport, open on every path
+
+*2026-08-14 (#461).* Three traps when holding one request in flight with
+`FetchGate` to pin down an ordering property (issue #423's cache-invalidation
+race).
+
+**The gate must sit inside the mocked transport**, not beside it. The barrier's
+job is to prove the parked caller is already *past* the state it snapshotted
+before fetching, and only a gate the caller reaches *by calling the transport*
+establishes that happens-before edge. A gate anywhere else proves the task
+started, which is a different and much weaker claim.
+
+**Use an unstructured `Task`, never `async let`.** `async let` cancels *and then
+awaits* its child at scope exit, and `FetchGate.wait()` parks on a bare
+`withCheckedContinuation` that cancellation does not resume — so any `throw`
+between starting the child and opening the gate hangs the suite instead of
+failing it. For the same reason, reach `open()` on **every** path: capture the
+intervening call as a `Result` instead of `try`-ing it.
+
+**`waitUntilEntered` returns on expiry rather than throwing** — it records an
+`Issue` and falls through. A caller that simply continues then hands the
+*still-gated* slot to its next request, which parks with nobody left to open the
+gate. Re-check `enteredCount` and bail out — opening the gate first — before
+going on.
+
+`.timeLimit` rescues none of these; see *`.timeLimit` does not rescue a task
+parked on an unresumed continuation*. All three are ordering assumptions, so they
+are invisible in a green run: each was found by reading, not by running.
+
+### Return a generation from the same call that makes the decision it guards
+
+*2026-08-14 (#461).* When a guard compares a snapshot taken before a suspension
+point against a counter an invalidation bumps (ADR-0013's `generation` pattern,
+now used by `APIConfigurationStore` and `ResponseCache`), take that snapshot from
+the **same actor call** that makes the decision it guards —
+`lookup(forKey:) -> (response:, generation:)`, not a separate
+`currentGeneration()` accessor called afterwards.
+
+Two calls leave a gap between "decided to fetch" and "captured the generation".
+The gap is benign, but it has to be *argued* benign every time someone reads the
+code; one call makes it atomic by construction and costs one fewer actor hop.
 
 ### Writing a `Task {}` body inside an actor: typed throws and the missing `await`
 

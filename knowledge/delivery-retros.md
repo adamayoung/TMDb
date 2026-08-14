@@ -25,6 +25,78 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-14 — 🐛 Generation guard for the cache invalidation race (#461) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight — small diff (~270 lines,
+  4 files at review time) but a concurrency + `HTTPClient` surface, which is
+  explicitly non-lite. Skills: `review-plan` (3 critics), `review-changes`
+  (5-dimension fan-out + adversarial verify), `security-review`,
+  `capture-knowledge`.
+  `consulted:` gotchas *False green* (a test asserting a guarantee it cannot
+  observe; green build of the wrong tree), *Testing a memoising actor*,
+  *`.timeLimit` does not rescue a task parked on an unresumed continuation*,
+  *`withCheckedContinuation`'s body runs in the enclosing actor's isolation*,
+  *Caching a credentialed response*, *`make ci` skips the Linux build*;
+  ADR-0007, ADR-0013.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` n/a (no infra files in the diff) → fell back to scanning: the two
+  `FetchGate` citations in `gotchas.md` name the type, not its path, so
+  relocating it to `TestUtils/` invalidated neither; both re-read, still true.
+
+- **Falsifying the guard found a real gap in the delivery's own test.** The
+  reproducer was red-first as designed, but deliberately breaking the guard two
+  ways — a snapshot off by one, then invalidating on a *failed* mutation —
+  showed that an over-eager guard would make the "caching resumes" assertion
+  consume a fourth response the mock never had, tripping its
+  `preconditionFailure` and aborting the whole test process rather than failing
+  one test. A plan critic had flagged that exposure for Test B and it was
+  applied there only; the falsification is what caught the same hole in Test A.
+  Cheap insurance: enqueue one response more than a passing run consumes.
+
+- **The critics converged unanimously on collapsing two actor hops into one.**
+  The plan snapshotted the generation with a separate `currentEpoch()` call
+  after the cache miss, then spent a three-clause paragraph arguing the gap was
+  benign. All three independently proposed a single
+  `lookup(forKey:) -> (response:, generation:)`; that made the snapshot atomic
+  by construction, deleted the argument, and cost one *fewer* hop than today.
+  A second lone-critic finding — name it `generation`, matching ADR-0013's
+  existing pattern, rather than the issue's "epoch" — was applied on the merits.
+
+- **Code review found the residual hang the hardening had missed.** Three
+  measures were taken up front against the known `FetchGate` hang class
+  (unstructured `Task` over `async let`, `open()` on every path, `.timeLimit`),
+  and review still found a fourth path: `waitUntilEntered` *returns* on expiry
+  rather than throwing, so when the GET never reaches the transport the mutation
+  dequeues the still-gated slot and parks with nobody left to open the gate.
+  Ordering assumptions stay invisible in a green run — this was found by
+  reading, as #401's were.
+
+- **Friction:** the diff corrected one of **four** places stating the cache
+  contract, and two review dimensions independently flagged that fixing one had
+  *widened* the divergence; the other three were stale on `PUT` and the
+  state-changing `GET` besides. `make ci` cannot see stale prose, so this is a
+  manual checklist — now a `gotchas.md` entry.
+
+- **Deviations:** put the new tests in their own file rather than appending to
+  `CacheHTTPClientInvalidationTests.swift` (per the plan), so the pre-existing
+  suite stays byte-untouched and AC3 is trivially checkable, and so the new
+  suite can carry its own `.timeLimit`. The Linux run happened **after** the PR
+  opened, not before it: Docker was down at Phase 9, so the PR opened flagged
+  Linux-unverified; once the user started Docker the suite passed (3309 tests),
+  and a scoped re-run confirmed **by name** that both new race tests executed
+  there — the count alone would not have. Worth the second run: the interleaving
+  is scheduler-dependent and Linux's cooperative pool differs from Darwin's.
+  Re-stamped `reviewedClean` after a post-review commit that only rewrapped a
+  doc comment the security reviewer itself had flagged.
+
+- **One improvement:** `/deliver` Phase 4 reads "**Lite / single-unit** → one
+  review of the full diff", which would have sent this single-unit diff down the
+  single-reviewer path despite full weight; the fan-out was chosen anyway
+  because concurrency is where this repo's bugs survive review (#401, #433).
+  The rule should key the fan-out on the *risk surface* that already decides
+  lite-vs-full, not on diff shape alone — otherwise the two clauses disagree
+  precisely on small concurrency changes, which is the dangerous case.
+
 ## 2026-08-14 — 🐛 Power-set overloads for the last 54 defaulted witnesses (#459) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (56 files, +11.8k/−1.6k, 306 new
@@ -726,98 +798,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   share one credential-free URLCache key space*, now false in every particular);
   skill-improvement-log citations of integration-failure.yml still accurate.
 
-## 2026-08-07 — 🐛 Defaulted-witness convenience sweep, 37 sites (#410) · full
-
-- **Phases / skills:** 0–8 pre-PR. `consulted:` gotchas *defaulted-argument
-  witness* (the source), *Growing a public protocol additively*, *sweep the
-  failure class not the property name*, *False green*, *swiftlint file_length*;
-  next-major.md; ADR-0005; wiki *a-protocol-extension-convenience-must-differ…*.
-  Plan pre-reviewed by a Fable critic (3 majors, all applied) so Phase 2's
-  critics were skipped. Phase 4a reference-unit review, then `/review-changes`
-  ×2 (1 High + 3 Medium → converged 0/0), `/security-review` → 0 findings,
-  independent grader → **4/4 ACs met**.
-- **Worked — the reference-unit gate earned its keep, again.** Reviewing one
-  site before replicating caught a DocC-curation regression (the convenience
-  is now a distinct symbol and falls out of its Topics group unless curated)
-  that would have shipped 37 times. It also settled three open design
-  questions in one pass — remove the concrete-side defaults, one `- Note:`
-  wording everywhere, split the tests per protocol — which is exactly what a
-  template review is for. Same pattern as #359.
-- **Worked — the census was re-derived, not trusted.** Both reviewers rebuilt
-  it independently and reproduced 91/15 and the 37/54 split, which is the only
-  reason the numbers in `gotchas.md`, `next-major.md` and the CHANGELOG can be
-  relied on. The first census had been **17 short** — it grepped protocol
-  *declaration* files and missed the two protocols that keep conveniences in a
-  sibling `+Defaults.swift`.
-- **Friction — I shipped a gate that did not gate.** The new check went into
-  `make lint`, but no workflow in this repo invokes `make`: the `Lint` job runs
-  swiftlint and swiftformat as inline steps. So the guard against a 55th hazard
-  site was invisible to CI, and CI stayed green. Caught in review, now its own
-  step, and recorded in gotchas *No workflow runs `make`*.
-- **Friction — two mechanical-sweep bugs, both of the same shape.** The script
-  did a first-occurrence `str.replace` per file, so it stripped the default from
-  `favouriteMovies` instead of `lists` — while reporting exactly the 36 edits
-  expected. And the checker itself passed on an empty scan (a typo'd path
-  printed success and exited 0). **A matching count is not evidence**; both are
-  now bullets under *False green*, and the checker compares against an explicit
-  set with its negatives verified rather than assumed.
-- **Deviations:** (1) scope grew twice, both times deliberately — from the one
-  method Adam asked about to all 37 cheap sites (deferring them to a *future*
-  major while this major is open is precisely what `next-major.md` exists to
-  prevent), and then to a committed lint guard, because otherwise "we recorded
-  54 in a markdown file" is a promise with nothing enforcing it. (2) **No
-  red-green.** The behaviour is unchanged by design, so these are
-  characterisation tests that pass before and after — what `CLAUDE.md`
-  prescribes for refactoring. Calling that TDD would have been theatre.
-  (3) Knowledge captured inline rather than via `/capture-knowledge`, since the
-  gotchas rewrite *is* part of the change; the retirement sweep still ran.
-- **One improvement:** the durable guard here is a committed script with an
-  explicit allowlist, and it is the third time this repo has reached for
-  "encode the rule as a blocking gate" (after the Phase 4a ledger task and the
-  `next-major.md` queue). Worth asking whether `/capture-knowledge` should
-  *prompt* for one: when an entry records a known-remaining defect count, the
-  natural follow-up question is "what fails if that number changes?"
-- **`swept:`** Makefile, .github/workflows/ci.yml, Scripts/ → no entry
-  invalidated (the `make ci` citations all describe composition this change
-  does not alter); gotchas.md and next-major.md rewritten as part of the change.
-
-## 2026-08-07 — ✨ TMDb v4 authentication (#409) · full
-
-- **Phases / skills:** 0–9; `review-plan`, `implement-plan`, `review-changes`
-  (2 iterations), `security-review`, `capture-knowledge`, `pr`. `consulted:`
-  gotchas (False green; EnterWorktree branch naming; growing a public protocol
-  additively; bearer-token URLCache key space; SourceKit lag on new files),
-  api-notes (error-body shape; silent-ignore of unknown query params), ADR-0001,
-  ADR-0005, ADR-0008, ADR-0010.
-- **`swept:`** 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
-- **What worked:** **probing the live API before writing the plan's models.**
-  TMDb's v4 documentation is wrong in ways no amount of reading would surface:
-  the documented endpoint *names* are 404s, the same field has different wire
-  types on different endpoints, `clear` is a state-changing GET, and both
-  `create(public:)` and add-items' `comment` are accepted-then-ignored. Every one
-  was found by curl, and each would have shipped as a bug. The corollary is that
-  v4 auth-gates *before* routing, so the cheap 401-vs-404 path probe returns
-  nothing useful until you hold a credential — which is exactly why the wrong
-  paths survived into an approved plan.
-  **The adversarial plan review earned its cost twice over**, both unanimous:
-  it caught that patching only `CacheHTTPClient` leaves the always-on 1 GB
-  on-disk `URLCache` leaking private reads across users, and that splitting
-  `V4ListService` across two PRs would make the second one source-breaking. The
-  second forced a redraw of the decomposition along a *protocol* boundary
-  instead of a read/write one — which dissolved a third blocker for free.
-- **Friction:** the delivery stalled at Phase 0 on a credential only the user
-  could obtain, and the first ask was mis-scoped — the plan assumed a v4 user
-  token was needed for everything, when in fact the v3 key already in the
-  environment authenticates all v4 *reads*. A sharper credential matrix up front
-  would have unblocked most of the investigation without waiting.
-- **Deviations:** decomposed one approved plan into two deliverables (this PR is
-  part one of two), on the review's blocker. Issue #394 stays open on merge.
-- **One improvement:** `/deliver`'s contract says run autonomously to the single
-  ready-to-merge gate, and this run instead ended its turn at four phase
-  boundaries to report status — the user had to say "keep going" and later ask
-  why no PR existed. The phase summaries are worth writing; ending the turn to
-  deliver them is not.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -825,6 +805,8 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-07 | #410 | full | Defaulted-witness convenience sweep across 37 sites. The **reference-unit gate earned its keep again**: reviewing one site before replicating caught a DocC-curation regression (the convenience becomes a distinct symbol and falls out of its Topics group unless curated) that would otherwise have shipped 37 times, and settled three open design questions in one pass. The **census was re-derived rather than trusted** — both reviewers independently reproduced 91/15 and the 37/54 split, after the first census came up **17 short** by grepping protocol *declaration* files and missing the two protocols keeping conveniences in a sibling `+Defaults.swift`. Two lasting False-green bullets came from it: a mechanical sweep did a first-occurrence `str.replace` per file, stripping the default from `favouriteMovies` instead of `lists` **while reporting exactly the 36 edits expected**, and the new checker passed on an empty scan (a typo'd path printed success and exited 0) — so a matching count is not evidence, and a checker must compare against an explicit set. Also **shipped a gate that did not gate**: the check went into `make lint`, but no workflow invokes `make` (the `Lint` job runs swiftlint/swiftformat inline), so it was invisible to CI — now its own step and the gotcha *No workflow runs `make`*. Its "one improvement" — have `/capture-knowledge` prompt "what fails if that number changes?" when an entry records a defect count — **shipped**, and is the *When an entry records a count* section of that skill today. |
+| 2026-08-07 | #409 | full | TMDb v4 authentication. The lasting practice is **probing the live API before writing the plan's models**: TMDb's v4 docs are wrong in ways reading cannot surface — documented endpoint *names* 404, the same field has different wire types on different endpoints, `clear` is a state-changing GET, and both `create(public:)` and add-items' `comment` are accepted-then-ignored. Each was found by curl and each would have shipped as a bug. The corollary, now in `tmdb-api-notes.md`: v4 auth-gates *before* routing, so a 401-vs-404 path probe proves nothing until you hold a credential — which is exactly how the wrong paths survived into an approved plan. The adversarial plan review paid for itself twice, both unanimous: patching only `CacheHTTPClient` would still leave the always-on 1 GB on-disk `URLCache` leaking private reads across users, and splitting `V4ListService` across two PRs would have made the second source-breaking — forcing a redraw of the decomposition along a *protocol* boundary, which dissolved a third blocker for free. Its "one improvement" — stop ending the turn at phase boundaries to report status — is the autonomy contract `/deliver` states today. |
 | 2026-07-29 | #407 | full | Hardened the delivery skills themselves. **Review before writing** paid outright: three plan-review rounds (37 + 9 + 11 findings) ran before a file was edited, and round 1 blocked v1 for **data loss** (the worktree sweep would remove unpushed work) and **credential exposure** (a public repo, with a headless job pasting diagnosis text verbatim into an issue); round 2 caught ACs still grading mechanisms the plan had just cut, which would have red-gated Phase 6 by construction. Verifying mechanisms rather than asserting them caught the content-stamp's first form as a false green — `git ls-tree` has no exclude pathspec, so both hashes were git's empty blob and compared equal. Its lasting legacy is the **reflexive-delivery rule**: three defects all came from the pipeline rewriting itself (a rewritten `/deliver` grading its own rewrite, ACs outliving their mechanisms, and a fan-out shipped as prose in the PR arguing prose isn't a gate), and the Phase 0 reflexive flag that pins verification to the original text **shipped** from this entry's one improvement. Also the origin of the post-ready review lesson: a readiness call was declared with CI green, then a review of the newest code returned fix-first with a major — the fan-out validated its args' shape but not their elements, so malformed input spawned agents on `undefined` and reported full coverage. Nothing in five earlier passes had read the last-written code as code. |
 | 2026-07-28 | #404 | full | Made `Company.logoPath` and `originCountry` optional. Two practices worth keeping. **Sample the population, don't spot-check**: one `curl` showed `logo_path: null` and nearly ended the investigation, while sampling 54 companies produced the field/nullability matrix that proved `origin_country` was in scope and `description`/`headquarters` were not — the difference between a correct fix and a subset. And **"consistent within the type" beats "matches the siblings"**: adjudicating a 2–1 critic split toward the lone dissenter left `Company.logoPath` mapping `""` → `nil` while `Company.Parent.logoPath` still threw — the exact bug the delivery existed to remove, one level down, caught by the independent grader. An unobserved value ranks the risk; it does not close the case. Its "one improvement" — run the rubric grader **before** `/capture-knowledge`, since Phase 7 changed a design that had already invalidated a committed Phase 6 entry — **shipped**, and is the ordering `/deliver` uses today. |
 | 2026-07-27 | #401 | full | Cached image URL resolver behind `client.images` (ADR-0013). Two practices worth keeping. **Drive each concurrency hazard out of a genuine red**: the naive memo measured *100 fetches at peak concurrency 76* under 100 concurrent callers and the refresh ABA returned `["first"]` where `["second"]` was expected, which produced evidence those are real regression tests for free. And **plan review caught a bug the plan could not have shipped without** — the cache rules said *what* to memoise but never *who writes state*, so a superseded fetch would clobber a newer `refresh()`, a permanently stale cache that none of the 13 planned tests would have caught; the generation counter came from that, pre-code. Also the source of *a caller that **joins** a shared in-flight fetch is invisible to the mock or gate*, so a gate-based barrier cannot observe coalescing — two tests were wrong by construction, not by observation (0/65 reproductions), fixed with an on-actor entry counter: **after a concurrency fix, re-review the tests, not just the code**. Its real cost was the delivery that made both build-isolation rules concrete: `make build-docs` *mutually invalidates* every other build, because `Package.swift` branches on `SWIFTCI_DOCC` into two different dependency graphs **and** two per-target source lists sharing one `.build` — so interleaving 5 docs runs with unit/release builds while 5–7 review agents built into the same scratch dir produced *cyclical*, not merely slow, work and ~10 `zsh` pipelines pinned at 100% until the user force-quit them. Both improvements shipped: `build-docs` got its own scratch path, and `/deliver` now forbids builds in reviewer/grader prompts and serialises its review phases. Also clarified that the live integration suite is **deliberately serialised** (40 suites on a global `.integrationGate` semaphore), so most of that wall-clock was by design. |
