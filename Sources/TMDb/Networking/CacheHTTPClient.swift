@@ -15,6 +15,7 @@ private actor ResponseCache {
     }
 
     private var entries: [String: CacheEntry] = [:]
+    private var generation: UInt64 = 0
     private let defaultTTL: Duration
     private let maximumEntryCount: Int
     private let clock = ContinuousClock()
@@ -24,20 +25,39 @@ private actor ResponseCache {
         self.maximumEntryCount = maximumEntryCount
     }
 
-    func response(forKey key: String) -> HTTPResponse? {
+    /// Looks `key` up, and reports the generation that lookup observed.
+    ///
+    /// Both come from a single actor turn, so a caller that misses can hand the
+    /// generation back to ``setResponse(_:forKey:ifGeneration:)`` and have its
+    /// write rejected if the cache was invalidated while it was fetching.
+    func lookup(forKey key: String) -> (response: HTTPResponse?, generation: UInt64) {
         guard let entry = entries[key] else {
-            return nil
+            return (nil, generation)
         }
 
         if clock.now >= entry.expiresAt {
             entries.removeValue(forKey: key)
-            return nil
+            return (nil, generation)
         }
 
-        return entry.response
+        return (entry.response, generation)
     }
 
-    func setResponse(_ response: HTTPResponse, forKey key: String) {
+    /// Stores `response`, unless the cache was invalidated since
+    /// `expectedGeneration` was observed.
+    ///
+    /// A response fetched before an invalidation describes pre-mutation state,
+    /// so storing it would serve stale data for a whole TTL — exactly what the
+    /// invalidation exists to prevent.
+    func setResponse(
+        _ response: HTTPResponse,
+        forKey key: String,
+        ifGeneration expectedGeneration: UInt64
+    ) {
+        guard expectedGeneration == generation else {
+            return
+        }
+
         sweepExpired()
 
         if entries.count >= maximumEntryCount {
@@ -50,6 +70,12 @@ private actor ResponseCache {
 
     func removeAll() {
         entries.removeAll()
+
+        // Bumped unconditionally, including when `entries` is already empty.
+        // During the race this guards, the cache is *typically* empty — the only
+        // read is still in flight and has yet to write — so guarding the bump on
+        // `!entries.isEmpty` would reinstate the bug it exists to close.
+        generation &+= 1
     }
 
     private func sweepExpired() {
@@ -78,6 +104,12 @@ private actor ResponseCache {
 /// than be cached. This layer sits above the underlying transport's own on-disk
 /// `URLCache`.
 ///
+/// Invalidation covers reads that were already in flight: a response fetched
+/// before a mutation landed carries pre-mutation state, so it is discarded
+/// rather than cached. Each read captures the cache's generation when it looks
+/// up, and a mutation bumps that generation — see
+/// `ResponseCache.setResponse(_:forKey:ifGeneration:)`.
+///
 final class CacheHTTPClient: HTTPClient, Sendable {
 
     private let httpClient: any HTTPClient
@@ -103,15 +135,16 @@ final class CacheHTTPClient: HTTPClient, Sendable {
         }
 
         let cacheKey = request.url.absoluteString
+        let (cachedResponse, generation) = await cache.lookup(forKey: cacheKey)
 
-        if let cachedResponse = await cache.response(forKey: cacheKey) {
+        if let cachedResponse {
             return cachedResponse
         }
 
         let response = try await httpClient.perform(request: request)
 
         if isSuccessful(response) {
-            await cache.setResponse(response, forKey: cacheKey)
+            await cache.setResponse(response, forKey: cacheKey, ifGeneration: generation)
         }
 
         return response

@@ -77,7 +77,10 @@ let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>", configuration: config
 This layer is deliberately lightweight: it holds responses in memory only (so it
 is cleared when the process ends), caches `GET` requests only, bypasses
 user-specific requests (see below), and invalidates the entire cache after any
-successful `POST` or `DELETE`.
+successful `POST`, `PUT` or `DELETE`, or a state-changing `GET` such as clearing
+a list. Invalidation also covers reads already in flight: a response fetched
+before the mutation landed describes pre-mutation state, so it is discarded
+rather than cached.
 
 Reach for it when you want a predictable, fixed TTL regardless of TMDb's headers,
 or when you need a cache on a platform where `URLCache` is unavailable.
