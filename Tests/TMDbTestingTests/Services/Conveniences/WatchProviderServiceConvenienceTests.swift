@@ -51,39 +51,41 @@ struct WatchProviderServiceConvenienceTests {
     @Test("every movieWatchProviders overload forwards the parameters it omits")
     func movieWatchProvidersOverloadsForwardOmittedParameters() async throws {
         _ = try await service.movieWatchProviders(filter: WatchProviderFilter(country: "GB"))
+        var call = try #require(service.movieWatchProvidersCalls.last)
+        #expect(call.filter?.country == "GB")
+        #expect(call.language == nil)
+
         _ = try await service.movieWatchProviders(language: "en-GB")
+        call = try #require(service.movieWatchProvidersCalls.last)
+        #expect(call.filter == nil)
+        #expect(call.language == "en-GB")
+
         _ = try await service.movieWatchProviders()
+        call = try #require(service.movieWatchProvidersCalls.last)
+        #expect(call.filter == nil)
+        #expect(call.language == nil)
 
-        let calls = service.movieWatchProvidersCalls
-        try #require(calls.count == 3)
-
-        #expect(calls[0].filter?.country == "GB")
-        #expect(calls[0].language == nil)
-
-        #expect(calls[1].filter == nil)
-        #expect(calls[1].language == "en-GB")
-
-        #expect(calls[2].filter == nil)
-        #expect(calls[2].language == nil)
+        #expect(service.movieWatchProvidersCalls.count == 3)
     }
 
     @Test("every tvSeriesWatchProviders overload forwards the parameters it omits")
     func tvSeriesWatchProvidersOverloadsForwardOmittedParameters() async throws {
         _ = try await service.tvSeriesWatchProviders(filter: WatchProviderFilter(country: "GB"))
+        var call = try #require(service.tvSeriesWatchProvidersCalls.last)
+        #expect(call.filter?.country == "GB")
+        #expect(call.language == nil)
+
         _ = try await service.tvSeriesWatchProviders(language: "en-GB")
+        call = try #require(service.tvSeriesWatchProvidersCalls.last)
+        #expect(call.filter == nil)
+        #expect(call.language == "en-GB")
+
         _ = try await service.tvSeriesWatchProviders()
+        call = try #require(service.tvSeriesWatchProvidersCalls.last)
+        #expect(call.filter == nil)
+        #expect(call.language == nil)
 
-        let calls = service.tvSeriesWatchProvidersCalls
-        try #require(calls.count == 3)
-
-        #expect(calls[0].filter?.country == "GB")
-        #expect(calls[0].language == nil)
-
-        #expect(calls[1].filter == nil)
-        #expect(calls[1].language == "en-GB")
-
-        #expect(calls[2].filter == nil)
-        #expect(calls[2].language == nil)
+        #expect(service.tvSeriesWatchProvidersCalls.count == 3)
     }
 
 }

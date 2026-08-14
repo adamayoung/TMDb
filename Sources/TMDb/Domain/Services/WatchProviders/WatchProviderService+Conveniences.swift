@@ -23,8 +23,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for movies.
     ///
     /// - Note: This convenience omits `language` rather than defaulting it, so that its signature stays distinct from
-    /// the requirement it forwards to. A defaulted overload would instead become that requirement's default
-    /// implementation.
+    /// the requirement it forwards to; it calls the requirement with `nil` for `language`. A defaulted overload would
+    /// instead become that requirement's default implementation.
     ///
     func movieWatchProviders(filter: WatchProviderFilter?) async throws(TMDbError) -> [WatchProvider] {
         try await movieWatchProviders(filter: filter, language: nil)
@@ -44,7 +44,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for movies.
     ///
     /// - Note: This convenience omits `filter` rather than defaulting it, so that its signature stays distinct from the
-    /// requirement it forwards to. A defaulted overload would instead become that requirement's default implementation.
+    /// requirement it forwards to; it calls the requirement with `nil` for `filter`. A defaulted overload would instead
+    /// become that requirement's default implementation.
     ///
     func movieWatchProviders(language: String?) async throws(TMDbError) -> [WatchProvider] {
         try await movieWatchProviders(filter: nil, language: language)
@@ -61,8 +62,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for movies.
     ///
     /// - Note: This convenience omits `filter` and `language` rather than defaulting them, so that its signature stays
-    /// distinct from the requirement it forwards to. A defaulted overload would instead become that requirement's
-    /// default implementation.
+    /// distinct from the requirement it forwards to; it calls the requirement with `nil` for `filter` and `language`. A
+    /// defaulted overload would instead become that requirement's default implementation.
     ///
     func movieWatchProviders() async throws(TMDbError) -> [WatchProvider] {
         try await movieWatchProviders(filter: nil, language: nil)
@@ -80,8 +81,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for TV series.
     ///
     /// - Note: This convenience omits `language` rather than defaulting it, so that its signature stays distinct from
-    /// the requirement it forwards to. A defaulted overload would instead become that requirement's default
-    /// implementation.
+    /// the requirement it forwards to; it calls the requirement with `nil` for `language`. A defaulted overload would
+    /// instead become that requirement's default implementation.
     ///
     func tvSeriesWatchProviders(filter: WatchProviderFilter?) async throws(TMDbError) -> [WatchProvider] {
         try await tvSeriesWatchProviders(filter: filter, language: nil)
@@ -100,7 +101,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for TV series.
     ///
     /// - Note: This convenience omits `filter` rather than defaulting it, so that its signature stays distinct from the
-    /// requirement it forwards to. A defaulted overload would instead become that requirement's default implementation.
+    /// requirement it forwards to; it calls the requirement with `nil` for `filter`. A defaulted overload would instead
+    /// become that requirement's default implementation.
     ///
     func tvSeriesWatchProviders(language: String?) async throws(TMDbError) -> [WatchProvider] {
         try await tvSeriesWatchProviders(filter: nil, language: language)
@@ -116,8 +118,8 @@ public extension WatchProviderService {
     /// - Returns: Watch providers for TV series.
     ///
     /// - Note: This convenience omits `filter` and `language` rather than defaulting them, so that its signature stays
-    /// distinct from the requirement it forwards to. A defaulted overload would instead become that requirement's
-    /// default implementation.
+    /// distinct from the requirement it forwards to; it calls the requirement with `nil` for `filter` and `language`. A
+    /// defaulted overload would instead become that requirement's default implementation.
     ///
     func tvSeriesWatchProviders() async throws(TMDbError) -> [WatchProvider] {
         try await tvSeriesWatchProviders(filter: nil, language: nil)

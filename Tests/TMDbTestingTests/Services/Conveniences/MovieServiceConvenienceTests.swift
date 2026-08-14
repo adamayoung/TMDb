@@ -88,11 +88,18 @@ struct MovieServiceConvenienceTests {
     /// `releaseDates(forMovie:)` had a `public extension` twin with the *same*
     /// signature, whose body called itself. It was therefore the requirement's
     /// witness, so a conformer that omitted the requirement recursed until the
-    /// stack overflowed instead of failing to compile. Deleting the twin leaves
-    /// the requirement as the only declaration; this pins that a call reaches
-    /// it exactly once.
+    /// stack overflowed instead of failing to compile. The twin is now deleted.
     ///
-    @Test("releaseDates(forMovie:) reaches the requirement rather than recursing")
+    /// This is a smoke test, **not** a regression pin, and no test can be one:
+    /// `MockMovieService` declares `releaseDates(forMovie:)` concretely, and a
+    /// concrete member always beats a protocol-extension member of the same
+    /// signature — so this would stay green if the twin came back. The only
+    /// conformer that recurses is one that *omits* the requirement, which must
+    /// be a compile error and so cannot be written. Invariant 1 of
+    /// `Scripts/check-defaulted-witnesses.py`, exercised by its `SELF_TEST`, is
+    /// what actually guards this.
+    ///
+    @Test("releaseDates(forMovie:) reaches the requirement")
     func releaseDatesReachesRequirement() async throws {
         _ = try await service.releaseDates(forMovie: 550)
 
