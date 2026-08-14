@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-14 — 🐛 Power-set overloads for the last 54 defaulted witnesses (#PLACEHOLDER-PR) · full
+## 2026-08-14 — 🐛 Power-set overloads for the last 54 defaulted witnesses (#459) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight (56 files, +11.8k/−1.6k, 306 new
   public overloads, two lint gates). Skills: `review-plan` (3 critics),

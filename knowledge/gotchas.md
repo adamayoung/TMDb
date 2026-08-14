@@ -65,7 +65,7 @@ retired; the family heading stays.
 
 ### `build-docs` cannot see a *missing* curation line — only a broken or ambiguous one
 
-*2026-08-14 (#PLACEHOLDER-PR).* `make build-docs` runs
+*2026-08-14 (#459).* `make build-docs` runs
 `--warnings-as-errors`, which catches a `- ``method(a:b:)``` line pointing at
 nothing and a line that resolves to two symbols. It does **not** catch an
 omission: DocC folds an uncurated symbol into a default topic group silently, so
@@ -82,7 +82,7 @@ lines and a set comparison is satisfied by either one.
 
 ### Two symbols with the same name and labels collide in DocC — disambiguate with the return type
 
-*2026-08-14 (#PLACEHOLDER-PR).* A DocC symbol link is name-plus-argument-labels
+*2026-08-14 (#459).* A DocC symbol link is name-plus-argument-labels
 and nothing else, so a sync/async overload pair occupies one link path. Adding
 `allTrending(inTimeWindow:language:) async throws -> TrendingPageableList`
 alongside the existing synchronous
@@ -107,7 +107,7 @@ stops being the first one's witness.
 
 ### `make test` compiles with `-warnings-as-errors`; a bare `swift build --build-tests` does not
 
-*2026-08-14 (#PLACEHOLDER-PR).* The `Makefile` test targets pass
+*2026-08-14 (#459).* The `Makefile` test targets pass
 `-Xswiftc -warnings-as-errors`, so a warning — an unmutated `var`, an unused
 result — fails them. Running `swift build --build-tests` by hand omits that
 flag, compiles clean, and invites the conclusion that a `make test` failure is
@@ -201,7 +201,7 @@ edit**, and grep the file for orphans (`grep -n "disable:next" <file>`).
 
 **The same trap fires on `file_length` when a file *shrinks*.** Moving
 `ChangesService.swift`'s conveniences into a sibling file took it from 421 lines
-to 192 (#PLACEHOLDER-PR), leaving the `// swiftlint:disable file_length` at line 8
+to 192 (#459), leaving the `// swiftlint:disable file_length` at line 8
 suppressing nothing — a `superfluous_disable_command` error. It is easy to miss
 because the rule is normally reasoned about in the growth direction only: check
 the line count of every file a split *empties*, not just the one it fills.
