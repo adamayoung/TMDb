@@ -786,23 +786,6 @@ public extension MovieService {
     }
 
     ///
-    /// Returns the release dates and certifications for a movie by country.
-    ///
-    /// [TMDb API - Movies: Release Dates](https://developer.themoviedb.org/reference/movie-release-dates)
-    ///
-    /// - Parameter movieID: The identifier of the movie.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: Release dates for the movie grouped by country.
-    ///
-    func releaseDates(
-        forMovie movieID: Movie.ID
-    ) async throws(TMDbError) -> [MovieReleaseDatesByCountry] {
-        try await releaseDates(forMovie: movieID)
-    }
-
-    ///
     /// Returns alternative titles for a movie.
     ///
     /// [TMDb API - Movies: Alternative Titles](https://developer.themoviedb.org/reference/movie-alternative-titles)

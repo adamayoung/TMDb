@@ -84,4 +84,21 @@ struct MovieServiceConvenienceTests {
         #expect(call.movieID == 550)
     }
 
+    ///
+    /// `releaseDates(forMovie:)` had a `public extension` twin with the *same*
+    /// signature, whose body called itself. It was therefore the requirement's
+    /// witness, so a conformer that omitted the requirement recursed until the
+    /// stack overflowed instead of failing to compile. Deleting the twin leaves
+    /// the requirement as the only declaration; this pins that a call reaches
+    /// it exactly once.
+    ///
+    @Test("releaseDates(forMovie:) reaches the requirement rather than recursing")
+    func releaseDatesReachesRequirement() async throws {
+        _ = try await service.releaseDates(forMovie: 550)
+
+        #expect(service.releaseDatesCalls.count == 1)
+        let call = try #require(service.releaseDatesCalls.first)
+        #expect(call.movieID == 550)
+    }
+
 }
