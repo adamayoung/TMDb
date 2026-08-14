@@ -421,35 +421,4 @@ public extension TVSeasonService {
     ) async throws(TMDbError) -> VideoCollection {
         try await videos(forSeason: seasonNumber, inTVSeries: tvSeriesID, filter: nil)
     }
-
-    ///
-    /// Returns change history for a TV season.
-    ///
-    /// [TMDb API - TV Season:
-    /// Changes](https://developer.themoviedb.org/reference/tv-season-changes-by-id)
-    ///
-    /// - Parameters:
-    ///   - seasonID: The identifier of the TV season.
-    ///   - startDate: The start date for changes.
-    ///   - endDate: The end date for changes.
-    ///   - page: The page of results to return.
-    ///
-    /// - Throws: TMDb error ``TMDbError``.
-    ///
-    /// - Returns: A collection of changes for the TV season.
-    ///
-    func changes(
-        forSeason seasonID: Int,
-        startDate: Date? = nil,
-        endDate: Date? = nil,
-        page: Int? = nil
-    ) async throws(TMDbError) -> ChangeCollection {
-        try await changes(
-            forSeason: seasonID,
-            startDate: startDate,
-            endDate: endDate,
-            page: page
-        )
-    }
-
 }

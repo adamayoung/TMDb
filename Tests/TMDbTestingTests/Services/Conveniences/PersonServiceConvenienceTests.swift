@@ -94,4 +94,132 @@ struct PersonServiceConvenienceTests {
         #expect(call.personID == 500)
     }
 
+    @Test("every changes(forPerson:startDate:endDate:page:) overload forwards the parameters it omits")
+    func changesForPersonOverloadsForwardOmittedParameters() async throws {
+        _ = try await service.changes(
+            forPerson: 500,
+            startDate: Date(timeIntervalSince1970: 1_000_000),
+            endDate: Date(timeIntervalSince1970: 2_000_000)
+        )
+        var call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forPerson: 500, startDate: Date(timeIntervalSince1970: 1_000_000), page: 3)
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forPerson: 500, endDate: Date(timeIntervalSince1970: 2_000_000), page: 3)
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forPerson: 500, startDate: Date(timeIntervalSince1970: 1_000_000))
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forPerson: 500, endDate: Date(timeIntervalSince1970: 2_000_000))
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forPerson: 500, page: 3)
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forPerson: 500)
+        call = try #require(service.changesForPersonCalls.last)
+        #expect(call.personID == 500)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        #expect(service.changesForPersonCalls.count == 7)
+    }
+
+    @Test("every changes(startDate:endDate:page:) overload forwards the parameters it omits")
+    func changesStartDateOverloadsForwardOmittedParameters() async throws {
+        _ = try await service.changes(
+            startDate: Date(timeIntervalSince1970: 1_000_000),
+            endDate: Date(timeIntervalSince1970: 2_000_000)
+        )
+        var call = try #require(service.changesCalls.last)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(startDate: Date(timeIntervalSince1970: 1_000_000), page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes(endDate: Date(timeIntervalSince1970: 2_000_000), page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == 3)
+
+        _ = try await service.changes(startDate: Date(timeIntervalSince1970: 1_000_000))
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        _ = try await service.changes(endDate: Date(timeIntervalSince1970: 2_000_000))
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes()
+        call = try #require(service.changesCalls.last)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        #expect(service.changesCalls.count == 7)
+    }
+
+    @Test("every popular(page:language:) overload forwards the parameters it omits")
+    func popularOverloadsForwardOmittedParameters() async throws {
+        _ = try await service.popular(page: 3)
+        var call = try #require(service.popularCalls.last)
+        #expect(call.page == 3)
+        #expect(call.language == nil)
+
+        _ = try await service.popular(language: "en-GB")
+        call = try #require(service.popularCalls.last)
+        #expect(call.page == nil)
+        #expect(call.language == "en-GB")
+
+        _ = try await service.popular()
+        call = try #require(service.popularCalls.last)
+        #expect(call.page == nil)
+        #expect(call.language == nil)
+
+        #expect(service.popularCalls.count == 3)
+    }
+
 }

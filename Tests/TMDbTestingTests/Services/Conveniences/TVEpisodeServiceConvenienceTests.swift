@@ -85,4 +85,62 @@ struct TVEpisodeServiceConvenienceTests {
         #expect(call.episodeNumber == 1)
     }
 
+    @Test("every changes(forEpisode:startDate:endDate:page:) overload forwards the parameters it omits")
+    func changesOverloadsForwardOmittedParameters() async throws {
+        _ = try await service.changes(
+            forEpisode: 1,
+            startDate: Date(timeIntervalSince1970: 1_000_000),
+            endDate: Date(timeIntervalSince1970: 2_000_000)
+        )
+        var call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forEpisode: 1, startDate: Date(timeIntervalSince1970: 1_000_000), page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forEpisode: 1, endDate: Date(timeIntervalSince1970: 2_000_000), page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forEpisode: 1, startDate: Date(timeIntervalSince1970: 1_000_000))
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forEpisode: 1, endDate: Date(timeIntervalSince1970: 2_000_000))
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
+        #expect(call.page == nil)
+
+        _ = try await service.changes(forEpisode: 1, page: 3)
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == 3)
+
+        _ = try await service.changes(forEpisode: 1)
+        call = try #require(service.changesCalls.last)
+        #expect(call.episodeID == 1)
+        #expect(call.startDate == nil)
+        #expect(call.endDate == nil)
+        #expect(call.page == nil)
+
+        #expect(service.changesCalls.count == 7)
+    }
+
 }
