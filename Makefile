@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses
+lint: lint-witnesses lint-fixtures
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -55,6 +55,15 @@ lint: lint-witnesses
 .PHONY: lint-witnesses
 lint-witnesses:
 	@python3 Scripts/check-defaulted-witnesses.py
+
+# JSON fixture hygiene: strict-parse (Foundation tolerates trailing commas, so
+# only an independent parser catches them), snake_case keys, and orphans in both
+# directions. Mirrored as the `Fixture check` step in .github/workflows/ci.yml,
+# with `Tests/TMDbTests/Resources/**` in the `changes` paths filter — see the
+# note above.
+.PHONY: lint-fixtures
+lint-fixtures:
+	@python3 Scripts/check-fixtures.py
 
 .PHONY: lint-markdown
 lint-markdown:

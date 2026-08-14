@@ -1,13 +1,25 @@
 {
-    "id": 49,
-    "logos": [
-        {
-            "aspect_ratio": 2.425287356321839,
-            "file_path": "/tuomPhY2UtuPTqqFnKMVHvSb724.png"
-        },
-        {
-            "aspect_ratio": 2.4242424242424243,
-            "file_path": "/hizvY65SpyF3BPY2qsBZMgUOxjs.png"
-        }
-    ]
+  "id": 49,
+  "logos": [
+    {
+      "aspect_ratio": 2.425287356321839,
+      "file_path": "/tuomPhY2UtuPTqqFnKMVHvSb724.png",
+      "height": 174,
+      "id": "5a7a67a40e0a26020a000091",
+      "file_type": ".svg",
+      "vote_average": 2.542,
+      "vote_count": 4,
+      "width": 422
+    },
+    {
+      "aspect_ratio": 2.4242424242424243,
+      "file_path": "/hizvY65SpyF3BPY2qsBZMgUOxjs.png",
+      "height": 495,
+      "id": "63e7979663aad200858726da",
+      "file_type": ".png",
+      "vote_average": 1.75,
+      "vote_count": 2,
+      "width": 1200
+    }
+  ]
 }

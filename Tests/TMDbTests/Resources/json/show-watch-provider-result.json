@@ -1,32 +1,62 @@
 {
-    "id": "1",
-    "results": [
-        ["GB": {
-            "link": "",
-            "free": {
-                "display_priority": 0,
-                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
-                "provider_name": "Netflix",
-                "provider_id": 8
-            },
-            "flatrate": {
-                "display_priority": 0,
-                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
-                "provider_name": "Netflix",
-                "provider_id": 8
-            },
-            "rent": {
-                "display_priority": 0,
-                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
-                "provider_name": "Netflix",
-                "provider_id": 8
-            },
-            "buy": {
-                "display_priority": 0,
-                "logo_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
-                "provider_name": "Netflix",
-                "provider_id": 8
-            },
-        }]
-    ]
+  "id": 1396,
+  "results": {
+    "JP": {
+      "link": "https://www.themoviedb.org/tv/1396-breaking-bad/watch?locale=JP",
+      "buy": [
+        {
+          "logo_path": "/qR6FKvnPBx2O37FDg8PNM7efwF3.jpg",
+          "provider_id": 10,
+          "provider_name": "Amazon Video",
+          "display_priority": 7
+        }
+      ],
+      "free": [
+        {
+          "logo_path": "/pvske1MyAoymrs5bguRfVqYiM9a.jpg",
+          "provider_id": 9,
+          "provider_name": "Amazon Prime Video",
+          "display_priority": 1
+        }
+      ],
+      "rent": [
+        {
+          "logo_path": "/9EWAEok40O0HVhV0MYJmlE4LhGy.jpg",
+          "provider_id": 2683,
+          "provider_name": "FOD",
+          "display_priority": 80
+        }
+      ],
+      "flatrate": [
+        {
+          "logo_path": "/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg",
+          "provider_id": 8,
+          "provider_name": "Netflix",
+          "display_priority": 0
+        }
+      ]
+    },
+    "RU": {
+      "link": "https://www.themoviedb.org/tv/1396-breaking-bad/watch?locale=RU",
+      "ads": [
+        {
+          "logo_path": "/3EJQtj4m83kRh7bV9BF6KWmPiKp.jpg",
+          "provider_id": 577,
+          "provider_name": "TvIgle",
+          "display_priority": 19
+        }
+      ]
+    },
+    "NZ": {
+      "link": "https://www.themoviedb.org/tv/1396-breaking-bad/watch?locale=NZ",
+      "flatrate": [
+        {
+          "logo_path": "/iscLKFDwQlr0BAgVDBcuRapLiwC.jpg",
+          "provider_id": 273,
+          "provider_name": "Neon TV",
+          "display_priority": 6
+        }
+      ]
+    }
+  }
 }

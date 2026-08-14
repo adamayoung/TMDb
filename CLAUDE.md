@@ -515,8 +515,9 @@ release build and the docs build, so **don't run those individually again just
 before it**: the live integration suite is deliberately serialised, and
 re-running it is the largest avoidable cost in a delivery (#401). `/pr`
 documents the one sanctioned narrowing — a diff touching no `*.swift`,
-`Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan` or
-`.github/workflows/**` runs `make lint && make lint-markdown && make build-docs`
+`Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`,
+`.github/workflows/**` or `Tests/TMDbTests/Resources/**` (JSON fixtures are a
+build input of `TMDbTests`) runs `make lint && make lint-markdown && make build-docs`
 instead (drop `build-docs` only if no `*.docc/**` changed). `/pr` owns that rule;
 if this paraphrase and `/pr` ever disagree, `/pr` is right.
 

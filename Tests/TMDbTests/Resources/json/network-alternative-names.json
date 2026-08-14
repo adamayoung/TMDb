@@ -1,9 +1,13 @@
 {
-    "id": 49,
-    "results": [
-        {
-            "name": "HBO Network",
-            "type": ""
-        }
-    ]
+  "id": 49,
+  "results": [
+    {
+      "name": "HBO HD",
+      "type": ""
+    },
+    {
+      "name": "Home Box Office",
+      "type": ""
+    }
+  ]
 }

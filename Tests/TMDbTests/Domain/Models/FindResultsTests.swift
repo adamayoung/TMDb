@@ -27,6 +27,57 @@ struct FindResultsTests {
         #expect(result.tvEpisodeResults == findResults.tvEpisodeResults)
     }
 
+    /// `find-results.json` is details-shaped (runtime, budget, genres) and has
+    /// every non-movie array empty, so neither the real /find movie shape nor a
+    /// populated tvResults had ever been decoded. These two are live captures.
+    @Test("JSON decoding of FindResults from a real /find IMDb-ID lookup")
+    func decodeReturnsFindResultsForIMDbID() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            FindResults.self,
+            fromResource: "find-imdb-id-movie"
+        )
+
+        let movie = try #require(result.movieResults.first)
+        #expect(result.movieResults.count == 1)
+        #expect(movie.id == 550)
+        #expect(movie.title == "Fight Club")
+        #expect(movie.originalTitle == "Fight Club")
+        #expect(movie.originalLanguage == "en")
+        #expect(movie.voteCount == 32615)
+        #expect(movie.isAdultOnly == false)
+
+        // /find sends genre_ids, never the expanded `genres` objects, so a
+        // movie decoded from this endpoint has no genres and no runtime.
+        #expect(movie.genres == nil)
+        #expect(movie.runtime == nil)
+
+        #expect(result.personResults.isEmpty)
+        #expect(result.tvResults.isEmpty)
+        #expect(result.tvSeasonResults.isEmpty)
+        #expect(result.tvEpisodeResults.isEmpty)
+    }
+
+    @Test("JSON decoding of FindResults from a real /find TVDB-ID lookup")
+    func decodeReturnsFindResultsForTVDBID() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            FindResults.self,
+            fromResource: "find-tvdb-id-tvshow"
+        )
+
+        let tvSeries = try #require(result.tvResults.first)
+        #expect(result.tvResults.count == 1)
+        #expect(tvSeries.id == 1396)
+        #expect(tvSeries.name == "Breaking Bad")
+        #expect(tvSeries.originalName == "Breaking Bad")
+        #expect(tvSeries.originalLanguage == "en")
+        #expect(tvSeries.voteCount == 18371)
+
+        #expect(result.movieResults.isEmpty)
+        #expect(result.personResults.isEmpty)
+        #expect(result.tvSeasonResults.isEmpty)
+        #expect(result.tvEpisodeResults.isEmpty)
+    }
+
 }
 
 extension FindResultsTests {

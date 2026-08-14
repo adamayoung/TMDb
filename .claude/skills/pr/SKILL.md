@@ -42,14 +42,16 @@ git diff --name-only origin/main...HEAD \
     - Already branched off an up-to-date `origin/main` with nothing to replay → this is a fast no-op.
 4. Run the pre-PR gate — **MANDATORY; it must pass before going further.** Run it directly (do not delegate). If it fails, stop and fix — **commit the fixes** — then re-run; never open a PR on a red gate. Scale the gate to the diff:
     - **Default — full `make ci`.** The gate CLAUDE.md requires before any PR: lint, markdown lint, unit tests, integration tests, the release build, and the docs build. Use this whenever **any** code or build-affecting file changed.
-    - **Docs/config-only fast gate.** When the diff touches **no build- or test-affecting files** — i.e. no `*.swift` **and** none of `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`, or `.github/workflows/**` — the test/release-build legs of `make ci` have nothing to exercise. Run only the meaningful checks instead: `make lint && make lint-markdown && make build-docs` (drop `build-docs` if no `*.docc/**` changed). Detect this with:
+    - **Docs/config-only fast gate.** When the diff touches **no build- or test-affecting files** — i.e. no `*.swift` **and** none of `Makefile`, `Package.swift`, `Package.resolved`, `*.xctestplan`, `.github/workflows/**`, or `Tests/TMDbTests/Resources/**` — the test/release-build legs of `make ci` have nothing to exercise. Run only the meaningful checks instead: `make lint && make lint-markdown && make build-docs` (drop `build-docs` if no `*.docc/**` changed). Detect this with:
 
         ```bash
         git diff --name-only origin/main...HEAD \
-          | grep -qE '\.swift$|^Makefile$|^Package\.(swift|resolved)$|\.xctestplan$|^\.github/workflows/' \
+          | grep -qE '\.swift$|^Makefile$|^Package\.(swift|resolved)$|\.xctestplan$|^\.github/workflows/|^Tests/TMDbTests/Resources/' \
           && echo "code/build touched → full make ci" \
           || echo "docs/config-only → fast gate"
         ```
+
+        **JSON fixtures count as test-affecting.** They are a build input of the `TMDbTests` target via `.process("Resources")` (`Package.swift`), so a fixture-only diff still has to run the unit suites — a re-captured value can break a decode assertion that no amount of lint will catch. `.github/workflows/ci.yml`'s `swift` paths filter carries the same path for the same reason; keep the two in step.
 
         The PR's own CI still runs the full matrix regardless, so this only trims the **local** gate; it never lowers what actually guards `main`. When in doubt, run full `make ci`.
     - **Re-lint new Swift files without the cache.** `make ci`'s lint leg is `swiftlint --strict .` (Makefile), and SwiftLint **caches results** (`~/Library/Caches/SwiftLint`). On **newly-added** `.swift` files this has been seen to report a **false green** locally — passing `file_length` / `type_body_length` that the PR's CI `Lint` job (a clean checkout, no cache) then fails on. So **when the diff adds any new `.swift` file** (`git diff --name-only --diff-filter=A origin/main...HEAD | grep -q '\.swift$'`), run a cache-bypassing lint before trusting the gate:

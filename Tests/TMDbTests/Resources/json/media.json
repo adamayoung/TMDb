@@ -45,7 +45,7 @@
     {
         "id": 287,
         "name": "Brad Pitt",
-        "originalName": "Brad Pitt",
+        "original_name": "Brad Pitt",
         "gender": 2,
         "profile_path": "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
         "adult": false,

@@ -463,12 +463,61 @@ guessed:
   reason to rank the risk low, not a reason to leave one property of a type
   behaving differently from its neighbour.
 
+### `/tv/{id}/translations`: `homepage` is `""` on essentially every locale
+
+*2026-08-14, all 68 locales of `/tv/1396/translations` (#457).* Every one sends
+`"homepage": ""`, and most send `"name": ""` for the original-language row —
+empty strings, not `null` and not absent. `TVSeriesTranslationData` types
+`homepage` as `String?`, so `""` decodes as `""`, **not** `nil`: this is not a
+`decodeNonEmptyURLIfPresent` case, because the property is a string rather than a
+`URL`. A test asserting `homepage == nil` here is wrong; assert `== ""`.
+
 ### Verify optionality against real responses, not assumptions
 
 - A property should be optional (`?`) only if the API can return `null` or omit
   it. Confirm against a live response via `mcp__tmdb__*` and the OpenAPI schema
   before deciding — the docs aren't always accurate about which fields are
   guaranteed.
+
+## Response shapes
+
+*All three measured 2026-08-14 while re-capturing orphaned fixtures (#457).*
+
+### `/tv/{id}/watch/providers` keys `results` by country — an object, not an array
+
+`results` is a **map** from ISO-3166-1 country code to a per-country object, not
+a list:
+
+```json
+{"id": 1396, "results": {"JP": {"link": "…", "flatrate": [...]}, "RU": {...}}}
+```
+
+Each country carries `link` plus **any subset** of `flatrate`, `buy`, `rent`,
+`free`, `ads` — the categories are genuinely sparse per country, and a country
+with only `ads` (Russia, for Breaking Bad) is normal. `ShowWatchProvider` types
+all five as optional arrays, so an absent category decodes as `nil`, never `[]`;
+assert `nil` rather than emptiness when covering them.
+
+### `/movie/{id}/release_dates` sends a full ISO timestamp, not a day
+
+`release_date` here is `"1999-10-15T00:00:00.000Z"` — **not** the `yyyy-MM-dd`
+form every other v3 endpoint uses. `JSONDecoder.theMovieDatabase`'s day-precision
+strategy cannot parse it, so `ReleaseDate` carries its own `init(from:)` that
+parses the timestamp explicitly (`Sources/TMDb/Domain/Models/ReleaseDate.swift`).
+Change that initialiser and the endpoint breaks even though the shared decoder
+looks untouched.
+
+### `/find/{external_id}` returns **list**-shaped rows, not details-shaped
+
+A `/find` movie carries `genre_ids` and has no `runtime`, `budget`, `genres`,
+`production_companies` or `imdb_id` — it is the search/list shape. It is decoded
+into the full `Movie` model all the same, which works only because those fields
+are optional. A fixture for this endpoint that carries details-shaped fields was
+not captured from it.
+
+Note also that `/find` can return matches in more than one array for a single
+lookup: `tt0137523` (Fight Club) returns a movie **and** an unrelated TV series
+whose IMDb id upstream has been mapped to the same string.
 
 ## Unmodelled fields
 
