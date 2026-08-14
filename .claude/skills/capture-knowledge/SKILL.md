@@ -44,6 +44,16 @@ Mirror the discipline of a good memory — don't record:
 
 Quality over volume: a few high-signal entries beat a long dump.
 
+**A learning that implies work is not a knowledge entry.** `knowledge/` records
+what is *true*; an issue records what should *change*. "The decoder drops `tv`
+rows" is not a gotcha to remember, it is a defect to file — writing it here
+instead buries it in a file nobody greps until they hit the same wall. When a
+candidate is really a task, file it per
+[`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) and record only the
+durable half here, if any survives. The two are not exclusive: a live-API quirk
+often earns a `tmdb-api-notes.md` line *and* an issue for the code that mishandles
+it — cite the issue number from the entry so they stay tied.
+
 ## When an entry records a count, ask what enforces it
 
 If a candidate entry states a **known-remaining defect count** — "54 sites still
@@ -135,7 +145,8 @@ as an observation rather than an invariant.
 
 Report concisely what you captured: each entry → which file (and ADR number for
 decisions), and note anything you deliberately skipped as not durable. If nothing
-met the bar, say so plainly — capturing nothing is a valid outcome.
+met the bar, say so plainly — capturing nothing is a valid outcome. List any
+issues you filed for candidates that turned out to be work rather than knowledge.
 
 **Always end with the `swept:` line from step 5.4** — `swept: <infra files> →
 <entries rewritten/deleted | none cited>`, or `swept: n/a`. It is not optional
