@@ -59,8 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that omitted the requirement compiled, then recursed until the stack
   overflowed, where a compile error was intended. Each is replaced by explicit
   overloads covering every combination of the parameters it can drop (306 in
-  all), so **no call site needs to change**. This completes the sweep started
-  in 19.1.0, which fixed the 37 single-default sites.
+  all), so **no call site needs to change**. This completes the sweep begun
+  earlier in this release, which fixed the 37 single-default sites (see below).
 
   One caveat, and it is not a call-site one: an *unapplied* reference to these
   methods — `let fetch = client.movies.popular` — now has several candidates
@@ -259,9 +259,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Affected: `AccountService`, `AuthenticationService`, `ConfigurationService`,
   `FindService`, `GenreService`, `MovieService`, `PersonService`,
   `SearchService`, `TVEpisodeService`, `TVSeasonService`, `TVSeriesService`,
-  `WatchProviderService`. A further 54 conveniences with two or more defaulted
-  parameters keep the old shape for now — fixing those cannot preserve every
-  existing call form (see `knowledge/next-major.md`).
+  `WatchProviderService`. The remaining 54 conveniences, which defaulted two or
+  more parameters each, are fixed by the entry above — in this same release, and
+  without any call-site change.
 
 ### Added
 

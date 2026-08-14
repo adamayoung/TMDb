@@ -168,6 +168,12 @@ SITES = {
 
 TOTAL_SITES = 54
 
+# The power sets of all 54 sites, summed. An independent tripwire on the same
+# data: dropping a whole site from the census would keep `TOTAL_SITES` honest
+# only if someone also decremented it, whereas this notices the 2**n - 1
+# overloads that stopped being demanded.
+TOTAL_OVERLOADS = 306
+
 # Sites already replaced by explicit no-default power-set overloads. Fix a site
 # by adding its key here — the label tuples are never retyped.
 REWRITTEN = frozenset({
@@ -227,21 +233,40 @@ REWRITTEN = frozenset({
     ("WatchProviderService", "tvSeriesWatchProviders", ("filter", "language")),
 })
 
-# A requirement plus two conveniences that witness it: one hidden behind
-# defaults, one an exact zero-default duplicate. Invariant 1 must flag both.
+# Requirements plus three conveniences that witness them: one hidden behind
+# defaults, one an exact zero-default duplicate, and one declared `public` inside
+# a non-public extension. Invariant 1 must flag all three.
+#
+# `canary` deliberately mixes an optional `= nil` default, a NON-optional `= .day`
+# default and an undefaulted parameter, so default detection is pinned in both
+# directions: a `= nil`-only test misses `gamma`, and an always-true test claims
+# `delta`. Getting that wrong is not academic — the real tree has exactly this
+# shape in TrendingService's `inTimeWindow`.
 SELF_TEST = '''
 public protocol CanaryService {
-    func canary(alpha: String?, beta: Int?) async throws -> Int
+    func canary(alpha: String?, beta: Int?, gamma: Window, delta: Int) async throws -> Int
     func exact(gamma: String) async throws -> Int
+    func hoisted(epsilon: String?) async throws -> Int
 }
 
 public extension CanaryService {
-    func canary(alpha: String? = nil, beta: Int? = nil) async throws -> Int {
-        try await canary(alpha: alpha, beta: beta)
+    func canary(alpha: String? = nil, beta: Int? = nil, gamma: Window = .day,
+                delta: Int) async throws -> Int {
+        try await canary(alpha: alpha, beta: beta, gamma: gamma, delta: delta)
     }
 
     func exact(gamma: String) async throws -> Int {
         try await exact(gamma: gamma)
+    }
+}
+
+extension CanaryService {
+    public func hoisted(epsilon: String? = nil) async throws -> Int {
+        try await hoisted(epsilon: epsilon)
+    }
+
+    func notAWitness(zeta: String? = nil) async throws -> Int {
+        try await hoisted(epsilon: zeta)
     }
 }
 '''
@@ -279,12 +304,21 @@ def split_params(inner):
 
 
 def funcs(block):
-    for m in re.finditer(r"\bfunc\s+([A-Za-z0-9_]+)\s*(?:<[^>]*>)?\s*\(", block):
+    """Each `func` in the block, with whether it is spelled `public func`.
+
+    The access level matters because an extension can be declared without
+    `public` and still expose a public member — swiftformat's
+    `extensionAccessControl` normally hoists the keyword onto the extension, but
+    it leaves a mixed-access-level extension alone, and such a member is a
+    witness just the same.
+    """
+    for m in re.finditer(r"(public\s+)?\bfunc\s+([A-Za-z0-9_]+)\s*(?:<[^>]*>)?\s*\(", block):
         open_idx = block.index("(", m.end() - 1)
         close_idx = closing_paren(block, open_idx)
         if close_idx < 0:
             continue
-        yield m.group(1), split_params(block[open_idx + 1: close_idx]), m.start()
+        yield (m.group(2), split_params(block[open_idx + 1: close_idx]),
+               m.start(), bool(m.group(1)))
 
 
 def label(param):
@@ -319,15 +353,18 @@ def scan(text, path="<memory>"):
     recorded table can be checked against the tree rather than trusted.
     """
     requirements, conveniences = {}, []
-    for m in re.finditer(r"^public (protocol|extension) ([A-Za-z0-9_]+)", text, re.M):
-        kind, owner = m.group(1), m.group(2)
+    for m in re.finditer(r"^(public )?(protocol|extension) ([A-Za-z0-9_]+)", text, re.M):
+        is_public, kind, owner = bool(m.group(1)), m.group(2), m.group(3)
         end = text.find("\n}\n", m.end())
         block = text[m.end(): end if end > 0 else len(text)]
-        for name, params, offset in funcs(block):
+        for name, params, offset, func_is_public in funcs(block):
             key = (owner, name, tuple(label(p) for p in params))
             if kind == "protocol":
-                requirements.setdefault(key, (path, line_of(text, m.end() + offset)))
-            else:
+                # A requirement is only reachable by an outside conformer if the
+                # protocol itself is public.
+                if is_public:
+                    requirements.setdefault(key, (path, line_of(text, m.end() + offset)))
+            elif is_public or func_is_public:
                 conveniences.append((
                     key, path, line_of(text, m.end() + offset),
                     tuple(label(p) for p in params if has_default(p)),
@@ -386,18 +423,24 @@ for key, defaulted in sorted(SITES.items()):
              % (render(owner, name, labels), sorted(stray)))
 
 # --- invariant 0: the machinery itself still works ------------------------
+CANARY = ("CanaryService", "canary", ("alpha", "beta", "gamma", "delta"))
+HOISTED = ("CanaryService", "hoisted", ("epsilon",))
+
 canary_reqs, canary_convs = scan(SELF_TEST)
 canary_hits = {c[0] for c in canary_convs if c[0] in canary_reqs}
-if canary_hits != {("CanaryService", "canary", ("alpha", "beta")),
-                   ("CanaryService", "exact", ("gamma",))}:
+if canary_hits != {CANARY, ("CanaryService", "exact", ("gamma",)), HOISTED}:
     fail("error: SELF_TEST did not detect its own planted witnesses — the parser",
          "       is broken, so a clean scan of Sources proves nothing.",
          "       got %s" % sorted(canary_hits))
 
 canary_defaults = {c[0]: c[3] for c in canary_convs}
-if canary_defaults.get(("CanaryService", "canary", ("alpha", "beta"))) != ("alpha", "beta"):
-    fail("error: SELF_TEST default detection is broken — invariant 2 would then",
-         "       'verify' every recorded tuple against an empty one.")
+if canary_defaults.get(CANARY) != ("alpha", "beta", "gamma"):
+    fail("error: SELF_TEST default detection is broken — it reported %s where"
+         % (canary_defaults.get(CANARY),),
+         "       ('alpha', 'beta', 'gamma') was planted. Testing for `= nil` alone",
+         "       misses `gamma`; treating every parameter as defaulted claims",
+         "       `delta`. Invariant 2 would then 'verify' recorded tuples against",
+         "       a tuple produced by the broken detector.")
 
 if (sorted(subsets_of(("a", "b", "c"), ("a", "b", "c")))
         != sorted([(), ("a",), ("b",), ("c",), ("a", "b"), ("a", "c"), ("b", "c")])
@@ -459,9 +502,43 @@ for key, defaulted in sorted(pending.items()):
              "       The recorded tuple drives the power set demanded after the",
              "       rewrite, so it must match the tree while the tree can prove it.")
 
-# --- invariant 3: rewritten sites keep their whole power set --------------
+# --- invariant 3: rewritten sites expose EXACTLY their power set -----------
+# Exactly, not merely at least: once every site is rewritten, invariant 2 has no
+# pending entry left to check, so a `SITES` tuple is frozen data the tree can no
+# longer corroborate. Understating one shrinks the demanded set, which would let
+# a public overload be deleted with this check still green. Comparing the demanded
+# set against what is actually in the tree catches that from the other side — an
+# EXTRA overload means the recorded tuple is too small.
 verified = 0
-missing = []
+missing, extra = [], []
+
+# Attribute every in-tree convenience to at most one site before comparing, so
+# the comparison cannot be filtered by the very tuple it is meant to audit.
+# Deriving "the parameters this site cannot drop" from SITES would make the
+# check self-consistent with an understated tuple: the overloads that would
+# expose it are exactly the ones such a filter discards.
+#
+# A convenience belongs to the site with the SMALLEST label set that contains
+# it, which is what separates the two same-named sites: `changes(startDate:page:)`
+# is a subset of both `changes(forMovie:startDate:endDate:page:)` and
+# `changes(startDate:endDate:page:)`, and belongs to the latter.
+# Only a declaration that carries NO defaults can be a power-set overload —
+# that is the whole contract of the rewrite. Attributing by labels alone lets a
+# *defaulted* declaration stand in for a missing overload: the synchronous
+# paginating `allTrending(inTimeWindow:language:)` defaults both its parameters
+# and shares a label set with the generated async one, so deleting the latter
+# would otherwise go unnoticed. It sits in a different file, which is exactly
+# why a reader would not catch it either.
+attributed = {key: set() for key in REWRITTEN}
+for (o, n, l), entries in by_key.items():
+    if not any(defaulted == () for _, _, defaulted in entries):
+        continue
+    candidates = [k for k in REWRITTEN
+                  if k[0] == o and k[1] == n and set(l) <= set(k[2]) and l != k[2]]
+    if not candidates:
+        continue
+    attributed[min(candidates, key=lambda k: len(k[2]))].add(l)
+
 for key in sorted(REWRITTEN):
     owner, name, labels = key
     if key in by_key:
@@ -469,11 +546,25 @@ for key in sorted(REWRITTEN):
              "error: %s is marked REWRITTEN but a convenience with the requirement's"
              % render(*key),
              "       own label list still exists — that is the witness itself.")
-    for wanted in subsets_of(labels, SITES[key]):
-        if (owner, name, wanted) in by_key:
-            verified += 1
-        else:
-            missing.append((owner, name, wanted, labels))
+
+    demanded = set(subsets_of(labels, SITES[key]))
+    verified += len(demanded & attributed[key])
+    for wanted in sorted(demanded - attributed[key]):
+        missing.append((owner, name, wanted, labels))
+    for found in sorted(attributed[key] - demanded):
+        extra.append((owner, name, found, labels))
+
+if extra:
+    fail("",
+         "error: %d overload(s) exist that the recorded power set does not demand:"
+         % len(extra))
+    for owner, name, found_labels, labels in extra:
+        fail("  %s   (not in the power set of %s)"
+             % (render(owner, name, found_labels), render(owner, name, labels)))
+    fail("",
+         "  Either the overload does not belong, or — far more likely — SITES",
+         "  understates which parameters this site defaulted, which would silently",
+         "  shrink what invariant 3 demands. Correct the recorded tuple.")
 
 if missing:
     fail("",
@@ -485,6 +576,14 @@ if missing:
     fail("",
          "  Add the overload, forwarding the requirement's full label list and",
          "  passing each omitted parameter its own original default.")
+
+demanded_total = sum(len(subsets_of(k[2], SITES[k])) for k in SITES)
+if demanded_total != TOTAL_OVERLOADS:
+    fail("",
+         "error: the census now demands %d overload(s), not %d."
+         % (demanded_total, TOTAL_OVERLOADS),
+         "       A recorded tuple changed, or a site left the table. Change",
+         "       TOTAL_OVERLOADS deliberately and say why in the commit.")
 
 if failed:
     sys.exit(1)

@@ -49,22 +49,45 @@ struct TrendingServiceConvenienceTests {
     ///
     /// The pair coexisted before this change too, but the ranking inputs moved:
     /// the async candidate used to be reached by filling defaults and is now an
-    /// exact match. These two tests pin the *synchronous* side, which nothing
-    /// else covers at these label sets, by binding the result to an explicit
-    /// type — if resolution ever flips, they stop compiling rather than
-    /// silently changing which API a caller gets.
+    /// exact match. These four tests cover all four shared label sets on the
+    /// *synchronous* side, which nothing else in the repository exercises.
+    ///
+    /// What the explicit result type pins is that a `PagedAsyncSequence` is
+    /// still *reachable* at each of them — annotating the binding is what
+    /// selects the sync candidate, so this would not catch a change in which
+    /// overload an *unannotated* call picks. Each also asserts the arguments
+    /// the helper forwarded, so its own `.day` default is pinned too: that is
+    /// the only real default value left anywhere in this API, every other
+    /// forwarded argument being `nil`.
     ///
     @Test("the zero-argument form still resolves to the paginating sequence")
     func zeroArgumentAllTrendingResolvesToPagedSequence() async throws {
         let sequence: PagedAsyncSequence<TrendingItem> = service.allTrending()
+        try await consumeOne(sequence)
 
-        var count = 0
-        for try await _ in sequence {
-            count += 1
-            if count == 1 { break }
-        }
+        let call = try #require(service.allTrendingCalls.last)
+        #expect(call.timeWindow == .day)
+        #expect(call.language == nil)
+    }
 
-        #expect(count == 1)
+    @Test("the time-window form still resolves to the paginating sequence")
+    func timeWindowAllTrendingResolvesToPagedSequence() async throws {
+        let sequence: PagedAsyncSequence<TrendingItem> = service.allTrending(inTimeWindow: .week)
+        try await consumeOne(sequence)
+
+        let call = try #require(service.allTrendingCalls.last)
+        #expect(call.timeWindow == .week)
+        #expect(call.language == nil)
+    }
+
+    @Test("the language form still resolves to the paginating sequence")
+    func languageAllTrendingResolvesToPagedSequence() async throws {
+        let sequence: PagedAsyncSequence<TrendingItem> = service.allTrending(language: "en-GB")
+        try await consumeOne(sequence)
+
+        let call = try #require(service.allTrendingCalls.last)
+        #expect(call.timeWindow == .day)
+        #expect(call.language == "en-GB")
     }
 
     @Test("the two-argument form still resolves to the paginating sequence")
@@ -73,11 +96,20 @@ struct TrendingServiceConvenienceTests {
             inTimeWindow: .week,
             language: "en-GB"
         )
+        try await consumeOne(sequence)
 
+        let call = try #require(service.allTrendingCalls.last)
+        #expect(call.timeWindow == .week)
+        #expect(call.language == "en-GB")
+    }
+
+    /// Draws a single item, which is enough to make the sequence issue its first
+    /// page request — the call these tests then assert on.
+    private func consumeOne(_ sequence: PagedAsyncSequence<TrendingItem>) async throws {
         var count = 0
         for try await _ in sequence {
             count += 1
-            if count == 1 { break }
+            break
         }
 
         #expect(count == 1)

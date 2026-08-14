@@ -9,6 +9,18 @@
 
 import Foundation
 
+///
+/// Shorter forms of the ``TrendingService`` requirements.
+///
+/// Every one of these **drops** parameters rather than defaulting them, and
+/// there is one for each combination a caller can leave out. A defaulted
+/// overload would share its requirement's signature — default values are not
+/// part of a signature for witness matching — and so would silently become that
+/// requirement's default implementation, recursing forever for any conformer
+/// that omitted it. `Scripts/check-defaulted-witnesses.py` fails the lint if one
+/// is ever added here, and equally if one of these overloads is ever removed:
+/// dropping a combination is a source break for anyone calling it.
+///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public extension TrendingService {
 
@@ -23,7 +35,7 @@ public extension TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -50,7 +62,7 @@ public extension TrendingService {
     /// [TMDb API - Trending: All](https://developer.themoviedb.org/reference/trending-all)
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's
     /// configured default language.
     ///
@@ -107,7 +119,7 @@ public extension TrendingService {
     ///
     /// [TMDb API - Trending: All](https://developer.themoviedb.org/reference/trending-all)
     ///
-    /// - Parameter timeWindow: Daily or weekly time window. Defaults to daily.
+    /// - Parameter timeWindow: Daily or weekly time window.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -202,7 +214,7 @@ public extension TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -229,7 +241,7 @@ public extension TrendingService {
     /// [TMDb API - Trending: Movies](https://developer.themoviedb.org/reference/trending-all)
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -286,7 +298,7 @@ public extension TrendingService {
     ///
     /// [TMDb API - Trending: Movies](https://developer.themoviedb.org/reference/trending-all)
     ///
-    /// - Parameter timeWindow: Daily or weekly time window. Defaults to daily.
+    /// - Parameter timeWindow: Daily or weekly time window.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -379,7 +391,7 @@ public extension TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -406,7 +418,7 @@ public extension TrendingService {
     /// [TMDb API - Trending: People](https://developer.themoviedb.org/reference/trending-people)
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -463,7 +475,7 @@ public extension TrendingService {
     ///
     /// [TMDb API - Trending: People](https://developer.themoviedb.org/reference/trending-people)
     ///
-    /// - Parameter timeWindow: Daily or weekly time window. Defaults to daily.
+    /// - Parameter timeWindow: Daily or weekly time window.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -556,7 +568,7 @@ public extension TrendingService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -583,7 +595,7 @@ public extension TrendingService {
     /// [TMDb API - Trending: TV](https://developer.themoviedb.org/reference/trending-tv)
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
     ///
@@ -640,7 +652,7 @@ public extension TrendingService {
     ///
     /// [TMDb API - Trending: TV](https://developer.themoviedb.org/reference/trending-tv)
     ///
-    /// - Parameter timeWindow: Daily or weekly time window. Defaults to daily.
+    /// - Parameter timeWindow: Daily or weekly time window.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

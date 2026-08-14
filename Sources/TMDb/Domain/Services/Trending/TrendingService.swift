@@ -24,7 +24,7 @@ public protocol TrendingService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
@@ -50,7 +50,7 @@ public protocol TrendingService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
@@ -76,7 +76,7 @@ public protocol TrendingService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's configured default
     /// language.
@@ -102,7 +102,7 @@ public protocol TrendingService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - timeWindow: Daily or weekly time window. Defaults to daily.
+    ///    - timeWindow: Daily or weekly time window.
     ///    - page: The page of results to return.
     ///    - language: ISO 639-1 language code to display results in. Defaults to the client's
     /// configured default language.

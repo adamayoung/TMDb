@@ -7,6 +7,18 @@
 
 import Foundation
 
+///
+/// Shorter forms of the ``PersonService`` requirements.
+///
+/// Every one of these **drops** parameters rather than defaulting them, and
+/// there is one for each combination a caller can leave out. A defaulted
+/// overload would share its requirement's signature — default values are not
+/// part of a signature for witness matching — and so would silently become that
+/// requirement's default implementation, recursing forever for any conformer
+/// that omitted it. `Scripts/check-defaulted-witnesses.py` fails the lint if one
+/// is ever added here, and equally if one of these overloads is ever removed:
+/// dropping a combination is a source break for anyone calling it.
+///
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public extension PersonService {
 
