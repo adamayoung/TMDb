@@ -66,6 +66,17 @@ struct CacheHTTPClientInvalidationRaceTests {
         // transport proves the GET is past the generation it captured.
         await gate.waitUntilEntered(atLeast: 1)
 
+        // `waitUntilEntered` records an issue and *returns* on expiry rather than
+        // throwing. Without this bail-out the mutation below would then dequeue
+        // the still-gated slot 0 and park with nobody left to open the gate — an
+        // unbounded hang that `.timeLimit` cannot break, because `FetchGate.wait()`
+        // suspends on a continuation that cancellation does not resume. Opening
+        // the gate first releases the GET should it arrive late.
+        guard await gate.enteredCount >= 1 else {
+            await gate.open()
+            return
+        }
+
         // Captured instead of `try`-ed so that `gate.open()` is reached on every
         // path — an unopened gate leaves `parkedGet` suspended forever.
         let mutation: Result<HTTPResponse, any Error>
@@ -136,6 +147,14 @@ struct CacheHTTPClientInvalidationRaceTests {
         }
 
         await gate.waitUntilEntered(atLeast: 1)
+
+        // See the note in the test above: bailing out here stops the mutation
+        // taking the still-gated slot and hanging the run when the GET never
+        // reached the transport.
+        guard await gate.enteredCount >= 1 else {
+            await gate.open()
+            return
+        }
 
         let mutation: Result<HTTPResponse, any Error>
         do {
