@@ -58,6 +58,8 @@ jobs:
               # The DocC catalog is an input of the curation check, so a PR that
               # only deletes a curation line must still run the Lint job.
               - 'Sources/TMDb/TMDb.docc/**'
+              # README code samples are an input of the prose call-form check.
+              - 'README.md'
             markdown:
               - 'README.md'
               - 'CLAUDE.md'
@@ -125,6 +127,10 @@ jobs:
       - name: DocC curation check
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-docc-curation.py
+
+      - name: Prose call-form check
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: python3 Scripts/check-prose-call-forms.py
 
   lint-markdown:
     name: Lint Markdown

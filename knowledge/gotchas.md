@@ -177,9 +177,9 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Three checks are mirrored this way today — `check-defaulted-witnesses.py`,
-`check-fixtures.py` and `check-docc-curation.py`, each a `make lint`
-prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
+Four checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py`, `check-docc-curation.py` and `check-prose-call-forms.py`,
+each a `make lint` prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
 paths-filter key over a new `outputs:` entry: a filter key with no matching line
 under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the
 step never runs while the job reports success — the same false green one level

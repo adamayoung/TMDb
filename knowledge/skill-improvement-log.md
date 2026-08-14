@@ -64,6 +64,39 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-14 — Gate the code samples: a prose call-form checker · applied
+
+- **Pattern:** a stale API call in an uncompiled code sample, for the **third**
+  time. #359 (a cross-module DocC break), #452 (a stale `search("…")` fixed in
+  `README.md` while the identical call survived in two `.docc` articles), and now
+  #459, whose own sweep found `README.md` documenting
+  `tmdbClient.search.multi(query:)` — a method that has never existed in
+  `Sources/`. Each was found by a reviewer or an incidental grep; none by a gate.
+- **Decision:** **applied** — `Scripts/check-prose-call-forms.py`, wired into
+  `make lint` (`lint-prose`) and mirrored as the `Prose call-form check` step in
+  the CI `Lint` job, with `README.md` added to the `swift` paths filter. It
+  resolves every `<service>.<method>(<labels>)` in a ```` ```swift ```` fence in
+  `README.md` and `**/*.docc/**` against the real API, by name *and* labels.
+  Shipped in #460 alongside the `search.multi` fix (issue #458).
+- **Rationale:** the previous entry (2026-08-13, below) named this exact trigger
+  — *"if this recurs a third time, the enforceable version is narrower"* — and
+  chose a checklist step instead because a general "did you grep?" is not
+  mechanisable. This is the narrower version, and it turned out cheaper than the
+  fence-compiling approach that entry imagined: anchoring on `TMDbClient`'s own
+  service properties is what keeps it quiet, since a sample also calls
+  `voteAverage.formatted()` and `task.cancel()`, which are not ours to check.
+  Two design points earned their keep immediately — a local binding **shadows** a
+  service of the same name (`let watchProviders = try await …` then
+  `.first(where:)`) which was the only false positive, and parsing whole fences
+  rather than line by line nearly doubled coverage (44 → 83 call forms), because
+  the wrapped multi-line calls that a line scanner silently skips are exactly the
+  ones with the most arguments to get wrong.
+- **Reconsider when:** n/a (applied). If it ever produces a false positive, the
+  fix is a narrower receiver rule, not a wider skip — a skip here is invisible by
+  construction, which is the failure this replaced.
+
+---
+
 ### 2026-08-13 — Enumerate Swift sites with the LSP, not `grep` · applied
 
 - **Pattern:** the fourth instance of the partial-sweep family, and the one the
@@ -128,11 +161,11 @@ those two runs stay comparable.
   rules are both scoped to work the author already knows is a sweep; this class
   is the one where they *don't* know it, which is why a third, cheaper check
   earns its place rather than widening either of the others.
-- **Reconsider when:** n/a (applied). Note it is prose in a checklist, not an
-  enforced gate — the honest reason being that a general "did you grep?" check is
-  not mechanisable without knowing what changed semantically. If this recurs a
-  third time, the enforceable version is narrower: a CI step that extracts every
-  ```` ```swift ```` fence from `README.md` and `**/*.docc/**` and compiles them.
+- **Reconsider when:** n/a (applied) — and **superseded on 2026-08-14**, when it
+  recurred a third time (#459) exactly as anticipated. The checklist step stays;
+  it is now backed by the enforced gate described in the entry above, which
+  resolves each sample's call against the real API rather than compiling the
+  fence.
 
 ---
 
