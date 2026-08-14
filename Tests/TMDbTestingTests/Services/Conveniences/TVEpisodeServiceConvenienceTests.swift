@@ -13,10 +13,18 @@ import TMDbTesting
 ///
 /// Pins the zero-defaulted-argument conveniences on ``TVEpisodeService``.
 ///
-/// Each convenience drops a parameter rather than defaulting it, so that its
-/// signature cannot witness the requirement it forwards to. These tests assert
-/// the other half of that contract: the convenience still reaches the
-/// requirement, passing `nil` for the parameter it omits.
+/// Each convenience drops its parameters rather than defaulting them, so that
+/// its signature cannot witness the requirement it forwards to. These tests
+/// assert the other half of that contract: the convenience still reaches the
+/// requirement, passing each omitted parameter's default.
+///
+/// Where a requirement has more than one droppable parameter there is one
+/// overload per proper subset of them, and one test per *site* drives the whole
+/// set: it calls every overload in turn and checks the recorded call straight
+/// after each one. A test per overload would assert the same thing several
+/// times over, since the mock records every call into one array. Sites with
+/// three or more droppable parameters are split a tier at a time, by how many
+/// parameters the overload drops.
 ///
 /// They live in this target on purpose. `TMDbTesting`'s mocks implement the
 /// *requirements* and never the conveniences, and this target imports through
@@ -85,8 +93,8 @@ struct TVEpisodeServiceConvenienceTests {
         #expect(call.episodeNumber == 1)
     }
 
-    @Test("every changes(forEpisode:startDate:endDate:page:) overload forwards the parameters it omits")
-    func changesOverloadsForwardOmittedParameters() async throws {
+    @Test("changes(forEpisode:startDate:endDate:page:) dropping one parameter")
+    func changesDroppingOneForwardsTheRest() async throws {
         _ = try await service.changes(
             forEpisode: 1,
             startDate: Date(timeIntervalSince1970: 1_000_000),
@@ -112,8 +120,13 @@ struct TVEpisodeServiceConvenienceTests {
         #expect(call.endDate == Date(timeIntervalSince1970: 2_000_000))
         #expect(call.page == 3)
 
+        #expect(service.changesCalls.count == 3)
+    }
+
+    @Test("changes(forEpisode:startDate:endDate:page:) dropping two parameters")
+    func changesDroppingTwoForwardsTheRest() async throws {
         _ = try await service.changes(forEpisode: 1, startDate: Date(timeIntervalSince1970: 1_000_000))
-        call = try #require(service.changesCalls.last)
+        var call = try #require(service.changesCalls.last)
         #expect(call.episodeID == 1)
         #expect(call.startDate == Date(timeIntervalSince1970: 1_000_000))
         #expect(call.endDate == nil)
@@ -133,14 +146,19 @@ struct TVEpisodeServiceConvenienceTests {
         #expect(call.endDate == nil)
         #expect(call.page == 3)
 
+        #expect(service.changesCalls.count == 3)
+    }
+
+    @Test("changes(forEpisode:startDate:endDate:page:) dropping three parameters")
+    func changesDroppingThreeForwardsTheRest() async throws {
         _ = try await service.changes(forEpisode: 1)
-        call = try #require(service.changesCalls.last)
+        let call = try #require(service.changesCalls.last)
         #expect(call.episodeID == 1)
         #expect(call.startDate == nil)
         #expect(call.endDate == nil)
         #expect(call.page == nil)
 
-        #expect(service.changesCalls.count == 7)
+        #expect(service.changesCalls.count == 1)
     }
 
 }

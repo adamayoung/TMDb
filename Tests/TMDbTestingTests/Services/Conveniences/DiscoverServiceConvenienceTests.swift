@@ -39,7 +39,7 @@ struct DiscoverServiceConvenienceTests {
         self.service = MockDiscoverService()
     }
 
-    @Test("every movies(filter:sortedBy:page:language:) overload dropping one parameter forwards the rest")
+    @Test("movies(filter:sortedBy:page:language:) dropping one parameter")
     func moviesDroppingOneForwardsTheRest() async throws {
         _ = try await service.movies(
             filter: DiscoverMovieFilter(people: [500]),
@@ -80,7 +80,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.moviesCalls.count == 4)
     }
 
-    @Test("every movies(filter:sortedBy:page:language:) overload dropping two parameters forwards the rest")
+    @Test("movies(filter:sortedBy:page:language:) dropping two parameters")
     func moviesDroppingTwoForwardsTheRest() async throws {
         _ = try await service.movies(
             filter: DiscoverMovieFilter(people: [500]),
@@ -130,7 +130,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.moviesCalls.count == 6)
     }
 
-    @Test("every movies(filter:sortedBy:page:language:) overload dropping three parameters forwards the rest")
+    @Test("movies(filter:sortedBy:page:language:) dropping three parameters")
     func moviesDroppingThreeForwardsTheRest() async throws {
         _ = try await service.movies(filter: DiscoverMovieFilter(people: [500]))
         var call = try #require(service.moviesCalls.last)
@@ -163,7 +163,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.moviesCalls.count == 4)
     }
 
-    @Test("every movies(filter:sortedBy:page:language:) overload dropping four parameters forwards the rest")
+    @Test("movies(filter:sortedBy:page:language:) dropping four parameters")
     func moviesDroppingFourForwardsTheRest() async throws {
         _ = try await service.movies()
         let call = try #require(service.moviesCalls.last)
@@ -175,7 +175,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.moviesCalls.count == 1)
     }
 
-    @Test("every tvSeries(filter:sortedBy:page:language:) overload dropping one parameter forwards the rest")
+    @Test("tvSeries(filter:sortedBy:page:language:) dropping one parameter")
     func tvSeriesDroppingOneForwardsTheRest() async throws {
         _ = try await service.tvSeries(
             filter: DiscoverTVSeriesFilter(firstAirDateYear: 1999),
@@ -220,7 +220,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.tvSeriesCalls.count == 4)
     }
 
-    @Test("every tvSeries(filter:sortedBy:page:language:) overload dropping two parameters forwards the rest")
+    @Test("tvSeries(filter:sortedBy:page:language:) dropping two parameters")
     func tvSeriesDroppingTwoForwardsTheRest() async throws {
         _ = try await service.tvSeries(
             filter: DiscoverTVSeriesFilter(firstAirDateYear: 1999),
@@ -270,7 +270,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.tvSeriesCalls.count == 6)
     }
 
-    @Test("every tvSeries(filter:sortedBy:page:language:) overload dropping three parameters forwards the rest")
+    @Test("tvSeries(filter:sortedBy:page:language:) dropping three parameters")
     func tvSeriesDroppingThreeForwardsTheRest() async throws {
         _ = try await service.tvSeries(filter: DiscoverTVSeriesFilter(firstAirDateYear: 1999))
         var call = try #require(service.tvSeriesCalls.last)
@@ -303,7 +303,7 @@ struct DiscoverServiceConvenienceTests {
         #expect(service.tvSeriesCalls.count == 4)
     }
 
-    @Test("every tvSeries(filter:sortedBy:page:language:) overload dropping four parameters forwards the rest")
+    @Test("tvSeries(filter:sortedBy:page:language:) dropping four parameters")
     func tvSeriesDroppingFourForwardsTheRest() async throws {
         _ = try await service.tvSeries()
         let call = try #require(service.tvSeriesCalls.last)

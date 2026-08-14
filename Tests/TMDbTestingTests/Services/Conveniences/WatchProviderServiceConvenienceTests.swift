@@ -20,9 +20,11 @@ import TMDbTesting
 ///
 /// Where a requirement has more than one droppable parameter there is one
 /// overload per proper subset of them, and one test per *site* drives the whole
-/// set: it calls every overload in turn and walks the mock's recorded calls. A
-/// test per overload would assert the same thing several times over, since the
-/// mock records every call into one array.
+/// set: it calls every overload in turn and checks the recorded call straight
+/// after each one. A test per overload would assert the same thing several
+/// times over, since the mock records every call into one array. Sites with
+/// three or more droppable parameters are split a tier at a time, by how many
+/// parameters the overload drops.
 ///
 /// They live in this target on purpose. `TMDbTesting`'s mocks implement the
 /// *requirements* and never the conveniences, and this target imports through
@@ -48,7 +50,7 @@ struct WatchProviderServiceConvenienceTests {
         #expect(call.language == nil)
     }
 
-    @Test("every movieWatchProviders overload forwards the parameters it omits")
+    @Test("movieWatchProviders(filter:language:) conveniences forward the parameters they omit")
     func movieWatchProvidersOverloadsForwardOmittedParameters() async throws {
         _ = try await service.movieWatchProviders(filter: WatchProviderFilter(country: "GB"))
         var call = try #require(service.movieWatchProvidersCalls.last)
@@ -68,7 +70,7 @@ struct WatchProviderServiceConvenienceTests {
         #expect(service.movieWatchProvidersCalls.count == 3)
     }
 
-    @Test("every tvSeriesWatchProviders overload forwards the parameters it omits")
+    @Test("tvSeriesWatchProviders(filter:language:) conveniences forward the parameters they omit")
     func tvSeriesWatchProvidersOverloadsForwardOmittedParameters() async throws {
         _ = try await service.tvSeriesWatchProviders(filter: WatchProviderFilter(country: "GB"))
         var call = try #require(service.tvSeriesWatchProvidersCalls.last)

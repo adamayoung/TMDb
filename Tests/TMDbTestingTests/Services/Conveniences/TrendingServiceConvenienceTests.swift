@@ -54,7 +54,7 @@ struct TrendingServiceConvenienceTests {
     /// type — if resolution ever flips, they stop compiling rather than
     /// silently changing which API a caller gets.
     ///
-    @Test("the zero-argument form still resolves to the paginating sequence in a sequence context")
+    @Test("the zero-argument form still resolves to the paginating sequence")
     func zeroArgumentAllTrendingResolvesToPagedSequence() async throws {
         let sequence: PagedAsyncSequence<TrendingItem> = service.allTrending()
 
@@ -67,7 +67,7 @@ struct TrendingServiceConvenienceTests {
         #expect(count == 1)
     }
 
-    @Test("the two-argument form still resolves to the paginating sequence when typed")
+    @Test("the two-argument form still resolves to the paginating sequence")
     func twoArgumentAllTrendingResolvesToPagedSequence() async throws {
         let sequence: PagedAsyncSequence<TrendingItem> = service.allTrending(
             inTimeWindow: .week,
@@ -83,8 +83,8 @@ struct TrendingServiceConvenienceTests {
         #expect(count == 1)
     }
 
-    @Test("every allTrending(inTimeWindow:page:language:) overload forwards the parameters it omits")
-    func allTrendingOverloadsForwardOmittedParameters() async throws {
+    @Test("allTrending(inTimeWindow:page:language:) dropping one parameter")
+    func allTrendingDroppingOneForwardsTheRest() async throws {
         _ = try await service.allTrending(inTimeWindow: .week, page: 3)
         var call = try #require(service.allTrendingCalls.last)
         #expect(call.timeWindow == .week)
@@ -103,8 +103,13 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == 3)
         #expect(call.language == "en-GB")
 
+        #expect(service.allTrendingCalls.count == 3)
+    }
+
+    @Test("allTrending(inTimeWindow:page:language:) dropping two parameters")
+    func allTrendingDroppingTwoForwardsTheRest() async throws {
         _ = try await service.allTrending(inTimeWindow: .week)
-        call = try #require(service.allTrendingCalls.last)
+        var call = try #require(service.allTrendingCalls.last)
         #expect(call.timeWindow == .week)
         #expect(call.page == nil)
         #expect(call.language == nil)
@@ -121,17 +126,22 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == nil)
         #expect(call.language == "en-GB")
 
+        #expect(service.allTrendingCalls.count == 3)
+    }
+
+    @Test("allTrending(inTimeWindow:page:language:) dropping three parameters")
+    func allTrendingDroppingThreeForwardsTheRest() async throws {
         _ = try await service.allTrending()
-        call = try #require(service.allTrendingCalls.last)
+        let call = try #require(service.allTrendingCalls.last)
         #expect(call.timeWindow == .day)
         #expect(call.page == nil)
         #expect(call.language == nil)
 
-        #expect(service.allTrendingCalls.count == 7)
+        #expect(service.allTrendingCalls.count == 1)
     }
 
-    @Test("every movies(inTimeWindow:page:language:) overload forwards the parameters it omits")
-    func moviesOverloadsForwardOmittedParameters() async throws {
+    @Test("movies(inTimeWindow:page:language:) dropping one parameter")
+    func moviesDroppingOneForwardsTheRest() async throws {
         _ = try await service.movies(inTimeWindow: .week, page: 3)
         var call = try #require(service.moviesCalls.last)
         #expect(call.timeWindow == .week)
@@ -150,8 +160,13 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == 3)
         #expect(call.language == "en-GB")
 
+        #expect(service.moviesCalls.count == 3)
+    }
+
+    @Test("movies(inTimeWindow:page:language:) dropping two parameters")
+    func moviesDroppingTwoForwardsTheRest() async throws {
         _ = try await service.movies(inTimeWindow: .week)
-        call = try #require(service.moviesCalls.last)
+        var call = try #require(service.moviesCalls.last)
         #expect(call.timeWindow == .week)
         #expect(call.page == nil)
         #expect(call.language == nil)
@@ -168,17 +183,22 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == nil)
         #expect(call.language == "en-GB")
 
+        #expect(service.moviesCalls.count == 3)
+    }
+
+    @Test("movies(inTimeWindow:page:language:) dropping three parameters")
+    func moviesDroppingThreeForwardsTheRest() async throws {
         _ = try await service.movies()
-        call = try #require(service.moviesCalls.last)
+        let call = try #require(service.moviesCalls.last)
         #expect(call.timeWindow == .day)
         #expect(call.page == nil)
         #expect(call.language == nil)
 
-        #expect(service.moviesCalls.count == 7)
+        #expect(service.moviesCalls.count == 1)
     }
 
-    @Test("every people(inTimeWindow:page:language:) overload forwards the parameters it omits")
-    func peopleOverloadsForwardOmittedParameters() async throws {
+    @Test("people(inTimeWindow:page:language:) dropping one parameter")
+    func peopleDroppingOneForwardsTheRest() async throws {
         _ = try await service.people(inTimeWindow: .week, page: 3)
         var call = try #require(service.peopleCalls.last)
         #expect(call.timeWindow == .week)
@@ -197,8 +217,13 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == 3)
         #expect(call.language == "en-GB")
 
+        #expect(service.peopleCalls.count == 3)
+    }
+
+    @Test("people(inTimeWindow:page:language:) dropping two parameters")
+    func peopleDroppingTwoForwardsTheRest() async throws {
         _ = try await service.people(inTimeWindow: .week)
-        call = try #require(service.peopleCalls.last)
+        var call = try #require(service.peopleCalls.last)
         #expect(call.timeWindow == .week)
         #expect(call.page == nil)
         #expect(call.language == nil)
@@ -215,17 +240,22 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == nil)
         #expect(call.language == "en-GB")
 
+        #expect(service.peopleCalls.count == 3)
+    }
+
+    @Test("people(inTimeWindow:page:language:) dropping three parameters")
+    func peopleDroppingThreeForwardsTheRest() async throws {
         _ = try await service.people()
-        call = try #require(service.peopleCalls.last)
+        let call = try #require(service.peopleCalls.last)
         #expect(call.timeWindow == .day)
         #expect(call.page == nil)
         #expect(call.language == nil)
 
-        #expect(service.peopleCalls.count == 7)
+        #expect(service.peopleCalls.count == 1)
     }
 
-    @Test("every tvSeries(inTimeWindow:page:language:) overload forwards the parameters it omits")
-    func tvSeriesOverloadsForwardOmittedParameters() async throws {
+    @Test("tvSeries(inTimeWindow:page:language:) dropping one parameter")
+    func tvSeriesDroppingOneForwardsTheRest() async throws {
         _ = try await service.tvSeries(inTimeWindow: .week, page: 3)
         var call = try #require(service.tvSeriesCalls.last)
         #expect(call.timeWindow == .week)
@@ -244,8 +274,13 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == 3)
         #expect(call.language == "en-GB")
 
+        #expect(service.tvSeriesCalls.count == 3)
+    }
+
+    @Test("tvSeries(inTimeWindow:page:language:) dropping two parameters")
+    func tvSeriesDroppingTwoForwardsTheRest() async throws {
         _ = try await service.tvSeries(inTimeWindow: .week)
-        call = try #require(service.tvSeriesCalls.last)
+        var call = try #require(service.tvSeriesCalls.last)
         #expect(call.timeWindow == .week)
         #expect(call.page == nil)
         #expect(call.language == nil)
@@ -262,13 +297,18 @@ struct TrendingServiceConvenienceTests {
         #expect(call.page == nil)
         #expect(call.language == "en-GB")
 
+        #expect(service.tvSeriesCalls.count == 3)
+    }
+
+    @Test("tvSeries(inTimeWindow:page:language:) dropping three parameters")
+    func tvSeriesDroppingThreeForwardsTheRest() async throws {
         _ = try await service.tvSeries()
-        call = try #require(service.tvSeriesCalls.last)
+        let call = try #require(service.tvSeriesCalls.last)
         #expect(call.timeWindow == .day)
         #expect(call.page == nil)
         #expect(call.language == nil)
 
-        #expect(service.tvSeriesCalls.count == 7)
+        #expect(service.tvSeriesCalls.count == 1)
     }
 
 }

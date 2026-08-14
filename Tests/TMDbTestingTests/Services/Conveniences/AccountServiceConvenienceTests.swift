@@ -13,10 +13,18 @@ import TMDbTesting
 ///
 /// Pins the zero-defaulted-argument conveniences on ``AccountService``.
 ///
-/// Each convenience drops a parameter rather than defaulting it, so that its
-/// signature cannot witness the requirement it forwards to. These tests assert
-/// the other half of that contract: the convenience still reaches the
-/// requirement, passing `nil` for the parameter it omits.
+/// Each convenience drops its parameters rather than defaulting them, so that
+/// its signature cannot witness the requirement it forwards to. These tests
+/// assert the other half of that contract: the convenience still reaches the
+/// requirement, passing each omitted parameter's default.
+///
+/// Where a requirement has more than one droppable parameter there is one
+/// overload per proper subset of them, and one test per *site* drives the whole
+/// set: it calls every overload in turn and checks the recorded call straight
+/// after each one. A test per overload would assert the same thing several
+/// times over, since the mock records every call into one array. Sites with
+/// three or more droppable parameters are split a tier at a time, by how many
+/// parameters the overload drops.
 ///
 /// They live in this target on purpose. `TMDbTesting`'s mocks implement the
 /// *requirements* and never the conveniences, and this target imports through
@@ -44,7 +52,7 @@ struct AccountServiceConvenienceTests {
         #expect(call.session == .sample)
     }
 
-    @Test("every favouriteMovies(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("favouriteMovies(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func favouriteMoviesOverloadsForwardOmittedParameters() async throws {
         _ = try await service.favouriteMovies(sortedBy: .createdAt(descending: true), accountID: 550, session: .sample)
         var call = try #require(service.favouriteMoviesCalls.last)
@@ -70,7 +78,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.favouriteMoviesCalls.count == 3)
     }
 
-    @Test("every favouriteTVSeries(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("favouriteTVSeries(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func favouriteTVSeriesOverloadsForwardOmittedParameters() async throws {
         _ = try await service.favouriteTVSeries(
             sortedBy: .createdAt(descending: true),
@@ -100,7 +108,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.favouriteTVSeriesCalls.count == 3)
     }
 
-    @Test("every movieWatchlist(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("movieWatchlist(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func movieWatchlistOverloadsForwardOmittedParameters() async throws {
         _ = try await service.movieWatchlist(sortedBy: .createdAt(descending: true), accountID: 550, session: .sample)
         var call = try #require(service.movieWatchlistCalls.last)
@@ -126,7 +134,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.movieWatchlistCalls.count == 3)
     }
 
-    @Test("every ratedMovies(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("ratedMovies(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func ratedMoviesOverloadsForwardOmittedParameters() async throws {
         _ = try await service.ratedMovies(sortedBy: .createdAt(descending: true), accountID: 550, session: .sample)
         var call = try #require(service.ratedMoviesCalls.last)
@@ -152,7 +160,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.ratedMoviesCalls.count == 3)
     }
 
-    @Test("every ratedTVEpisodes(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("ratedTVEpisodes(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func ratedTVEpisodesOverloadsForwardOmittedParameters() async throws {
         _ = try await service.ratedTVEpisodes(sortedBy: .createdAt(descending: true), accountID: 550, session: .sample)
         var call = try #require(service.ratedTVEpisodesCalls.last)
@@ -178,7 +186,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.ratedTVEpisodesCalls.count == 3)
     }
 
-    @Test("every ratedTVSeries(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("ratedTVSeries(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func ratedTVSeriesOverloadsForwardOmittedParameters() async throws {
         _ = try await service.ratedTVSeries(sortedBy: .createdAt(descending: true), accountID: 550, session: .sample)
         var call = try #require(service.ratedTVSeriesCalls.last)
@@ -204,7 +212,7 @@ struct AccountServiceConvenienceTests {
         #expect(service.ratedTVSeriesCalls.count == 3)
     }
 
-    @Test("every tvSeriesWatchlist(sortedBy:page:accountID:session:) overload forwards the parameters it omits")
+    @Test("tvSeriesWatchlist(sortedBy:page:accountID:session:) conveniences forward the parameters they omit")
     func tvSeriesWatchlistOverloadsForwardOmittedParameters() async throws {
         _ = try await service.tvSeriesWatchlist(
             sortedBy: .createdAt(descending: true),

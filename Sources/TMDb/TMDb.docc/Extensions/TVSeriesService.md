@@ -18,6 +18,9 @@
 
 ### Reviews
 
+- ``reviews(forTVSeries:)``
+- ``reviews(forTVSeries:page:)``
+- ``reviews(forTVSeries:language:)``
 - ``reviews(forTVSeries:page:language:)``
 
 ### Media
@@ -29,9 +32,21 @@
 
 ### Lists and Related Content
 
+- ``recommendations(forTVSeries:)``
+- ``recommendations(forTVSeries:page:)``
+- ``recommendations(forTVSeries:language:)``
 - ``recommendations(forTVSeries:page:language:)``
+- ``similar(toTVSeries:)``
+- ``similar(toTVSeries:page:)``
+- ``similar(toTVSeries:language:)``
 - ``similar(toTVSeries:page:language:)``
+- ``popular()``
+- ``popular(page:)``
+- ``popular(language:)``
 - ``popular(page:language:)``
+- ``lists(forTVSeries:)``
+- ``lists(forTVSeries:page:)``
+- ``lists(forTVSeries:language:)``
 - ``lists(forTVSeries:page:language:)``
 
 ### User Interactions
@@ -67,7 +82,21 @@
 
 ### Change Tracking
 
+- ``changes(forTVSeries:)``
+- ``changes(forTVSeries:startDate:)``
+- ``changes(forTVSeries:endDate:)``
+- ``changes(forTVSeries:page:)``
+- ``changes(forTVSeries:startDate:endDate:)``
+- ``changes(forTVSeries:startDate:page:)``
+- ``changes(forTVSeries:endDate:page:)``
 - ``changes(forTVSeries:startDate:endDate:page:)``
+- ``changes()``
+- ``changes(startDate:)``
+- ``changes(endDate:)``
+- ``changes(page:)``
+- ``changes(startDate:endDate:)``
+- ``changes(startDate:page:)``
+- ``changes(endDate:page:)``
 - ``changes(startDate:endDate:page:)``
 - ``latest()``
 
@@ -78,6 +107,23 @@
 - ``contentRatings(forTVSeries:)``
 - ``screenedTheatrically(forTVSeries:)``
 - ``episodeGroups(forTVSeries:)``
+- ``airingToday()``
+- ``airingToday(page:)``
+- ``airingToday(timezone:)``
+- ``airingToday(language:)``
+- ``airingToday(page:timezone:)``
+- ``airingToday(page:language:)``
+- ``airingToday(timezone:language:)``
 - ``airingToday(page:timezone:language:)``
+- ``onTheAir()``
+- ``onTheAir(page:)``
+- ``onTheAir(timezone:)``
+- ``onTheAir(language:)``
+- ``onTheAir(page:timezone:)``
+- ``onTheAir(page:language:)``
+- ``onTheAir(timezone:language:)``
 - ``onTheAir(page:timezone:language:)``
+- ``topRated()``
+- ``topRated(page:)``
+- ``topRated(language:)``
 - ``topRated(page:language:)``
