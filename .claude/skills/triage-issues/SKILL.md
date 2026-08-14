@@ -21,20 +21,40 @@ this skill consumes what that produces.
 Project status update carrying the ordered run-list, and a summary to the caller.
 **Never:** opens a PR, edits source, or changes an issue that is not in Backlog.
 
-## Phase 1 — Resolve the board
+## Phase 1 — Resolve the board, and the tree
 
-Resolve by **title**, never by a hard-coded number — the number changes if the
-board is recreated, and a stale number makes every later write a silent no-op:
+**Project operations go through the GitHub MCP** (`mcp__github__projects_*`), not
+`gh project`. Per ADR-0009 the MCP is the default and `gh` covers only the
+enumerated exceptions, which Projects is not — and concretely, `gh project`
+requires a `read:project` token scope this repo's usual token does not carry, so
+the `gh` route fails at the first call.
 
-```bash
-gh project list --owner adamayoung --format json \
-  | jq -r '.projects[] | select(.title == "TMDb") | .number'
+Resolve by **title**, never a hard-coded number — the number changes if the board
+is recreated, and a stale number makes every later write a silent no-op:
+
+```text
+mcp__github__projects_list / list_projects   owner: adamayoung, owner_type: user
+→ select the project whose title is exactly "TMDb"
 ```
 
 Zero matches or more than one → **stop and say so**. Do not guess.
 
-Capture `HEAD` (`git rev-parse --short HEAD`) and today's date; both are passed
-to the workflow, which cannot compute a date itself.
+**Then pin the tree the verdicts are about.** The Ready test says "re-verified at
+HEAD", which is worth nothing if HEAD is a stale checkout or a feature branch —
+run this skill from an unfetched branch and every verdict is stamped against
+history while claiming to be current.
+
+```bash
+git fetch origin
+git rev-parse --abbrev-ref HEAD    # must be main
+git rev-parse --short origin/main  # this is the sha passed to the workflow
+```
+
+Not on `main`, or `main` behind `origin/main` → say so and stop. The agents run
+`git log` in this checkout, so the checkout has to be the thing being triaged.
+
+Capture that sha and today's date; both are passed to the workflow, which cannot
+compute a date itself.
 
 ## Phase 2 — Adopt orphans
 
@@ -46,13 +66,24 @@ silently loses work:
 gh issue list --repo adamayoung/TMDb --state open --limit 200 --json number,url
 ```
 
-Add each missing one; new items land in Backlog by default. Report the count
-adopted — a number that keeps growing means an issue-filing skill is skipping
-its board step, which is a bug in that skill, not here.
+Add each missing one with `projects_write / add_project_item`, then **set its
+Status to Backlog explicitly** with `update_project_item`. Do not rely on the
+board's "Item added" workflow to do it: whether that automation is enabled is not
+queryable through the API and nothing here can check it. If it is off, adopted
+items arrive with *no* Status — and since Phase 3 collects Backlog items and the
+scope rule forbids touching anything outside Backlog, they would be permanently
+invisible. That is the precise outcome this phase exists to prevent, so it must
+not depend on an unverifiable assumption.
+
+For the same reason, Phase 3 treats an item with **empty Status** as Backlog.
+
+Report the count adopted — a number that keeps growing means an issue-filing
+skill is skipping its board step, which is a bug in that skill, not here.
 
 ## Phase 3 — Fan out
 
-Collect the Backlog issue numbers, then run the workflow:
+Collect the Backlog issue numbers — including any item whose Status is **empty**,
+per Phase 2 — then run the workflow:
 
 ```text
 Workflow({ scriptPath: '.claude/workflows/triage-issues.js',
@@ -125,6 +156,14 @@ within a month. So:
   `evidenceDigest` differs** from the previous run. A new `HEAD` alone is not a
   reason to comment; nothing changed for the reader.
 - Field updates are always applied — they are idempotent and silent.
+
+The digest is computed **by the workflow script**, not by the agent, from the
+decision-bearing fields only (`exit`, `priority`, `size`, `wontfixBasis`, sorted
+`dependsOn`, sorted `staleClaims` locations). Prose is deliberately excluded. Do
+not ask an agent for it and do not recompute it here: an LLM asked for a "stable
+fingerprint" will word the same findings differently each run, the digests will
+differ every time, and this rule quietly becomes a no-op that still looks
+enforced.
 
 Comment content: what changed since filing, then corrected file:line pointers,
 then anything a picker-upper needs that the body lacks. Do not restate the issue

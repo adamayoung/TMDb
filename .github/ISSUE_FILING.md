@@ -67,8 +67,9 @@ exists.>
 ```
 
 Add `**Decision needed:**` as its own line when the fix is not determined — one
-sentence naming the choice, not a discussion of it. That line is what
-`/triage-issues` keys on to route an issue to Backlog rather than Ready.
+sentence naming the choice, not a discussion of it. An issue whose fix approach
+is undecided is not ready for anyone to pick up, and saying so in one line is
+cheaper for every later reader than leaving them to discover it.
 
 ### Two conventions that are easy to get wrong
 
@@ -88,23 +89,25 @@ gh issue create --repo adamayoung/TMDb \
   --body-file <path>
 ```
 
-Then **add it to the board's Backlog column** — an unfiled-to-the-board issue is
-invisible to `/triage-issues` until its orphan sweep catches it:
+Then **add it to the board's Backlog column** — an issue that is not on the board
+is invisible to `/triage-issues` until its orphan sweep catches it.
 
-```bash
-gh project item-add <number> --owner adamayoung --url <issue-url>
+Use the **GitHub MCP**, not `gh project`: ADR-0009 makes the MCP the default, and
+`gh project` needs a `read:project` token scope this repo's usual token does not
+have, so it fails on the first call.
+
+```text
+mcp__github__projects_list  / list_projects       → the project titled "TMDb"
+mcp__github__projects_write / add_project_item    → owner/repo + issue_number
+mcp__github__projects_write / update_project_item → Status = "Backlog"
 ```
 
-Resolve `<number>` by title rather than hard-coding it:
+Set Status explicitly rather than trusting the board's "Item added" automation —
+whether it is enabled cannot be checked through the API, and an item that lands
+with no Status is one `/triage-issues` will never groom.
 
-```bash
-gh project list --owner adamayoung --format json \
-  | jq -r '.projects[] | select(.title == "TMDb") | .number'
-```
-
-New items land in Backlog by default. Do **not** set Status, Priority or Size
-yourself — those are `/triage-issues`' output, and guessing them here means two
-owners for one judgement.
+Do **not** set Priority or Size. Those are `/triage-issues`' output; guessing them
+at filing time gives one judgement two owners.
 
 ## Titles
 

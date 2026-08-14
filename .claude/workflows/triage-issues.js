@@ -8,7 +8,7 @@ export const meta = {
 // `args` can arrive as a JSON string rather than an object — a known harness
 // gotcha, and the one that once turned a fan-out over a string into a
 // char-by-char loop spawning ~281 agents. Parse before reading any field, and
-// assert the shape of the array before it reaches pipeline().
+// assert the shape of the array before it reaches the fan-out.
 const input = typeof args === 'string' ? JSON.parse(args) : args
 
 if (!input || typeof input !== 'object' || Array.isArray(input)) {
@@ -105,13 +105,6 @@ const VERDICT_SCHEMA = {
       type: 'string',
       description: 'what a picker-upper needs that the issue body does not say. Empty if nothing.',
     },
-    evidenceDigest: {
-      type: 'string',
-      description:
-        'a short stable fingerprint of the FINDINGS (exit + the verified facts), not of your prose. ' +
-        'Two runs that verify the same facts must produce the same digest, so an unchanged issue ' +
-        'does not get re-commented.',
-    },
     verifiedBy: {
       type: 'string',
       description:
@@ -132,9 +125,41 @@ const VERDICT_SCHEMA = {
     'contendsWith',
     'filesTouched',
     'newContext',
-    'evidenceDigest',
     'verifiedBy',
   ],
+}
+
+// The digest is computed HERE, from the structured verdict — never asked of the
+// agent. An earlier draft made it a schema field described as "a short stable
+// fingerprint… two runs that verify the same facts must produce the same
+// digest", which is an instruction to an LLM to behave like a hash function.
+// Two runs would word the same findings differently, the digests would differ,
+// and the skill's "comment only when the digest changed" rule would fire every
+// run — reproducing exactly the comment-spam it exists to prevent, with nothing
+// measuring the failure.
+//
+// Only decision-bearing fields go in. Prose (`oneLine`, `decisionNeeded`,
+// `newContext`) and agent-authored path lists are excluded: they drift in
+// wording without the findings changing, which is the same defect by a longer
+// route.
+function evidenceDigest(v) {
+  const material = [
+    v.exit,
+    v.priority,
+    v.size,
+    v.wontfixBasis,
+    [...v.dependsOn].sort((a, b) => a - b).join(','),
+    [...v.staleClaims].map((c) => c.current).sort().join('|'),
+  ].join('~')
+
+  // FNV-1a, 32-bit. Not cryptographic — it only has to be stable and cheap,
+  // and `Math.imul` keeps the multiply in 32-bit range.
+  let h = 0x811c9dc5
+  for (let i = 0; i < material.length; i++) {
+    h ^= material.charCodeAt(i)
+    h = Math.imul(h, 0x01000193) >>> 0
+  }
+  return h.toString(16).padStart(8, '0')
 }
 
 const RUBRIC = `
@@ -160,8 +185,15 @@ READY TEST — an issue is 'ready' ONLY if ALL FOUR hold:
   not 'ready' — priority does not override the test.
 `.trim()
 
-const results = await pipeline(input.issues, (number) =>
-  agent(
+// `parallel`, not `pipeline`: this is a single stage, where the two are
+// equivalent, and every sibling workflow in this repo uses `parallel`. The
+// agents are tagged with `opts.phase` rather than a global `phase()` call, which
+// is what keeps the progress grouping correct when thunks interleave.
+phase('Triage')
+
+const results = await parallel(
+  input.issues.map((number) => () =>
+    agent(
     `Triage issue #${number} in ${REPO} against \`main\` @ ${HEAD}. Today is ${TODAY}.
 
 Read it first: \`gh issue view ${number} --repo ${REPO} --comments\`.
@@ -197,14 +229,43 @@ CONSTRAINTS
 - Do not run builds, tests, or \`make\`.
 - filesTouched should list what the FIX would change, so the caller can detect
   two issues colliding in the same file.`,
-    { label: `triage:#${number}`, phase: 'Triage', schema: VERDICT_SCHEMA }
+      { label: `triage:#${number}`, phase: 'Triage', schema: VERDICT_SCHEMA }
+    )
   )
 )
 
-const verdicts = results.filter(Boolean)
-const lost = input.issues.length - verdicts.length
-if (lost > 0) {
-  log(`WARNING: ${lost} of ${input.issues.length} issues returned no verdict — they are UNTRIAGED, not clean.`)
+// A verdict's `issue` is agent-supplied, so it is a claim, not an identity. An
+// echoed-wrong or duplicated number would otherwise sail through while the real
+// issue landed in `untriaged` — and the skill would then write fields against an
+// issue nobody triaged. Discard rather than trust, and say what was discarded.
+const requested = new Set(input.issues)
+const seen = new Set()
+const verdicts = []
+const discarded = []
+
+for (const v of results.filter(Boolean)) {
+  if (!requested.has(v.issue)) {
+    discarded.push(`#${v.issue} (not in the requested set)`)
+    continue
+  }
+  if (seen.has(v.issue)) {
+    discarded.push(`#${v.issue} (duplicate verdict)`)
+    continue
+  }
+  seen.add(v.issue)
+  verdicts.push({ ...v, evidenceDigest: evidenceDigest(v) })
+}
+
+if (discarded.length > 0) {
+  log(`Discarded ${discarded.length} malformed verdict(s): ${discarded.join(', ')}`)
+}
+
+const untriaged = input.issues.filter((n) => !seen.has(n))
+if (untriaged.length > 0) {
+  log(
+    `WARNING: ${untriaged.length} of ${input.issues.length} issues returned no usable verdict ` +
+      `(${untriaged.map((n) => `#${n}`).join(', ')}) — they are UNTRIAGED, not clean.`
+  )
 }
 
 return {
@@ -212,6 +273,7 @@ return {
   today: TODAY,
   requested: input.issues.length,
   triaged: verdicts.length,
-  untriaged: input.issues.filter((n) => !verdicts.some((v) => v.issue === n)),
+  untriaged,
+  discarded,
   verdicts,
 }

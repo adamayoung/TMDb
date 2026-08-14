@@ -8,10 +8,12 @@ description: Cut a new TMDb release — work out the next SemVer version from th
 Takes `main` from "a pile of merged PRs" to "a tagged, published release".
 
 **This skill is never headless.** Every other skill in this repo may decide for
-itself; this one may not. A tag is the one artifact consumers resolve against —
-SwiftPM will hand `20.0.0` to everyone with `from: "19.0.0"` the moment it
-exists, and deleting a tag does not un-fetch it. Phases 1–5 are read-only and
-local. Phase 6 is a **hard stop**. Phases 7–9 run only on an explicit go-ahead.
+itself; this one may not. A tag is the one artifact consumers resolve against,
+and publishing one is effectively irreversible: SwiftPM hands a new **minor or
+patch** to everyone inside the current `from:` range the moment it exists, a new
+**major** reaches everyone who has since bumped, and deleting a tag does not
+un-fetch it from anyone who already resolved. Phases 1–5 are read-only and local.
+Phase 6 is a **hard stop**. Phases 7–9 run only on an explicit go-ahead.
 
 If invoked with no human able to answer, run to the hard stop, print the summary,
 and exit. Do not tag.
@@ -24,9 +26,11 @@ Stop on any failure; report which one and what to do.
   (`git status --porcelain`, `git rev-list --count main..origin/main`).
 - `git fetch --tags`; establish the last release:
   `git tag --sort=-v:refname | head -1`.
-- CI is **green on the exact commit being tagged**:
-  `gh api repos/adamayoung/TMDb/commits/<sha>/check-runs`. A tag on a red commit
-  is the one mistake with no clean undo.
+- CI is **green on the current `main` tip**:
+  `gh api repos/adamayoung/TMDb/commits/<sha>/check-runs`. This is the *entry*
+  check — the commit that actually gets tagged does not exist yet (Phase 7
+  creates it), and Phase 7 re-checks that one. Starting from a red `main` just
+  means finding out later.
 - There is something to release — at least one commit since the last tag that is
   not purely a tag-housekeeping commit.
 
@@ -43,14 +47,16 @@ inside it, and read the section headings:
 - otherwise (`### Fixed` / `### Changed` only) → **patch**
 
 **Signal B — the commits (cross-check).** `git log <lasttag>..HEAD`, bucketed by
-gitmoji: `✨` feature, `🐛` fix, `♻️` refactor, `🔒` security, `⚡️` perf,
-`🔧` chore, `📝` docs, `👷` CI, `✅` tests, `📦` build.
+gitmoji. Consumer-visible: `✨` feature, `🐛` fix, `♻️` refactor, `🔒` security,
+`⚡️` perf. Not consumer-visible: `🔧` chore, `📝` docs, `👷` CI, `✅` tests,
+`📦` build. Count multibyte-safely — `sort | uniq -c` over emoji collapses
+distinct ones in a non-UTF-8 locale and will hand you a confidently wrong tally.
 
 **Gitmoji alone is not enough to pick a version in this repo, and you must not
-try.** A `🐛` here is routinely source-breaking — "stop 54 protocol conveniences
-witnessing their own requirements" was filed as a fix and broke exhaustive
-switches. Signal B exists to catch *omissions* from the CHANGELOG, not to
-compute the bump.
+try.** A `🐛` here is routinely source-breaking: "🐛 Surface task cancellation as
+`TMDbError.cancelled`" (PR #433) was filed as a fix and added an enum case, which
+breaks every exhaustive `switch` downstream. Signal B exists to catch *omissions*
+from the CHANGELOG, not to compute the bump.
 
 Then reconcile:
 
@@ -62,12 +68,18 @@ Then reconcile:
 - The computed tag must not already exist.
 
 **Coverage check.** Every commit since the last tag that touches `Sources/` and
-carries a consumer-visible gitmoji (`✨ 🐛 ♻️ 🔒 ⚡️`) should be represented
-somewhere in the open CHANGELOG section. List any that are not. This is the
-check that catches a real change shipping invisibly; tooling-only commits
-(`🔧 📝 👷 ✅`) legitimately have no CHANGELOG entry and are not flagged.
+carries a consumer-visible gitmoji should be represented somewhere in the open
+CHANGELOG section. List any that are not. This is the check that catches a real
+change shipping invisibly; the not-consumer-visible buckets legitimately have no
+CHANGELOG entry and are not flagged.
 
 ## Phase 3 — Pre-tag housekeeping
+
+**Branch first.** `git checkout -b chore/prepare-<version>-release`. Phase 1 put
+you on a clean `main`, and CLAUDE.md forbids editing there — but the practical
+reason is re-entrancy: if the run is abandoned at the Phase 6 stop, edits made on
+`main` leave a dirty tree that fails this skill's *own* Phase 1 preflight on the
+next attempt. Branching now costs nothing and makes an abort free.
 
 **A tag snapshots the tree**, so anything that says "unreleased" is frozen
 saying it, forever, inside the very release it describes. These four are not
@@ -100,8 +112,8 @@ optional, and all of them were needed for 19.0.0 (PR #406):
    `unreleased — tooling only` ADRs alone; they describe `.claude/` machinery
    with no library impact and no version to ship in.
 
-Prepare these as edits but **do not commit yet** — they are shown at the hard
-stop, and they go up as a PR, never straight to `main`.
+Make these edits on the branch but **do not commit yet** — they are shown at the
+hard stop, and they go up as a PR, never straight to `main`.
 
 ## Phase 4 — Draft the release notes
 
@@ -161,12 +173,11 @@ change request, apply it and return to this phase; the gate re-arms every time.
 
 ## Phase 7 — Land the housekeeping
 
-Only after approval. Never commit to `main` (`CLAUDE.md` → *Branching*).
+Only after approval. The branch already exists from Phase 3.
 
-Branch `chore/prepare-<version>-release`, commit the Phase 3 edits as
-`🔧 Prepare the <version> release`, open the PR via `/pr`, and let its CI run.
-The narrowed docs/config gate usually applies here — the diff is Markdown only —
-but `/pr` owns that call; do not pre-empt it.
+Commit the Phase 3 edits as `🔧 Prepare the <version> release`, open the PR via
+`/pr`, and let its CI run. The narrowed docs/config gate usually applies here —
+the diff is Markdown only — but `/pr` owns that call; do not pre-empt it.
 
 Merge once green.
 
@@ -195,6 +206,11 @@ git push origin <version>
 ```
 
 Annotated, not lightweight — a release tag should carry an author and a date.
+
+**Regenerate the commit list before publishing.** The notes were drafted in
+Phase 4, before the housekeeping merge existed — so their `<details>` list is
+short by exactly the commit being tagged, while the compare link below it
+includes it. Re-run the log against the new tag and refresh that block.
 
 ## Phase 9 — Publish
 
