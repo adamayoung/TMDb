@@ -51,6 +51,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- A type conforming to one of the service protocols itself, rather than using
+  `TMDbTesting`'s mocks, no longer risks an infinite recursion. 54 protocol
+  conveniences shared their requirement's signature, differing only by default
+  argument values — which are not part of a signature for witness matching, so
+  each convenience *was* that requirement's default implementation. A conformer
+  that omitted the requirement compiled, then recursed until the stack
+  overflowed, where a compile error was intended. Each is replaced by explicit
+  overloads covering every combination of the parameters it can drop (306 in
+  all), so **no call site needs to change**. This completes the sweep started
+  in 19.1.0, which fixed the 37 single-default sites.
+
+  One caveat, and it is not a call-site one: an *unapplied* reference to these
+  methods — `let fetch = client.movies.popular` — now has several candidates
+  where it had one, so it may need an explicit function-type annotation.
+
+  Also removes a `MovieService.releaseDates(forMovie:)` convenience that
+  duplicated its own requirement exactly and called itself. Its signature was
+  identical, so callers are unaffected and now reach the requirement.
+
 - **Breaking:** cancelling a task no longer surfaces as `TMDbError.network`. A dismissed
   SwiftUI `.task {}` looked like an outage, `withThrowingTaskGroup` sibling
   cancellation produced N phantom network errors, "retry on network error" logic

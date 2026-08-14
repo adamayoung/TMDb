@@ -51,6 +51,7 @@
 - ``changes(forPerson:endDate:page:)``
 - ``changes(forPerson:startDate:endDate:page:)``
 - ``latest()``
+- ``latestPerson()``
 - ``changes()``
 - ``changes(startDate:)``
 - ``changes(endDate:)``
@@ -59,3 +60,4 @@
 - ``changes(startDate:page:)``
 - ``changes(endDate:page:)``
 - ``changes(startDate:endDate:page:)``
+- ``personChanges(startDate:endDate:page:)``

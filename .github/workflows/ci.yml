@@ -55,6 +55,9 @@ jobs:
               # .process("Resources"), so a fixture-only change must run the
               # unit suites as well as the fixture check.
               - 'Tests/TMDbTests/Resources/**'
+              # The DocC catalog is an input of the curation check, so a PR that
+              # only deletes a curation line must still run the Lint job.
+              - 'Sources/TMDb/TMDb.docc/**'
             markdown:
               - 'README.md'
               - 'CLAUDE.md'
@@ -118,6 +121,10 @@ jobs:
       - name: Fixture check
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-fixtures.py
+
+      - name: DocC curation check
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: python3 Scripts/check-docc-curation.py
 
   lint-markdown:
     name: Lint Markdown

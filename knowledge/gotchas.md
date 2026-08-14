@@ -1215,17 +1215,47 @@ Call sites (`f()`) are unchanged, and omitting the requirement is now a compile
 error.
 
 **The idiom was repo-wide, not a one-off.** A census found **91 sites across 15
-public protocols**. 37 had exactly one defaulted parameter and were fixed — the
-fix costs a single dropped-parameter overload and no call site changes. The
-remaining **54 have 2–4 defaults**, where preserving every existing call form
-needs the *power set* of overloads (4, 8 or 16 each), so they are deferred to
-`next-major.md`. `Scripts/check-defaulted-witnesses.py` holds both invariants — zero
-single-default sites, and the multi-default sites must match its `DEFERRED`
-allowlist exactly (a set, not a count, so a fix and a regression cannot cancel
-out and an empty scan cannot pass green). It runs from `make lint` **and** as
-its own step in the CI `Lint` job: that job invokes swiftlint and swiftformat
-directly rather than through `make`, so wiring it only into the Makefile would
-have left it invisible to CI.
+public protocols**. 37 had exactly one defaulted parameter and were fixed in
+PR #410 by dropping it. The remaining **54 had 2–4 defaults**, and were fixed in
+PR #458 (issue #431) by generating the **power set** of no-default overloads —
+2ⁿ−1 per site, **306** in all — which keeps every existing call form compiling,
+so it shipped as a *minor* rather than waiting for a major.
+
+*2026-08-14.* Three things that sweep learned, none of which the original
+framing anticipated:
+
+- **A duplicate with ZERO defaults is the same hazard, and the worst kind.**
+  `MovieService.releaseDates(forMovie:)` had a `public extension` twin with an
+  identical signature whose body called itself; it had been in the tree since
+  PR #259 and survived #410's sweep because the checker filtered on the default
+  *count* being truthy. The failure class is "parameter list matches after
+  erasing defaults" — and erasing *none* still matches.
+- **Not every default is `nil`.** `TrendingService`'s `inTimeWindow` is a
+  non-optional `TrendingTimeWindowFilterType = .day`, so a dropped-parameter
+  rewrite must forward each parameter's own default expression; `nil` there does
+  not even compile.
+- **A defaulted helper is callable under every subset of its defaults**, so a
+  collision scan comparing *declarations* under-reports. Trending's synchronous
+  `allTrending(inTimeWindow:language:)` pagination helper overlaps **four**
+  generated async call forms, not one.
+
+`Scripts/check-defaulted-witnesses.py` now enforces four invariants rather than
+an allowlist: no convenience may share a requirement's argument labels at any
+default count; a not-yet-rewritten site must still carry exactly the defaults
+recorded for it (which is what keeps the table honest while the tree can still
+prove it); a rewritten site must expose its **whole** power set; and the census
+is closed at `TOTAL_SITES`. The third is the one that matters most, because
+every other gate is deletion-side: once a defaulted convenience is gone, nothing
+else notices whether 7 replacements were written or 6, and a missing one is a
+silent **source break** that passes lint, build, test and CI. A `SELF_TEST`
+fixture keeps the detector, the default detection and the subset generator
+exercised now that no witness remains in the tree — a *count* floor cannot do
+that, since requirements and conveniences both stay non-zero when default
+detection breaks.
+
+It runs from `make lint` **and** as its own step in the CI `Lint` job: that job
+invokes swiftlint and swiftformat directly rather than through `make`, so wiring
+it only into the Makefile would have left it invisible to CI.
 
 **The first census came out 17 short, and the reason generalises.** It grepped
 the *protocol declaration* files. But `AccountService` and `PersonService` keep
