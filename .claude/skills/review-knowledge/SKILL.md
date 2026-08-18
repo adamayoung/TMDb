@@ -319,6 +319,12 @@ Present the consensus and **stop**. On the go-ahead:
 - If the audit found a **class** of staleness rather than instances, fix the
   trigger too — an audit that only patches entries guarantees the next audit finds
   the same class again.
+- **A finding about the code is not a docs edit.** When an entry is stale because
+  the *tree* is wrong rather than the prose — the documented invariant is right
+  and the code stopped honouring it — editing the entry to match the code
+  launders a defect into a description. File it per
+  [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) and leave the
+  entry stating the invariant, with the issue number beside it.
 
 Close with what changed, what was deliberately left, and anything needing a human
 call.

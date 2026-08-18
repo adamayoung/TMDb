@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses lint-fixtures lint-curation lint-prose
+lint: lint-witnesses lint-fixtures lint-curation lint-prose lint-readme-version
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -83,12 +83,19 @@ lint-curation:
 lint-prose:
 	@python3 Scripts/check-prose-call-forms.py
 
+# Mirrored as the `README version check` step in .github/workflows/ci.yml — see
+# the note above lint-witnesses.
+.PHONY: lint-readme-version
+lint-readme-version:
+	@python3 Scripts/check-readme-version.py
+
 .PHONY: lint-markdown
 lint-markdown:
 	markdownlint "README.md" "CLAUDE.md"
 	markdownlint "**/*.docc/**/*.md"
 	markdownlint ".claude/**/*.md"
 	markdownlint "knowledge/**/*.md"
+	markdownlint ".github/*.md"
 
 .PHONY: build
 build:

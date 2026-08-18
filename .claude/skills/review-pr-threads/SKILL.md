@@ -78,6 +78,11 @@ For each unresolved thread:
    commit per fix, but `git push` **once** after all threads are handled (§3), so
    one review/CI cycle is triggered per sweep, not one per thread.
 3. **No fix warranted** (disagree / out of scope / a question / already done) →
+   when the reason is *out of scope* and the reviewer's point is sound, file it
+   per [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) and reply
+   with the issue number. "Out of scope" with nothing behind it is how a valid
+   review comment gets closed forever; a link is what makes it a deferral rather
+   than a dismissal.
    make no code change; you'll say why in the reply.
 4. **Reply** on the thread — what you assessed and whether you fixed it (include
    the commit SHA when you did). Use

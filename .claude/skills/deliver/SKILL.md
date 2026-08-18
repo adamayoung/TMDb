@@ -520,6 +520,17 @@ after the gate**. Guidance:
 - **Any post-gate push re-opens the gate** — after the last exceptional push
   (amendment or approved skill edit), run the `/watch-pr` loop once more on
   the new tip before merge.
+- **File what this delivery deliberately left behind.** Every phase that scopes
+  something out — a review finding ruled out of scope, a security finding not in
+  this change's class, a rubric gap accepted, a breaking change deferred — has
+  produced a fact that exists only in this session's transcript until it is
+  filed. Open an issue per
+  [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) for each, citing
+  this PR as `**Origin:**`, and list the numbers in the retro. **Auto mode files
+  these too** — it is additive, reversible, and touches no source; the Phase 11
+  prohibition is on editing *skill files* unattended, not on recording work.
+  Deferring a finding without filing it is how it gets rediscovered as novel six
+  weeks later, which this repo has done more than once.
 - **Update the personal wiki** — best-effort, `propose_entry` only (never
   autonomous writes); degrade silently if absent.
 - **Recurring-pattern scan**: friction/deviations recurring across the last

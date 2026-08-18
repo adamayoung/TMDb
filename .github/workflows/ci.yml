@@ -60,9 +60,16 @@ jobs:
               - 'Sources/TMDb/TMDb.docc/**'
               # README code samples are an input of the prose call-form check.
               - 'README.md'
+              # CHANGELOG is an input of the README version check — it is where
+              # the last-released and in-preparation versions are read from, so a
+              # CHANGELOG-only change must still run the Lint job.
+              - 'CHANGELOG.md'
             markdown:
               - 'README.md'
               - 'CLAUDE.md'
+              # CODE_REVIEW.md and ISSUE_FILING.md are load-bearing specs that
+              # several skills depend on, and lived in a lint blind spot.
+              - '.github/*.md'
               - '**/*.docc/**/*.md'
               - '.claude/**/*.md'
               - 'knowledge/**/*.md'
@@ -132,6 +139,10 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-prose-call-forms.py
 
+      - name: README version check
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: python3 Scripts/check-readme-version.py
+
   lint-markdown:
     name: Lint Markdown
     needs: changes
@@ -150,7 +161,7 @@ jobs:
 
       - name: Lint Markdown
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
-        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md" "knowledge/**/*.md"
+        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md" "knowledge/**/*.md" ".github/*.md"
 
   build-test:
     name: Build and Test

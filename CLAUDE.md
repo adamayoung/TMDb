@@ -249,6 +249,11 @@ Key skills (the README's *Claude Code Skills* tables list them all):
 - **`/review-changes`** — code review of the working-tree change (scales: one
   reviewer, or a fan-out + adversarial verification for large diffs).
 - **`/capture-knowledge`** — record durable learnings into `knowledge/`.
+- **`/triage-issues`** — groom the project board's Backlog against current
+  `main`; owns the Ready test and the priority/size rubrics.
+- **`/cut-release`** — work out the next SemVer version, do the pre-tag
+  housekeeping, draft the notes, tag and publish. **Never headless**: it stops
+  for approval before anything is tagged or published.
 - **`/pr`**, **`/watch-pr`**, **`/review-pr-threads`**, **`/fix-pr-checks`** —
   open and shepherd the pull request.
 - **`/document-swift`** — the canonical DocC conventions for public API.
@@ -264,6 +269,16 @@ real drift on a branch off `main`, and opens a **PR for review** (never
 auto-merges), then files/updates a tracking issue. Running headless, the skill
 verifies with the targeted suite (not full `make ci`) and opens the PR via
 `git`/`gh` (not `/pr`) — the PR's own CI is the gate.
+
+**Issue tracking** — work discovered but not done gets **filed**, never left in a
+transcript. One shared spec, [`.github/ISSUE_FILING.md`](.github/ISSUE_FILING.md),
+owns when to file, the body template, and the rule that every new issue lands in
+the `TMDb` project board's **Backlog** column; `/review-changes`,
+`/deliver`, `/capture-knowledge`, `/review-knowledge` and `/review-pr-threads`
+point at it rather than restating it. `/triage-issues` then grooms Backlog into a
+worked queue, and owns the Ready test and the priority/size rubrics in turn. The
+split matters: filing and triage are separate judgements, so neither file states
+the other's rules.
 
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and

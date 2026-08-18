@@ -278,6 +278,16 @@ note how many Critical/High findings were dropped by adversarial verification
 (`droppedByVerification`) — that number is a feature, not a gap. The caller
 decides what blocks and applies the fixes.
 
+**Findings you are not going to fix get filed, not dropped.** A Medium or Low
+that is real but out of scope for this change dies in the report unless someone
+writes it down — and this skill produces findings precisely because the caller
+will not act on all of them. File those per
+[`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md), and cite the issue
+number beside the finding, so the report shows what was captured rather than what
+was noticed.
+Do **not** file Critical/High findings — those block, and filing one reads as
+handling it.
+
 **On the large path, coverage is mandatory in the report**: list
 `dimensionsCovered`, and when `partial` is true name every dimension in
 `dimensionsMissing` and say plainly that the review is incomplete. A
