@@ -60,20 +60,28 @@ def fail(message: str) -> None:
 
 
 def changelog_versions() -> tuple[str | None, str | None]:
-    """Return (newest_dated, newest_undated) in file order — newest is first."""
-    newest_dated: str | None = None
-    newest_undated: str | None = None
+    """Return (newest_dated, newest_undated), each the greatest version of its kind."""
+    dated: list[str] = []
+    undated: list[str] = []
 
     for line in CHANGELOG.read_text(encoding="utf-8").splitlines():
         match = SECTION.match(line)
         if not match:
             continue
         version, date = match.group(1), match.group(2)
-        if date:
-            if newest_dated is None:
-                newest_dated = version
-        elif newest_undated is None:
-            newest_undated = version
+        (dated if date else undated).append(version)
+
+    # Greatest by version, not first in file. Keep a Changelog prepends, so the
+    # two normally agree — but taking the first would let a mis-ordered file
+    # silently bless a stale README, which is the one failure this check exists
+    # to make impossible.
+    def newest(versions: list[str]) -> str | None:
+        if not versions:
+            return None
+        return max(versions, key=lambda v: tuple(int(part) for part in v.split(".")))
+
+    newest_dated = newest(dated)
+    newest_undated = newest(undated)
 
     return newest_dated, newest_undated
 

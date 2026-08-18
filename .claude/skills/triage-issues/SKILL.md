@@ -39,6 +39,13 @@ mcp__github__projects_list / list_projects   owner: adamayoung, owner_type: user
 
 Zero matches or more than one → **stop and say so**. Do not guess.
 
+> **"Headless" here means unattended within a session — it decides for itself.**
+> It cannot run on a GitHub Actions runner: the Project MCP is user-scoped and
+> is not mounted there ([ADR-0009](../../../knowledge/decisions/0009-github-mcp-over-gh-cli.md)
+> records this as the reason `claude.yml` and `integration-failure.yml` stay on
+> `git`/`gh`), and `gh project` needs a scope this repo's token lacks. Wiring
+> this to a cron would fail at the call above.
+
 **Then pin the tree the verdicts are about.** The Ready test says "re-verified at
 HEAD", which is worth nothing if HEAD is a stale checkout or a feature branch —
 run this skill from an unfetched branch and every verdict is stamped against
@@ -87,8 +94,13 @@ not depend on an unverifiable assumption.
 
 For the same reason, Phase 3 treats an item with **empty Status** as Backlog.
 
-Report the count adopted — a number that keeps growing means an issue-filing
-skill is skipping its board step, which is a bug in that skill, not here.
+Report the count adopted. A growing count usually means an issue-filing skill is
+skipping its board step — a bug in that skill, not here. **One standing
+exception:** `.github/workflows/integration-failure.yml` files its alert issue
+with plain `gh issue create` and cannot add it to the board, for the same reason
+this skill cannot run on a runner. Those arrive as orphans every time. Adopt them,
+but do not read them as a filing bug — and take care triaging one that tracks an
+*in-flight* fix PR, since it is not stale, it is in progress.
 
 ## Phase 3 — Skip what cannot have changed
 
@@ -104,20 +116,42 @@ For each Backlog issue, read the most recent triage marker in its comments:
 <!-- triaged: <sha> | <digest> | <exit> | <priority> | <size> | deps=<csv> -->
 ```
 
-**Skip the agent** when both hold:
+**Skip the agent** when all four hold:
 
-1. the marker's `<sha>` equals the `origin/main` sha from Phase 1 — `main` has not
-   moved, so no code under any issue can have changed; **and**
-2. the issue itself has no update (body edit, new comment, label or title change)
-   more recent than that marker's comment.
+1. the marker's `<sha>` matches the `origin/main` sha from Phase 1 — compare
+   **by prefix**, either direction, since one may be short and the other full;
+2. the issue's `updated_at` is no later than the marker comment's `updated_at`
+   — that is the operational test, and it is why Phase 7 writes the marker
+   comment **last**: any label or field write landing after it would stamp the
+   issue as touched by this skill's own hand, and the item would re-triage
+   forever;
+3. the marker is **less than 30 days old**; and
+4. the previous verdict's `verifiedBy` cites no live-API check, and its priority
+   rests on no dated trigger (see below).
 
 A skipped issue carries its marker's `exit`, `priority`, `size` and `deps`
 forward, which is why the marker holds them rather than the digest alone — it
 keeps its place in the ordering without an agent having read it.
 
-Anything else is triaged: no marker, an unparseable one, a moved `main`, or a
-touched issue. Prefer re-triaging on doubt — the cost of a needless agent is
-tokens, the cost of a wrongly-skipped one is a stale verdict presented as current.
+**Conditions 3 and 4 exist because "`main` has not moved" is narrower than it
+sounds.** A verdict rests on three things this repo does not control:
+
+- **The live TMDb API.** Agents are told to re-check API claims with
+  `mcp__tmdb__*` rather than trust the body. The API drifts on its own schedule;
+  an issue can start or stop reproducing with `main` untouched.
+- **The calendar.** P1 means "a latent break with a *scheduled* trigger". That
+  trigger can fire between runs, turning a P1 into a P0 while nothing in the
+  repo changed.
+- **Dependencies closed elsewhere.** An issue blocked on another can become
+  unblocked by that one being closed — including closed as `wontfix`, which is
+  no commit at all.
+
+The 30-day ceiling costs one full sweep a month and bounds all three.
+
+Anything else is triaged: no marker, an unparseable one, a moved `main`, a
+touched issue, an old marker, or a live-API/dated-trigger verdict. Prefer
+re-triaging on doubt — the cost of a needless agent is tokens, the cost of a
+wrongly-skipped one is a stale verdict presented as current.
 
 Report the split (`n skipped, m triaged`). A run that skips everything is the
 expected steady state, not a failure.
@@ -164,7 +198,10 @@ Sort the Ready set:
 1. `dependsOn` order — a dependency always precedes its dependent.
 2. Priority — P0, then P1, then P2.
 3. Contention — do not schedule two file-contending issues adjacently when
-   something else can sit between them.
+   something else can sit between them. This is computed only over **freshly
+   triaged** issues: the marker carries no `filesTouched`, so a skipped issue
+   contributes no contention edges. Say so in the run-list rather than implying
+   full coverage.
 4. Size ascending — smallest first inside a band, so the board drains.
 
 Rule 1 outranks rule 2: a P2 that unblocks a P0 goes first. Say so explicitly in
@@ -199,6 +236,15 @@ within a month. So:
 - Read the last such marker before writing. **Comment only if the
   `evidenceDigest` differs** from the previous run. A new `HEAD` alone is not a
   reason to comment; nothing changed for the reader.
+- **When the digest is unchanged but `HEAD` has advanced, refresh the marker in
+  place** — edit the existing triage comment so its `<sha>` is current, rather
+  than posting a new one. Without this the marker's sha only ever advances when
+  a *verdict* changes, so in the steady state this skill is built for — `main`
+  moves, verdicts do not — Phase 3's skip could never fire and every run would
+  pay the full fan-out. The comment body stays as it was; only the marker moves.
+- **Write the marker comment last.** Labels and field updates first, comment
+  after — see Phase 3 condition 2. A label written after the comment makes the
+  issue look touched-since-triage on the next run, and it re-triages forever.
 - Field updates are always applied — they are idempotent and silent.
 
 The digest and the marker are computed **by the workflow script**, not by the
@@ -262,12 +308,11 @@ hostile.
 
 ## Rubrics
 
-**Priority.** P0 — data loss, credential exposure, or blocks a currently-open
-release. P1 — a correctness defect, or a latent break with a *scheduled* trigger
-(some known future event fires it). P2 — hygiene, CI ergonomics, docs, and
-latent breaks with no trigger.
+**The rubrics live in `.claude/workflows/triage-issues.js` (`RUBRIC`)** — that is
+the copy handed to every agent, so it is the one that actually reaches a
+decision. Read it there; do not restate it here. A second copy in this file
+drifted from the script within a day of being written, which is precisely the
+decay this repo's single-ownership rule exists to prevent.
 
-**Size.** XS — one file, under an hour. S — one unit of work, obvious tests.
-M — a model/decoder change with fixtures, or a mechanical port across files.
-L — multi-item, or wants several PRs. XL — needs a plan before it can start;
-say so, since XL and `split` usually travel together.
+What this skill owns and states above, because no agent needs it: the Ready
+test's four conditions, the wontfix bases, the four exits, and the skip rule.

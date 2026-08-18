@@ -95,6 +95,7 @@ lint-markdown:
 	markdownlint "**/*.docc/**/*.md"
 	markdownlint ".claude/**/*.md"
 	markdownlint "knowledge/**/*.md"
+	markdownlint ".github/*.md"
 
 .PHONY: build
 build:

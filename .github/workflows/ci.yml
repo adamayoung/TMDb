@@ -67,6 +67,9 @@ jobs:
             markdown:
               - 'README.md'
               - 'CLAUDE.md'
+              # CODE_REVIEW.md and ISSUE_FILING.md are load-bearing specs that
+              # several skills depend on, and lived in a lint blind spot.
+              - '.github/*.md'
               - '**/*.docc/**/*.md'
               - '.claude/**/*.md'
               - 'knowledge/**/*.md'
@@ -158,7 +161,7 @@ jobs:
 
       - name: Lint Markdown
         if: needs.changes.outputs.markdown == 'true' || github.event_name == 'workflow_dispatch'
-        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md" "knowledge/**/*.md"
+        run: markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md" "knowledge/**/*.md" ".github/*.md"
 
   build-test:
     name: Build and Test
