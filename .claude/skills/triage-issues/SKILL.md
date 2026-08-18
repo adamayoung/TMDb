@@ -53,6 +53,15 @@ git rev-parse --short origin/main  # this is the sha passed to the workflow
 Not on `main`, or `main` behind `origin/main` → say so and stop. The agents run
 `git log` in this checkout, so the checkout has to be the thing being triaged.
 
+> **A skill cannot be tested from the branch that introduces it.** This guard
+> demands `main`, and checking out `main` removes an unmerged skill file — so
+> the first real run necessarily comes after the merge. That is the right way
+> round: a branch's tree is not what the issues are about. When this was first
+> hit, `Sources/` and `Tests/` were identical to `main` but `ci.yml`, `Makefile`
+> and `Scripts/` were not — which is exactly what two of the open CI issues
+> were about. Dry-run the workflow directly if you need to exercise the
+> machinery before merging; do not relax this.
+
 Capture that sha and today's date; both are passed to the workflow, which cannot
 compute a date itself.
 
@@ -70,7 +79,8 @@ Add each missing one with `projects_write / add_project_item`, then **set its
 Status to Backlog explicitly** with `update_project_item`. Do not rely on the
 board's "Item added" workflow to do it: whether that automation is enabled is not
 queryable through the API and nothing here can check it. If it is off, adopted
-items arrive with *no* Status — and since Phase 3 collects Backlog items and the
+items arrive with *no* Status — and since Phase 3 onward works from the Backlog
+set and the
 scope rule forbids touching anything outside Backlog, they would be permanently
 invisible. That is the precise outcome this phase exists to prevent, so it must
 not depend on an unverifiable assumption.
@@ -80,10 +90,42 @@ For the same reason, Phase 3 treats an item with **empty Status** as Backlog.
 Report the count adopted — a number that keeps growing means an issue-filing
 skill is skipping its board step, which is a bug in that skill, not here.
 
-## Phase 3 — Fan out
+## Phase 3 — Skip what cannot have changed
 
-Collect the Backlog issue numbers — including any item whose Status is **empty**,
-per Phase 2 — then run the workflow:
+**Do this before fanning out, not after.** A triage agent costs roughly 80k
+tokens, so a full backlog is over a million tokens a run. The comment-suppression
+rule in Phase 7 saves *noise*; it does not save any of that, because the agent has
+already run by the time the digest is compared. On a schedule, most runs would
+spend a million tokens re-discovering that nothing moved.
+
+For each Backlog issue, read the most recent triage marker in its comments:
+
+```text
+<!-- triaged: <sha> | <digest> | <exit> | <priority> | <size> | deps=<csv> -->
+```
+
+**Skip the agent** when both hold:
+
+1. the marker's `<sha>` equals the `origin/main` sha from Phase 1 — `main` has not
+   moved, so no code under any issue can have changed; **and**
+2. the issue itself has no update (body edit, new comment, label or title change)
+   more recent than that marker's comment.
+
+A skipped issue carries its marker's `exit`, `priority`, `size` and `deps`
+forward, which is why the marker holds them rather than the digest alone — it
+keeps its place in the ordering without an agent having read it.
+
+Anything else is triaged: no marker, an unparseable one, a moved `main`, or a
+touched issue. Prefer re-triaging on doubt — the cost of a needless agent is
+tokens, the cost of a wrongly-skipped one is a stale verdict presented as current.
+
+Report the split (`n skipped, m triaged`). A run that skips everything is the
+expected steady state, not a failure.
+
+## Phase 4 — Fan out
+
+Take the issues that survived Phase 3 — including any item whose Status is
+**empty**, per Phase 2 — and run the workflow:
 
 ```text
 Workflow({ scriptPath: '.claude/workflows/triage-issues.js',
@@ -100,7 +142,7 @@ separation is what keeps a parallel run from racing on the board.
 If the workflow reports `untriaged`, those issues are **unknown**, not clean.
 Leave them in Backlog untouched and name them in the summary.
 
-## Phase 4 — Reconcile
+## Phase 5 — Reconcile
 
 The agents saw one issue each; the cross-issue judgements are yours.
 
@@ -115,7 +157,7 @@ The agents saw one issue each; the cross-issue judgements are yours.
 - **Duplicates.** Two `wontfix`/`duplicate` verdicts pointing at each other means
   neither agent saw the other. Keep the older issue, close the newer.
 
-## Phase 5 — Order
+## Phase 6 — Order
 
 Sort the Ready set:
 
@@ -128,7 +170,7 @@ Sort the Ready set:
 Rule 1 outranks rule 2: a P2 that unblocks a P0 goes first. Say so explicitly in
 the run-list when it happens, or it reads as a mis-sort.
 
-## Phase 6 — Write
+## Phase 7 — Write
 
 Per issue, by exit:
 
@@ -151,15 +193,18 @@ usually obvious to a human in ten seconds.
 Headless on a schedule, a comment per issue per run makes the issues unreadable
 within a month. So:
 
-- End every triage comment with `<!-- triaged: <sha> | <evidenceDigest> -->`.
+- End every triage comment with the verdict's `marker` field, **verbatim**. The
+  workflow script assembles it so the written form and the form Phase 3 parses
+  cannot drift apart. Do not hand-build it.
 - Read the last such marker before writing. **Comment only if the
   `evidenceDigest` differs** from the previous run. A new `HEAD` alone is not a
   reason to comment; nothing changed for the reader.
 - Field updates are always applied — they are idempotent and silent.
 
-The digest is computed **by the workflow script**, not by the agent, from the
-decision-bearing fields only (`exit`, `priority`, `size`, `wontfixBasis`, sorted
-`dependsOn`, sorted `staleClaims` locations). Prose is deliberately excluded. Do
+The digest and the marker are computed **by the workflow script**, not by the
+agent. The digest covers the decision-bearing fields only (`exit`, `priority`,
+`size`, `wontfixBasis`, sorted `dependsOn`, sorted `staleClaims` locations).
+Prose is deliberately excluded. Do
 not ask an agent for it and do not recompute it here: an LLM asked for a "stable
 fingerprint" will word the same findings differently each run, the digests will
 differ every time, and this rule quietly becomes a no-op that still looks
@@ -169,7 +214,7 @@ Comment content: what changed since filing, then corrected file:line pointers,
 then anything a picker-upper needs that the body lacks. Do not restate the issue
 back at its author.
 
-## Phase 7 — Publish the run-list
+## Phase 8 — Publish the run-list
 
 One Project status update per run — this is where execution order lives, since
 the board has no rank field:
@@ -187,7 +232,7 @@ and it is the diff between one run and the next.
 Mark `AT_RISK` when a P0 sits in `blocked`: the highest-priority work being
 un-startable is exactly the state a status colour exists to surface.
 
-## Phase 8 — Report
+## Phase 9 — Report
 
 To the caller: counts by exit, the ordered Ready list, every `blocked` item with
 its decision, anything closed and why, adopted orphans, and any `untriaged`

@@ -162,6 +162,19 @@ function evidenceDigest(v) {
   return h.toString(16).padStart(8, '0')
 }
 
+// The marker the skill writes at the foot of a triage comment and parses on the
+// NEXT run to decide whether an agent needs to run at all. Assembled here so the
+// written form and the parsed form cannot drift apart: an unparseable marker
+// degrades into "re-triage everything", which is the expensive failure rather
+// than a loud one.
+//
+// It carries the ordering-relevant facts, not just the digest, so a skipped
+// issue can still take its place in the run-list without an agent having read it.
+function buildMarker(v, digest) {
+  const deps = [...v.dependsOn].sort((a, b) => a - b).join(',')
+  return `<!-- triaged: ${HEAD} | ${digest} | ${v.exit} | ${v.priority} | ${v.size} | deps=${deps} -->`
+}
+
 const RUBRIC = `
 PRIORITY
   P0 — data loss, credential exposure, or blocks a release that is currently open.
@@ -175,6 +188,12 @@ SIZE
   M  — a model/decoder change with fixtures, or a mechanical port across several files.
   L  — multi-item, or spans several units that want separate PRs.
   XL — cannot be started without a plan first. If you pick XL, say so in newContext.
+
+  Size the work the issue's OUTCOME requires, never the analysis needed to reach
+  it. A 'blocked' item is sized by what its decision unlocks: if the answer is
+  "close this" or "record a line", that is XS however much reasoning the decision
+  took. Sizing the thinking inflates every judgement-heavy item and makes the
+  board unplannable.
 
 READY TEST — an issue is 'ready' ONLY if ALL FOUR hold:
   1. Every load-bearing claim re-verified against ${HEAD}.
@@ -253,7 +272,8 @@ for (const v of results.filter(Boolean)) {
     continue
   }
   seen.add(v.issue)
-  verdicts.push({ ...v, evidenceDigest: evidenceDigest(v) })
+  const digest = evidenceDigest(v)
+  verdicts.push({ ...v, evidenceDigest: digest, marker: buildMarker(v, digest) })
 }
 
 if (discarded.length > 0) {
