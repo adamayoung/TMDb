@@ -585,9 +585,12 @@ directly.
 | `/canon-tdd` | Drive test-first development (test list → failing test → pass → refactor) |
 | `/document-swift` | Write DocC documentation for public API per project conventions |
 
-Three subagents back the pipeline: `code-reviewer` (deep Swift/TMDb review,
+Four subagents back the pipeline: `code-reviewer` (deep Swift/TMDb review,
 pinned to Opus), `documentation-writer` (bulk DocC generation, pinned to
-Sonnet), and `tooling-runner` (build/test execution, pinned to Haiku). The
+Sonnet), `tooling-runner` (build/test execution, pinned to Haiku), and
+`check-diagnoser` (PR-check diagnosis for `/fix-pr-checks` — reports, never
+fixes; pinned to Haiku, with a repeat re-diagnosed on Opus via the caller's
+call-site override). The
 reviewer follows the shared spec in
 [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
 

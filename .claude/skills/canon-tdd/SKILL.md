@@ -34,7 +34,14 @@ The point of this skill: do these by default, without being reminded.
    implementation reveals a new case.
 2. **Write a test** — pick the next item and write one real, automated test:
    setup, invocation, and **assertions**. Define *what* the system does and *how
-   it's invoked* — not how it works inside. Run it; confirm it fails.
+   it's invoked* — not how it works inside. Run it; confirm it fails — and
+   **state the failure**: quote the failing assertion/message and check it is
+   the *expected* reason. (For brand-new API the first red is normally a
+   compile error — the symbol doesn't exist yet; that is expected. Stub the
+   minimal declaration and re-run so the red becomes the failing assertion.)
+   A compile error in *existing* code, a missing import, or an unrelated
+   crash is a red for the wrong reason — it proves nothing about the
+   behaviour, so fix the test and re-run until it is red for the right reason.
 3. **Make it pass** — change the system to satisfy that test with the simplest
    thing that works. Nothing more; resist solving items still on the list.
 4. **Optionally refactor** — improve names, structure, and duplication while every

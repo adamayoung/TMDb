@@ -286,10 +286,13 @@ follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
 reviewers, plus committed `.claude/workflows/` and `Scripts/` for the local one
 (docs/prose-only changes are not reviewed, unless the caller passes
 `force-review` — `/deliver` does for a delivery that rewrites the pipeline's own
-skills). Three subagents back the pipeline:
+skills). Four subagents back the pipeline:
 `code-reviewer` (deep Swift/TMDb review, pinned to Opus),
-`documentation-writer` (bulk DocC generation, pinned to Sonnet), and
-`tooling-runner` (build/test execution, pinned to Haiku).
+`documentation-writer` (bulk DocC generation, pinned to Sonnet),
+`tooling-runner` (build/test execution, pinned to Haiku), and
+`check-diagnoser` (PR-check diagnosis for `/fix-pr-checks` — reports, never
+fixes; pinned to Haiku, with a repeat re-diagnosed on Opus via the caller's
+call-site override).
 
 ## Build and Test Tooling
 
