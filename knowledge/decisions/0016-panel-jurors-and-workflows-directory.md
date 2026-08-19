@@ -80,9 +80,28 @@ before committing to this placement.
   `.claude/settings*`. This ADR's placement decision is what creates that
   surface, so closing it is part of the same change.
 - The repo now has **two conventions** for Workflow scripts. The rule is
-  frequency: **once per invocation → embed; many times per run → file.**
+  drift-sensitivity: **orchestration-only scripts embed in their `SKILL.md`;
+  a script that encodes a decision procedure (rubrics, tally rules,
+  guard thresholds) or runs headless lives in `.claude/workflows/`** — an
+  executed file cannot drift between invocations the way a re-authored
+  embedded script can, and for decisions that drift is a correctness bug.
+  (As originally written the rule keyed on *frequency* — "once per
+  invocation → embed; many times per run → file" — see the 2026-08-19
+  addendum for why that proxy was replaced.)
 - Phase 11 proposals now always wait for a human, so the default auto path
   pushes nothing after the ready gate.
 - **The jurors themselves remain unexercised** — only the guards have run. Auto
   mode has still never completed a real delivery, and this ADR does not change
   that.
+- *Addendum (2026-08-19, knowledge-drift audit):* PR #464 committed
+  `.claude/workflows/triage-issues.js` — a once-per-invocation script — as a
+  file, violating the frequency rule while matching this ADR's own deeper
+  rationale (it carries the triage `RUBRIC` constants and runs headless, so
+  re-authoring drift would corrupt decisions). The rule failed because it
+  named the proxy (frequency) instead of the criterion (drift-sensitivity of
+  decisions); the Consequences bullet above now states the criterion. The
+  census is six scripts: four embedded (`review-plan`, `review-knowledge`,
+  `review-changes`, `fix-pr-checks`), two files (`deliver-panel.js`,
+  `triage-issues.js`). Placement has no mechanical gate; the standing hook is
+  that `.claude/workflows/` sits on the security-surface list, so every new
+  file there passes a reviewer — who should check it against this rule.

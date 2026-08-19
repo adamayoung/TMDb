@@ -5,13 +5,15 @@ description: Lint code with swiftlint and swiftformat
 
 # Lint code
 
-Run `make lint` from the project root to check code style. It runs **six**
-checks, in order: four Python scripts under `Scripts/` — `lint-witnesses`
+Run `make lint` from the project root to check code style. It runs **seven**
+checks, in order: five Python scripts under `Scripts/` — `lint-witnesses`
 (`check-defaulted-witnesses.py`, protocol conveniences that would witness their
 own requirement), `lint-fixtures` (`check-fixtures.py`, JSON fixture hygiene),
 `lint-curation` (`check-docc-curation.py`, public methods missing from their
-DocC page) and `lint-prose` (`check-prose-call-forms.py`, code samples calling a
-method that does not exist) — then `swiftlint --strict .`, then
+DocC page), `lint-prose` (`check-prose-call-forms.py`, code samples calling a
+method that does not exist) and `lint-readme-version`
+(`check-readme-version.py`, README's `.package(from:)` vs the newest
+`CHANGELOG.md` release) — then `swiftlint --strict .`, then
 `swiftformat --lint .`.
 
 Each script enforces something no single-file linter can see, and a failure in

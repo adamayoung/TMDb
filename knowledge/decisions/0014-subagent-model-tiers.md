@@ -51,7 +51,8 @@ re-diagnoses only where judgment demonstrably matters.
 ## Consequences
 
 - Model choice is no longer a caller responsibility for the runners — the
-  pin lives in `tooling-runner.md` and can't be forgotten.
+  pin lives in `tooling-runner.md` (and, since PR #466, `check-diagnoser.md`
+  for the `/fix-pr-checks` first attempt) and can't be forgotten.
 - Review quality has a floor: `code-reviewer` never silently degrades below
   Opus in a cheaper session, while call sites may still override upward.
 - Bulk documentation gets cheaper without a quality change worth caring
@@ -74,6 +75,14 @@ re-diagnoses only where judgment demonstrably matters.
   shape → tier mapping is unchanged, and the trigger for revisiting the
   remaining Opus pins (the `/review-plan` critics, the `/deliver` panel) stays
   "critics start missing blockers".
+- *Addendum (2026-08-19, PR #466):* the `/fix-pr-checks` first-attempt Haiku
+  pin moved from call-site prose into the new `check-diagnoser.md` agent's
+  frontmatter — the floor mechanic above, exercised: the call-site
+  `model: opus` re-diagnosis still overrides it, and a spawn that forgets
+  `model` now lands on Haiku instead of the session model. (The PR's plan
+  originally said *no* pin, reasoning a pin would block the escalation —
+  the review caught that as contradicting this ADR's mechanic.) Tier mapping
+  unchanged.
 
 ## Alternatives considered
 
