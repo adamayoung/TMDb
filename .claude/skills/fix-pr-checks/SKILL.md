@@ -75,8 +75,10 @@ If nothing is failing, return immediately (note any pending checks).
 
 ## 2. Diagnose each failing check (Haiku first, Opus on a repeat)
 
-For each `fail` check under its attempt cap, spawn a diagnosis subagent — Agent
-tool, `subagent_type: general-purpose` — substituting the check name and the
+For each `fail` check under its attempt cap, spawn the **`check-diagnoser`**
+agent (Agent tool, `subagent_type: check-diagnoser` — its read-only/no-build
+contract, report shape, and deliberately unpinned model live in
+`.claude/agents/check-diagnoser.md`), substituting the check name and the
 routed skill. Pick the model from the check's ledger history:
 
 - **First attempt** → `model: haiku`.
@@ -89,25 +91,8 @@ routed skill. Pick the model from the check's ledger history:
 ```text
 The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.
 
-Use the `<SKILL>` skill to diagnose it. The skill locates the failing run,
-reads the log, and maps it to a cause and fix.
-
-DO NOT BUILD OR RUN TESTS — no `make`, no `swift build`, no `swift test`, and
-do not invoke /build, /test or /integration-test. Diagnose by reading the
-failing run's log and the source. The routed skill tells you to reproduce
-locally; that step is the caller's, not yours — it owns the single build slot
-for this worktree. Reproduction here would collide with it and with any sibling
-diagnosis running beside you.
-
-Report back ONLY the skill's three-section result — Summary, Likely cause,
-Suggested fix — including the offending `file:line`, plus the `observed:` line
-where the routed skill requires one. Do not paste raw logs.
+Use the `<SKILL>` skill to diagnose it.
 ```
-
-> **Section names.** `/diagnose-ci-failure` emits *Summary / Cause / Fix*;
-> `/diagnose-integration-failure` emits *Summary / Likely cause / Suggested
-> fix* and adds `observed:` for shape-drift causes. Ask for the latter shape —
-> it is a superset, so both skills can satisfy it.
 
 ### Two or more failing checks → one Workflow
 
@@ -167,13 +152,6 @@ if (typeof input.branch !== 'string' || !input.branch) {
   throw new Error('fix-pr-checks: args.branch must be a non-empty string.')
 }
 
-const NO_BUILD =
-  `DO NOT BUILD OR RUN TESTS — no \`make\`, no \`swift build\`, no \`swift test\`, and do not invoke ` +
-  `/build, /test or /integration-test. Diagnose by READING the failing run's log and the source. ` +
-  `The routed skill tells you to reproduce locally; that step is the caller's, not yours — it owns the ` +
-  `single build slot for this worktree. Reproduction here would collide with it and with any sibling ` +
-  `diagnosis running beside you.`
-
 const DIAGNOSIS_SCHEMA = {
   type: 'object',
   additionalProperties: false,
@@ -197,17 +175,16 @@ phase('Diagnose')
 const results = await parallel(input.checks.map((c) => () =>
   agent(
     `The \`${c.name}\` check failed on the TMDb PR for branch \`${input.branch}\`.\n\n` +
-      `Use the \`${c.skill}\` skill to diagnose it. The skill locates the failing run, reads the log, ` +
-      `and maps it to a cause and fix.\n\n` +
+      `Use the \`${c.skill}\` skill to diagnose it.` +
       (c.priorAttempt
-        ? `THIS IS A REPEAT. The previous attempt did not stick:\n${c.priorAttempt}\n` +
-          `Do not re-propose it — find what that diagnosis missed.\n\n`
-        : '') +
-      `${NO_BUILD}\n\n` +
-      `Report ONLY the skill's three-section result. Do not paste raw logs.`,
+        ? `\n\nTHIS IS A REPEAT. The previous attempt did not stick:\n${c.priorAttempt}\n` +
+          `Do not re-propose it — find what that diagnosis missed.`
+        : ''),
     {
       label: `diagnose:${c.name}`,
       phase: 'Diagnose',
+      // The agent definition carries the no-build rule and report contract.
+      agentType: 'check-diagnoser',
       // Haiku first; a repeat escalates. The conductor supplies the history —
       // a Workflow cannot see the ledger's per-check attempt counters.
       model: c.priorAttempt ? 'opus' : 'haiku',
