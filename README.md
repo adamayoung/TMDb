@@ -588,8 +588,9 @@ directly.
 Four subagents back the pipeline: `code-reviewer` (deep Swift/TMDb review,
 pinned to Opus), `documentation-writer` (bulk DocC generation, pinned to
 Sonnet), `tooling-runner` (build/test execution, pinned to Haiku), and
-`check-diagnoser` (read-only PR-check diagnosis for `/fix-pr-checks`; not
-model-pinned — the caller picks Haiku first, Opus on a repeat). The
+`check-diagnoser` (PR-check diagnosis for `/fix-pr-checks` — reports, never
+fixes; pinned to Haiku, with a repeat re-diagnosed on Opus via the caller's
+call-site override). The
 reviewer follows the shared spec in
 [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md).
 

@@ -76,10 +76,12 @@ If nothing is failing, return immediately (note any pending checks).
 ## 2. Diagnose each failing check (Haiku first, Opus on a repeat)
 
 For each `fail` check under its attempt cap, spawn the **`check-diagnoser`**
-agent (Agent tool, `subagent_type: check-diagnoser` — its read-only/no-build
-contract, report shape, and deliberately unpinned model live in
+agent (Agent tool, `subagent_type: check-diagnoser` — its no-fix/no-build
+contract, report shape, and Haiku floor-pin live in
 `.claude/agents/check-diagnoser.md`), substituting the check name and the
-routed skill. Pick the model from the check's ledger history:
+routed skill. Pick the model from the check's ledger history and pass it
+explicitly (a call-site `model` beats the agent's frontmatter pin —
+ADR-0014):
 
 - **First attempt** → `model: haiku`.
 - **Repeat** (the ledger shows a prior attempt for this check — a fix that
@@ -87,6 +89,14 @@ routed skill. Pick the model from the check's ledger history:
   prepending one line of prior-attempt context to the prompt: the previous
   Cause/Fix and why it didn't stick. A misdiagnosis costs a full
   fix→push→CI round trip; don't pay it twice on the same model tier.
+
+> **Registry lag.** A freshly merged agent file may not register as a
+> spawnable `subagent_type` until a new session
+> (`knowledge/delivery-retros.md`), and an unrecognised type silently starts a
+> plain general-purpose agent — with no contract at all now that the prompt
+> below carries none. If `check-diagnoser` is not a recognised type, don't
+> fall through silently: say so, and re-spawn as `general-purpose` with
+> `.claude/agents/check-diagnoser.md` read into the prompt as its contract.
 
 ```text
 The `<CHECK NAME>` check failed on the TMDb PR for branch `<branch>`.
