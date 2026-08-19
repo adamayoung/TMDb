@@ -63,6 +63,26 @@ retired; the family heading stays.
 
 ## Tooling
 
+### A new `.claude/agents/*.md` is spawnable immediately — but only in the session that wrote it
+
+*2026-08-19 (#466).* Two observations that look contradictory and are both
+true:
+
+- **The authoring session sees it at once.** Writing
+  `.claude/agents/check-diagnoser.md` made the harness announce the new
+  `subagent_type` in the same session, before any restart — no lag.
+- **Every other context lags.** A session already running when the file merges
+  (and a worktree, whose skill/agent registry loads from the main checkout —
+  see `knowledge/delivery-retros.md`) may not have the type until a fresh
+  session. The failure is **silent**: the Agent tool starts a plain
+  general-purpose agent for an unrecognised `subagent_type` rather than
+  erroring, so the spawn "works" with none of the agent file's contract.
+
+`/fix-pr-checks` §2 carries the operational fallback (announce, then re-spawn
+as `general-purpose` with the agent file read into the prompt). The durable
+fact is the asymmetry: don't fear the lag in the session that authored the
+file, and don't trust type recognition anywhere else until a restart.
+
 ### `build-docs` cannot see a *missing* curation line — only a broken or ambiguous one
 
 *2026-08-14 (#459).* `make build-docs` runs
