@@ -63,6 +63,39 @@ retired; the family heading stays.
 
 ## Tooling
 
+### A gate keyed on `git tag` passes vacuously in CI — the checkout has no tags
+
+*2026-08-19 (#464).* `actions/checkout` fetches no tags by default, so any
+check that compares against "the latest tag" sees an empty list in CI and
+passes on the degenerate path — the **False green** family, one level down.
+`Scripts/check-readme-version.py` therefore treats `CHANGELOG.md` as the
+authoritative shipped-version record, not `git tag`. Two facts worth keeping
+with it:
+
+- **README's `.package(from:)` silently caps consumers.** SemVer reads
+  `from: X.Y.Z` as `>= X.Y.Z, < (X+1).0.0`, so a stale major in the README
+  snippet pins every copy-pasting consumer below the current release. #406
+  caught exactly this by hand while preparing 19.0.0; the script now gates it.
+- **The check has two arms by design** — README may match the newest *dated*
+  release **or** the newest undated/unreleased section — so `/cut-release`'s
+  pre-tag housekeeping PR (which bumps README before the tag exists) is not
+  blocked by the very gate it feeds.
+
+### Swift code fences in README and the DocC articles are prose — nothing compiles them
+
+*2026-08-19 (#460).* A stale call form in a README or `*.docc` article code
+sample is invisible to `make ci` and to `build-docs` (DocC renders fences, it
+does not compile them), and fixing one occurrence leaves identical siblings
+stale — #452 fixed a dead `search("…")` call in README while the same call
+survived in two DocC articles; #459's README documented a
+`tmdbClient.search.multi(query:)` that never existed. It took three
+recurrences (PRs #359, #452 and #459) before #460 added
+`Scripts/check-prose-call-forms.py`, which
+resolves every `<service>.<method>(<labels>)` in those fences against
+`TMDbClient`'s real service API. Two shapes to know: the one false positive is
+a **local binding shadowing a service name**; and parsing whole fences rather
+than line-by-line nearly doubled coverage (44 → 83 call forms).
+
 ### A new `.claude/agents/*.md` is spawnable immediately — but only in the session that wrote it
 
 *2026-08-19 (#466).* Two observations that look contradictory and are both
@@ -197,8 +230,9 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Four checks are mirrored this way today — `check-defaulted-witnesses.py`,
-`check-fixtures.py`, `check-docc-curation.py` and `check-prose-call-forms.py`,
+Five checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py` and
+`check-readme-version.py` (paths-filter input: `CHANGELOG.md`),
 each a `make lint` prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
 paths-filter key over a new `outputs:` entry: a filter key with no matching line
 under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the

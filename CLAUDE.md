@@ -28,7 +28,10 @@ knowledge; `CLAUDE.md` stays imperative.)
   every skill-improvement proposal and its decision; the recurring-pattern
   scan's dedup memory.
 
-**Before solving a non-trivial problem**, skim the relevant file. **After learning
+**Before solving a non-trivial problem**, skim the relevant file. Concretely:
+when a command or tool fails **twice**, grep `knowledge/gotchas.md` for the
+tool's name before a third attempt — the trap is usually already recorded, and
+re-deriving it costs more than the grep. **After learning
 something durable** (a gotcha, an API quirk, a design decision), record it there —
 run `/capture-knowledge` (it runs automatically before a PR in `/deliver`). Add an
 ADR for any non-obvious design decision.
@@ -539,9 +542,12 @@ build input of `TMDbTests`) runs `make lint && make lint-markdown && make build-
 instead (drop `build-docs` only if no `*.docc/**` changed). `/pr` owns that rule;
 if this paraphrase and `/pr` ever disagree, `/pr` is right.
 
-**The one thing `make ci` cannot check is `README.md`** — `build-docs` compiles
-DocC but cannot see a stale README. If the public API changed, keep it in sync
-by hand (see `/document-swift`). Record durable learnings with
+**What `make ci` still cannot check in `README.md` is the narrative prose** —
+`make lint` now gates the Swift code samples (`check-prose-call-forms.py`,
+README + DocC articles) and the `.package(from:)` version
+(`check-readme-version.py`), but feature lists, service tables and described
+behaviour compile through no gate. If the public API changed, keep that prose
+in sync by hand (see `/document-swift`). Record durable learnings with
 `/capture-knowledge`.
 
 `/deliver` runs this checklist, the self-review (`/review-changes`), and the PR
