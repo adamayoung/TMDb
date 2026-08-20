@@ -673,12 +673,24 @@ longer open-and-`Ready`, and re-verifies the head candidate against
 necessarily at today's. A candidate whose claims no longer hold goes back to
 **Backlog** with a comment, and the run moves on.
 
-Three constraints are worth knowing before you reach for it:
+That line is **assembled by `Scripts/build_run_list.py`**, not written by hand:
+it carries the whole of `/triage-issues`' ordering — dependency order,
+contention spacing, and the promotion in which a P2 that unblocks a P0 goes
+first — and a re-worded line would lose exactly that while still looking
+correct.
+
+Four constraints are worth knowing before you reach for it:
 
 * **`merge` refuses a breaking change.** In `merge` mode an issue is selectable
   only if its `Breaking class` is `none` — absent or unparseable counts as
   "needs a decision". Every other change still gets a human at the
   ready-to-merge gate, which is where a compatibility call belongs.
+* **No run-list line, no unattended run.** If no status update carries the
+  line, `/deliver next` falls back to ordering by Priority then Size and says
+  loudly that contention spacing and dependency-driven promotion are
+  unavailable — but `auto` and `auto merge` **stop** and send you to
+  `/triage-issues`, since a warning nobody reads is not a warning. The fallback
+  is degraded, not unsafe: an open dependency still rejects a candidate outright.
 * **It needs the user-scoped Projects MCP**, so it runs in your own environment
   (including a CCR-triggered session) but **not** on a GitHub Actions runner,
   where that MCP is not mounted — the same limit `/triage-issues` has.

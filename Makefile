@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses lint-fixtures lint-curation lint-prose lint-readme-version
+lint: lint-witnesses lint-fixtures lint-curation lint-prose lint-readme-version lint-run-list
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -88,6 +88,20 @@ lint-prose:
 .PHONY: lint-readme-version
 lint-readme-version:
 	@python3 Scripts/check-readme-version.py
+
+# The run-list builder's own suite. /triage-issues Phase 8 publishes one line
+# that /deliver next parses and nothing else, so a wrong ORDER is as damaging as
+# a wrong format and neither is visible at write time (issue #471). Two things
+# are covered: the sort rules, and — reading the skill files off disk — that the
+# prose still agrees with the grammar the module defines.
+#
+# `-t` repeats the start directory because Python 3.9's discover requires the
+# start directory to be importable; the repo's python3 is Xcode's 3.9.
+# Mirrored as the `Run-list builder check` step in .github/workflows/ci.yml —
+# see the note above lint-witnesses.
+.PHONY: lint-run-list
+lint-run-list:
+	@python3 -m unittest discover -s Scripts/tests -t Scripts/tests
 
 .PHONY: lint-markdown
 lint-markdown:

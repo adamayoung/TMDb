@@ -193,19 +193,44 @@ The agents saw one issue each; the cross-issue judgements are yours.
 
 ## Phase 6 — Order
 
-Sort the Ready set:
+**The ordering is computed, not composed.** Run it:
 
-1. `dependsOn` order — a dependency always precedes its dependent.
-2. Priority — P0, then P1, then P2.
-3. Contention — do not schedule two file-contending issues adjacently when
-   something else can sit between them. This is computed only over **freshly
-   triaged** issues: the marker carries no `filesTouched`, so a skipped issue
-   contributes no contention edges. Say so in the run-list rather than implying
-   full coverage.
-4. Size ascending — smallest first inside a band, so the board drains.
+```bash
+python3 Scripts/build_run_list.py .build/run-list-input.json
+```
 
-Rule 1 outranks rule 2: a P2 that unblocks a P0 goes first. Say so explicitly in
-the run-list when it happens, or it reads as a mis-sort.
+Input is `{ head, ready, closed }`. `ready` uses **`triage-issues.js`'
+`VERDICT_SCHEMA` field names** (`issue`, `priority`, `size`, `dependsOn`,
+`filesTouched`), so a freshly-triaged verdict is passed through **untouched** —
+re-shaping records by hand would put back, at the input, the transcription risk
+the script removes at the output. A **skipped** issue is assembled from its
+marker (`issue`, `priority`, `size`, `dependsOn`; it carries no `filesTouched`).
+`closed` lists the issues Phase 5 discharged edges onto.
+
+It returns `ordered`, `runListLine`, and the three disclosures Phase 8 needs:
+`depsOutrankPriority`, `dischargedEdges`, `unseparableContention`.
+
+The four sort rules — dependency order, priority, contention, size — are
+**defined in [`Scripts/build_run_list.py`](../../../Scripts/build_run_list.py)**,
+which is the copy that actually decides. Read them there; do not restate them
+here. That is the same single-ownership rule this file already applies to the
+[rubrics](#rubrics), and for the same reason: a second copy drifted from the
+script within a day of being written. What is worth knowing without opening it:
+rule 1 outranks rule 2 (a P2 that unblocks a P0 goes first, which the script
+implements as *effective priority* — a plain topological sort does **not** do
+this), rule 2 outranks rule 3 (separating contenders never crosses a priority
+band), and contention is computed only over freshly-triaged issues because a
+marker carries no `filesTouched`.
+
+**Do not re-sort what it returns.** Phase 8 pastes `ordered` and `runListLine`
+as they came back.
+
+**If it exits non-zero**, it has found something Phase 5 should have resolved — a
+cycle, an edge onto an issue that is neither Ready nor closed, or a malformed
+record. Fix the input and re-invoke. **Never hand-write the line**: a
+hand-assembled line is the exact defect this phase was changed to remove. If it
+cannot be fixed this run, publish the status update **without** the line and say
+why — no line is honest, a wrong line is not.
 
 ## Phase 7 — Write
 
@@ -275,36 +300,41 @@ then dependency edges, then contention warnings, then the Backlog-blocked items
 each with its one-sentence decision. Keep it scannable — it is read at a glance,
 and it is the diff between one run and the next.
 
-### The run-list line — write it verbatim
+### The run-list line — paste what the script returned
 
-End the body with **exactly this line**, and nothing else after it:
+End the body with Phase 6's **`runListLine`, exactly as it came back**, and
+nothing after it. Do not reword, prettify, annotate, wrap, or re-derive it — you
+are pasting a **field**, not writing to a format.
 
-```text
-<!-- run-list: <short sha> | <issue numbers, in order, comma-separated, no spaces> -->
-```
+`/deliver next` parses **that line and nothing else** to decide what to work on
+([`.claude/skills/deliver/references/next-mode.md`](../deliver/references/next-mode.md)
+§3). The prose table above it is for humans and is rewritten from scratch every
+run — the 2026-08-18 and 2026-08-20 updates already use different column headers
+and different cell formats, so anything parsing the table is parsing a moving
+target, and a near-miss would silently discard the dependency and contention
+ordering this phase exists to publish.
 
-`/deliver next` parses **this line and nothing else** to decide what to work on
-([`.claude/skills/deliver/references/next-mode.md`](../deliver/references/next-mode.md)).
-The prose table above it is for humans and is rewritten from scratch every run —
-the 2026-08-18 and 2026-08-20 updates already use different column headers and
-different cell formats, so anything parsing the table is parsing a moving target,
-and a near-miss would silently discard the dependency and contention ordering
-this phase exists to publish.
+The grammar is **defined by `build_run_list_line` in
+[`Scripts/build_run_list.py`](../../../Scripts/build_run_list.py)** and parsed by
+`RUN_LIST_RE` in that same module, so the written form and the parsed form cannot
+drift apart — the same discipline as the per-issue marker, for the same reason.
+It is not restated here; if you need to see it, read it there.
 
-So: **assemble the line mechanically** — join the ordered issue numbers with
-commas — and do not reword, prettify, annotate or wrap it. It is the same
-discipline as the per-issue marker, for the same reason (an LLM re-authoring a
-fixed format from prose produces a different string each time), with the same
-consequence if it drifts: a consumer that quietly falls back rather than failing
-loudly. A status update **without** this line is *not a usable run-list*, and
-`next` will say so and fall back to board fields — which reproduces two of this
-phase's four sort rules and loses the other two.
+A status update **without** the line is *not a usable run-list*: `next` says so
+and falls back to board fields, which reproduces two of Phase 6's four sort rules
+and loses the other two.
 
-> The line is currently written by this skill, not built by
-> [`.claude/workflows/triage-issues.js`](../../workflows/triage-issues.js) the
-> way the marker is, because the ordering is decided in Phase 6 — after the
-> script has returned. Moving Phase 6's sort into the script would close that
-> gap; it is tracked, not done.
+Also carry, in prose, the three disclosures Phase 6 returns — they are facts the
+script supplies so this phase need not remember them:
+
+- **`depsOutrankPriority`** — each case where a lower-priority issue precedes a
+  higher one because it unblocks it. Say so, or the order reads as a mis-sort.
+- **`unseparableContention`** — contending pairs left adjacent because nothing
+  could sit between them.
+- **`dischargedEdges`** — dependencies dropped because their target is closed.
+
+Contention is computed only over freshly-triaged issues, since a marker carries
+no `filesTouched`. Say that, rather than implying full coverage.
 
 Mark `AT_RISK` when a P0 sits in `blocked`: the highest-priority work being
 un-startable is exactly the state a status colour exists to surface.
