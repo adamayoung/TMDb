@@ -210,6 +210,11 @@ marker (`issue`, `priority`, `size`, `dependsOn`; it carries no `filesTouched`).
 It returns `ordered`, `runListLine`, and the three disclosures Phase 8 needs:
 `depsOutrankPriority`, `dischargedEdges`, `unseparableContention`.
 
+**An empty Ready set returns `runListLine: null`** with a `note` saying why —
+deliberately, because a line with an empty issue list would parse as a
+well-formed run-list containing nothing, which is worse than no line at all.
+Publish the update without the line in that case, and carry the note.
+
 The four sort rules — dependency order, priority, contention, size — are
 **defined in [`Scripts/build_run_list.py`](../../../Scripts/build_run_list.py)**,
 which is the copy that actually decides. Read them there; do not restate them
@@ -320,9 +325,11 @@ The grammar is **defined by `build_run_list_line` in
 drift apart — the same discipline as the per-issue marker, for the same reason.
 It is not restated here; if you need to see it, read it there.
 
-A status update **without** the line is *not a usable run-list*: `next` says so
-and falls back to board fields, which reproduces two of Phase 6's four sort rules
-and loses the other two.
+A status update **without** the line is *not a usable run-list*. Attended,
+`/deliver next` says so and falls back to board fields — which reproduces two of
+Phase 6's four sort rules and loses the other two. **Unattended, `auto next` and
+`auto merge next` stop outright**, because a warning nobody reads is not a
+warning. So an omitted line does not merely degrade the next run; it can halt it.
 
 Also carry, in prose, the three disclosures Phase 6 returns — they are facts the
 script supplies so this phase need not remember them:

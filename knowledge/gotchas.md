@@ -299,9 +299,11 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Five checks are mirrored this way today — `check-defaulted-witnesses.py`,
-`check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py` and
-`check-readme-version.py` (paths-filter input: `CHANGELOG.md`),
+Six checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py`,
+`check-readme-version.py` (paths-filter input: `CHANGELOG.md`) and
+`run-script-tests.py` (the run-list builder's suite; gated on `swift` **or**
+`markdown`, since its anti-drift cases read `.claude/**/*.md`),
 each a `make lint` prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
 paths-filter key over a new `outputs:` entry: a filter key with no matching line
 under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the

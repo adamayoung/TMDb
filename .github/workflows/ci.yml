@@ -160,7 +160,7 @@ jobs:
         if: >-
           needs.changes.outputs.swift == 'true' || needs.changes.outputs.markdown == 'true'
           || github.event_name == 'workflow_dispatch'
-        run: python3 -m unittest discover -s Scripts/tests -t Scripts/tests
+        run: python3 Scripts/run-script-tests.py
 
   lint-markdown:
     name: Lint Markdown

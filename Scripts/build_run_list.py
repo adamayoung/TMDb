@@ -49,9 +49,12 @@ from pathlib import Path
 # The empty-list case is deliberately unmatchable: `<!-- run-list: <sha> | -->`
 # would parse as a well-formed run-list containing nothing, which is worse than
 # publishing no line at all. An empty Ready set returns `runListLine: None`.
-RUN_LIST_RE = re.compile(r"^<!-- run-list: [0-9a-f]{7,40} \| \d+(?:,\d+)* -->$")
+# `\Z`, never `$`: in Python `$` also matches just *before* a trailing newline,
+# so `"36552a4d\n"` would satisfy a `$`-anchored check and then be interpolated
+# into a line no parser could match. Match against the stripped line.
+RUN_LIST_RE = re.compile(r"^<!-- run-list: [0-9a-f]{7,40} \| \d+(?:,\d+)* -->\Z")
 
-HEAD_RE = re.compile(r"^[0-9a-f]{7,40}$")
+HEAD_RE = re.compile(r"^[0-9a-f]{7,40}\Z")
 
 PRIORITIES = {"P0": 0, "P1": 1, "P2": 2}
 SIZES = {"XS": 0, "S": 1, "M": 2, "L": 3, "XL": 4}
@@ -75,6 +78,12 @@ def _validate(head, ready, closed):
         raise RunListError(f"ready must be a list, got {type(ready).__name__}.")
     if not isinstance(closed, (list, tuple, set)):
         raise RunListError(f"closed must be a list, got {type(closed).__name__}.")
+    for target in closed:
+        # Checked to the same standard as every other collection here: a string
+        # "393" would never match the integer 393 an edge carries, so the edge
+        # would be reported as a dangling caller bug instead of discharged.
+        if not isinstance(target, int) or isinstance(target, bool) or target <= 0:
+            raise RunListError(f"closed contains a non-positive-integer element: {target!r}.")
 
     seen = set()
     for index, item in enumerate(ready):
@@ -92,13 +101,17 @@ def _validate(head, ready, closed):
             )
         seen.add(number)
 
-        if item.get("priority") not in PRIORITIES:
+        # `isinstance(..., str)` first: `x in PRIORITIES` raises TypeError for an
+        # unhashable value, which would escape as a traceback rather than the
+        # RunListError the caller is told to expect.
+        priority = item.get("priority")
+        if not isinstance(priority, str) or priority not in PRIORITIES:
+            raise RunListError(f"#{number}: priority must be one of {sorted(PRIORITIES)}, got {priority!r}.")
+
+        size = item.get("size")
+        if not isinstance(size, str) or size not in SIZES:
             raise RunListError(
-                f"#{number}: priority must be one of {sorted(PRIORITIES)}, got {item.get('priority')!r}."
-            )
-        if item.get("size") not in SIZES:
-            raise RunListError(
-                f"#{number}: size must be one of {sorted(SIZES, key=SIZES.get)}, got {item.get('size')!r}."
+                f"#{number}: size must be one of {sorted(SIZES, key=SIZES.get)}, got {size!r}."
             )
 
         depends_on = item.get("dependsOn", [])
@@ -129,7 +142,9 @@ def _resolve_edges(ready, closed):
     for item in ready:
         number = item["issue"]
         kept = []
-        for target in item.get("dependsOn", []):
+        # `sorted(set(...))`: a repeated target is one edge, and reporting a
+        # duplicate twice in `dischargedEdges` would overstate what was dropped.
+        for target in sorted(set(item.get("dependsOn", []))):
             if target in in_ready:
                 kept.append(target)
             elif target in closed_set:
@@ -250,7 +265,7 @@ def _is_valid_order(order, deps):
     return all(position[target] < position[node] for node in order for target in deps[node])
 
 
-def _separate_contenders(order, items, deps):
+def _separate_contenders(order, items, deps, effective):
     """One deterministic left-to-right pass; move a non-contender between a pair.
 
     The primitive is a MOVE (remove and re-insert), not a swap. Swapping the two
@@ -262,6 +277,14 @@ def _separate_contenders(order, items, deps):
     Constraints on the element moved in, in the order they are checked:
       * same OWN priority band — rule 2 outranks rule 3, so separating two
         contenders may never promote or demote across priorities;
+      * it must not LEAPFROG anything better-ranked. Checking the candidate
+        against its new right-hand neighbour alone is not enough: the move jumps
+        every element in between, so a same-band candidate can still overtake a
+        higher-priority issue sitting in that gap. That inversion would carry no
+        dependency edge, so `depsOutrankPriority` would not disclose it either —
+        an undisclosed mis-sort, which is the one thing Phase 6 must not publish.
+        Rank is compared as `(effective, own)` so a rule-1 promotion cannot be
+        undone here either;
       * it must not itself contend with the left-hand issue, or the pair is
         merely replaced by a new one;
       * the resulting order must still be a valid topological order.
@@ -272,6 +295,9 @@ def _separate_contenders(order, items, deps):
     is conditional ("when something else can sit between them"), so sometimes
     nothing can.
     """
+    def rank(node):
+        return (effective[node], PRIORITIES[items[node]["priority"]])
+
     order = list(order)
     unseparable = []
 
@@ -282,6 +308,9 @@ def _separate_contenders(order, items, deps):
             for candidate_index in range(index + 2, len(order)):
                 candidate = order[candidate_index]
                 if PRIORITIES[items[candidate]["priority"]] != PRIORITIES[items[right]["priority"]]:
+                    continue
+                # Everything in [index+1, candidate_index) is jumped by the move.
+                if any(rank(node) < rank(candidate) for node in order[index + 1 : candidate_index]):
                     continue
                 if _contends(items, left, candidate):
                     continue
@@ -350,7 +379,7 @@ def build(head, ready, closed=()):
 
     effective = _effective_priorities(items, deps)
     ordered = _topological_order(items, deps, effective)
-    ordered, unseparable = _separate_contenders(ordered, items, deps)
+    ordered, unseparable = _separate_contenders(ordered, items, deps, effective)
 
     return {
         "head": head,
@@ -365,7 +394,14 @@ def build(head, ready, closed=()):
 
 def main():
     """Read `{head, ready, closed}` as JSON from a file argument or stdin."""
-    source = Path(sys.argv[1]).read_text(encoding="utf-8") if len(sys.argv) > 1 else sys.stdin.read()
+    try:
+        source = Path(sys.argv[1]).read_text(encoding="utf-8") if len(sys.argv) > 1 else sys.stdin.read()
+    except OSError as error:
+        # Inside the try so a missing or unreadable path gets the repo's
+        # `build-run-list: ...` stderr line rather than a raw traceback.
+        print(f"build-run-list: cannot read input: {error}", file=sys.stderr)
+        sys.exit(1)
+
     try:
         payload = json.loads(source)
     except json.JSONDecodeError as error:

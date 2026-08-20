@@ -95,13 +95,14 @@ lint-readme-version:
 # are covered: the sort rules, and — reading the skill files off disk — that the
 # prose still agrees with the grammar the module defines.
 #
-# `-t` repeats the start directory because Python 3.9's discover requires the
-# start directory to be importable; the repo's python3 is Xcode's 3.9.
+# Run via the wrapper, never `unittest discover` directly: a bare discover exits
+# 0 when it collects NOTHING on Python 3.9, so a renamed file would empty this
+# gate while it still reported green. The wrapper asserts a collection floor.
 # Mirrored as the `Run-list builder check` step in .github/workflows/ci.yml —
 # see the note above lint-witnesses.
 .PHONY: lint-run-list
 lint-run-list:
-	@python3 -m unittest discover -s Scripts/tests -t Scripts/tests
+	@python3 Scripts/run-script-tests.py
 
 .PHONY: lint-markdown
 lint-markdown:
