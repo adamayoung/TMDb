@@ -63,6 +63,75 @@ retired; the family heading stays.
 
 ## Tooling
 
+### An issue template's field is a convention, not a schema — parse it defensively
+
+*2026-08-20 (PR #474).* `.github/ISSUE_FILING.md` ends every issue body with
+`**Breaking class:** none | source-breaking | behavioural | needs a decision`.
+A read-only sweep of the board's `Ready` column found it written **three
+different ways**, and a parser expecting the documented shape gets two of the
+three wrong:
+
+| Shape | Live example |
+| --- | --- |
+| Inline bold label, mid-paragraph, followed by prose rather than a bare value | issue 437 |
+| Its own `## Breaking class` heading with the value in the sentence below | issue 448 |
+| **Absent entirely** | issue 426 |
+
+At the time, only 3 of the 12 issues in `Ready` carried the line at all. So any
+automation gating on a template field needs (a) to accept more than one shape,
+and (b) a **fail-closed default for absence** — the unlabelled issue is the one
+nobody classified, which makes it the *last* thing to auto-approve, not a
+convenient default. Same reasoning as *A fixture you invented tests your belief,
+not the API*: read what is actually there, in quantity, before deciding what the
+field means.
+
+### GitHub Projects MCP: one `list_project_items` call gives status, fields and pagination
+
+*2026-08-20 (PR #474).* `mcp__github__projects_list` /
+`list_project_items` returns each item's `content.state` (`open`/`closed`)
+alongside the requested `field_names`, plus `pageInfo.hasNextPage` and
+`nextCursor`. So filtering a column to *open* issues with their `Priority` and
+`Size` is **one paginated call**, not a per-issue follow-up — verified live.
+
+Worth knowing because the two facts disagree in practice: a **closed** issue can
+sit in a `Ready` column for as long as the board's automation takes to move it,
+so `Status` alone is not a liveness test. Filter on both.
+
+### A rule written in two files drifts, and the copy you didn't edit is the one that wins
+
+*2026-08-20 (PR #474).* One delivery produced **three** instances, one of them a
+security HIGH — so treat a rule stated in more than one place as a defect to fix
+at the moment you notice it, not a tidiness issue.
+
+- **The reflexive glob set.** `/deliver`'s Phase 0 listed three globs;
+  `next-mode.md` §5b listed four. Phase 10's merge-drop keys on Phase 0's
+  computation, so the missing glob — `.claude/workflows/**` — meant
+  `/deliver auto merge next` could have squash-merged a rewrite of
+  `deliver-panel.js`, the script defining the panel that authorises unattended
+  work, with nobody reading the diff.
+- **A board transition's owner.** A rule changed in `deliver/SKILL.md` was left
+  stale in `.github/ISSUE_FILING.md` — a file whose own first lines say *"If this
+  file and a skill ever disagree, this file is right."* A stale authoritative
+  copy doesn't lag, it **overrides**: an agent reconciling the two concludes the
+  new behaviour is unsanctioned.
+- **An enumeration inside a single file.** A third test was added to a section,
+  and two other lists in the *same file* still enumerated only the first two.
+
+What makes this worse than ordinary duplication is that the *reader* picks the
+copy, so which one wins is unpredictable. Countermeasures, cheapest first:
+
+- **Name the set once and quote it by name** ("the reflexive set"), with each
+  copy pointing at the other and saying *change both or neither*. Prose can't be
+  compiled, so the cross-reference is the only thing making drift visible to
+  someone reading one file alone.
+- **Grep for the *old* wording after every edit** — including after a
+  review-loop fix that changes the rule a second time. The first two commits of
+  that delivery passed the sweep; the commit that *fixed* everything else
+  reintroduced the drift, because the sweep had been run against the original
+  change's wording rather than the fix's.
+- **Prefer fail-closed defaults** where two lists gate the same thing, so a
+  drifted copy under-permits rather than over-permits.
+
 ### A gate keyed on `git tag` passes vacuously in CI — the checkout has no tags
 
 *2026-08-19 (#464).* `actions/checkout` fetches no tags by default, so any
@@ -537,6 +606,25 @@ under `.build/` (gitignored); or delegate the work to a subagent, which is not
 subject to the caller's guard. `Edit`/`Write` on a path outside the worktree are
 refused too, with a pointer to the worktree copy — which is wrong for
 `.git/`-relative state, so reach for `sed` there.
+
+**Some refusals are silent — assume nothing landed until you check.** *2026-08-20
+(PR #474).* A `python3 - <<'EOF'` heredoc rewriting the `/deliver` run file in
+`.git/deliver/` produced **no output, no error and no write**. The refusal above
+at least announces itself; this one is indistinguishable from success, which is
+the **False green** family again — and the file it silently failed to write was
+the durable half of the delivery's state. The fix that worked, and generalises:
+**stage the new content inside the worktree, then move it with a single
+two-literal-path `cp`**.
+
+```bash
+python3 - <<'EOF'                     # writes .build/deliver-tmp/run.json — inside
+...
+EOF
+cp /abs/literal/worktree/.build/deliver-tmp/run.json /abs/literal/.git/deliver/<id>.json
+```
+
+Whatever route you take, **verify with a `grep` for a string you just wrote**.
+A write to `.git/` that reports nothing has told you nothing.
 
 ### The `Workflow` tool resolves a repo-relative `scriptPath`
 

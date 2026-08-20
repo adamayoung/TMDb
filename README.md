@@ -547,7 +547,7 @@ that automate the development workflow. Invoke any of them with `/<name>`.
 
 | Skill | Purpose |
 | --- | --- |
-| `/deliver` | Orchestrate the full pipeline from an approved plan to a ready-to-merge PR |
+| `/deliver` | Orchestrate the full pipeline from an approved plan to a ready-to-merge PR — or `/deliver next` to take the top startable issue off the board's Ready column and plan it first |
 | `/review-plan` | Adversarially review the current plan with three independent critics and apply the consensus |
 | `/implement-plan` | Implement the plan test-first (Canon TDD) until the test list is empty |
 | `/review-changes` | Review the working-tree changes — one reviewer, or a parallel fan-out with adversarial verification for large diffs |
@@ -615,16 +615,23 @@ never auto-merges), then files/updates a tracking issue linking the fix. See
 the skill for the headless contract and the `INTEGRATION_FIX_PR_TOKEN` secret
 it needs.
 
-### Feature Workflow (`/plan` → `/deliver`)
+### Feature Workflow (plan mode → `/deliver`)
 
-To build a feature end-to-end, draft and approve a plan with `/plan` (Claude
-Code plan mode), then run `/deliver` to carry it all the way to a ready-to-merge
-pull request. **Invoking `/deliver` is itself the plan-approval gate** — it then
-runs autonomously to a single hard stop, **ready-to-merge**, and ends with a
-short retrospective.
+To build a feature end-to-end, draft and approve a plan in Claude Code **plan
+mode** (or with the `Plan` agent — there is no `/plan` skill), then run
+`/deliver` to carry it all the way to a ready-to-merge pull request.
+**Invoking `/deliver` is itself the plan-approval gate** — it then runs
+autonomously to a single hard stop, **ready-to-merge**, and ends with a short
+retrospective.
+
+Working from the issue tracker instead? **`/deliver next`** needs no plan: it
+takes the top startable issue off the project board's **Ready** column,
+re-verifies it against `origin/main`, claims it, drafts a plan and shows it to
+you for approval, then runs the same pipeline. See *Picking the next issue*
+below.
 
 ```text
-/plan                    ← you draft AND approve the plan
+plan mode                ← you draft AND approve the plan
   │
   ▼  invoking /deliver = plan approval; it then runs autonomously:
   ├─ (feature branch)
@@ -647,6 +654,40 @@ short retrospective.
 
 Each step is also usable on its own — e.g. `/review-changes` to review local
 changes, or `/watch-pr` to babysit an existing PR.
+
+#### Picking the next issue (`/deliver next`)
+
+`/triage-issues` grooms the Backlog into an ordered **Ready** queue and
+publishes that order as a Project status update. `/deliver next` is its
+consumer — one command from "what should I do now?" to a green PR:
+
+```text
+/deliver next              pick + plan + approve, then the pipeline above
+/deliver auto next         same, unattended — jurors rule instead of you
+/deliver auto merge next   same, and squash-merge once green
+```
+
+Selection reads the status update's canonical run-list line, drops anything no
+longer open-and-`Ready`, and re-verifies the head candidate against
+`origin/main` before planning it — a `Ready` verdict was true at some sha, not
+necessarily at today's. A candidate whose claims no longer hold goes back to
+**Backlog** with a comment, and the run moves on.
+
+Three constraints are worth knowing before you reach for it:
+
+* **`merge` refuses a breaking change.** In `merge` mode an issue is selectable
+  only if its `Breaking class` is `none` — absent or unparseable counts as
+  "needs a decision". Every other change still gets a human at the
+  ready-to-merge gate, which is where a compatibility call belongs.
+* **It needs the user-scoped Projects MCP**, so it runs in your own environment
+  (including a CCR-triggered session) but **not** on a GitHub Actions runner,
+  where that MCP is not mounted — the same limit `/triage-issues` has.
+* **The issue is claimed at the pick**, not at the worktree, which narrows the
+  window in which two concurrent runs could take the same one down to the
+  verification call (the board has no compare-and-swap, so it isn't zero).
+  If the run stops before its PR opens the claim is released back to `Ready`,
+  and a run that dies without stopping has its claim released by the next
+  run's reconcile sweep.
 
 ## Acknowledgments
 

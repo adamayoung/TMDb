@@ -43,6 +43,7 @@ always fair game.
 | [0023](0023-python-strict-parser-for-fixture-hygiene.md) | Enforce fixture hygiene with an independent strict parser, not a Swift test | 2026-08-14 | Accepted (unreleased — tooling only) |
 | [0024](0024-two-way-witness-guard.md) | Keep the defaulted-witness guard, as a two-way completeness oracle | 2026-08-14 | Accepted (in 20.0.0, unreleased) |
 | [0025](0025-redact-transport-error-payload.md) | Redact the transport error carried by `TMDbError.network` | 2026-08-20 | Accepted (in 20.0.0, unreleased) |
+| [0026](0026-unattended-selection-needs-an-author-check.md) | An unattended run must not read its authorisation from the work it selected | 2026-08-20 | Accepted (unreleased — tooling only) |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

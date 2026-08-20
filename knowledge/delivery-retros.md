@@ -25,6 +25,93 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (#474) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight — prose-only diff (~900 lines,
+  12 files), but reflexive and it rewrites the pipeline's own contract, so
+  `reflexive: true` overrode both self-skips. Skills: `review-plan` (3 critics),
+  `review-changes` (`force-review`, single-reviewer path — the fan-out's five
+  lenses are all Swift-specific and would have had nothing to read),
+  `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *In a worktree session, Bash refuses commands it can't
+  prove stay inside it*, *`EnterWorktree` no longer uses the requested name*,
+  *`markdownlint --fix` turns a line-leading `#NNN` into an H1*, *A `Write` of a
+  Markdown file can leak `</content>`*, *Edits can land in the main checkout*;
+  ADR-0009.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported / 0 claims
+  released. One settled run file closed (PR #469, merged as `cabb3846`).
+  `swept:` `.claude/skills/deliver/**`, `.claude/skills/triage-issues/SKILL.md`,
+  `.claude/workflows/deliver-panel.js` → ADR-0016 rewritten (its "six decision
+  points", stated twice, was stale the moment the enum grew to seven; it now
+  points at the `POINTS` enum instead of restating a count).
+  `skill-improvement-log.md` left as-is — a decision log records what was
+  decided *then*.
+
+- **The dry-run of the selection step paid for itself twice.** Running §1–§6
+  read-only against the live board before writing any more prose found (a) that
+  real issue bodies express `Breaking class` three different ways, so my
+  one-shape parser would have misread two of three; and (b) that the head of the
+  queue, issue 426, is not startable at all — it carries three competing fix
+  options. Both became commits; (b) became issue #472. A feature that reads a
+  live system should be exercised against it before the spec is finished, not
+  after.
+
+- **Four review passes, and passes 2–4 mostly found defects the previous fix
+  created.** 12 → 8 → 3 → 2 findings. Nearly every one lived in a single seam —
+  the claim/release machinery that makes concurrent `next` runs safe — while the
+  selection logic was essentially right from the first draft. Worth remembering
+  when scoping a review budget: an adversarial loop over prose-as-program is not
+  converging on a fixed target, and the cost concentrates in whichever part
+  models concurrency.
+
+- **Friction — the ledger tool did not exist this session.** `/deliver`'s
+  Contract §6 mandates *two* records, a `TaskCreate` ledger and the run file;
+  no `TaskCreate`/`TodoWrite` tool was available, so the contract silently
+  degraded to one. The run file carried everything, which is the right
+  half to survive — but a mandated record that may simply be absent should say
+  so, rather than reading as unconditional.
+
+- **Friction — writes to `.git/deliver/` from inside a worktree fail *silently*.**
+  A `python3` heredoc rewriting the run file produced no output, no error and no
+  write; only a follow-up `grep` caught it. The existing gotcha documents the
+  *loud* refusal. Captured the silent variant and the staged-`cp` workaround.
+
+- **Deviation — the review-loop cap was exceeded by one, with the user's
+  authorisation.** Phase 4's 3-iteration cap was reached with three blockers
+  still open, all in one seam and all precisely specified. Rather than proceed
+  unverified or loop silently, the state went to the user with the option to cut
+  the whole concurrency seam instead; they chose one more pass. Passes 3 and 4
+  then closed six further findings, two of which (a live conductor's claim being
+  swept, and a claim held with no issue recorded) would have shipped.
+
+- **Deviation — AC 3 and AC 4 graded `not met`, deliberately.** AC 3's
+  script-assembled run-list line was narrowed at planning time and filed as
+  issue #471 (the ordering is computed after that script returns, so it needs
+  Phase 6's sort moved too). AC 4 says a dead verifier *rejects* the candidate;
+  review finding N3 showed that demotes a healthy issue and blames the board for
+  a harness failure, so it now *passes over*. Neither AC was reworded to pass —
+  the divergence is the record.
+
+- **One improvement:** the reflexive sweep rule now says **re-sweep after every
+  review-loop fix**, not just after the first edit. This delivery's fix commit
+  reintroduced exactly the drift its first two commits had avoided, into
+  `.github/ISSUE_FILING.md` — a file that declares itself authoritative, so the
+  stale copy overrode rather than lagged. That is the third instance of one
+  pattern in one delivery, now a gotcha in its own right.
+
+- **`watch:`** the readiness test nearly passed on a PR that could not merge.
+  `gh pr checks --watch` exited **0 twice**, minutes apart, with every printed
+  row reading `pass` — while eight of the `main` ruleset's ten required checks
+  had not reported at all, because the `CI` workflow was still **queued** and a
+  workflow that has not started produces **no check runs**. `/watch-pr` §3's
+  positive test ("every check run is completed and success") is vacuously true
+  over an empty-ish set, so it does not catch this; only `mergeStateStatus:
+  BLOCKED` did, and the first cause I inferred for that — a review requirement —
+  was wrong. The correct test compares against the ruleset's **required
+  contexts**, which needs `gh api repos/:owner/:repo/rules/branches/main`. Filed
+  as issue #475. Fourth instance of the False-green family this delivery, and
+  the purest: "not yet run" and "nothing wrong" were byte-identical.
+
 ## 2026-08-20 — 🔒 Redact credentials from `TMDbError.network`'s payload (#469) · full
 
 Branch `fix/redact-credentials-in-network-error`. Issue #434 (P0) — item 1 in
@@ -788,36 +875,6 @@ the board's Ready execution order.
   here ad hoc — instead of forcing a choice between a hard stop and
   `rubric: none`.
 
-## 2026-08-07 — ♻️ Rename `Network.homepage` to `homepageURL` (#412) · lite
-
-- **Phases / skills:** 0–8 pre-PR; lite, so no `/review-plan` critics and the
-  single-reviewer path. `consulted:` next-major.md (the source), gotchas
-  *Renaming a method's internal parameter name is source- and ABI-compatible*
-  (this is the opposite case — a public *property* rename **is** breaking).
-- **Worked — the queue fired for the second time.** `next-major.md` existed
-  precisely so a deferred breaking change would resurface at the next major
-  rather than be forgotten. This entry was written on 2026-07-27, deferred out
-  of 19.0.0 as cosmetic scope creep on a bug fix, and shipped here because the
-  file was read when the 20.0.0 window opened. That is the whole design working
-  end to end.
-- **Worked — the entry that did *not* ship was recorded, not skipped.** The
-  `TMDbError.invalidRating` item stays deferred because its own condition is
-  unmet: it is only worth doing inside a wider `TMDbError` review, and 20.0.0
-  did not open one. Recorded explicitly, so the next reader can tell
-  "considered and declined" from "missed".
-- **Friction:** none material. The rename is three files plus fixtures; the JSON
-  key is unchanged so only Swift call sites move. `Translation.homepage` was
-  deliberately left alone — it is a `String`, a different type, and outside the
-  entry's scope.
-- **Deviations:** stacked on `feature/v4-lists` rather than branched from
-  `main`, because both edit `CHANGELOG.md`'s `[20.0.0]` section and would
-  otherwise conflict. Rebase onto `main` once #411 merges.
-- **One improvement:** the file now carries a status line saying the 20.0.0
-  window is open, so a future entry is not filed against a version that has
-  already shipped. Worth `/capture-knowledge` asserting that whenever it adds an
-  entry.
-- **`swept:`** n/a — no infra files touched.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -825,6 +882,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-07 | #412 | lite | Renamed `Network.homepage` to `homepageURL`, the second firing of the `next-major.md` queue: the item was deferred out of 19.0.0 on 2026-07-27 as cosmetic scope creep on a bug fix, and shipped here because the file was read when the 20.0.0 window opened — the deferral mechanism working end to end. Equally deliberate was the entry that did **not** ship: `TMDbError.invalidRating` stayed deferred because its own condition (a wider `TMDbError` review) was unmet, and that was recorded rather than skipped, so a later reader can tell "considered and declined" from "missed". Stacked on `feature/v4-lists` rather than branched from `main`, since both edit the same `CHANGELOG` section. Its "one improvement" — have `next-major.md` carry a status line naming the open major window, so an entry cannot be filed against a version that already shipped — **shipped**, and `/capture-knowledge` asserts it on every addition today. |
 | 2026-08-07 | #411 | full | TMDb v4 lists (`client.v4Lists`), settling ADR-0017's four open decisions. **Phase 0 probing changed the shipped API twice, both unfixable later**: `sort_by` turned out to be honoured on the read side (so `details`/`items` take `sortedBy:` — adding a protocol requirement afterwards is source-breaking), and `create(isPublic:)` shipped after all because TMDb ignores the *boolean* and honours the *integer* — the earlier "it ignores the field" conclusion came from a probe that sent a bool. Reading the resource back caught both. The count-reconciliation assertion caught a real drop on its first outing (`Show.encode` writes no `media_type`, so every encoded item failed to decode and the whole list vanished silently). Two of the three bugs were **the probe scripts lying**: an `EXIT` trap that never fired and orphaned four lists on a real account, and ten identical "rejected" results across a `sort_by` sweep that were the spam filter (`status_code` 18), not an answer — a uniform failure across a sweep is evidence about the sweep. Both are now standing rules in `CLAUDE.md`: a probe must verify its own postcondition. Also a mid-delivery **correction**: I reported credentials committed in `Integration.xctestplan` having read it off disk without running `git ls-files` — the file is gitignored and absent from HEAD (they were committed in 2023 and remain in public history, so rotation still applies). |
 | 2026-08-07 | #410 | full | Defaulted-witness convenience sweep across 37 sites. The **reference-unit gate earned its keep again**: reviewing one site before replicating caught a DocC-curation regression (the convenience becomes a distinct symbol and falls out of its Topics group unless curated) that would otherwise have shipped 37 times, and settled three open design questions in one pass. The **census was re-derived rather than trusted** — both reviewers independently reproduced 91/15 and the 37/54 split, after the first census came up **17 short** by grepping protocol *declaration* files and missing the two protocols keeping conveniences in a sibling `+Defaults.swift`. Two lasting False-green bullets came from it: a mechanical sweep did a first-occurrence `str.replace` per file, stripping the default from `favouriteMovies` instead of `lists` **while reporting exactly the 36 edits expected**, and the new checker passed on an empty scan (a typo'd path printed success and exited 0) — so a matching count is not evidence, and a checker must compare against an explicit set. Also **shipped a gate that did not gate**: the check went into `make lint`, but no workflow invokes `make` (the `Lint` job runs swiftlint/swiftformat inline), so it was invisible to CI — now its own step and the gotcha *No workflow runs `make`*. Its "one improvement" — have `/capture-knowledge` prompt "what fails if that number changes?" when an entry records a defect count — **shipped**, and is the *When an entry records a count* section of that skill today. |
 | 2026-08-07 | #409 | full | TMDb v4 authentication. The lasting practice is **probing the live API before writing the plan's models**: TMDb's v4 docs are wrong in ways reading cannot surface — documented endpoint *names* 404, the same field has different wire types on different endpoints, `clear` is a state-changing GET, and both `create(public:)` and add-items' `comment` are accepted-then-ignored. Each was found by curl and each would have shipped as a bug. The corollary, now in `tmdb-api-notes.md`: v4 auth-gates *before* routing, so a 401-vs-404 path probe proves nothing until you hold a credential — which is exactly how the wrong paths survived into an approved plan. The adversarial plan review paid for itself twice, both unanimous: patching only `CacheHTTPClient` would still leave the always-on 1 GB on-disk `URLCache` leaking private reads across users, and splitting `V4ListService` across two PRs would have made the second source-breaking — forcing a redraw of the decomposition along a *protocol* boundary, which dissolved a third blocker for free. Its "one improvement" — stop ending the turn at phase boundaries to report status — is the autonomy contract `/deliver` states today. |

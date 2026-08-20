@@ -233,7 +233,10 @@ Feature work is **skill-driven**. Draft and approve a plan in **plan mode**
 `/deliver` to carry it through to a ready-to-merge PR. **Invoking `/deliver` is
 itself the plan-approval gate** — it then runs autonomously to a single hard stop,
 **ready-to-merge**, pausing only for a plan-review blocker or a red gate it can't
-triage. It **auto-scales** its review machinery to the change's risk (lite vs
+triage. **`/deliver next` needs no plan**: it takes the top startable issue off
+the project board's Ready column, re-verifies it, claims it and drafts one —
+adding a single approval stop for the plan it wrote (none in `auto`, where a
+juror panel rules instead). It **auto-scales** its review machinery to the change's risk (lite vs
 full), **triages** an unrelated red CI gate to `/fix-integration-failures` rather
 than stalling, and records each delivery's short retrospective into
 [`knowledge/delivery-retros.md`](knowledge/delivery-retros.md) **before the PR
@@ -245,7 +248,8 @@ branch → (`/review-plan` for risky/large changes) → `/implement-plan` →
 
 Key skills (the README's *Claude Code Skills* tables list them all):
 
-- **`/deliver`** — run the whole pipeline from an approved plan.
+- **`/deliver`** — run the whole pipeline from an approved plan; `/deliver next`
+  picks its own work off the board's Ready column first.
 - **`/review-plan`** — adversarial 3-critic review of a plan; apply the consensus.
 - **`/implement-plan`** — implement test-first (`canon-tdd`) to an empty test
   list, committing at logical checkpoints.
@@ -286,10 +290,15 @@ the other's rules.
 That spec also carries the **board's column lifecycle** — the one place the
 column names and the `update_project_item` idiom are written down. An issue moves
 Backlog → Ready (`/triage-issues`) → **In progress** (`/deliver`, on entering the
-worktree) → **In review** (`/watch-pr`, when the PR is green and waiting on you)
+worktree — or at the pick, in `next` mode) → **In review** (`/watch-pr`, when the
+PR is green and waiting on you)
 → Done (the board's own "item closed" automation, via the `Closes #NNN` line
-`/pr` puts in every PR body). Each column has exactly one owner; a board write
-that fails is reported, never fatal.
+`/pr` puts in every PR body). Three **reverse** moves belong to `/deliver` —
+Ready → Backlog when a `next` candidate fails re-verification, In progress →
+Ready when a claimed run stops before its PR opens, and In progress → Ready
+again from Phase 1's reconcile sweep, which releases the claim of a `next` run
+that died without stopping. Each transition has exactly one owner; a board
+write that fails is reported, never fatal.
 
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and

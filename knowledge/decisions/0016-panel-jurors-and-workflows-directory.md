@@ -27,7 +27,7 @@ decision procedure.
 Role pre-commitment helps *build* a case and invalidates *reaching* one. A
 two-round design (assigned advocates brief, independent jurors rule) was
 considered and rejected as speculative generality: it costs five `opus`/`xhigh`
-agents per decision, at six decision points, for a mode that **has never been
+agents per decision, at every decision point, for a mode that **has never been
 exercised by a real delivery**. Nothing downstream consumed the briefs.
 
 So: **one round of three independent jurors**, `opus`/`xhigh`,
@@ -62,8 +62,13 @@ Both guards were verified live: each throws with **zero agents spawned**.
 
 The other Workflow scripts (`review-plan`, `review-knowledge`, `review-changes`
 and `fix-pr-checks` — four as of 2026-08-13) are embedded in their `SKILL.md`,
-and each runs **once per skill invocation**, so re-authoring costs nothing. The panel runs at **six
-decision points per run**, from a context that has been compacting for hours.
+and each runs **once per skill invocation**, so re-authoring costs nothing. The
+panel runs at **many decision points per run** — seven as of 2026-08-20, and the
+count grows whenever a mode adds a stop-and-ask — from a context that has been
+compacting for hours. The exact number lives in
+`.claude/workflows/deliver-panel.js`'s `POINTS` enum and in
+`deliver/references/auto-and-async.md`; it is deliberately not restated here,
+because a count in a third place is one more thing to drift.
 
 An embedded script is **re-authored** each time; a file is **executed**. Drift
 between invocations in a *decision procedure* — the tally rule, the dead-agent

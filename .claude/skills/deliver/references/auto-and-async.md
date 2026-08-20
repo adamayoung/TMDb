@@ -25,7 +25,7 @@ Workflow({ scriptPath: '.claude/workflows/deliver-panel.js',
 ```
 
 (A repo-relative `scriptPath` resolves — verified 2026-07-29. It lives in a file
-rather than embedded in this doc because it runs at **six** decision points per
+rather than embedded in this doc because it runs at **seven** decision points per
 run: an executed script cannot drift between invocations the way one re-authored
 from prose can, and drift in a *decision procedure* is a correctness bug, not an
 inefficiency. The three review skills embed theirs because each runs once per
@@ -54,7 +54,7 @@ squeamish: `stop` hands back to a human and is recoverable; `proceed` may not be
 **The conductor may not state a preference.** `args` carries facts only —
 `decision`, `context`, `evidence`, `proceedMeans`, `stopMeans`, `artifacts`.
 The script **throws** if passed `recommendation`/`preference`/`suggested`, and
-**throws** on any `decision` outside the six below. That is what keeps the hard
+**throws** on any `decision` outside the seven below. That is what keeps the hard
 stops hard *by construction* rather than by prose: an unattended run cannot
 invent a new delegable decision.
 
@@ -63,8 +63,16 @@ record (per-juror verdicts, tally, live count, `degraded`). Paste the line into
 the ledger for **every** panel convened. Autonomy *with* a full record — an
 unattended run must still be reviewable.
 
-**Panel decision points** — **six** (marked **Auto:** in `SKILL.md`):
+**Panel decision points** — **seven** (marked **Auto:** in `SKILL.md`):
 
+- Phase 0, `next` only — the run picked its own issue and drafted its own plan:
+  proceed with both vs stop. This is the attended approval stop
+  ([`next-mode.md`](next-mode.md) §7) with the jurors standing in for the human.
+  It exists because `next` is the first mode to **add** a stop-and-ask, and auto
+  mode's whole invariant is that such a stop becomes a panel — dropping it
+  unattended would leave the conductor that chose the work and wrote the plan as
+  its own only judge. The jurors rule on **both halves**: is this the right next
+  issue, and does the plan address it.
 - Phase 0 — acceptance criteria neither supplied **nor derivable**: proceed
   without a rubric (Phase 6 becomes a no-op) vs stop. ACs that are *derivable*
   from a linked issue or an explicit test list are **not** a panel decision — the
@@ -84,7 +92,7 @@ unattended run must still be reviewable.
   **not** a panel decision: in auto it behaves as the `merge` opt-in — once
   ready, proceed to wrap-up (and merge if `merge` was passed).
 
-**Not delegable — Phase 11.** The recurring-pattern scan used to be a seventh
+**Not delegable — Phase 11.** The recurring-pattern scan used to be a delegable
 decision point, with the panel approving proposals and **applying them
 directly**. It is now excluded, and the script throws if asked for it: a
 `proceed` there would authorise an unattended run to edit and push the repo's
@@ -115,7 +123,16 @@ If you queue a `/deliver`, mind two things:
 - **Inline the whole plan + acceptance criteria in the trigger prompt.** A
   fresh session has no conversation history, and Phase 0's entry gate
   **requires ACs** — so the plan text and its ACs must travel *in* the prompt,
-  or the run stops at the gate immediately.
+  or the run stops at the gate immediately. **`next` is the one exception, and
+  only in your own environment** — it derives both from the issue it picks, so
+  `/deliver auto merge next` needs no plan in the prompt at all. That works from
+  a CCR-spawned session, which keeps your user-scoped MCP; it does **not** work
+  on a GitHub Actions runner, where the Projects MCP is not mounted and
+  `gh project` fails for want of the `read:project` scope
+  ([ADR-0009](../../../../knowledge/decisions/0009-github-mcp-over-gh-cli.md);
+  `/triage-issues` is unrunnable there for exactly the same reason). A headless
+  `auto next` would fail at its first call, so headless runs still inline the
+  plan.
 - **User-scoped MCP may be absent** (`mcp__github__*`, `wiki`). The `gh`
   fallbacks in `/pr` and `/watch-pr` cover GitHub; the wiki step degrades
   silently. A headless GitHub-Actions run has no user MCP at all (it uses
@@ -125,6 +142,9 @@ If you queue a `/deliver`, mind two things:
 **Recommendation — don't routinise async *feature* delivery here.** This is a
 single-maintainer package with public API surface, where the ready-to-merge
 human gate is deliberate — every change is a compatibility call worth a
-human's eyes. Async earns its place for the *occasional* away-from-keyboard
+human's eyes. That sentence is also why `next` refuses to select a
+non-`none` **Breaking class** in `merge` mode ([`next-mode.md`](next-mode.md)
+§5): `/deliver auto merge next` is the one invocation that could otherwise turn
+a board row into a merged compatibility decision with nobody reading it. Async earns its place for the *occasional* away-from-keyboard
 run and for the self-healing integration cron (which already opens a PR for
 review, never merges) — not as the default path.

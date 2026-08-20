@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take the current plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent) and want the rest of the feature pipeline run end-to-end. Invoking it is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
+description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent), or pass `next` to take the top startable issue off the project board's Ready column and plan it first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -15,10 +15,13 @@ rides the delivery's own PR. Every run happens in its **own git worktree**
 (Phase 1; torn down on merge, Phase 12) so the user's main checkout stays
 free. The plan is created first in **plan mode** (or with the `Plan` agent;
 there is no `/plan` skill) — `/deliver`
-picks up from there.
+picks up from there. **`/deliver next` supplies its own plan**: it takes the
+top startable issue off the project board's Ready column and drafts one
+(Phase 0; [`references/next-mode.md`](references/next-mode.md)).
 
 ```text
-you approve the plan ─▶ /deliver ─▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
+you approve the plan ─▶ /deliver ─────▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
+   (or: /deliver next ─▶ pick a Ready issue ─▶ draft ─▶ approve ─┘)
   implement ─▶ code-review + fix ─▶ security-review + fix ─▶
   rubric check (ACs met?) ─▶ capture ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
   GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
@@ -37,7 +40,12 @@ Non-negotiable. Do these by default, without being reminded.
 1. **Invoking `/deliver` is plan approval — run autonomously to the one
    gate** (the diagram above), with no second "is the plan ok?" prompt. The
    only legitimate mid-run pauses: a **blocker** from `/review-plan`
-   (Phase 2), or a **red gate you cannot triage** (§4).
+   (Phase 2), a **red gate you cannot triage** (§4), or — **attended `next`
+   only** — the one approval stop on a plan `/deliver` drafted for itself
+   (Phase 0). That third case is not an exception to this rule but its
+   boundary: invoking the skill approves *the plan you brought*, and a `next`
+   run brought none. In `auto` it is not a pause at all — the
+   `phase0n-selection` panel rules instead.
 2. **Delegate to the existing skills — don't reinvent them**: `/review-plan`,
    `/implement-plan`, `/review-changes`, `/security-review`,
    `/capture-knowledge`, `/pr`, `/watch-pr`, `/fix-integration-failures`.
@@ -75,15 +83,58 @@ Non-negotiable. Do these by default, without being reminded.
    start signal — invoke `/deliver` immediately; pause first only if
    Phase 0's entry gate fires.
 
-## Auto mode & async invocation
+## Invocation — `/deliver [auto] [merge] [next]`
+
+The three keywords are recognised only as whole, standalone tokens **in a
+leading run** — parsing stops at the first token that is not one of them, and
+everything from there on is the **named plan target** Phase 0 resolves. So
+`/deliver auto merge next` is three keywords, and `/deliver auto fix the merge
+handling plan` is one keyword plus the target *"fix the merge handling plan"* —
+**not** an auto-merge, even though `merge` appears in it. A keyword found after
+the target has begun is part of the target; say so rather than acting on it,
+because the failure is silent and one-directional: nobody notices an
+auto-merge they did not ask for until it has happened.
+
+`next` and a named target contradict each other — report that and
+stop, rather than silently picking one. `next` also takes precedence over a
+plan already in the conversation, and says so before drafting.
+
+**Echo the parse before acting on it** — one line, first thing, before any
+board write, worktree or edit:
+
+```text
+parsed: auto=on · merge=off · next=on · target=(none)
+```
+
+The leading-run rule still can't disambiguate a target whose *first* token is a
+keyword (`/deliver merge conflict handling plan` reads as `merge` + *"conflict
+handling plan"*), and no grammar fixes that without banning reasonable plan
+names. An echo does: a mis-parse becomes visible in the second before it
+matters, rather than at the moment an unrequested squash-merge lands. Phase 0
+already writes this parse to the run file at the same instant, so the line costs
+nothing to produce.
+
+- **`auto`** — unattended; every stop-and-ask becomes a juror panel (below).
+- **`merge`** — squash-merge once the PR is green, instead of stopping at the
+  gate (Phase 10).
+- **`next`** — no plan needed: take the top startable issue off the board's
+  Ready column and draft one (Phase 0;
+  [`references/next-mode.md`](references/next-mode.md)). Requires the
+  user-scoped GitHub Projects MCP, so it is **unavailable on a GitHub Actions
+  runner**.
+
+### Auto mode & async invocation
 
 `/deliver auto` replaces every stop-and-ask decision with an **adversarial
 panel** of three independent Opus jurors — a dead panel is never a proceed,
 and every panel convened leaves an audit line in the ledger. Decision points
 are marked **Auto:** below. Never delegated: a **data-loss or
-breaking-change plan blocker is a hard stop even in auto**. `/deliver` can
-also be queued headless (the plan + ACs must travel in the trigger prompt).
-Panel procedure and queuing caveats:
+breaking-change plan blocker is a hard stop even in auto**, and in
+`auto merge next` an issue whose **Breaking class is anything but `none` is
+not selectable at all**. `/deliver` can
+also be queued headless (the plan + ACs must travel in the trigger prompt —
+unless `next` supplies them, which only works where the Projects MCP is
+mounted). Panel procedure and queuing caveats:
 [`references/auto-and-async.md`](references/auto-and-async.md). In attended
 mode the **Auto:** branches do not apply — stop and ask, as written.
 
@@ -100,6 +151,14 @@ single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 (e.g. a pre-reviewed plan with the full review machinery) records as **full**
 with the skipped machinery noted, in the ledger and the retro; never invent a
 third tier.
+
+**One named override exists, and it is not a third tier.** An `auto next` run
+drafted its own plan with no human between the issue and the implementation, so
+it **always** runs `/review-plan`'s critics whatever the weight (Phase 2).
+Record that as `planReview: forced — auto-next` in the run file and the retro,
+leaving `weight` itself untouched; a lite run stays lite for Phases 4 and 5.
+Attended `next` is **not** covered: its Phase 0 approval stop is the same
+consent `ExitPlanMode` gives every other run, so it follows weight as normal.
 
 ## Multi-deliverable plans — one run, several PRs
 
@@ -149,7 +208,28 @@ implementation = separate `/deliver` sessions.)
 ## Phase 0 — Preconditions
 
 - **A plan must exist** (named target → plan-mode plan → most recent in
-  conversation). None → stop; ask for one in plan mode. Never invent one.
+  conversation). None → stop; ask for one in plan mode. Never invent one —
+  **except on the one sanctioned path**: `next` *selects* one instead. It takes
+  the top startable issue off the board's Ready column, re-verifies it against
+  `origin/main`, claims it, and drafts a plan with the `Plan` agent — then
+  continues through the rest of this phase unchanged. Procedure, exclusions and
+  the `selection` block:
+  [`references/next-mode.md`](references/next-mode.md). Selection is part of
+  Phase 0 rather than a phase of its own precisely so the run file keeps one
+  writer and the knowledge consult below still precedes the drafting that
+  consumes it. Nothing startable, or no Projects MCP → **stop before the
+  worktree**; never fall through to the "no plan" stop, which reads as an
+  unrelated failure.
+  **Write the parsed invocation into the run file when you parse the keywords —
+  before selection runs**, not after. Record **every** keyword, not just this
+  one (`"mode": "auto merge next"`), plus `conductorPid` — this session's PID.
+  Written afterwards, a run that skipped selection carries no `mode` either and
+  sails through Phase 6's gate as an ordinary run; and `auto`/`merge` recorded
+  nowhere durable means Phase 6's `planReview` stop and Phase 10's merge-drop
+  both read a keyword the ledger lost at `EnterWorktree` — they would silently
+  no-op on exactly the resumed and backgrounded paths the run file exists for.
+  **Auto:** the approval stop below becomes the `phase0n-selection` panel —
+  proceed with this self-picked issue and self-drafted plan, vs stop.
 - **A plan born from a review finding is a hypothesis** — verify against the
   code (quick `Explore`) *before* planning or asking strategy questions.
 - **State the goal** in a sentence; **judge the weight**; open the ledger.
@@ -166,7 +246,7 @@ implementation = separate `/deliver` sessions.)
   `EnterWorktree` clears it.** Phase 8 copies it into the retro, which is the
   committed, human-reviewed copy.
 - **Identify the issue this delivers, and record it.** Most deliveries implement
-  a tracked issue — `/deliver auto` takes one off the board's Ready column, and a
+  a tracked issue — `next` takes one off the board's Ready column, and a
   plan usually names one. Record `issue: <number>` on **the deliverable** in the
   run file (or `issue: null` when the work is genuinely untracked, which is the
   honest answer for an ad-hoc fix). Per-deliverable, not run-scoped: a
@@ -174,10 +254,29 @@ implementation = separate `/deliver` sessions.)
   moves it to **In progress** and Phase 10 to **In review**, so an unrecorded
   issue is one the board silently never reflects. It goes in the run file rather
   than the ledger for the usual reason — `EnterWorktree` clears the ledger.
-- **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
-  `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
+  A `next` run has already made the **In progress** move itself, at the pick —
+  it has to claim the issue before the drafting window, or a concurrent session
+  delivers the same one. Phase 1's move then finds it already set and no-ops.
+  The claim carries an obligation: **any stop before the PR opens releases it
+  back to `Ready`** ([`references/next-mode.md`](references/next-mode.md)).
+- **Flag a reflexive delivery.** If the plan touches any of the **reflexive
+  set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
+  `.github/CODE_REVIEW.md` — this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
   two consequences for the rest of the pipeline:
+
+  > **This list is the reflexive set, and it is quoted in exactly one other
+  > place** — [`references/next-mode.md`](references/next-mode.md) §5b, which
+  > refuses such an issue in `merge` mode. **Change both or neither.** They were
+  > briefly out of step: this list omitted `.claude/workflows/**`, so
+  > `/deliver auto merge next` could have selected an issue whose plan rewrote
+  > `deliver-panel.js` — the script defining the panel that authorises unattended
+  > work — computed `reflexive: false`, and squash-merged it with nobody
+  > reading the diff. `.claude/workflows/` was already a Phase 5 security
+  > surface and a Phase 4 review surface; it belongs here for the same reason.
+  > **When in doubt about a path, resolve it as reflexive** — the cost of a
+  > false positive is one human merge, and the cost of a false negative is the
+  > pipeline silently editing its own gates.
   1. **It cannot be dogfooded before merge.** The skill registry loaded at
      session start comes from the **main checkout**, so your edits are not what
      executes this run. Verify by reading, and say so in the PR — never claim a
@@ -200,6 +299,15 @@ implementation = separate `/deliver` sessions.)
        | sed 's|/[^/]*$||' | sort -u        # every skill dir you touched
      grep -rn '<the old wording>' .claude/ CLAUDE.md .github/CODE_REVIEW.md
      ```
+
+     **Re-sweep after every review-loop fix, not just after the first edit.**
+     A Phase 4 or Phase 5 fix that changes the rule *again* has its own
+     footprint, and a sweep run against the original change's wording will not
+     find it. This is how the recurrence below reached three: the first two
+     commits of a delivery swept clean, and the commit that *fixed* the review's
+     findings reintroduced the drift — into `.github/ISSUE_FILING.md`, which
+     declares itself authoritative over the skills, so the stale copy overrode
+     rather than lagged. Sweep is per-commit-that-changes-a-rule, not per-run.
 
      This has now recurred twice. #441–#443 each fixed `deliver/SKILL.md` and
      left `deliver/references/worktree-lifecycle.md` — the file `SKILL.md`
@@ -227,6 +335,12 @@ implementation = separate `/deliver` sessions.)
     `rubricProvenance: derived — <the source>`, and say in the PR body that the
     rubric was derived rather than supplied. Bug fixes land here routinely;
     stopping to ask a question the plan already answers is ceremony, not rigour.
+    **A `next`-drafted plan always lands here**, whatever its text contains:
+    record `derived — issue <number>`, **never `supplied`**. The drafted plan
+    will carry ACs — the `Plan` agent writes them — but `supplied` means *a
+    human set the bar*, and here the run that gets graded wrote its own rubric.
+    This is reflexive rule 2 in another costume: the thing being graded must not
+    be the thing that sets the grade. Do not "simplify" it back.
   - **Neither** → stop and ask for them ("Given X, when Y, then Z") — don't
     enter the worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops)
     vs stop; record that as `rubric: none`, which is **present-and-empty**, not
@@ -272,6 +386,50 @@ Procedures and traps:
    `swept:`, which is Phase 7's knowledge sweep and will silently take the
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
+   **Release stranded `next` claims while you are here — keyed on the PID, not
+   on a bucket.** For every run file with a `next` mode, `pr: null`,
+   `status: open`, **no `claimHandedBack` stamp**, and **`selection.claimed` not
+   `false`**, test its `conductorPid` with `kill -0`. **Dead** → that run is
+   holding an issue in **In progress** with nobody to release it: move the issue
+   back to **Ready**, **stamp `claimHandedBack: <iso8601>` on the deliverable**,
+   and count it in the `reconciled` line's `claims released` slot. **Alive, or
+   the PID is absent/unparseable** → leave it entirely, and report it.
+   Both extra predicate clauses prevent the sweep from taking an issue away from
+   a **live** delivery, which is the same harm the claim itself exists to
+   prevent — just reached from the other direction:
+   - **`claimed: false`** means that run's claim write failed and it proceeded
+     unclaimed (`references/next-mode.md` §6). It never held the issue, so there
+     is nothing to give back — and by now another run may legitimately hold it.
+   - **`claimHandedBack`** makes the release **idempotent**. The predicate is
+     otherwise still true after a release, so the next run re-releases the same
+     issue; once it has been re-claimed by anyone, that repeat is a theft rather
+     than a recovery. Nothing else closes the file: bucket 4 explicitly permits
+     a dead run file to be left standing.
+
+   **Evaluate the predicate at two scopes** — it mixes them, and only looks
+   unambiguous at one deliverable. `mode`, `conductorPid` and
+   `selection.claimed` are **run**-scoped; `pr`, `status`, `issue` and
+   `claimHandedBack` are **per-deliverable**. So walk the deliverables: release
+   and stamp **each qualifying one independently**, rather than asking whether
+   "the run" has a PR. A batch where deliverable 1 has merged and 2–3 are still
+   open otherwise either never releases anything or strands the rest behind one
+   stamp. A `next` pick *can* decompose — Phase 0's decomposition runs after
+   selection, and the board currently holds batch-shaped issues.
+   One corollary: `claimed: false` suppresses the release of
+   `selection.picked`'s issue **only**. A batch's other issues reached
+   **In progress** via Phase 1 step 5, not via the `next` claim, so that flag
+   never described them.
+   Do **not** key this on the worktree buckets. `resumable` tests the PID, but
+   `settled` does not test liveness at all, and — decisively — a `next` run
+   holds its claim from **Phase 0, before any worktree exists**, which is the
+   whole reason it claims early. Such a run has no worktree to classify, so a
+   bucket-keyed rule either releases a **live** conductor's claim while it waits
+   at the approval stop (re-opening the double-delivery the claim prevents, in
+   the exact window it was designed for) or never releases it at all. The PID
+   test is the only thing that separates those two, and it covers the
+   pre-worktree window the buckets cannot see. Treat an `EPERM` from `kill -0`
+   as alive, and cross-check a suspiciously old PID against
+   `ps -p <pid> -o lstart=` exactly as the lock-liveness rule does.
 2. **Enter** with `EnterWorktree(name: "<prefix>/<slug>")` (`feature/`,
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch
    name afterwards** (`git branch --show-current`; `git branch -m` if the
@@ -292,6 +450,13 @@ Procedures and traps:
    the phase list and the run file, it isn't lost work. Set the run file's
    `entry` to `created`, or to `adopted` when resuming an existing worktree
    via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
+   **Adopting a `next` run whose deliverable carries `claimHandedBack`?** Its
+   issue was handed back to `Ready` while it was dead and may now belong to
+   someone else. Re-run the claim steps in
+   [`references/next-mode.md`](references/next-mode.md) §6 before resuming —
+   `Status` not `Ready` → stop and say the issue was re-claimed elsewhere.
+   Resuming on the strength of a claim the sweep already released is how an
+   adopted run comes to "release" an issue a live delivery is holding.
 5. **Move the issue to `In progress`** — the run file's `issue`, if it has one.
    This is the right moment rather than Phase 0: the entry gate can still stop a
    run, so the worktree is the first step that commits to doing the work. Column
@@ -311,7 +476,12 @@ enter, proceed.
 **Lite, or already adversarially reviewed this session** (a converged
 `/review-plan`, or an equivalent in-conversation critique whose findings were
 applied) → skip the critics. `ExitPlanMode` approval alone is consent, not
-review — it does **not** skip. **Full with an unreviewed plan**
+review — it does **not** skip. **`auto next` never skips**, at any weight: no
+human stood between the issue and the plan, so the critics are the only review
+the plan gets before implementation. Record it as `planReview: forced —
+auto-next` (see *Delivery weight*); attended `next` follows weight as normal,
+because its Phase 0 approval stop is that missing human. **Full with an
+unreviewed plan**
 → invoke `/review-plan`, present the revised plan + a one-line change log
 (applied / rejected) as an **FYI**, keep going —
 except a **blocker** (wrong approach, breaking, data-loss), which stops the
@@ -425,6 +595,21 @@ Three distinct cases, and they must not be conflated:
   missing run file is not a pass, exactly as a dead grader is not a pass; and a
   file without `reconciled` means Phase 1's sweep never ran. This is what makes
   both gates real rather than advisory.
+- **`mode: next` with `selection` missing or empty** → **hard stop**, the same
+  way and for the same reason: it means the selection in
+  [`references/next-mode.md`](references/next-mode.md) never ran, so nothing
+  established that this issue was the right one, still verified, or claimed.
+  Without this the `selection` block would be telemetry no phase reads — a
+  green indistinguishable from never having looked. (`mode` is written at
+  Phase 0's keyword parse, *before* selection, so a skipped selection shows up
+  as `mode: next` with no `selection` rather than as an ordinary run.)
+- **A `mode` naming both `auto` and `next`, with `planReview` missing** →
+  **hard stop.** That field is the sole record that the forced `/review-plan`
+  actually ran, and a self-picked, self-drafted, unattended plan whose critics
+  were skipped is the least-reviewed thing this pipeline can produce. Read
+  `auto` from the run file's `mode`, never from memory of the invocation — the
+  ledger that held it does not survive `EnterWorktree`, a resume, or Phase 10's
+  background handoff.
 
 How it is graded depends on weight:
 
@@ -529,6 +714,16 @@ gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
+**`merge` is dropped, not honoured, when the run file says `reflexive: true`
+and a `mode` naming `next`** — read both from the run file, since this phase
+runs in the background, potentially long after the invocation. A `next` run
+chose its own issue, so nobody decided to
+merge a rewrite of the pipeline's own skills unattended — stop at the gate and
+say the opt-in was dropped and why. Selection already refuses a reflexive
+candidate in `merge` mode ([`references/next-mode.md`](references/next-mode.md)
+§5b); this catches the case where the issue's fix sketch understated its
+footprint and Phase 0 discovered the truth from the drafted plan.
+
 ## Phase 11 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 
 The retro is already on the PR (Phase 8) — **the default path pushes nothing
@@ -600,3 +795,9 @@ Wherever it stops — the gate, an untriageable red gate, a stuck PR — end wit
 a concise status: phase reached, branch and PR, what passed, what's blocking,
 and the single next action needed from the user. The destination is a green
 PR ready for their merge — say plainly whether you got there.
+
+A `next` run that stops **before its PR opens** owes one extra line: the issue
+it claimed has been released back to `Ready`, or it is stranded in a column
+nothing else can move it out of.
+
+Arguments: $ARGUMENTS
