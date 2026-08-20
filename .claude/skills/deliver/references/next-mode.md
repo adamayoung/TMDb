@@ -224,8 +224,13 @@ default leak into every mode, which on the board as it stands would have
 demoted nine perfectly good `Ready` issues on the first run.
 
 `/deliver auto merge next` is the only invocation that can take an issue from a
-board to a merged commit with nobody looking. Two properties make a candidate
-unfit for that, and both are knowable before Phase 1.
+board to a merged commit with nobody looking. Three properties make a candidate
+unfit for that, and all are knowable before Phase 1: it is **breaking** (5a), it
+is **reflexive** (5b), or it was **written by someone outside this repo** (5c).
+
+Two of the three are read out of the issue body, which is why 5c exists — the
+first two ask the issue to certify itself, and 5c asks who signed the
+certificate.
 
 ### 5a — A breaking change
 
@@ -274,10 +279,17 @@ stops at the gate, which is exactly where a compatibility call belongs.
 
 ### 5b — A reflexive change
 
-An issue whose fix touches `.claude/skills/**`, `.claude/agents/**`,
-`.claude/workflows/**` or `.github/CODE_REVIEW.md` is **not selectable in
-`merge` mode either**, whatever its Breaking class. Judge it from the issue's
-own fix sketch and the files it names, at the same moment as the class.
+An issue whose fix touches the **reflexive set** — `.claude/skills/**`,
+`.claude/agents/**`, `.claude/workflows/**` or `.github/CODE_REVIEW.md` — is
+**not selectable in `merge` mode either**, whatever its Breaking class. Judge it
+from the issue's own fix sketch and the files it names, at the same moment as
+the class, and **resolve any doubt as reflexive**.
+
+That set is defined in `SKILL.md` Phase 0 and quoted here; the two must match
+exactly, because Phase 10's backstop keys on Phase 0's computation rather than
+on this test. When they drifted — this list carrying `.claude/workflows/**` and
+Phase 0's not — the backstop covered three quarters of what this gate refuses,
+and the missing quarter was the one holding `deliver-panel.js`.
 
 This closes a hole the Breaking-class filter does not cover: those files carry
 no public API, so a reflexive issue reads as `none`. Issue 467 is the live
@@ -293,6 +305,32 @@ Phase 0 already computes `reflexive` for the drafted plan, so **Phase 10 drops
 the `merge` opt-in** whenever the run file says `reflexive: true` and
 `mode: next` — belt and braces, in case the fix sketch understated the
 footprint. The run still delivers; it just stops at the gate.
+
+### 5c — An issue this repo's maintainers didn't write
+
+Both tests above read the **issue body**, and 5b also reads its fix sketch. That
+text is written by whoever opened the issue. `adamayoung/TMDb` is a **public
+repository**, and `/triage-issues` sweeps *every* open issue onto the board, so
+an issue reaching `Ready` is not evidence that a maintainer chose it.
+
+**In `merge` mode, a candidate is selectable only if its `author_association`
+is `OWNER`, `MEMBER` or `COLLABORATOR`** — and the same is required of the
+`<!-- triaged: … -->` marker comment §4 relies on. Anything else, including
+`CONTRIBUTOR` and `NONE`, is not selectable. Read it from the issue and the
+comment (`mcp__github__issue_read` returns it); absent or unrecognised counts as
+untrusted, like every other default in this section.
+
+Without this, the two properties authorising an unattended merge are **supplied
+by the party whose work is being authorised** — they write the defect, the fix
+sketch, the `Breaking class: none` line, and (via the *Failure scenario* section
+§6 derives the rubric from) the acceptance criteria their own change will be
+graded against. Nothing in the path re-derives any of it from the code. That is
+a supply-chain path into `main` of a published package, and an author check is
+the cheap, decisive cut across it.
+
+This only ever *narrows* `merge`. An outside contributor's issue is still
+delivered by `/deliver next` and `/deliver auto next` — it simply stops at the
+human gate, which is exactly where a stranger's proposal should stop.
 
 ## 6 — Claim the issue, then draft
 

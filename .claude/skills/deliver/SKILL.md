@@ -85,9 +85,17 @@ Non-negotiable. Do these by default, without being reminded.
 
 ## Invocation — `/deliver [auto] [merge] [next]`
 
-The three keywords are recognised only as **whole, standalone tokens**, in any
-order; anything else in the argument is the **named plan target** Phase 0
-resolves. `next` and a named target contradict each other — report that and
+The three keywords are recognised only as whole, standalone tokens **in a
+leading run** — parsing stops at the first token that is not one of them, and
+everything from there on is the **named plan target** Phase 0 resolves. So
+`/deliver auto merge next` is three keywords, and `/deliver auto fix the merge
+handling plan` is one keyword plus the target *"fix the merge handling plan"* —
+**not** an auto-merge, even though `merge` appears in it. A keyword found after
+the target has begun is part of the target; say so rather than acting on it,
+because the failure is silent and one-directional: nobody notices an
+auto-merge they did not ask for until it has happened.
+
+`next` and a named target contradict each other — report that and
 stop, rather than silently picking one. `next` also takes precedence over a
 plan already in the conversation, and says so before drafting.
 
@@ -236,10 +244,24 @@ implementation = separate `/deliver` sessions.)
   delivers the same one. Phase 1's move then finds it already set and no-ops.
   The claim carries an obligation: **any stop before the PR opens releases it
   back to `Ready`** ([`references/next-mode.md`](references/next-mode.md)).
-- **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
-  `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
+- **Flag a reflexive delivery.** If the plan touches any of the **reflexive
+  set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
+  `.github/CODE_REVIEW.md` — this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
   two consequences for the rest of the pipeline:
+
+  > **This list is the reflexive set, and it is quoted in exactly one other
+  > place** — [`references/next-mode.md`](references/next-mode.md) §5b, which
+  > refuses such an issue in `merge` mode. **Change both or neither.** They were
+  > briefly out of step: this list omitted `.claude/workflows/**`, so
+  > `/deliver auto merge next` could have selected an issue whose plan rewrote
+  > `deliver-panel.js` — the script defining the panel that authorises unattended
+  > work — computed `reflexive: false`, and squash-merged it with nobody
+  > reading the diff. `.claude/workflows/` was already a Phase 5 security
+  > surface and a Phase 4 review surface; it belongs here for the same reason.
+  > **When in doubt about a path, resolve it as reflexive** — the cost of a
+  > false positive is one human merge, and the cost of a false negative is the
+  > pipeline silently editing its own gates.
   1. **It cannot be dogfooded before merge.** The skill registry loaded at
      session start comes from the **main checkout**, so your edits are not what
      executes this run. Verify by reading, and say so in the PR — never claim a
