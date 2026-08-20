@@ -45,6 +45,7 @@ always fair game.
 | [0025](0025-redact-transport-error-payload.md) | Redact the transport error carried by `TMDbError.network` | 2026-08-20 | Accepted (in 20.0.0, unreleased) |
 | [0026](0026-unattended-selection-needs-an-author-check.md) | An unattended run must not read its authorisation from the work it selected | 2026-08-20 | Accepted (unreleased — tooling only) |
 | [0027](0027-run-list-ordering-in-scripts.md) | Compute the triage run-list in `Scripts/`, not in a workflow | 2026-08-20 | Accepted (unreleased — tooling only) |
+| [0028](0028-selection-policy-as-a-token-of-mode.md) | A selection policy is a token of `mode`, not a field beside it | 2026-08-20 | Accepted (unreleased — tooling only) |
 
 > **Keep the Status column true.** "In X, unreleased" becomes "shipped in X" when
 > X is **tagged** — a `CHANGELOG.md` section is not a release. For breaking changes

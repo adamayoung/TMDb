@@ -51,6 +51,18 @@ board, with no comment and no column change.
 
 ## Consequences
 
+> **Amended 2026-08-20 by [ADR-0028](0028-selection-policy-as-a-token-of-mode.md)
+> (issue 481).** `next` is now one of **two** selection policies, so
+> `/deliver auto merge issue <n>` is a second invocation that can reach an
+> unattended merge. This decision's test is unchanged and still applies to both.
+> What differs is enforcement: under `next` a refusal passes the candidate over,
+> which is structural; under `explicit` there is no next candidate, so the
+> refusal instead **drops the `merge` opt-in**. That made the check depend on a
+> field a conductor had to remember to write, so selection now persists
+> `selection.authorAssociation` verbatim and Phase 10 **re-derives** the drop
+> from it — absent or unrecognised counting as outside. Read every
+> "`auto merge next`" below as naming both invocations.
+
 - `/deliver auto merge next` can only ever unattended-merge work that a
   maintainer wrote. Every outside proposal still gets delivered by
   `/deliver next` and `/deliver auto next` — it simply stops at the

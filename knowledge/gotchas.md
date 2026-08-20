@@ -170,6 +170,16 @@ at the moment you notice it, not a tidiness issue.
 - **An enumeration inside a single file.** A third test was added to a section,
   and two other lists in the *same file* still enumerated only the first two.
 
+*Recurred 2026-08-20 (issue 481), four more times, in the delivery whose whole
+purpose was closing this class.* The reflexive set turned out to have a **third**
+copy (`deliver/references/worktree-lifecycle.md`) missing `.claude/workflows/**`,
+while `SKILL.md` asserted the set was "quoted in exactly one other place". Then
+three gate restatements outside `SKILL.md` were left keyed on the old wording —
+**two of them by the commits that were fixing the other findings**. The pattern
+worth internalising: across five review passes, **every** High finding was in a
+*restatement* or in the *test*, never in the primary rule. The primary was right
+from the first commit. Sweep the copies, and sweep again after each fix commit.
+
 What makes this worse than ordinary duplication is that the *reader* picks the
 copy, so which one wins is unpredictable. Countermeasures, cheapest first:
 
@@ -184,6 +194,11 @@ copy, so which one wins is unpredictable. Countermeasures, cheapest first:
   change's wording rather than the fix's.
 - **Prefer fail-closed defaults** where two lists gate the same thing, so a
   drifted copy under-permits rather than over-permits.
+- **Mutation-test the executable check itself.** *(2026-08-20, issue 481.)* The
+  countermeasure below is only as good as the test enforcing it, and in the very
+  delivery that added one, the test was blind three separate ways — see *A test
+  that asserts on prose can be blind* below. Adding the check is half the work;
+  proving it fails is the other half.
 - **Make the agreement executable when one copy is code.** If a format or value
   is *built* in code and *quoted* in prose, have a test read the prose file off
   disk and assert against it — then drift fails a gate instead of waiting for a
@@ -194,6 +209,56 @@ copy, so which one wins is unpredictable. Countermeasures, cheapest first:
   paired with, and `Scripts/check-prose-call-forms.py` for the same idea applied
   to code samples. This caught a re-introduced grammar template in the very
   commit that removed the original (2026-08-20, PR #476).
+
+### A test that asserts on prose can be blind — mutation-test it, don't read the green
+
+*2026-08-20 (PR for issue 481).* This repo now guards prose rules with tests that
+read the skill files off disk (`Scripts/tests/test_deliver_selection_prose.py`,
+`test_build_run_list.py`'s `AntiDriftTests`). Those tests are the countermeasure
+for the entry above — and in one delivery **three** of them passed while checking
+nothing. Each blindness mode is invisible from a green run:
+
+- **A line window bleeds into its neighbours.** Asserting a token appears within
+  6 lines before / 14 after an anchor: `SKILL.md`'s four gate predicates are
+  consecutive bullets, so each one's window contained the next. Reverting a
+  predicate left the test green because the *neighbouring* copy still supplied
+  the token. Fix: split on blank lines **and** on list-item markers — a
+  blank-line-only split does not separate adjacent bullets.
+- **An edit to the test silently does not apply.** A string-replace whose
+  needle had drifted updated the docstring but not the regex, so the file
+  *described* behaviour it did not have. The docstring is not the test.
+- **Narrative prose supplies the very token being checked.** A paragraph
+  explaining a past drift names the glob it is describing, so unioning matches
+  across "every paragraph mentioning X" masks a deletion from the canonical
+  list. In one file the canonical list and its narrative were in the **same
+  paragraph** — the sentence documenting the bug was hiding the bug.
+
+**The only reliable check is to break the thing on purpose and confirm the suite
+goes red.** A throwaway harness that reverts each guarded rule in turn costs
+minutes and is the difference between a test and a decoration:
+
+```text
+revert 'selection missing or empty' -> RED     drop workflows glob (SKILL.md)   -> RED
+revert 'planReview missing'         -> RED     drop workflows glob (next-mode)  -> RED
+revert 'Release stranded'           -> RED     drop workflows glob (lifecycle)  -> RED
+baseline                            -> GREEN
+```
+
+Two of those started GREEN. Prefer asserting a **canonical phrase** (here
+"(`next` or `explicit`)") over bare substrings: a bare `next` is satisfied by any
+`next-mode.md` link in view, and a bare `explicit` by the word "explicitly".
+
+### Anti-drift tests must enumerate with `git ls-files`, never a filesystem glob
+
+*2026-08-20 (PR for issue 481).* `.claude/worktrees/` is gitignored
+(`.gitignore:19`) but **present on disk**, and it holds a complete second copy of
+every skill file — one per in-flight `/deliver` run, and concurrent runs are
+explicitly sanctioned. So a test globbing `.claude/**/*.md` walks *other
+branches'* checkouts: it is red locally and green in CI, non-deterministically,
+depending on what someone else is delivering. Ask git instead
+(`git ls-files -z '*.md'`), which restores the invariant that the tracked tree is
+what is under test. Verified live: the worktree running that delivery was itself
+one of the stale copies its own test would have read.
 
 ### A gate keyed on `git tag` passes vacuously in CI — the checkout has no tags
 
