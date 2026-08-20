@@ -72,7 +72,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   same URL, so code reading them will now find them absent. An error with
   nothing to redact — including one thrown by your own `HTTPClient` — is
   attached exactly as raised, so its concrete type still matches in a `catch`.
-  `TMDbClient(bearerToken:)` was never affected: that credential is a header.
+
+  The v4 bearer token itself was never at risk — it travels as a header, never
+  in a URL. A `session_id` was: a user-scoped v3 call carries it as a query item
+  whichever way the client was created, so `TMDbClient(bearerToken:)` leaked one
+  too wherever you passed a session id.
 
 - A type conforming to one of the service protocols itself, rather than using
   `TMDbTesting`'s mocks, no longer risks an infinite recursion. 54 protocol

@@ -23,10 +23,8 @@ struct NetworkErrorRedactionEndToEndTests {
 
     private static let failingURLStringKey = "NSErrorFailingURLStringKey"
 
-    private static func transportError(url urlString: String) -> NSError {
-        guard let url = URL(string: urlString) else {
-            preconditionFailure("Test URL is not parseable.")
-        }
+    private static func transportError(url urlString: String) throws -> NSError {
+        let url = try #require(URL(string: urlString))
 
         return NSError(
             domain: NSURLErrorDomain,
@@ -49,7 +47,7 @@ struct NetworkErrorRedactionEndToEndTests {
             serialiser: TMDbJSONSerialiser(),
             httpClient: httpClient
         )
-        httpClient.result = .failure(
+        httpClient.result = try .failure(
             Self.transportError(url: "https://some.domain.com/3/movie/550?api_key=abc123secret")
         )
 
