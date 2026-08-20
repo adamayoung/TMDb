@@ -70,12 +70,22 @@ mcp__github__projects_list / list_project_status_updates   per_page: 5
 ```
 
 Take the newest update carrying the canonical run-list line. That line has a
-**fixed grammar**, defined once in `/triage-issues` (its Phase 8) and parsed
-here and nowhere else:
+**fixed grammar**, and the grammar is **not defined in prose** — it is defined by
+`build_run_list_line` in
+[`Scripts/build_run_list.py`](../../../../Scripts/build_run_list.py) and parsed
+by `RUN_LIST_RE` in that same module, which is what keeps the written and parsed
+forms from drifting apart. `/triage-issues` Phase 8 pastes what that function
+returned. An example of what lands on the board:
 
 ```text
-<!-- run-list: <sha> | 426,437,448,428,454,424,425,427,429,435,467,430 -->
+<!-- run-list: cc7cba55 | 426,437,448,428,454,424,425,427,429,435,467,430 -->
 ```
+
+> **Change all three together or none**: the builder, this section, and
+> `/triage-issues` Phase 8. `Scripts/tests/test_build_run_list.py` asserts that
+> every `<!-- run-list:` example in *this file* still parses under `RUN_LIST_RE`,
+> so a drifted example fails a test rather than waiting for a reader to pick the
+> wrong copy.
 
 Parse **only that line**. Its prose table is for humans and is written afresh
 each run — the 2026-08-18 and 2026-08-20 updates already use different table
@@ -83,12 +93,33 @@ shapes, so a regex over the table is not reproducible, and a near-miss would
 silently discard exactly the dependency and contention ordering the run-list
 exists to carry.
 
-**No status update carries the line → there is no usable run-list.** Say so, in
-those words, and fall back to board fields: order by Priority (P0 → P1 → P2),
-then Size ascending (XS < S < M < L < XL). State in the report that **dependency
-and contention order are unknown on this path** — the fallback reproduces two of
-`/triage-issues`' four sort rules, not all four. Never quietly best-effort the
-prose table into a third ordering authority.
+**No status update carries the line → there is no usable run-list**, and what
+happens next depends on **whether anyone is watching**:
+
+- **Attended (`/deliver next`)** — say "there is no usable run-list", in those
+  words, and fall back to board fields: Priority (P0 → P1 → P2), then Size
+  ascending (XS < S < M < L < XL). Report **prominently** that **contention
+  spacing and dependency-driven promotion are unavailable on this path** — the
+  fallback reproduces two of `/triage-issues`' four sort rules, not all four.
+  The human can weigh that and decide whether to proceed or go run
+  `/triage-issues`.
+- **Unattended (`/deliver auto next`, `/deliver auto merge next`)** — **stop**,
+  and recommend `/triage-issues`. A warning is only loud if someone reads it,
+  and unattended nobody does.
+
+This split is the same principle §5 already applies to the Breaking-class and
+reflexive refusals: unattended runs get tighter constraints than attended ones.
+
+**The fallback is degraded, not unsafe — and the reason is §4, not this
+section.** §4's *"`dependsOn` outranks priority"* rule makes an open dependency
+from the marker's `deps=` field a `needs-decision` **rejection**, so even with no
+run-list `next` cannot pick a dependent ahead of its dependency; it rejects it.
+What the fallback loses is ordering *quality*: contention spacing, and the
+promotion in which a P2 that unblocks a P0 legitimately goes first. **Do not
+simplify this section without re-reading §4's `deps=` check** — remove that and
+the fallback stops being safe.
+
+Never quietly best-effort the prose table into a third ordering authority.
 
 Final order:
 

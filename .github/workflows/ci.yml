@@ -90,11 +90,20 @@ jobs:
       SWIFTFORMAT_VERSION: 0.61.1
     steps:
       - name: No changes detected
-        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
-        run: echo "No Swift changes detected, skipping lint"
+        if: >-
+          needs.changes.outputs.swift != 'true' && needs.changes.outputs.markdown != 'true'
+          && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift or Markdown changes detected, skipping lint"
 
+      # Also gated on `markdown`, not `swift` alone: the run-list builder check
+      # below reads the skill prose off disk, so a prose-only change is exactly
+      # when it must run — and without a checkout it would have nothing to read.
+      # Every swiftlint/swiftformat step below stays gated on `swift`, and the
+      # runner falls to ubuntu-latest when `swift` is false, where python3 ships.
       - name: Checkout
-        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        if: >-
+          needs.changes.outputs.swift == 'true' || needs.changes.outputs.markdown == 'true'
+          || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v7
 
       - name: Install SwiftLint and SwiftFormat
@@ -142,6 +151,16 @@ jobs:
       - name: README version check
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-readme-version.py
+
+      # Mirrors `make lint-run-list`. No new paths-filter output is needed: the
+      # builder lives under `Scripts/**` (already in the `swift` key) and its
+      # anti-drift cases read `.claude/**/*.md` (already in the `markdown` key),
+      # so gating on either covers both of its inputs.
+      - name: Run-list builder check
+        if: >-
+          needs.changes.outputs.swift == 'true' || needs.changes.outputs.markdown == 'true'
+          || github.event_name == 'workflow_dispatch'
+        run: python3 Scripts/run-script-tests.py
 
   lint-markdown:
     name: Lint Markdown

@@ -171,7 +171,7 @@ is a claim that a human set the bar.
   "conductorPid": 90982,
   "planReview": "forced — auto-next",
   "selection": {
-    "source": "board-fields (no run-list line; deps/contention unknown)",
+    "source": "run-list@cc7cba55",
     "verifiedAt": "527682f7",
     "listed": 12, "picked": 448, "breakingClass": "none", "claimed": true,
     "passedOver": [{ "issue": 434, "why": "filtered — closed, still showing Ready" }],

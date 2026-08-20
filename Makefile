@@ -38,7 +38,7 @@ format:
 	@swiftformat .
 
 .PHONY: lint
-lint: lint-witnesses lint-fixtures lint-curation lint-prose lint-readme-version
+lint: lint-witnesses lint-fixtures lint-curation lint-prose lint-readme-version lint-run-list
 	@swiftlint --strict .
 	@swiftformat --lint .
 
@@ -88,6 +88,21 @@ lint-prose:
 .PHONY: lint-readme-version
 lint-readme-version:
 	@python3 Scripts/check-readme-version.py
+
+# The run-list builder's own suite. /triage-issues Phase 8 publishes one line
+# that /deliver next parses and nothing else, so a wrong ORDER is as damaging as
+# a wrong format and neither is visible at write time (issue #471). Two things
+# are covered: the sort rules, and — reading the skill files off disk — that the
+# prose still agrees with the grammar the module defines.
+#
+# Run via the wrapper, never `unittest discover` directly: a bare discover exits
+# 0 when it collects NOTHING on Python 3.9, so a renamed file would empty this
+# gate while it still reported green. The wrapper asserts a collection floor.
+# Mirrored as the `Run-list builder check` step in .github/workflows/ci.yml —
+# see the note above lint-witnesses.
+.PHONY: lint-run-list
+lint-run-list:
+	@python3 Scripts/run-script-tests.py
 
 .PHONY: lint-markdown
 lint-markdown:

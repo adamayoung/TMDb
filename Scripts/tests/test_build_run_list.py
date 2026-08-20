@@ -1,0 +1,405 @@
+#!/usr/bin/env python3
+"""Tests for `Scripts/build_run_list.py`.
+
+Two distinct jobs here, and the second is the one that is easy to get wrong.
+
+**Behaviour** — the ordering rules, each in isolation. The interesting cases are
+the two the plan review caught: a plain greedy topological sort does NOT promote
+an unblocker (`test_p2_unblocking_a_p0_precedes_an_independent_p1`), and a
+contention pass that swaps the contending pair with each other leaves it adjacent
+(`test_a_non_contender_is_moved_between_two_contending_issues`).
+
+**Anti-drift** — asserting the built line against a string literal *here* would
+make this file a second copy of the grammar, not a check on the real ones. So the
+format cases assert against `RUN_LIST_RE` exported by the module under test, and
+the prose cases READ THE SKILL FILES OFF DISK. That is what makes
+`knowledge/gotchas.md`'s "a rule written in two files drifts" detectable by a
+test rather than only by a cross-reference. Precedent for a check that greps
+prose: `Scripts/check-prose-call-forms.py`.
+"""
+
+from __future__ import annotations
+
+import itertools
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT / "Scripts"))
+
+import build_run_list as brl  # noqa: E402
+
+NEXT_MODE = ROOT / ".claude" / "skills" / "deliver" / "references" / "next-mode.md"
+TRIAGE_SKILL = ROOT / ".claude" / "skills" / "triage-issues" / "SKILL.md"
+
+HEAD = "36552a4d"
+
+
+def issue(number, priority="P1", size="S", depends_on=(), files=None):
+    """Build one Ready-set element. `files=None` models a SKIPPED issue.
+
+    A skipped issue's marker carries `deps=`, `priority` and `size` but no
+    `filesTouched`, so it contributes no contention edges — the distinction the
+    `noEdgeData` case turns on.
+    """
+    item = {
+        "issue": number,
+        "priority": priority,
+        "size": size,
+        "dependsOn": list(depends_on),
+    }
+    if files is not None:
+        item["filesTouched"] = list(files)
+    return item
+
+
+def order(ready, closed=()):
+    return brl.build(HEAD, ready, closed=closed)["ordered"]
+
+
+class DependencyOrderTests(unittest.TestCase):
+    def test_a_dependency_precedes_its_dependent(self):
+        ready = [issue(100, depends_on=[200]), issue(200)]
+        self.assertEqual(order(ready), [200, 100])
+
+    def test_p2_unblocking_a_p0_precedes_an_independent_p1(self):
+        # SKILL.md:207 — "Rule 1 outranks rule 2: a P2 that unblocks a P0 goes
+        # first." Plain greedy Kahn's emits 437, 430, 426 here, because 430's OWN
+        # priority is P2. Only effective priority (min over transitive
+        # dependents) promotes it.
+        ready = [
+            issue(430, priority="P2", depends_on=[]),
+            issue(426, priority="P0", depends_on=[430]),
+            issue(437, priority="P1"),
+        ]
+        self.assertEqual(order(ready), [430, 426, 437])
+
+    def test_effective_priority_propagates_transitively(self):
+        # 300 <- 301 <- 302(P0). 300 must be promoted by its GRANDCHILD.
+        ready = [
+            issue(300, priority="P2"),
+            issue(301, priority="P2", depends_on=[300]),
+            issue(302, priority="P0", depends_on=[301]),
+            issue(310, priority="P1"),
+        ]
+        self.assertEqual(order(ready), [300, 301, 302, 310])
+
+    def test_deps_outranking_priority_is_reported(self):
+        ready = [
+            issue(430, priority="P2"),
+            issue(426, priority="P0", depends_on=[430]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertIn({"before": 430, "after": 426}, result["depsOutrankPriority"])
+
+    def test_no_deps_outrank_report_when_priorities_agree(self):
+        ready = [issue(1, priority="P0"), issue(2, priority="P1", depends_on=[1])]
+        self.assertEqual(brl.build(HEAD, ready)["depsOutrankPriority"], [])
+
+
+class PrioritySizeTiebreakTests(unittest.TestCase):
+    def test_priority_orders_before_size(self):
+        ready = [issue(1, priority="P2", size="XS"), issue(2, priority="P0", size="L")]
+        self.assertEqual(order(ready), [2, 1])
+
+    def test_size_ascending_within_a_priority_band(self):
+        ready = [issue(1, size="L"), issue(2, size="XS"), issue(3, size="M")]
+        self.assertEqual(order(ready), [2, 3, 1])
+
+    def test_issue_number_ascending_is_the_final_tiebreak(self):
+        ready = [issue(9), issue(3), issue(7)]
+        self.assertEqual(order(ready), [3, 7, 9])
+
+    def test_reproduces_the_published_2026_08_20_run_list(self):
+        # The real Ready set from the 2026-08-20 status update. That run had no
+        # dependency edges and no contention, so this pins rules 2-4 against
+        # real data; rules 1 and 3 are covered by the synthetic cases above.
+        published = [434, 426, 437, 448, 428, 454, 424, 425, 427, 429, 435, 467, 430]
+        ready = [
+            issue(434, "P0", "S"), issue(426, "P0", "M"), issue(437, "P0", "M"),
+            issue(448, "P1", "XS"), issue(428, "P1", "S"), issue(454, "P1", "S"),
+            issue(424, "P1", "M"), issue(425, "P1", "M"), issue(427, "P1", "L"),
+            issue(429, "P1", "L"), issue(435, "P2", "XS"), issue(467, "P2", "S"),
+            issue(430, "P2", "L"),
+        ]
+        self.assertEqual(order(ready), published)
+
+
+class ContentionTests(unittest.TestCase):
+    def test_a_non_contender_is_moved_between_two_contending_issues(self):
+        # 1 and 2 contend. Swapping them with each other would leave them
+        # adjacent — the separation must bring 3 in.
+        ready = [
+            issue(1, size="XS", files=["a.swift"]),
+            issue(2, size="S", files=["a.swift"]),
+            issue(3, size="M", files=["b.swift"]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 3, 2])
+        self.assertEqual(result["unseparableContention"], [])
+
+    def test_contention_never_moves_an_item_across_a_priority_band(self):
+        # 1 and 2 contend, but the only non-contender is a P2. Rule 2 outranks
+        # rule 3, so the pair stays adjacent and is REPORTED instead.
+        ready = [
+            issue(1, priority="P0", size="XS", files=["a.swift"]),
+            issue(2, priority="P0", size="S", files=["a.swift"]),
+            issue(3, priority="P2", size="M", files=["b.swift"]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 2, 3])
+        self.assertEqual(result["unseparableContention"], [[1, 2]])
+
+    def test_separator_is_not_promoted_past_a_higher_priority_issue(self):
+        # Regression: checking the candidate's band against `right` alone is not
+        # enough — the move JUMPS every element between, so a same-band candidate
+        # can still leapfrog a higher-priority issue sitting in that gap.
+        #
+        # 1 and 2 contend and are both promoted to effective P0 by 3. The first
+        # same-band candidate is 4 (P1), and moving it to index 1 would put it
+        # ahead of 3 (P0) — an undisclosed mis-sort, since depsOutrankPriority
+        # only reports dependency edges and 4 has none. Rule 2 outranks rule 3,
+        # so the pair must be reported instead.
+        ready = [
+            issue(1, priority="P1", size="XS", files=["a.swift"]),
+            issue(2, priority="P1", size="S", depends_on=[1], files=["a.swift"]),
+            issue(3, priority="P0", size="M", depends_on=[2], files=["c.swift"]),
+            issue(4, priority="P1", size="L", files=["b.swift"]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 2, 3, 4])
+        self.assertEqual(result["unseparableContention"], [[1, 2]])
+
+    def test_an_unseparable_pair_is_reported(self):
+        ready = [
+            issue(1, files=["a.swift"]),
+            issue(2, files=["a.swift"]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 2])
+        self.assertEqual(result["unseparableContention"], [[1, 2]])
+
+    def test_contention_pass_is_a_fixed_point_on_its_own_output(self):
+        # Exercise `_separate_contenders` DIRECTLY. Re-feeding `build()` its own
+        # output proves nothing: the topological sort selects with a total key,
+        # so `build()` is invariant under permutation of `ready` and the
+        # assertion would reduce to `once == once` — it would still pass if the
+        # pass swapped instead of moved, which is the mistake being guarded.
+        ready = [
+            issue(1, size="XS", files=["a.swift"]),
+            issue(2, size="S", files=["a.swift"]),
+            issue(3, size="M", files=["b.swift"]),
+        ]
+        items = {i["issue"]: i for i in ready}
+        deps = {i["issue"]: [] for i in ready}
+        effective = {i["issue"]: 1 for i in ready}
+
+        once, unseparable_once = brl._separate_contenders([1, 2, 3], items, deps, effective)
+        self.assertEqual(once, [1, 3, 2])
+
+        twice, unseparable_twice = brl._separate_contenders(once, items, deps, effective)
+        self.assertEqual(twice, once)
+        self.assertEqual(unseparable_twice, unseparable_once)
+
+    def test_skipped_issues_contribute_no_contention_edges(self):
+        # Both touch a.swift, but neither declares filesTouched (skipped), so
+        # there is no edge to detect and nothing to separate.
+        ready = [issue(1, size="XS"), issue(2, size="S"), issue(3, size="M")]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 2, 3])
+        self.assertEqual(result["unseparableContention"], [])
+
+    def test_separation_never_violates_dependency_order(self):
+        # 1 and 2 contend; 3 would separate them but 3 depends on 2, so moving
+        # 3 before 2 is illegal. 4 is the legal separator.
+        ready = [
+            issue(1, size="XS", files=["a.swift"]),
+            issue(2, size="S", files=["a.swift"]),
+            issue(3, size="M", depends_on=[2], files=["b.swift"]),
+            issue(4, size="L", files=["c.swift"]),
+        ]
+        result = brl.build(HEAD, ready)
+        self.assertEqual(result["ordered"], [1, 4, 2, 3])
+        self.assertEqual(result["unseparableContention"], [])
+
+
+class ErrorTests(unittest.TestCase):
+    def test_a_cycle_is_an_error_naming_the_nodes(self):
+        ready = [issue(1, depends_on=[2]), issue(2, depends_on=[1])]
+        with self.assertRaises(brl.RunListError) as ctx:
+            brl.build(HEAD, ready)
+        self.assertIn("1", str(ctx.exception))
+        self.assertIn("2", str(ctx.exception))
+
+    def test_an_edge_onto_an_unknown_issue_is_an_error(self):
+        # Neither Ready nor declared closed: this is Phase 5's Ready-demotion
+        # rule violated — a Ready issue depending on something not landing.
+        ready = [issue(1, depends_on=[999])]
+        with self.assertRaises(brl.RunListError) as ctx:
+            brl.build(HEAD, ready)
+        self.assertIn("999", str(ctx.exception))
+
+    def test_an_edge_onto_a_closed_issue_is_discharged(self):
+        ready = [issue(1, depends_on=[999])]
+        result = brl.build(HEAD, ready, closed=[999])
+        self.assertEqual(result["ordered"], [1])
+        self.assertEqual(result["dischargedEdges"], [{"from": 1, "to": 999}])
+
+    def test_a_bad_priority_is_an_error(self):
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue(1, priority="P9")])
+
+    def test_a_bad_size_is_an_error(self):
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue(1, size="XXL")])
+
+    def test_a_non_integer_issue_number_is_an_error(self):
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue("426")])
+
+    def test_a_duplicate_issue_number_is_an_error(self):
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue(1), issue(1)])
+
+    def test_a_bad_head_sha_is_an_error(self):
+        # The trailing-newline case is the subtle one: Python's `$` also matches
+        # just before a trailing newline, so a `$`-anchored check would accept
+        # "36552a4d\n" and emit a line no parser could ever match.
+        for bad in ("", "not-a-sha", "ABCDEF1", "36552a", "36552a4d\n", " 36552a4d"):
+            with self.subTest(head=bad), self.assertRaises(brl.RunListError):
+                brl.build(bad, [issue(1)])
+
+    def test_a_non_integer_closed_element_is_an_error(self):
+        # "393" would never match the integer 393 an edge carries, so the edge
+        # would be misreported as a dangling caller bug instead of discharged.
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue(1, depends_on=[393])], closed=["393"])
+
+    def test_an_unhashable_priority_raises_run_list_error_not_type_error(self):
+        with self.assertRaises(brl.RunListError):
+            brl.build(HEAD, [issue(1, priority={"a": 1})])
+
+    def test_a_self_dependency_is_reported_as_a_cycle(self):
+        with self.assertRaises(brl.RunListError) as ctx:
+            brl.build(HEAD, [issue(1, depends_on=[1])])
+        self.assertIn("cycle", str(ctx.exception).lower())
+
+    def test_a_repeated_closed_target_is_discharged_once(self):
+        result = brl.build(HEAD, [issue(1, depends_on=[999, 999])], closed=[999])
+        self.assertEqual(result["dischargedEdges"], [{"from": 1, "to": 999}])
+
+    def test_an_empty_ready_set_returns_a_note_and_no_line(self):
+        # Never `<!-- run-list: <sha> | -->` — the parser would accept that as a
+        # well-formed empty run-list, which is worse than no line at all.
+        result = brl.build(HEAD, [])
+        self.assertEqual(result["ordered"], [])
+        self.assertIsNone(result["runListLine"])
+        self.assertTrue(result["note"])
+
+
+class LineFormatTests(unittest.TestCase):
+    def test_line_matches_the_exported_regex(self):
+        line = brl.build_run_list_line(HEAD, [426, 437, 448])
+        self.assertRegex(line, brl.RUN_LIST_RE)
+
+    def test_exact_byte_format(self):
+        self.assertEqual(
+            brl.build_run_list_line(HEAD, [426, 437]),
+            f"<!-- run-list: {HEAD} | 426,437 -->",
+        )
+
+    def test_line_is_invariant_under_permutation_of_the_input(self):
+        # Calling build() twice with the SAME list cannot fail — there is no
+        # hash- or iteration-order dependence in the output path, so it reduces
+        # to `once == once`. Permuting the input is the property that actually
+        # has force: the conductor assembles `ready` from a fan-out plus a set
+        # of skipped markers, in no guaranteed order, and the published line
+        # must not depend on which order they arrived in.
+        ready = [issue(9), issue(3, depends_on=[7]), issue(7)]
+        baseline = brl.build(HEAD, ready)["runListLine"]
+        for permutation in itertools.permutations(ready):
+            with self.subTest(order=[i["issue"] for i in permutation]):
+                self.assertEqual(brl.build(HEAD, list(permutation))["runListLine"], baseline)
+
+    def test_regex_rejects_the_near_misses_that_motivated_this(self):
+        # Each of these is a plausible LLM rewording of the line. All must fail
+        # the parse rather than half-match — that is the whole point of #471.
+        for bad in (
+            f"<!-- run-list: {HEAD} | 426, 437 -->",
+            f"<!-- run-list: {HEAD} | #426,#437 -->",
+            f"<!-- run-list: {HEAD} | 426,437 -->.",
+            f"<!-- run-list:{HEAD} | 426,437 -->",
+            f"<!-- run-list: {HEAD} | -->",
+        ):
+            with self.subTest(line=bad):
+                self.assertNotRegex(bad, brl.RUN_LIST_RE)
+
+
+class AntiDriftTests(unittest.TestCase):
+    """The grammar is stated in code and quoted in prose. Prove the prose still
+    agrees, so a drifted copy fails a test instead of being read by a human who
+    picks the wrong one."""
+
+    def test_next_mode_still_carries_the_grammar_markers(self):
+        # Both markers must appear on the SAME line. Asserting " -->" against the
+        # whole file cannot fail — next-mode.md carries unrelated HTML comments
+        # (`<!-- triaged: … -->`, `<!-- deliver-next: … -->`) that satisfy it
+        # even if the run-list example were deleted outright.
+        lines = NEXT_MODE.read_text(encoding="utf-8").splitlines()
+        self.assertTrue(
+            any(line.strip().startswith("<!-- run-list: ") and line.strip().endswith(" -->") for line in lines),
+            msg=f"{NEXT_MODE.name} no longer carries a complete run-list example line.",
+        )
+
+    def test_next_mode_names_the_builder_as_the_definition(self):
+        text = NEXT_MODE.read_text(encoding="utf-8")
+        self.assertIn("build_run_list_line", text)
+
+    def test_triage_skill_phase_8_names_the_builder(self):
+        text = TRIAGE_SKILL.read_text(encoding="utf-8")
+        self.assertIn("build_run_list_line", text)
+
+    def test_every_documented_example_line_parses(self):
+        # Pull documented examples straight out of the prose and run them
+        # through the real parser. Checked across BOTH files that mention the
+        # line, not just next-mode.md: the hand-written grammar template this
+        # change deleted lived in triage-issues/SKILL.md, so that is exactly
+        # where a re-introduced one would land.
+        found_any = False
+        for path in (NEXT_MODE, TRIAGE_SKILL):
+            examples = [
+                line.strip()
+                for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip().startswith("<!-- run-list:")
+            ]
+            for example in examples:
+                found_any = True
+                with self.subTest(path=path.name, example=example):
+                    self.assertRegex(example, brl.RUN_LIST_RE)
+        self.assertTrue(found_any, "no run-list example line found in either file")
+
+    def test_triage_skill_does_not_restate_the_grammar(self):
+        # Phase 8 now pastes a FIELD. A `<sha>`-style placeholder template
+        # reappearing here would be a second definition of the grammar — the
+        # drift this change exists to remove.
+        # Custom messages: a bare assertNotIn dumps the entire ~40KB skill file
+        # into the failure output, which buries the one line that matters.
+        text = TRIAGE_SKILL.read_text(encoding="utf-8")
+        self.assertNotIn(
+            "<!-- run-list: <",
+            text,
+            msg=f"{TRIAGE_SKILL.name} restates the run-list grammar as a template. "
+            "Phase 8 pastes the `runListLine` field; the grammar is defined only by "
+            "build_run_list_line in Scripts/build_run_list.py.",
+        )
+        self.assertNotIn(
+            "short sha",
+            text,
+            msg=f"{TRIAGE_SKILL.name} says 'short sha'; the grammar accepts 7-40 hex "
+            "and next-mode.md §3 documents it as <sha>. Those two must not disagree.",
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

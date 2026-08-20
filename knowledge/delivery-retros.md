@@ -25,6 +25,68 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-20 — ✨ Assemble the triage run-list in code (issue #471, #476) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight — small diff, but reflexive
+  (`.claude/skills/**` + `Scripts/**`) and it changes an unattended decision
+  path, so both Phase 4/5 self-skips were overridden. Skills: `review-plan`
+  (3 critics), `review-changes` (`force-review`, fan-out — with the five
+  Swift lenses **replaced** by ones fitting a Python + prose diff), a targeted
+  2-lens converge pass, `security-review`, `capture-knowledge`.
+  `consulted:` gotchas *No workflow runs `make`*, *The `Workflow` tool resolves
+  a repo-relative `scriptPath`*, *The `Workflow` tool's contract is the schema
+  authority*, *A rule written in two files drifts*; wiki
+  *a-rule-stated-in-two-files-has-already-drifted*,
+  *never-ask-a-model-for-a-stable-fingerprint*.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported. Every
+  prior run file was already closed.
+  `swept:` `Makefile`, `.github/workflows/ci.yml`,
+  `.claude/skills/{lint,triage-issues,deliver}/**` → the mirrored-check registry
+  rewritten (five → six); `check-defaulted-witnesses.py`'s `make lint` + CI note
+  verified still true; none deleted.
+
+- **What worked — review found every substantive defect; writing the code did
+  not.** Three algorithm errors, each of which would have shipped as a silently
+  wrong *order* under a correctly-formatted line: a topological sort does not
+  promote an unblocker (precedence ≠ promotion); separating contenders by
+  swapping them leaves them adjacent; and the fixed band-check compared only the
+  new neighbour, not the jumped range, so a P1 could overtake a P0 with no
+  dependency edge to disclose it. The first two came from `/review-plan` — i.e.
+  **before** the wrong code existed — which is the cheapest place they could
+  have been caught.
+
+- **What worked — the anti-drift test caught its own author.** The test that
+  reads the skill prose off disk failed on a grammar template introduced by the
+  same commit that deleted the original. A test asserting against a literal
+  would have passed.
+
+- **Friction — four of my own tests could not fail.** `assertIn(" -->", text)`
+  was satisfied by unrelated HTML comments; `build(x) == build(x)` reduced to
+  `once == once` because the sort is permutation-invariant; the collection floor
+  had 8 tests of slack; and the gate itself exited 0 on an empty run. All four
+  are the same shape as the defect under test — a green indistinguishable from
+  "nobody looked" — written *while actively thinking about that failure mode*.
+  Writing a test does not mean writing a falsifiable one; the check is "make it
+  fail once".
+
+- **Deviations:** (1) `Scripts/build_run_list.py`, not the plan's
+  `build-run-list.py` — its tests import it and a hyphen is not importable.
+  The rubric was left naming the hyphenated path and the grader flagged the
+  discrepancy rather than it being quietly reconciled. (2) `/review-changes`'
+  fan-out lenses were swapped for the diff's actual subject matter; the five
+  stock lenses are Swift-specific and would have returned five empty reports,
+  which reads as coverage. (3) Two decisions were escalated mid-`/deliver`
+  (vehicle, and whether the mode split was scope creep) because the critics
+  overturned a user choice — Phase 2 has no branch for that, so it was handled
+  as an ordinary question.
+
+- **One improvement:** `/review-changes` §2b hard-codes five Swift lenses, and
+  the skill's own `force-review` path anticipates non-Swift diffs but only
+  offers the *single-reviewer* escape. A `full`-weight non-Swift diff therefore
+  has no sanctioned fan-out, and the choice to substitute lenses was made
+  ad hoc. Worth giving §2b a script-and-prose lens set the way §0 already gives
+  the single-reviewer path a script-focused brief.
+
 ## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (#474) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — prose-only diff (~900 lines,
@@ -809,72 +871,6 @@ the board's Ready execution order.
   after adding tests, `/test` should confirm the new ones **by name**, not by
   total.
 
-## 2026-08-12 — 🐛 Decode empty-string credit dates as nil (#432) · full
-
-- **Phases / skills:** 0–11; **full** (a `Decodable`/`CodingKeys` change is a
-  named risky surface), so the 3-critic `/review-plan` ran and Phase 6 used an
-  independent grader. `/review-changes` took the single-reviewer path (555 lines,
-  one cohesive unit). `consulted:` gotchas *Guard consistently within a type*,
-  *Sweep the failure class, not the property name*, *Model-decode equality tests*,
-  *`Date(iso8601:)` is not visible to `TMDbIntegrationTests`*; api-notes
-  *Verify optionality against real responses*, *`/company/{id}` nullability*;
-  issues #418, #426, #430 for scope boundaries.
-- **Worked — the #404 failure-class sweep, in both directions.** The plan reached
-  Phase 0 having excluded the URL decodes from a *single* spot-check of one
-  record. Sweeping the whole `/credit/{id}` tree over 300 live records instead
-  both **cleared** those five URL decodes with a measurement (`null`-bearing,
-  never `""`) and **found a bug the issue never mentioned**: `credit_type:
-  "creator"` throws today. Without the sweep the first would have been an
-  assertion a reviewer could reasonably reject, and the second would have
-  shipped undiscovered.
-- **Worked — the critics found the false green I had built in.** All three
-  returned `sound-with-fixes` and every load-bearing claim I checked held up.
-  The best catch was mine to be embarrassed by: **no fixture in my test list
-  omitted `character`**, so a `decode`-instead-of-`decodeIfPresent` slip in
-  either hand-written init would have compiled, passed everything, and broken
-  36% of live credits. Re-sourcing both blank-date fixtures to **crew** credits
-  fixed it for free — TMDb omits `character` entirely on crew credits, so one
-  fixture now covers an empty date *and* an absent optional.
-- **Worked — reconciling a 2-vs-1 critic split on evidence rather than vote.**
-  One critic read *Guard consistently within a type* as requiring
-  `decodeNonEmptyURLIfPresent` on the image paths. The rule is about one **value
-  class** diverging (`Company.logoPath` vs `Company.Parent.logoPath`), not a date
-  differing from a URL — and guarding would have made `CreditMovie` the lone
-  divergence across ~20 models. The gotcha now records that scope explicitly, so
-  the next reader doesn't re-derive it.
-- **Friction — the worktree Bash guard.** A worktree-isolated session refuses any
-  command it cannot statically prove stays inside the worktree, which blocked
-  writing the durable run file under `.git/deliver/` (outside the worktree *by
-  design* — it lives in the common git dir) via `jq`+`mv` **and** via `Edit`,
-  plus several `curl -o` and multi-pipe sampling commands that were never leaving.
-  `sed` with fully literal paths worked. Now a `gotchas.md` entry; the deeper
-  issue is that `/deliver`'s own run-file location is at odds with its own
-  worktree isolation.
-- **Friction — two API 529s killed the code reviewer** before it started. Retried
-  after doing unrelated work; the second retry succeeded. Void ≠ failed was the
-  right read.
-- **Friction — a subagent asserted a green it could not see.** The
-  `tooling-runner` reported the integration suite passed "including the newly
-  added `detailsForMovieCredit` test", but the xcsift log carries only aggregate
-  counts — no test names. A scoped `--filter` run proved it genuinely ran. The
-  runner's report shape cannot distinguish *ran and passed* from *never ran*.
-- **Deviations:** (1) The plan had **no formal ACs** — a bug-fix plan written as
-  a test list. Rather than stop the run for a rubric the author could not supply
-  mid-flight, I derived seven Given/When/Then ACs from the issue and the test
-  list and recorded `rubricProvenance: derived-…` in the run file; the grader
-  then judged against them and returned ALL MET. Flagged as derived, not
-  supplied. (2) Reported the `creator` finding to #418 **before** the PR rather
-  than in Phase 11, because all three critics independently observed that
-  "defer to #418" deferred it *nowhere* — #418's body never mentioned
-  `CreditType`.
-- **One improvement:** `/deliver`'s Phase 0 entry gate assumes a plan either has
-  ACs or doesn't. A bug fix whose issue already states observable
-  before/after behaviour is a third case: the ACs are *derivable* rather than
-  absent, and stopping to ask for them is pure ceremony. The gate should sanction
-  deriving them with recorded provenance — which is what `rubricProvenance` did
-  here ad hoc — instead of forcing a choice between a hard stop and
-  `rubric: none`.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -882,6 +878,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-12 | #432 | full | Decoded empty-string credit dates as nil. **The #404 population sweep paid in both directions**: 300 live `/credit/{id}` records both *cleared* five URL decodes with a measurement (`null`-bearing, never `""`) and *found a bug the issue never mentioned* — `credit_type: "creator"` threw. A sweep earns its keep by excluding as much as by finding. The critics caught a false green the author built in: **no fixture omitted `character`**, so a `decode`-instead-of-`decodeIfPresent` slip would have compiled, passed everything, and broken 36% of live credits — fixed for free by re-sourcing both blank-date fixtures to *crew* credits, which omit `character` entirely. A 2-vs-1 critic split was reconciled **on evidence, not vote**: *Guard consistently within a type* is about one value class diverging, not a date differing from a URL, and guarding would have made `CreditMovie` the lone divergence across ~20 models. Two lasting frictions: the worktree Bash guard refuses commands it cannot prove stay inside the worktree (which blocks writing `/deliver`'s own run file under `.git/deliver/` — its run-file location is at odds with its worktree isolation), and **a subagent asserted a green it could not see** (the tooling-runner reported a named test passed, but xcsift logs carry only aggregate counts; its report shape cannot distinguish *ran and passed* from *never ran*). Its "one improvement" — sanction *deriving* ACs with recorded provenance when a plan states observable before/after behaviour in the wrong shape — **shipped**, and is the entry gate's `derived` branch and `rubricProvenance` field today. |
 | 2026-08-07 | #412 | lite | Renamed `Network.homepage` to `homepageURL`, the second firing of the `next-major.md` queue: the item was deferred out of 19.0.0 on 2026-07-27 as cosmetic scope creep on a bug fix, and shipped here because the file was read when the 20.0.0 window opened — the deferral mechanism working end to end. Equally deliberate was the entry that did **not** ship: `TMDbError.invalidRating` stayed deferred because its own condition (a wider `TMDbError` review) was unmet, and that was recorded rather than skipped, so a later reader can tell "considered and declined" from "missed". Stacked on `feature/v4-lists` rather than branched from `main`, since both edit the same `CHANGELOG` section. Its "one improvement" — have `next-major.md` carry a status line naming the open major window, so an entry cannot be filed against a version that already shipped — **shipped**, and `/capture-knowledge` asserts it on every addition today. |
 | 2026-08-07 | #411 | full | TMDb v4 lists (`client.v4Lists`), settling ADR-0017's four open decisions. **Phase 0 probing changed the shipped API twice, both unfixable later**: `sort_by` turned out to be honoured on the read side (so `details`/`items` take `sortedBy:` — adding a protocol requirement afterwards is source-breaking), and `create(isPublic:)` shipped after all because TMDb ignores the *boolean* and honours the *integer* — the earlier "it ignores the field" conclusion came from a probe that sent a bool. Reading the resource back caught both. The count-reconciliation assertion caught a real drop on its first outing (`Show.encode` writes no `media_type`, so every encoded item failed to decode and the whole list vanished silently). Two of the three bugs were **the probe scripts lying**: an `EXIT` trap that never fired and orphaned four lists on a real account, and ten identical "rejected" results across a `sort_by` sweep that were the spam filter (`status_code` 18), not an answer — a uniform failure across a sweep is evidence about the sweep. Both are now standing rules in `CLAUDE.md`: a probe must verify its own postcondition. Also a mid-delivery **correction**: I reported credentials committed in `Integration.xctestplan` having read it off disk without running `git ls-files` — the file is gitignored and absent from HEAD (they were committed in 2023 and remain in public history, so rotation still applies). |
 | 2026-08-07 | #410 | full | Defaulted-witness convenience sweep across 37 sites. The **reference-unit gate earned its keep again**: reviewing one site before replicating caught a DocC-curation regression (the convenience becomes a distinct symbol and falls out of its Topics group unless curated) that would otherwise have shipped 37 times, and settled three open design questions in one pass. The **census was re-derived rather than trusted** — both reviewers independently reproduced 91/15 and the 37/54 split, after the first census came up **17 short** by grepping protocol *declaration* files and missing the two protocols keeping conveniences in a sibling `+Defaults.swift`. Two lasting False-green bullets came from it: a mechanical sweep did a first-occurrence `str.replace` per file, stripping the default from `favouriteMovies` instead of `lists` **while reporting exactly the 36 edits expected**, and the new checker passed on an empty scan (a typo'd path printed success and exited 0) — so a matching count is not evidence, and a checker must compare against an explicit set. Also **shipped a gate that did not gate**: the check went into `make lint`, but no workflow invokes `make` (the `Lint` job runs swiftlint/swiftformat inline), so it was invisible to CI — now its own step and the gotcha *No workflow runs `make`*. Its "one improvement" — have `/capture-knowledge` prompt "what fails if that number changes?" when an entry records a defect count — **shipped**, and is the *When an entry records a count* section of that skill today. |

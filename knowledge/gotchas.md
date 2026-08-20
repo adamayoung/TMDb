@@ -49,6 +49,11 @@ Instances, each with its countermeasure:
   Its green was byte-identical to a clean tree's (2026-08-07). *Check: compare
   against an expected **set**, not a threshold, so an empty result fails; and
   run the analyser against a deliberately wrong input before trusting it.*
+- **A test runner that collected nothing** — `python3 -m unittest discover`
+  exits 0 when it finds no tests, and counts a skipped test as a success, so a
+  renamed file or one `@unittest.skip` empties a gate while it stays green
+  (2026-08-20, PR #476). *Check: assert a collection floor **and** re-assert it
+  against tests actually executed — see Tooling.*
 - **N mechanical edits reported, wrong symbols edited** — a sweep script did a
   first-occurrence `str.replace` per file, so it stripped the default argument
   from `favouriteMovies` rather than `lists`, and still reported exactly the 36
@@ -62,6 +67,54 @@ When an instance's countermeasure becomes tooling-enforced, its bullet may be
 retired; the family heading stays.
 
 ## Tooling
+
+### `unittest discover` exits 0 when it collected nothing — and a skip counts as success
+
+*2026-08-20 (PR #476).* Two separate ways a Python test gate reports green
+without asserting anything. Both were verified directly, not inferred.
+
+**Collected nothing.** `python3 -m unittest discover` ends in
+`sys.exit(not self.result.wasSuccessful())`, and `wasSuccessful()` is True when
+`testsRun == 0`. The `_NO_TESTS_EXITCODE = 5` that would catch it arrived in
+**Python 3.12**; the `python3` on this repo's PATH is **Xcode's 3.9.6**, so a
+renamed test file, a renamed directory, a wrong working directory, or a filename
+that stops matching the default `test*.py` pattern silently empties the gate.
+Running `discover` against an empty directory exits 0.
+
+**Collected but skipped.** `wasSuccessful()` also treats a skip as a success, and
+`testsRun` counts skipped tests — a two-test class decorated `@unittest.skip`
+reports `collected: 2, testsRun: 2, skipped: 2, wasSuccessful: True`. So a
+`@unittest.skipUnless` guard, or a `raise unittest.SkipTest` in `setUpModule`,
+keeps a collection-count check green too.
+
+`Scripts/run-script-tests.py` is the countermeasure: it asserts an **exact**
+count before running (a loose floor lets a whole class vanish inside the slack)
+and re-asserts it afterwards against `testsRun - skipped - expectedFailures`.
+
+One unrelated 3.9 constraint in the same area: `discover`'s start directory must
+be **importable**, so pass `top_level_dir` equal to the start directory (or add
+an `__init__.py`) — otherwise it fails with *"Start directory is not
+importable"*.
+
+### The `Lint` job gates its own `Checkout` on `swift`, and PRs ignore `on.paths`
+
+*2026-08-20 (PR #476).* Two facts about `.github/workflows/ci.yml` that decide
+whether a check you add actually runs.
+
+**Every step in the `Lint` job — including `Checkout` — is conditioned on
+`needs.changes.outputs.swift == 'true' || workflow_dispatch`,** and the job's
+`runs-on` selects `xcode-27` vs `ubuntu-latest` off the same output. So adding a
+step gated on any *other* filter key gives you a step that runs **with no
+repository checked out**. Widening a step means widening `Checkout` with it.
+That is why the run-list check is gated on `swift || markdown`: its inputs are
+`Scripts/**` (in the `swift` key) *and* `.claude/**/*.md` (in `markdown`), and
+without the widened checkout the prose half would have had nothing to read.
+
+**`on.pull_request` carries no `paths:` filter — only `on.push` does.** So every
+PR triggers the workflow regardless, and the `changes` job's `dorny/paths-filter`
+outputs are what actually gate the work. Editing `on.push.paths` changes only the
+post-merge push run; it has no effect on PR runs. Reason about the filter
+outputs, not `on.paths`, when asking "will my check run on this PR?"
 
 ### An issue template's field is a convention, not a schema — parse it defensively
 
@@ -131,6 +184,16 @@ copy, so which one wins is unpredictable. Countermeasures, cheapest first:
   change's wording rather than the fix's.
 - **Prefer fail-closed defaults** where two lists gate the same thing, so a
   drifted copy under-permits rather than over-permits.
+- **Make the agreement executable when one copy is code.** If a format or value
+  is *built* in code and *quoted* in prose, have a test read the prose file off
+  disk and assert against it — then drift fails a gate instead of waiting for a
+  reader to pick the wrong copy. Asserting against a string literal in the test
+  does **not** count: that is a further copy, not a check on the others. See
+  `Scripts/tests/test_build_run_list.py`'s `AntiDriftTests`, which parses every
+  run-list example out of `next-mode.md` with the same regex the builder is
+  paired with, and `Scripts/check-prose-call-forms.py` for the same idea applied
+  to code samples. This caught a re-introduced grammar template in the very
+  commit that removed the original (2026-08-20, PR #476).
 
 ### A gate keyed on `git tag` passes vacuously in CI — the checkout has no tags
 
@@ -299,9 +362,11 @@ shipped this way for one review round before it was caught.
 paths-filter *and* `on.push.paths` — otherwise a PR touching only that script
 skips the whole job that runs it.
 
-Five checks are mirrored this way today — `check-defaulted-witnesses.py`,
-`check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py` and
-`check-readme-version.py` (paths-filter input: `CHANGELOG.md`),
+Six checks are mirrored this way today — `check-defaulted-witnesses.py`,
+`check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py`,
+`check-readme-version.py` (paths-filter input: `CHANGELOG.md`) and
+`run-script-tests.py` (the run-list builder's suite; gated on `swift` **or**
+`markdown`, since its anti-drift cases read `.claude/**/*.md`),
 each a `make lint` prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
 paths-filter key over a new `outputs:` entry: a filter key with no matching line
 under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the
