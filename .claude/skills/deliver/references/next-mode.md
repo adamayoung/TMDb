@@ -196,11 +196,16 @@ longer holds. Both halves matter:
 
 **Cap the rejects per run, not from the head.** Stop when either the whole
 candidate list is exhausted or **5** candidates have been **rejected** in this
-run. Only a §4 verdict is a reject. A candidate removed by a §2 filter (closed,
-not `Ready`, already claimed by a PR or a live worktree), skipped by §5's
-`merge`-mode tests, or lost to a concurrent claim is **passed over, not
-rejected** — it never reached a verifier, nothing is wrong with it, and it does
-not count against the cap or earn a comment.
+run. Only a §4 verdict is a reject. Everything else is **passed over, not
+rejected** — no verifier ruled on it, nothing is wrong with it, and it neither
+counts against the cap nor earns a comment. That is the whole of the other
+list, so check a new case against it rather than inventing a third:
+
+- removed by a §2 filter — closed, no longer `Ready`, or already claimed by an
+  open `Closes #NNN` PR or a live worktree;
+- skipped by §5's `merge`-mode tests — breaking (5a) or reflexive (5b);
+- lost to a concurrent claim at §6 step 1;
+- **its verifier died twice** — a fact about the harness, not the issue.
 A "3 consecutive rejects" rule counted from the head would let three stale items
 brick `next` permanently while startable work sat at position 4. Report
 `n rejected, picked #m` in one line either way.
@@ -341,6 +346,13 @@ Phase 1 reconcile sweep, which releases the issue of any `next` run that never
 opened a PR **and whose `conductorPid` is dead**
 ([`worktree-lifecycle.md`](worktree-lifecycle.md)).
 
+That sweep **stamps `claimReleased` on the run file it released**, and skips any
+file already carrying it — so the release happens once. Left unstamped, the
+sweep's predicate is still true afterwards and every later run re-releases the
+same issue; the moment it has been legitimately re-claimed, that repeat takes it
+away from a live delivery. It also skips any run recording
+`selection.claimed: false`, which never held the issue at all.
+
 Two owners for one release is deliberate, and it is not the ambiguity the
 one-owner rule guards against — but only because of that PID test, so do not
 weaken it to something cheaper. They cannot both fire: the first runs only
@@ -407,9 +419,15 @@ indistinguishable from never having run.
     { "issue": 426, "verdict": "needs-decision", "why": "body offers three competing fixes; demoted to Backlog" }
   ],
   "picked": 448,
-  "breakingClass": "none"
+  "breakingClass": "none",
+  "claimed": true
 }
 ```
+
+`claimed` is **not** decoration. It is read by Phase 1's reconcile sweep, which
+skips any run file recording `claimed: false` — that run never held the issue,
+so there is nothing to hand back, and by the time the sweep runs someone else
+may legitimately hold it. Write it on every `next` run, both values.
 
 Note what the two lists mean, because the distinction is load-bearing:
 `rejected` holds candidates a **verifier** ruled on — each one was demoted and

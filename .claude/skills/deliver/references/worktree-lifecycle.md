@@ -50,8 +50,22 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    Rows 2 and 6 make this total: **nothing can fail to classify**, so the sweep
    can never brick the pipeline on an unrecognised state.
 
-3. Record one ledger line: `reconciled: <n> in scope / <k> reclaimed / <r>
-   resumable / <o> reported`, and carry it into the retro (Phase 8).
+3. **Release stranded `next` claims.** For every run file with a `next` mode,
+   `pr: null`, `status: open`, no `claimReleased`, and `selection.claimed` not
+   `false`, test its `conductorPid` with `kill -0`. Dead → move that issue back
+   to **Ready**, stamp `claimReleased: <iso8601>` on the deliverable, and count
+   it. Alive, `EPERM`, or no parseable PID → leave it and report it. Key this on
+   the **PID**, never on the worktree buckets: `settled` tests no liveness, and
+   a `next` run holds its claim from Phase 0, *before any worktree exists*.
+   The `claimReleased` stamp is what makes this **idempotent** — without it the
+   predicate stays true after the release, so every later run re-releases the
+   same issue, and once it has been legitimately re-claimed the repeat release
+   takes it out from under a live delivery.
+4. Record one ledger line: `reconciled: <n> in scope / <k> reclaimed / <r>
+   resumable / <o> reported / <c> claims released`, and carry it into the retro
+   (Phase 8). **Claims released needs its own slot**, not a share of an existing
+   one — see the `swept:`/`reconciled:` incident below for what happens when two
+   counts contend for one key.
    **The key is `reconciled:`, never `swept:`** — `swept:` belongs to Phase 7's
    knowledge-retirement sweep, and when both wrote the same key the Phase 7 form
    occupied the slot for four consecutive deliveries while this tripwire went
@@ -151,14 +165,15 @@ is a claim that a human set the bar.
   "goal": "…", "weight": "full",
   "reflexive": false,
   "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
-  "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
+  "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0,
+                  "claimsReleased": 0 },
   "mode": "auto merge next",
   "conductorPid": 90982,
   "planReview": "forced — auto-next",
   "selection": {
     "source": "board-fields (no run-list line; deps/contention unknown)",
     "verifiedAt": "527682f7",
-    "listed": 12, "picked": 448, "breakingClass": "none",
+    "listed": 12, "picked": 448, "breakingClass": "none", "claimed": true,
     "passedOver": [{ "issue": 434, "why": "filtered — closed, still showing Ready" }],
     "rejected": [{ "issue": 426, "verdict": "needs-decision", "why": "three competing fixes; demoted" }]
   },
@@ -167,6 +182,7 @@ is a claim that a human set the bar.
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
+    "claimReleased": null,
     "rubric": ["Given …, when …, then …"],
     "rubricProvenance": "supplied",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
@@ -219,11 +235,21 @@ dead while a conductor is live at its approval stop, or never swept at all.
 
 `selection` records how the issue was chosen —
 the ordering source and its sha, the sha every candidate was re-verified
-against, the pick, its `Breaking class`, and every rejected candidate with its
-verdict. It is **read, not merely written**: Phase 6 hard-stops when `mode` is
-`next` and `selection` is missing or empty, the same way it does on a missing
-`reconciled` block. Both fields are absent on an ordinary run, and `mode: next`
-without `selection` is the failure the gate exists to catch — not a default.
+against, the pick, its `Breaking class`, whether the claim actually landed
+(**`claimed`**), every candidate a verifier **`rejected`** with its verdict, and
+every candidate **`passedOver`** without one. It is **read, not merely
+written**: Phase 6 hard-stops when `mode` is `next` and `selection` is missing
+or empty, the same way it does on a missing `reconciled` block, and Phase 1's
+sweep reads `claimed` to decide whether this run has a claim worth releasing at
+all. Both fields are absent on an ordinary run, and `mode: next` without
+`selection` is the failure the gate exists to catch — not a default.
+
+**`claimReleased`** sits on the **deliverable**, not here, because it is written
+by a *later* run than the one it describes: Phase 1's sweep stamps it when it
+hands a dead run's issue back to `Ready`. Its presence excludes that run file
+from the sweep for good, which is what stops the release repeating and
+eventually taking an issue away from whoever legitimately re-claimed it. An
+adopt of a run carrying it must re-claim before resuming (`SKILL.md` Phase 1).
 
 `rubricProvenance` on a `next` run is always `derived — issue <number>`; see
 the note above on why it is never `supplied`.

@@ -341,11 +341,24 @@ Procedures and traps:
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
    **Release stranded `next` claims while you are here — keyed on the PID, not
-   on a bucket.** For every run file with a `next` mode, `pr: null` and
-   `status: open`, test its `conductorPid` with `kill -0`. **Dead** → that run
-   is holding an issue in **In progress** with nobody to release it: move the
-   issue back to **Ready** and count it in the `reconciled` line. **Alive, or
+   on a bucket.** For every run file with a `next` mode, `pr: null`,
+   `status: open`, **no `claimReleased` stamp**, and **`selection.claimed` not
+   `false`**, test its `conductorPid` with `kill -0`. **Dead** → that run is
+   holding an issue in **In progress** with nobody to release it: move the issue
+   back to **Ready**, **stamp `claimReleased: <iso8601>` on the deliverable**,
+   and count it in the `reconciled` line's `claims released` slot. **Alive, or
    the PID is absent/unparseable** → leave it entirely, and report it.
+   Both extra predicate clauses prevent the sweep from taking an issue away from
+   a **live** delivery, which is the same harm the claim itself exists to
+   prevent — just reached from the other direction:
+   - **`claimed: false`** means that run's claim write failed and it proceeded
+     unclaimed (`references/next-mode.md` §6). It never held the issue, so there
+     is nothing to give back — and by now another run may legitimately hold it.
+   - **`claimReleased`** makes the release **idempotent**. The predicate is
+     otherwise still true after a release, so the next run re-releases the same
+     issue; once it has been re-claimed by anyone, that repeat is a theft rather
+     than a recovery. Nothing else closes the file: bucket 4 explicitly permits
+     a dead run file to be left standing.
    Do **not** key this on the worktree buckets. `resumable` tests the PID, but
    `settled` does not test liveness at all, and — decisively — a `next` run
    holds its claim from **Phase 0, before any worktree exists**, which is the
@@ -377,6 +390,13 @@ Procedures and traps:
    the phase list and the run file, it isn't lost work. Set the run file's
    `entry` to `created`, or to `adopted` when resuming an existing worktree
    via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
+   **Adopting a `next` run whose deliverable carries `claimReleased`?** Its
+   issue was handed back to `Ready` while it was dead and may now belong to
+   someone else. Re-run the three-step claim in
+   [`references/next-mode.md`](references/next-mode.md) §6 before resuming —
+   `Status` not `Ready` → stop and say the issue was re-claimed elsewhere.
+   Resuming on the strength of a claim the sweep already released is how an
+   adopted run comes to "release" an issue a live delivery is holding.
 5. **Move the issue to `In progress`** — the run file's `issue`, if it has one.
    This is the right moment rather than Phase 0: the entry gate can still stop a
    run, so the worktree is the first step that commits to doing the work. Column
