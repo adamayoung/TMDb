@@ -304,7 +304,11 @@ that is what `verifiedBy` is for, and "read the issue body" forces `blocked`.
 
 **Scope.** Backlog only, plus the orphan sweep. Never touch In progress, In
 review or Done; someone is working there and a status change under them is
-hostile.
+hostile. Those three columns have owners of their own — `/deliver` sets In
+progress, `/watch-pr` sets In review, and the board's own automation sets Done;
+the whole lifecycle is tabulated in
+[`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) → *Board status —
+the column lifecycle*.
 
 ## Rubrics
 

@@ -283,6 +283,14 @@ worked queue, and owns the Ready test and the priority/size rubrics in turn. The
 split matters: filing and triage are separate judgements, so neither file states
 the other's rules.
 
+That spec also carries the **board's column lifecycle** — the one place the
+column names and the `update_project_item` idiom are written down. An issue moves
+Backlog → Ready (`/triage-issues`) → **In progress** (`/deliver`, on entering the
+worktree) → **In review** (`/watch-pr`, when the PR is green and waiting on you)
+→ Done (the board's own "item closed" automation, via the `Closes #NNN` line
+`/pr` puts in every PR body). Each column has exactly one owner; a board write
+that fails is reported, never fatal.
+
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
 **run only when the change touches reviewable code** — Swift for both

@@ -165,6 +165,14 @@ implementation = separate `/deliver` sessions.)
   live where it survives: **the ledger alone is not enough, because Phase 1's
   `EnterWorktree` clears it.** Phase 8 copies it into the retro, which is the
   committed, human-reviewed copy.
+- **Identify the issue this delivers, and record it.** Most deliveries implement
+  a tracked issue — `/deliver auto` takes one off the board's Ready column, and a
+  plan usually names one. Record `issue: <number>` in the **run file** (or
+  `issue: null` when the work is genuinely untracked, which is the honest answer
+  for an ad-hoc fix). Phase 1 moves it to **In progress** and Phase 10 to **In
+  review**, so an unrecorded issue is one the board silently never reflects. It
+  goes in the run file rather than the ledger for the usual reason: `EnterWorktree`
+  clears the ledger, and Phase 10 may run long after that, in the background.
 - **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
   `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
@@ -283,7 +291,14 @@ Procedures and traps:
    the phase list and the run file, it isn't lost work. Set the run file's
    `entry` to `created`, or to `adopted` when resuming an existing worktree
    via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
-5. **Edit via worktree paths**: re-`Read` anything read before entering, and
+5. **Move the issue to `In progress`** — the run file's `issue`, if it has one.
+   This is the right moment rather than Phase 0: the entry gate can still stop a
+   run, so the worktree is the first step that commits to doing the work. Column
+   vocabulary and the exact call:
+   [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) →
+   *Board status — the column lifecycle*. No issue → skip and say so; a failed
+   board write is reported, never fatal.
+6. **Edit via worktree paths**: re-`Read` anything read before entering, and
    **verify `git status` shows your diff in the worktree before trusting the
    first green build** (empty diff + baseline counts = edits went to `main`).
 
@@ -497,6 +512,13 @@ changes when the conductor moves to the next deliverable's worktree. It
 resolves threads, fixes failing checks (routing unrelated integration
 failures per §4), and loops until **ready** or **stuck**. Ready means
 **mergeable now** (branch brought up to date with `main`, re-run green).
+
+On ready it also moves the issue to **In review**, which it reads from the
+`Closes #NNN` line Phase 9's PR body carries — **not** from an argument. Two bare
+numbers in one invocation (`/watch-pr <pr> <issue>`) would be ambiguous, and the
+PR body is the same link GitHub uses to close the issue on merge, so there is one
+source rather than two that can disagree. The run file's `issue` is what Phase 1
+uses, before any PR exists.
 
 **THE GATE — hard stop.** Ready → stop; hand the merge to the user; report
 the PR URL and state; run Phase 11. The worktree **stays** (torn down only on
