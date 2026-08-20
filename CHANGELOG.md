@@ -51,6 +51,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Breaking:** `TMDbError.network(_:)` no longer hands your API key to whatever
+  you log the error to. A `URLSession` failure carries the whole URL of the
+  request that failed in its `NSError` `userInfo`, and for a client created with
+  `TMDbClient(apiKey:)` that URL contains the `api_key` query item — so an
+  ordinary timeout, DNS failure or dropped connection put the credential into
+  consumer logs, crash reports and analytics breadcrumbs. The library already
+  scrubbed token-bearing *path* segments from `TMDbErrorContext.endpointPath`;
+  it now covers the failing URL too.
+
+  The value of any credential-bearing query item (`api_key`, `session_id`,
+  `request_token`, `guest_session_id`), and any guest session id or account id
+  in the path, is replaced with `REDACTED`. The attached error keeps its
+  `domain`, `code` and `localizedDescription`, so branching on those is
+  unaffected, and on Apple platforms it still bridges to `URLError`.
+
+  Breaking, and silently so — nothing stops compiling. The other diagnostic
+  `userInfo` entries (`NSUnderlyingError` and the related-task keys) are
+  **dropped** rather than scrubbed, because they can nest a second copy of the
+  same URL, so code reading them will now find them absent. An error with
+  nothing to redact — including one thrown by your own `HTTPClient` — is
+  attached exactly as raised, so its concrete type still matches in a `catch`.
+  `TMDbClient(bearerToken:)` was never affected: that credential is a header.
+
 - A type conforming to one of the service protocols itself, rather than using
   `TMDbTesting`'s mocks, no longer risks an infinite recursion. 54 protocol
   conveniences shared their requirement's signature, differing only by default

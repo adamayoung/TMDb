@@ -44,7 +44,11 @@ final class TMDbAPIClient: UnmappedAPIClient {
                 throw TMDbAPIError.cancelled
             }
 
-            throw TMDbAPIError.network(error)
+            // Redacted for the same reason as `TMDbErrorContext.endpointPath`:
+            // this error reaches a public case a caller may log, and a
+            // `URLSession` failure carries the whole request URL — `api_key`
+            // and all — in its `userInfo`.
+            throw TMDbAPIError.network(NetworkErrorRedactor.redact(error))
         }
 
         try await validate(response: httpResponse, with: serialiser, path: request.path)
