@@ -23,6 +23,10 @@ enum TMDbAPIError: Error, Equatable {
     ///
     /// Network error.
     ///
+    /// The associated value is redacted by ``NetworkErrorRedactor``: a
+    /// `URLSession` failure carries the failing request's whole URL — `api_key`
+    /// included — in its `userInfo`.
+    ///
     case network(Error)
 
     ///
