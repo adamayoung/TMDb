@@ -41,8 +41,9 @@ Keep an item only if **both** hold: its `Status` is `Ready`, **and** its issue
 `Ready` for as long as it takes the board's automation to move it, and on
 2026-08-20 the newest run-list was headed by an issue that was already `Done`.
 
-Then remove three classes of candidate. Each is cheap, and each prevents a
-distinct way of delivering the same work twice:
+Then remove the candidates that are unfit before any verifier runs. The first
+two are cheap, and each prevents a distinct way of delivering the same work
+twice; the third defers to §5:
 
 - **Already claimed by a PR** — an open pull request whose body carries
   `Closes #NNN` for that issue. One `mcp__github__list_pull_requests` call
@@ -52,7 +53,8 @@ distinct way of delivering the same work twice:
 - **Already claimed by a live worktree** — a run file under `.git/deliver/`
   whose deliverable names that `issue` and whose worktree is `live` (lock PID
   alive; see [`worktree-lifecycle.md`](worktree-lifecycle.md)).
-- **Breaking, in `merge` mode only** — see §5.
+- **Unfit for `merge` mode** — breaking (§5a) or reflexive (§5b). Only in
+  `merge` mode, and a skip rather than a rejection.
 
 An empty set after filtering → **stop before any worktree**, report the counts,
 and recommend `/triage-issues`.
@@ -130,16 +132,26 @@ Spawn **one read-only subagent per candidate**, given the issue body, its latest
 | --- | --- |
 | `startable` | every claim in the body still holds at the sha; the fix approach is determined; no unsatisfied `dependsOn` |
 | `stale` | a load-bearing claim no longer holds — the code moved, or it was already fixed |
-| `needs-decision` | sound, but the fix approach is not determined (a `**Decision needed:**` line, a `question` label, or an open `dependsOn` from the marker's `deps=`) |
+| `needs-decision` | sound, but the fix approach is not determined — a `**Decision needed:**` line, a `question` label, an open `dependsOn` from the marker's `deps=`, or an explicit `**Breaking class:** needs a decision` |
 
 plus the **one deciding fact** and **what it checked first-hand**. A verifier
 that cannot name what it checked votes `stale`.
 
 **A dead verifier is not a `startable`.** Retry once; still dead or unusable →
-the candidate is **rejected**, and the run moves on. This is deterministic on
-purpose — "fall back to deciding it yourself" would hand the startability call
-to the party with an interest in continuing, which is the whole reason the
-dead-grader rule exists in Phase 6.
+**pass the candidate over** — leave it in `Ready`, do not comment, do not count
+it against the reject cap, and move on. This is deterministic on purpose:
+"fall back to deciding it yourself" would hand the startability call to the
+party with an interest in continuing, which is the whole reason the dead-grader
+rule exists in Phase 6.
+
+Pass over rather than reject, because a dead verifier is a fact about the
+**harness**, not about the issue. Demoting a healthy `Ready` issue and
+commenting on it because a subagent died blames the board for a tooling
+failure — and there is no verdict to put in the comment's marker anyway. For
+the same reason, **two dead verifiers in one run stop the run**: repeated
+verifier death means the harness is broken, and continuing would silently pass
+over the whole queue and report "nothing startable", which reads as a board
+problem. Say which it was.
 
 **`dependsOn` outranks priority.** An open dependency makes a candidate
 `needs-decision` even when it sits at the head — `/triage-issues` Phase 6 sorts
@@ -240,6 +252,14 @@ unclassified compatibility question belongs. Only an issue **explicitly**
 classed `needs a decision` is a §4 rejection, and then because its fix approach
 is undecided — not because of this section.
 
+`auto-and-async.md` already states why this filter is worth its pickiness: this
+is a single-maintainer package with public API surface *"where the
+ready-to-merge human gate is deliberate — every change is a compatibility call
+worth a human's eyes"*. Without it, `/deliver auto merge next` would have
+squash-merged a milestone-20.0.0 behavioural change on the day it shipped.
+Without `merge`, `/deliver auto next` still delivers those issues — it just
+stops at the gate, which is exactly where a compatibility call belongs.
+
 > **Expect `merge` mode to be picky, and say so when it is.** On the board at
 > the time of writing, **3 of the 12** `Ready` issues carry a Breaking-class
 > line at all, so `/deliver auto merge next` will often report "nothing
@@ -269,14 +289,6 @@ the `merge` opt-in** whenever the run file says `reflexive: true` and
 `mode: next` — belt and braces, in case the fix sketch understated the
 footprint. The run still delivers; it just stops at the gate.
 
-This is not belt-and-braces: `auto-and-async.md` already states that this is a
-single-maintainer package with public API surface *"where the ready-to-merge
-human gate is deliberate — every change is a compatibility call worth a human's
-eyes"*. Without the filter, `/deliver auto merge next` would have squash-merged
-a milestone-20.0.0 behavioural change on the day it shipped. Without `merge`,
-`/deliver auto next` still delivers those issues — it just stops at the gate,
-which is exactly where a compatibility call belongs.
-
 ## 6 — Claim the issue, then draft
 
 **Claim before drafting.** The moment a candidate is `startable`:
@@ -290,7 +302,13 @@ which is exactly where a compatibility call belongs.
    [`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md) →
    *Board status*).
 3. **Re-read once more to confirm the write landed** — a board write is
-   non-fatal by policy, so a failed one is otherwise silent.
+   non-fatal by policy, so a failed one is otherwise silent. Still not
+   `In progress` → retry once, then **proceed unclaimed**: record
+   `"claimed": false` in `selection` and say in the report that the board does
+   not reflect this run. Do not stop (a board write never fails the work) and
+   do not pretend it landed — both the §6 release obligation and Phase 1's
+   sweep key off that flag, and a run that believes it holds a claim it does
+   not will "release" an issue another run is delivering.
 
 Step 1 narrows the race; it does not eliminate it. `update_project_item` is a
 blind overwrite with no compare-and-swap, so two runs that re-read in the same
@@ -319,12 +337,21 @@ it is in the lifecycle table with the others.
 presupposes reaching a stop report; the commonest end of an unattended run —
 context exhaustion, a killed session, a dropped MCP — reaches none, and leaves
 the claim held forever. So the recovery is **also** owned by the next run's
-Phase 1 reconcile sweep, which releases the issue of any dead `next` run that
-never opened a PR ([`worktree-lifecycle.md`](worktree-lifecycle.md)). Two
-owners for one release is deliberate here, and is not the ambiguity the
-one-owner rule guards against: they cannot both fire, because the first only
-runs while the conductor is alive and the second only once it demonstrably is
-not.
+Phase 1 reconcile sweep, which releases the issue of any `next` run that never
+opened a PR **and whose `conductorPid` is dead**
+([`worktree-lifecycle.md`](worktree-lifecycle.md)).
+
+Two owners for one release is deliberate, and it is not the ambiguity the
+one-owner rule guards against — but only because of that PID test, so do not
+weaken it to something cheaper. They cannot both fire: the first runs only
+while the conductor is alive, the second only once it is **proven** dead. The
+worktree buckets look like they would serve and do not: `settled` performs no
+liveness test at all, and a `next` claim is held from Phase 0, *before any
+worktree exists*. A bucket-keyed sweep would therefore either release a live
+conductor's claim while it sits at the approval stop — handing the issue to a
+concurrent run, which is the double-delivery the early claim exists to
+prevent — or never see the pre-worktree window, which is where the claim
+actually lives.
 
 **Draft with the `Plan` agent**, given the issue body, the verifier's findings,
 and the `knowledge/` entries Phase 0's consult surfaced. From the issue:

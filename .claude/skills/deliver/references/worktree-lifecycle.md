@@ -152,7 +152,8 @@ is a claim that a human set the bar.
   "reflexive": false,
   "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
   "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
-  "mode": "next",
+  "mode": "auto merge next",
+  "conductorPid": 90982,
   "planReview": "forced — auto-next",
   "selection": {
     "source": "board-fields (no run-list line; deps/contention unknown)",
@@ -180,7 +181,7 @@ A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
 
-Five run-scoped fields sit outside `deliverables[]` because they describe the
+Six run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
@@ -196,12 +197,27 @@ field rather than a habit for the reason this whole file exists — Phase 6
 hard-stops when an `auto` `next` run reaches the gate without it, so "the
 critics were skipped" cannot look identical to "the critics ran".
 
-**`mode`** and **`selection`** belong to `next` runs
-([`next-mode.md`](next-mode.md)). **`mode` is written when Phase 0 parses the
-invocation keywords — before selection runs**, not after it. That ordering is
-the whole point: written afterwards, a run that skipped selection would carry
-neither field and grade as an ordinary run, which is precisely the green the
-gate exists to catch. `selection` records how the issue was chosen —
+**`mode`**, **`conductorPid`** and **`selection`** belong to `next` runs
+([`next-mode.md`](next-mode.md)). `mode` and `conductorPid` are written **when
+Phase 0 parses the invocation keywords — before selection runs**, not after it.
+That ordering is the whole point: written afterwards, a run that skipped
+selection would carry neither field and grade as an ordinary run, which is
+precisely the green the gate exists to catch.
+
+`mode` records the **whole parsed invocation** — `"auto merge next"`, not
+`"next"`. `auto` and `merge` are read after the point where they could still be
+remembered: Phase 6's `planReview` stop runs past an `EnterWorktree`, and Phase
+10's merge-drop runs in the background, potentially in a resumed session. A
+keyword kept only in the ledger is a keyword those two phases silently no-op on.
+
+**`conductorPid`** is this session's PID, and it is what makes a stranded claim
+recoverable. Phase 1 releases a dead `next` run's issue **on the PID test
+alone** — never on the worktree buckets, because `settled` performs no liveness
+test and, more importantly, a `next` run holds its claim from Phase 0, *before
+any worktree exists to classify*. Without a PID, that window is either swept as
+dead while a conductor is live at its approval stop, or never swept at all.
+
+`selection` records how the issue was chosen —
 the ordering source and its sha, the sha every candidate was re-verified
 against, the pick, its `Breaking class`, and every rejected candidate with its
 verdict. It is **read, not merely written**: Phase 6 hard-stops when `mode` is

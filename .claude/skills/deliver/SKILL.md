@@ -197,9 +197,14 @@ implementation = separate `/deliver` sessions.)
   consumes it. Nothing startable, or no Projects MCP → **stop before the
   worktree**; never fall through to the "no plan" stop, which reads as an
   unrelated failure.
-  **Write `mode: next` into the run file when you parse the keywords — before
-  selection runs**, not after. Written afterwards, a run that skipped selection
-  carries no `mode` either and sails through Phase 6's gate as an ordinary run.
+  **Write the parsed invocation into the run file when you parse the keywords —
+  before selection runs**, not after. Record **every** keyword, not just this
+  one (`"mode": "auto merge next"`), plus `conductorPid` — this session's PID.
+  Written afterwards, a run that skipped selection carries no `mode` either and
+  sails through Phase 6's gate as an ordinary run; and `auto`/`merge` recorded
+  nowhere durable means Phase 6's `planReview` stop and Phase 10's merge-drop
+  both read a keyword the ledger lost at `EnterWorktree` — they would silently
+  no-op on exactly the resumed and backgrounded paths the run file exists for.
   **Auto:** the approval stop below becomes the `phase0n-selection` panel —
   proceed with this self-picked issue and self-drafted plan, vs stop.
 - **A plan born from a review finding is a hypothesis** — verify against the
@@ -335,16 +340,23 @@ Procedures and traps:
    `swept:`, which is Phase 7's knowledge sweep and will silently take the
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
-   **Release stranded `next` claims while you are here.** Any run file with
-   `mode: next`, `pr: null` and `status: open` whose worktree classified
-   `resumable` or `settled` is a `next` run that died holding an issue in
-   **In progress** — move that issue back to **Ready** and count it in the
-   `reconciled` line. A live conductor releases its own claim on a reported
-   stop, but the commonest end of an unattended run — context exhaustion, a
-   killed session, a dropped MCP — reaches no stop report, and nothing else
-   recovers it: `next` reads only `Ready`, and `/triage-issues` is forbidden to
-   touch `In progress`. This sweep already enumerates the run files, so the
-   strand costs one board write here and otherwise lasts forever.
+   **Release stranded `next` claims while you are here — keyed on the PID, not
+   on a bucket.** For every run file with a `next` mode, `pr: null` and
+   `status: open`, test its `conductorPid` with `kill -0`. **Dead** → that run
+   is holding an issue in **In progress** with nobody to release it: move the
+   issue back to **Ready** and count it in the `reconciled` line. **Alive, or
+   the PID is absent/unparseable** → leave it entirely, and report it.
+   Do **not** key this on the worktree buckets. `resumable` tests the PID, but
+   `settled` does not test liveness at all, and — decisively — a `next` run
+   holds its claim from **Phase 0, before any worktree exists**, which is the
+   whole reason it claims early. Such a run has no worktree to classify, so a
+   bucket-keyed rule either releases a **live** conductor's claim while it waits
+   at the approval stop (re-opening the double-delivery the claim prevents, in
+   the exact window it was designed for) or never releases it at all. The PID
+   test is the only thing that separates those two, and it covers the
+   pre-worktree window the buckets cannot see. Treat an `EPERM` from `kill -0`
+   as alive, and cross-check a suspiciously old PID against
+   `ps -p <pid> -o lstart=` exactly as the lock-liveness rule does.
 2. **Enter** with `EnterWorktree(name: "<prefix>/<slug>")` (`feature/`,
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch
    name afterwards** (`git branch --show-current`; `git branch -m` if the
@@ -511,10 +523,13 @@ Three distinct cases, and they must not be conflated:
   green indistinguishable from never having looked. (`mode` is written at
   Phase 0's keyword parse, *before* selection, so a skipped selection shows up
   as `mode: next` with no `selection` rather than as an ordinary run.)
-- **`mode: next` in `auto`, with `planReview` missing** → **hard stop.** That
-  field is the sole record that the forced `/review-plan` actually ran, and a
-  self-picked, self-drafted, unattended plan whose critics were skipped is the
-  least-reviewed thing this pipeline can produce.
+- **A `mode` naming both `auto` and `next`, with `planReview` missing** →
+  **hard stop.** That field is the sole record that the forced `/review-plan`
+  actually ran, and a self-picked, self-drafted, unattended plan whose critics
+  were skipped is the least-reviewed thing this pipeline can produce. Read
+  `auto` from the run file's `mode`, never from memory of the invocation — the
+  ledger that held it does not survive `EnterWorktree`, a resume, or Phase 10's
+  background handoff.
 
 How it is graded depends on weight:
 
@@ -620,7 +635,9 @@ opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
 **`merge` is dropped, not honoured, when the run file says `reflexive: true`
-and `mode: next`.** A `next` run chose its own issue, so nobody decided to
+and a `mode` naming `next`** — read both from the run file, since this phase
+runs in the background, potentially long after the invocation. A `next` run
+chose its own issue, so nobody decided to
 merge a rewrite of the pipeline's own skills unattended — stop at the gate and
 say the opt-in was dropped and why. Selection already refuses a reflexive
 candidate in `merge` mode ([`references/next-mode.md`](references/next-mode.md)

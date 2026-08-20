@@ -293,10 +293,12 @@ Backlog → Ready (`/triage-issues`) → **In progress** (`/deliver`, on enterin
 worktree — or at the pick, in `next` mode) → **In review** (`/watch-pr`, when the
 PR is green and waiting on you)
 → Done (the board's own "item closed" automation, via the `Closes #NNN` line
-`/pr` puts in every PR body). Two **reverse** moves belong to `/deliver next`
-alone — Ready → Backlog when a candidate fails re-verification, and In progress →
-Ready when a claimed run stops before its PR opens. Each transition has exactly
-one owner; a board write that fails is reported, never fatal.
+`/pr` puts in every PR body). Three **reverse** moves belong to `/deliver` —
+Ready → Backlog when a `next` candidate fails re-verification, In progress →
+Ready when a claimed run stops before its PR opens, and In progress → Ready
+again from Phase 1's reconcile sweep, which releases the claim of a `next` run
+that died without stopping. Each transition has exactly one owner; a board
+write that fails is reported, never fatal.
 
 **Code review** — both the local `/review-changes` and the GitHub Actions reviewer
 follow one shared spec, [`.github/CODE_REVIEW.md`](.github/CODE_REVIEW.md), and
