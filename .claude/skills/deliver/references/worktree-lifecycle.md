@@ -185,6 +185,7 @@ is a claim that a human set the bar.
     "verifiedAt": "527682f7",
     "listed": 12, "picked": 448, "breakingClass": "none", "claimed": true,
     "claimedFrom": "Ready", "mergeRefused": null,
+    "breakingClass": "none", "authorAssociation": "OWNER",
     "passedOver": [{ "issue": 434, "why": "filtered — closed, still showing Ready" }],
     "rejected": [{ "issue": 426, "verdict": "needs-decision", "why": "three competing fixes; demoted" }]
   },

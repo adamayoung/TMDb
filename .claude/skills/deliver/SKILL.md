@@ -790,16 +790,16 @@ gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
-**`merge` is dropped, not honoured, when *either* holds** — and both apply under
-both selection policies (`next` or `explicit`):
+**`merge` is dropped, not honoured, when *any* of these holds** — and all apply
+under both selection policies (`next` or `explicit`):
 
 1. the run file says **`reflexive: true`** *and* it is a selection run — its
    `mode` names a **selection-policy token** (`next` or `explicit`), **or** it
    carries a `selection.policy`; or
 2. **`selection.mergeRefused` is non-null** — selection already refused the
    opt-in under §5a/§5b/§5c; or
-3. **the raw facts say it should have been refused, whatever `mergeRefused`
-   says** — `selection.breakingClass` is anything but `none`, or
+3. **on a selection run, the raw facts say it should have been refused, whatever
+   `mergeRefused` says** — `selection.breakingClass` is anything but `none`, or
    `selection.authorAssociation` is outside `{OWNER, MEMBER, COLLABORATOR}`
    (absent or unrecognised counts as outside). Re-derive rather than trust: a
    refusal under `explicit` survives only as a field a conductor had to remember
