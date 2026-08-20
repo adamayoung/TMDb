@@ -51,6 +51,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Breaking:** `TaggedImageMedia` gains a `tvSeries(TVSeriesListItem)` case, and
+  tagged images attached to a whole TV series stop being thrown away. TMDb sets a
+  tagged image's nested `media_type` to `"tv"` when the image belongs to a series
+  rather than to a movie or a single episode; the library modelled only the
+  latter two, so every such image was silently discarded while decoding the page.
+  It is not a rare shape — 56 of 219 rows across a live sample of 30 people, and
+  for a TV-heavy person it is most of the page (18 of 20 for person 17419).
+
+  It was worse than a short page. Because the rows were dropped *before* the
+  results array was assembled, a page whose images were all TV series decoded to
+  **no results at all** — and an empty page ends a `PagedAsyncSequence`. So
+  `allTaggedImages(forPerson:)` and `allTaggedImagesPages(forPerson:)` stopped
+  there and discarded every remaining page, rather than merely skipping rows.
+
+  This affects you at compile time only if you switch **exhaustively** over
+  `TaggedImageMedia` — add a `.tvSeries` branch, or a `default`. It is also
+  breaking *silently*: pages that were quietly short now return the missing rows,
+  so result counts grow, and code that treated "not `.movie`" as "must be an
+  episode", or that funnels the unexpected through a `default:` arm, changes
+  behaviour with nothing to stop it compiling.
+
+  A nested `media_type` this library still does not model — `tv_season` does
+  occur, rarely — is unaffected: it is skipped while decoding, exactly as before.
+
 - **Breaking:** `TMDbError.network(_:)` no longer hands your API key to whatever
   you log the error to. A `URLSession` failure carries the whole URL of the
   request that failed in its `NSError` `userInfo`, and for a client created with

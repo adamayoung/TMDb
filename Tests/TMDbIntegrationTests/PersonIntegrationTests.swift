@@ -113,6 +113,32 @@ struct PersonIntegrationTests {
         #expect(!taggedImageList.results.isEmpty)
     }
 
+    ///
+    /// Person 500 is tagged almost entirely in movies, so the test above never
+    /// exercised a TV series. Person 17419 is the opposite — most of page one is
+    /// tagged against the series rather than an episode of it, and every one of
+    /// those rows was silently discarded before `TaggedImageMedia.tvSeries`
+    /// existed.
+    ///
+    /// The drop count is deliberately not asserted here. `tv_season` also occurs
+    /// on this endpoint and is still unmodelled, so an exact count against live
+    /// data would fail for something the library is designed to skip.
+    ///
+    @Test("taggedImages for a person tagged against whole TV series")
+    func taggedImagesForPersonTaggedAgainstTVSeries() async throws {
+        let personID = 17419
+
+        let taggedImageList = try await personService
+            .taggedImages(forPerson: personID)
+
+        #expect(!taggedImageList.results.isEmpty)
+        #expect(
+            taggedImageList.results.contains {
+                if case .tvSeries = $0.media { true } else { false }
+            }
+        )
+    }
+
     @Test("translations")
     func translations() async throws {
         let personID = 500

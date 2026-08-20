@@ -10,7 +10,10 @@ import Foundation
 ///
 /// A model representing the media associated with a tagged image.
 ///
-/// Tagged images can only be associated with movies or TV episodes.
+/// A tagged image can be associated with a movie, with a whole TV series, or
+/// with a single TV episode. TMDb occasionally tags an image with a media type
+/// this library does not model; such an image is skipped while decoding a page
+/// rather than failing the whole page.
 ///
 public enum TaggedImageMedia: Identifiable, Codable, Equatable, Hashable,
 Sendable {
@@ -23,6 +26,9 @@ Sendable {
         case .movie(let movie):
             movie.id
 
+        case .tvSeries(let tvSeries):
+            tvSeries.id
+
         case .tvEpisode(let tvEpisode):
             tvEpisode.id
         }
@@ -32,6 +38,11 @@ Sendable {
     /// Movie.
     ///
     case movie(MovieListItem)
+
+    ///
+    /// TV series.
+    ///
+    case tvSeries(TVSeriesListItem)
 
     ///
     /// TV episode.
@@ -48,6 +59,7 @@ extension TaggedImageMedia {
 
     private enum MediaType: String, Codable, Equatable {
         case movie
+        case tvSeries = "tv"
         case tvEpisode = "tv_episode"
     }
 
@@ -67,6 +79,9 @@ extension TaggedImageMedia {
         case .movie:
             self = try .movie(MovieListItem(from: decoder))
 
+        case .tvSeries:
+            self = try .tvSeries(TVSeriesListItem(from: decoder))
+
         case .tvEpisode:
             self = try .tvEpisode(TVEpisode(from: decoder))
         }
@@ -84,6 +99,13 @@ extension TaggedImageMedia {
         case .movie(let movie):
             try container.encode(MediaType.movie, forKey: .mediaType)
             try movie.encode(to: encoder)
+
+        case .tvSeries(let tvSeries):
+            try container.encode(
+                MediaType.tvSeries,
+                forKey: .mediaType
+            )
+            try tvSeries.encode(to: encoder)
 
         case .tvEpisode(let tvEpisode):
             try container.encode(

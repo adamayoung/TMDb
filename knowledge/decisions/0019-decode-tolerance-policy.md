@@ -120,6 +120,11 @@ into "swallow anything".
   sampled tagged images are `tv` — roughly 13.5% of every tagged-images page is
   discarded, and far more for TV-heavy people. That was previously invisible and
   is now counted. Modelling `tv` is a separate feature decision.
+  **Settled 2026-08-20 (#437):** that decision was taken — `TaggedImageMedia`
+  gained a `tvSeries(TVSeriesListItem)` case in 20.0.0, so `tv` now decodes
+  rather than being counted. This is limb 1 continuing to work, not a change to
+  it: `tv_season` was found on the same endpoint in the same sweep, is still
+  unmodelled, and is still skipped and counted.
 
 ## Alternatives considered
 

@@ -424,13 +424,30 @@ Not measurable here: the whole **v4** surface (no MCP tooling) and the
 `PageableListResult<TVEpisode>` and `<MediaListSummary>` have never decoded a
 real row in CI.
 
-### `TaggedImageMedia` models only `movie` and `tv_episode`
+### `TaggedImageMedia` dropped every `tv` row until 20.0.0
 
 *2026-08-12, N=229 across 11 people.* The nested `media.media_type` was `movie`
-165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page is
+165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page was
 discarded, and far more for TV-heavy people (person 17419 lost 18 of 20 on page
-one). Tracked as #437; a tolerance policy cannot recover these, because the
-library has nowhere to put a series — the fix is a new case.
+one). **Fixed in 20.0.0 (#437):** `TaggedImageMedia` now has a
+`tvSeries(TVSeriesListItem)` case, so `tv` decodes. The drop was worse than a
+short page — an all-`tv` page decoded to *zero* results, and an empty page ends a
+`PagedAsyncSequence`, so `allTaggedImages` stopped there and lost every later
+page too.
+
+*2026-08-20, N=219 across 30 people (re-sampled for #437).* `movie` 109, `tv` 56,
+`tv_episode` 53 — and **`tv_season` 1** (person 57755, *True Detective* S1). The
+vocabulary on this endpoint is **not** closed at three: a 12-person / 378-row
+sweep the same day found only movie/tv/tv_episode and looked conclusive, and
+widening it to 30 people falsified that. `tv_season` remains unmodelled and is
+still skipped. Two consequences worth keeping: **do not** assert an exact
+`droppedItemCount` against this endpoint live (ADR-0019's carve-out applies), and
+the 56 `tv` rows span 13 distinct series with all five of `TVSeriesListItem`'s
+non-optional fields present and non-null on every one.
+
+The endpoint also **ignores the `page` query parameter**: `?page=1`, `?page=2`
+and `?page=3` return identical result ids, and the `page` field is always `0`
+despite a `total_pages` above 1. `allTaggedImages` therefore yields duplicates.
 
 Note also that the **top-level** `media_type` on a tagged image uses a *different
 vocabulary* from the nested one: `episode` where the nested object says
