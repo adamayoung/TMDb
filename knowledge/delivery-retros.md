@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (`feature/deliver-next-mode`) · full
+## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (#474) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — prose-only diff (~900 lines,
   12 files), but reflexive and it rewrites the pipeline's own contract, so
