@@ -547,7 +547,7 @@ that automate the development workflow. Invoke any of them with `/<name>`.
 
 | Skill | Purpose |
 | --- | --- |
-| `/deliver` | Orchestrate the full pipeline from an approved plan to a ready-to-merge PR — or `/deliver next` to take the top startable issue off the board's Ready column and plan it first |
+| `/deliver` | Orchestrate the full pipeline from an approved plan to a ready-to-merge PR — or `/deliver next` / `/deliver issue <n>` to select an issue (top of the Ready queue, or the one you name) and plan it first |
 | `/review-plan` | Adversarially review the current plan with three independent critics and apply the consensus |
 | `/implement-plan` | Implement the plan test-first (Canon TDD) until the test list is empty |
 | `/review-changes` | Review the working-tree changes — one reviewer, or a parallel fan-out with adversarial verification for large diffs |
@@ -624,11 +624,12 @@ mode** (or with the `Plan` agent — there is no `/plan` skill), then run
 autonomously to a single hard stop, **ready-to-merge**, and ends with a short
 retrospective.
 
-Working from the issue tracker instead? **`/deliver next`** needs no plan: it
-takes the top startable issue off the project board's **Ready** column,
-re-verifies it against `origin/main`, claims it, drafts a plan and shows it to
-you for approval, then runs the same pipeline. See *Picking the next issue*
-below.
+Working from the issue tracker instead? A **selection run** needs no plan.
+**`/deliver next`** takes the top startable issue off the project board's
+**Ready** column; **`/deliver issue 480`** takes the issue you name. Either way
+it re-verifies against `origin/main`, claims it, drafts a plan and shows it to
+you for approval, then runs the same pipeline. See *Picking the issue to work
+on* below.
 
 ```text
 plan mode                ← you draft AND approve the plan
@@ -655,23 +656,43 @@ plan mode                ← you draft AND approve the plan
 Each step is also usable on its own — e.g. `/review-changes` to review local
 changes, or `/watch-pr` to babysit an existing PR.
 
-#### Picking the next issue (`/deliver next`)
+#### Picking the issue to work on
 
-`/triage-issues` grooms the Backlog into an ordered **Ready** queue and
-publishes that order as a Project status update. `/deliver next` is its
-consumer — one command from "what should I do now?" to a green PR:
+`/deliver` chooses its issue under one of two **selection policies**. Both then
+run the identical path — re-verify, claim, draft, approve, deliver:
+
+| Policy | Invocation | Chooses |
+| --- | --- | --- |
+| `top-of-run-list` | `/deliver next` | the top startable issue on the board's **Ready** column |
+| `explicit` | `/deliver issue 480` | the issue **you** name — and it may sit in **Backlog** |
 
 ```text
-/deliver next              pick + plan + approve, then the pipeline above
-/deliver auto next         same, unattended — jurors rule instead of you
-/deliver auto merge next   same, and squash-merge once green
+/deliver next                  pick + plan + approve, then the pipeline above
+/deliver auto next             same, unattended — jurors rule instead of you
+/deliver auto merge next       same, and squash-merge once green
+/deliver issue 480             deliver that issue specifically
+/deliver auto issue 480        same, unattended
 ```
 
-Selection reads the status update's canonical run-list line, drops anything no
+`issue` takes one operand, with an optional `#`. It is a keyword rather than a
+bare number on purpose: a bare number would be ambiguous against a plan target
+whose first word happens to be a number, and pinning that would need a parser.
+
+**`/deliver next`** is `/triage-issues`' consumer — that skill grooms the
+Backlog into an ordered Ready queue and publishes the order as a Project status
+update. Selection reads that update's canonical run-list line, drops anything no
 longer open-and-`Ready`, and re-verifies the head candidate against
 `origin/main` before planning it — a `Ready` verdict was true at some sha, not
 necessarily at today's. A candidate whose claims no longer hold goes back to
 **Backlog** with a comment, and the run moves on.
+
+**`/deliver issue <n>`** skips the queue entirely: no run-list, no ordering, no
+`Ready` requirement, because choosing the issue yourself *is* the triage
+judgement. It still re-verifies the issue at `origin/main` and still claims it.
+The differences are in what happens when something is wrong — with no queue to
+move along, every exclusion becomes a **stop with a report** rather than a
+pass-over, and a failed re-verification stops rather than demoting the issue you
+just chose.
 
 That line is **assembled by `Scripts/build_run_list.py`**, not written by hand:
 it carries the whole of `/triage-issues`' ordering — dependency order,
@@ -681,10 +702,14 @@ correct.
 
 Four constraints are worth knowing before you reach for it:
 
-* **`merge` refuses a breaking change.** In `merge` mode an issue is selectable
+* **`merge` refuses a breaking change** — and equally a *reflexive* one (a
+  change to the repo's own skills, agents or workflows) or an issue written by
+  someone outside the repo. In `merge` mode an issue is selectable
   only if its `Breaking class` is `none` — absent or unparseable counts as
-  "needs a decision". Every other change still gets a human at the
-  ready-to-merge gate, which is where a compatibility call belongs.
+  "needs a decision". Under `next` the candidate is passed over; under
+  `issue <n>` there is nothing to pass over to, so the run **drops the `merge`
+  opt-in** and stops at the ready-to-merge gate for you instead. Either way the
+  compatibility call reaches a human, which is where it belongs.
 * **No run-list line, no unattended run.** If no status update carries the
   line, `/deliver next` falls back to ordering by Priority then Size and says
   loudly that contention spacing and dependency-driven promotion are

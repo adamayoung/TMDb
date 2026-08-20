@@ -73,6 +73,19 @@ Keep an item only if **both** hold: its `Status` is `Ready`, **and** its issue
 `Ready` for as long as it takes the board's automation to move it, and on
 2026-08-20 the newest run-list was headed by an issue that was already `Done`.
 
+> **Under `explicit`, the candidate set is the one issue you named**, so this
+> whole section reduces to checking *that* issue. Three differences:
+>
+> - **The `Status == Ready` half does not apply.** An issue in **Backlog** is
+>   selectable, because naming it yourself *is* the triage judgement the Ready
+>   test otherwise stands in for. The `state == open` half still applies.
+> - **The number must resolve to an issue, not a pull request.** GitHub shares
+>   one number space between them, so `issue 480` on a PR number would otherwise
+>   sail through and be "verified" as though it were an issue. A number that
+>   resolves to a PR, or to nothing at all, is a **stop**.
+> - **Every exclusion below becomes a stop rather than a pass-over**, per §0 —
+>   there is no next candidate to move to. Say which exclusion fired.
+
 Then remove the candidates that are unfit before any verifier runs. The first
 two are cheap, and each prevents a distinct way of delivering the same work
 twice; the third defers to §5:
@@ -224,6 +237,27 @@ an issue no agent re-read this run.
 
 ### Rejecting a candidate
 
+> **This whole procedure is `top-of-run-list`'s.** Demotion exists to give a
+> *queue* an exit past a poisoned head, and under `explicit` there is no queue —
+> so demoting the issue you just named would fight your own triage decision and
+> move an issue you are actively working on. Under `explicit`, both verdicts
+> **stop without demoting or commenting**, and they differ only in what the stop
+> says:
+>
+> - **`stale`** — a *factual* claim that the issue's premise no longer holds. No
+>   vote changes a fact, so it stops under **both** policies and in **both**
+>   attended and `auto`. Report which claim failed and recommend
+>   `/triage-issues`.
+> - **`needs-decision`** — a *judgement* that the fix approach is undetermined.
+>   Attended, stop and name the decision. In `auto`, that is exactly what a panel
+>   is for: route it to the existing **`phase0n-selection`** point. Do not invent
+>   a new point — [`deliver-panel.js`](../../../workflows/deliver-panel.js)
+>   throws on an id that is not in its `POINTS` map.
+>
+> **Two dead verifiers → stop**, under both policies: `top-of-run-list` cannot
+> tell a bad candidate from a broken verifier, and `explicit` has nowhere to
+> pass over to.
+
 A rejected candidate is **moved to `Backlog`**, with a comment naming what no
 longer holds. Both halves matter:
 
@@ -280,15 +314,31 @@ why, and recommend `/triage-issues`.
 
 ## 5 — What `merge` mode refuses
 
-Everything in this section is **scoped to `merge` mode** and is a
-**skip**, not a rejection: the candidate is passed over for this run and left
-exactly where it is on the board. Nothing here demotes anything, and outside
-`merge` mode none of it is read at all — §4's verifier alone decides
-startability. Keep that boundary: an earlier draft let the `Breaking class`
-default leak into every mode, which on the board as it stands would have
-demoted nine perfectly good `Ready` issues on the first run.
+Everything in this section is **scoped to `merge` mode**. Nothing here demotes
+anything, and outside `merge` mode none of it is read at all — §4's verifier
+alone decides startability. Keep that boundary: an earlier draft let the
+`Breaking class` default leak into every mode, which on the board as it stands
+would have demoted nine perfectly good `Ready` issues on the first run.
 
-`/deliver auto merge next` is the only invocation that can take an issue from a
+**What a refusal *does* depends on the policy** (§0), and this is the one place
+the two genuinely diverge:
+
+- **`top-of-run-list`** — a **skip**. The candidate is passed over for this run
+  and left exactly where it is on the board; the run moves to the next one.
+- **`explicit`** — there is no next candidate, and stopping outright would be
+  the wrong trade: you asked for this issue, and the work is still worth doing.
+  So the refusal **drops the `merge` opt-in** and records
+  `selection.mergeRefused: "<5a|5b|5c> — <reason>"` in the run file. The run
+  delivers normally and **stops at the Phase 10 gate for you to merge by hand**.
+  Never grant, never silently proceed to merge.
+
+That degradation is fail-closed, which is what makes it safe: §5's harm is *a
+diff nobody read getting merged*, and the diff does not exist at selection time,
+so naming an issue is not the human review §5 requires. Dropping the opt-in
+leaves a green PR waiting for a human — the same place an attended run ends.
+
+`/deliver auto merge next` and `/deliver auto merge issue <n>` are the only
+invocations that can take an issue from a
 board to a merged commit with nobody looking. Three properties make a candidate
 unfit for that, and all are knowable before Phase 1: it is **breaking** (5a), it
 is **reflexive** (5b), or it was **written by someone outside this repo** (5c).
@@ -402,13 +452,35 @@ human gate, which is exactly where a stranger's proposal should stop.
 **Claim before drafting.** The moment a candidate is `startable`:
 
 1. **Re-read the item's `Status` immediately before writing.** Anything other
-   than `Ready` means another run claimed it during your verification — a
-   subagent call, so a window of minutes. Treat it as a **lost race**: move to
+   than the status you read a moment ago means another run claimed it during
+   your verification — a
+   subagent call, so a window of minutes. Treat it as a **lost race**: under
+   `top-of-run-list` move to
    the next candidate, and do not count it against the reject cap (nothing was
-   wrong with the issue).
+   wrong with the issue); under `explicit` **stop and say the issue was claimed
+   elsewhere**.
+   Under `explicit` the acceptable starting statuses are **`Ready` or
+   `Backlog`**. Two further cases, neither of which exists under
+   `top-of-run-list`:
+   - **Absent from the board** → proceed with `"claimed": false` and say the
+     board does not reflect this run. Do **not** add it — Backlog entry belongs
+     to `/triage-issues` ([`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md)).
+   - **Already `In progress`** → test the holder's `conductorPid` with
+     `kill -0`, exactly as Phase 1's sweep does. **Alive** (or the PID is
+     absent/unparseable) → a live delivery holds it; **stop**. **Dead** →
+     the claim was stranded; proceed, claim it, and say so.
 2. Write `Status = In progress` (call:
    [`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md) →
-   *Board status*).
+   *Board status*), and **record the column you claimed it from** as
+   `selection.claimedFrom`.
+
+   > **`claimedFrom` is what every release path returns the issue to.** Under
+   > `explicit` the origin may be **Backlog**, and returning that to `Ready`
+   > would promote untriaged work past `/triage-issues`' Ready test with no
+   > Priority or Size — giving that column a second owner and feeding unvetted
+   > work to the next unattended run. Phase 1's sweep runs in a *later,
+   > different session*, so the origin cannot be inferred there; it has to be
+   > persisted here. Absent (every pre-change run file) → default to `Ready`.
 3. **Re-read once more to confirm the write landed** — a board write is
    non-fatal by policy, so a failed one is otherwise silent. Still not
    `In progress` → retry once, then **proceed unclaimed**: record
@@ -450,7 +522,12 @@ pick is two deliveries of one issue. Phase 1's write then finds the item already
 **A claim must be releasable.** Nothing else in the repo moves an issue *out* of
 `In progress`, so on **any stop before the PR opens** — a rejected plan, a
 `/review-plan` blocker, a red gate, a panel `stop` — move the issue back to
-`Ready` (Priority and Size untouched) and say so in the stop report. Skipping
+**`selection.claimedFrom`**, the column it was claimed from (Priority and Size
+untouched), and say so in the stop report. That is `Ready` for a
+`top-of-run-list` pick and for every run file written before `claimedFrom`
+existed, and it may be **Backlog** under `explicit` — returning a
+Backlog-claimed issue to `Ready` would promote untriaged work past the Ready
+test. Skipping
 this drains the queue into a column `next` can never see again and
 `/triage-issues` is forbidden to touch. `/deliver` owns this reverse transition;
 it is in the lifecycle table with the others.
@@ -521,7 +598,8 @@ nothing downstream is special-cased.
 Written into the run file at the end of selection — **except `picked` and
 `claimed`, which are written at §6 step 4, the instant the claim settles and
 before any drafting** — and **read by Phase 6**: a
-run whose run file records `mode: next` with `selection` missing or empty
+run whose run file records a **selection-policy token** in `mode` with
+`selection` missing or empty
 **hard-stops at the exit gate**, exactly as a missing `reconciled` block does.
 Without that, `selection` would be telemetry nobody checks — a green
 indistinguishable from never having run.
@@ -529,6 +607,8 @@ indistinguishable from never having run.
 ```json
 "mode": "next",
 "selection": {
+  "policy": "top-of-run-list",
+  "requested": null,
   "source": "board-fields (no run-list line; deps/contention unknown)",
   "verifiedAt": "527682f7",
   "listed": 12,
@@ -541,9 +621,22 @@ indistinguishable from never having run.
   ],
   "picked": 448,
   "breakingClass": "none",
-  "claimed": true
+  "claimed": true,
+  "claimedFrom": "Ready",
+  "mergeRefused": null
 }
 ```
+
+Under `explicit` the same block records `"policy": "explicit"`, the number you
+named in `"requested"`, and a `"source"` naming the invocation rather than the
+run-list. `listed`, `passedOver` and `rejected` are then empty or absent — there
+was no queue to list, pass over, or reject from — and `claimedFrom` may be
+`"Backlog"`.
+
+`claimedFrom` and `mergeRefused` are the two fields a *later* session reads:
+Phase 1's sweep returns a stranded claim to `claimedFrom`, and Phase 10 drops
+the `merge` opt-in when `mergeRefused` is present. Both must therefore be
+written at the moment they are known, not reconstructed at the end.
 
 `claimed` is **not** decoration. It is read by Phase 1's reconcile sweep, which
 skips any run file recording `claimed: false` — that run never held the issue,

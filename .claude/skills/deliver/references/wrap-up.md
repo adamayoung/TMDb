@@ -21,7 +21,8 @@ not a ceremony (a handful of bullets):
 - **`reconciled:`** — Phase 1's worktree sweep, e.g.
   `reconciled: 2 in scope / 1 reclaimed / 0 resumable / 1 reported / 0 claims
   released`. Named for the run file's own `reconciled` block. The last slot is
-  `next`-specific — issues released from **In progress** because the run holding
+  specific to **selection runs** (either policy) — issues released from
+  **In progress** back to their `claimedFrom` column because the run holding
   them died; it is `0` on almost every delivery, and a non-zero value is worth a
   sentence in the retro rather than just a number.
 - **`swept:`** — Phase 7's knowledge-retirement sweep, verbatim from

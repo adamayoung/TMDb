@@ -65,14 +65,21 @@ unattended run must still be reviewable.
 
 **Panel decision points** — **seven** (marked **Auto:** in `SKILL.md`):
 
-- Phase 0, `next` only — the run picked its own issue and drafted its own plan:
+- Phase 0, **selection runs only** (either policy) — the run has an issue and a
+  self-drafted plan:
   proceed with both vs stop. This is the attended approval stop
   ([`next-mode.md`](next-mode.md) §7) with the jurors standing in for the human.
-  It exists because `next` is the first mode to **add** a stop-and-ask, and auto
+  It exists because selection is the first thing to **add** a stop-and-ask, and
+  auto
   mode's whole invariant is that such a stop becomes a panel — dropping it
-  unattended would leave the conductor that chose the work and wrote the plan as
-  its own only judge. The jurors rule on **both halves**: is this the right next
-  issue, and does the plan address it.
+  unattended would leave the conductor that wrote the plan as
+  its own only judge. **What the jurors rule on depends on the policy**: under
+  `top-of-run-list` the run chose the issue *and* wrote the plan, so they judge
+  both halves; under `explicit` the user chose the issue, so that half is
+  settled and they judge the plan and whether the issue is startable as named.
+  One case reaches this point only under `explicit` — a `needs-decision` verdict,
+  where the plan had to *choose* a fix approach, and the jurors rule on whether
+  that choice is defensible.
 - Phase 0 — acceptance criteria neither supplied **nor derivable**: proceed
   without a rubric (Phase 6 becomes a no-op) vs stop. ACs that are *derivable*
   from a linked issue or an explicit test list are **not** a panel decision — the

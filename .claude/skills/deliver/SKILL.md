@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent), or pass `next` to take the top startable issue off the project board's Ready column and plan it first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
+description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent); pass `issue <n>` to deliver a specific GitHub issue you name, or `next` to take the top startable issue off the project board's Ready column — either way it re-verifies, claims and plans the issue first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -180,13 +180,18 @@ single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 with the skipped machinery noted, in the ledger and the retro; never invent a
 third tier.
 
-**One named override exists, and it is not a third tier.** An `auto next` run
-drafted its own plan with no human between the issue and the implementation, so
+**One named override exists, and it is not a third tier.** An `auto` **selection
+run** — under either policy — drafted its own plan with no human between the
+issue and the implementation, so
 it **always** runs `/review-plan`'s critics whatever the weight (Phase 2).
-Record that as `planReview: forced — auto-next` in the run file and the retro,
-leaving `weight` itself untouched; a lite run stays lite for Phases 4 and 5.
-Attended `next` is **not** covered: its Phase 0 approval stop is the same
-consent `ExitPlanMode` gives every other run, so it follows weight as normal.
+Record that as `planReview: forced — auto-<policy>` in the run file and the
+retro, leaving `weight` itself untouched; a lite run stays lite for Phases 4 and
+5. **`explicit` is covered too**: naming the issue yourself puts a human between
+you and the *issue*, not between anyone and the *plan*, and it is the plan the
+critics read.
+An **attended** selection run is **not** covered: its Phase 0 approval stop is
+the same consent `ExitPlanMode` gives every other run, so it follows weight as
+normal.
 
 ## Multi-deliverable plans — one run, several PRs
 
@@ -237,9 +242,12 @@ implementation = separate `/deliver` sessions.)
 
 - **A plan must exist** (named target → plan-mode plan → most recent in
   conversation). None → stop; ask for one in plan mode. Never invent one —
-  **except on the one sanctioned path**: `next` *selects* one instead. It takes
-  the top startable issue off the board's Ready column, re-verifies it against
-  `origin/main`, claims it, and drafts a plan with the `Plan` agent — then
+  **except on the one sanctioned path**: a **selection run** *selects* one
+  instead. Under `top-of-run-list` (`next`) it takes
+  the top startable issue off the board's Ready column; under `explicit`
+  (`issue <n>`) it takes the issue you named, which may sit in **Backlog**.
+  Either way it then re-verifies against
+  `origin/main`, claims it, and drafts a plan with the `Plan` agent — and
   continues through the rest of this phase unchanged. Procedure, exclusions and
   the `selection` block:
   [`references/next-mode.md`](references/next-mode.md). Selection is part of
@@ -250,7 +258,10 @@ implementation = separate `/deliver` sessions.)
   unrelated failure.
   **Write the parsed invocation into the run file when you parse the keywords —
   before selection runs**, not after. Record **every** keyword, not just this
-  one (`"mode": "auto merge next"`), plus `conductorPid` — this session's PID.
+  one (`"mode": "auto merge next"`, or `"mode": "auto explicit"` for
+  `issue <n>` — `next` and `explicit` are the two **selection-policy tokens**,
+  and every gate keys on that rather than on the literal word `next`), plus the
+  raw argument string as `invocation`, plus `conductorPid` — this session's PID.
   Written afterwards, a run that skipped selection carries no `mode` either and
   sails through Phase 6's gate as an ordinary run; and `auto`/`merge` recorded
   nowhere durable means Phase 6's `planReview` stop and Phase 10's merge-drop
@@ -522,11 +533,12 @@ enter, proceed.
 **Lite, or already adversarially reviewed this session** (a converged
 `/review-plan`, or an equivalent in-conversation critique whose findings were
 applied) → skip the critics. `ExitPlanMode` approval alone is consent, not
-review — it does **not** skip. **`auto next` never skips**, at any weight: no
-human stood between the issue and the plan, so the critics are the only review
-the plan gets before implementation. Record it as `planReview: forced —
-auto-next` (see *Delivery weight*); attended `next` follows weight as normal,
-because its Phase 0 approval stop is that missing human. **Full with an
+review — it does **not** skip. **An `auto` selection run never skips**, under
+either policy and at any weight: no
+human read the plan before implementation, so the critics are the only review
+it gets. Record it as `planReview: forced —
+auto-<policy>` (see *Delivery weight*); an **attended** selection run follows
+weight as normal, because its Phase 0 approval stop is that missing human. **Full with an
 unreviewed plan**
 → invoke `/review-plan`, present the revised plan + a one-line change log
 (applied / rejected) as an **FYI**, keep going —
