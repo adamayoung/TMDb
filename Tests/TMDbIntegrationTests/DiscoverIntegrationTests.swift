@@ -80,14 +80,19 @@ struct DiscoverIntegrationTests {
         #expect(orTotal >= andTotal)
     }
 
-    /// Proves the outbound half of the day-precision contract end to end: the
-    /// bounds are formatted at GMT, so TMDb receives the calendar days meant
-    /// and every result falls inside them.
+    /// The `Date`-granular bounds are accepted and applied by TMDb.
     ///
-    /// Asserting the returned dates — not just that something came back —
-    /// is what makes this catch an off-by-one. A `releaseDateMin` rendered in a
-    /// negative-offset zone would go out as 2023-12-31 and admit movies from
-    /// the previous year.
+    /// Deliberately **not** asserting that every returned `releaseDate` falls
+    /// inside the window: `release_date.gte`/`.lte` bound *any* release type,
+    /// while the `release_date` on a list row is the **primary** release, so a
+    /// film with a 2024 festival run and a 2023 primary release legitimately
+    /// matches. See `knowledge/tmdb-api-notes.md`, "discover/movie has two
+    /// distinct release-date filters".
+    ///
+    /// The one-day GMT boundary is proved deterministically in
+    /// `DayPrecisionDateTests.discoverMoviesRequestSendsGMTCalendarDay`, which
+    /// asserts the emitted query item directly. A live result set cannot
+    /// distinguish a one-day shift.
     @Test("movies with release date range")
     func moviesWithReleaseDateRange() async throws {
         let rangeStart = Date(timeIntervalSince1970: 1_704_067_200) // 2024-01-01T00:00:00Z
@@ -98,9 +103,11 @@ struct DiscoverIntegrationTests {
 
         #expect(!movieList.results.isEmpty)
 
+        // The window is applied, not ignored: some result must sit inside it.
+        // A wholly-ignored filter would return the unfiltered popular list,
+        // which spans decades.
         let releaseDates = movieList.results.compactMap(\.releaseDate)
-        #expect(!releaseDates.isEmpty)
-        #expect(releaseDates.allSatisfy { $0 >= rangeStart && $0 <= rangeEnd })
+        #expect(releaseDates.contains { $0 >= rangeStart && $0 <= rangeEnd })
     }
 
     @Test("movies without watch providers")
