@@ -181,9 +181,28 @@ ready and leave the user waiting on a rebase + re-run. Update **once** at the re
 point, not eagerly on every `main` advance — each update re-runs the full ~4–7 min
 CI matrix.
 
+**On ready, move the issue to `In review` — before reporting.** Ready means the
+PR is waiting on a human, which is exactly what that column tells them, and the
+board is how they see it without reading this run's output. Take the issue number
+from the **closing keyword in the PR body** (`Closes #NNN` / `Fixes #NNN`), which
+`/pr` requires on every PR that has an issue. That is deliberately the only
+source: it is the same link GitHub uses to close the issue on merge, so it cannot
+disagree with what actually happens, and it needs no extra argument — a second
+bare number beside the PR number would be ambiguous to parse.
+Column vocabulary and the exact call:
+[`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) → *Board status —
+the column lifecycle*. No issue reference → skip the move and say so in the
+summary; a failed board write is reported, never fatal, and never a reason to
+withhold a ready PR.
+
+Do this in **both** modes. In merge-when-ready it is momentary — the merge closes
+the issue and the board's own automation takes it to Done — but it is still
+correct while the merge is in flight, and it is what the board shows if the merge
+then fails.
+
 - **Watch-only**: report "PR is ready" with a short summary (threads handled,
-  checks green, branch up to date) and stop — wait for the user's explicit
-  go-ahead before merging.
+  checks green, branch up to date, issue moved to `In review`) and stop — wait
+  for the user's explicit go-ahead before merging.
 - **Merge-when-ready**: on ready, **capture the head branch name first** (you need it
   to delete the remote branch — `merge_pull_request` has no delete-branch option),
   merge with `mcp__github__merge_pull_request` (owner/repo from `origin`,

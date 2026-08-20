@@ -90,10 +90,14 @@ git diff --name-only origin/main...HEAD \
 
     Example: `✨ Add createdBy property to TVSeries`.
 
-    **Body** — fill this skeleton, keeping only the sections that apply, and end with the attribution line exactly as shown:
+    **Body** — fill this skeleton, keeping only the sections that apply, and end with the attribution line exactly as shown.
+
+    **`Closes #NNN` is required whenever the work has a tracked issue** — drop the line only when it genuinely has none. It is not decoration: GitHub uses it to close the issue on merge, which is what carries the board item to **Done**, and `/watch-pr` reads it to move that item to **In review** when the PR goes green (see [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md) → *Board status — the column lifecycle*). Omit it and the issue stays open after merge and never leaves its column — silently, since nothing fails.
 
     ```markdown
     ## Summary
+
+    Closes #NNN.
 
     [Brief description of what this PR does and why]
 

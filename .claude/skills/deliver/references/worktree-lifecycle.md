@@ -151,7 +151,7 @@ PR body is required to say so.
   "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
   "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
   "deliverables": [{
-    "title": "…", "dependsOn": [],
+    "title": "…", "issue": 434, "dependsOn": [],
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
@@ -177,6 +177,15 @@ this is its durable home, and Phase 8 copies it into the retro.
 `.claude/agents/**` or `.github/CODE_REVIEW.md`, which changes what Phases 4
 and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
 this schema is a field nothing ends up writing.
+
+**`issue`** is per-*deliverable*, not run-scoped: a batch can implement several
+issues, or none. It is the GitHub issue number this deliverable closes, or
+`null` when the work is untracked. Phase 1 reads it to move the issue to **In
+progress** and Phase 10 to move it to **In review** (columns and call:
+[`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md) → *Board status
+— the column lifecycle*). It lives here rather than in the ledger for the reason
+the whole file exists — `EnterWorktree` clears the ledger, and Phase 10 runs in
+the background, potentially long after the conductor has moved on.
 
 ### Stamps: hash content, never a commit
 

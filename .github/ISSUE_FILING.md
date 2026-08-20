@@ -109,6 +109,50 @@ with no Status is one `/triage-issues` will never groom.
 Do **not** set Priority or Size. Those are `/triage-issues`' output; guessing them
 at filing time gives one judgement two owners.
 
+## Board status — the column lifecycle
+
+Filing owns only the first column. Each later move is owned by the skill that
+causes it, and this table is the **one place the column names and the write idiom
+are written down** — so a renamed column is a one-file fix rather than a hunt
+through four skills.
+
+| Column | Set by | When |
+| --- | --- | --- |
+| **Backlog** | whoever files (this spec) | the issue is created |
+| **Ready** | `/triage-issues` | it passes the Ready test; Priority + Size are set with it |
+| **In progress** | `/deliver` (Phase 1) | the worktree is entered — work has actually begun |
+| **In review** | `/watch-pr` (§3, at *ready*) | the PR is green and mergeable, waiting on a human |
+| **Done** | the board's own "item closed" automation | the PR merges and closes the issue |
+
+**Done is deliberately not written by any skill.** It is the one transition
+observed to happen unaided: `/triage-issues` closes `wontfix` issues without
+touching Status and they land in Done regardless. A write for it would give one
+column two owners. If a merged issue is ever seen *not* reaching Done, that
+automation has been turned off — and this row is where to record that.
+
+The call is the same for every row, so it is stated once, here:
+
+```text
+mcp__github__projects_write / update_project_item
+  owner: adamayoung · project_number: <resolve "TMDb" via projects_list>
+  item_owner: adamayoung · item_repo: TMDb · issue_number: <n>
+  updated_field: { "name": "Status", "value": "<column name>" }
+```
+
+Four things that are easy to get wrong:
+
+- **Pass the option *name*, not its id.** The name form resolves server-side; an
+  id is opaque, unreviewable in a diff, and silently wrong if a column is ever
+  recreated.
+- **Resolve the project number; don't hardcode it.** A hardcoded number fails
+  quietly against the wrong board rather than loudly against none.
+- **A board write must never fail the work.** These moves are bookkeeping. If one
+  errors, say so in the run's summary and carry on — a red board write is not a
+  red delivery.
+- **No issue means no move.** Plenty of changes are untracked (an ad-hoc fix, a
+  follow-up to a review). Skip the move and say you skipped it; never invent an
+  issue so that something can be moved.
+
 ## Titles
 
 The title is what someone scans in a list of forty. Lead with the symptom and
