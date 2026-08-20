@@ -52,7 +52,7 @@ Instances, each with its countermeasure:
 - **A test runner that collected nothing** — `python3 -m unittest discover`
   exits 0 when it finds no tests, and counts a skipped test as a success, so a
   renamed file or one `@unittest.skip` empties a gate while it stays green
-  (2026-08-20, PR #TBD). *Check: assert a collection floor **and** re-assert it
+  (2026-08-20, PR #476). *Check: assert a collection floor **and** re-assert it
   against tests actually executed — see Tooling.*
 - **N mechanical edits reported, wrong symbols edited** — a sweep script did a
   first-occurrence `str.replace` per file, so it stripped the default argument
@@ -70,7 +70,7 @@ retired; the family heading stays.
 
 ### `unittest discover` exits 0 when it collected nothing — and a skip counts as success
 
-*2026-08-20 (PR #TBD).* Two separate ways a Python test gate reports green
+*2026-08-20 (PR #476).* Two separate ways a Python test gate reports green
 without asserting anything. Both were verified directly, not inferred.
 
 **Collected nothing.** `python3 -m unittest discover` ends in
@@ -98,7 +98,7 @@ importable"*.
 
 ### The `Lint` job gates its own `Checkout` on `swift`, and PRs ignore `on.paths`
 
-*2026-08-20 (PR #TBD).* Two facts about `.github/workflows/ci.yml` that decide
+*2026-08-20 (PR #476).* Two facts about `.github/workflows/ci.yml` that decide
 whether a check you add actually runs.
 
 **Every step in the `Lint` job — including `Checkout` — is conditioned on
@@ -193,7 +193,7 @@ copy, so which one wins is unpredictable. Countermeasures, cheapest first:
   run-list example out of `next-mode.md` with the same regex the builder is
   paired with, and `Scripts/check-prose-call-forms.py` for the same idea applied
   to code samples. This caught a re-introduced grammar template in the very
-  commit that removed the original (2026-08-20, PR #TBD).
+  commit that removed the original (2026-08-20, PR #476).
 
 ### A gate keyed on `git tag` passes vacuously in CI — the checkout has no tags
 

@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-20 — ✨ Assemble the triage run-list in code (issue #471, PR #TBD) · full
+## 2026-08-20 — ✨ Assemble the triage run-list in code (issue #471, #476) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — small diff, but reflexive
   (`.claude/skills/**` + `Scripts/**`) and it changes an unattended decision
