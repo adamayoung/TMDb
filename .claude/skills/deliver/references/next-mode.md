@@ -182,13 +182,33 @@ why, and recommend `/triage-issues`.
 ## 5 — `merge` mode refuses a breaking change
 
 `/deliver auto merge next` is the only invocation that can take an issue from a
-board to a merged commit with nobody looking. Every issue body carries a
-`**Breaking class:** none | source-breaking | behavioural | needs a decision`
-line ([`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md)).
+board to a merged commit with nobody looking. The body template
+([`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md)) ends every
+issue with `**Breaking class:** none | source-breaking | behavioural | needs a
+decision`.
 
 **In `merge` mode, a candidate is selectable only if its class is `none`.**
-Absent or unparseable counts as `needs a decision`, never as `none`. Skip the
-rest, name them in the report, and take the next candidate.
+Skip the rest, name them in the report, and take the next candidate.
+
+Read the class **defensively — real bodies vary**, and the three shapes seen on
+the live board are not interchangeable:
+
+| Shape | Example | Read as |
+| --- | --- | --- |
+| Inline bold label | issue 437: `**Breaking class:** adding a case … is source-breaking for exhaustive switches` | the label's text, not a bare enum value |
+| Its own heading | issue 448: `## Breaking class` / `None — CI configuration only.` | the section's first sentence |
+| **Absent** | issue 426 carries no class at all | `needs a decision` |
+
+So: find the label in either form, take the prose that follows, and treat it as
+`none` **only** when that prose actually says so. Anything else — a qualifier, a
+sentence you are not sure about, or no label at all — is **not** `none`. The
+default matters more than the parse: an unlabelled issue is the one nobody
+classified, which is the last one to merge unread.
+
+**A `needs a decision` class is a rejection in every mode**, not just `merge` —
+an issue whose fix approach is undecided fails re-verification anyway (§4), and
+the two facts should agree. Issue 426 is the live example: no class line, and a
+"Decision needed" section offering three different fixes.
 
 This is not belt-and-braces: `auto-and-async.md` already states that this is a
 single-maintainer package with public API surface *"where the ready-to-merge
