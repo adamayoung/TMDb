@@ -354,10 +354,48 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build -c release -Xswiftc -warnings-as-errors
 
+  # Day-precision dates are pinned to GMT in both directions (see ADR-0029).
+  # Every assertion that proves it reads `== <GMT value>`, which passes
+  # trivially on a UTC runner whether or not the production code pins a zone —
+  # so the proof is this job, not the assertions. Both zones are needed and
+  # they catch different halves: a negative offset catches the outbound
+  # formatter (a GMT-midnight instant formats as the *previous* day), a
+  # positive offset catches year-boundary maths (`startOfYear` lands in the
+  # previous year). Delete this job and a whole class of test silently stops
+  # proving anything.
+  unit-test-timezones:
+    name: Test (${{ matrix.timezone }})
+    needs: changes
+    if: always()
+    runs-on: ubuntu-latest
+    container: swift:6.1-jammy
+    strategy:
+      fail-fast: false
+      matrix:
+        timezone: [America/Los_Angeles, Pacific/Auckland]
+    env:
+      TZ: ${{ matrix.timezone }}
+    steps:
+      - name: No changes detected
+        if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "No Swift changes detected, skipping ${{ matrix.timezone }} test run"
+
+      - name: Checkout
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v7
+
+      - name: Build
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: swift build --build-tests -Xswiftc -warnings-as-errors
+
+      - name: Test
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: swift test --skip-build --filter "TMDbTests|TMDbTestingTests|TMDbIntelligenceTests|TMDbIntelligenceTestingTests"
+
   ci:
     name: CI
     if: always()
-    needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux]
+    needs: [changes, lint, lint-markdown, build-test, build-platforms, build-test-linux, unit-test-timezones]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
@@ -369,6 +407,7 @@ jobs:
             "${{ needs.build-test.result }}" \
             "${{ needs.build-platforms.result }}" \
             "${{ needs.build-test-linux.result }}" \
+            "${{ needs.unit-test-timezones.result }}" \
           )
           for result in "${results[@]}"; do
             if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then

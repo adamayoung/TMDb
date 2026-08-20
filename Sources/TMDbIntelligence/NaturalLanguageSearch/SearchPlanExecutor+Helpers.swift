@@ -246,8 +246,20 @@ extension SearchPlanExecutor {
         }
     }
 
+    /// "What year is it?" — a question about the *user's* wall clock, not about
+    /// TMDb's data, so it is answered in the local zone. Someone in Los Angeles
+    /// saying "this year" at 18:00 on 31 December means the year they can see
+    /// on their own calendar.
+    ///
+    /// This deliberately does **not** use ``calendar()``. Pinning it to GMT
+    /// alongside the instant maths would roll "this year" forward eight hours
+    /// early for every negative-offset user, and would disagree with
+    /// `FoundationModelsSearchPlanGenerator`, which seeds the model's notion of
+    /// the current year from the ambient calendar.
     private func currentYear() -> Int {
-        calendar().component(.year, from: now())
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .current
+        return calendar.component(.year, from: now())
     }
 
     func startOfYear(_ year: Int) -> Date? {
@@ -262,12 +274,18 @@ extension SearchPlanExecutor {
         calendar().component(.year, from: date)
     }
 
+    /// GMT, matching both halves of the day-precision date contract: the
+    /// instants this builds are formatted into `yyyy-MM-dd` discover query
+    /// parameters by `DateFormatter.theMovieDatabase`, and the dates it reads a
+    /// year out of were decoded at GMT midnight by
+    /// `JSONDecoder.theMovieDatabase`.
+    ///
+    /// This was the local zone, to match a formatter that had no explicit zone
+    /// at all. Both are now GMT, so a year boundary round-trips exactly instead
+    /// of shifting a day.
     private func calendar() -> Calendar {
         var calendar = Calendar(identifier: .gregorian)
-        // Match the timezone the discover request date formatter uses (the
-        // current timezone) so year-boundary Dates round-trip to the intended
-        // yyyy-MM-dd string rather than shifting a day in non-UTC zones.
-        calendar.timeZone = .current
+        calendar.timeZone = .gmt
         return calendar
     }
 

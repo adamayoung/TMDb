@@ -312,4 +312,34 @@ struct SearchPlanExecutorTests {
         #expect(result.degradations.contains(.moodApproximated("feel-good")))
     }
 
+    /// 23. Year bounds are GMT instants, so they round-trip through
+    /// `DateFormatter.theMovieDatabase` to the day the user asked for.
+    ///
+    /// Like `DayPrecisionDateTests`, these read `== <GMT value>` and so pass
+    /// trivially on a UTC runner — the CI `TZ` matrix is what makes them
+    /// meaningful. `Pacific/Auckland` is the zone that catches a regression
+    /// here: an ambient-zone calendar puts `startOfYear(2020)` at
+    /// 2019-12-31T11:00:00Z, which formats as the wrong year entirely.
+    @Test("year bounds are GMT midnight instants")
+    func yearBoundsAreGMTMidnightInstants() throws {
+        let start = try #require(executor.startOfYear(2020))
+        let end = try #require(executor.endOfYear(2024))
+
+        #expect(start == Date(timeIntervalSince1970: 1_577_836_800))
+        #expect(end == Date(timeIntervalSince1970: 1_735_603_200))
+    }
+
+    /// 24. "This year" is a question about the user's wall clock, so it stays
+    /// on the local calendar even though the instant maths moved to GMT.
+    ///
+    /// `now` is pinned to 2026-06-03, mid-year, so no offset on Earth can move
+    /// the answer — which is the point: the assertion holds in every zone, and
+    /// would break only if `currentYear()` started reading something other than
+    /// the injected `now`.
+    @Test("the current year follows the local calendar")
+    func currentYearFollowsLocalCalendar() {
+        #expect(executor.yearBounds(for: .thisYear) == (from: 2026, to: 2026))
+        #expect(executor.yearBounds(for: .recent) == (from: 2025, to: 2026))
+    }
+
 }

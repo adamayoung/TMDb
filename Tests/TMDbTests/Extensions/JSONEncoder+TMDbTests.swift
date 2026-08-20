@@ -12,20 +12,23 @@ import Testing
 struct JSONEncoderTMDbTests {
 
     var jsonEncoder: JSONEncoder!
-    var dateFormatter: DateFormatter!
+
+    /// 1990-01-02T00:00:00Z. An absolute instant rather than a
+    /// formatter-derived one: deriving the expectation from a formatter makes
+    /// both sides of the assertion move together, so the test would pass in any
+    /// time zone whether or not the encoder pins one.
+    private static let dateOfBirth = Date(timeIntervalSince1970: 631_238_400)
 
     init() {
-        self.dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-ddd"
         self.jsonEncoder = JSONEncoder.theMovieDatabase
     }
 
     @Test("encoder encodes object")
     func theMovieDatabaseEncoderEncodesObject() throws {
-        let value = try SomeThing(
+        let value = SomeThing(
             id: "abc123",
             firstName: "Adam",
-            dateOfBirth: #require(dateFormatter.date(from: "1990-01-02"))
+            dateOfBirth: Self.dateOfBirth
         )
 
         let expectedIDResult = "\"id\":\"abc123\""

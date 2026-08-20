@@ -43,8 +43,13 @@ struct NaturalLanguageSearchIntegrationTests {
         self.executor = SearchPlanExecutor(dataSource: dataSource)
     }
 
+    /// Day-precision dates decode at GMT midnight, so the calendar reading the
+    /// year back must be GMT too. An ambient-zone calendar reports the previous
+    /// year for a January release anywhere west of Greenwich.
     private func year(of date: Date) -> Int {
-        Calendar(identifier: .gregorian).component(.year, from: date)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .gmt
+        return calendar.component(.year, from: date)
     }
 
     @Test("find returns the matching movie for a bare title query")

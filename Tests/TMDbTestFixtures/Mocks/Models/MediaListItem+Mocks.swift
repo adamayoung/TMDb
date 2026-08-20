@@ -20,11 +20,10 @@ package extension MediaListItem {
             // swiftlint:disable:next line_length
             "After finding themselves ensnared in a death trap, seven disillusioned castoffs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.",
         genreIDs: [Genre.ID] = [28, 878, 12],
-        releaseDate: Date? = {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            return formatter.date(from: "2025-04-30")
-        }(),
+        // 2025-04-30T00:00:00Z — an absolute instant, matching what the decoder
+        // produces for "2025-04-30". A bare `DateFormatter` here would build a
+        // different instant on every machine.
+        releaseDate: Date? = Date(timeIntervalSince1970: 1_745_971_200),
         posterPath: URL? = URL(string: "/hqcexYHbiTBfDIdDWxrxPtVndBX.jpg"),
         backdropPath: URL? = URL(string: "/jYCyTdPfgT01IOJWDnnetr9RDX6.jpg"),
         popularity: Double? = 20.2419,

@@ -231,8 +231,19 @@ public extension MediaListItem {
 
         // Handle empty release_date strings - decode as nil.
         // Day-precision dates (e.g. "2025-04-30") are parsed at GMT midnight; an
-        // unparseable string decodes as nil, mirroring the previous behaviour.
-        // A TV series sends `first_air_date` in place of `release_date`.
+        // unparseable string decodes as nil, per the decode-tolerance policy
+        // (ADR-0019). A TV series sends `first_air_date` in place of
+        // `release_date`.
+        //
+        // This keeps its own `.iso8601` strategy rather than sharing
+        // `JSONDecoder.theMovieDatabaseDateStrategy`, and the difference is
+        // deliberate: `Date.ParseStrategy` is *lenient*, rolling out-of-range
+        // components over ("2025-13-45" -> 2026-02-14, "0000-00-00" ->
+        // -0001-11-30), while `.iso8601` rejects them. Behind the `try?` above,
+        // sharing the strategy would silently turn a malformed date into a
+        // plausible wrong one instead of nil. Both already parse at GMT, so the
+        // divergence costs nothing. Measured in
+        // `MediaListItemTests.decodeReturnsMediaListItemWith…ReleaseDate…`.
         let dateString = try container.decodeIfPresent(
             String.self, forKey: .releaseDate
         ) ?? container.decodeIfPresent(String.self, forKey: .firstAirDate)
