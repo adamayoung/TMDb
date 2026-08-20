@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-20 — 🔒 Redact credentials from `TMDbError.network`'s payload (PR #TBD) · full
+## 2026-08-20 — 🔒 Redact credentials from `TMDbError.network`'s payload (#469) · full
 
 Branch `fix/redact-credentials-in-network-error`. Issue #434 (P0) — item 1 in
 the board's Ready execution order.
