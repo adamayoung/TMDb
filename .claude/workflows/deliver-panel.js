@@ -10,9 +10,18 @@ export const meta = {
 // rather than by prose. Phase 11 is deliberately ABSENT: a `proceed` must never
 // authorise an unattended run to edit and push the repo's own skill files,
 // least of all this script.
+//
+// A mode that adds a stop-and-ask MUST add its point here. `next` added the
+// Phase 0 plan-approval stop; leaving it off this list would not have made auto
+// mode safer, it would have made the stop vanish unattended — with the
+// conductor that chose the issue and wrote the plan left as its only judge.
+// "This mode delegates no decision" is a claim to check against the stops it
+// introduces, not a property to assert.
 const POINTS = {
+  'phase0n-selection':
+    'A `next` run has picked an issue off the board and drafted its own plan for it. Attended, this is where the human reads both and approves; unattended, you are that reader. Proceeding commits the pipeline to THIS issue and THIS self-authored plan. Nobody else has looked: the conductor chose the work and then wrote the plan for it, so the usual independence between "what to build" and "who approved it" is absent. Judge both halves — is this issue genuinely the right next one (still reproducing, fix approach determined, correctly ordered), and does the plan actually address it?',
   'phase0-no-acs':
-    'The plan arrived with no acceptance criteria AND none derivable from a linked issue or an explicit test list (derivable ACs are handled by the entry gate, not panelled). Proceeding makes Phase 6 (rubric verification) a no-op for the whole delivery — it ships with no exit gate.',
+    'The plan arrived with no acceptance criteria AND none derivable from a linked issue or an explicit test list (derivable ACs are handled by the entry gate, not panelled). Proceeding makes Phase 6 (rubric verification) a no-op for the whole delivery — it ships with no exit gate. NOTE: this point is about a plan the USER brought. A plan the conductor drafted for itself in `next` mode is `phase0n-selection`, and always derives its rubric from the issue — it never reaches this point.',
   'phase2-blocker':
     'A /review-plan blocker that is NOT data loss and NOT a breaking change. (Those two never reach this panel.)',
   'phase4-findings':

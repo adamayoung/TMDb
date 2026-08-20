@@ -141,7 +141,9 @@ carried them, or `derived — <source>` when Phase 0 derived them from a linked
 issue or an explicit test list (its second entry-gate case). It exists so a
 derived rubric is auditable rather than indistinguishable from a supplied one:
 Phase 6 grades both identically, but a reader can tell which was which, and the
-PR body is required to say so.
+PR body is required to say so. A **`next`-drafted plan is never `supplied`**,
+however many ACs its text carries — the `Plan` agent wrote them, and `supplied`
+is a claim that a human set the bar.
 
 ```json
 {
@@ -150,6 +152,12 @@ PR body is required to say so.
   "reflexive": false,
   "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
   "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
+  "mode": "next",
+  "selection": {
+    "source": "run-list@cc7cba55", "verifiedAt": "527682f7",
+    "listed": 12, "picked": 426, "breakingClass": "behavioural",
+    "rejected": [{ "issue": 434, "verdict": "stale", "why": "closed by PR #469" }]
+  },
   "deliverables": [{
     "title": "…", "issue": 434, "dependsOn": [],
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
@@ -169,7 +177,7 @@ A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
 
-Two run-scoped fields sit outside `deliverables[]` because they describe the
+Four run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
@@ -177,6 +185,18 @@ this is its durable home, and Phase 8 copies it into the retro.
 `.claude/agents/**` or `.github/CODE_REVIEW.md`, which changes what Phases 4
 and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
 this schema is a field nothing ends up writing.
+
+**`mode`** and **`selection`** belong to `next` runs
+([`next-mode.md`](next-mode.md)). `selection` records how the issue was chosen —
+the ordering source and its sha, the sha every candidate was re-verified
+against, the pick, its `Breaking class`, and every rejected candidate with its
+verdict. It is **read, not merely written**: Phase 6 hard-stops when `mode` is
+`next` and `selection` is missing or empty, the same way it does on a missing
+`reconciled` block. Both fields are absent on an ordinary run, and `mode: next`
+without `selection` is the failure the gate exists to catch — not a default.
+
+`rubricProvenance` on a `next` run is always `derived — issue <number>`; see
+the note below on why it is never `supplied`.
 
 **`issue`** is per-*deliverable*, not run-scoped: a batch can implement several
 issues, or none. It is the GitHub issue number this deliverable closes, or

@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take the current plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent) and want the rest of the feature pipeline run end-to-end. Invoking it is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
+description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent), or pass `next` to take the top startable issue off the project board's Ready column and plan it first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -15,10 +15,13 @@ rides the delivery's own PR. Every run happens in its **own git worktree**
 (Phase 1; torn down on merge, Phase 12) so the user's main checkout stays
 free. The plan is created first in **plan mode** (or with the `Plan` agent;
 there is no `/plan` skill) — `/deliver`
-picks up from there.
+picks up from there. **`/deliver next` supplies its own plan**: it takes the
+top startable issue off the project board's Ready column and drafts one
+(Phase 0; [`references/next-mode.md`](references/next-mode.md)).
 
 ```text
-you approve the plan ─▶ /deliver ─▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
+you approve the plan ─▶ /deliver ─────▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
+   (or: /deliver next ─▶ pick a Ready issue ─▶ draft ─▶ approve ─┘)
   implement ─▶ code-review + fix ─▶ security-review + fix ─▶
   rubric check (ACs met?) ─▶ capture ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
   GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
@@ -37,7 +40,12 @@ Non-negotiable. Do these by default, without being reminded.
 1. **Invoking `/deliver` is plan approval — run autonomously to the one
    gate** (the diagram above), with no second "is the plan ok?" prompt. The
    only legitimate mid-run pauses: a **blocker** from `/review-plan`
-   (Phase 2), or a **red gate you cannot triage** (§4).
+   (Phase 2), a **red gate you cannot triage** (§4), or — **attended `next`
+   only** — the one approval stop on a plan `/deliver` drafted for itself
+   (Phase 0). That third case is not an exception to this rule but its
+   boundary: invoking the skill approves *the plan you brought*, and a `next`
+   run brought none. In `auto` it is not a pause at all — the
+   `phase0n-selection` panel rules instead.
 2. **Delegate to the existing skills — don't reinvent them**: `/review-plan`,
    `/implement-plan`, `/review-changes`, `/security-review`,
    `/capture-knowledge`, `/pr`, `/watch-pr`, `/fix-integration-failures`.
@@ -75,15 +83,35 @@ Non-negotiable. Do these by default, without being reminded.
    start signal — invoke `/deliver` immediately; pause first only if
    Phase 0's entry gate fires.
 
-## Auto mode & async invocation
+## Invocation — `/deliver [auto] [merge] [next]`
+
+The three keywords are recognised only as **whole, standalone tokens**, in any
+order; anything else in the argument is the **named plan target** Phase 0
+resolves. `next` and a named target contradict each other — report that and
+stop, rather than silently picking one. `next` also takes precedence over a
+plan already in the conversation, and says so before drafting.
+
+- **`auto`** — unattended; every stop-and-ask becomes a juror panel (below).
+- **`merge`** — squash-merge once the PR is green, instead of stopping at the
+  gate (Phase 10).
+- **`next`** — no plan needed: take the top startable issue off the board's
+  Ready column and draft one (Phase 0;
+  [`references/next-mode.md`](references/next-mode.md)). Requires the
+  user-scoped GitHub Projects MCP, so it is **unavailable on a GitHub Actions
+  runner**.
+
+### Auto mode & async invocation
 
 `/deliver auto` replaces every stop-and-ask decision with an **adversarial
 panel** of three independent Opus jurors — a dead panel is never a proceed,
 and every panel convened leaves an audit line in the ledger. Decision points
 are marked **Auto:** below. Never delegated: a **data-loss or
-breaking-change plan blocker is a hard stop even in auto**. `/deliver` can
-also be queued headless (the plan + ACs must travel in the trigger prompt).
-Panel procedure and queuing caveats:
+breaking-change plan blocker is a hard stop even in auto**, and in
+`auto merge next` an issue whose **Breaking class is anything but `none` is
+not selectable at all**. `/deliver` can
+also be queued headless (the plan + ACs must travel in the trigger prompt —
+unless `next` supplies them, which only works where the Projects MCP is
+mounted). Panel procedure and queuing caveats:
 [`references/auto-and-async.md`](references/auto-and-async.md). In attended
 mode the **Auto:** branches do not apply — stop and ask, as written.
 
@@ -100,6 +128,14 @@ single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 (e.g. a pre-reviewed plan with the full review machinery) records as **full**
 with the skipped machinery noted, in the ledger and the retro; never invent a
 third tier.
+
+**One named override exists, and it is not a third tier.** An `auto next` run
+drafted its own plan with no human between the issue and the implementation, so
+it **always** runs `/review-plan`'s critics whatever the weight (Phase 2).
+Record that as `planReview: forced — auto-next` in the run file and the retro,
+leaving `weight` itself untouched; a lite run stays lite for Phases 4 and 5.
+Attended `next` is **not** covered: its Phase 0 approval stop is the same
+consent `ExitPlanMode` gives every other run, so it follows weight as normal.
 
 ## Multi-deliverable plans — one run, several PRs
 
@@ -149,7 +185,18 @@ implementation = separate `/deliver` sessions.)
 ## Phase 0 — Preconditions
 
 - **A plan must exist** (named target → plan-mode plan → most recent in
-  conversation). None → stop; ask for one in plan mode. Never invent one.
+  conversation). None → stop; ask for one in plan mode. Never invent one —
+  **except on the one sanctioned path**: `next` *selects* one instead. It takes
+  the top startable issue off the board's Ready column, re-verifies it against
+  `origin/main`, claims it, and drafts a plan with the `Plan` agent — then
+  continues through the rest of this phase unchanged. Procedure, exclusions and
+  the `selection` block:
+  [`references/next-mode.md`](references/next-mode.md). Selection is part of
+  Phase 0 rather than a phase of its own precisely so the run file keeps one
+  writer and the knowledge consult below still precedes the drafting that
+  consumes it. Nothing startable, or no Projects MCP → **stop before the
+  worktree**; never fall through to the "no plan" stop, which reads as an
+  unrelated failure.
 - **A plan born from a review finding is a hypothesis** — verify against the
   code (quick `Explore`) *before* planning or asking strategy questions.
 - **State the goal** in a sentence; **judge the weight**; open the ledger.
@@ -166,7 +213,7 @@ implementation = separate `/deliver` sessions.)
   `EnterWorktree` clears it.** Phase 8 copies it into the retro, which is the
   committed, human-reviewed copy.
 - **Identify the issue this delivers, and record it.** Most deliveries implement
-  a tracked issue — `/deliver auto` takes one off the board's Ready column, and a
+  a tracked issue — `next` takes one off the board's Ready column, and a
   plan usually names one. Record `issue: <number>` on **the deliverable** in the
   run file (or `issue: null` when the work is genuinely untracked, which is the
   honest answer for an ad-hoc fix). Per-deliverable, not run-scoped: a
@@ -174,6 +221,11 @@ implementation = separate `/deliver` sessions.)
   moves it to **In progress** and Phase 10 to **In review**, so an unrecorded
   issue is one the board silently never reflects. It goes in the run file rather
   than the ledger for the usual reason — `EnterWorktree` clears the ledger.
+  A `next` run has already made the **In progress** move itself, at the pick —
+  it has to claim the issue before the drafting window, or a concurrent session
+  delivers the same one. Phase 1's move then finds it already set and no-ops.
+  The claim carries an obligation: **any stop before the PR opens releases it
+  back to `Ready`** ([`references/next-mode.md`](references/next-mode.md)).
 - **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
   `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
@@ -227,6 +279,12 @@ implementation = separate `/deliver` sessions.)
     `rubricProvenance: derived — <the source>`, and say in the PR body that the
     rubric was derived rather than supplied. Bug fixes land here routinely;
     stopping to ask a question the plan already answers is ceremony, not rigour.
+    **A `next`-drafted plan always lands here**, whatever its text contains:
+    record `derived — issue <number>`, **never `supplied`**. The drafted plan
+    will carry ACs — the `Plan` agent writes them — but `supplied` means *a
+    human set the bar*, and here the run that gets graded wrote its own rubric.
+    This is reflexive rule 2 in another costume: the thing being graded must not
+    be the thing that sets the grade. Do not "simplify" it back.
   - **Neither** → stop and ask for them ("Given X, when Y, then Z") — don't
     enter the worktree. **Auto:** panel — proceed rubric-less (Phase 6 no-ops)
     vs stop; record that as `rubric: none`, which is **present-and-empty**, not
@@ -311,7 +369,12 @@ enter, proceed.
 **Lite, or already adversarially reviewed this session** (a converged
 `/review-plan`, or an equivalent in-conversation critique whose findings were
 applied) → skip the critics. `ExitPlanMode` approval alone is consent, not
-review — it does **not** skip. **Full with an unreviewed plan**
+review — it does **not** skip. **`auto next` never skips**, at any weight: no
+human stood between the issue and the plan, so the critics are the only review
+the plan gets before implementation. Record it as `planReview: forced —
+auto-next` (see *Delivery weight*); attended `next` follows weight as normal,
+because its Phase 0 approval stop is that missing human. **Full with an
+unreviewed plan**
 → invoke `/review-plan`, present the revised plan + a one-line change log
 (applied / rejected) as an **FYI**, keep going —
 except a **blocker** (wrong approach, breaking, data-loss), which stops the
@@ -425,6 +488,12 @@ Three distinct cases, and they must not be conflated:
   missing run file is not a pass, exactly as a dead grader is not a pass; and a
   file without `reconciled` means Phase 1's sweep never ran. This is what makes
   both gates real rather than advisory.
+- **`mode: next` with `selection` missing or empty** → **hard stop**, the same
+  way and for the same reason: it means the selection in
+  [`references/next-mode.md`](references/next-mode.md) never ran, so nothing
+  established that this issue was the right one, still verified, or claimed.
+  Without this the `selection` block would be telemetry no phase reads — a
+  green indistinguishable from never having looked.
 
 How it is graded depends on weight:
 
@@ -600,3 +669,9 @@ Wherever it stops — the gate, an untriageable red gate, a stuck PR — end wit
 a concise status: phase reached, branch and PR, what passed, what's blocking,
 and the single next action needed from the user. The destination is a green
 PR ready for their merge — say plainly whether you got there.
+
+A `next` run that stops **before its PR opens** owes one extra line: the issue
+it claimed has been released back to `Ready`, or it is stranded in a column
+nothing else can move it out of.
+
+Arguments: $ARGUMENTS

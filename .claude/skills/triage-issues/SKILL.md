@@ -275,6 +275,37 @@ then dependency edges, then contention warnings, then the Backlog-blocked items
 each with its one-sentence decision. Keep it scannable — it is read at a glance,
 and it is the diff between one run and the next.
 
+### The run-list line — write it verbatim
+
+End the body with **exactly this line**, and nothing else after it:
+
+```text
+<!-- run-list: <short sha> | <issue numbers, in order, comma-separated, no spaces> -->
+```
+
+`/deliver next` parses **this line and nothing else** to decide what to work on
+([`.claude/skills/deliver/references/next-mode.md`](../deliver/references/next-mode.md)).
+The prose table above it is for humans and is rewritten from scratch every run —
+the 2026-08-18 and 2026-08-20 updates already use different column headers and
+different cell formats, so anything parsing the table is parsing a moving target,
+and a near-miss would silently discard the dependency and contention ordering
+this phase exists to publish.
+
+So: **assemble the line mechanically** — join the ordered issue numbers with
+commas — and do not reword, prettify, annotate or wrap it. It is the same
+discipline as the per-issue marker, for the same reason (an LLM re-authoring a
+fixed format from prose produces a different string each time), with the same
+consequence if it drifts: a consumer that quietly falls back rather than failing
+loudly. A status update **without** this line is *not a usable run-list*, and
+`next` will say so and fall back to board fields — which reproduces two of this
+phase's four sort rules and loses the other two.
+
+> The line is currently written by this skill, not built by
+> [`.claude/workflows/triage-issues.js`](../../workflows/triage-issues.js) the
+> way the marker is, because the ordering is decided in Phase 6 — after the
+> script has returned. Moving Phase 6's sort into the script would close that
+> gap; it is tracked, not done.
+
 Mark `AT_RISK` when a P0 sits in `blocked`: the highest-priority work being
 un-startable is exactly the state a status colour exists to surface.
 

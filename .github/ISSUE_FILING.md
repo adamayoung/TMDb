@@ -120,9 +120,27 @@ through four skills.
 | --- | --- | --- |
 | **Backlog** | whoever files (this spec) | the issue is created |
 | **Ready** | `/triage-issues` | it passes the Ready test; Priority + Size are set with it |
-| **In progress** | `/deliver` (Phase 1) | the worktree is entered — work has actually begun |
+| **In progress** | `/deliver` (Phase 1, or Phase 0 for `next`) | the worktree is entered — or, in `next` mode, the moment the issue is picked |
 | **In review** | `/watch-pr` (§3, at *ready*) | the PR is green and mergeable, waiting on a human |
 | **Done** | the board's own "item closed" automation | the PR merges and closes the issue |
+
+Two **reverse** transitions exist, both owned by `/deliver next`, both there
+because that mode is the only thing in the repo that takes work off the board
+without a human choosing it:
+
+| Column | Set by | When |
+| --- | --- | --- |
+| **Ready → Backlog** | `/deliver next` (selection) | a Ready candidate fails re-verification against `origin/main` — its claims no longer hold, or its fix approach turns out to be undecided |
+| **In progress → Ready** | `/deliver next` | the run stops before its PR opens, releasing an issue it had claimed |
+
+Neither gives a column a second owner: `/triage-issues` still owns *promotion*
+into Ready, and `/deliver` still owns the move into In progress. What these add
+is an owner for undoing each — which nothing had. A `next` run that rejects a
+candidate but leaves it in Ready re-rejects the same issue on every future run
+while the queue behind it stays unreachable, because `/triage-issues` is scoped
+to Backlog and never re-examines a Ready item. A `next` run that claims an issue
+and then stops strands it in In progress, which nothing else can move it out of
+at all. Both are silent, and both drain the queue.
 
 **Done is deliberately not written by any skill.** It is the one transition
 observed to happen unaided: `/triage-issues` closes `wontfix` issues without
