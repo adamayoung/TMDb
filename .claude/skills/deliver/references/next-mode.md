@@ -427,9 +427,11 @@ change unattended; the machine must not choose it for them.
 
 Phase 0 already computes `reflexive` for the drafted plan, so **Phase 10 drops
 the `merge` opt-in** whenever the run file says `reflexive: true` and its `mode`
-names a **selection-policy token** (`next` or `explicit`) — belt and braces, in
+names a **selection-policy token** (`next` or `explicit`), or it carries a
+`selection.policy` — belt and braces, in
 case the fix sketch understated the
-footprint. The run still delivers; it just stops at the gate. **This must stay
+footprint. Phase 10 drops it on a second condition too (`selection.mergeRefused`
+present); `SKILL.md` Phase 10 is the full statement. The run still delivers; it just stops at the gate. **This must stay
 in step with [`SKILL.md`](../SKILL.md) Phase 10** — keying it on `next` alone
 would exempt every `explicit` run from the backstop, which is precisely the case
 where no `selection.mergeRefused` exists because selection saw nothing to
@@ -504,9 +506,12 @@ human gate, which is exactly where a stranger's proposal should stop.
    sweep key off that flag, and a run that believes it holds a claim it does
    not will "release" an issue another run is delivering.
 4. **Write the claim to the run file *now*, before drafting anything.** The
-   moment the re-read settles, persist three things: `selection.picked`,
-   `selection.claimed`, and the deliverable's `issue`. The rest of `selection`
-   can wait for the end of selection; these three cannot.
+   moment the re-read settles, persist four things: `selection.picked`,
+   `selection.claimed`, **`selection.claimedFrom`**, and the deliverable's
+   `issue`. The rest of `selection`
+   can wait for the end of selection; these four cannot — `claimedFrom` least of
+   all, because the session that needs it is a *later* one that cannot infer the
+   column the issue came from.
 
    This ordering is the whole recovery mechanism, not bookkeeping. Between the
    board write and the end of drafting sit a `Plan` agent invocation and,

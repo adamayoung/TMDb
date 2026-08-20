@@ -90,7 +90,7 @@ def paragraph(text: str, anchor: str) -> str | None:
     next, and reverting a predicate left the test green because the token was
     still in view. A paragraph ends where the rule ends.
     """
-    for para in re.split(r"\n\s*\n", text):
+    for para in re.split(r"\n\s*\n|\n(?=\s*(?:[-*+]|\d+\.)\s)", text):
         if anchor in para:
             return para
     return None

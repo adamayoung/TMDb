@@ -130,7 +130,7 @@ If you queue a `/deliver`, mind two things:
 - **Inline the whole plan + acceptance criteria in the trigger prompt.** A
   fresh session has no conversation history, and Phase 0's entry gate
   **requires ACs** — so the plan text and its ACs must travel *in* the prompt,
-  or the run stops at the gate immediately. **a selection run is the exception, and
+  or the run stops at the gate immediately. **a selection run is the exception**, and
   only in your own environment** — it derives both from the issue it picks, so
   `/deliver auto merge next` and `/deliver auto merge issue <n>` need no plan in the prompt at all — both derive their ACs from the issue. That works from
   a CCR-spawned session, which keeps your user-scoped MCP; it does **not** work
@@ -138,7 +138,7 @@ If you queue a `/deliver`, mind two things:
   `gh project` fails for want of the `read:project` scope
   ([ADR-0009](../../../../knowledge/decisions/0009-github-mcp-over-gh-cli.md);
   `/triage-issues` is unrunnable there for exactly the same reason). A headless
-  a selection run would fail at its first call, so headless runs still inline the
+  selection run would fail at its first call, so headless runs still inline the
   plan.
 - **User-scoped MCP may be absent** (`mcp__github__*`, `wiki`). The `gh`
   fallbacks in `/pr` and `/watch-pr` cover GitHub; the wiki step degrades

@@ -460,6 +460,7 @@ Procedures and traps:
    > unvetted work to the next unattended `next` run. This sweep runs in a
    > *later, different session* than the run it is cleaning up, so the origin
    > column has to have been persisted at claim time; it cannot be inferred here.
+
    Both extra predicate clauses prevent the sweep from taking an issue away from
    a **live** delivery, which is the same harm the claim itself exists to
    prevent — just reached from the other direction:
@@ -675,8 +676,8 @@ Three distinct cases, and they must not be conflated:
   green indistinguishable from never having looked. (`mode` is written at
   Phase 0's keyword parse, *before* selection, so a skipped selection shows up
   as a policy token with no `selection` rather than as an ordinary run.)
-- **A `mode` naming `auto`, together with a selection-policy token (`next` or
-  `explicit`) in `mode` **or** a `selection.policy`, with `planReview` missing**
+- **A `mode` naming `auto`, together with a selection-policy token
+  (`next` or `explicit`) in `mode` — or a `selection.policy` — and `planReview` missing**
   → **hard stop.** That field is the sole record that the forced `/review-plan`
   actually ran, and a self-drafted, unattended plan whose critics
   were skipped is the least-reviewed thing this pipeline can produce — whether
