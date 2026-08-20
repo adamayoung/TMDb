@@ -25,6 +25,78 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-20 — 🔒 Redact credentials from `TMDbError.network`'s payload (PR #TBD) · full
+
+Branch `fix/redact-credentials-in-network-error`. Issue #434 (P0) — item 1 in
+the board's Ready execution order.
+
+- **Phases / skills:** 0–8 pre-PR. Full weight — networking + a public error
+  payload, explicitly non-lite regardless of the diff being small. Skills:
+  `review-plan` (3 critics), `implement-plan`/`canon-tdd`, `review-changes`
+  (5-dimension fan-out + adversarial verify), `security-review`,
+  `capture-knowledge`.
+  `consulted:` gotchas §Networking (*`URL(string:)` rejects almost nothing*,
+  *Percent-encoding is not a traversal defence*, *`percentEncodedPath`'s setter
+  traps*, *`String.contains` compares grapheme clusters*, *Caching a
+  credentialed response*), §Tooling (*the tooling-runner runs in the main
+  checkout*, *Edits can land in the main checkout*), *False green*; ADR-0001,
+  ADR-0012, ADR-0022; plus the personal wiki entry *A diagnostic field added
+  for logging is a publishing surface*, whose closing line already named
+  `URLError.userInfo[NSURLErrorFailingURLErrorKey]` as the uncovered trap —
+  this delivery is that prediction coming true.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
+  `swept:` n/a — no infra files in the diff; fallback scan of the neighbouring
+  Networking and Testing entries found nothing invalidated.
+
+- **What worked:** *measuring instead of reasoning*, repeatedly and decisively.
+  Four separate design points were settled by a throwaway `swiftc` probe rather
+  than argument — the deprecated key symbol (a build error, not a style
+  choice), `%2B` corruption, the `/3` prefix defeating a naive
+  `EndpointPathRedactor` delegate, and custom-error identity dying on rebuild.
+  The critics did the same independently, which is why their blockers were
+  actionable rather than speculative. Best single moment: a security-review
+  hypothesis that a bearer token was reachable through the related-task key was
+  **refuted by probe** — the key holds an opaque `String`, not a
+  `URLSessionTask` — which saved a real but unnecessary scope expansion.
+
+- **Friction:**
+  - The plan I took into `/review-plan` was wrong in two structural ways
+    (unconditional rebuild; sweep-by-value-type). Three critics caught both
+    unanimously. Cheap here, expensive if it had reached implementation.
+  - Batching 13 redactor tests into one red/green cycle meant they all went
+    green at once, which is exactly the shape a false green hides in. Cost an
+    extra unwire-and-rerun to prove the fix was load-bearing — worth it, but a
+    tighter loop would not have needed the detour.
+  - `MockURLProtocol`'s process-global statics produced a test that passed
+    under `--filter` and failed in the full run. Captured.
+
+- **Deviations:**
+  - **No new integration test.** All three critics independently argued the
+    planned live-suite test exercised no live behaviour, could pass vacuously
+    (it asserted only absence), and risks the weekly cron opening a spurious
+    PR. Replaced with an offline full-stack test plus a characterisation test
+    that a *real* `URLSession` failure still populates the keys the redactor
+    reads. Deliberate departure from CLAUDE.md's unit-and-integration default,
+    reasoned rather than skipped.
+  - **AC6 was corrected at Phase 6**, not merely fixed. An independent grader
+    marked it not met; the criterion itself was factually wrong ("behaviour is
+    unchanged" for a bearer client, when redaction keys on the URL rather than
+    on how the client was built). The missing test was written and the AC
+    restated, with the original wording and the reason recorded beside it — and
+    a second grader was asked specifically whether that was a legitimate
+    correction or laundering. It ruled correction, on the grounds that the
+    missing evidence was supplied rather than written around.
+
+- **One improvement:** `/deliver` has no step that asks *"would these tests fail
+  if the fix were reverted?"* — I ran it by hand here, on instinct, and it was
+  the single most informative minute of the delivery. For a change whose whole
+  purpose is that something no longer appears, absence-assertions are the
+  default failure mode, and the pipeline currently relies on the conductor
+  thinking of it. Worth considering as an explicit Phase 3 checkpoint for
+  security/redaction-shaped work.
+
+---
+
 ## 2026-08-14 — 🐛 Generation guard for the cache invalidation race (#461) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — small diff (~270 lines,
@@ -746,58 +818,6 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   entry.
 - **`swept:`** n/a — no infra files touched.
 
-## 2026-08-07 — ✨ TMDb v4 lists, `client.v4Lists` (#411) · full
-
-- **Phases / skills:** 0–8 pre-PR. `consulted:` ADR-0017 (its four open
-  decisions are what this settles), ADR-0005/0008/0011, gotchas *bearer-token
-  URLCache*, *False green*, *file_length*; tmdb-api-notes v4 section; wiki
-  *bridge-a-wire-type-to-a-domain-type*, *prove-an-api-honours-a-field-by-
-  reading-it-back*, *only-auto-retry-idempotent-operations*,
-  *ship-your-packages-test-doubles-as-a-public-product*. Plan Fable-reviewed
-  before delivery (3 majors applied).
-- **Worked — Phase 0 probing changed the shipped API twice, and both were
-  unfixable later.** `details`/`items` take `sortedBy:` because the read-side
-  `sort_by` turned out to be honoured; adding a protocol requirement afterwards
-  is source-breaking. And `create(isPublic:)` ships after all — ADR-0017 had
-  concluded TMDb ignores the field, but it ignores the *boolean* and honours the
-  *integer*. The earlier conclusion came from a probe that sent a bool. Reading
-  the resource back is what caught both.
-- **Worked — the count-reconciliation assertion caught a real drop on its first
-  outing.** The `V4List` round-trip failed because `Show.encode` writes no
-  `media_type`, so every encoded item failed to decode and `FailableDecodable`
-  silently dropped the lot — an empty list, no error. Exactly the failure the
-  assertion was added for, found within minutes of adding it.
-- **Friction — I misread a rate limit as an API verdict.** Ten identical
-  "rejected" results across a `sort_by` sweep looked like a definitive answer
-  about `sort_by`. They were TMDb's spam filter (`status_code` 18) reacting to
-  rapid list creation, and only the error *body* disproved it. A uniform failure
-  across a parameter sweep is evidence about the sweep, not the parameter. Now
-  an api-note.
-- **Friction — my own cleanup didn't run.** A probe script's `EXIT` trap never
-  fired and orphaned four lists on Adam's account until I enumerated and deleted
-  them. The integration suite's teardown therefore *enumerates* the account
-  rather than trusting a remembered id, so an interrupted run self-heals.
-- **Deviations:** (1) A **correction mid-delivery**: I told Adam the API key and
-  password were committed in `Integration.xctestplan`. They are not — the file is
-  gitignored and absent from HEAD. They *were* committed in 2023 and remain in
-  public history, so rotation is still the remedy, but the "blank the values"
-  work item was struck as a no-op. I had read the file off disk and never run
-  `git ls-files`. (2) Adam corrected the cache criterion mid-flight — my flag
-  only covered v4 per-call tokens, leaving v3 session and guest-session responses
-  on disk. Widened to "requires a user's credential", which is the right
-  predicate and should have been the first one.
-- **One improvement:** two of this delivery's three bugs were *my probe scripts*
-  lying — the trap that never ran, and the sweep that misattributed a rate
-  limit. Live-API probing has become a core part of how this repo establishes
-  truth, but the scripts doing it get none of the rigour the Swift does: no
-  review, no assertion that cleanup happened, no check that a uniform result
-  isn't an artifact. A probe worth trusting should end by *verifying its own
-  postcondition* — here, enumerating the account and asserting it is empty.
-- **`swept:`** Makefile, .github/workflows/integration.yml,
-  integration-failure.yml → 1 entry rewritten (gotchas *bearer-token clients
-  share one credential-free URLCache key space*, now false in every particular);
-  skill-improvement-log citations of integration-failure.yml still accurate.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -805,6 +825,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-07 | #411 | full | TMDb v4 lists (`client.v4Lists`), settling ADR-0017's four open decisions. **Phase 0 probing changed the shipped API twice, both unfixable later**: `sort_by` turned out to be honoured on the read side (so `details`/`items` take `sortedBy:` — adding a protocol requirement afterwards is source-breaking), and `create(isPublic:)` shipped after all because TMDb ignores the *boolean* and honours the *integer* — the earlier "it ignores the field" conclusion came from a probe that sent a bool. Reading the resource back caught both. The count-reconciliation assertion caught a real drop on its first outing (`Show.encode` writes no `media_type`, so every encoded item failed to decode and the whole list vanished silently). Two of the three bugs were **the probe scripts lying**: an `EXIT` trap that never fired and orphaned four lists on a real account, and ten identical "rejected" results across a `sort_by` sweep that were the spam filter (`status_code` 18), not an answer — a uniform failure across a sweep is evidence about the sweep. Both are now standing rules in `CLAUDE.md`: a probe must verify its own postcondition. Also a mid-delivery **correction**: I reported credentials committed in `Integration.xctestplan` having read it off disk without running `git ls-files` — the file is gitignored and absent from HEAD (they were committed in 2023 and remain in public history, so rotation still applies). |
 | 2026-08-07 | #410 | full | Defaulted-witness convenience sweep across 37 sites. The **reference-unit gate earned its keep again**: reviewing one site before replicating caught a DocC-curation regression (the convenience becomes a distinct symbol and falls out of its Topics group unless curated) that would otherwise have shipped 37 times, and settled three open design questions in one pass. The **census was re-derived rather than trusted** — both reviewers independently reproduced 91/15 and the 37/54 split, after the first census came up **17 short** by grepping protocol *declaration* files and missing the two protocols keeping conveniences in a sibling `+Defaults.swift`. Two lasting False-green bullets came from it: a mechanical sweep did a first-occurrence `str.replace` per file, stripping the default from `favouriteMovies` instead of `lists` **while reporting exactly the 36 edits expected**, and the new checker passed on an empty scan (a typo'd path printed success and exited 0) — so a matching count is not evidence, and a checker must compare against an explicit set. Also **shipped a gate that did not gate**: the check went into `make lint`, but no workflow invokes `make` (the `Lint` job runs swiftlint/swiftformat inline), so it was invisible to CI — now its own step and the gotcha *No workflow runs `make`*. Its "one improvement" — have `/capture-knowledge` prompt "what fails if that number changes?" when an entry records a defect count — **shipped**, and is the *When an entry records a count* section of that skill today. |
 | 2026-08-07 | #409 | full | TMDb v4 authentication. The lasting practice is **probing the live API before writing the plan's models**: TMDb's v4 docs are wrong in ways reading cannot surface — documented endpoint *names* 404, the same field has different wire types on different endpoints, `clear` is a state-changing GET, and both `create(public:)` and add-items' `comment` are accepted-then-ignored. Each was found by curl and each would have shipped as a bug. The corollary, now in `tmdb-api-notes.md`: v4 auth-gates *before* routing, so a 401-vs-404 path probe proves nothing until you hold a credential — which is exactly how the wrong paths survived into an approved plan. The adversarial plan review paid for itself twice, both unanimous: patching only `CacheHTTPClient` would still leave the always-on 1 GB on-disk `URLCache` leaking private reads across users, and splitting `V4ListService` across two PRs would have made the second source-breaking — forcing a redraw of the decomposition along a *protocol* boundary, which dissolved a third blocker for free. Its "one improvement" — stop ending the turn at phase boundaries to report status — is the autonomy contract `/deliver` states today. |
 | 2026-07-29 | #407 | full | Hardened the delivery skills themselves. **Review before writing** paid outright: three plan-review rounds (37 + 9 + 11 findings) ran before a file was edited, and round 1 blocked v1 for **data loss** (the worktree sweep would remove unpushed work) and **credential exposure** (a public repo, with a headless job pasting diagnosis text verbatim into an issue); round 2 caught ACs still grading mechanisms the plan had just cut, which would have red-gated Phase 6 by construction. Verifying mechanisms rather than asserting them caught the content-stamp's first form as a false green — `git ls-tree` has no exclude pathspec, so both hashes were git's empty blob and compared equal. Its lasting legacy is the **reflexive-delivery rule**: three defects all came from the pipeline rewriting itself (a rewritten `/deliver` grading its own rewrite, ACs outliving their mechanisms, and a fan-out shipped as prose in the PR arguing prose isn't a gate), and the Phase 0 reflexive flag that pins verification to the original text **shipped** from this entry's one improvement. Also the origin of the post-ready review lesson: a readiness call was declared with CI green, then a review of the newest code returned fix-first with a major — the fan-out validated its args' shape but not their elements, so malformed input spawned agents on `undefined` and reported full coverage. Nothing in five earlier passes had read the last-written code as code. |
