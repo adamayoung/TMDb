@@ -140,7 +140,14 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   anti-drift tests must be mutation-checked before Phase 4 converges. The
   3-iteration review cap assumes findings shrink each round; here rounds 2 and 3
   each found defects *in the fixes*, and only the mutation harness distinguished
-  "fixed" from "looks fixed".
+  "fixed" from "looks fixed". Filed as issue 485; logged `deferred — raised
+  unattended` in `skill-improvement-log.md`, since an auto run must not edit the
+  pipeline's own skill files.
+- **Filed, deliberately left behind:** issue 483 (§5c's marker-comment author
+  check has no Phase 10 backstop — this PR closed the issue-author half only),
+  issue 484 (the reflexive-set test infers its canonical list by "largest
+  paragraph wins", which a fuller narrative paragraph would defeat), issue 485
+  (the improvement above).
 
 ## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (#474) · full
 

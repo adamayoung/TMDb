@@ -197,6 +197,35 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-20 — Mutation-check a reflexive delivery's anti-drift tests · deferred
+
+- **Pattern:** a **fifth** instance of the partial-sweep family, but with a new
+  twist that none of the four existing rules reach: in PR #482 the sweep *was*
+  performed and the executable check *was* added — and the check was **blind**.
+  Three assertions passed while testing nothing (a line window bleeding into the
+  neighbouring bullet; a string-replace that updated a docstring but not the
+  regex it described; narrative prose about a past drift supplying the very
+  token under test). Two only broke once deliberately broken. Meanwhile rounds 2
+  and 3 of the review each found defects **in the previous round's fixes**, so
+  Phase 4's 3-iteration cap was measuring the wrong thing.
+- **Decision:** **deferred — raised unattended, needs review.** `/deliver auto`
+  must not edit and push the repo's own skill files, so no skill file was
+  touched. Filed as issue #485 with the fix sketch instead, so the proposal is
+  actionable rather than only logged.
+- **Rationale:** the four existing sweep rules all assume that *doing* the sweep
+  is the hard part. This class is different — the sweep was done and encoded in a
+  test, and the test was the thing that lied. The countermeasure is cheap
+  (revert each guarded rule, demand red, confirm the baseline is green) and it is
+  the only evidence that separates "fixed" from "looks fixed" when the deliverable
+  is prose. Recorded in `knowledge/gotchas.md` → *A test that asserts on prose can
+  be blind* with the worked matrix.
+- **Reconsider when:** Adam reviews issue #485. Keep it scoped to
+  `reflexive: true` deliveries that add or change a prose-asserting test —
+  widening it to every delivery would demand a mutation pass on Swift suites,
+  where the compiler and `--Werror` already do this work.
+
+---
+
 ### 2026-08-13 — Grep for a changed string's siblings before calling it done · applied
 
 - **Pattern:** partial sweeps keep recurring, but **outside the scope of the two
