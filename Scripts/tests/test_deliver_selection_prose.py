@@ -81,6 +81,28 @@ def window(text: str, anchor: str, before: int = 6, after: int = 14) -> str | No
     return None
 
 
+def paragraph(text: str, anchor: str) -> str | None:
+    """The blank-line-delimited paragraph containing `anchor`, or None.
+
+    Preferred over `window()` for anything asserting a token is PRESENT. A fixed
+    line window bleeds into its neighbours: SKILL.md's four gate predicates are
+    consecutive bullets, so a 6-before/14-after window around one contains the
+    next, and reverting a predicate left the test green because the token was
+    still in view. A paragraph ends where the rule ends.
+    """
+    for para in re.split(r"\n\s*\n", text):
+        if anchor in para:
+            return para
+    return None
+
+
+# The canonical way every gate predicate names its two policies. Asserting this
+# phrase rather than the bare words is what stops `next` matching a
+# `references/next-mode.md` link and `explicit` matching the word "explicitly" —
+# the same substring trap this file's own policy-name test guards against.
+BOTH_TOKENS = "(`next` or `explicit`)"
+
+
 class GatePredicateTests(unittest.TestCase):
     """The four gates that ask "was this a selection run?".
 
@@ -113,7 +135,7 @@ class GatePredicateTests(unittest.TestCase):
     def test_reference_restatements_name_both_policy_tokens(self):
         located = {}
         for name, path, anchor in self.RESTATEMENTS:
-            located[name] = window(read(path), anchor, before=2, after=8)
+            located[name] = paragraph(read(path), anchor)
         missing = [n for n, r in located.items() if r is None]
         self.assertEqual(
             missing,
@@ -125,16 +147,15 @@ class GatePredicateTests(unittest.TestCase):
             ),
         )
         for name, region in located.items():
-            for token in POLICY_TOKENS:
-                with self.subTest(restatement=name, token=token):
-                    self.assertTrue(
-                        token in region,
-                        msg=(
-                            f"{name} does not mention the {token!r} policy token. A conductor "
-                            f"reading this copy would conclude the gate does not apply.\n"
-                            f"Region was:\n{region}"
-                        ),
-                    )
+            with self.subTest(restatement=name):
+                self.assertTrue(
+                    BOTH_TOKENS in region,
+                    msg=(
+                        f"{name} does not name both policies as {BOTH_TOKENS}. A conductor "
+                        f"reading this copy would conclude the gate does not apply.\n"
+                        f"Region was:\n{region}"
+                    ),
+                )
 
     def test_every_gate_predicate_names_both_policy_tokens(self):
         text = read(SKILL)
@@ -142,7 +163,7 @@ class GatePredicateTests(unittest.TestCase):
         # assertions would make the floor unreachable the moment any gate fails,
         # reporting "0 of 4 checked" — a confusing second failure that hides the
         # real one.
-        located = {name: window(text, anchor) for name, anchor in self.GATES}
+        located = {name: paragraph(text, anchor) for name, anchor in self.GATES}
         missing = [name for name, region in located.items() if region is None]
         self.assertEqual(
             missing,
@@ -154,16 +175,15 @@ class GatePredicateTests(unittest.TestCase):
             ),
         )
         for name, region in located.items():
-            for token in POLICY_TOKENS:
-                with self.subTest(gate=name, token=token):
-                    self.assertTrue(
-                        token in region,
-                        msg=(
-                            f"The {name} predicate does not mention the {token!r} "
-                            f"selection-policy token, so it does not fire for that policy.\n"
-                            f"Predicate region was:\n{region}"
-                        ),
-                    )
+            with self.subTest(gate=name):
+                self.assertTrue(
+                    BOTH_TOKENS in region,
+                    msg=(
+                        f"The {name} predicate does not name both selection policies as "
+                        f"{BOTH_TOKENS}, so it does not demonstrably fire for both.\n"
+                        f"Predicate paragraph was:\n{region}"
+                    ),
+                )
 
 
 class ReflexiveSetTests(unittest.TestCase):

@@ -690,9 +690,10 @@ necessarily at today's. A candidate whose claims no longer hold goes back to
 `Ready` requirement, because choosing the issue yourself *is* the triage
 judgement. It still re-verifies the issue at `origin/main` and still claims it.
 The differences are in what happens when something is wrong — with no queue to
-move along, every exclusion becomes a **stop with a report** rather than a
-pass-over, and a failed re-verification stops rather than demoting the issue you
-just chose.
+move along, a failed **§2 filter** or a failed re-verification becomes a **stop
+with a report** rather than a pass-over, and re-verification stops rather than
+demoting the issue you just chose. The `merge`-mode refusals are the exception
+and behave differently again; see the constraint below.
 
 That line is **assembled by `Scripts/build_run_list.py`**, not written by hand:
 it carries the whole of `/triage-issues`' ordering — dependency order,

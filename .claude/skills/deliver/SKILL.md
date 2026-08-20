@@ -389,7 +389,7 @@ implementation = separate `/deliver` sessions.)
     `rubricProvenance: derived — <the source>`, and say in the PR body that the
     rubric was derived rather than supplied. Bug fixes land here routinely;
     stopping to ask a question the plan already answers is ceremony, not rigour.
-    **A `next`-drafted plan always lands here**, whatever its text contains:
+    **A selection-run-drafted plan always lands here, under either policy**, whatever its text contains:
     record `derived — issue <number>`, **never `supplied`**. The drafted plan
     will carry ACs — the `Plan` agent writes them — but `supplied` means *a
     human set the bar*, and here the run that gets graded wrote its own rubric.
@@ -675,7 +675,8 @@ Three distinct cases, and they must not be conflated:
   green indistinguishable from never having looked. (`mode` is written at
   Phase 0's keyword parse, *before* selection, so a skipped selection shows up
   as a policy token with no `selection` rather than as an ordinary run.)
-- **A `mode` naming `auto` and a selection-policy token (`next` or `explicit`), with `planReview` missing**
+- **A `mode` naming `auto`, together with a selection-policy token (`next` or
+  `explicit`) in `mode` **or** a `selection.policy`, with `planReview` missing**
   → **hard stop.** That field is the sole record that the forced `/review-plan`
   actually ran, and a self-drafted, unattended plan whose critics
   were skipped is the least-reviewed thing this pipeline can produce — whether
@@ -788,7 +789,8 @@ gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
-**`merge` is dropped, not honoured, when *either* holds:**
+**`merge` is dropped, not honoured, when *either* holds** — and both apply under
+both selection policies (`next` or `explicit`):
 
 1. the run file says **`reflexive: true`** *and* it is a selection run — its
    `mode` names a **selection-policy token** (`next` or `explicit`), **or** it
@@ -809,8 +811,13 @@ say the opt-in was dropped and why.
 > on the first `explicit` run ever performed, which recorded `mode: "auto"` with
 > a full `selection` block. Phase 1 and Phase 10 both read a *completed*
 > `selection`, so `selection.policy` is a free second witness and either suffices.
-> Phase 6's selection gate cannot use it — that gate fires precisely when
-> `selection` is **absent** — so it stays keyed on `mode` alone.
+> Only Phase 6's **selection gate** cannot use it — that one gate fires
+> precisely when `selection` is **absent**, so it has no second witness to read
+> and stays keyed on `mode` alone. Phase 6's **`planReview` stop** is not
+> exempt: it fires on a run whose `selection` block is present and complete, so
+> it takes the second witness like Phase 1 and Phase 10. Getting that wrong
+> would let an unattended, self-drafted plan whose forced critics never ran pass
+> the exit gate green — the least-reviewed artefact this pipeline can produce.
 >
 > **Both conditions are needed; neither subsumes the other.** §5b refuses a
 > reflexive candidate at *selection* time, judging from the issue's own fix

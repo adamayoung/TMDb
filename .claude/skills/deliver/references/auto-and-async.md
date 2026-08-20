@@ -130,15 +130,15 @@ If you queue a `/deliver`, mind two things:
 - **Inline the whole plan + acceptance criteria in the trigger prompt.** A
   fresh session has no conversation history, and Phase 0's entry gate
   **requires ACs** — so the plan text and its ACs must travel *in* the prompt,
-  or the run stops at the gate immediately. **`next` is the one exception, and
+  or the run stops at the gate immediately. **a selection run is the exception, and
   only in your own environment** — it derives both from the issue it picks, so
-  `/deliver auto merge next` needs no plan in the prompt at all. That works from
+  `/deliver auto merge next` and `/deliver auto merge issue <n>` need no plan in the prompt at all — both derive their ACs from the issue. That works from
   a CCR-spawned session, which keeps your user-scoped MCP; it does **not** work
   on a GitHub Actions runner, where the Projects MCP is not mounted and
   `gh project` fails for want of the `read:project` scope
   ([ADR-0009](../../../../knowledge/decisions/0009-github-mcp-over-gh-cli.md);
   `/triage-issues` is unrunnable there for exactly the same reason). A headless
-  `auto next` would fail at its first call, so headless runs still inline the
+  a selection run would fail at its first call, so headless runs still inline the
   plan.
 - **User-scoped MCP may be absent** (`mcp__github__*`, `wiki`). The `gh`
   fallbacks in `/pr` and `/watch-pr` cover GitHub; the wiki step degrades
@@ -149,9 +149,12 @@ If you queue a `/deliver`, mind two things:
 **Recommendation — don't routinise async *feature* delivery here.** This is a
 single-maintainer package with public API surface, where the ready-to-merge
 human gate is deliberate — every change is a compatibility call worth a
-human's eyes. That sentence is also why `next` refuses to select a
+human's eyes. That sentence is also why a **selection run** refuses a
 non-`none` **Breaking class** in `merge` mode ([`next-mode.md`](next-mode.md)
-§5): `/deliver auto merge next` is the one invocation that could otherwise turn
+§5) — under `next` by passing the candidate over, under `issue <n>` by dropping
+the `merge` opt-in so the PR waits at the gate:
+`/deliver auto merge next` and `/deliver auto merge issue <n>` are the
+invocations that could otherwise turn
 a board row into a merged compatibility decision with nobody reading it. Async earns its place for the *occasional* away-from-keyboard
 run and for the self-healing integration cron (which already opens a PR for
 review, never merges) — not as the default path.

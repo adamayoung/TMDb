@@ -161,7 +161,8 @@ carried them, or `derived — <source>` when Phase 0 derived them from a linked
 issue or an explicit test list (its second entry-gate case). It exists so a
 derived rubric is auditable rather than indistinguishable from a supplied one:
 Phase 6 grades both identically, but a reader can tell which was which, and the
-PR body is required to say so. A **`next`-drafted plan is never `supplied`**,
+PR body is required to say so. A plan drafted by a **selection run** — under either policy — is never
+`supplied`,
 however many ACs its text carries — the `Plan` agent wrote them, and `supplied`
 is a claim that a human set the bar.
 
@@ -188,13 +189,13 @@ is a claim that a human set the bar.
     "rejected": [{ "issue": 426, "verdict": "needs-decision", "why": "three competing fixes; demoted" }]
   },
   "deliverables": [{
-    "title": "…", "issue": 434, "dependsOn": [],
+    "title": "…", "issue": 448, "dependsOn": [],
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
     "claimHandedBack": null,
     "rubric": ["Given …, when …, then …"],
-    "rubricProvenance": "derived — issue 434",
+    "rubricProvenance": "derived — issue 448",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
                 "rubricGraded": null },
     "openFindings": [], "knowledgeCandidates": [], "pr": null,
