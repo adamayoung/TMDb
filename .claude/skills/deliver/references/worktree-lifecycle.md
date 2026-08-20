@@ -218,6 +218,7 @@ this is its durable home, and Phase 8 copies it into the retro.
 and 5 do (see `SKILL.md` Phase 0). That set is **defined** in `SKILL.md`
 Phase 0 and quoted here and in [`next-mode.md`](next-mode.md) §5b; all three
 must match exactly — **change all three or none**.
+
 `Scripts/tests/test_deliver_selection_prose.py` asserts they do, because this
 copy had already drifted (it omitted `.claude/workflows/**`, the glob covering
 `deliver-panel.js` — the script defining the panel that authorises unattended

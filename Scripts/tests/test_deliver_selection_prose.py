@@ -119,7 +119,7 @@ class GatePredicateTests(unittest.TestCase):
         ("Phase 1 stranded-claim sweep", "Release stranded"),
         ("Phase 6 selection gate", "`selection` missing or empty"),
         ("Phase 6 planReview stop", "`planReview` missing"),
-        ("Phase 10 merge-drop", "dropped, not honoured"),
+        ("Phase 10 merge-drop", "it is a selection run"),
     )
 
     # Restatements of the same predicates in the reference files. `SKILL.md`
@@ -199,21 +199,30 @@ class ReflexiveSetTests(unittest.TestCase):
     SOURCES = (("SKILL.md Phase 0", SKILL), ("next-mode.md 5b", NEXT_MODE), ("worktree-lifecycle.md", LIFECYCLE))
 
     def _globs(self, path: Path) -> set[str]:
-        """Globs from every paragraph that both says "reflexive" and lists one.
+        """The CANONICAL glob list in `path` — the largest single set in one paragraph.
 
-        Anchoring on the FIRST "reflexive" in the file does not work: in
-        `next-mode.md` that is a §5 cross-reference ("breaking (§5a), reflexive
-        (§5b)") twelve lines from any glob, so the window came back empty and the
-        test reported a missing copy that is actually present. Scoping to
-        blank-line-separated paragraphs finds the definition wherever it sits,
-        and requiring BOTH the word and a glob keeps unrelated prose out.
+        Unioning across every paragraph that says "reflexive" does not work: all
+        three files also carry *narrative* paragraphs about the past drift, and
+        those name individual globs in passing. `SKILL.md` has three such
+        paragraphs. Delete a glob from the canonical list and the narrative
+        still supplies it to a union, so the test stays green — which is the
+        false green this whole file exists to prevent, one level up.
+
+        Taking the largest per-paragraph set instead means a deletion drops that
+        file's count while the other two hold, and the cross-file comparison
+        fails. A glob deliberately removed from all three still compares equal,
+        which is intended: this test asserts AGREEMENT, and
+        `test_the_workflows_glob_is_present_everywhere` asserts the one
+        membership that carries a security consequence.
         """
-        found: set[str] = set()
+        best: set[str] = set()
         for para in re.split(r"\n\s*\n", read(path)):
             if "reflexive" not in para.lower():
                 continue
-            found |= set(REFLEXIVE_GLOB_RE.findall(para))
-        return found
+            found = set(REFLEXIVE_GLOB_RE.findall(para))
+            if len(found) > len(best):
+                best = found
+        return best
 
     def test_all_three_copies_list_the_same_globs(self):
         found = {name: self._globs(path) for name, path in self.SOURCES}
@@ -245,9 +254,19 @@ class ReflexiveSetTests(unittest.TestCase):
         # to the panel script that authorises unattended merges.
         for name, path in self.SOURCES:
             with self.subTest(source=name):
-                self.assertTrue(
-                    "`.claude/workflows/**`" in read(path),
-                    msg=f"{name} omits `.claude/workflows/**` from the reflexive set.",
+                # Against the canonical list, NOT the whole file: every one of
+                # these files mentions the glob in narrative prose about the
+                # drift, which would satisfy a bare substring check with the
+                # canonical list fully gutted.
+                self.assertIn(
+                    ".claude/workflows/**",
+                    self._globs(path),
+                    msg=(
+                        f"{name}'s canonical reflexive set omits `.claude/workflows/**`. "
+                        f"That glob is what stops a rewrite of deliver-panel.js — the script "
+                        f"defining the panel that authorises unattended merges — being "
+                        f"auto-merged unread."
+                    ),
                 )
 
 

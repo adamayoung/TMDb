@@ -796,8 +796,15 @@ both selection policies (`next` or `explicit`):
 1. the run file says **`reflexive: true`** *and* it is a selection run — its
    `mode` names a **selection-policy token** (`next` or `explicit`), **or** it
    carries a `selection.policy`; or
-2. **`selection.mergeRefused` is present** — selection already refused the
-   opt-in under §5a/§5b/§5c.
+2. **`selection.mergeRefused` is non-null** — selection already refused the
+   opt-in under §5a/§5b/§5c; or
+3. **the raw facts say it should have been refused, whatever `mergeRefused`
+   says** — `selection.breakingClass` is anything but `none`, or
+   `selection.authorAssociation` is outside `{OWNER, MEMBER, COLLABORATOR}`
+   (absent or unrecognised counts as outside). Re-derive rather than trust: a
+   refusal under `explicit` survives only as a field a conductor had to remember
+   to write, and §5c — the check guarding against an outside-authored issue
+   reaching `main` — otherwise has no second witness at all.
 
 Read all of it from the run file, since this phase
 runs in the background, potentially long after the invocation. A selection run
