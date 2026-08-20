@@ -37,7 +37,7 @@ TESTS = ROOT / "Scripts" / "tests"
 # `make lint` and CI would stay green. An exact count also forces a one-line,
 # diff-visible bump in the same commit that adds a test, which is the only
 # enforcement a "remember to update this" comment ever really has.
-EXPECTED_MINIMUM = 47
+EXPECTED_MINIMUM = 48
 
 
 def main() -> None:

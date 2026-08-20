@@ -15,13 +15,14 @@ rides the delivery's own PR. Every run happens in its **own git worktree**
 (Phase 1; torn down on merge, Phase 12) so the user's main checkout stays
 free. The plan is created first in **plan mode** (or with the `Plan` agent;
 there is no `/plan` skill) — `/deliver`
-picks up from there. **`/deliver next` supplies its own plan**: it takes the
-top startable issue off the project board's Ready column and drafts one
+picks up from there. **A selection run supplies its own plan**: `/deliver next`
+takes the top startable issue off the project board's Ready column and
+`/deliver issue <n>` takes the one you name, then drafts a plan for it
 (Phase 0; [`references/next-mode.md`](references/next-mode.md)).
 
 ```text
 you approve the plan ─▶ /deliver ─────▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
-   (or: /deliver next ─▶ pick a Ready issue ─▶ draft ─▶ approve ─┘)
+   (or: /deliver next | issue <n> ─▶ select ─▶ re-verify ─▶ claim ─▶ draft ─▶ approve ─┘)
   implement ─▶ code-review + fix ─▶ security-review + fix ─▶
   rubric check (ACs met?) ─▶ capture ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
   GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
@@ -40,11 +41,14 @@ Non-negotiable. Do these by default, without being reminded.
 1. **Invoking `/deliver` is plan approval — run autonomously to the one
    gate** (the diagram above), with no second "is the plan ok?" prompt. The
    only legitimate mid-run pauses: a **blocker** from `/review-plan`
-   (Phase 2), a **red gate you cannot triage** (§4), or — **attended `next`
-   only** — the one approval stop on a plan `/deliver` drafted for itself
+   (Phase 2), a **red gate you cannot triage** (§4), or — on an **attended
+   selection run, under either policy** — the one approval stop on a plan
+   `/deliver` drafted for itself
    (Phase 0). That third case is not an exception to this rule but its
-   boundary: invoking the skill approves *the plan you brought*, and a `next`
-   run brought none. In `auto` it is not a pause at all — the
+   boundary: invoking the skill approves *the plan you brought*, and a selection
+   run brought none — naming the issue yourself settles *what* to build, not
+   *how*, so `/deliver issue <n>` gets that stop exactly as `/deliver next`
+   does. In `auto` it is not a pause at all — the
    `phase0n-selection` panel rules instead.
 2. **Delegate to the existing skills — don't reinvent them**: `/review-plan`,
    `/implement-plan`, `/review-changes`, `/security-review`,
@@ -158,8 +162,10 @@ panel** of three independent Opus jurors — a dead panel is never a proceed,
 and every panel convened leaves an audit line in the ledger. Decision points
 are marked **Auto:** below. Never delegated: a **data-loss or
 breaking-change plan blocker is a hard stop even in auto**, and in
-`auto merge next` an issue whose **Breaking class is anything but `none` is
-not selectable at all**. `/deliver` can
+`auto merge` a **breaking** issue is never merged unattended: under `next` it is
+not selectable at all, and under `issue <n>` the `merge` opt-in is **dropped**
+so the PR waits at the gate ([`references/next-mode.md`](references/next-mode.md)
+§5). `/deliver` can
 also be queued headless (the plan + ACs must travel in the trigger prompt —
 unless `next` supplies them, which only works where the Projects MCP is
 mounted). Panel procedure and queuing caveats:
@@ -297,7 +303,9 @@ implementation = separate `/deliver` sessions.)
   it has to claim the issue before the drafting window, or a concurrent session
   delivers the same one. Phase 1's move then finds it already set and no-ops.
   The claim carries an obligation: **any stop before the PR opens releases it
-  back to `Ready`** ([`references/next-mode.md`](references/next-mode.md)).
+  back to `selection.claimedFrom`** — the column it was claimed from, which is
+  `Ready` for a `next` pick and may be **Backlog** under `explicit`
+  ([`references/next-mode.md`](references/next-mode.md)).
 - **Flag a reflexive delivery.** If the plan touches any of the **reflexive
   set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
   `.github/CODE_REVIEW.md` — this run is **rewriting the
@@ -434,7 +442,8 @@ Procedures and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
    **Release stranded selection claims while you are here — keyed on the PID,
    not on a bucket.** For every run file whose `mode` names a **selection-policy
-   token** (`next` or `explicit`), with `pr: null`,
+   token** (`next` or `explicit`) **or which carries a `selection.policy`**,
+   with `pr: null`,
    `status: open`, **no `claimHandedBack` stamp**, and **`selection.claimed` not
    `false`**, test its `conductorPid` with `kill -0`. **Dead** → that run is
    holding an issue in **In progress** with nobody to release it: move the issue
@@ -507,11 +516,15 @@ Procedures and traps:
    the phase list and the run file, it isn't lost work. Set the run file's
    `entry` to `created`, or to `adopted` when resuming an existing worktree
    via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
-   **Adopting a `next` run whose deliverable carries `claimHandedBack`?** Its
-   issue was handed back to `Ready` while it was dead and may now belong to
+   **Adopting a selection run whose deliverable carries `claimHandedBack`?** Its
+   issue was handed back to its `selection.claimedFrom` column while it was dead
+   and may now belong to
    someone else. Re-run the claim steps in
    [`references/next-mode.md`](references/next-mode.md) §6 before resuming —
-   `Status` not `Ready` → stop and say the issue was re-claimed elsewhere.
+   `Status` neither `claimedFrom` nor claimable → stop and say the issue was
+   re-claimed elsewhere. **Do not test against `Ready` specifically**: a
+   Backlog-claimed issue is handed back to *Backlog*, so a `Ready` test would
+   report "re-claimed elsewhere" for every `explicit` resume and brick it.
    Resuming on the strength of a claim the sweep already released is how an
    adopted run comes to "release" an issue a live delivery is holding.
 5. **Move the issue to `In progress`** — the run file's `issue`, if it has one.
@@ -777,8 +790,9 @@ opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 
 **`merge` is dropped, not honoured, when *either* holds:**
 
-1. the run file says **`reflexive: true`** *and* its `mode` names a
-   **selection-policy token** (`next` or `explicit`); or
+1. the run file says **`reflexive: true`** *and* it is a selection run — its
+   `mode` names a **selection-policy token** (`next` or `explicit`), **or** it
+   carries a `selection.policy`; or
 2. **`selection.mergeRefused` is present** — selection already refused the
    opt-in under §5a/§5b/§5c.
 
@@ -790,6 +804,14 @@ its own plan — so nobody decided to
 merge a rewrite of the pipeline's own skills unattended. Stop at the gate and
 say the opt-in was dropped and why.
 
+> **Two witnesses, deliberately.** `mode` is written by hand at Phase 0 and a
+> mis-written one silently disables this gate — that has already happened once,
+> on the first `explicit` run ever performed, which recorded `mode: "auto"` with
+> a full `selection` block. Phase 1 and Phase 10 both read a *completed*
+> `selection`, so `selection.policy` is a free second witness and either suffices.
+> Phase 6's selection gate cannot use it — that gate fires precisely when
+> `selection` is **absent** — so it stays keyed on `mode` alone.
+>
 > **Both conditions are needed; neither subsumes the other.** §5b refuses a
 > reflexive candidate at *selection* time, judging from the issue's own fix
 > sketch ([`references/next-mode.md`](references/next-mode.md) §5b) and setting
@@ -872,8 +894,8 @@ a concise status: phase reached, branch and PR, what passed, what's blocking,
 and the single next action needed from the user. The destination is a green
 PR ready for their merge — say plainly whether you got there.
 
-A `next` run that stops **before its PR opens** owes one extra line: the issue
-it claimed has been released back to `Ready`, or it is stranded in a column
-nothing else can move it out of.
+A **selection run** that stops **before its PR opens** owes one extra line: the
+issue it claimed has been released back to its `selection.claimedFrom` column,
+or it is stranded in a column nothing else can move it out of.
 
 Arguments: $ARGUMENTS

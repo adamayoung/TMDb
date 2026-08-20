@@ -51,7 +51,9 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    can never brick the pipeline on an unrecognised state.
 
 3. **Release stranded selection claims.** For every run file whose `mode` names a
-   **selection-policy token** (`next` or `explicit`),
+   **selection-policy token** (`next` or `explicit`) **or which carries a
+   `selection.policy`** — two witnesses, because a hand-written `mode` has
+   already been observed missing its token on a real run —
    `pr: null`, `status: open`, no `claimHandedBack`, and `selection.claimed` not
    `false`, test its `conductorPid` with `kill -0`. Dead → move that issue back
    to **`selection.claimedFrom`** (defaulting to **Ready** when absent, which is
@@ -173,7 +175,7 @@ is a claim that a human set the bar.
                   "claimsReleased": 0 },
   "mode": "auto merge next",
   "conductorPid": 90982,
-  "planReview": "forced — auto-explicit",
+  "planReview": "forced — auto-top-of-run-list",
   "invocation": "auto merge next",
   "selection": {
     "policy": "top-of-run-list",
@@ -192,7 +194,7 @@ is a claim that a human set the bar.
     "entry": "created",
     "claimHandedBack": null,
     "rubric": ["Given …, when …, then …"],
-    "rubricProvenance": "supplied",
+    "rubricProvenance": "derived — issue 434",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
                 "rubricGraded": null },
     "openFindings": [], "knowledgeCandidates": [], "pr": null,
@@ -205,7 +207,7 @@ A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
 
-Six run-scoped fields sit outside `deliverables[]` because they describe the
+Seven run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
@@ -250,7 +252,8 @@ and `planReview` stops, and Phase 10's merge-drop. Keeping `next` *as* a policy
 token is what makes backward compatibility structural: a run file written before
 `explicit` existed carries `"mode": "auto merge next"` and satisfies all four by
 construction, with no legacy clause to maintain. `Scripts/tests/test_deliver_selection_prose.py`
-asserts each of the four still names both tokens.
+asserts each of the four **primary** statements in `SKILL.md` still names both
+tokens, and that this file's restatements do too.
 
 **`invocation`** is the raw argument string, verbatim. A reflexive change to the
 grammar cannot be dogfooded before merge, so recording what was actually typed
@@ -278,10 +281,11 @@ the ordering source and its sha, the sha every candidate was re-verified
 against, the pick, its `Breaking class`, whether the claim actually landed
 (**`claimed`**), every candidate a verifier **`rejected`** with its verdict, and
 every candidate **`passedOver`** without one. It is **read, not merely
-written**: Phase 6 hard-stops when `mode` is `next` and `selection` is missing
+written**: Phase 6 hard-stops when `mode` names a selection-policy token
+(`next` or `explicit`) and `selection` is missing
 or empty, the same way it does on a missing `reconciled` block, and Phase 1's
 sweep reads `claimed` to decide whether this run has a claim worth releasing at
-all. Both fields are absent on an ordinary run, and `mode: next` without
+all. Both fields are absent on an ordinary run, and a policy token without
 `selection` is the failure the gate exists to catch — not a default.
 
 **`claimHandedBack`** sits on the **deliverable**, not here, because it is written

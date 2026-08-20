@@ -100,6 +100,42 @@ class GatePredicateTests(unittest.TestCase):
         ("Phase 10 merge-drop", "dropped, not honoured"),
     )
 
+    # Restatements of the same predicates in the reference files. `SKILL.md`
+    # holds the primary statement, but a conductor following SKILL.md's own link
+    # lands in these — so a copy keyed on `next` alone silently exempts every
+    # explicit run from the gate it is reading about.
+    RESTATEMENTS = (
+        ("next-mode.md §5b Phase 10 backstop", NEXT_MODE, "Phase 10 drops"),
+        ("worktree-lifecycle.md Phase 1 sweep", LIFECYCLE, "Release stranded"),
+        ("worktree-lifecycle.md Phase 6 gate", LIFECYCLE, "Phase 6 hard-stops"),
+    )
+
+    def test_reference_restatements_name_both_policy_tokens(self):
+        located = {}
+        for name, path, anchor in self.RESTATEMENTS:
+            located[name] = window(read(path), anchor, before=2, after=8)
+        missing = [n for n, r in located.items() if r is None]
+        self.assertEqual(
+            missing,
+            [],
+            msg=(
+                f"Could not locate these gate restatements: {missing}. They carry the same "
+                f"rule as SKILL.md's primary statements; if one was removed, drop it from "
+                f"RESTATEMENTS in the same commit rather than leaving this test blind."
+            ),
+        )
+        for name, region in located.items():
+            for token in POLICY_TOKENS:
+                with self.subTest(restatement=name, token=token):
+                    self.assertTrue(
+                        token in region,
+                        msg=(
+                            f"{name} does not mention the {token!r} policy token. A conductor "
+                            f"reading this copy would conclude the gate does not apply.\n"
+                            f"Region was:\n{region}"
+                        ),
+                    )
+
     def test_every_gate_predicate_names_both_policy_tokens(self):
         text = read(SKILL)
         # Count anchors located BEFORE asserting on them. Incrementing after the
@@ -259,19 +295,23 @@ class InvocationGrammarTests(unittest.TestCase):
     """`issue` is a keyword taking one operand; both policies are documented."""
 
     def test_skill_documents_the_issue_keyword(self):
-        text = read(SKILL)
+        # Scope to the Invocation heading's own section. Over the whole file this
+        # passes on the run file's `issue: <number>` field and other incidental
+        # uses, i.e. with the keyword entirely removed.
+        section = window(read(SKILL), "## Invocation", before=0, after=45) or ""
         self.assertTrue(
-            re.search(r"`issue\b", text) is not None,
-            msg=f"{SKILL.name} does not document an `issue` keyword, so a named issue cannot be selected.",
+            re.search(r"`issue` takes exactly one operand", section) is not None,
+            msg=f"{SKILL.name}'s Invocation section does not define the `issue` keyword and its operand.",
         )
 
     def test_next_mode_names_both_policies(self):
         text = read(NEXT_MODE)
-        for policy in ("top-of-run-list", "explicit"):
+        # Backticked, so "explicitly" in unrelated prose cannot satisfy it.
+        for policy in ("`top-of-run-list`", "`explicit`"):
             with self.subTest(policy=policy):
                 self.assertTrue(
                     policy in text,
-                    msg=f"{NEXT_MODE.name} does not name the {policy!r} selection policy.",
+                    msg=f"{NEXT_MODE.name} does not name the {policy} selection policy.",
                 )
 
     def test_panel_brief_covers_a_user_named_issue(self):
@@ -280,8 +320,12 @@ class InvocationGrammarTests(unittest.TestCase):
             "phase0n-selection" in text,
             msg="The phase0n-selection point vanished; deliver-panel.js throws on an unlisted point.",
         )
+        # Scope to the point's OWN brief. Asserting over the whole file passes on
+        # `phase0-no-acs`'s unrelated phrase "an explicit test list", so the
+        # check would survive reverting the entire rewrite.
+        brief = window(text, "'phase0n-selection'", before=0, after=3) or ""
         self.assertTrue(
-            re.search(r"named|explicit", text) is not None,
+            re.search(r"named|explicit", brief) is not None,
             msg=(
                 "phase0n-selection's brief does not distinguish an issue the run picked from one "
                 "the user named, so jurors are briefed on the wrong question."

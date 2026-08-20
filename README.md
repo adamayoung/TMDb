@@ -722,7 +722,9 @@ Four constraints are worth knowing before you reach for it:
 * **The issue is claimed at the pick**, not at the worktree, which narrows the
   window in which two concurrent runs could take the same one down to the
   verification call (the board has no compare-and-swap, so it isn't zero).
-  If the run stops before its PR opens the claim is released back to `Ready`,
+  If the run stops before its PR opens the claim is released back to the column
+  it came from — `Ready` for a `next` pick, and possibly **Backlog** for a named
+  issue —
   and a run that dies without stopping has its claim released by the next
   run's reconcile sweep.
 
