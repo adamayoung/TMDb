@@ -46,7 +46,9 @@ distinct way of delivering the same work twice:
 
 - **Already claimed by a PR** — an open pull request whose body carries
   `Closes #NNN` for that issue. One `mcp__github__list_pull_requests` call
-  (`state: open`), which Phase 1's reconcile sweep already makes.
+  (`state: open`). This is its own call, made here in Phase 0 — Phase 1's
+  reconcile sweep makes a similar one later, with `state: all`, for a different
+  purpose; neither reuses the other's result.
 - **Already claimed by a live worktree** — a run file under `.git/deliver/`
   whose deliverable names that `issue` and whose worktree is `live` (lock PID
   alive; see [`worktree-lifecycle.md`](worktree-lifecycle.md)).
@@ -170,8 +172,23 @@ longer holds. Both halves matter:
   own marker, which makes the issue look touched-since-triage and forces a full
   re-triage next run — here that is the **point**, not a cost.
 
+  **Never skip the comment on a run that actually performed the move.** The
+  demotion's whole exit route is that bumped `updated_at`: a Project field write
+  does **not** touch the issue's own timestamp, so a silent demotion leaves
+  `/triage-issues`' skip condition satisfied, its Phase 3 carries the stale
+  `exit: ready` marker forward, and Phase 7 promotes the issue straight back to
+  `Ready` without re-examining it — the poisoned head returns, unexamined and
+  now with a triage run's apparent blessing. So the idempotency skip applies
+  only when the item was **already** in Backlog; if this run wrote
+  `Ready → Backlog`, always post or refresh the marker comment.
+
 **Cap the rejects per run, not from the head.** Stop when either the whole
-candidate list is exhausted or **5** candidates have been rejected in this run.
+candidate list is exhausted or **5** candidates have been **rejected** in this
+run. Only a §4 verdict is a reject. A candidate removed by a §2 filter (closed,
+not `Ready`, already claimed by a PR or a live worktree), skipped by §5's
+`merge`-mode tests, or lost to a concurrent claim is **passed over, not
+rejected** — it never reached a verifier, nothing is wrong with it, and it does
+not count against the cap or earn a comment.
 A "3 consecutive rejects" rule counted from the head would let three stale items
 brick `next` permanently while startable work sat at position 4. Report
 `n rejected, picked #m` in one line either way.
@@ -179,16 +196,27 @@ brick `next` permanently while startable work sat at position 4. Report
 Nothing startable → **stop before any worktree**, list what was rejected and
 why, and recommend `/triage-issues`.
 
-## 5 — `merge` mode refuses a breaking change
+## 5 — What `merge` mode refuses
+
+Everything in this section is **scoped to `merge` mode** and is a
+**skip**, not a rejection: the candidate is passed over for this run and left
+exactly where it is on the board. Nothing here demotes anything, and outside
+`merge` mode none of it is read at all — §4's verifier alone decides
+startability. Keep that boundary: an earlier draft let the `Breaking class`
+default leak into every mode, which on the board as it stands would have
+demoted nine perfectly good `Ready` issues on the first run.
 
 `/deliver auto merge next` is the only invocation that can take an issue from a
-board to a merged commit with nobody looking. The body template
+board to a merged commit with nobody looking. Two properties make a candidate
+unfit for that, and both are knowable before Phase 1.
+
+### 5a — A breaking change
+
+The body template
 ([`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md)) ends every
 issue with `**Breaking class:** none | source-breaking | behavioural | needs a
-decision`.
-
-**In `merge` mode, a candidate is selectable only if its class is `none`.**
-Skip the rest, name them in the report, and take the next candidate.
+decision`. **In `merge` mode, a candidate is selectable only if its class is
+`none`.**
 
 Read the class **defensively — real bodies vary**, and the three shapes seen on
 the live board are not interchangeable:
@@ -197,7 +225,7 @@ the live board are not interchangeable:
 | --- | --- | --- |
 | Inline bold label | issue 437: `**Breaking class:** adding a case … is source-breaking for exhaustive switches` | the label's text, not a bare enum value |
 | Its own heading | issue 448: `## Breaking class` / `None — CI configuration only.` | the section's first sentence |
-| **Absent** | issue 426 carries no class at all | `needs a decision` |
+| **Absent** | issue 426 carries no class at all | **not `none`** — so unselectable in `merge` mode, and nothing more |
 
 So: find the label in either form, take the prose that follows, and treat it as
 `none` **only** when that prose actually says so. Anything else — a qualifier, a
@@ -205,10 +233,41 @@ sentence you are not sure about, or no label at all — is **not** `none`. The
 default matters more than the parse: an unlabelled issue is the one nobody
 classified, which is the last one to merge unread.
 
-**A `needs a decision` class is a rejection in every mode**, not just `merge` —
-an issue whose fix approach is undecided fails re-verification anyway (§4), and
-the two facts should agree. Issue 426 is the live example: no class line, and a
-"Decision needed" section offering three different fixes.
+**Absence is not a verdict about the issue**, only about merging it unattended.
+An unlabelled issue is still perfectly deliverable by `/deliver next` and
+`/deliver auto next`; it just stops at the human gate, which is where an
+unclassified compatibility question belongs. Only an issue **explicitly**
+classed `needs a decision` is a §4 rejection, and then because its fix approach
+is undecided — not because of this section.
+
+> **Expect `merge` mode to be picky, and say so when it is.** On the board at
+> the time of writing, **3 of the 12** `Ready` issues carry a Breaking-class
+> line at all, so `/deliver auto merge next` will often report "nothing
+> selectable" while `/deliver auto next` has plenty to do. That is the template
+> being backfilled over time, not a fault — report which candidates were skipped
+> for a missing class, so the gap is visible rather than mysterious.
+
+### 5b — A reflexive change
+
+An issue whose fix touches `.claude/skills/**`, `.claude/agents/**`,
+`.claude/workflows/**` or `.github/CODE_REVIEW.md` is **not selectable in
+`merge` mode either**, whatever its Breaking class. Judge it from the issue's
+own fix sketch and the files it names, at the same moment as the class.
+
+This closes a hole the Breaking-class filter does not cover: those files carry
+no public API, so a reflexive issue reads as `none`. Issue 467 is the live
+example — P2, small, touches `.claude/agents/**` — and `auto merge next` would
+otherwise have selected it, drafted its own plan, and squash-merged **a rewrite
+of the delivery machinery with nobody reading it**. That is the exact thing
+[`deliver-panel.js`](../../../workflows/deliver-panel.js) says must never
+happen: *"a `proceed` must never authorise an unattended run to edit and push
+the repo's own skill files"*. Before `next`, a human chose to deliver a skill
+change unattended; the machine must not choose it for them.
+
+Phase 0 already computes `reflexive` for the drafted plan, so **Phase 10 drops
+the `merge` opt-in** whenever the run file says `reflexive: true` and
+`mode: next` — belt and braces, in case the fix sketch understated the
+footprint. The run still delivers; it just stops at the gate.
 
 This is not belt-and-braces: `auto-and-async.md` already states that this is a
 single-maintainer package with public API surface *"where the ready-to-merge
@@ -220,10 +279,25 @@ which is exactly where a compatibility call belongs.
 
 ## 6 — Claim the issue, then draft
 
-**Claim before drafting.** The moment a candidate is `startable`, write
-`Status = In progress` (call:
-[`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md) → *Board status*),
-then **re-read the item to confirm the write landed**. Only then draft.
+**Claim before drafting.** The moment a candidate is `startable`:
+
+1. **Re-read the item's `Status` immediately before writing.** Anything other
+   than `Ready` means another run claimed it during your verification — a
+   subagent call, so a window of minutes. Treat it as a **lost race**: move to
+   the next candidate, and do not count it against the reject cap (nothing was
+   wrong with the issue).
+2. Write `Status = In progress` (call:
+   [`.github/ISSUE_FILING.md`](../../../../.github/ISSUE_FILING.md) →
+   *Board status*).
+3. **Re-read once more to confirm the write landed** — a board write is
+   non-fatal by policy, so a failed one is otherwise silent.
+
+Step 1 narrows the race; it does not eliminate it. `update_project_item` is a
+blind overwrite with no compare-and-swap, so two runs that re-read in the same
+instant still both proceed. Do not describe this as making concurrent claims
+impossible — it makes them improbable, and the remaining window is small enough
+that the Phase 1 exclusions (an open `Closes #NNN` PR, a live worktree) catch
+what is left.
 
 Claiming here rather than at Phase 1 is deliberate. Phase 1 is the normal owner
 of that move, and for a plan the user brought it is the right moment — the entry
@@ -240,6 +314,17 @@ pick is two deliveries of one issue. Phase 1's write then finds the item already
 this drains the queue into a column `next` can never see again and
 `/triage-issues` is forbidden to touch. `/deliver` owns this reverse transition;
 it is in the lifecycle table with the others.
+
+**And a release that depends on a live conductor is not enough.** The rule above
+presupposes reaching a stop report; the commonest end of an unattended run —
+context exhaustion, a killed session, a dropped MCP — reaches none, and leaves
+the claim held forever. So the recovery is **also** owned by the next run's
+Phase 1 reconcile sweep, which releases the issue of any dead `next` run that
+never opened a PR ([`worktree-lifecycle.md`](worktree-lifecycle.md)). Two
+owners for one release is deliberate here, and is not the ambiguity the
+one-owner rule guards against: they cannot both fire, because the first only
+runs while the conductor is alive and the second only once it demonstrably is
+not.
 
 **Draft with the `Plan` agent**, given the issue body, the verifier's findings,
 and the `knowledge/` entries Phase 0's consult surfaced. From the issue:
@@ -284,13 +369,23 @@ indistinguishable from never having run.
 ```json
 "mode": "next",
 "selection": {
-  "source": "run-list@cc7cba55",
+  "source": "board-fields (no run-list line; deps/contention unknown)",
   "verifiedAt": "527682f7",
   "listed": 12,
-  "picked": 426,
-  "breakingClass": "behavioural",
+  "passedOver": [
+    { "issue": 434, "why": "filtered by §2 — closed, still showing Ready" },
+    { "issue": 437, "why": "skipped by §5a — Breaking class source-breaking, merge mode" }
+  ],
   "rejected": [
-    { "issue": 434, "verdict": "stale", "why": "closed by PR #469; filtered before verification" }
-  ]
+    { "issue": 426, "verdict": "needs-decision", "why": "body offers three competing fixes; demoted to Backlog" }
+  ],
+  "picked": 448,
+  "breakingClass": "none"
 }
 ```
+
+Note what the two lists mean, because the distinction is load-bearing:
+`rejected` holds candidates a **verifier** ruled on — each one was demoted and
+counts against the cap — while `passedOver` holds candidates that never reached
+a verifier and were left exactly as they were. An entry in the wrong list either
+demotes an issue that was fine or hides one that is not.

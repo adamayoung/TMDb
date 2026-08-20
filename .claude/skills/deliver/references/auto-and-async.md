@@ -92,7 +92,7 @@ unattended run must still be reviewable.
   **not** a panel decision: in auto it behaves as the `merge` opt-in — once
   ready, proceed to wrap-up (and merge if `merge` was passed).
 
-**Not delegable — Phase 11.** The recurring-pattern scan used to be a seventh
+**Not delegable — Phase 11.** The recurring-pattern scan used to be a delegable
 decision point, with the panel approving proposals and **applying them
 directly**. It is now excluded, and the script throws if asked for it: a
 `proceed` there would authorise an unattended run to edit and push the repo's

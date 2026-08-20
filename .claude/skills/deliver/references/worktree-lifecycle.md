@@ -153,10 +153,13 @@ is a claim that a human set the bar.
   "consulted": "gotchas §False green, §Docs scratch path; ADR-0014",
   "reconciled": { "inScope": 1, "reclaimed": 0, "resumable": 0, "reported": 0 },
   "mode": "next",
+  "planReview": "forced — auto-next",
   "selection": {
-    "source": "run-list@cc7cba55", "verifiedAt": "527682f7",
-    "listed": 12, "picked": 426, "breakingClass": "behavioural",
-    "rejected": [{ "issue": 434, "verdict": "stale", "why": "closed by PR #469" }]
+    "source": "board-fields (no run-list line; deps/contention unknown)",
+    "verifiedAt": "527682f7",
+    "listed": 12, "picked": 448, "breakingClass": "none",
+    "passedOver": [{ "issue": 434, "why": "filtered — closed, still showing Ready" }],
+    "rejected": [{ "issue": 426, "verdict": "needs-decision", "why": "three competing fixes; demoted" }]
   },
   "deliverables": [{
     "title": "…", "issue": 434, "dependsOn": [],
@@ -177,7 +180,7 @@ A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
 
-Four run-scoped fields sit outside `deliverables[]` because they describe the
+Five run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
@@ -186,8 +189,19 @@ this is its durable home, and Phase 8 copies it into the retro.
 and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
 this schema is a field nothing ends up writing.
 
+**`planReview`** records the one sanctioned override of the weight rule: an
+`auto next` run always runs `/review-plan`'s critics, because nobody read its
+self-drafted plan. Its value is the literal `forced — auto-next`. It exists as a
+field rather than a habit for the reason this whole file exists — Phase 6
+hard-stops when an `auto` `next` run reaches the gate without it, so "the
+critics were skipped" cannot look identical to "the critics ran".
+
 **`mode`** and **`selection`** belong to `next` runs
-([`next-mode.md`](next-mode.md)). `selection` records how the issue was chosen —
+([`next-mode.md`](next-mode.md)). **`mode` is written when Phase 0 parses the
+invocation keywords — before selection runs**, not after it. That ordering is
+the whole point: written afterwards, a run that skipped selection would carry
+neither field and grade as an ordinary run, which is precisely the green the
+gate exists to catch. `selection` records how the issue was chosen —
 the ordering source and its sha, the sha every candidate was re-verified
 against, the pick, its `Breaking class`, and every rejected candidate with its
 verdict. It is **read, not merely written**: Phase 6 hard-stops when `mode` is
@@ -196,7 +210,7 @@ verdict. It is **read, not merely written**: Phase 6 hard-stops when `mode` is
 without `selection` is the failure the gate exists to catch — not a default.
 
 `rubricProvenance` on a `next` run is always `derived — issue <number>`; see
-the note below on why it is never `supplied`.
+the note above on why it is never `supplied`.
 
 **`issue`** is per-*deliverable*, not run-scoped: a batch can implement several
 issues, or none. It is the GitHub issue number this deliverable closes, or

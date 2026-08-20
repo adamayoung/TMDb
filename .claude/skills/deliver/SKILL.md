@@ -197,6 +197,11 @@ implementation = separate `/deliver` sessions.)
   consumes it. Nothing startable, or no Projects MCP → **stop before the
   worktree**; never fall through to the "no plan" stop, which reads as an
   unrelated failure.
+  **Write `mode: next` into the run file when you parse the keywords — before
+  selection runs**, not after. Written afterwards, a run that skipped selection
+  carries no `mode` either and sails through Phase 6's gate as an ordinary run.
+  **Auto:** the approval stop below becomes the `phase0n-selection` panel —
+  proceed with this self-picked issue and self-drafted plan, vs stop.
 - **A plan born from a review finding is a hypothesis** — verify against the
   code (quick `Explore`) *before* planning or asking strategy questions.
 - **State the goal** in a sentence; **judge the weight**; open the ledger.
@@ -330,6 +335,16 @@ Procedures and traps:
    `swept:`, which is Phase 7's knowledge sweep and will silently take the
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
+   **Release stranded `next` claims while you are here.** Any run file with
+   `mode: next`, `pr: null` and `status: open` whose worktree classified
+   `resumable` or `settled` is a `next` run that died holding an issue in
+   **In progress** — move that issue back to **Ready** and count it in the
+   `reconciled` line. A live conductor releases its own claim on a reported
+   stop, but the commonest end of an unattended run — context exhaustion, a
+   killed session, a dropped MCP — reaches no stop report, and nothing else
+   recovers it: `next` reads only `Ready`, and `/triage-issues` is forbidden to
+   touch `In progress`. This sweep already enumerates the run files, so the
+   strand costs one board write here and otherwise lasts forever.
 2. **Enter** with `EnterWorktree(name: "<prefix>/<slug>")` (`feature/`,
    `fix/`, `chore/`, …) — sanctioned auto-use, don't ask. **Verify the branch
    name afterwards** (`git branch --show-current`; `git branch -m` if the
@@ -493,7 +508,13 @@ Three distinct cases, and they must not be conflated:
   [`references/next-mode.md`](references/next-mode.md) never ran, so nothing
   established that this issue was the right one, still verified, or claimed.
   Without this the `selection` block would be telemetry no phase reads — a
-  green indistinguishable from never having looked.
+  green indistinguishable from never having looked. (`mode` is written at
+  Phase 0's keyword parse, *before* selection, so a skipped selection shows up
+  as `mode: next` with no `selection` rather than as an ordinary run.)
+- **`mode: next` in `auto`, with `planReview` missing** → **hard stop.** That
+  field is the sole record that the forced `/review-plan` actually ran, and a
+  self-picked, self-drafted, unattended plan whose critics were skipped is the
+  least-reviewed thing this pipeline can produce.
 
 How it is graded depends on weight:
 
@@ -597,6 +618,14 @@ worktree**. **Auto:** stuck → panel (retry via `ScheduleWakeup` vs stop); the
 gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
+
+**`merge` is dropped, not honoured, when the run file says `reflexive: true`
+and `mode: next`.** A `next` run chose its own issue, so nobody decided to
+merge a rewrite of the pipeline's own skills unattended — stop at the gate and
+say the opt-in was dropped and why. Selection already refuses a reflexive
+candidate in `merge` mode ([`references/next-mode.md`](references/next-mode.md)
+§5b); this catches the case where the issue's fix sketch understated its
+footprint and Phase 0 discovered the truth from the drafted plan.
 
 ## Phase 11 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 

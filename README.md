@@ -682,9 +682,12 @@ Three constraints are worth knowing before you reach for it:
 * **It needs the user-scoped Projects MCP**, so it runs in your own environment
   (including a CCR-triggered session) but **not** on a GitHub Actions runner,
   where that MCP is not mounted — the same limit `/triage-issues` has.
-* **The issue is claimed at the pick**, not at the worktree, so two concurrent
-  runs can't take the same one; if the run stops before its PR opens, the claim
-  is released back to `Ready`.
+* **The issue is claimed at the pick**, not at the worktree, which narrows the
+  window in which two concurrent runs could take the same one down to the
+  verification call (the board has no compare-and-swap, so it isn't zero).
+  If the run stops before its PR opens the claim is released back to `Ready`,
+  and a run that dies without stopping has its claim released by the next
+  run's reconcile sweep.
 
 ## Acknowledgments
 
