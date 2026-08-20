@@ -99,6 +99,19 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   stale copy overrode rather than lagged. That is the third instance of one
   pattern in one delivery, now a gotcha in its own right.
 
+- **`watch:`** the readiness test nearly passed on a PR that could not merge.
+  `gh pr checks --watch` exited **0 twice**, minutes apart, with every printed
+  row reading `pass` — while eight of the `main` ruleset's ten required checks
+  had not reported at all, because the `CI` workflow was still **queued** and a
+  workflow that has not started produces **no check runs**. `/watch-pr` §3's
+  positive test ("every check run is completed and success") is vacuously true
+  over an empty-ish set, so it does not catch this; only `mergeStateStatus:
+  BLOCKED` did, and the first cause I inferred for that — a review requirement —
+  was wrong. The correct test compares against the ruleset's **required
+  contexts**, which needs `gh api repos/:owner/:repo/rules/branches/main`. Filed
+  as issue #475. Fourth instance of the False-green family this delivery, and
+  the purest: "not yet run" and "nothing wrong" were byte-identical.
+
 ## 2026-08-20 — 🔒 Redact credentials from `TMDbError.network`'s payload (#469) · full
 
 Branch `fix/redact-credentials-in-network-error`. Issue #434 (P0) — item 1 in
