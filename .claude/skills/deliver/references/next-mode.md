@@ -53,8 +53,9 @@ twice; the third defers to §5:
 - **Already claimed by a live worktree** — a run file under `.git/deliver/`
   whose deliverable names that `issue` and whose worktree is `live` (lock PID
   alive; see [`worktree-lifecycle.md`](worktree-lifecycle.md)).
-- **Unfit for `merge` mode** — breaking (§5a) or reflexive (§5b). Only in
-  `merge` mode, and a skip rather than a rejection.
+- **Unfit for `merge` mode** — breaking (§5a), reflexive (§5b), or written by
+  an untrusted author (§5c). Only in `merge` mode, and a skip rather than a
+  rejection.
 
 An empty set after filtering → **stop before any worktree**, report the counts,
 and recommend `/triage-issues`.
@@ -203,7 +204,8 @@ list, so check a new case against it rather than inventing a third:
 
 - removed by a §2 filter — closed, no longer `Ready`, or already claimed by an
   open `Closes #NNN` PR or a live worktree;
-- skipped by §5's `merge`-mode tests — breaking (5a) or reflexive (5b);
+- skipped by §5's `merge`-mode tests — breaking (5a), reflexive (5b), or an
+  untrusted author (5c);
 - lost to a concurrent claim at §6 step 1;
 - **its verifier died twice** — a fact about the harness, not the issue.
 A "3 consecutive rejects" rule counted from the head would let three stale items

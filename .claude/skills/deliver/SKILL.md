@@ -99,6 +99,21 @@ auto-merge they did not ask for until it has happened.
 stop, rather than silently picking one. `next` also takes precedence over a
 plan already in the conversation, and says so before drafting.
 
+**Echo the parse before acting on it** — one line, first thing, before any
+board write, worktree or edit:
+
+```text
+parsed: auto=on · merge=off · next=on · target=(none)
+```
+
+The leading-run rule still can't disambiguate a target whose *first* token is a
+keyword (`/deliver merge conflict handling plan` reads as `merge` + *"conflict
+handling plan"*), and no grammar fixes that without banning reasonable plan
+names. An echo does: a mis-parse becomes visible in the second before it
+matters, rather than at the moment an unrequested squash-merge lands. Phase 0
+already writes this parse to the run file at the same instant, so the line costs
+nothing to produce.
+
 - **`auto`** — unattended; every stop-and-ask becomes a juror panel (below).
 - **`merge`** — squash-merge once the PR is green, instead of stopping at the
   gate (Phase 10).
