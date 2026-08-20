@@ -51,13 +51,13 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    can never brick the pipeline on an unrecognised state.
 
 3. **Release stranded `next` claims.** For every run file with a `next` mode,
-   `pr: null`, `status: open`, no `claimReleased`, and `selection.claimed` not
+   `pr: null`, `status: open`, no `claimHandedBack`, and `selection.claimed` not
    `false`, test its `conductorPid` with `kill -0`. Dead → move that issue back
-   to **Ready**, stamp `claimReleased: <iso8601>` on the deliverable, and count
+   to **Ready**, stamp `claimHandedBack: <iso8601>` on the deliverable, and count
    it. Alive, `EPERM`, or no parseable PID → leave it and report it. Key this on
    the **PID**, never on the worktree buckets: `settled` tests no liveness, and
    a `next` run holds its claim from Phase 0, *before any worktree exists*.
-   The `claimReleased` stamp is what makes this **idempotent** — without it the
+   The `claimHandedBack` stamp is what makes this **idempotent** — without it the
    predicate stays true after the release, so every later run re-releases the
    same issue, and once it has been legitimately re-claimed the repeat release
    takes it out from under a live delivery.
@@ -182,7 +182,7 @@ is a claim that a human set the bar.
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
-    "claimReleased": null,
+    "claimHandedBack": null,
     "rubric": ["Given …, when …, then …"],
     "rubricProvenance": "supplied",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
@@ -244,7 +244,7 @@ sweep reads `claimed` to decide whether this run has a claim worth releasing at
 all. Both fields are absent on an ordinary run, and `mode: next` without
 `selection` is the failure the gate exists to catch — not a default.
 
-**`claimReleased`** sits on the **deliverable**, not here, because it is written
+**`claimHandedBack`** sits on the **deliverable**, not here, because it is written
 by a *later* run than the one it describes: Phase 1's sweep stamps it when it
 hands a dead run's issue back to `Ready`. Its presence excludes that run file
 from the sweep for good, which is what stops the release repeating and

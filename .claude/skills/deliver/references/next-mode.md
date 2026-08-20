@@ -314,6 +314,20 @@ footprint. The run still delivers; it just stops at the gate.
    do not pretend it landed — both the §6 release obligation and Phase 1's
    sweep key off that flag, and a run that believes it holds a claim it does
    not will "release" an issue another run is delivering.
+4. **Write the claim to the run file *now*, before drafting anything.** The
+   moment the re-read settles, persist three things: `selection.picked`,
+   `selection.claimed`, and the deliverable's `issue`. The rest of `selection`
+   can wait for the end of selection; these three cannot.
+
+   This ordering is the whole recovery mechanism, not bookkeeping. Between the
+   board write and the end of drafting sit a `Plan` agent invocation and,
+   attended, an unbounded wait at the approval stop — and a user who reads the
+   plan, wanders off and closes the terminal is the likeliest way this mode ever
+   dies. A run that dies there with the issue unwritten matches Phase 1's sweep
+   predicate exactly (`next` mode, `pr: null`, `status: open`, no stamp,
+   `claimed` absent) **and names no issue to hand back**, so the strand is
+   unrecoverable by the mechanism built for it, in precisely the window the
+   early claim exists to cover.
 
 Step 1 narrows the race; it does not eliminate it. `update_project_item` is a
 blind overwrite with no compare-and-swap, so two runs that re-read in the same
@@ -346,8 +360,10 @@ Phase 1 reconcile sweep, which releases the issue of any `next` run that never
 opened a PR **and whose `conductorPid` is dead**
 ([`worktree-lifecycle.md`](worktree-lifecycle.md)).
 
-That sweep **stamps `claimReleased` on the run file it released**, and skips any
-file already carrying it — so the release happens once. Left unstamped, the
+That sweep **stamps `claimHandedBack` on the deliverable it released** (not on
+the run file as a whole — a batch releases each qualifying deliverable
+independently), and skips any deliverable already carrying it — so the release
+happens once. Left unstamped, the
 sweep's predicate is still true afterwards and every later run re-releases the
 same issue; the moment it has been legitimately re-claimed, that repeat takes it
 away from a live delivery. It also skips any run recording
@@ -399,7 +415,9 @@ nothing downstream is special-cased.
 
 ## The `selection` block
 
-Written into the run file at the end of selection, and **read by Phase 6**: a
+Written into the run file at the end of selection — **except `picked` and
+`claimed`, which are written at §6 step 4, the instant the claim settles and
+before any drafting** — and **read by Phase 6**: a
 run whose run file records `mode: next` with `selection` missing or empty
 **hard-stops at the exit gate**, exactly as a missing `reconciled` block does.
 Without that, `selection` would be telemetry nobody checks — a green
