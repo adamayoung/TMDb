@@ -80,16 +80,27 @@ struct DiscoverIntegrationTests {
         #expect(orTotal >= andTotal)
     }
 
+    /// Proves the outbound half of the day-precision contract end to end: the
+    /// bounds are formatted at GMT, so TMDb receives the calendar days meant
+    /// and every result falls inside them.
+    ///
+    /// Asserting the returned dates — not just that something came back —
+    /// is what makes this catch an off-by-one. A `releaseDateMin` rendered in a
+    /// negative-offset zone would go out as 2023-12-31 and admit movies from
+    /// the previous year.
     @Test("movies with release date range")
     func moviesWithReleaseDateRange() async throws {
-        let filter = DiscoverMovieFilter(
-            releaseDateMin: Date(timeIntervalSince1970: 1_704_067_200), // 2024-01-01
-            releaseDateMax: Date(timeIntervalSince1970: 1_735_603_200) // 2024-12-31
-        )
+        let rangeStart = Date(timeIntervalSince1970: 1_704_067_200) // 2024-01-01T00:00:00Z
+        let rangeEnd = Date(timeIntervalSince1970: 1_735_603_200) // 2024-12-31T00:00:00Z
+        let filter = DiscoverMovieFilter(releaseDateMin: rangeStart, releaseDateMax: rangeEnd)
 
         let movieList = try await discoverService.movies(filter: filter)
 
         #expect(!movieList.results.isEmpty)
+
+        let releaseDates = movieList.results.compactMap(\.releaseDate)
+        #expect(!releaseDates.isEmpty)
+        #expect(releaseDates.allSatisfy { $0 >= rangeStart && $0 <= rangeEnd })
     }
 
     @Test("movies without watch providers")

@@ -20,8 +20,8 @@ public protocol ChangesService: Sendable {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -41,8 +41,8 @@ public protocol ChangesService: Sendable {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -62,8 +62,8 @@ public protocol ChangesService: Sendable {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -83,8 +83,8 @@ public protocol ChangesService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -105,8 +105,8 @@ public protocol ChangesService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -127,8 +127,8 @@ public protocol ChangesService: Sendable {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -149,8 +149,8 @@ public protocol ChangesService: Sendable {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -171,8 +171,8 @@ public protocol ChangesService: Sendable {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.

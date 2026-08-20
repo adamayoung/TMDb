@@ -30,8 +30,8 @@ public extension TVSeasonService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: The start date for changes.
-    ///    - endDate: The end date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -57,7 +57,7 @@ public extension TVSeasonService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -84,7 +84,7 @@ public extension TVSeasonService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -111,7 +111,7 @@ public extension TVSeasonService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -136,7 +136,7 @@ public extension TVSeasonService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

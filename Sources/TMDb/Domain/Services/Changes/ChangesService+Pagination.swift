@@ -30,8 +30,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields individual ``ChangedID`` objects.
     ///
@@ -53,8 +53,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields individual ``ChangedID`` objects.
     ///
@@ -76,8 +76,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields individual ``ChangedID`` objects.
     ///
@@ -101,8 +101,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``ChangedID`` objects.
     ///
@@ -124,8 +124,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``ChangedID`` objects.
     ///
@@ -147,8 +147,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Returns: An async sequence that yields ``PageableListResult`` pages containing ``ChangedID`` objects.
     ///

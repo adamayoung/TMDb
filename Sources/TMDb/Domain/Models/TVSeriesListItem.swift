@@ -45,6 +45,8 @@ public struct TVSeriesListItem: Identifiable, Codable, Equatable, Hashable, Send
     ///
     /// TV series' first air date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let firstAirDate: Date?
 
     ///

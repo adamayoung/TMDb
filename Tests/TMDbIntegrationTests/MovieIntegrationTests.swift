@@ -33,6 +33,24 @@ struct MovieIntegrationTests {
         #expect(movie.title == "Barbie")
     }
 
+    /// A day-precision date from the live API lands on GMT midnight.
+    ///
+    /// The midnight-alignment check is the durable half — it fails on any
+    /// non-zero-offset machine and cannot drift when TMDb's data changes. The
+    /// pinned instant is the exact half; if TMDb ever restates Fight Club's
+    /// release date, that assertion is the one to update, and the alignment
+    /// check still holds the line.
+    @Test("a day-precision date decodes to GMT midnight")
+    func dayPrecisionDateDecodesToGMTMidnight() async throws {
+        let fightClubID = 550
+
+        let movie = try await movieService.details(forMovie: fightClubID)
+
+        let releaseDate = try #require(movie.releaseDate)
+        #expect(releaseDate.timeIntervalSince1970.truncatingRemainder(dividingBy: 86400) == 0)
+        #expect(releaseDate == Date(timeIntervalSince1970: 939_945_600))
+    }
+
     @Test("details includes originCountry")
     func detailsIncludesOriginCountry() async throws {
         let movieID = 346_698

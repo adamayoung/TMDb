@@ -75,6 +75,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   A nested `media_type` this library still does not model — `tv_season` does
   occur, rarely — is unaffected: it is skipped while decoding, exactly as before.
 
+- **Breaking:** Day-precision dates are now interpreted at **GMT** instead of
+  the machine's current time zone, in both directions.
+
+  A TMDb day-precision value like `"1999-10-15"` carries no time zone, and the
+  library used to resolve it against whatever zone the machine happened to be
+  in. The same release therefore became a *different* `Date` instant on every
+  machine — a server on UTC and a device on UTC+13 disagreed by up to 26 hours,
+  so the "same" date compared unequal across platforms and any UTC-based
+  re-formatting could display the previous day.
+
+  The outbound direction was a live wrong-results bug, not just a
+  representational one. The same formatter renders `Date` query parameters for
+  the `discover` and `changes` endpoints, so a caller west of Greenwich asked
+  TMDb for the **wrong calendar day**: passing `2024-01-01T00:00:00Z` as
+  `startDate` sent `start_date=2023-12-31` at UTC-8, and the results came back
+  accordingly.
+
+  Breaking, and silently so — nothing stops compiling. If you persist, cache or
+  compare decoded `Date` values across a version boundary, the same TMDb date
+  now resolves to a different instant than it did before by the size of your
+  local UTC offset, so cached values and equality checks against previously
+  stored dates will not match. The affected properties are the day-precision
+  ones: movie release dates, TV first/last air dates, season and episode air
+  dates, and person birthdays and deathdays. Timestamp-precision values (review
+  and video timestamps, change dates, session expiries) were already GMT and are
+  unaffected.
+
+  `TMDbTesting`'s sample values were already absolute GMT-midnight instants, so
+  they now agree exactly with what the decoder produces.
+
 - **Breaking:** `TMDbError.network(_:)` no longer hands your API key to whatever
   you log the error to. A `URLSession` failure carries the whole URL of the
   request that failed in its `NSError` `userInfo`, and for a client created with

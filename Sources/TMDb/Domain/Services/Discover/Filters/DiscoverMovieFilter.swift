@@ -155,10 +155,14 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
     ///
     /// Minimum movie release date (any release type).
     ///
+    /// Interpreted as its GMT calendar day.
+    ///
     public let releaseDateMin: Date?
 
     ///
     /// Maximum movie release date (any release type).
+    ///
+    /// Interpreted as its GMT calendar day.
     ///
     public let releaseDateMax: Date?
 

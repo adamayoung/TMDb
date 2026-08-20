@@ -197,8 +197,8 @@ public protocol PersonService: Sendable {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -229,8 +229,8 @@ public protocol PersonService: Sendable {
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.

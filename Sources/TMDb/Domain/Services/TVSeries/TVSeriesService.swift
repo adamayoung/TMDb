@@ -442,8 +442,8 @@ public protocol TVSeriesService: Sendable {
     ///
     /// - Parameters:
     ///   - tvSeriesID: The identifier of the TV series.
-    ///   - startDate: The start date for changes.
-    ///   - endDate: The end date for changes.
+    ///   - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///   - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///   - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -476,8 +476,8 @@ public protocol TVSeriesService: Sendable {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///   - startDate: The start date for changes.
-    ///   - endDate: The end date for changes.
+    ///   - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///   - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///   - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.

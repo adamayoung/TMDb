@@ -40,10 +40,14 @@ public struct Person: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Person's birthday.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let birthday: Date?
 
     ///
     /// Person's death day, if they've died.
+    ///
+    /// Midnight GMT on the day TMDb reports.
     ///
     public let deathday: Date?
 

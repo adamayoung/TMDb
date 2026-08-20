@@ -165,8 +165,8 @@ public extension PersonService {
     /// Returns a list of person IDs that have changed.
     ///
     /// - Parameters:
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.

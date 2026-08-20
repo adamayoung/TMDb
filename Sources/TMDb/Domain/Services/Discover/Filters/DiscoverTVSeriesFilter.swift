@@ -35,20 +35,28 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     ///
     /// Minimum first air date.
     ///
+    /// Interpreted as its GMT calendar day.
+    ///
     public let firstAirDateMin: Date?
 
     ///
     /// Maximum first air date.
+    ///
+    /// Interpreted as its GMT calendar day.
     ///
     public let firstAirDateMax: Date?
 
     ///
     /// Minimum episode air date.
     ///
+    /// Interpreted as its GMT calendar day.
+    ///
     public let airDateMin: Date?
 
     ///
     /// Maximum episode air date.
+    ///
+    /// Interpreted as its GMT calendar day.
     ///
     public let airDateMax: Date?
 

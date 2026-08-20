@@ -99,8 +99,8 @@ public extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - startDate: The start date for changes.
-    ///    - endDate: The end date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -125,7 +125,7 @@ public extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -151,7 +151,7 @@ public extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -177,7 +177,7 @@ public extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -201,7 +201,7 @@ public extension MovieService {
     ///
     /// - Parameters:
     ///    - movieID: The identifier of the movie.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -268,8 +268,8 @@ public extension MovieService {
     /// [TMDb API - Movie Changes: List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: The start date for changes.
-    ///    - endDate: The end date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -294,7 +294,7 @@ public extension MovieService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -320,7 +320,7 @@ public extension MovieService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -343,7 +343,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie Changes: List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
-    /// - Parameter startDate: The start date for changes.
+    /// - Parameter startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -362,7 +362,7 @@ public extension MovieService {
     ///
     /// [TMDb API - Movie Changes: List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
-    /// - Parameter endDate: The end date for changes.
+    /// - Parameter endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

@@ -60,7 +60,10 @@ public struct MediaListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// A movie's `release_date`, or a TV series' `first_air_date`.
     ///
-    /// Empty and unparseable strings are decoded as `nil`.
+    /// Empty strings are decoded as `nil`, as are strings this cannot parse as a
+    /// calendar day. A trailing time component is accepted and ignored.
+    ///
+    /// Midnight GMT on the day TMDb reports.
     ///
     public let releaseDate: Date?
 
@@ -187,7 +190,8 @@ public extension MediaListItem {
     /// Both decode into ``title``, ``originalTitle`` and ``releaseDate``, so a
     /// caller never has to branch on ``mediaType``.
     ///
-    /// Empty and unparseable date strings decode as `nil`.
+    /// Empty date strings decode as `nil`, as do strings this cannot parse as a
+    /// calendar day. A trailing time component is accepted and ignored.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///

@@ -82,6 +82,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// TV series' first air date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let firstAirDate: Date?
 
     ///
@@ -120,6 +122,8 @@ public struct TVSeries: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     ///
     /// Last air date of the TV series.
+    ///
+    /// Midnight GMT on the day TMDb reports.
     ///
     public let lastAirDate: Date?
 

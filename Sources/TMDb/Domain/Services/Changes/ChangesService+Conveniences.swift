@@ -31,8 +31,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -56,7 +56,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -81,7 +81,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
     /// - Parameters:
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -105,7 +105,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
-    /// - Parameter startDate: Filter from this date.
+    /// - Parameter startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -125,7 +125,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: Movie List](https://developer.themoviedb.org/reference/changes-movie-list)
     ///
-    /// - Parameter endDate: Filter to this date.
+    /// - Parameter endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -185,8 +185,8 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -211,7 +211,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -237,7 +237,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -263,7 +263,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -287,7 +287,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the movie.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -355,8 +355,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -380,7 +380,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -405,7 +405,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -429,7 +429,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
-    /// - Parameter startDate: Filter from this date.
+    /// - Parameter startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -449,7 +449,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: Person List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
-    /// - Parameter endDate: Filter to this date.
+    /// - Parameter endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -509,8 +509,8 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -535,7 +535,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -561,7 +561,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -587,7 +587,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -611,7 +611,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the person.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -679,8 +679,8 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -705,7 +705,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -731,7 +731,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -757,7 +757,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -781,7 +781,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - episodeID: The identifier of the TV episode.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -849,8 +849,8 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -875,7 +875,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -901,7 +901,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -927,7 +927,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -951,7 +951,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - seasonID: The identifier of the TV season.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1019,8 +1019,8 @@ public extension ChangesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1044,7 +1044,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -1069,7 +1069,7 @@ public extension ChangesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -1093,7 +1093,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
-    /// - Parameter startDate: Filter from this date.
+    /// - Parameter startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1113,7 +1113,7 @@ public extension ChangesService {
     ///
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
-    /// - Parameter endDate: Filter to this date.
+    /// - Parameter endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1173,8 +1173,8 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - startDate: Filter from this date.
-    ///    - endDate: Filter to this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1199,7 +1199,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -1225,7 +1225,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -1251,7 +1251,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - startDate: Filter from this date.
+    ///    - startDate: Filter from this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -1275,7 +1275,7 @@ public extension ChangesService {
     ///
     /// - Parameters:
     ///    - id: The identifier of the TV series.
-    ///    - endDate: Filter to this date.
+    ///    - endDate: Filter to this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
