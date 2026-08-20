@@ -30,9 +30,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TESTS = ROOT / "Scripts" / "tests"
 
-# Bump when suites are added. Lower than the current count only if tests are
-# deliberately removed — never to make a red run go green.
-EXPECTED_MINIMUM = 30
+# The EXACT current count, not a loose floor. Slack is what lets a whole class
+# vanish unnoticed: at 30 against an actual 38, the five AntiDriftTests — the
+# only cases that read `.claude/**/*.md` off disk, and the entire reason the CI
+# step is gated on `markdown` as well as `swift` — could be deleted and both
+# `make lint` and CI would stay green. An exact count also forces a one-line,
+# diff-visible bump in the same commit that adds a test, which is the only
+# enforcement a "remember to update this" comment ever really has.
+EXPECTED_MINIMUM = 38
 
 
 def main() -> None:
@@ -59,7 +64,26 @@ def main() -> None:
 
     print(f"run-script-tests: {count} tests collected under {TESTS.relative_to(ROOT)}.")
     result = unittest.TextTestRunner(verbosity=1).run(suite)
-    sys.exit(not result.wasSuccessful())
+
+    if not result.wasSuccessful():
+        sys.exit(1)
+
+    # Re-assert the floor against what actually EXECUTED. `wasSuccessful()`
+    # counts a skip as a success, so a `@unittest.skip` on a class — or a
+    # `raise unittest.SkipTest` in `setUpModule` — would keep both the
+    # collection count and the exit status green while running no assertions
+    # at all. That is the same "green means nobody looked" shape the collection
+    # floor above exists to close, one step further along.
+    executed = result.testsRun - len(result.skipped) - len(result.expectedFailures)
+    if executed < EXPECTED_MINIMUM:
+        print(
+            f"run-script-tests: only {executed} of {count} tests actually ran "
+            f"({len(result.skipped)} skipped), expected {EXPECTED_MINIMUM}.\n"
+            "  A skipped suite passes without asserting anything — remove the skip, or\n"
+            "  lower EXPECTED_MINIMUM deliberately if the tests were genuinely retired.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 if __name__ == "__main__":

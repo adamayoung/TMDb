@@ -20,6 +20,7 @@ prose: `Scripts/check-prose-call-forms.py`.
 
 from __future__ import annotations
 
+import itertools
 import sys
 import unittest
 from pathlib import Path
@@ -308,11 +309,18 @@ class LineFormatTests(unittest.TestCase):
             f"<!-- run-list: {HEAD} | 426,437 -->",
         )
 
-    def test_same_input_twice_is_byte_identical(self):
+    def test_line_is_invariant_under_permutation_of_the_input(self):
+        # Calling build() twice with the SAME list cannot fail — there is no
+        # hash- or iteration-order dependence in the output path, so it reduces
+        # to `once == once`. Permuting the input is the property that actually
+        # has force: the conductor assembles `ready` from a fan-out plus a set
+        # of skipped markers, in no guaranteed order, and the published line
+        # must not depend on which order they arrived in.
         ready = [issue(9), issue(3, depends_on=[7]), issue(7)]
-        first = brl.build(HEAD, ready)["runListLine"]
-        second = brl.build(HEAD, ready)["runListLine"]
-        self.assertEqual(first, second)
+        baseline = brl.build(HEAD, ready)["runListLine"]
+        for permutation in itertools.permutations(ready):
+            with self.subTest(order=[i["issue"] for i in permutation]):
+                self.assertEqual(brl.build(HEAD, list(permutation))["runListLine"], baseline)
 
     def test_regex_rejects_the_near_misses_that_motivated_this(self):
         # Each of these is a plausible LLM rewording of the line. All must fail
@@ -334,9 +342,15 @@ class AntiDriftTests(unittest.TestCase):
     picks the wrong one."""
 
     def test_next_mode_still_carries_the_grammar_markers(self):
-        text = NEXT_MODE.read_text(encoding="utf-8")
-        self.assertIn("<!-- run-list: ", text)
-        self.assertIn(" -->", text)
+        # Both markers must appear on the SAME line. Asserting " -->" against the
+        # whole file cannot fail — next-mode.md carries unrelated HTML comments
+        # (`<!-- triaged: … -->`, `<!-- deliver-next: … -->`) that satisfy it
+        # even if the run-list example were deleted outright.
+        lines = NEXT_MODE.read_text(encoding="utf-8").splitlines()
+        self.assertTrue(
+            any(line.strip().startswith("<!-- run-list: ") and line.strip().endswith(" -->") for line in lines),
+            msg=f"{NEXT_MODE.name} no longer carries a complete run-list example line.",
+        )
 
     def test_next_mode_names_the_builder_as_the_definition(self):
         text = NEXT_MODE.read_text(encoding="utf-8")
