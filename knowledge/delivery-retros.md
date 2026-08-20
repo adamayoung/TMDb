@@ -87,7 +87,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   ad hoc. Worth giving §2b a script-and-prose lens set the way §0 already gives
   the single-reviewer path a script-focused brief.
 
-## 2026-08-20 — ✨ `/deliver issue <n>`: the `explicit` selection policy (feature/deliver-issue-selector) · full
+## 2026-08-20 — ✨ `/deliver issue <n>`: the `explicit` selection policy (#482) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — prose-heavy diff (~1100 lines,
   13 files) plus one Python test file; reflexive, so `reflexive: true` overrode
