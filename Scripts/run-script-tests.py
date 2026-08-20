@@ -31,13 +31,15 @@ ROOT = Path(__file__).resolve().parent.parent
 TESTS = ROOT / "Scripts" / "tests"
 
 # The EXACT current count, not a loose floor. Slack is what lets a whole class
-# vanish unnoticed: at 30 against an actual 38, the five AntiDriftTests — the
-# only cases that read `.claude/**/*.md` off disk, and the entire reason the CI
-# step is gated on `markdown` as well as `swift` — could be deleted and both
-# `make lint` and CI would stay green. An exact count also forces a one-line,
+# vanish unnoticed: set this to 30 against an actual 48 and every anti-drift
+# case — the ones that read the skill prose off disk, and the entire reason the
+# CI step is gated on `markdown` as well as `swift` — could be deleted while
+# both `make lint` and CI stayed green. An exact count also forces a one-line,
 # diff-visible bump in the same commit that adds a test, which is the only
 # enforcement a "remember to update this" comment ever really has.
-EXPECTED_MINIMUM = 38
+#
+# Currently: 38 in test_build_run_list.py + 11 in test_deliver_selection_prose.py.
+EXPECTED_MINIMUM = 49
 
 
 def main() -> None:

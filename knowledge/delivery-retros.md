@@ -87,6 +87,68 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
   ad hoc. Worth giving §2b a script-and-prose lens set the way §0 already gives
   the single-reviewer path a script-focused brief.
 
+## 2026-08-20 — ✨ `/deliver issue <n>`: the `explicit` selection policy (#482) · full
+
+- **Phases / skills:** 0–8 pre-PR. Full weight — prose-heavy diff (~1100 lines,
+  13 files) plus one Python test file; reflexive, so `reflexive: true` overrode
+  both Phase 4/5 self-skips. Skills: `review-plan` (3 critics, **forced** —
+  `planReview: forced — auto-explicit`), `review-changes` ×3 (`force-review`),
+  `security-review` ×2, independent grader, `capture-knowledge`.
+  `consulted:` gotchas *A rule written in two files drifts*, *`markdownlint
+  --fix` turns a line-leading `#NNN` into an H1*, *False green*, *In a worktree
+  session, Bash refuses commands it can't prove stay inside it*, *Edits can land
+  in the main checkout*; ADR-0026, ADR-0027.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported / 0 claims
+  released.
+- **Rubric:** 17/17 met, independent grader. `rubricProvenance: derived — issue
+  481`, revised at Phase 2 by the critics **before** any code.
+- **What worked.** The critics paid for themselves twice over. They found that
+  `mode` **already** carried `next` as a token, killing a planned parallel
+  `selectionPolicy` field and, with it, an entire four-predicate
+  backward-compat burden (ADR-0028). And the user's mid-run re-scope —
+  `issue <n>` as a keyword+operand rather than a bare number — deleted a parser
+  module, ~27 tests, and the `Makefile`/`ci.yml` churn that would have forfeited
+  `/pr`'s docs-only fast gate. Neither blocking finding depended on the grammar,
+  so the cheaper shape lost nothing.
+- **The lesson worth keeping: I could not trust my own green.** Three separate
+  anti-drift assertions passed while checking nothing — a line window bleeding
+  into the neighbouring bullet, a string-replace that updated a docstring but
+  not the regex it described, and narrative prose about a past drift supplying
+  the very token under test. All three surfaced only from a throwaway mutation
+  harness that reverted each guarded rule and demanded red. Two started GREEN.
+  Captured as a gotcha; **this should be reflex whenever a test asserts on
+  prose**, not something rediscovered.
+- **Friction: every High was in a copy, never in the primary.** Across five
+  review passes — three code, two security — not one High finding was in the
+  rule itself. They were in restatements (`next-mode.md` §5b's Phase 10
+  backstop, `worktree-lifecycle.md`'s Phase 6 copy, the README's blanket rule)
+  or in the tests. **Two were introduced by the commits fixing the previous
+  round.** `SKILL.md` Phase 0 already says to re-sweep after every review-loop
+  fix; I did not, twice.
+- **Deviation: no `TaskCreate` ledger.** The tool is not available in this
+  session, so the two-record rule ran on the run file alone. It carried
+  everything the ledger would have (rubric, stamps, knowledge candidates), but
+  the contract says two records and there was one — worth knowing the rule can
+  silently degrade to half.
+- **Found live, in this run's own state.** The first `explicit` run ever
+  performed wrote `mode: "auto"` with a complete `selection` block — so under
+  the predicate it had just authored, its claim on issue 481 was unreleasable by
+  any sweep, on an issue taken from **Backlog**, a column nothing else can reach.
+  A reviewer found it by reading `.git/deliver/`. It drove the second-witness
+  scheme and is the concrete evidence in ADR-0028.
+- **Improvement:** `/deliver` should say that a **reflexive** delivery's
+  anti-drift tests must be mutation-checked before Phase 4 converges. The
+  3-iteration review cap assumes findings shrink each round; here rounds 2 and 3
+  each found defects *in the fixes*, and only the mutation harness distinguished
+  "fixed" from "looks fixed". Filed as issue 485; logged `deferred — raised
+  unattended` in `skill-improvement-log.md`, since an auto run must not edit the
+  pipeline's own skill files.
+- **Filed, deliberately left behind:** issue 483 (§5c's marker-comment author
+  check has no Phase 10 backstop — this PR closed the issue-author half only),
+  issue 484 (the reflexive-set test infers its canonical list by "largest
+  paragraph wins", which a fuller narrative paragraph would defeat), issue 485
+  (the improvement above).
+
 ## 2026-08-20 — ✨ `/deliver next` — select and plan the top Ready issue (#474) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — prose-only diff (~900 lines,

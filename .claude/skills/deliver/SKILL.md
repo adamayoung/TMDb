@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent), or pass `next` to take the top startable issue off the project board's Ready column and plan it first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
+description: Take a plan all the way to a ready-to-merge pull request — review the plan (scaled to risk), implement it test-first, code-review and fix, run the CI gate, open the PR, and watch it green. Use after you have an approved plan (from plan mode, or the Plan agent); pass `issue <n>` to deliver a specific GitHub issue you name, or `next` to take the top startable issue off the project board's Ready column — either way it re-verifies, claims and plans the issue first. Invoking it with a plan already in hand is itself plan approval — it then runs autonomously to a single hard stop: ready-to-merge.
 ---
 
 # Deliver
@@ -15,13 +15,14 @@ rides the delivery's own PR. Every run happens in its **own git worktree**
 (Phase 1; torn down on merge, Phase 12) so the user's main checkout stays
 free. The plan is created first in **plan mode** (or with the `Plan` agent;
 there is no `/plan` skill) — `/deliver`
-picks up from there. **`/deliver next` supplies its own plan**: it takes the
-top startable issue off the project board's Ready column and drafts one
+picks up from there. **A selection run supplies its own plan**: `/deliver next`
+takes the top startable issue off the project board's Ready column and
+`/deliver issue <n>` takes the one you name, then drafts a plan for it
 (Phase 0; [`references/next-mode.md`](references/next-mode.md)).
 
 ```text
 you approve the plan ─▶ /deliver ─────▶ entry gate (ACs?) ─▶ worktree ─▶ [review-plan] ─▶
-   (or: /deliver next ─▶ pick a Ready issue ─▶ draft ─▶ approve ─┘)
+   (or: /deliver next | issue <n> ─▶ select ─▶ re-verify ─▶ claim ─▶ draft ─▶ approve ─┘)
   implement ─▶ code-review + fix ─▶ security-review + fix ─▶
   rubric check (ACs met?) ─▶ capture ─▶ retro (pre-PR) ─▶ /pr reviewed ─▶ /watch-pr ─▶
   GATE: ready-to-merge ─▶ wrap-up (wiki + recurring-pattern scan)
@@ -40,11 +41,14 @@ Non-negotiable. Do these by default, without being reminded.
 1. **Invoking `/deliver` is plan approval — run autonomously to the one
    gate** (the diagram above), with no second "is the plan ok?" prompt. The
    only legitimate mid-run pauses: a **blocker** from `/review-plan`
-   (Phase 2), a **red gate you cannot triage** (§4), or — **attended `next`
-   only** — the one approval stop on a plan `/deliver` drafted for itself
+   (Phase 2), a **red gate you cannot triage** (§4), or — on an **attended
+   selection run, under either policy** — the one approval stop on a plan
+   `/deliver` drafted for itself
    (Phase 0). That third case is not an exception to this rule but its
-   boundary: invoking the skill approves *the plan you brought*, and a `next`
-   run brought none. In `auto` it is not a pause at all — the
+   boundary: invoking the skill approves *the plan you brought*, and a selection
+   run brought none — naming the issue yourself settles *what* to build, not
+   *how*, so `/deliver issue <n>` gets that stop exactly as `/deliver next`
+   does. In `auto` it is not a pause at all — the
    `phase0n-selection` panel rules instead.
 2. **Delegate to the existing skills — don't reinvent them**: `/review-plan`,
    `/implement-plan`, `/review-changes`, `/security-review`,
@@ -83,9 +87,9 @@ Non-negotiable. Do these by default, without being reminded.
    start signal — invoke `/deliver` immediately; pause first only if
    Phase 0's entry gate fires.
 
-## Invocation — `/deliver [auto] [merge] [next]`
+## Invocation — `/deliver [auto] [merge] [next | issue <n>]`
 
-The three keywords are recognised only as whole, standalone tokens **in a
+The four keywords are recognised only as whole, standalone tokens **in a
 leading run** — parsing stops at the first token that is not one of them, and
 everything from there on is the **named plan target** Phase 0 resolves. So
 `/deliver auto merge next` is three keywords, and `/deliver auto fix the merge
@@ -95,16 +99,36 @@ the target has begun is part of the target; say so rather than acting on it,
 because the failure is silent and one-directional: nobody notices an
 auto-merge they did not ask for until it has happened.
 
-`next` and a named target contradict each other — report that and
-stop, rather than silently picking one. `next` also takes precedence over a
-plan already in the conversation, and says so before drafting.
+**`issue` takes exactly one operand** — the issue number, with an optional
+leading `#`. So `/deliver auto issue 480` is two keywords plus an operand, and
+selects issue 480. Making it a keyword with an operand, rather than letting a
+bare number be a selector, is deliberate: a bare number would be a **fourth
+token class** that the leading-run rule has to tell apart from a plan target
+whose first word happens to be a number, and that ambiguity would have to be
+pinned by a parser. `issue` has no such ambiguity, so the grammar stays
+prose-sized.
+
+**Four contradictions — report and stop *before* any board write, worktree or
+edit**, rather than silently picking one:
+
+- `issue <n>` with a named plan target
+- `issue <n>` together with `next` (two selection policies)
+- two `issue` operands
+- `issue` with no operand, or a non-numeric one
+
+`next` and a named target contradict each other for the same reason. Either
+selector takes precedence over a plan already in the conversation, and says so
+before drafting.
 
 **Echo the parse before acting on it** — one line, first thing, before any
 board write, worktree or edit:
 
 ```text
-parsed: auto=on · merge=off · next=on · target=(none)
+parsed: auto=on · merge=off · select=issue#480 · target=(none)
 ```
+
+`select=` renders as `issue#<n>` for an explicit pick, `next` for the
+top-of-run-list policy, or `(none)` when neither was requested.
 
 The leading-run rule still can't disambiguate a target whose *first* token is a
 keyword (`/deliver merge conflict handling plan` reads as `merge` + *"conflict
@@ -117,11 +141,19 @@ nothing to produce.
 - **`auto`** — unattended; every stop-and-ask becomes a juror panel (below).
 - **`merge`** — squash-merge once the PR is green, instead of stopping at the
   gate (Phase 10).
-- **`next`** — no plan needed: take the top startable issue off the board's
-  Ready column and draft one (Phase 0;
-  [`references/next-mode.md`](references/next-mode.md)). Requires the
-  user-scoped GitHub Projects MCP, so it is **unavailable on a GitHub Actions
-  runner**.
+- **`next`** — no plan needed: requests the **`top-of-run-list`** selection
+  policy, which takes the top startable issue off the board's Ready column and
+  drafts one (Phase 0;
+  [`references/next-mode.md`](references/next-mode.md)).
+- **`issue <n>`** — no plan needed: requests the **`explicit`** selection
+  policy, which takes the issue *you* name and drafts one. Same path from there
+  on — re-verify, claim, draft, and release the claim on any stop before the PR
+  opens. Unlike `next` it may name an issue in **Backlog**: choosing it yourself
+  is the triage judgement the Ready test otherwise stands in for.
+
+Both selectors require the user-scoped GitHub Projects MCP — `explicit` still
+has to claim the issue — so both are **unavailable on a GitHub Actions
+runner**.
 
 ### Auto mode & async invocation
 
@@ -130,8 +162,10 @@ panel** of three independent Opus jurors — a dead panel is never a proceed,
 and every panel convened leaves an audit line in the ledger. Decision points
 are marked **Auto:** below. Never delegated: a **data-loss or
 breaking-change plan blocker is a hard stop even in auto**, and in
-`auto merge next` an issue whose **Breaking class is anything but `none` is
-not selectable at all**. `/deliver` can
+`auto merge` a **breaking** issue is never merged unattended: under `next` it is
+not selectable at all, and under `issue <n>` the `merge` opt-in is **dropped**
+so the PR waits at the gate ([`references/next-mode.md`](references/next-mode.md)
+§5). `/deliver` can
 also be queued headless (the plan + ACs must travel in the trigger prompt —
 unless `next` supplies them, which only works where the Projects MCP is
 mounted). Panel procedure and queuing caveats:
@@ -152,13 +186,18 @@ single-reviewer path. **Full** — anything risky or large ⇒ the three-critic
 with the skipped machinery noted, in the ledger and the retro; never invent a
 third tier.
 
-**One named override exists, and it is not a third tier.** An `auto next` run
-drafted its own plan with no human between the issue and the implementation, so
+**One named override exists, and it is not a third tier.** An `auto` **selection
+run** — under either policy — drafted its own plan with no human between the
+issue and the implementation, so
 it **always** runs `/review-plan`'s critics whatever the weight (Phase 2).
-Record that as `planReview: forced — auto-next` in the run file and the retro,
-leaving `weight` itself untouched; a lite run stays lite for Phases 4 and 5.
-Attended `next` is **not** covered: its Phase 0 approval stop is the same
-consent `ExitPlanMode` gives every other run, so it follows weight as normal.
+Record that as `planReview: forced — auto-<policy>` in the run file and the
+retro, leaving `weight` itself untouched; a lite run stays lite for Phases 4 and
+5. **`explicit` is covered too**: naming the issue yourself puts a human between
+you and the *issue*, not between anyone and the *plan*, and it is the plan the
+critics read.
+An **attended** selection run is **not** covered: its Phase 0 approval stop is
+the same consent `ExitPlanMode` gives every other run, so it follows weight as
+normal.
 
 ## Multi-deliverable plans — one run, several PRs
 
@@ -209,9 +248,12 @@ implementation = separate `/deliver` sessions.)
 
 - **A plan must exist** (named target → plan-mode plan → most recent in
   conversation). None → stop; ask for one in plan mode. Never invent one —
-  **except on the one sanctioned path**: `next` *selects* one instead. It takes
-  the top startable issue off the board's Ready column, re-verifies it against
-  `origin/main`, claims it, and drafts a plan with the `Plan` agent — then
+  **except on the one sanctioned path**: a **selection run** *selects* one
+  instead. Under `top-of-run-list` (`next`) it takes
+  the top startable issue off the board's Ready column; under `explicit`
+  (`issue <n>`) it takes the issue you named, which may sit in **Backlog**.
+  Either way it then re-verifies against
+  `origin/main`, claims it, and drafts a plan with the `Plan` agent — and
   continues through the rest of this phase unchanged. Procedure, exclusions and
   the `selection` block:
   [`references/next-mode.md`](references/next-mode.md). Selection is part of
@@ -222,7 +264,10 @@ implementation = separate `/deliver` sessions.)
   unrelated failure.
   **Write the parsed invocation into the run file when you parse the keywords —
   before selection runs**, not after. Record **every** keyword, not just this
-  one (`"mode": "auto merge next"`), plus `conductorPid` — this session's PID.
+  one (`"mode": "auto merge next"`, or `"mode": "auto explicit"` for
+  `issue <n>` — `next` and `explicit` are the two **selection-policy tokens**,
+  and every gate keys on that rather than on the literal word `next`), plus the
+  raw argument string as `invocation`, plus `conductorPid` — this session's PID.
   Written afterwards, a run that skipped selection carries no `mode` either and
   sails through Phase 6's gate as an ordinary run; and `auto`/`merge` recorded
   nowhere durable means Phase 6's `planReview` stop and Phase 10's merge-drop
@@ -258,16 +303,25 @@ implementation = separate `/deliver` sessions.)
   it has to claim the issue before the drafting window, or a concurrent session
   delivers the same one. Phase 1's move then finds it already set and no-ops.
   The claim carries an obligation: **any stop before the PR opens releases it
-  back to `Ready`** ([`references/next-mode.md`](references/next-mode.md)).
+  back to `selection.claimedFrom`** — the column it was claimed from, which is
+  `Ready` for a `next` pick and may be **Backlog** under `explicit`
+  ([`references/next-mode.md`](references/next-mode.md)).
 - **Flag a reflexive delivery.** If the plan touches any of the **reflexive
   set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
   `.github/CODE_REVIEW.md` — this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
   two consequences for the rest of the pipeline:
 
-  > **This list is the reflexive set, and it is quoted in exactly one other
-  > place** — [`references/next-mode.md`](references/next-mode.md) §5b, which
-  > refuses such an issue in `merge` mode. **Change both or neither.** They were
+  > **This list is the reflexive set, and it is quoted in two other places** —
+  > [`references/next-mode.md`](references/next-mode.md) §5b, which
+  > refuses such an issue in `merge` mode, and
+  > [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md)'s
+  > run-file schema, which defines the `reflexive` field itself.
+  > **Change all three or none**, and
+  > `Scripts/tests/test_deliver_selection_prose.py` asserts that they agree —
+  > this note previously said "exactly one other place" while the third copy had
+  > already drifted, which is why the check is now executable rather than a
+  > cross-reference. They were
   > briefly out of step: this list omitted `.claude/workflows/**`, so
   > `/deliver auto merge next` could have selected an issue whose plan rewrote
   > `deliver-panel.js` — the script defining the panel that authorises unattended
@@ -335,7 +389,7 @@ implementation = separate `/deliver` sessions.)
     `rubricProvenance: derived — <the source>`, and say in the PR body that the
     rubric was derived rather than supplied. Bug fixes land here routinely;
     stopping to ask a question the plan already answers is ceremony, not rigour.
-    **A `next`-drafted plan always lands here**, whatever its text contains:
+    **A selection-run-drafted plan always lands here, under either policy**, whatever its text contains:
     record `derived — issue <number>`, **never `supplied`**. The drafted plan
     will carry ACs — the `Plan` agent writes them — but `supplied` means *a
     human set the bar*, and here the run that gets graded wrote its own rubric.
@@ -386,14 +440,27 @@ Procedures and traps:
    `swept:`, which is Phase 7's knowledge sweep and will silently take the
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
-   **Release stranded `next` claims while you are here — keyed on the PID, not
-   on a bucket.** For every run file with a `next` mode, `pr: null`,
+   **Release stranded selection claims while you are here — keyed on the PID,
+   not on a bucket.** For every run file whose `mode` names a **selection-policy
+   token** (`next` or `explicit`) **or which carries a `selection.policy`**,
+   with `pr: null`,
    `status: open`, **no `claimHandedBack` stamp**, and **`selection.claimed` not
    `false`**, test its `conductorPid` with `kill -0`. **Dead** → that run is
    holding an issue in **In progress** with nobody to release it: move the issue
-   back to **Ready**, **stamp `claimHandedBack: <iso8601>` on the deliverable**,
+   back to **`selection.claimedFrom`** (the column it was claimed from —
+   defaulting to **Ready** when the field is absent, which is every pre-change
+   run file), **stamp `claimHandedBack: <iso8601>` on the deliverable**,
    and count it in the `reconciled` line's `claims released` slot. **Alive, or
    the PID is absent/unparseable** → leave it entirely, and report it.
+
+   > **Release to `claimedFrom`, never unconditionally to `Ready`.** The
+   > `explicit` policy may claim an issue out of **Backlog**, and returning that
+   > to `Ready` would promote untriaged work past `/triage-issues`' Ready test
+   > with no Priority or Size — giving that column a second owner and feeding
+   > unvetted work to the next unattended `next` run. This sweep runs in a
+   > *later, different session* than the run it is cleaning up, so the origin
+   > column has to have been persisted at claim time; it cannot be inferred here.
+
    Both extra predicate clauses prevent the sweep from taking an issue away from
    a **live** delivery, which is the same harm the claim itself exists to
    prevent — just reached from the other direction:
@@ -450,11 +517,15 @@ Procedures and traps:
    the phase list and the run file, it isn't lost work. Set the run file's
    `entry` to `created`, or to `adopted` when resuming an existing worktree
    via `EnterWorktree(path:)` — **Phase 12's teardown branches on it.**
-   **Adopting a `next` run whose deliverable carries `claimHandedBack`?** Its
-   issue was handed back to `Ready` while it was dead and may now belong to
+   **Adopting a selection run whose deliverable carries `claimHandedBack`?** Its
+   issue was handed back to its `selection.claimedFrom` column while it was dead
+   and may now belong to
    someone else. Re-run the claim steps in
    [`references/next-mode.md`](references/next-mode.md) §6 before resuming —
-   `Status` not `Ready` → stop and say the issue was re-claimed elsewhere.
+   `Status` neither `claimedFrom` nor claimable → stop and say the issue was
+   re-claimed elsewhere. **Do not test against `Ready` specifically**: a
+   Backlog-claimed issue is handed back to *Backlog*, so a `Ready` test would
+   report "re-claimed elsewhere" for every `explicit` resume and brick it.
    Resuming on the strength of a claim the sweep already released is how an
    adopted run comes to "release" an issue a live delivery is holding.
 5. **Move the issue to `In progress`** — the run file's `issue`, if it has one.
@@ -476,11 +547,12 @@ enter, proceed.
 **Lite, or already adversarially reviewed this session** (a converged
 `/review-plan`, or an equivalent in-conversation critique whose findings were
 applied) → skip the critics. `ExitPlanMode` approval alone is consent, not
-review — it does **not** skip. **`auto next` never skips**, at any weight: no
-human stood between the issue and the plan, so the critics are the only review
-the plan gets before implementation. Record it as `planReview: forced —
-auto-next` (see *Delivery weight*); attended `next` follows weight as normal,
-because its Phase 0 approval stop is that missing human. **Full with an
+review — it does **not** skip. **An `auto` selection run never skips**, under
+either policy and at any weight: no
+human read the plan before implementation, so the critics are the only review
+it gets. Record it as `planReview: forced —
+auto-<policy>` (see *Delivery weight*); an **attended** selection run follows
+weight as normal, because its Phase 0 approval stop is that missing human. **Full with an
 unreviewed plan**
 → invoke `/review-plan`, present the revised plan + a one-line change log
 (applied / rejected) as an **FYI**, keep going —
@@ -595,18 +667,22 @@ Three distinct cases, and they must not be conflated:
   missing run file is not a pass, exactly as a dead grader is not a pass; and a
   file without `reconciled` means Phase 1's sweep never ran. This is what makes
   both gates real rather than advisory.
-- **`mode: next` with `selection` missing or empty** → **hard stop**, the same
+- **A `mode` naming a selection-policy token (`next` or `explicit`) with
+  `selection` missing or empty** → **hard stop**, the same
   way and for the same reason: it means the selection in
   [`references/next-mode.md`](references/next-mode.md) never ran, so nothing
   established that this issue was the right one, still verified, or claimed.
   Without this the `selection` block would be telemetry no phase reads — a
   green indistinguishable from never having looked. (`mode` is written at
   Phase 0's keyword parse, *before* selection, so a skipped selection shows up
-  as `mode: next` with no `selection` rather than as an ordinary run.)
-- **A `mode` naming both `auto` and `next`, with `planReview` missing** →
-  **hard stop.** That field is the sole record that the forced `/review-plan`
-  actually ran, and a self-picked, self-drafted, unattended plan whose critics
-  were skipped is the least-reviewed thing this pipeline can produce. Read
+  as a policy token with no `selection` rather than as an ordinary run.)
+- **A `mode` naming `auto`, together with a selection-policy token
+  (`next` or `explicit`) in `mode` — or a `selection.policy` — and `planReview` missing**
+  → **hard stop.** That field is the sole record that the forced `/review-plan`
+  actually ran, and a self-drafted, unattended plan whose critics
+  were skipped is the least-reviewed thing this pipeline can produce — whether
+  the run picked the issue itself or you named it, because neither puts a human
+  between the issue and the plan. Read
   `auto` from the run file's `mode`, never from memory of the invocation — the
   ledger that held it does not survive `EnterWorktree`, a resume, or Phase 10's
   background handoff.
@@ -714,15 +790,52 @@ gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
-**`merge` is dropped, not honoured, when the run file says `reflexive: true`
-and a `mode` naming `next`** — read both from the run file, since this phase
-runs in the background, potentially long after the invocation. A `next` run
-chose its own issue, so nobody decided to
-merge a rewrite of the pipeline's own skills unattended — stop at the gate and
-say the opt-in was dropped and why. Selection already refuses a reflexive
-candidate in `merge` mode ([`references/next-mode.md`](references/next-mode.md)
-§5b); this catches the case where the issue's fix sketch understated its
-footprint and Phase 0 discovered the truth from the drafted plan.
+**`merge` is dropped, not honoured, when *any* of these holds** — and all apply
+under both selection policies (`next` or `explicit`):
+
+1. the run file says **`reflexive: true`** *and* it is a selection run — its
+   `mode` names a **selection-policy token** (`next` or `explicit`), **or** it
+   carries a `selection.policy`; or
+2. **`selection.mergeRefused` is non-null** — selection already refused the
+   opt-in under §5a/§5b/§5c; or
+3. **on a selection run, the raw facts say it should have been refused, whatever
+   `mergeRefused` says** — `selection.breakingClass` is anything but `none`, or
+   `selection.authorAssociation` is outside `{OWNER, MEMBER, COLLABORATOR}`
+   (absent or unrecognised counts as outside). Re-derive rather than trust: a
+   refusal under `explicit` survives only as a field a conductor had to remember
+   to write, and §5c — the check guarding against an outside-authored issue
+   reaching `main` — otherwise has no second witness at all.
+
+Read all of it from the run file, since this phase
+runs in the background, potentially long after the invocation. A selection run
+did not have a human choose *both* the issue and the plan — `next` chose the
+issue itself, and under `explicit` you named an issue but the run still drafted
+its own plan — so nobody decided to
+merge a rewrite of the pipeline's own skills unattended. Stop at the gate and
+say the opt-in was dropped and why.
+
+> **Two witnesses, deliberately.** `mode` is written by hand at Phase 0 and a
+> mis-written one silently disables this gate — that has already happened once,
+> on the first `explicit` run ever performed, which recorded `mode: "auto"` with
+> a full `selection` block. Phase 1 and Phase 10 both read a *completed*
+> `selection`, so `selection.policy` is a free second witness and either suffices.
+> Only Phase 6's **selection gate** cannot use it — that one gate fires
+> precisely when `selection` is **absent**, so it has no second witness to read
+> and stays keyed on `mode` alone. Phase 6's **`planReview` stop** is not
+> exempt: it fires on a run whose `selection` block is present and complete, so
+> it takes the second witness like Phase 1 and Phase 10. Getting that wrong
+> would let an unattended, self-drafted plan whose forced critics never ran pass
+> the exit gate green — the least-reviewed artefact this pipeline can produce.
+>
+> **Both conditions are needed; neither subsumes the other.** §5b refuses a
+> reflexive candidate at *selection* time, judging from the issue's own fix
+> sketch ([`references/next-mode.md`](references/next-mode.md) §5b) and setting
+> `mergeRefused`. Condition 1 is the backstop for when that sketch
+> **understated** the footprint and Phase 0 discovered the truth only from the
+> drafted plan — there is no `mergeRefused` in that case, because selection saw
+> nothing to refuse. Dropping condition 1 in favour of the `mergeRefused`
+> disjunct alone would let `/deliver auto merge issue <n>` squash-merge a
+> rewrite of `.claude/skills/**` that nobody read.
 
 ## Phase 11 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 
@@ -796,8 +909,8 @@ a concise status: phase reached, branch and PR, what passed, what's blocking,
 and the single next action needed from the user. The destination is a green
 PR ready for their merge — say plainly whether you got there.
 
-A `next` run that stops **before its PR opens** owes one extra line: the issue
-it claimed has been released back to `Ready`, or it is stranded in a column
-nothing else can move it out of.
+A **selection run** that stops **before its PR opens** owes one extra line: the
+issue it claimed has been released back to its `selection.claimedFrom` column,
+or it is stranded in a column nothing else can move it out of.
 
 Arguments: $ARGUMENTS

@@ -120,19 +120,28 @@ through four skills.
 | --- | --- | --- |
 | **Backlog** | whoever files (this spec) | the issue is created |
 | **Ready** | `/triage-issues` | it passes the Ready test; Priority + Size are set with it |
-| **In progress** | `/deliver` (Phase 1, or Phase 0 for `next`) | the worktree is entered — or, in `next` mode, the moment the issue is picked |
+| **In progress** | `/deliver` (Phase 1, or Phase 0 for a selection run) | the worktree is entered — or, under either selection policy, the moment the issue is picked |
+| **Backlog → In progress** | `/deliver issue <n>` (selection, Phase 0) | the `explicit` policy may claim straight out of Backlog: naming the issue yourself is the triage judgement the Ready test otherwise stands in for |
 | **In review** | `/watch-pr` (§3, at *ready*) | the PR is green and mergeable, waiting on a human |
 | **Done** | the board's own "item closed" automation | the PR merges and closes the issue |
 
 Three **reverse** transitions exist, all belonging to `/deliver`, all there
-because `next` is the only thing in the repo that takes work off the board
-without a human choosing it:
+because a **selection run** is the only thing in the repo that takes work off
+the board without a human choosing it *and* writes the plan for it:
 
 | Column | Set by | When |
 | --- | --- | --- |
-| **Ready → Backlog** | `/deliver next` (selection) | a Ready candidate fails re-verification against `origin/main` — its claims no longer hold, or its fix approach turns out to be undecided |
-| **In progress → Ready** | `/deliver next` | the run stops before its PR opens, releasing an issue it had claimed |
-| **In progress → Ready** | `/deliver` Phase 1 reconcile, **any mode** | a *different*, dead `next` run left a claim behind — released by the next run's sweep, on a `conductorPid` liveness test |
+| **Ready → Backlog** | `/deliver next` (selection) | a Ready candidate fails re-verification against `origin/main` — its claims no longer hold, or its fix approach turns out to be undecided. **`top-of-run-list` only**: demotion exists to give a *queue* an exit past a poisoned head, and `/deliver issue <n>` has no queue, so it stops instead of demoting the issue you just named |
+| **In progress → `claimedFrom`** | `/deliver` (either selection policy) | the run stops before its PR opens, releasing an issue it had claimed |
+| **In progress → `claimedFrom`** | `/deliver` Phase 1 reconcile, **any mode** | a *different*, dead selection run left a claim behind — released by the next run's sweep, on a `conductorPid` liveness test |
+
+**`claimedFrom` is the column the issue was claimed *from*** — recorded in the
+run file at claim time and defaulting to **Ready** when absent. It is `Ready` for
+a `next` pick and for every run file predating the field, and may be **Backlog**
+under `explicit`. Releasing a Backlog-claimed issue into Ready would promote
+untriaged work past the Ready test with no Priority or Size, which *would* give
+that column a second owner — the thing the paragraph below says none of these
+transitions does.
 
 The last two are one obligation with two writers, and they cannot both fire:
 the first runs only while that run's conductor is alive to reach its stop
@@ -147,10 +156,16 @@ What they add is an owner for undoing each — which nothing had. A `next` run
 that rejects a candidate but leaves it in Ready re-rejects the same issue on
 every future run while the queue behind it stays unreachable, because
 `/triage-issues` is scoped to Backlog and never re-examines a Ready item. A
-`next` run that claims an issue and then dies strands it in In progress, which
+**selection run** that claims an issue and then dies strands it in In progress,
+which
 **only that reconcile sweep** can move it out of — `/triage-issues` is
 forbidden to touch the column, and `next` itself reads only Ready. Both are
 silent, and both drain the queue.
+
+That second hazard is **worse under `explicit`**, which is why the sweep keys on
+a policy token rather than on the word `next`: `/deliver issue <n>` can claim an
+issue out of **Backlog**, a column `next` never reads, so nothing else would
+ever look at it again.
 
 **Done is deliberately not written by any skill.** It is the one transition
 observed to happen unaided: `/triage-issues` closes `wontfix` issues without

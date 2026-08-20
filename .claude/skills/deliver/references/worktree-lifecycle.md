@@ -50,13 +50,19 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    Rows 2 and 6 make this total: **nothing can fail to classify**, so the sweep
    can never brick the pipeline on an unrecognised state.
 
-3. **Release stranded `next` claims.** For every run file with a `next` mode,
+3. **Release stranded selection claims.** For every run file whose `mode` names a
+   **selection-policy token** (`next` or `explicit`) **or which carries a
+   `selection.policy`** — two witnesses, because a hand-written `mode` has
+   already been observed missing its token on a real run —
    `pr: null`, `status: open`, no `claimHandedBack`, and `selection.claimed` not
    `false`, test its `conductorPid` with `kill -0`. Dead → move that issue back
-   to **Ready**, stamp `claimHandedBack: <iso8601>` on the deliverable, and count
+   to **`selection.claimedFrom`** (defaulting to **Ready** when absent, which is
+   every pre-change run file — an `explicit` pick may have come from Backlog, and
+   returning it to Ready would promote untriaged work),
+   stamp `claimHandedBack: <iso8601>` on the deliverable, and count
    it. Alive, `EPERM`, or no parseable PID → leave it and report it. Key this on
    the **PID**, never on the worktree buckets: `settled` tests no liveness, and
-   a `next` run holds its claim from Phase 0, *before any worktree exists*.
+   a selection run holds its claim from Phase 0, *before any worktree exists*.
    The `claimHandedBack` stamp is what makes this **idempotent** — without it the
    predicate stays true after the release, so every later run re-releases the
    same issue, and once it has been legitimately re-claimed the repeat release
@@ -155,7 +161,8 @@ carried them, or `derived — <source>` when Phase 0 derived them from a linked
 issue or an explicit test list (its second entry-gate case). It exists so a
 derived rubric is auditable rather than indistinguishable from a supplied one:
 Phase 6 grades both identically, but a reader can tell which was which, and the
-PR body is required to say so. A **`next`-drafted plan is never `supplied`**,
+PR body is required to say so. A plan drafted by a **selection run** — under either policy — is never
+`supplied`,
 however many ACs its text carries — the `Plan` agent wrote them, and `supplied`
 is a claim that a human set the bar.
 
@@ -169,22 +176,27 @@ is a claim that a human set the bar.
                   "claimsReleased": 0 },
   "mode": "auto merge next",
   "conductorPid": 90982,
-  "planReview": "forced — auto-next",
+  "planReview": "forced — auto-top-of-run-list",
+  "invocation": "auto merge next",
   "selection": {
+    "policy": "top-of-run-list",
+    "requested": null,
     "source": "run-list@cc7cba55",
     "verifiedAt": "527682f7",
     "listed": 12, "picked": 448, "breakingClass": "none", "claimed": true,
+    "claimedFrom": "Ready", "mergeRefused": null,
+    "authorAssociation": "OWNER",
     "passedOver": [{ "issue": 434, "why": "filtered — closed, still showing Ready" }],
     "rejected": [{ "issue": 426, "verdict": "needs-decision", "why": "three competing fixes; demoted" }]
   },
   "deliverables": [{
-    "title": "…", "issue": 434, "dependsOn": [],
+    "title": "…", "issue": 448, "dependsOn": [],
     "worktree": "…/.claude/worktrees/chore+harden-delivery-skills",
     "branch": "chore/harden-delivery-skills",
     "entry": "created",
     "claimHandedBack": null,
     "rubric": ["Given …, when …, then …"],
-    "rubricProvenance": "supplied",
+    "rubricProvenance": "derived — issue 448",
     "stamps": { "reviewedClean": "<content hash>", "securityClean": null,
                 "rubricGraded": null },
     "openFindings": [], "knowledgeCandidates": [], "pr": null,
@@ -197,25 +209,59 @@ A **batch is the N=1 case generalised** — more entries in `deliverables[]`. No
 separate mechanism, and it is the only state that survives Phase 10's
 background-watch handoff, where the conductor moves to the next worktree.
 
-Six run-scoped fields sit outside `deliverables[]` because they describe the
+Seven run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
-**`reflexive`** is true when the diff touches `.claude/skills/**`,
-`.claude/agents/**` or `.github/CODE_REVIEW.md`, which changes what Phases 4
-and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
+**`reflexive`** is true when the diff touches the **reflexive set** —
+`.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
+`.github/CODE_REVIEW.md` — which changes what Phases 4
+and 5 do (see `SKILL.md` Phase 0). That set is **defined** in `SKILL.md`
+Phase 0 and quoted here and in [`next-mode.md`](next-mode.md) §5b; all three
+must match exactly — **change all three or none**.
+
+`Scripts/tests/test_deliver_selection_prose.py` asserts they do, because this
+copy had already drifted (it omitted `.claude/workflows/**`, the glob covering
+`deliver-panel.js` — the script defining the panel that authorises unattended
+work) while `SKILL.md` still claimed the set was quoted in exactly one other
+place. A field mandated by a phase but absent from
 this schema is a field nothing ends up writing.
 
 **`planReview`** records the one sanctioned override of the weight rule: an
-`auto next` run always runs `/review-plan`'s critics, because nobody read its
-self-drafted plan. Its value is the literal `forced — auto-next`. It exists as a
+`auto` run under **either** selection policy always runs `/review-plan`'s
+critics, because nobody read its
+self-drafted plan. Its value is `forced — auto-<policy>`, so
+`forced — auto-top-of-run-list` or `forced — auto-explicit`. Naming an issue
+yourself does not exempt the run: it puts a human between you and the *issue*,
+not between anyone and the *plan*. It exists as a
 field rather than a habit for the reason this whole file exists — Phase 6
-hard-stops when an `auto` `next` run reaches the gate without it, so "the
+hard-stops when an `auto` selection run reaches the gate without it, so "the
 critics were skipped" cannot look identical to "the critics ran".
 
-**`mode`**, **`conductorPid`** and **`selection`** belong to `next` runs
-([`next-mode.md`](next-mode.md)). `mode` and `conductorPid` are written **when
+**`mode`**, **`conductorPid`**, **`invocation`** and **`selection`** belong to
+**selection runs**
+under either policy ([`next-mode.md`](next-mode.md)). `mode` and `conductorPid`
+are written **when
 Phase 0 parses the invocation keywords — before selection runs**, not after it.
+`conductorPid` in particular is written for *every* selection run, not just
+`next` ones: it is the only thing Phase 1's sweep can test, so a run that omits
+it holds its claim for good.
+
+**`mode` is a space-separated set drawn from `auto`, `merge`, `next` and
+`explicit`**, of which **`next` and `explicit` are the two selection-policy
+tokens**. Four gates key on "does `mode` name a policy token?" rather than on
+the literal word `next` — Phase 1's stranded-claim sweep, Phase 6's selection
+and `planReview` stops, and Phase 10's merge-drop. Keeping `next` *as* a policy
+token is what makes backward compatibility structural: a run file written before
+`explicit` existed carries `"mode": "auto merge next"` and satisfies all four by
+construction, with no legacy clause to maintain. `Scripts/tests/test_deliver_selection_prose.py`
+asserts each of the four **primary** statements in `SKILL.md` still names both
+tokens, and that this file's restatements do too.
+
+**`invocation`** is the raw argument string, verbatim. A reflexive change to the
+grammar cannot be dogfooded before merge, so recording what was actually typed
+next to what it was parsed as is the cheapest thing that makes a mis-parse
+*provable after the fact* rather than a matter of recollection.
 That ordering is the whole point: written afterwards, a run that skipped
 selection would carry neither field and grade as an ordinary run, which is
 precisely the green the gate exists to catch.
@@ -238,20 +284,21 @@ the ordering source and its sha, the sha every candidate was re-verified
 against, the pick, its `Breaking class`, whether the claim actually landed
 (**`claimed`**), every candidate a verifier **`rejected`** with its verdict, and
 every candidate **`passedOver`** without one. It is **read, not merely
-written**: Phase 6 hard-stops when `mode` is `next` and `selection` is missing
+written**: Phase 6 hard-stops when `mode` names a selection-policy token
+(`next` or `explicit`) and `selection` is missing
 or empty, the same way it does on a missing `reconciled` block, and Phase 1's
 sweep reads `claimed` to decide whether this run has a claim worth releasing at
-all. Both fields are absent on an ordinary run, and `mode: next` without
+all. Both fields are absent on an ordinary run, and a policy token without
 `selection` is the failure the gate exists to catch — not a default.
 
 **`claimHandedBack`** sits on the **deliverable**, not here, because it is written
 by a *later* run than the one it describes: Phase 1's sweep stamps it when it
-hands a dead run's issue back to `Ready`. Its presence excludes that run file
+hands a dead run's issue back to its `claimedFrom` column. Its presence excludes that run file
 from the sweep for good, which is what stops the release repeating and
 eventually taking an issue away from whoever legitimately re-claimed it. An
 adopt of a run carrying it must re-claim before resuming (`SKILL.md` Phase 1).
 
-`rubricProvenance` on a `next` run is always `derived — issue <number>`; see
+`rubricProvenance` on a selection run is always `derived — issue <number>`; see
 the note above on why it is never `supplied`.
 
 **`issue`** is per-*deliverable*, not run-scoped: a batch can implement several
