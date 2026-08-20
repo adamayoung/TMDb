@@ -217,7 +217,12 @@ let popularMovies = try await tmdbClient.discover.movies(
 let fightClub = try await tmdbClient.movies.details(forMovie: 550)
 print("Title: \(fightClub.title)")
 if let releaseDate = fightClub.releaseDate {
-    print("Release Date: \(releaseDate.formatted(.dateTime.year().month().day()))")
+    // Day-precision dates are midnight GMT on the day TMDb reports, so format
+    // and compare them with an explicit GMT zone. `Date.formatted()` uses the
+    // device's zone by default, which renders the previous day west of
+    // Greenwich.
+    let dayStyle = Date.FormatStyle(date: .abbreviated, timeZone: .gmt)
+    print("Release Date: \(releaseDate.formatted(dayStyle))")
 }
 if let voteAverage = fightClub.voteAverage {
     print("Rating: \(voteAverage.formatted(.voteAveragePercentage))")

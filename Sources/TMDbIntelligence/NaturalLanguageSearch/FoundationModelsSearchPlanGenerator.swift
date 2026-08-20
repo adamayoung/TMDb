@@ -90,7 +90,15 @@
 
         // swiftlint:disable:next function_body_length
         private func instructions() -> String {
-            let year = Calendar(identifier: .gregorian).component(.year, from: now())
+            // Local, deliberately: this is the year the *user* is living in, and
+            // it must agree with `SearchPlanExecutor.currentYear()`, which is
+            // also local. Do not pin this to GMT to match the day-precision date
+            // contract — those are instants decoded from TMDb, this is a wall
+            // clock, and pinning one without the other makes "this year" mean
+            // two different things inside one search.
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.timeZone = .current
+            let year = calendar.component(.year, from: now())
             return """
             You convert a movie or TV search request into a structured plan that is run against a \
             database. Only copy words the user actually typed into title, people, genres, or \

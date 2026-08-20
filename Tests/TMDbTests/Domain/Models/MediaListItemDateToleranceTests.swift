@@ -43,16 +43,22 @@ struct MediaListItemDateToleranceTests {
     }
 
     /// The permissive half, and the half that actually constrains the parser
-    /// choice: a trailing time component is **accepted**. That matters in
-    /// production — `/movie/{id}/release_dates` sends
-    /// `"1999-10-15T00:00:00.000Z"` rather than a bare day, so a stricter
-    /// parser would turn a real release date into `nil` behind the `try?`.
+    /// choice.
+    ///
+    /// A trailing time component is accepted, and the time is **discarded** —
+    /// a nonzero time still lands on GMT midnight of the same day, which is
+    /// what `releaseDate`'s DocC promises. This boundary is characterised
+    /// defensively rather than in response to a known payload: `MediaListItem`
+    /// decodes v3 `/list/{id}` rows, which send a bare day. (The full-timestamp
+    /// form does exist elsewhere in the API — `/movie/{id}/release_dates` —
+    /// but that decodes into `ReleaseDate`, not this type.)
     @Test(
         "an accepted release_date form decodes to its documented instant",
         .tags(.decoding),
         arguments: [
             ("2025-10-26", 1_761_436_800.0),
             ("2025-10-26T00:00:00Z", 1_761_436_800.0),
+            ("2025-10-26T14:30:00Z", 1_761_436_800.0),
             ("99-10-15", -59_018_371_200.0)
         ]
     )

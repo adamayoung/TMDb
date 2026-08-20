@@ -246,8 +246,7 @@ public extension MediaListItem {
         // -0001-11-30), while `.iso8601` rejects them. Behind the `try?` above,
         // sharing the strategy would silently turn a malformed date into a
         // plausible wrong one instead of nil. Both already parse at GMT, so the
-        // divergence costs nothing. Measured in
-        // `MediaListItemTests.decodeReturnsMediaListItemWith…ReleaseDate…`.
+        // divergence costs nothing. Measured in `MediaListItemDateToleranceTests`.
         let dateString = try container.decodeIfPresent(
             String.self, forKey: .releaseDate
         ) ?? container.decodeIfPresent(String.self, forKey: .firstAirDate)

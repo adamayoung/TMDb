@@ -92,6 +92,40 @@ struct DayPrecisionDateTests {
         #expect(decoded.releaseDate == Self.releaseDayInstant)
     }
 
+    // MARK: - Leniency
+
+    /// The shared strategy is **lenient**: it rolls out-of-range components
+    /// over instead of rejecting them.
+    ///
+    /// This is the other half of the asymmetry that justifies `MediaListItem`
+    /// keeping its own validating `.iso8601` strategy — that type swallows
+    /// parse failures with `try?`, so sharing this one would convert a
+    /// malformed date into a plausible wrong one rather than `nil`. The strict
+    /// half is measured in `MediaListItemDateToleranceTests`.
+    ///
+    /// If a future Foundation release tightens `Date.ParseStrategy`, this test
+    /// fails and the divergence can be removed — rather than the rationale
+    /// silently becoming false while everything stays green.
+    @Test(
+        "the shared day-precision strategy rolls out-of-range components over",
+        .tags(.decoding),
+        arguments: [
+            ("2025-13-45", 1_771_027_200.0), // month 13, day 45 -> 2026-02-14
+            ("0000-00-00", -62_170_156_800.0) // -> -0001-11-30
+        ]
+    )
+    func sharedStrategyRollsOutOfRangeComponentsOver(
+        dateString: String,
+        expectedTimeIntervalSince1970: Double
+    ) throws {
+        let data = Data(#"{"release_date":"\#(dateString)"}"#.utf8)
+
+        let result = try JSONDecoder.theMovieDatabase.decode(DayPrecisionPayload.self, from: data)
+
+        let releaseDate = try #require(result.releaseDate)
+        #expect(releaseDate == Date(timeIntervalSince1970: expectedTimeIntervalSince1970))
+    }
+
     // MARK: - Model
 
     @Test("MediaListItem decodes a day-precision date to GMT midnight", .tags(.decoding))

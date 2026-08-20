@@ -384,6 +384,21 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v7
 
+      # This job's whole value is running at a non-UTC offset. If tzdata is
+      # absent or the identifier fails to resolve, the zone silently falls back
+      # to UTC, every assertion still passes, and a green here would mean
+      # nothing — the same silent-green failure the job exists to prevent.
+      # Assert the postcondition rather than assuming it.
+      - name: Verify the container honours TZ
+        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        run: |
+          offset=$(date +%z)
+          echo "TZ=$TZ resolved to offset $offset"
+          if [ "$offset" = "+0000" ]; then
+            echo "::error::TZ=$TZ was not applied — this job would run at UTC and prove nothing"
+            exit 1
+          fi
+
       - name: Build
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: swift build --build-tests -Xswiftc -warnings-as-errors

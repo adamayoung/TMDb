@@ -24,6 +24,11 @@ extension JSONDecoder {
     /// rather than rejecting them, so `"2025-13-45"` parses as 2026-02-14. That
     /// is why `MediaListItem`, which swallows parse failures with `try?`, keeps
     /// its own validating `.iso8601` strategy instead of sharing this one.
+    /// Both halves of that asymmetry are measured — the lenient side in
+    /// `DayPrecisionDateTests`, the strict side in
+    /// `MediaListItemDateToleranceTests` — so if a future Foundation release
+    /// tightens this strategy, the test that justifies the divergence fails
+    /// rather than the divergence quietly becoming unnecessary.
     private static let theMovieDatabaseDateStrategy = Date.ParseStrategy(
         format: "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits)",
         locale: Locale(identifier: "en_US_POSIX"),

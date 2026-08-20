@@ -20,12 +20,22 @@ final class MovieChangesListRequest: DecodableAPIRequest<ChangedIDCollection> {
 
 private extension APIRequestQueryItems {
 
+    static let startDate = APIRequestQueryItem.Name("start_date")
+    static let endDate = APIRequestQueryItem.Name("end_date")
+
     init(startDate: Date?, endDate: Date?, page: Int?) {
         self.init()
 
-        self[ifPresent: .startDate] = startDate
+        // Format through the shared formatter, as every sibling changes request
+        // does — see `MovieChangesRequest` for why assigning the `Date` itself
+        // is wrong.
+        if let startDate {
+            self[Self.startDate] = DateFormatter.theMovieDatabase.string(from: startDate)
+        }
 
-        self[ifPresent: .endDate] = endDate
+        if let endDate {
+            self[Self.endDate] = DateFormatter.theMovieDatabase.string(from: endDate)
+        }
 
         self[ifPresent: .page] = page
     }

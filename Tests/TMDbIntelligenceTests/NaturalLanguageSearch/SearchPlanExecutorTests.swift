@@ -331,15 +331,37 @@ struct SearchPlanExecutorTests {
 
     /// 24. "This year" is a question about the user's wall clock, so it stays
     /// on the local calendar even though the instant maths moved to GMT.
-    ///
-    /// `now` is pinned to 2026-06-03, mid-year, so no offset on Earth can move
-    /// the answer — which is the point: the assertion holds in every zone, and
-    /// would break only if `currentYear()` started reading something other than
-    /// the injected `now`.
     @Test("the current year follows the local calendar")
     func currentYearFollowsLocalCalendar() {
         #expect(executor.yearBounds(for: .thisYear) == (from: 2026, to: 2026))
         #expect(executor.yearBounds(for: .recent) == (from: 2025, to: 2026))
+    }
+
+    /// 25. The deliberate carve-out, tested where it actually differs.
+    ///
+    /// `currentYear()` uses the **local** calendar while its sibling helpers
+    /// moved to GMT. Mid-year that distinction is invisible, so this pins a
+    /// `now` that straddles a year boundary: 2026-01-01T04:00:00Z is still
+    /// 2025 anywhere west of UTC-4, and already 2026 at GMT and east of it.
+    ///
+    /// The expectation is derived from the local calendar rather than
+    /// hard-coded, so it holds under every `TZ` the CI matrix runs — and fails
+    /// the moment someone "harmonises" `currentYear()` onto `calendar()`, which
+    /// is the cleanup this carve-out exists to survive.
+    @Test("the current year follows the local calendar across a year boundary")
+    func currentYearFollowsLocalCalendarAcrossBoundary() {
+        let boundary = Date(timeIntervalSince1970: 1_767_240_000) // 2026-01-01T04:00:00Z
+        let executor = SearchPlanExecutor(
+            dataSource: MockNaturalLanguageSearchDataSource(),
+            resultLimit: 20,
+            now: { boundary }
+        )
+
+        var local = Calendar(identifier: .gregorian)
+        local.timeZone = .current
+        let expectedYear = local.component(.year, from: boundary)
+
+        #expect(executor.yearBounds(for: .thisYear) == (from: expectedYear, to: expectedYear))
     }
 
 }

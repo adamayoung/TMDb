@@ -195,10 +195,10 @@ public struct DiscoverTVSeriesFilter: Equatable, Hashable, Sendable {
     ///     TV series.
     ///   - withoutGenres: A list of genre identifiers to exclude.
     ///   - firstAirDateYear: The first air date year.
-    ///   - firstAirDateMin: Minimum first air date.
-    ///   - firstAirDateMax: Maximum first air date.
-    ///   - airDateMin: Minimum episode air date.
-    ///   - airDateMax: Maximum episode air date.
+    ///   - firstAirDateMin: Minimum first air date. Interpreted as its GMT calendar day.
+    ///   - firstAirDateMax: Maximum first air date. Interpreted as its GMT calendar day.
+    ///   - airDateMin: Minimum episode air date. Interpreted as its GMT calendar day.
+    ///   - airDateMax: Maximum episode air date. Interpreted as its GMT calendar day.
     ///   - voteAverageMin: Minimum vote average score.
     ///   - voteAverageMax: Maximum vote average score.
     ///   - voteCountMin: Minimum number of votes.
