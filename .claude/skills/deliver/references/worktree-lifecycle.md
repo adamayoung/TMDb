@@ -201,9 +201,17 @@ Six run-scoped fields sit outside `deliverables[]` because they describe the
 run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
-**`reflexive`** is true when the diff touches `.claude/skills/**`,
-`.claude/agents/**` or `.github/CODE_REVIEW.md`, which changes what Phases 4
-and 5 do (see `SKILL.md` Phase 0). A field mandated by a phase but absent from
+**`reflexive`** is true when the diff touches the **reflexive set** —
+`.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
+`.github/CODE_REVIEW.md` — which changes what Phases 4
+and 5 do (see `SKILL.md` Phase 0). That set is **defined** in `SKILL.md`
+Phase 0 and quoted here and in [`next-mode.md`](next-mode.md) §5b; all three
+must match exactly — **change all three or none**.
+`Scripts/tests/test_deliver_selection_prose.py` asserts they do, because this
+copy had already drifted (it omitted `.claude/workflows/**`, the glob covering
+`deliver-panel.js` — the script defining the panel that authorises unattended
+work) while `SKILL.md` still claimed the set was quoted in exactly one other
+place. A field mandated by a phase but absent from
 this schema is a field nothing ends up writing.
 
 **`planReview`** records the one sanctioned override of the weight rule: an

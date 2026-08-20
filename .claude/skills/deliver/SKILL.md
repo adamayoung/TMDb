@@ -83,9 +83,9 @@ Non-negotiable. Do these by default, without being reminded.
    start signal — invoke `/deliver` immediately; pause first only if
    Phase 0's entry gate fires.
 
-## Invocation — `/deliver [auto] [merge] [next]`
+## Invocation — `/deliver [auto] [merge] [next | issue <n>]`
 
-The three keywords are recognised only as whole, standalone tokens **in a
+The four keywords are recognised only as whole, standalone tokens **in a
 leading run** — parsing stops at the first token that is not one of them, and
 everything from there on is the **named plan target** Phase 0 resolves. So
 `/deliver auto merge next` is three keywords, and `/deliver auto fix the merge
@@ -95,16 +95,36 @@ the target has begun is part of the target; say so rather than acting on it,
 because the failure is silent and one-directional: nobody notices an
 auto-merge they did not ask for until it has happened.
 
-`next` and a named target contradict each other — report that and
-stop, rather than silently picking one. `next` also takes precedence over a
-plan already in the conversation, and says so before drafting.
+**`issue` takes exactly one operand** — the issue number, with an optional
+leading `#`. So `/deliver auto issue 480` is two keywords plus an operand, and
+selects issue 480. Making it a keyword with an operand, rather than letting a
+bare number be a selector, is deliberate: a bare number would be a **fourth
+token class** that the leading-run rule has to tell apart from a plan target
+whose first word happens to be a number, and that ambiguity would have to be
+pinned by a parser. `issue` has no such ambiguity, so the grammar stays
+prose-sized.
+
+**Four contradictions — report and stop *before* any board write, worktree or
+edit**, rather than silently picking one:
+
+- `issue <n>` with a named plan target
+- `issue <n>` together with `next` (two selection policies)
+- two `issue` operands
+- `issue` with no operand, or a non-numeric one
+
+`next` and a named target contradict each other for the same reason. Either
+selector takes precedence over a plan already in the conversation, and says so
+before drafting.
 
 **Echo the parse before acting on it** — one line, first thing, before any
 board write, worktree or edit:
 
 ```text
-parsed: auto=on · merge=off · next=on · target=(none)
+parsed: auto=on · merge=off · select=issue#480 · target=(none)
 ```
+
+`select=` renders as `issue#<n>` for an explicit pick, `next` for the
+top-of-run-list policy, or `(none)` when neither was requested.
 
 The leading-run rule still can't disambiguate a target whose *first* token is a
 keyword (`/deliver merge conflict handling plan` reads as `merge` + *"conflict
@@ -117,11 +137,19 @@ nothing to produce.
 - **`auto`** — unattended; every stop-and-ask becomes a juror panel (below).
 - **`merge`** — squash-merge once the PR is green, instead of stopping at the
   gate (Phase 10).
-- **`next`** — no plan needed: take the top startable issue off the board's
-  Ready column and draft one (Phase 0;
-  [`references/next-mode.md`](references/next-mode.md)). Requires the
-  user-scoped GitHub Projects MCP, so it is **unavailable on a GitHub Actions
-  runner**.
+- **`next`** — no plan needed: requests the **`top-of-run-list`** selection
+  policy, which takes the top startable issue off the board's Ready column and
+  drafts one (Phase 0;
+  [`references/next-mode.md`](references/next-mode.md)).
+- **`issue <n>`** — no plan needed: requests the **`explicit`** selection
+  policy, which takes the issue *you* name and drafts one. Same path from there
+  on — re-verify, claim, draft, and release the claim on any stop before the PR
+  opens. Unlike `next` it may name an issue in **Backlog**: choosing it yourself
+  is the triage judgement the Ready test otherwise stands in for.
+
+Both selectors require the user-scoped GitHub Projects MCP — `explicit` still
+has to claim the issue — so both are **unavailable on a GitHub Actions
+runner**.
 
 ### Auto mode & async invocation
 
@@ -265,9 +293,16 @@ implementation = separate `/deliver` sessions.)
   machinery that runs it**. Record `reflexive: true` in the run file and hold
   two consequences for the rest of the pipeline:
 
-  > **This list is the reflexive set, and it is quoted in exactly one other
-  > place** — [`references/next-mode.md`](references/next-mode.md) §5b, which
-  > refuses such an issue in `merge` mode. **Change both or neither.** They were
+  > **This list is the reflexive set, and it is quoted in two other places** —
+  > [`references/next-mode.md`](references/next-mode.md) §5b, which
+  > refuses such an issue in `merge` mode, and
+  > [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md)'s
+  > run-file schema, which defines the `reflexive` field itself.
+  > **Change all three or none**, and
+  > `Scripts/tests/test_deliver_selection_prose.py` asserts that they agree —
+  > this note previously said "exactly one other place" while the third copy had
+  > already drifted, which is why the check is now executable rather than a
+  > cross-reference. They were
   > briefly out of step: this list omitted `.claude/workflows/**`, so
   > `/deliver auto merge next` could have selected an issue whose plan rewrote
   > `deliver-panel.js` — the script defining the panel that authorises unattended
@@ -386,14 +421,25 @@ Procedures and traps:
    `swept:`, which is Phase 7's knowledge sweep and will silently take the
    slot**. Procedure, buckets and traps:
    [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
-   **Release stranded `next` claims while you are here — keyed on the PID, not
-   on a bucket.** For every run file with a `next` mode, `pr: null`,
+   **Release stranded selection claims while you are here — keyed on the PID,
+   not on a bucket.** For every run file whose `mode` names a **selection-policy
+   token** (`next` or `explicit`), with `pr: null`,
    `status: open`, **no `claimHandedBack` stamp**, and **`selection.claimed` not
    `false`**, test its `conductorPid` with `kill -0`. **Dead** → that run is
    holding an issue in **In progress** with nobody to release it: move the issue
-   back to **Ready**, **stamp `claimHandedBack: <iso8601>` on the deliverable**,
+   back to **`selection.claimedFrom`** (the column it was claimed from —
+   defaulting to **Ready** when the field is absent, which is every pre-change
+   run file), **stamp `claimHandedBack: <iso8601>` on the deliverable**,
    and count it in the `reconciled` line's `claims released` slot. **Alive, or
    the PID is absent/unparseable** → leave it entirely, and report it.
+
+   > **Release to `claimedFrom`, never unconditionally to `Ready`.** The
+   > `explicit` policy may claim an issue out of **Backlog**, and returning that
+   > to `Ready` would promote untriaged work past `/triage-issues`' Ready test
+   > with no Priority or Size — giving that column a second owner and feeding
+   > unvetted work to the next unattended `next` run. This sweep runs in a
+   > *later, different session* than the run it is cleaning up, so the origin
+   > column has to have been persisted at claim time; it cannot be inferred here.
    Both extra predicate clauses prevent the sweep from taking an issue away from
    a **live** delivery, which is the same harm the claim itself exists to
    prevent — just reached from the other direction:
@@ -595,18 +641,21 @@ Three distinct cases, and they must not be conflated:
   missing run file is not a pass, exactly as a dead grader is not a pass; and a
   file without `reconciled` means Phase 1's sweep never ran. This is what makes
   both gates real rather than advisory.
-- **`mode: next` with `selection` missing or empty** → **hard stop**, the same
+- **A `mode` naming a selection-policy token (`next` or `explicit`) with
+  `selection` missing or empty** → **hard stop**, the same
   way and for the same reason: it means the selection in
   [`references/next-mode.md`](references/next-mode.md) never ran, so nothing
   established that this issue was the right one, still verified, or claimed.
   Without this the `selection` block would be telemetry no phase reads — a
   green indistinguishable from never having looked. (`mode` is written at
   Phase 0's keyword parse, *before* selection, so a skipped selection shows up
-  as `mode: next` with no `selection` rather than as an ordinary run.)
-- **A `mode` naming both `auto` and `next`, with `planReview` missing** →
-  **hard stop.** That field is the sole record that the forced `/review-plan`
-  actually ran, and a self-picked, self-drafted, unattended plan whose critics
-  were skipped is the least-reviewed thing this pipeline can produce. Read
+  as a policy token with no `selection` rather than as an ordinary run.)
+- **A `mode` naming `auto` and a selection-policy token (`next` or `explicit`), with `planReview` missing**
+  → **hard stop.** That field is the sole record that the forced `/review-plan`
+  actually ran, and a self-drafted, unattended plan whose critics
+  were skipped is the least-reviewed thing this pipeline can produce — whether
+  the run picked the issue itself or you named it, because neither puts a human
+  between the issue and the plan. Read
   `auto` from the run file's `mode`, never from memory of the invocation — the
   ledger that held it does not survive `EnterWorktree`, a resume, or Phase 10's
   background handoff.
@@ -714,15 +763,30 @@ gate itself is not a panel decision — in auto, ready behaves as the `merge`
 opt-in. **Opt-in auto-merge:** only if the user passed `merge`, forward it
 (`/watch-pr merge <number>`) — the gate becomes "report the merge" → Phase 12.
 
-**`merge` is dropped, not honoured, when the run file says `reflexive: true`
-and a `mode` naming `next`** — read both from the run file, since this phase
-runs in the background, potentially long after the invocation. A `next` run
-chose its own issue, so nobody decided to
-merge a rewrite of the pipeline's own skills unattended — stop at the gate and
-say the opt-in was dropped and why. Selection already refuses a reflexive
-candidate in `merge` mode ([`references/next-mode.md`](references/next-mode.md)
-§5b); this catches the case where the issue's fix sketch understated its
-footprint and Phase 0 discovered the truth from the drafted plan.
+**`merge` is dropped, not honoured, when *either* holds:**
+
+1. the run file says **`reflexive: true`** *and* its `mode` names a
+   **selection-policy token** (`next` or `explicit`); or
+2. **`selection.mergeRefused` is present** — selection already refused the
+   opt-in under §5a/§5b/§5c.
+
+Read all of it from the run file, since this phase
+runs in the background, potentially long after the invocation. A selection run
+did not have a human choose *both* the issue and the plan — `next` chose the
+issue itself, and under `explicit` you named an issue but the run still drafted
+its own plan — so nobody decided to
+merge a rewrite of the pipeline's own skills unattended. Stop at the gate and
+say the opt-in was dropped and why.
+
+> **Both conditions are needed; neither subsumes the other.** §5b refuses a
+> reflexive candidate at *selection* time, judging from the issue's own fix
+> sketch ([`references/next-mode.md`](references/next-mode.md) §5b) and setting
+> `mergeRefused`. Condition 1 is the backstop for when that sketch
+> **understated** the footprint and Phase 0 discovered the truth only from the
+> drafted plan — there is no `mergeRefused` in that case, because selection saw
+> nothing to refuse. Dropping condition 1 in favour of the `mergeRefused`
+> disjunct alone would let `/deliver auto merge issue <n>` squash-merge a
+> rewrite of `.claude/skills/**` that nobody read.
 
 ## Phase 11 — Wrap-up (wiki, pattern scan, exceptional retro amendment)
 

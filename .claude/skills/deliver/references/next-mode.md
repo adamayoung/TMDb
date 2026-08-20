@@ -17,6 +17,34 @@ and cannot be replaced by `gh project` — the repo's token lacks the
 "no plan" stop, which reads as an unrelated failure, and never fall back to
 `gh project`.
 
+## 0 — The two selection policies
+
+A **selection policy** is how a run chooses the issue it will deliver. There are
+exactly two, and this is the canonical list:
+
+| Policy | Requested by | Chooses |
+| --- | --- | --- |
+| **`top-of-run-list`** | the `next` keyword | the top startable issue on the board's Ready column, in run-list order |
+| **`explicit`** | `issue <n>` | the issue **you** named |
+
+`next` is therefore a *keyword requesting a policy*, not a mode of its own. Both
+policies then run **the same** path — §4 re-verify, §5 `merge` refusals, §6 claim
+and draft, §7 approve — and the run file records which one ran, as a token in
+`mode` (`next` or `explicit`). Every gate that asks *"was this a selection run?"*
+keys on that token rather than on the literal word `next`, so a run file written
+before `explicit` existed still satisfies all of them: `next` **is** a policy
+token. (The four gates:
+[`SKILL.md`](../SKILL.md) Phase 1's stranded-claim sweep, Phase 6's selection and
+`planReview` stops, and Phase 10's merge-drop.)
+
+> **The filters below are policy-independent; what a filter *does* when it fires
+> is policy-dependent.** Under `top-of-run-list` a fired filter is a
+> **pass-over** — there is always a next candidate. Under `explicit` there is no
+> next candidate, so the same filter is a **stop with a report**. Read every
+> exclusion in §2 and §4 through that rule rather than duplicating them.
+
+This file's name predates the generalisation; it covers both policies.
+
 ## 1 — Resolve the board
 
 ```text
@@ -27,6 +55,10 @@ mcp__github__projects_list / list_projects   owner: adamayoung, owner_type: user
 Resolve **by title, never a hard-coded number**. Zero matches or more than one
 → stop. A hard-coded number fails quietly against the wrong board rather than
 loudly against none.
+
+**Both policies need the board.** `explicit` still has to claim the issue, so
+the no-`projects_*` stop in this file's preamble applies to it too — it is not a
+`next`-only requirement.
 
 ## 2 — Build the live Ready set
 
