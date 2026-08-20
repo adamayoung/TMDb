@@ -318,6 +318,31 @@ class RunFileSchemaTests(unittest.TestCase):
             self.fail(f"The run-file example in {LIFECYCLE.name} is not valid JSON: {exc}")
         self.assertIn("mode", parsed, msg="The run-file example lost its `mode` field, which all four gates read.")
 
+    def test_run_file_example_has_no_duplicate_keys(self):
+        """`json.loads` accepts duplicate keys and keeps the last, so validity
+        alone does not catch a field pasted in twice — which is how the example
+        acquired two `breakingClass` entries. `object_pairs_hook` sees the raw
+        pairs before the dict collapses them."""
+        seen = []
+
+        def collect(pairs):
+            names = [k for k, _ in pairs]
+            dupes = {n for n in names if names.count(n) > 1}
+            if dupes:
+                seen.append(sorted(dupes))
+            return dict(pairs)
+
+        json.loads(self._example(), object_pairs_hook=collect)
+        self.assertEqual(
+            seen,
+            [],
+            msg=(
+                f"The run-file example has duplicate keys: {seen}. It parses anyway "
+                f"(last wins), so this is invisible to a validity check — but it is the "
+                f"copy a conductor templates from."
+            ),
+        )
+
     def test_run_file_example_mode_names_a_policy_token(self):
         parsed = json.loads(self._example())
         mode = parsed.get("mode") or ""

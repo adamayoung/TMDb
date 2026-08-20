@@ -205,7 +205,7 @@ Final order:
 Record the ordering source in the run file's `selection` block — either
 `run-list@<sha>` or `board-fields (no run-list line; deps/contention unknown)`.
 
-## 4 — Re-verify the head candidate
+## 4 — Re-verify the candidate
 
 `Ready` means the issue passed `/triage-issues`' Ready test **at some sha**, not
 at the current one. The 2026-08-20 run-list says so itself: 11 of its 13 entries
@@ -646,7 +646,8 @@ and the `knowledge/` entries Phase 0's consult surfaced. From the issue:
 
 ## 7 — Approve, then continue
 
-- **Attended** (`/deliver next`) → present the plan, its derived ACs, and one
+- **Attended** (`/deliver next` or `/deliver issue <n>`) → present the plan,
+  its derived ACs, and one
   line on why this issue was picked, and **stop for approval**. Invoking
   `/deliver` is plan approval for a plan the user wrote; it cannot be approval
   for one that did not exist at invocation. **This applies under both policies**
