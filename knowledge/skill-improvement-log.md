@@ -64,6 +64,34 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · deferred
+
+- **Pattern:** the **False green** family, in its absence-assertion form. When a
+  fix means "this value must no longer appear", every test asserts a negative —
+  and a negative passes just as happily when the value was never there, when the
+  key was renamed upstream, or when the code path is not reached at all. Nothing
+  in `/deliver` asks for the one check that distinguishes "the fix works" from
+  "the test cannot tell": revert the fix and watch the tests go red. In #469 I
+  ran it by hand, on instinct, and it was the single most informative minute of
+  the delivery — two wiring tests went red, which is the only reason their green
+  meant anything. The family recurs throughout this log (a `ls-tree` hash where
+  "found" and "nothing found" were byte-identical; a cached SwiftLint false
+  green; a check re-read from an earlier tip) and heads `gotchas.md`, but every
+  instance so far has been caught after the fact rather than by a step.
+- **Decision:** **deferred — raised unattended, needs review.** Nothing applied.
+  The candidate is a Phase 3 checkpoint for redaction/absence-shaped work:
+  before declaring implementation done, unwire the fix, confirm the new tests
+  fail, restore. Scope is the open question — a blanket rule would be noise on
+  the many deliveries whose assertions are positive, so it likely wants a
+  trigger ("the acceptance criteria are phrased as *X no longer appears*")
+  rather than an unconditional step.
+- **Rationale:** raised by an autonomous `/deliver auto` run, which must not
+  edit the pipeline's own skills without review. Recording it here rather than
+  applying it is the Phase 11 contract for auto mode.
+- **Reconsider when:** Adam reviews this entry — or when a second delivery whose
+  fix is an absence ships a test that would have passed without the fix, which
+  would make the trigger condition concrete rather than hypothetical.
+
 ### 2026-08-14 — Review granularity keys on risk surface, not diff shape · applied
 
 - **Pattern:** two entries raised the same conflict from opposite directions.

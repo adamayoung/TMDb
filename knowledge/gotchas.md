@@ -990,6 +990,28 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ## Testing
 
+### `MockURLProtocol`'s statics are process-global — a test that reads them back is order-dependent
+
+*2026-08-20 (#469).* `MockURLProtocol.lastRequest` (and `data`, `failError`,
+`responseStatusCode`) are `static`, and Swift Testing runs suites **in
+parallel**, so several suites drive the same four slots at once. A test that
+sets `failError`, performs a request, then reads `lastRequest` back to assert
+what was sent **passes on its own and fails in the full run** — another suite's
+request overwrote the slot in between. Observed as exactly that: green under
+`--filter`, one failure at 3392 tests.
+
+The lock inside the mock does not help; it makes each access atomic, not the
+set-perform-read sequence. `.serialized` on your own suite does not help
+either — it orders tests *within* the suite, not against other suites.
+
+**Fix:** when a test needs to read back what the client sent, give it a
+`private final class …URLProtocol: URLProtocol` in its own file with its own
+storage, rather than sharing the common mock. Better still, have that protocol
+**derive its response from the request in front of it** — the redaction test
+builds its failure `NSError` from the incoming request's own URL, so the
+assertion is about the URL the client really sent and there is no cross-test
+slot to race on at all.
+
 ### A mock that traps on queue exhaustion turns a regression into a process abort
 
 *2026-08-14 (#461).* `SequencingHTTPMockClient` calls `preconditionFailure` when a
@@ -1466,6 +1488,67 @@ emoji, invalid percent-escapes (`%zz`), `<>`, `\`, `^`, `|`.
   strings) before writing any test that depends on `URL(string:)` returning
   `nil`; the behaviour changed with the swift-foundation rewrite and intuitions
   from older Foundation are wrong.
+- **`URL(string:)` parses ordinary prose**, so "does this string look like a
+  URL?" is not a usable test for anything: `URL(string: "The request timed
+  out.")` is non-nil (percent-encoded to `The%20request%20timed%20out.`), and
+  that is the literal `NSLocalizedDescription` of a real timeout. Key on the
+  documented `userInfo` key instead of sniffing the value.
+- **`URLComponents(string:)` is stricter than `URL(string:)`** and does reject
+  the malformed bracketed host (`"http://[bad/x"`) as well as a raw space in
+  the scheme or host. That makes it the input to reach a "the string could not
+  be parsed" branch in a test — a raw space in the *path* or a `NUL` is
+  accepted, so those do not work.
+
+### What a `URLSession` failure actually puts in `userInfo` — four measured facts
+
+*2026-08-20 (#469).* Redacting the credential out of `TMDbError.network`'s
+payload meant reading a real transport error rather than an imagined one. All
+four of these were measured on macOS 27, and three of them change the code:
+
+- **`NSURLErrorFailingURLStringErrorKey` cannot be named.** It is deprecated
+  from macOS 15.4 (*"Use NSURLErrorFailingURLErrorKey instead"*), and the
+  package builds `-warnings-as-errors`, so referencing it **fails the build**.
+  Its Swift-side alias `NSErrorFailingURLStringKey` is marked *unavailable*.
+  Spell the key as the string literal `"NSErrorFailingURLStringKey"` — that is
+  what the runtime populates, on Darwin and Linux alike.
+  `NSURLErrorFailingURLErrorKey` is fine to name and equals
+  `"NSErrorFailingURLKey"`.
+- **The two task keys hold opaque `String`s, not `URLSessionTask`s.**
+  `_NSURLErrorFailingURLSessionTaskErrorKey` is a string like
+  `LocalDataTask <4B904CDB-…>.<1>`, and
+  `_NSURLErrorRelatedURLSessionTaskErrorKey` is an array of the same. So there
+  is **no route from an error's `userInfo` to the request's headers** — a
+  bearer token in `Authorization` is not reachable from a caught error. Worth
+  knowing because the opposite is a plausible-sounding security claim: it was
+  raised as one during review and only measurement settled it.
+- **The failing URL is absolute**, so its path starts `/3` or `/4`. Handing it
+  to `EndpointPathRedactor` unstripped makes `segments[0]` the string `"3"`,
+  the endpoint classifier match nothing, and the redaction a **silent no-op**
+  — which a test fed a bare `/guest_session/…` path would never catch.
+- **`NSUnderlyingError` is a real nested `NSError`** with a `userInfo` of its
+  own (`_NSURLErrorNWResolutionReportKey`, `_NSURLErrorNWPathKey`, …). Any
+  "scrub the values" pass over the top-level dictionary walks past it, which is
+  why the redactor rebuilds from an allowlist instead
+  ([ADR-0025](decisions/0025-redact-transport-error-payload.md)).
+
+### `URLComponents.queryItems` corrupts a literal `%2B`; `percentEncodedQueryItems` does not
+
+*2026-08-20 (#469).* Reading `URLComponents.queryItems` and assigning the same
+value straight back is **not** a round-trip:
+
+```text
+…?api_key=SECRET&query=Star%2BWars%20II&language=en-GB
+  → queryItems r/t:                query=Star+Wars%20II     ← %2B became +
+  → percentEncodedQueryItems r/t:  query=Star%2BWars%20II   ← unchanged
+```
+
+The getter percent-decodes and the setter re-encodes, and `+` and `%2B` are not
+interchangeable to a peer that decodes the query. Search requests routinely
+carry `query=`, so rewriting one query item (here, blanking a credential) would
+silently corrupt an unrelated search term beside it. Use
+`percentEncodedQueryItems` for **both** the read and the write whenever you are
+editing one item and must leave the others byte-identical. Same family as the
+`percentEncodedPath` note above: the plain accessors are lossy views.
 
 ### Percent-encoding is not a traversal defence when the peer decodes first
 

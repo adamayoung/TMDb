@@ -59,7 +59,26 @@ public enum TMDbError: Equatable, LocalizedError, Sendable {
     /// An error indicating there was a problem encoding data.
     case encode(Error)
 
+    ///
     /// An error indicating there was a network problem.
+    ///
+    /// The associated error is the transport failure, with your credentials
+    /// removed — so it is safe to log, forward to a crash reporter, or attach to
+    /// an analytics breadcrumb.
+    ///
+    /// A `URLSession` failure carries the whole URL of the request that failed
+    /// in its `userInfo`, and for a client created with ``TMDbClient/init(apiKey:configuration:)``
+    /// that URL contains your `api_key`. Before the error is attached here, the
+    /// value of any credential-bearing query item — and any guest session id or
+    /// account id in the path — is replaced with `REDACTED`. The error keeps its
+    /// `domain`, `code` and `localizedDescription`, so branching on those is
+    /// unaffected; other diagnostic `userInfo` entries are dropped, because they
+    /// can nest a copy of the same URL.
+    ///
+    /// An error with nothing to redact — including one thrown by your own
+    /// ``HTTPClient`` — is attached exactly as it was raised, so its concrete
+    /// type still matches in a `catch`.
+    ///
     case network(Error)
 
     /// An error indicating there was a problem decoding data.

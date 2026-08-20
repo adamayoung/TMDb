@@ -28,7 +28,7 @@ case.
 | ``TMDbError/serverError(_:)`` | TMDb reported a server-side failure (HTTP 5xx). |
 | ``TMDbError/invalidURL(_:)`` | A request URL could not be constructed from the given value, or was rejected as unsafe. A path segment that could resolve to a different endpoint — an identifier containing `/` or `..` — is refused on-device, before any request is sent. |
 | ``TMDbError/encode(_:)`` | A request body could not be encoded. The underlying error is attached. |
-| ``TMDbError/network(_:)`` | The request never completed — offline, timed out, or a DNS / connection failure. The underlying error is attached. |
+| ``TMDbError/network(_:)`` | The request never completed — offline, timed out, or a DNS / connection failure. The underlying error is attached, with your credentials redacted. |
 | ``TMDbError/decode(_:)`` | A response was received but could not be decoded into the expected model. The underlying error is attached. |
 | ``TMDbError/invalidRating`` | A rating passed to an `addRating` method is out of range; it must be between `0.5` and `10.0` in increments of `0.5`. Validated on-device before any request is sent. |
 | ``TMDbError/cancelled`` | The task performing the request was cancelled — see <doc:#Cancellation>. |
@@ -63,6 +63,20 @@ do {
 - Note: ``TMDbErrorContext/endpointPath`` is safe to log — token-bearing path
   segments such as a guest session id or account id are redacted to a
   placeholder before the error leaves the library.
+
+The error attached to ``TMDbError/network(_:)`` is safe to log for the same
+reason. A `URLSession` failure carries the whole URL of the request that failed
+in its `userInfo`, and for a client created with
+``TMDbClient/init(apiKey:configuration:)`` that URL contains your `api_key`. The
+value of any credential-bearing query item, and any guest session id or account
+id in the path, is replaced with `REDACTED` before the error is attached.
+
+The error keeps its `domain`, `code` and `localizedDescription`, so anything you
+branch on is unaffected; the other diagnostic `userInfo` entries are dropped,
+because they can nest a second copy of the same URL. An error with nothing to
+redact — including one thrown by your own ``HTTPClient`` — is attached exactly as
+it was raised, so `catch TMDbError.network(let error as MyTransportError)` keeps
+matching.
 
 ## Catching Errors
 
