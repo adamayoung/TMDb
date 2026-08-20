@@ -167,12 +167,13 @@ implementation = separate `/deliver` sessions.)
   committed, human-reviewed copy.
 - **Identify the issue this delivers, and record it.** Most deliveries implement
   a tracked issue — `/deliver auto` takes one off the board's Ready column, and a
-  plan usually names one. Record `issue: <number>` in the **run file** (or
-  `issue: null` when the work is genuinely untracked, which is the honest answer
-  for an ad-hoc fix). Phase 1 moves it to **In progress** and Phase 10 to **In
-  review**, so an unrecorded issue is one the board silently never reflects. It
-  goes in the run file rather than the ledger for the usual reason: `EnterWorktree`
-  clears the ledger, and Phase 10 may run long after that, in the background.
+  plan usually names one. Record `issue: <number>` on **the deliverable** in the
+  run file (or `issue: null` when the work is genuinely untracked, which is the
+  honest answer for an ad-hoc fix). Per-deliverable, not run-scoped: a
+  multi-deliverable plan can close a different issue per PR, or none. Phase 1
+  moves it to **In progress** and Phase 10 to **In review**, so an unrecorded
+  issue is one the board silently never reflects. It goes in the run file rather
+  than the ledger for the usual reason — `EnterWorktree` clears the ledger.
 - **Flag a reflexive delivery.** If the plan touches `.claude/skills/**`,
   `.claude/agents/**` or `.github/CODE_REVIEW.md`, this run is **rewriting the
   machinery that runs it**. Record `reflexive: true` in the run file and hold
