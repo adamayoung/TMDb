@@ -170,6 +170,77 @@ struct MediaListItemTests {
         #expect(result.releaseDate == nil)
     }
 
+    /// Characterisation of the malformed-date contract `releaseDate` documents
+    /// ("Empty and unparseable strings are decoded as `nil`").
+    ///
+    /// The surrounding `try?` turns *any* parse failure into `nil`, so a change
+    /// of parsing engine cannot be caught by the happy-path tests — it would
+    /// show up only as a value silently becoming `nil` in a consumer's app.
+    /// These cases pin the accepted/rejected boundary so that swapping the
+    /// engine is a measured no-op rather than an assumed one.
+    @Test(
+        "JSON decoding of MediaListItem with an unparseable release_date is nil",
+        .tags(.decoding),
+        arguments: ["0000-00-00", "2025-13-45", "1999", "not-a-date", "2025/10/26", ""]
+    )
+    func decodeReturnsMediaListItemWithUnparseableReleaseDateAsNil(dateString: String) throws {
+        let json = """
+        {
+          "id": 5,
+          "title": "Malformed Date",
+          "original_title": "Malformed Date",
+          "overview": "Carries an unparseable release_date.",
+          "media_type": "movie",
+          "original_language": "en",
+          "release_date": "\(dateString)"
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        #expect(result.releaseDate == nil)
+    }
+
+    /// The permissive half of the same contract, and the half that actually
+    /// constrains the parser choice.
+    ///
+    /// A trailing time component is **accepted**, which matters in production:
+    /// `/movie/{id}/release_dates` sends `"1999-10-15T00:00:00.000Z"` rather
+    /// than a bare day. A parser that rejected it would turn a real release
+    /// date into `nil` silently, because of the `try?`.
+    @Test(
+        "JSON decoding of MediaListItem accepts these release_date forms",
+        .tags(.decoding),
+        arguments: [
+            ("2025-10-26", 1_761_436_800.0),
+            ("2025-10-26T00:00:00Z", 1_761_436_800.0),
+            ("99-10-15", -59_018_371_200.0)
+        ]
+    )
+    func decodeReturnsMediaListItemWithAcceptedReleaseDateForm(
+        dateString: String,
+        expectedTimeIntervalSince1970: Double
+    ) throws {
+        let json = """
+        {
+          "id": 6,
+          "title": "Accepted Date",
+          "original_title": "Accepted Date",
+          "overview": "Carries an accepted release_date form.",
+          "media_type": "movie",
+          "original_language": "en",
+          "release_date": "\(dateString)"
+        }
+        """
+
+        let data = Data(json.utf8)
+        let result = try JSONDecoder.theMovieDatabase.decode(MediaListItem.self, from: data)
+
+        let releaseDate = try #require(result.releaseDate)
+        #expect(releaseDate == Date(timeIntervalSince1970: expectedTimeIntervalSince1970))
+    }
+
     /// `ShowType.unknown` has the raw value `"unknown"`, so a server literally
     /// sending that string would match the enum and slip past `decodeMediaType`.
     /// The guard exists for exactly that case; this is the only way to reach it.
