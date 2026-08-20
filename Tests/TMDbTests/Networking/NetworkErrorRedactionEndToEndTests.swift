@@ -138,6 +138,66 @@ struct NetworkErrorRedactionEndToEndTests {
         #expect(!underlying.localizedDescription.contains(apiKey))
     }
 
+    @Test("a bearer-token client's transport failure never carries the token, and is not rebuilt")
+    func bearerTokenClientTransportFailureIsUntouched() async throws {
+        let bearerToken = "bearer-stack-secret"
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [EchoingFailureURLProtocol.self]
+
+        let client = TMDbClient(
+            bearerToken: bearerToken,
+            httpClient: URLSessionHTTPClientAdapter(urlSession: URLSession(configuration: configuration))
+        )
+
+        var thrown: (any Error)?
+        do {
+            _ = try await client.movies.details(forMovie: 550)
+        } catch let error {
+            thrown = error
+        }
+
+        let error = try #require(thrown as? TMDbError)
+        guard case .network(let underlying) = error else {
+            Issue.record("Expected a .network error, got \(error).")
+            return
+        }
+
+        // The token was genuinely sent — as a header, never in the URL. That is
+        // why it is not at risk here, and asserting it makes the point testable
+        // rather than merely stated.
+        #expect(EchoingFailureURLProtocol.observedHeader(containing: bearerToken))
+        #expect(!EchoingFailureURLProtocol.observedURL(containing: bearerToken))
+
+        #expect(!String(describing: (underlying as NSError).userInfo).contains(bearerToken))
+
+        // `/3/movie/550` carries no credential query item and no token-bearing
+        // path segment, so there is nothing to redact and the error is passed
+        // through untouched — diagnostics intact.
+        let nsError = underlying as NSError
+        #expect(nsError.userInfo[NSURLErrorFailingURLErrorKey] != nil)
+        #expect(nsError.domain == NSURLErrorDomain)
+    }
+
+    @Test("a bearer-token client is not exempt: an account-path failure is still redacted")
+    func bearerTokenClientAccountPathIsStillRedacted() throws {
+        // The redaction keys on what is in the URL, not on how the client was
+        // built. A bearer-token client calling a user-scoped v3 endpoint puts an
+        // account id in the path and a `session_id` in the query, so its failure
+        // IS rebuilt — "bearer clients are unaffected" is true of the bearer
+        // token only, and this pins the distinction.
+        let error = try Self.transportError(
+            url: "https://api.themoviedb.org/3/account/9876543/favorite?session_id=sess123secret"
+        )
+
+        let redacted = NetworkErrorRedactor.redact(error)
+
+        let urlString = try #require((redacted as NSError).userInfo[Self.failingURLStringKey] as? String)
+        #expect(!urlString.contains("sess123secret"))
+        #expect(!urlString.contains("9876543"))
+        #expect(urlString.contains("/3/account/REDACTED/favorite"))
+    }
+
     @Test("URLSession still reports the failing URL under the keys the redactor reads")
     func urlSessionStillReportsFailingURLUnderExpectedKeys() async throws {
         // A characterisation test, not a test of this package: every other test
@@ -188,10 +248,16 @@ private final class EchoingFailureURLProtocol: URLProtocol, @unchecked Sendable 
 
     private static let lock = NSLock()
     private nonisolated(unsafe) static var unsafeObservedURLs: [String] = []
+    private nonisolated(unsafe) static var unsafeObservedHeaders: [String] = []
 
     /// Whether any request seen by this protocol carried `value` in its URL.
     static func observedURL(containing value: String) -> Bool {
         lock.withLock { unsafeObservedURLs.contains { $0.contains(value) } }
+    }
+
+    /// Whether any request seen by this protocol carried `value` in a header.
+    static func observedHeader(containing value: String) -> Bool {
+        lock.withLock { unsafeObservedHeaders.contains { $0.contains(value) } }
     }
 
     override static func canInit(with _: URLRequest) -> Bool {
@@ -208,7 +274,11 @@ private final class EchoingFailureURLProtocol: URLProtocol, @unchecked Sendable 
             return
         }
 
-        Self.lock.withLock { Self.unsafeObservedURLs.append(url.absoluteString) }
+        let headers = String(describing: request.allHTTPHeaderFields ?? [:])
+        Self.lock.withLock {
+            Self.unsafeObservedURLs.append(url.absoluteString)
+            Self.unsafeObservedHeaders.append(headers)
+        }
 
         let error = NSError(
             domain: NSURLErrorDomain,
