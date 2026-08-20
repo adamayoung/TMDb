@@ -300,6 +300,15 @@ implementation = separate `/deliver` sessions.)
      grep -rn '<the old wording>' .claude/ CLAUDE.md .github/CODE_REVIEW.md
      ```
 
+     **Re-sweep after every review-loop fix, not just after the first edit.**
+     A Phase 4 or Phase 5 fix that changes the rule *again* has its own
+     footprint, and a sweep run against the original change's wording will not
+     find it. This is how the recurrence below reached three: the first two
+     commits of a delivery swept clean, and the commit that *fixed* the review's
+     findings reintroduced the drift — into `.github/ISSUE_FILING.md`, which
+     declares itself authoritative over the skills, so the stale copy overrode
+     rather than lagged. Sweep is per-commit-that-changes-a-rule, not per-run.
+
      This has now recurred twice. #441–#443 each fixed `deliver/SKILL.md` and
      left `deliver/references/worktree-lifecycle.md` — the file `SKILL.md`
      points at — still teaching the forbidden `swept:` key, the superseded
