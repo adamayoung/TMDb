@@ -95,6 +95,11 @@ lint-readme-version:
 # are covered: the sort rules, and — reading the skill files off disk — that the
 # prose still agrees with the grammar the module defines.
 #
+# Runs EVERY suite under Scripts/tests — the run-list builder's own cases, the
+# /deliver selection-prose anti-drift cases, and the workflow cache-key and
+# change-gate cases added for #448 — not just the run-list builder's, despite the
+# target name.
+#
 # Run via the wrapper, never `unittest discover` directly: a bare discover exits
 # 0 when it collects NOTHING on Python 3.9, so a renamed file would empty this
 # gate while it still reported green. The wrapper asserts a collection floor.

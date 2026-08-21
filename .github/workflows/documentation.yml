@@ -64,6 +64,12 @@ jobs:
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/configure-pages@v6
 
+      # See the note on ci.yml's `Cache Swift packages`. The cross-workflow
+      # `${{ runner.os }}-swift-` fallback that used to sit under the docs prefix
+      # is deliberately gone: on a docs-cache miss it re-imported CI's frozen
+      # cache, which is exactly the import the key exists to prevent — and the
+      # docs build has its own dependency graph, since SWIFTCI_DOCC=1 adds
+      # swift-docc-plugin (Package.swift:74-90).
       - name: Cache Swift packages
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/cache@v6
@@ -71,10 +77,9 @@ jobs:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-docs-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('.github/workflows/documentation.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
-            ${{ runner.os }}-docs-
-            ${{ runner.os }}-swift-
+            ${{ runner.os }}-docs-${{ hashFiles('.github/workflows/documentation.yml') }}-
 
       - name: Build documentation
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'

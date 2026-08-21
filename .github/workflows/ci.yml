@@ -32,6 +32,7 @@ jobs:
     outputs:
       swift: ${{ steps.filter.outputs.swift }}
       markdown: ${{ steps.filter.outputs.markdown }}
+      versioncheck: ${{ steps.filter.outputs.versioncheck }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -47,7 +48,6 @@ jobs:
               - '.swiftlint.yml'
               - '.swift-version'
               - 'Package.swift'
-              - 'Package.resolved'
               - 'Scripts/**'
               - 'Makefile'
               - '.github/workflows/ci.yml'
@@ -60,9 +60,15 @@ jobs:
               - 'Sources/TMDb/TMDb.docc/**'
               # README code samples are an input of the prose call-form check.
               - 'README.md'
-              # CHANGELOG is an input of the README version check — it is where
-              # the last-released and in-preparation versions are read from, so a
-              # CHANGELOG-only change must still run the Lint job.
+            # Inputs of `Scripts/check-readme-version.py`, and only its inputs.
+            # Split out of `swift` because `swift` gates five jobs — Lint,
+            # build-test, the 4-way build-platforms matrix and build-test-linux —
+            # so a CHANGELOG typo used to buy the entire Apple build matrix AND a
+            # Linux container build. Do not add the DocC catalog or Sources here:
+            # the prose call-form check needs those and deliberately stays on
+            # `swift`.
+            versioncheck:
+              - 'README.md'
               - 'CHANGELOG.md'
             markdown:
               - 'README.md'
@@ -73,7 +79,13 @@ jobs:
               - '**/*.docc/**/*.md'
               - '.claude/**/*.md'
               - 'knowledge/**/*.md'
-              - '.github/workflows/ci.yml'
+              # Widened from `ci.yml` to every workflow so that an edit to
+              # codeql.yml or documentation.yml runs the workflow cache-key suite
+              # below — they sit in no other filter key. No new output is needed:
+              # Checkout and `Run-list builder check` are already gated on
+              # `swift || markdown`, and `swift` stays false so Lint still lands
+              # on ubuntu-latest.
+              - '.github/workflows/**'
 
   lint:
     name: Lint
@@ -89,20 +101,27 @@ jobs:
       SWIFTLINT_VERSION: 0.63.2
       SWIFTFORMAT_VERSION: 0.61.1
     steps:
+      # runner-safe: a bare `echo` — it needs no toolchain at all, and its
+      # condition is the negation of the others, so it runs precisely when
+      # nothing else in this job does.
       - name: No changes detected
         if: >-
           needs.changes.outputs.swift != 'true' && needs.changes.outputs.markdown != 'true'
+          && needs.changes.outputs.versioncheck != 'true'
           && github.event_name != 'workflow_dispatch'
-        run: echo "No Swift or Markdown changes detected, skipping lint"
+        run: echo "No Swift, Markdown or version-check changes detected, skipping lint"
 
-      # Also gated on `markdown`, not `swift` alone: the run-list builder check
-      # below reads the skill prose off disk, so a prose-only change is exactly
-      # when it must run — and without a checkout it would have nothing to read.
-      # Every swiftlint/swiftformat step below stays gated on `swift`, and the
-      # runner falls to ubuntu-latest when `swift` is false, where python3 ships.
+      # runner-safe: gated more widely than `runs-on` selects on, deliberately.
+      # Checkout must be gated on the UNION of every step's condition in this job:
+      # a step gated on a key Checkout is not gated on runs with no repository on
+      # disk (PR #476). So `markdown` is here for the run-list builder check, and
+      # `versioncheck` for the README version check. Every swiftlint/swiftformat
+      # step stays gated on `swift`, and the runner falls to ubuntu-latest when
+      # `swift` is false, where python3 and git both ship.
       - name: Checkout
         if: >-
           needs.changes.outputs.swift == 'true' || needs.changes.outputs.markdown == 'true'
+          || needs.changes.outputs.versioncheck == 'true'
           || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v7
 
@@ -148,14 +167,26 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-prose-call-forms.py
 
+      # runner-safe: may run on ubuntu-latest when only `versioncheck` fired.
+      # `check-readme-version.py` is stdlib-only Python 3 over README.md and
+      # CHANGELOG.md — it needs no Xcode, so a version-only change has no reason
+      # to select the macOS runner. Checkout above is widened to match.
       - name: README version check
-        if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
+        if: >-
+          needs.changes.outputs.swift == 'true' || needs.changes.outputs.versioncheck == 'true'
+          || github.event_name == 'workflow_dispatch'
         run: python3 Scripts/check-readme-version.py
 
-      # Mirrors `make lint-run-list`. No new paths-filter output is needed: the
-      # builder lives under `Scripts/**` (already in the `swift` key) and its
-      # anti-drift cases read `.claude/**/*.md` (already in the `markdown` key),
-      # so gating on either covers both of its inputs.
+      # runner-safe: may run on ubuntu-latest when only `markdown` fired. Every
+      # suite under Scripts/tests is stdlib-only Python 3 plus git, so no Xcode
+      # is needed; Checkout above is widened to match.
+      #
+      # Mirrors `make lint-run-list`, which runs EVERY suite under Scripts/tests
+      # via the wrapper's collection floor — the run-list builder's cases plus the
+      # workflow cache-key / change-gate cases added for #448. No new paths-filter
+      # output is needed: the builder lives under `Scripts/**` (already in the
+      # `swift` key), its anti-drift cases read `.claude/**/*.md`, and the workflow
+      # suite reads `.github/workflows/**` — both already in the `markdown` key.
       - name: Run-list builder check
         if: >-
           needs.changes.outputs.swift == 'true' || needs.changes.outputs.markdown == 'true'
@@ -202,6 +233,17 @@ jobs:
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v7
 
+      # Hash this workflow file, not `Package.resolved`: the latter is gitignored
+      # (.gitignore:5) and never present in a fresh checkout, so `hashFiles`
+      # returned '' and the key collapsed to the constant `macOS-swift-` —
+      # byte-identical to its own restore prefix, hence an exact primary-key hit,
+      # on which actions/cache SKIPS THE SAVE. That cache was written once in
+      # April and never refreshed (#448). This file carries the DEVELOPER_DIR
+      # Xcode pin, so a toolchain bump now invalidates the cache by itself. The
+      # `-ci-` segment keeps this out of codeql.yml's namespace: both cache the
+      # same two paths, and until #448 both resolved to the identical key.
+      # Note the save recurs once per (workflow-hash, Package.swift-hash, ref) —
+      # not per run — so a single entry per tuple is correct, not a regression.
       - name: Cache Swift packages
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/cache@v6
@@ -209,9 +251,9 @@ jobs:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-swift-ci-${{ hashFiles('.github/workflows/ci.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
-            ${{ runner.os }}-swift-
+            ${{ runner.os }}-swift-ci-${{ hashFiles('.github/workflows/ci.yml') }}-
 
       - name: Install xcsift
         if: needs.changes.outputs.swift == 'true' || github.event_name == 'workflow_dispatch'
