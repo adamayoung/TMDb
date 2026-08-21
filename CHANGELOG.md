@@ -92,13 +92,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `startDate` sent `start_date=2023-12-31` at UTC-8, and the results came back
   accordingly.
 
-  Separately, `movies.changes(forMovie:…)` and `changes.movies(…)` never used
-  that formatter at all — they sent a `Date`'s raw description, e.g.
-  `start_date=2024-01-01 00:00:00 +0000`. They now send `2024-01-01` like every
-  other `changes` method. TMDb accepted both forms, so results are unchanged,
-  and because the raw description is always UTC this was never zone-dependent —
-  unlike the rest of this entry, it affects the request sent from **every** zone,
-  including UTC.
+  Separately, the movie `changes` methods — `movies.changes(forMovie:…)`,
+  `movies.changes(startDate:endDate:page:)`, `changes.movieDetails(forMovie:…)`
+  and `changes.movieChanges(…)` — never used that formatter at all. They sent a
+  `Date`'s raw description, e.g. `start_date=2024-01-01 00:00:00 +0000`. They
+  now send `2024-01-01` like every other `changes` method. TMDb accepted both
+  forms, so results are unchanged, and because the raw description is always UTC
+  this was never zone-dependent — unlike the rest of this entry, it affects the
+  request sent from **every** zone, including UTC.
 
   Breaking, and silently so — nothing stops compiling, and **code that was
   correct before is wrong after**. Three things to check:
