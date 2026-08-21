@@ -298,7 +298,12 @@ def ci_lines() -> list[str]:
 
 
 def filter_block(text: str) -> dict[str, list[str]]:
-    """Parse a `filters: |` block — YAML inside a YAML string, with comments."""
+    """Parse the FIRST `filters: |` block — YAML inside a YAML string, with comments.
+
+    The first only. No workflow here declares two, but a second one would be
+    silently unchecked; `EXPECTED_LITERAL_PATH_COUNTS` catches a file dropping to
+    zero, not a file whose second list goes unread.
+    """
     lines = text.splitlines()
     for i, line in enumerate(lines):
         if line.strip().startswith("filters:"):
@@ -761,10 +766,22 @@ class ChangeGateTests(unittest.TestCase):
 
     def test_versioncheck_filter_lists_its_consumer_inputs(self):
         self.assertEqual(self.filters.get("versioncheck"), EXPECTED_VERSIONCHECK_FILTER)
+
+        # Assert the consumer is named in the COMMENT ABOVE the block, not merely
+        # somewhere in the file: `check-readme-version.py` also appears in the
+        # step's own `run:` line, so a whole-file `assertIn` would be satisfied by
+        # that alone and deleting the explanation would not go red. This filter
+        # exists only for that script, and a reader who cannot see why will widen
+        # it back into `swift`.
+        lines = self.ci.splitlines()
+        index = next(i for i, line in enumerate(lines) if line.strip() == "versioncheck:")
+        preamble = " ".join(
+            line.strip() for line in lines[max(0, index - 8) : index] if line.strip().startswith("#")
+        )
         self.assertIn(
             "check-readme-version.py",
-            self.ci,
-            "name the consumer beside the filter it exists for",
+            preamble,
+            "name the consumer in the comment beside the filter that exists for it",
         )
 
 
