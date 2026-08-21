@@ -1,0 +1,36 @@
+{
+  "aspect_ratio": 0.667,
+  "file_path": "/xL5yWkuH1PlmNJmpWvIxAfXvNXK.jpg",
+  "height": 2268,
+  "id": "598795c2c3a3680d5101954a",
+  "iso_3166_1": "HU",
+  "iso_639_1": "hu",
+  "vote_average": 1.75,
+  "vote_count": 4,
+  "width": 1512,
+  "image_type": "poster",
+  "media": {
+    "adult": false,
+    "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+    "id": 1396,
+    "name": "Breaking Bad",
+    "original_name": "Breaking Bad",
+    "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime.",
+    "poster_path": "/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+    "media_type": "tv",
+    "original_language": "en",
+    "genre_ids": [
+      18,
+      80
+    ],
+    "popularity": 146.4569,
+    "first_air_date": "2008-01-20",
+    "softcore": false,
+    "vote_average": 8.9,
+    "vote_count": 18429,
+    "origin_country": [
+      "US"
+    ]
+  },
+  "media_type": "tv"
+}

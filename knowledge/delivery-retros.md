@@ -25,6 +25,79 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-21 — 🐛 Model tagged images attached to a whole TV series (#486) · full
+
+- **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
+  board's Ready column, no supplied plan). Full weight — small diff, but it
+  touches `Decodable`/`CodingKeys` and adds a public enum case, so risk
+  overrode size. Skills: self-drafted plan, `review-plan` (3 critics, 20
+  findings, 2 blockers), `implement-plan`, `review-changes` (§2b fan-out),
+  `security-review`, independent rubric grader, `capture-knowledge`.
+  Three juror panels ruled in place of user stops, all 3-0.
+  `consulted:` `tmdb-api-notes.md` §427, ADR-0019, ADR-0021, gotchas
+  *Check how a page is built before reasoning about its decode tolerance*,
+  *Carry a decode marker inside a `DecodingError`*,
+  *A fixture the author invented tests the author's belief*.
+  `swept:` n/a (no infra files in the diff) → citation scan of `knowledge/` and
+  `.claude/` for `TaggedImage`; `next-major.md:68` reviewed and left (still
+  true); ADR-0019:119-123 reconciled in the implementation commit.
+
+- **What worked — widening a sweep that already looked conclusive.** A
+  12-person / 378-row probe returned exactly three nested `media_type` values
+  (`movie` 334, `tv` 38, `tv_episode` 6) and read as proof the vocabulary closed
+  at three. Widening to 30 people surfaced a fourth, `tv_season`, at **one row
+  in 219**. That single row reversed a decision: the plan had a live
+  `droppedItemCount == 0` assertion, a risk critic objected, I adjudicated
+  *against* them, and the new evidence made them right — the assertion would
+  have turned the weekly cron red for something the library is designed to skip.
+  It was dropped, and the exact count is asserted on frozen fixtures instead.
+
+- **What worked — rejecting a majority finding on evidence rather than count.**
+  Two of three critics wanted a fourth row in ADR-0021's table for a
+  "wire-decoded, payload-carrying" vocabulary. Reading ADR-0019:44-51 showed the
+  cell is a *media-type discriminator*, already governed by limb 1; ADR-0021
+  covers limb-2 value enums only. The gap was my own plan's miscategorisation,
+  not the ADR's. Three independent jurors upheld the rejection. The signpost
+  now lives in ADR-0021 itself, because a 3-of-4 error rate on a boundary
+  question will recur.
+
+- **Friction — two false-green near-misses, both in the reporting layer.** The
+  scoped test runner listed twelve names under a suite it labelled "(6 tests)"
+  and did not name the new throw-test, then on a re-run attributed
+  pageable-list tests to `PersonTaggedImagesRequestTests`. Both were reporting
+  artefacts — the tests had run — but the only way to know that was to re-run
+  narrower and read the names. A report that mis-groups its results cannot
+  answer "did *my* test execute", which is the one question a scoped run exists
+  to answer.
+
+- **Friction — the worktree Bash guard, again.** Long heredocs are refused as
+  "too complex to verify that it stays inside the worktree" while shorter writes
+  to the same path succeed, so it is length and complexity, not permissions.
+  Cost roughly six retries; the workaround is splitting every write into
+  create-then-run, and chunking long documents into one `>` plus appends. A
+  quoted heredoc also passed `"\\n"` through literally, emitting a stray `\n`
+  line into a test file.
+
+- **Deviations:** (1) Three fixtures ship, not the planned four — a captured
+  fixture cannot back a throwing test, since `decode(_:fromResource:)` calls
+  `Issue.record` before rethrowing, and an unreferenced fixture fails
+  `check-fixtures.py` as an orphan; the throw case uses inline JSON carrying the
+  real captured row. (2) The page fixture is a trimmed row-subset, not the
+  verbatim 20-row page, which was 25KB for no added decoder coverage. (3) The
+  live `droppedItemCount` assertion was cut, per the sweep above. (4) The run
+  file's `stamps` live under `deliverables[0]`, not at top level; two stamps
+  were written to a stray top-level key and had to be moved.
+
+- **One improvement:** `CLAUDE.md` already says a **uniform** result across a
+  sweep is evidence about the sweep until the error body says otherwise. The
+  same shape applies one step out: a sweep that returns **only values you
+  already model** cannot distinguish "the vocabulary is closed" from "the sample
+  missed the tail", because the tail is exactly what a modelled-values-only
+  result hides. That is what made 378 rows look conclusive at 12 people and
+  wrong at 30. Worth stating alongside the existing rule, since the failure mode
+  is *confidence produced by the sample's own blind spot* rather than by too few
+  records.
+
 ## 2026-08-20 — ✨ Assemble the triage run-list in code (issue #471, #476) · full
 
 - **Phases / skills:** 0–8 pre-PR. Full weight — small diff, but reflexive

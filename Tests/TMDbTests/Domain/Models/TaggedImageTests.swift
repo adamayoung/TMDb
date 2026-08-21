@@ -63,4 +63,54 @@ struct TaggedImageTests {
         #expect(episode.seasonNumber == 1)
     }
 
+    @Test(
+        "JSON decoding of TaggedImage with TV series media",
+        .tags(.decoding)
+    )
+    func decodeWithTVSeriesMediaReturnsTaggedImage() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TaggedImage.self,
+            fromResource: "tagged-image-tv-series"
+        )
+
+        #expect(result.id == "598795c2c3a3680d5101954a")
+        #expect(result.aspectRatio == 0.667)
+        #expect(result.imageType == "poster")
+        #expect(result.media.id == 1396)
+
+        guard case .tvSeries(let tvSeries) = result.media else {
+            Issue.record("Expected tvSeries media type")
+            return
+        }
+
+        #expect(tvSeries.name == "Breaking Bad")
+        #expect(tvSeries.originalName == "Breaking Bad")
+        #expect(tvSeries.firstAirDate == Date(iso8601: "2008-01-20T00:00:00Z"))
+        #expect(tvSeries.originCountries == ["US"])
+    }
+
+    @Test(
+        "JSON encoding of TaggedImage with TV series media",
+        .tags(.encoding)
+    )
+    func encodeWithTVSeriesMediaWritesTVMediaType() throws {
+        let taggedImage = try JSONDecoder.theMovieDatabase.decode(
+            TaggedImage.self,
+            fromResource: "tagged-image-tv-series"
+        )
+
+        let data = try JSONEncoder.theMovieDatabase.encode(taggedImage)
+        let object = try #require(
+            try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        )
+        let media = try #require(object["media"] as? [String: Any])
+        #expect(media["media_type"] as? String == "tv")
+
+        let roundTripped = try JSONDecoder.theMovieDatabase.decode(
+            TaggedImage.self,
+            from: data
+        )
+        #expect(roundTripped == taggedImage)
+    }
+
 }
