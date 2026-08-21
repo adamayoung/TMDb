@@ -252,9 +252,13 @@ public extension MediaListItem {
         ) ?? container.decodeIfPresent(String.self, forKey: .firstAirDate)
 
         if let dateString, !dateString.isEmpty {
+            // `.gmt` is `ISO8601FormatStyle`'s default, but state it: this is
+            // the one decode path that opts out of the shared strategy, so the
+            // zone it agrees on should be visible rather than inherited.
             self.releaseDate = try? Date(
                 dateString,
-                strategy: .iso8601.year().month().day().dateSeparator(.dash)
+                strategy: Date.ISO8601FormatStyle(timeZone: .gmt)
+                    .year().month().day().dateSeparator(.dash)
             )
         } else {
             self.releaseDate = nil

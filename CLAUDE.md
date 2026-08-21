@@ -167,17 +167,20 @@ then fetch its details or watch providers.
 - Uses **Swift Testing** framework (`@Test`, `#expect`, `#require`) — not
   XCTest
 
-**Adding a test target?** Test-target names are hardcoded in **four** places —
+**Adding a test target?** Test-target names are hardcoded in **five** places —
 miss one and the failure is silent:
 
 1. `Makefile` — `TEST_TARGET`.
 2. `.github/workflows/ci.yml` — the macOS `Test` step's `--filter`.
 3. `.github/workflows/ci.yml` — the Linux `Test` step's `--filter`.
-4. `.github/workflows/ci.yml` — the **`Prepare Code Coverage`** loop
+4. `.github/workflows/ci.yml` — the **`unit-test-timezones`** `Test` step's
+   `--filter` (the `TZ` matrix job).
+5. `.github/workflows/ci.yml` — the **`Prepare Code Coverage`** loop
    (`for target in …`), which enumerates one `.xctest` bundle per target.
 
-Miss 1–3 and the suite never runs; miss 4 and it runs but its coverage is
-never exported, so the code it covers reads as uncovered on codecov.
+Miss 1–4 and the suite never runs there; miss 5 and it runs but its coverage is
+never exported, so the code it covers reads as uncovered on codecov. Miss 4
+specifically and the new target is never proven time-zone-independent.
 
 ## Understanding the TMDb API
 

@@ -33,6 +33,27 @@ struct DayPrecisionDateTests {
     /// 2024-12-31T00:00:00Z.
     private static let newYearEve2024 = Date(timeIntervalSince1970: 1_735_603_200)
 
+    // MARK: - The harness itself
+
+    /// Asserts that the `unit-test-timezones` CI job is doing what it claims.
+    ///
+    /// Every other assertion in this file reads `== <GMT value>` and passes
+    /// trivially at UTC, so the job's non-UTC offset is what makes them a test.
+    /// The job already refuses to proceed if `date` reports `+0000` — but that
+    /// reads glibc, while these tests read Foundation, and Foundation on Linux
+    /// is actively being reimplemented. If it ever stops honouring `TZ`, the
+    /// bash guard still passes and this whole file silently proves nothing.
+    ///
+    /// Enabled only where the job sets `TMDB_EXPECT_NON_UTC`, so it is inert on
+    /// developer machines and on every other CI job.
+    @Test(
+        "the timezone matrix runs Foundation at a non-UTC offset",
+        .enabled(if: ProcessInfo.processInfo.environment["TMDB_EXPECT_NON_UTC"] != nil)
+    )
+    func timezoneMatrixRunsFoundationAtNonUTCOffset() {
+        #expect(TimeZone.current.secondsFromGMT() != 0)
+    }
+
     // MARK: - Inbound
 
     @Test("day-precision date decodes to GMT midnight", .tags(.decoding))

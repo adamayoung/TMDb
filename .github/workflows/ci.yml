@@ -375,6 +375,11 @@ jobs:
         timezone: [America/Los_Angeles, Pacific/Auckland]
     env:
       TZ: ${{ matrix.timezone }}
+      # Switches on a test that asserts Foundation itself sees a non-UTC offset.
+      # The bash guard below reads glibc; the tests read
+      # swift-corelibs-foundation. Those are different runtimes reading the same
+      # variable, and only the second one matters here.
+      TMDB_EXPECT_NON_UTC: "1"
     steps:
       - name: No changes detected
         if: needs.changes.outputs.swift != 'true' && github.event_name != 'workflow_dispatch'
