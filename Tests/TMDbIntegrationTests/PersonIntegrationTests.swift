@@ -34,6 +34,20 @@ struct PersonIntegrationTests {
         #expect(person.isAdultOnly != nil)
     }
 
+    /// A non-movie witness that the GMT pin is not movie-shaped: `birthday`
+    /// decodes through the same day-precision strategy as a release date.
+    @Test("a birthday decodes to GMT midnight")
+    func birthdayDecodesToGMTMidnight() async throws {
+        let tomCruiseID = 500
+
+        let person = try await personService.details(forPerson: tomCruiseID)
+
+        let birthday = try #require(person.birthday)
+        #expect(birthday.timeIntervalSince1970.truncatingRemainder(dividingBy: 86400) == 0)
+        // 1962-07-03T00:00:00Z, confirmed against the live API.
+        #expect(birthday == Date(timeIntervalSince1970: -236_649_600))
+    }
+
     @Test("combinedCredits")
     func combinedCredits() async throws {
         let personID = 500

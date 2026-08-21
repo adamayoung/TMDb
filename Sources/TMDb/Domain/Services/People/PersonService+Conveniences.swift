@@ -29,8 +29,8 @@ public extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -55,7 +55,7 @@ public extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - startDate: Filter changes after this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -81,7 +81,7 @@ public extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - endDate: Filter changes before this date.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -107,7 +107,7 @@ public extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - startDate: Filter changes after this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -131,7 +131,7 @@ public extension PersonService {
     ///
     /// - Parameters:
     ///    - personID: The identifier of the person.
-    ///    - endDate: Filter changes before this date.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -198,8 +198,8 @@ public extension PersonService {
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter changes after this date.
-    ///    - endDate: Filter changes before this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -222,7 +222,7 @@ public extension PersonService {
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - startDate: Filter changes after this date.
+    ///    - startDate: Filter changes after this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -246,7 +246,7 @@ public extension PersonService {
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
     /// - Parameters:
-    ///    - endDate: Filter changes before this date.
+    ///    - endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -269,7 +269,7 @@ public extension PersonService {
     ///
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
-    /// - Parameter startDate: Filter changes after this date.
+    /// - Parameter startDate: Filter changes after this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -288,7 +288,7 @@ public extension PersonService {
     ///
     /// [TMDb API - Changes: People List](https://developer.themoviedb.org/reference/changes-people-list)
     ///
-    /// - Parameter endDate: Filter changes before this date.
+    /// - Parameter endDate: Filter changes before this date. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

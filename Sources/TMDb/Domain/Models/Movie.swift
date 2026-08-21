@@ -67,6 +67,8 @@ public struct Movie: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// Movie release date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let releaseDate: Date?
 
     ///

@@ -80,16 +80,34 @@ struct DiscoverIntegrationTests {
         #expect(orTotal >= andTotal)
     }
 
+    /// The `Date`-granular bounds are accepted and applied by TMDb.
+    ///
+    /// Deliberately **not** asserting that every returned `releaseDate` falls
+    /// inside the window: `release_date.gte`/`.lte` bound *any* release type,
+    /// while the `release_date` on a list row is the **primary** release, so a
+    /// film with a 2024 festival run and a 2023 primary release legitimately
+    /// matches. See `knowledge/tmdb-api-notes.md`, "discover/movie has two
+    /// distinct release-date filters".
+    ///
+    /// The one-day GMT boundary is proved deterministically in
+    /// `DayPrecisionDateTests.discoverMoviesRequestSendsGMTCalendarDay`, which
+    /// asserts the emitted query item directly. A live result set cannot
+    /// distinguish a one-day shift.
     @Test("movies with release date range")
     func moviesWithReleaseDateRange() async throws {
-        let filter = DiscoverMovieFilter(
-            releaseDateMin: Date(timeIntervalSince1970: 1_704_067_200), // 2024-01-01
-            releaseDateMax: Date(timeIntervalSince1970: 1_735_603_200) // 2024-12-31
-        )
+        let rangeStart = Date(timeIntervalSince1970: 1_704_067_200) // 2024-01-01T00:00:00Z
+        let rangeEnd = Date(timeIntervalSince1970: 1_735_603_200) // 2024-12-31T00:00:00Z
+        let filter = DiscoverMovieFilter(releaseDateMin: rangeStart, releaseDateMax: rangeEnd)
 
         let movieList = try await discoverService.movies(filter: filter)
 
         #expect(!movieList.results.isEmpty)
+
+        // The window is applied, not ignored: some result must sit inside it.
+        // A wholly-ignored filter would return the unfiltered popular list,
+        // which spans decades.
+        let releaseDates = movieList.results.compactMap(\.releaseDate)
+        #expect(releaseDates.contains { $0 >= rangeStart && $0 <= rangeEnd })
     }
 
     @Test("movies without watch providers")

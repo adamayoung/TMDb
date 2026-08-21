@@ -31,6 +31,31 @@ struct ChangesIntegrationTests {
         #expect(result.totalPages >= 1)
     }
 
+    /// The date-filtered form, live.
+    ///
+    /// Nothing in this suite passed `startDate`/`endDate` before, which is
+    /// exactly why the movie changes requests could send
+    /// `start_date=2024-01-01 00:00:00 +0000` — a `Date`'s raw description
+    /// rather than the formatted day — without anything noticing. The unit test
+    /// pins the emitted string; this pins that TMDb accepts it.
+    ///
+    /// A recent, short window: the endpoint caps the range at 14 days, and a
+    /// window with no changes in it is still a valid response.
+    @Test("movieChanges within a date window")
+    func movieChangesWithinDateWindow() async throws {
+        let endDate = Date()
+        let startDate = endDate.addingTimeInterval(-7 * 86400)
+
+        let result = try await changesService.movieChanges(
+            startDate: startDate,
+            endDate: endDate,
+            page: nil
+        )
+
+        #expect(result.page >= 1)
+        #expect(result.totalPages >= 1)
+    }
+
     @Test("tvSeriesChanges")
     func tvSeriesChanges() async throws {
         let result = try await changesService.tvSeriesChanges()

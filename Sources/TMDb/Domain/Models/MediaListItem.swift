@@ -60,7 +60,10 @@ public struct MediaListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// A movie's `release_date`, or a TV series' `first_air_date`.
     ///
-    /// Empty and unparseable strings are decoded as `nil`.
+    /// Empty strings are decoded as `nil`, as are strings this cannot parse as a
+    /// calendar day. A trailing time component is accepted and ignored.
+    ///
+    /// Midnight GMT on the day TMDb reports.
     ///
     public let releaseDate: Date?
 
@@ -187,7 +190,8 @@ public extension MediaListItem {
     /// Both decode into ``title``, ``originalTitle`` and ``releaseDate``, so a
     /// caller never has to branch on ``mediaType``.
     ///
-    /// Empty and unparseable date strings decode as `nil`.
+    /// Empty date strings decode as `nil`, as do strings this cannot parse as a
+    /// calendar day. A trailing time component is accepted and ignored.
     ///
     /// - Parameter decoder: The decoder to read data from.
     ///
@@ -231,16 +235,30 @@ public extension MediaListItem {
 
         // Handle empty release_date strings - decode as nil.
         // Day-precision dates (e.g. "2025-04-30") are parsed at GMT midnight; an
-        // unparseable string decodes as nil, mirroring the previous behaviour.
-        // A TV series sends `first_air_date` in place of `release_date`.
+        // unparseable string decodes as nil, per the decode-tolerance policy
+        // (ADR-0019). A TV series sends `first_air_date` in place of
+        // `release_date`.
+        //
+        // This keeps its own `.iso8601` strategy rather than sharing
+        // `JSONDecoder.theMovieDatabaseDateStrategy`, and the difference is
+        // deliberate: `Date.ParseStrategy` is *lenient*, rolling out-of-range
+        // components over ("2025-13-45" -> 2026-02-14, "0000-00-00" ->
+        // -0001-11-30), while `.iso8601` rejects them. Behind the `try?` above,
+        // sharing the strategy would silently turn a malformed date into a
+        // plausible wrong one instead of nil. Both already parse at GMT, so the
+        // divergence costs nothing. Measured in `MediaListItemDateToleranceTests`.
         let dateString = try container.decodeIfPresent(
             String.self, forKey: .releaseDate
         ) ?? container.decodeIfPresent(String.self, forKey: .firstAirDate)
 
         if let dateString, !dateString.isEmpty {
+            // `.gmt` is `ISO8601FormatStyle`'s default, but state it: this is
+            // the one decode path that opts out of the shared strategy, so the
+            // zone it agrees on should be visible rather than inherited.
             self.releaseDate = try? Date(
                 dateString,
-                strategy: .iso8601.year().month().day().dateSeparator(.dash)
+                strategy: Date.ISO8601FormatStyle(timeZone: .gmt)
+                    .year().month().day().dateSeparator(.dash)
             )
         } else {
             self.releaseDate = nil

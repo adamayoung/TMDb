@@ -155,10 +155,14 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
     ///
     /// Minimum movie release date (any release type).
     ///
+    /// Interpreted as its GMT calendar day.
+    ///
     public let releaseDateMin: Date?
 
     ///
     /// Maximum movie release date (any release type).
+    ///
+    /// Interpreted as its GMT calendar day.
     ///
     public let releaseDateMax: Date?
 
@@ -217,8 +221,8 @@ public struct DiscoverMovieFilter: Equatable, Hashable, Sendable {
     ///   - withOriginCountry: Filter by origin country.
     ///   - withoutCompanies: Production company identifiers to exclude.
     ///   - watchMonetizationTypes: Filter by monetization type.
-    ///   - releaseDateMin: Minimum movie release date (any release type).
-    ///   - releaseDateMax: Maximum movie release date (any release type).
+    ///   - releaseDateMin: Minimum movie release date (any release type). Interpreted as its GMT calendar day.
+    ///   - releaseDateMax: Maximum movie release date (any release type). Interpreted as its GMT calendar day.
     ///   - withoutWatchProviders: Watch provider identifiers to exclude.
     ///   - genresJoin: The logical operator used to join ``genres``.
     ///   - keywordsJoin: The logical operator used to join ``keywords``.

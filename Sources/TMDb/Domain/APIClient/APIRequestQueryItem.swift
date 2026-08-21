@@ -95,9 +95,15 @@ extension APIRequestQueryItem.Name {
     static let externalSource = APIRequestQueryItem.Name("external_source")
     static let timezone = APIRequestQueryItem.Name("timezone")
     static let country = APIRequestQueryItem.Name("country")
-    static let startDate = APIRequestQueryItem.Name("start_date")
-    static let endDate = APIRequestQueryItem.Name("end_date")
     static let appendToResponse = APIRequestQueryItem.Name("append_to_response")
+
+    // Note: there are deliberately no shared `startDate`/`endDate` names here.
+    // `Value` is `CustomStringConvertible`, so `self[ifPresent: .startDate] =
+    // someDate` compiles and stringifies via `Date.description` — sending
+    // "2024-01-01 00:00:00 +0000" and bypassing the GMT pin that
+    // `DateFormatter.theMovieDatabase` carries. That was the bug #426 removed
+    // from the two movie changes requests. Each `*ChangesRequest` declares its
+    // own name and formats through the formatter; keep it that way.
 
 }
 

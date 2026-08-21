@@ -17,9 +17,14 @@ movie.
 ```swift
 let tmdbClient = TMDbClient(apiKey: "<your-tmdb-api-key>")
 
+// Day-precision dates are midnight GMT on the day TMDb reports, so format them
+// with an explicit GMT zone — `formatted()` uses the device's zone by default
+// and renders the previous day west of Greenwich.
+let dayStyle = Date.FormatStyle(date: .abbreviated, timeZone: .gmt)
+
 let movie = try await tmdbClient.movies.details(forMovie: 550)
 print("Title: \(movie.title)")
-print("Release Date: \(movie.releaseDate?.formatted() ?? "Unknown")")
+print("Release Date: \(movie.releaseDate?.formatted(dayStyle) ?? "Unknown")")
 if let voteAverage = movie.voteAverage {
     print("Rating: \(voteAverage.formatted(.voteAveragePercentage))")
 }

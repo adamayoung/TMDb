@@ -35,6 +35,8 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///
     /// TV season's air date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let airDate: Date?
 
     ///

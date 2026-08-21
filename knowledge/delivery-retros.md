@@ -25,6 +25,103 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-21 — 🐛 Pin day-precision dates to GMT (#490) · full
+
+- **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
+  board's Ready column, no supplied plan). Full weight — the diff is mostly a
+  mechanical DocC sweep, but it changes a `Decodable` date strategy and lands a
+  silent behavioural break on 17 public properties, so risk overrode size.
+  Skills: self-drafted plan, `review-plan` (3 critics, 31 findings, 1 blocker),
+  `implement-plan`, `review-changes` (§2b fan-out, **3 rounds**),
+  `security-review`, independent rubric grader (9/9), `capture-knowledge`.
+  One juror panel (`phase0n-selection`) ruled 3-0 in place of the user stop.
+  `consulted:` gotchas *Date(iso8601:) is not visible to
+  `TMDbIntegrationTests`*, *Model-decode equality tests: build the expected
+  value directly*, *`MockURLProtocol`'s statics are process-global*,
+  *A rule written in two files drifts*; `tmdb-api-notes.md`
+  *§/movie/{id}/release_dates sends a full ISO timestamp*; ADR-0019.
+  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported / 0 claims
+  released.
+  `swept:` `.github/workflows/ci.yml` → **2 entries rewritten** (both claimed
+  `build-test-linux` was the *sole* Linux gate; `unit-test-timezones` is now a
+  second Linux job), 1 updated (the xcsift exit-status entry), 5 other citing
+  entries re-read and still true.
+
+- **What worked — characterising a contract before touching it.** The owner's
+  decision put "delete the `MediaListItem` GMT special case" explicitly in
+  scope, on the reasoning that it existed solely to work around the
+  inconsistency being fixed. A critic objected that "the two strategies are
+  equivalent" was asserted rather than measured. Pinning the current
+  accepted/rejected boundary **first**, in its own commit, showed the
+  substitution was a silent data-corruption change: `Date.ParseStrategy` rolls
+  out-of-range components over (`"2025-13-45"` → 2026-02-14) where
+  `.iso8601` rejects them, and behind that decoder's `try?` a malformed date
+  would have become a plausible wrong one with nothing failing. The
+  characterisation also contradicted the property's own DocC in two ways
+  (two-digit years and trailing timestamps are accepted). Reverted with
+  evidence; both files now say why the divergence stands.
+
+- **What worked — the review loop finding what the diff could not show.** The
+  highest-severity finding of the delivery was that the change silently broke
+  the library's **own examples**: `README.md` prints `10/14/1999` for Fight Club
+  west of Greenwich, and a DocC how-to prints the *previous year* for a
+  1 January release. `Date.formatted()` uses the device zone, so before the pin
+  those snippets were accidentally correct. They are unchanged in the diff — the
+  decoder beneath them moved — so no line-based reading finds it. Round 2 then
+  found the same blind spot one layer out: the CHANGELOG described the *old*
+  behaviour's wrong-day display and never stated the consequence this change
+  introduces, which for a compile-silent break is the entire warning system.
+
+- **What worked — mutation-testing a compile-time guard.** Reviewers twice asked
+  for a structural guard against assigning a `Date` into `APIRequestQueryItems`.
+  An `@available(*, unavailable)` overload was implemented, **built clean**, and
+  every gate went green — then a probe assigning a `Date` compiled without
+  error. `Date` conforms to `CustomStringConvertible`, so overload resolution
+  never selects the guard. It was reverted rather than shipped as decoration on
+  the exact trap it claimed to close. A guard that compiles is not a guard that
+  catches.
+
+- **Friction — a review round returned `0 high` with a dimension dead.** Round 3
+  came back `partial: true` with `correctness` missing (the host slept
+  mid-run), while the headline read 0 critical / 0 high. Reported as converged
+  it would have been indistinguishable from a genuine all-clear, on the lens
+  most likely to catch a logic error in a date change. Resuming by `runId`
+  replayed the other four from cache and re-ran only the dead one. The script
+  surfaces `dimensionsMissing`/`partial` precisely so this cannot hide — but the
+  clean-looking severities are what the eye lands on first.
+
+- **Friction — three fabricated constants, all caught by something other than
+  me.** An epoch for Tom Cruise's birthday (18.4M seconds out, caught by
+  checking the live API), a `releaseDateMin` mapping that does not exist (caught
+  by the compiler), and a rolled-over epoch for year -1 (caught by running the
+  test). Same failure each time: producing a plausible value instead of deriving
+  or measuring one.
+
+- **Deviations:** (1) The `MediaListItem` substitution was reverted, so AC4 was
+  rewritten to the measured contract — the plan pre-authorised that branch, and
+  the grader verified the characterised values are byte-identical before and
+  after, i.e. nothing was loosened to fit the outcome. (2) The plan claimed LA
+  could not fail the inbound half; **measured wrong** — an absolute-instant
+  inbound assertion fails in *any* non-GMT zone, so LA failed 6 of 6 while
+  Auckland failed 3. Both zones stay, but Auckland earns its place on the
+  year-boundary case, not the decode. (3) The DocC parameter sweep is 142 sites,
+  not the ~18 the plan implied: the changes-method `startDate:`/`endDate:` docs
+  use **five** different phrasings across six services, and the plan's grep
+  found one. (4) `origin/main` advanced mid-delivery (#486); rebased, with a
+  real `CHANGELOG` conflict resolved by keeping both entries.
+
+- **One improvement:** the knowledge base was **read at task entry and not
+  re-read at the moment it mattered**. `tmdb-api-notes.md` documents that
+  discover's `release_date.gte/.lte` bound *any* release type while a list row
+  carries the *primary* release — I consulted that file in Phase 0, then twenty
+  minutes later wrote a live assertion that every result must fall inside the
+  requested window, which failed against real data for exactly that reason. The
+  entry was correct and findable; the consult was in the wrong place. Phase 0's
+  `consulted:` line proves the base was read once, which is not the same as
+  reading it when writing the assertion that depends on it. Worth stating in
+  `capture-knowledge` or `CLAUDE.md`: consult again at the point of writing a
+  claim about API behaviour, not only at task entry.
+
 ## 2026-08-21 — 🐛 Model tagged images attached to a whole TV series (#486) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
@@ -946,66 +1043,6 @@ the board's Ready execution order.
   corrected in the suite comment; and a diff-reading reviewer cannot see this
   class of bug — `claude-review` explicitly approved the file.
 
-## 2026-08-12 — ✨ Adopt a single decode-tolerance policy (#440) · full
-
-- **Phases / skills:** 0–11; **full**. `/review-plan` (3 critics),
-  `/implement-plan`, `/review-changes` (5-dimension fan-out + adversarial
-  verify), `/security-review`, independent Phase 6 grader (ALL MET),
-  `/capture-knowledge`. 11 commits.
-- **Worked — making the failure-class sweep a *blocking ledger task*, not a plan
-  bullet.** All three critics independently graded the blast-radius audit as the
-  weakest part of revision 1 (two called it a blocker), because it was a *name*
-  sweep that missed every synthesized decoder — the exact #404 mistake. Promoting
-  it to a Step 0 gate that blocked the container flip is what found the delivery's
-  worst bug: `TVSeriesDetailsResponse.lists` was typed `MediaPageableList` when
-  `/tv/{id}/lists` returns list summaries with no `media_type`, so tightening
-  tolerance would have turned a silent empty array into a thrown call. Rule of
-  thumb confirmed: a process step that only exists in prose gets skipped under
-  momentum; one that blocks a task does not.
-- **Worked — the sweep's exclusions, not just its findings.** It disproved my own
-  plan's claim that `TVSeriesListItem.originCountries` was "the one confirmed
-  hardening needed" (clean at 1,046/1,046), and showed the 9%-null
-  `origin_country` figure recorded for `/company/{id}` does **not** transfer to
-  `/search/company` (100/100 clean). Both would have shipped as confident
-  assertions a reviewer could reasonably have rejected.
-- **Worked — review overturning a decision the critics had settled.** Phase 2
-  rejected an inert-equality wrapper for the drop count on the grounds that "no
-  production code compares these models". Two review dimensions independently
-  pointed out that reasoning covered *in-package* code and ignored consumers,
-  who are exactly who a public `Equatable` serves — a decoded page no longer
-  equalled its own round trip. Reinstated. Later-phase evidence beating an
-  earlier consensus is the pipeline working, not churn.
-- **Friction — three of my own load-bearing claims were wrong, each caught by a
-  different stage.** (1) "`lists.items` silently drops TV rows" — it threw, like
-  `details`; both decode the same `MediaList` (critic). (2) The sentinel "sits
-  inside a tolerant container so it never reaches a caller" — every `init(from:)`
-  is public, so a consumer decoding cached JSON gets it directly (reviewer).
-  (3) The error message was safe — it interpolated an unbounded raw server string
-  into a loggable `debugDescription` (security). Each was cheap to fix and
-  expensive to have shipped.
-- **Friction — a peer session landed `CreditType` (#436) into `main` mid-flight**,
-  duplicating work I had already committed. Cost a rebase, four conflict
-  resolutions in favour of `main`, and a reworded commit whose message had become
-  half-false. Two sessions picking up the same issue is the real cost; the
-  worktree sweep saw the peer's worktree but had no way to know what it would
-  claim.
-- **Deviations:** (1) The run file could not live at `.git/deliver/<id>.json` —
-  this session's background worktree-isolation guard refuses every write outside
-  the worktree, via both `Write` and a Bash redirect. Kept it at
-  `<worktree>/.build/deliver-run.json` (gitignored, survives `make ci`) and
-  recorded the deviation in the file. (2) The rubric was **derived** from the
-  plan's test list plus the issue's comment rather than supplied, with
-  `rubricProvenance` recorded — the path #432's retro asked to have sanctioned.
-  (3) `tooling-runner` hit a session limit near the end; fell back to
-  `make -C <dir> test` directly and disclosed it.
-- **One improvement:** the `tooling-runner` contract reports aggregate counts
-  only, so "3147 passed" reads identically whether a new test ran or never
-  compiled in — a peer hit the same thing today and logged it as `deferred`. I
-  worked around it by re-running each batch of new tests with a scoped
-  `--filter` and reading the names back. That workaround should be the contract:
-  after adding tests, `/test` should confirm the new ones **by name**, not by
-  total.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -1013,6 +1050,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-12 | #440 | full | Adopted a single decode-tolerance policy. The lasting practice is **promoting a failure-class sweep from a plan bullet to a blocking ledger task**: all three critics graded the blast-radius audit as revision 1's weakest part because it swept by *name* and missed every synthesized decoder, and the promoted gate is what found the delivery's worst bug — `TVSeriesDetailsResponse.lists` typed `MediaPageableList` when `/tv/{id}/lists` returns summaries with no `media_type`, so tightening tolerance would have turned a silent empty array into a thrown call. A process step that exists only in prose gets skipped under momentum; one that blocks a task does not. The sweep also earned its keep by **excluding**: it disproved the plan's own "one confirmed hardening needed" claim (1,046/1,046 clean) and showed a 9%-null figure recorded for `/company/{id}` does not transfer to `/search/company`. Three of the author's load-bearing claims were each caught by a different stage (critic, reviewer, security), and a peer session landed #436 into `main` mid-flight, costing a rebase. Its "one improvement" — `/test` should confirm new tests **by name**, not by aggregate count, since "3147 passed" reads identically whether a new test ran or never compiled in — remains open. |
 | 2026-08-12 | #432 | full | Decoded empty-string credit dates as nil. **The #404 population sweep paid in both directions**: 300 live `/credit/{id}` records both *cleared* five URL decodes with a measurement (`null`-bearing, never `""`) and *found a bug the issue never mentioned* — `credit_type: "creator"` threw. A sweep earns its keep by excluding as much as by finding. The critics caught a false green the author built in: **no fixture omitted `character`**, so a `decode`-instead-of-`decodeIfPresent` slip would have compiled, passed everything, and broken 36% of live credits — fixed for free by re-sourcing both blank-date fixtures to *crew* credits, which omit `character` entirely. A 2-vs-1 critic split was reconciled **on evidence, not vote**: *Guard consistently within a type* is about one value class diverging, not a date differing from a URL, and guarding would have made `CreditMovie` the lone divergence across ~20 models. Two lasting frictions: the worktree Bash guard refuses commands it cannot prove stay inside the worktree (which blocks writing `/deliver`'s own run file under `.git/deliver/` — its run-file location is at odds with its worktree isolation), and **a subagent asserted a green it could not see** (the tooling-runner reported a named test passed, but xcsift logs carry only aggregate counts; its report shape cannot distinguish *ran and passed* from *never ran*). Its "one improvement" — sanction *deriving* ACs with recorded provenance when a plan states observable before/after behaviour in the wrong shape — **shipped**, and is the entry gate's `derived` branch and `rubricProvenance` field today. |
 | 2026-08-07 | #412 | lite | Renamed `Network.homepage` to `homepageURL`, the second firing of the `next-major.md` queue: the item was deferred out of 19.0.0 on 2026-07-27 as cosmetic scope creep on a bug fix, and shipped here because the file was read when the 20.0.0 window opened — the deferral mechanism working end to end. Equally deliberate was the entry that did **not** ship: `TMDbError.invalidRating` stayed deferred because its own condition (a wider `TMDbError` review) was unmet, and that was recorded rather than skipped, so a later reader can tell "considered and declined" from "missed". Stacked on `feature/v4-lists` rather than branched from `main`, since both edit the same `CHANGELOG` section. Its "one improvement" — have `next-major.md` carry a status line naming the open major window, so an entry cannot be filed against a version that already shipped — **shipped**, and `/capture-knowledge` asserts it on every addition today. |
 | 2026-08-07 | #411 | full | TMDb v4 lists (`client.v4Lists`), settling ADR-0017's four open decisions. **Phase 0 probing changed the shipped API twice, both unfixable later**: `sort_by` turned out to be honoured on the read side (so `details`/`items` take `sortedBy:` — adding a protocol requirement afterwards is source-breaking), and `create(isPublic:)` shipped after all because TMDb ignores the *boolean* and honours the *integer* — the earlier "it ignores the field" conclusion came from a probe that sent a bool. Reading the resource back caught both. The count-reconciliation assertion caught a real drop on its first outing (`Show.encode` writes no `media_type`, so every encoded item failed to decode and the whole list vanished silently). Two of the three bugs were **the probe scripts lying**: an `EXIT` trap that never fired and orphaned four lists on a real account, and ten identical "rejected" results across a `sort_by` sweep that were the spam filter (`status_code` 18), not an answer — a uniform failure across a sweep is evidence about the sweep. Both are now standing rules in `CLAUDE.md`: a probe must verify its own postcondition. Also a mid-delivery **correction**: I reported credentials committed in `Integration.xctestplan` having read it off disk without running `git ls-files` — the file is gitignored and absent from HEAD (they were committed in 2023 and remain in public history, so rotation still applies). |

@@ -55,6 +55,8 @@ Hashable, Sendable {
     ///
     /// Movie release date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let releaseDate: Date?
 
     ///

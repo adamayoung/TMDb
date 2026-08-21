@@ -193,8 +193,8 @@ public extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - startDate: The start date for changes.
-    ///    - endDate: The end date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -221,7 +221,7 @@ public extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -249,7 +249,7 @@ public extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -275,7 +275,7 @@ public extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -299,7 +299,7 @@ public extension TVSeriesService {
     ///
     /// - Parameters:
     ///    - tvSeriesID: The identifier of the TV series.
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -368,8 +368,8 @@ public extension TVSeriesService {
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
     /// - Parameters:
-    ///    - startDate: The start date for changes.
-    ///    - endDate: The end date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -394,7 +394,7 @@ public extension TVSeriesService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - startDate: The start date for changes.
+    ///    - startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -420,7 +420,7 @@ public extension TVSeriesService {
     /// - Precondition: `page` can be between `1` and `1000`.
     ///
     /// - Parameters:
-    ///    - endDate: The end date for changes.
+    ///    - endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///    - page: The page of results to return.
     ///
     /// - Throws: TMDb error ``TMDbError``.
@@ -443,7 +443,7 @@ public extension TVSeriesService {
     ///
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
-    /// - Parameter startDate: The start date for changes.
+    /// - Parameter startDate: The start date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///
@@ -462,7 +462,7 @@ public extension TVSeriesService {
     ///
     /// [TMDb API - Changes: TV List](https://developer.themoviedb.org/reference/changes-tv-list)
     ///
-    /// - Parameter endDate: The end date for changes.
+    /// - Parameter endDate: The end date for changes. Interpreted as its GMT calendar day.
     ///
     /// - Throws: TMDb error ``TMDbError``.
     ///

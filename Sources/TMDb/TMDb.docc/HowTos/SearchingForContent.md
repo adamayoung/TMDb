@@ -42,8 +42,12 @@ let movies = try await tmdbClient.search.searchMovies(
     query: "Inception"
 )
 
+// Take the year from a GMT calendar: a day-precision date is midnight GMT, so
+// the device's zone reports the previous year for a 1 January release.
+let yearStyle = Date.FormatStyle(timeZone: .gmt).year()
+
 for movie in movies.results {
-    print("\(movie.title) (\(movie.releaseDate?.formatted(.dateTime.year()) ?? "Unknown"))")
+    print("\(movie.title) (\(movie.releaseDate?.formatted(yearStyle) ?? "Unknown"))")
 }
 ```
 

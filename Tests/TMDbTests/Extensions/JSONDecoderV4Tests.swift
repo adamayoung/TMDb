@@ -51,20 +51,24 @@ struct JSONDecoderV4Tests {
 
         let result = try JSONDecoder.theMovieDatabaseV4.decode(DayPrecision.self, from: data)
 
-        #expect(result.releaseDate != Date(timeIntervalSince1970: 0))
+        #expect(result.releaseDate == Date(timeIntervalSince1970: 939_945_600))
     }
 
     @Test("a day-precision date decodes identically to the v3 decoder")
     func dayPrecisionMatchesV3Decoder() throws {
         // The two decoders must agree, or the same `releaseDate` would land on a
         // different instant depending on which API version fetched it. That
-        // means reusing v3's time zone (the current one), not GMT.
+        // means reusing v3's day-precision strategy, GMT time zone included.
+        //
+        // Agreement alone is a weak assertion — the two share one strategy, so
+        // they cannot disagree — hence the absolute instant below as well.
         let data = Data(#"{"release_date": "1999-10-15"}"#.utf8)
 
         let v4Decoded = try JSONDecoder.theMovieDatabaseV4.decode(DayPrecision.self, from: data)
         let v3Decoded = try JSONDecoder.theMovieDatabase.decode(DayPrecision.self, from: data)
 
         #expect(v4Decoded.releaseDate == v3Decoded.releaseDate)
+        #expect(v4Decoded.releaseDate == Date(timeIntervalSince1970: 939_945_600))
     }
 
     @Test("both date forms decode from one response")

@@ -50,6 +50,8 @@ public struct MovieListItem: Identifiable, Codable, Equatable, Hashable, Sendabl
     ///
     /// Movie release date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let releaseDate: Date?
 
     ///

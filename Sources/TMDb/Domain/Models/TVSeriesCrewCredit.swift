@@ -48,6 +48,8 @@ public struct TVSeriesCrewCredit: Identifiable, Codable, Equatable, Hashable, Se
     ///
     /// TV series' first air date.
     ///
+    /// Midnight GMT on the day TMDb reports.
+    ///
     public let firstAirDate: Date?
 
     ///

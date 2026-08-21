@@ -515,6 +515,25 @@ with only `ads` (Russia, for Breaking Bad) is normal. `ShowWatchProvider` types
 all five as optional arrays, so an absent category decodes as `nil`, never `[]`;
 assert `nil` rather than emptiness when covering them.
 
+### The `changes` endpoints tolerate a trailing time on `start_date`/`end_date`
+
+*2026-08-21 (#490).* `changes/movie/list` returns **byte-identical**
+results for `start_date=2026-08-18` and for
+`start_date=2026-08-18 00:00:00 +0000` — same `total_results`, same pages. TMDb
+parses the leading calendar day and ignores the rest.
+
+Measured because `MovieChangesRequest` and `MovieChangesListRequest` had been
+sending the second form for their whole existence: they assigned a `Date` into
+`APIRequestQueryItems` (whose value type is `CustomStringConvertible`), so it was
+stringified by `Date.description` rather than formatted. Nothing failed, which is
+why it went unnoticed — the divergence was found by reading, not by a red test.
+
+They now format through `DateFormatter.theMovieDatabase` like their six siblings.
+**Do not read this leniency as licence** to send the timestamp form: it is
+undocumented, and the day-precision contract the library now advertises
+([ADR-0029](decisions/0029-day-precision-dates-at-gmt.md)) depends on sending
+`yyyy-MM-dd`.
+
 ### `/movie/{id}/release_dates` sends a full ISO timestamp, not a day
 
 `release_date` here is `"1999-10-15T00:00:00.000Z"` — **not** the `yyyy-MM-dd`
