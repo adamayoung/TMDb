@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-21 — 🐛 Model tagged images attached to a whole TV series (#TBD) · full
+## 2026-08-21 — 🐛 Model tagged images attached to a whole TV series (#486) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
   board's Ready column, no supplied plan). Full weight — small diff, but it

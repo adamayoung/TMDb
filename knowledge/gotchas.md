@@ -758,7 +758,7 @@ A write to `.git/` that reports nothing has told you nothing.
 
 ### `deliver-panel`'s `artifacts` must be an **array**, not a string
 
-*2026-08-21 (#TBD).* `.claude/workflows/deliver-panel.js:94` does
+*2026-08-21 (#486).* `.claude/workflows/deliver-panel.js:94` does
 `(input.artifacts || []).join('\n')`. Pass a newline-joined string — the obvious
 thing, since that is what the jurors end up reading — and `.join` is not a
 function on it, so the workflow throws at `workflow.js:88` **before any juror
@@ -1221,7 +1221,7 @@ because Linux uses swift-corelibs-foundation's separate implementation.
 
 ### An all-dropped page doesn't shorten the sequence — it ends it
 
-*2026-08-21 (#TBD).* Decode tolerance and auto-pagination interact, and the
+*2026-08-21 (#486).* Decode tolerance and auto-pagination interact, and the
 interaction is worse than either alone. `PagedAsyncSequence` stops when a page
 comes back with an empty `results` array — reasonably, since that is what the
 last page looks like. But a tolerant container drops unmodelled rows *before*
@@ -1241,7 +1241,7 @@ When you add or reason about a tolerant array, ask whether it sits behind a
 
 ### Capture a fixture *from* the live page — don't paste the page in whole
 
-*2026-08-21 (#TBD).* "Use real API responses, not assumptions" is right about
+*2026-08-21 (#486).* "Use real API responses, not assumptions" is right about
 *provenance* and says nothing about *size*. A verbatim 20-row tagged-images page
 came to 25KB — twice the largest fixture in the repo and four times the largest
 `*-pageable-list.json` — because 18 of its rows were the same series repeated.
@@ -1256,7 +1256,7 @@ invented one.
 
 ### A captured fixture cannot back a *throwing* decode test
 
-*2026-08-21 (#TBD).* Two rules collide. `decode(_:fromResource:)`
+*2026-08-21 (#486).* Two rules collide. `decode(_:fromResource:)`
 (`Tests/TMDbTests/TestUtils/JSONDecoder+DecodeFromFile.swift:24`) calls
 `Issue.record` before it rethrows, so a test asserting the decode *throws* fails
 anyway — the recorded issue is a failure even though `#expect(throws:)` was

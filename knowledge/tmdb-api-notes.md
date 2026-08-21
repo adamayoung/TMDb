@@ -429,13 +429,13 @@ real row in CI.
 *2026-08-12, N=229 across 11 people.* The nested `media.media_type` was `movie`
 165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page was
 discarded, and far more for TV-heavy people (person 17419 lost 18 of 20 on page
-one). **Fixed in 20.0.0 (#437):** `TaggedImageMedia` now has a
+one). **Fixed in 20.0.0 (#486):** `TaggedImageMedia` now has a
 `tvSeries(TVSeriesListItem)` case, so `tv` decodes. The drop was worse than a
 short page — an all-`tv` page decoded to *zero* results, and an empty page ends a
 `PagedAsyncSequence`, so `allTaggedImages` stopped there and lost every later
 page too.
 
-*2026-08-20, N=219 across 30 people (re-sampled for #437).* `movie` 109, `tv` 56,
+*2026-08-20, N=219 across 30 people (re-sampled for #486).* `movie` 109, `tv` 56,
 `tv_episode` 53 — and **`tv_season` 1** (person 57755, *True Detective* S1). The
 vocabulary on this endpoint is **not** closed at three: a 12-person / 378-row
 sweep the same day found only movie/tv/tv_episode and looked conclusive, and

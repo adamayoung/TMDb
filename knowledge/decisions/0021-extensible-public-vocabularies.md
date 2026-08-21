@@ -55,7 +55,7 @@ is not one: that cell is a **media-type discriminator**, and
 unmodelled value is skipped from its nearest enclosing tolerant array and
 counted, never widened into a growth slot. This ADR covers limb-2 *value* enums
 only. The distinction is easy to lose: while adding `TaggedImageMedia.tvSeries`
-(#437) the plan claimed this fourth row was needed, and two of three plan
+(#486) the plan claimed this fourth row was needed, and two of three plan
 critics agreed before the limb boundary was re-read. If you find yourself
 reaching for a new row here, check first whether what you have is a
 discriminator.
