@@ -25,6 +25,12 @@ struct TaggedImagePageableListTests {
         #expect(result.results.count == 5)
         #expect(result.droppedItemCount == 0)
 
+        // `page` is 0, not 1: this endpoint ignores the `page` query parameter
+        // and reports 0 on every page. The fixture captures that verbatim.
+        #expect(result.page == 0)
+        #expect(result.totalPages == 2)
+        #expect(result.totalResults == 35)
+
         let tvSeriesImage = try #require(
             result.results.first { $0.id == "598795c2c3a3680d5101954a" }
         )
@@ -126,6 +132,52 @@ struct TaggedImagePageableListTests {
 
         #expect(result.results.isEmpty)
         #expect(result.droppedItemCount == 1)
+    }
+
+    ///
+    /// ADR-0019 limb 3. Only an unmodelled `media_type` may be skipped; a row
+    /// whose media type *is* modelled but whose payload is malformed must fail
+    /// the page loudly, or a decoder regression arrives as a quietly short
+    /// page. The row below is a well-formed `"tv"` tagged image with one
+    /// corrupted field.
+    ///
+    @Test(
+        "JSON decoding of a TaggedImagePageableList page whose TV series row is malformed throws",
+        .tags(.decoding)
+    )
+    func decodeWhenTVSeriesPageItemIsMalformedThrows() {
+        let json = """
+        {
+          "page": 0,
+          "results": [
+            {
+              "id": "598795c2c3a3680d5101954a",
+              "aspect_ratio": 0.667,
+              "file_path": "/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
+              "height": 3000,
+              "width": 2000,
+              "image_type": "poster",
+              "vote_average": 5.3,
+              "vote_count": 3,
+              "media": {
+                "id": "not-an-int",
+                "name": "Breaking Bad",
+                "original_name": "Breaking Bad",
+                "media_type": "tv"
+              }
+            }
+          ],
+          "total_pages": 1,
+          "total_results": 1
+        }
+        """
+
+        #expect(throws: DecodingError.self) {
+            _ = try JSONDecoder.theMovieDatabase.decode(
+                TaggedImagePageableList.self,
+                from: Data(json.utf8)
+            )
+        }
     }
 
     ///
