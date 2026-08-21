@@ -39,8 +39,8 @@ TESTS = ROOT / "Scripts" / "tests"
 # enforcement a "remember to update this" comment ever really has.
 #
 # Currently: 38 in test_build_run_list.py + 11 in test_deliver_selection_prose.py
-# + 15 in test_workflow_gates.py.
-EXPECTED_MINIMUM = 64
+# + 26 in test_workflow_gates.py.
+EXPECTED_MINIMUM = 75
 
 
 def main() -> None:

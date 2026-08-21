@@ -201,6 +201,12 @@ def step_blocks(lines: list[str]) -> list[list[str]]:
     already writes four steps that way. A scanner that only recognised the named
     form skipped such a step *and every field in it* while the inventory
     assertion — which compares only what was found — stayed green.
+
+    This is not a general YAML reader. It requires the list-item dash to be
+    indented deeper than its `steps:` key, which is how every workflow here is
+    written; the same-indent style YAML also permits would yield no blocks. The
+    raw-text cross-check in `test_discovers_the_expected_cache_steps` is what
+    turns any such miss into a red rather than a silent pass.
     """
     blocks: list[list[str]] = []
     steps_indent: int | None = None
@@ -233,7 +239,18 @@ def step_blocks(lines: list[str]) -> list[list[str]]:
     return blocks
 
 
-CACHE_USES = re.compile(r"^uses:\s*(actions/cache@\S+)")
+# Quote- and whitespace-tolerant, because YAML permits `uses: 'actions/cache@v6'`
+# and `uses:  actions/cache@v6`, and a pattern that rejected those would make such
+# a step invisible to every assertion here.
+CACHE_USES = re.compile(r"^uses:\s*['\"]?(actions/cache@[^'\"\s]+)")
+
+# The raw cross-check counts LINES matching this, not a bare substring. A
+# substring count is wrong in both directions: `# ... uses: actions/cache@v3` in a
+# comment inflates it into a false red (and ci.yml, codeql.yml and claude.yml all
+# discuss this action in prose), while a quoted `uses:` deflates it to zero —
+# which, since the parser missed it too, is a SILENT GREEN, exactly the failure
+# this cross-check exists to prevent.
+CACHE_USES_RAW = re.compile(r"^(?:-\s+)?uses:\s*['\"]?actions/cache@")
 
 
 def cache_steps() -> list[CacheStep]:
@@ -304,11 +321,18 @@ def filter_block(text: str) -> dict[str, list[str]]:
 
 
 def push_paths(text: str) -> list[str]:
-    """The `on.push.paths` list, in block *or* flow style.
+    """The first `paths:` list in the file, in block *or* flow style.
 
-    Flow style (`paths: ['a', 'b']`) is already used elsewhere in these files —
-    `claude.yml` writes `types: [opened, synchronize]` — so a block-only reader
-    would return `[]` for such a file and silently check nothing in it.
+    The FIRST one, not specifically `on.push.paths` — for `claude.yml` that is
+    `on.pull_request.paths`. That is deliberate for the only caller, which asks
+    whether any path filter names a file that does not exist; every path filter is
+    worth that check.
+
+    Flow style (`paths: ['a', 'b']`) is handled because it is already used
+    elsewhere in these files — `claude.yml` writes `types: [opened, synchronize]` —
+    and a block-only reader returns `[]` for such a file, silently checking
+    nothing in it. Still unhandled, and would read as empty: a single scalar
+    (`paths: 'a.md'`) and a flow sequence with a trailing comment.
     """
     lines = text.splitlines()
     for i, line in enumerate(lines):
@@ -392,7 +416,16 @@ def jobs_with_steps() -> dict[str, dict[str, object]]:
             continue
         if in_steps and stripped.startswith("if:") and jobs[job]["steps"]:  # type: ignore[index]
             joined, _, _ = _scalar(lines, i)
-            jobs[job]["steps"][-1].condition = joined  # type: ignore[index]
+            step = jobs[job]["steps"][-1]  # type: ignore[index]
+            step.condition = joined
+            # ATTACH any comment sitting between `- name:` and `if:` rather than
+            # discarding it: a `# runner-safe:` marker reads just as naturally
+            # inside the step as above it, and dropping it would fail the step
+            # with "add a marker" when the marker is right there. Resetting
+            # afterwards is what stops it leaking onto the NEXT step, which would
+            # be worse — a marker excusing a step nobody wrote it for.
+            if pending_comment:
+                step.comment = (step.comment + " " + " ".join(pending_comment)).strip()
             pending_comment = []
             continue
         pending_comment = []
@@ -489,7 +522,12 @@ class CacheKeyTests(unittest.TestCase):
         # structured walk misses a step — because it was written in a shape the
         # walk does not recognise — the two counts diverge and this fails, rather
         # than every other test in the class quietly iterating a short list.
-        raw = sum(t.count("uses: actions/cache@") for t in workflow_texts().values())
+        raw = sum(
+            1
+            for text in workflow_texts().values()
+            for line in text.splitlines()
+            if CACHE_USES_RAW.match(line.strip())
+        )
         self.assertEqual(
             len(self.steps),
             raw,
@@ -623,7 +661,9 @@ class CacheKeyTests(unittest.TestCase):
             per_file,
             EXPECTED_LITERAL_PATH_COUNTS,
             "a workflow's paths/filters stopped parsing (or gained entries) — a file "
-            "that silently yields 0 is checked by nothing",
+            "that silently yields 0 is checked by nothing. A NEW workflow must be "
+            "added to EXPECTED_LITERAL_PATH_COUNTS in the same commit. (Counts are "
+            "occurrences, not distinct paths: ci.yml lists README.md three times.)",
         )
 
 
@@ -726,6 +766,91 @@ class ChangeGateTests(unittest.TestCase):
             self.ci,
             "name the consumer beside the filter it exists for",
         )
+
+
+class StepScannerTests(unittest.TestCase):
+    """Exercise the scanner against CONSTRUCTED YAML, not just the six real files.
+
+    Everything above reads the tracked workflows, so the scanner is only ever
+    tested on shapes this repo happens to write today. That is how a real blind
+    spot survived a full review round: a cache step in the bare `- uses:` form was
+    invisible, and no assertion could see it because no workflow used that form.
+    `test_build_run_list.py` already sets this precedent — it feeds its parser
+    synthetic inputs and asserts on the output directly.
+    """
+
+    def blocks(self, text: str) -> list[list[str]]:
+        return step_blocks(text.splitlines())
+
+    def test_reads_a_named_step(self):
+        text = "jobs:\n  a:\n    steps:\n      - name: One\n        uses: actions/checkout@v7\n"
+        self.assertEqual(len(self.blocks(text)), 1)
+
+    def test_reads_a_nameless_step(self):
+        text = "jobs:\n  a:\n    steps:\n      - uses: actions/cache@v6\n        with:\n          key: k\n"
+        self.assertEqual(len(self.blocks(text)), 1)
+
+    def test_a_dash_inside_a_run_block_is_not_a_step(self):
+        text = (
+            "jobs:\n  a:\n    steps:\n      - name: One\n        run: |\n"
+            "          echo hi\n          - not a step\n          - nor this\n"
+        )
+        self.assertEqual(len(self.blocks(text)), 1)
+
+    def test_a_job_without_steps_yields_nothing(self):
+        text = "jobs:\n  a:\n    uses: ./.github/workflows/other.yml\n"
+        self.assertEqual(self.blocks(text), [])
+
+    def test_a_second_job_does_not_leak_into_the_first(self):
+        text = (
+            "jobs:\n  a:\n    steps:\n      - name: One\n        uses: actions/checkout@v7\n"
+            "  b:\n    runs-on: ubuntu-latest\n    steps:\n      - name: Two\n        run: echo\n"
+        )
+        self.assertEqual(len(self.blocks(text)), 2)
+
+    def test_the_raw_cross_check_matches_every_uses_spelling(self):
+        for spelling in (
+            "- uses: actions/cache@v6",
+            "uses: actions/cache@v6",
+            "uses:  actions/cache@v6",
+            "uses: 'actions/cache@v6'",
+            'uses: "actions/cache@v6"',
+        ):
+            with self.subTest(spelling=spelling):
+                self.assertTrue(
+                    CACHE_USES_RAW.match(spelling),
+                    "a cache step written this way would evade the cross-check AND "
+                    "the parser — a silent green",
+                )
+
+    def test_the_raw_cross_check_ignores_prose(self):
+        # These workflows discuss `actions/cache` in comments; counting substrings
+        # would turn that prose into a false red naming a step that does not exist.
+        for prose in (
+            "# Historically this was uses: actions/cache@v3",
+            "# see uses: actions/cache@v6 above",
+        ):
+            with self.subTest(prose=prose):
+                self.assertIsNone(CACHE_USES_RAW.match(prose))
+
+    def test_the_step_regex_accepts_a_quoted_uses(self):
+        self.assertEqual(
+            CACHE_USES.match("uses: 'actions/cache@v6'").group(1), "actions/cache@v6"
+        )
+
+    def test_push_paths_reads_block_and_flow_style(self):
+        block = "on:\n  push:\n    paths:\n      - 'a.md'\n      - 'b.md'\n"
+        flow = "on:\n  push:\n    paths: ['a.md', 'b.md']\n"
+        self.assertEqual(push_paths(block), ["a.md", "b.md"])
+        self.assertEqual(push_paths(flow), ["a.md", "b.md"])
+
+    def test_push_paths_does_not_match_paths_ignore(self):
+        self.assertEqual(push_paths("on:\n  push:\n    paths-ignore:\n      - 'a.md'\n"), [])
+
+    def test_evaluate_collapses_only_when_every_glob_misses(self):
+        tracked = frozenset({"Package.swift"})
+        self.assertEqual(evaluate("${{ hashFiles('nope') }}", tracked), "")
+        self.assertIn("H(", evaluate("${{ hashFiles('nope', 'Package.swift') }}", tracked))
 
 
 if __name__ == "__main__":
