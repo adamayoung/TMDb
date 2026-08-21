@@ -64,6 +64,47 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-21 — The run file lives where the worktree guard forbids writing (#490) · deferred
+
+- **Pattern:** `/deliver`'s run file is specified to live at
+  `.git/deliver/<id>.json` — deliberately, so it cannot enter a diff and
+  survives `ExitWorktree(remove)`. But a worktree-isolated session's `Bash`
+  guard refuses any command it cannot statically prove stays inside the
+  worktree, and `.git/` is outside it **by design**. So every run-file write
+  fights the guard. The friction appears in **four** retro entries
+  (`delivery-retros.md`: #432, #476, #486, and this delivery), and #432 states
+  the contradiction outright — *"its run-file location is at odds with its
+  worktree isolation"*. It is not in this log, so it has recurred four times
+  without ever being raised as a proposal.
+
+  The failure is not a hard block — it is a tax. The refusal message asks you to
+  "split it into plain, separate commands", so each write becomes write-a-script
+  then run-it, and long heredocs are refused where shorter writes to the same
+  path succeed (it keys on complexity, not permissions). This delivery paid it
+  roughly six times: every `stamps` update, the reconcile record, the rubric,
+  and the plan file. `worktree-lifecycle.md` already documents the workaround —
+  a fully literal path with a single-purpose command — which is evidence the
+  friction is known and has been absorbed rather than fixed.
+
+- **Decision:** **deferred — raised unattended, needs review.** This run was
+  `/deliver auto next`; Phase 11 is not a delegable decision point, and a
+  proposal that would edit the pipeline's own skills must not be applied by an
+  unattended run.
+
+- **Rationale:** four recurrences without a log entry is exactly the shape this
+  log exists to stop — each delivery re-derives the same workaround from
+  scratch. Three shapes are worth weighing, and the choice is a real judgement
+  rather than an obvious fix: (a) keep the location and make the workaround
+  first-class — a tiny `Scripts/deliver-runfile.py` with a fixed literal path
+  that the guard accepts, called by every phase that stamps; (b) move the file
+  inside the worktree and accept losing the batch/teardown survival properties
+  ADR-0015 chose it for; (c) leave it, and treat the tax as the cost of the
+  isolation guarantee. (a) looks cheapest and preserves the ADR's reasoning, but
+  it adds a script to the reflexive set.
+
+- **Reconsider when:** a human reviews this entry, or the guard's behaviour
+  changes such that `.git/`-adjacent writes stop being refused.
+
 ### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · deferred
 
 - **Pattern:** the **False green** family, in its absence-assertion form. When a
