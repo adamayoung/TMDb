@@ -25,6 +25,73 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-21 — 🐛 Give each workflow cache key a real hash and its own namespace (`fix/ci-cache-keys`) · full
+
+- **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; issue #448 taken off
+  the board's Ready column, no supplied plan). Full weight — the diff is CI YAML
+  and Python, but its failure mode is a gate that passes without running, which
+  is the shape a single reviewer misses. Skills: self-drafted plan,
+  `review-plan` (3 critics, **all three `not-ready`**), `implement-plan`,
+  `review-changes` (fan-out + adversarial verify, custom lenses),
+  `security-review`, independent rubric grader (17/17), `capture-knowledge`.
+  Three juror panels: `phase0n-selection` proceed 3-0; `phase2-blocker`
+  **stop 1-2**, then proceed 3-0 after the artifact defect below was cured.
+- `consulted:` gotchas *`hashFiles` over a pattern matching nothing returns the
+  empty string* (#449 — the entry this delivery had to extend), *The `Lint` job
+  gates its own `Checkout` on `swift`, and PRs ignore `on.paths`* (#476),
+  *An issue template's field is a convention, not a schema*, *A rule written in
+  two files drifts*.
+- `reconciled:` 1 in scope / 0 reclaimed / 0 resumable / 1 reported / 0 claims
+  released — the one other worktree had a **live** conductor (PID alive), so it
+  was reported and left untouched.
+- `swept:` `.github/workflows/{ci,claude,codeql,documentation,integration}.yml`,
+  `Makefile`, `Scripts/run-script-tests.py` → 2 entries rewritten, 1 extended,
+  2 added.
+- **What worked.** *Mutation-testing the checker, not reading its green.* The
+  new suite went green early and was **twice blind**: step discovery keyed on
+  `- name:` hid a bare `- uses: actions/cache@v6` step, then requiring an
+  unquoted value hid `uses: 'actions/cache@v6'`. Both were silent greens,
+  because the inventory assertion compared only what the parser had found and so
+  agreed with itself. Verified rather than argued — with a broken step in either
+  form, the pre-fix suite reported *zero failures*. The final table is 20 rows
+  red plus a false-red guard green. Also: **measuring the external system
+  settled a confident blocker.** A plan critic blocked on "the fix still skips
+  the save on every run", citing `build-platforms` as proof; `gh api
+  .../actions/caches` showed that same key had rotated three generations in four
+  days, while the key being replaced had not re-saved in 117 days.
+- **Friction.** The worktree Bash guard refused **three** attempts to write
+  `/deliver`'s own plan file under `.git/deliver/` — and the refusal is silent in
+  consequence: the run continued believing the write had landed, and told a juror
+  panel the plan was revised when the file on disk was the unrevised original.
+  The panel caught it (stop 1-2) by reading the artifact instead of trusting the
+  claim. This is the **third** firing of the same location-vs-isolation conflict —
+  #432 logged it as friction, #440 as a deviation, relocating the run file to
+  `<worktree>/.build/` to escape the guard entirely — and the first where it
+  produced a **false certification** rather than an inconvenience.
+- **Deviations.** (1) The run-list was read with `gh api graphql`, not the
+  Projects MCP, which strips the HTML comment carrying it (issue #479).
+  `next-mode.md` §3 says an unattended run with no readable run-list must stop —
+  disclosed to the panel, which ruled that stop's trigger ("no status update
+  carries the line") factually false, since the line is published and only the
+  default reader cannot see it. (2) `/review-changes`' §2b fan-out lenses are
+  Swift-specific (concurrency, `TMDbClient` architecture, DocC) and useless here,
+  so custom lenses were authored — the skill sanctions a script-focused brief for
+  `Scripts/`, but only on its single-reviewer path, which `full` weight forbids.
+  (3) A review Medium (add a hash-free restore tier so workflow edits do not
+  cold-start) was **rejected**: it contradicts `gotchas.md`'s bare-prefix rule
+  and the settled owner comment on #448. Filed rather than silently dropped.
+- **One improvement.** `/deliver` should **verify its own state writes landed**,
+  not assume them. A `Bash` refusal under worktree isolation returns an error the
+  run can read, but nothing forces it to; the cheap fix is that every run-file and
+  plan-file write is followed by a re-read asserting the change is present, with a
+  mismatch treated as a hard stop. Without it the failure mode is not a lost file
+  but a **false statement to the panel that stands in for the user** — which is
+  exactly what happened here, and was caught only because two jurors independently
+  ran `grep` on the artifact rather than believing the conductor. (Secondary, worth
+  its own issue: Phase 4's reviewable-code gate excludes `.github/workflows/**`
+  while Phase 5's security surface includes it, so a CI-config change gets a
+  security review and **no** code review unless the caller passes `force-review`.)
+
 ## 2026-08-21 — 🐛 Pin day-precision dates to GMT (#490) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
