@@ -408,6 +408,24 @@ collection rather than failing. Both wrapper types are distinguishable by their
 key (`results` vs `logos`), so assert on that key in any test built from these,
 and a mis-capture fails loudly instead of passing empty.
 
+### A new CI job gates nothing unless it is registered in **two** places
+
+*2026-08-21 (#PR_NUMBER).* The branch ruleset requires one check — the aggregate
+`ci` job — and that job enumerates its dependencies **by hand, twice**:
+
+1. its `needs: [changes, lint, lint-markdown, build-test, …]` list, and
+2. a `results=( "${{ needs.<job>.result }}" … )` array in its run step.
+
+A job missing from either is invisible to the required check, so it can go red
+while the PR merges green. Adding a job means editing both. This is the same
+hardcoded-in-N-places trap `CLAUDE.md` records for test-target names — which is
+now **five** sites, the fifth being the `unit-test-timezones` matrix job.
+
+Note also that every job is gated on `needs.changes.outputs.swift == 'true'`, and
+the aggregate treats `skipped` as a pass. That is fine for a build job, but it
+means a behaviour change that touches no `*.swift` — a JSON fixture, a workflow —
+is not covered by the jobs that would have proven it.
+
 ### No workflow runs `make` — a check added to a `make` target does not reach CI
 
 *2026-08-07.* The `Makefile` and CI are **parallel implementations**, not one
@@ -935,6 +953,13 @@ job (container `swift:6.1-jammy`), which runs the full trio — `swift build
 `make build-linux`, the PR's CI is the authoritative off-Apple check — don't
 treat a missing local Linux build as a blocker.
 
+A second Linux job, **`unit-test-timezones`**, runs the same four unit-test
+targets in the same container under a two-zone `TZ` matrix (see
+[ADR-0029](decisions/0029-day-precision-dates-at-gmt.md)). It exists to prove
+time-zone independence, not portability, but it does mean the unit suites now
+execute on Linux three times per PR. `build-test-linux` remains the only job
+that builds for **release** there.
+
 **One carve-out, added 2026-08-12 (#433).** For a **hand-rolled concurrency
 primitive** — a continuation wrapper, a lock, an `@unchecked Sendable` box —
 run `make test-linux` *before* opening the PR if Docker is up. That class is
@@ -1058,7 +1083,14 @@ property of the rule set, not a guarantee.
 
 - macOS targets pipe compiler/test output through `xcsift`; the Makefile sets
   `set -o pipefail`, so a non-zero exit from `swift build`/`swift test`
-  propagates through the pipe. **Trust the pipeline's exit status over any
+  propagates through the pipe. **That guarantee is the Makefile's, not the
+  shell's** — an ad-hoc `swift test --filter … 2>&1 | tail -20` typed at a
+  prompt has no `pipefail`, so it reports **`tail`'s** exit status and comes
+  back **0 with failing tests**. Set `set -o pipefail` yourself on any
+  hand-rolled pipeline, or read the output rather than the status. (Observed
+  while probing a deliberately-red test: exit 0, one failed expectation in the
+  text.)
+- Within a `make` target, **trust the pipeline's exit status over any
   rendering of its output** — the two can disagree in both directions:
   `xcsift` itself exits 0 on input whose producer failed (check `pipestatus`
   when debugging the pipe itself), and its `-f toon` `errors[…]` array can
@@ -1166,6 +1198,66 @@ Two things that matter in that command:
 Prefer `generic/platform=…` over a pinned `name=iPhone 17,OS=26.2` destination:
 it needs the SDK only — no simulator runtime, no boot — and does not rot when the
 runner image changes its device names.
+
+### `Date.ParseStrategy` is lenient; `Date.ISO8601FormatStyle` validates
+
+*2026-08-21 (#PR_NUMBER).* The two date parsers Foundation offers are **not**
+interchangeable, and the difference is invisible until it corrupts data.
+
+`Date.ParseStrategy(format:)` **rolls out-of-range components over** rather than
+rejecting them, so a malformed day parses to a real, plausible-looking date:
+
+| Input | `Date.ParseStrategy` | `Date.ISO8601FormatStyle` |
+| --- | --- | --- |
+| `"2025-13-45"` | 2026-02-14 | throws |
+| `"0000-00-00"` | -0001-11-30 | throws |
+
+That matters wherever a parse failure is *tolerated*. `MediaListItem` decodes its
+day-precision date with `try?` (deliberate, per
+[ADR-0019](decisions/0019-decode-tolerance-policy.md)), so swapping its
+`.iso8601` strategy for the shared `ParseStrategy` would convert `nil` into a
+wrong date — silently, with no error to surface and no existing test failing.
+The substitution was attempted during #426, measured, and reverted; see
+[ADR-0029](decisions/0029-day-precision-dates-at-gmt.md).
+
+Both directions are pinned by tests, so the asymmetry cannot quietly stop being
+true: `DayPrecisionDateTests.sharedStrategyRollsOutOfRangeComponentsOver` and
+`MediaListItemDateToleranceTests`.
+
+`ISO8601FormatStyle` also **accepts a trailing time component and discards it**
+(`"2025-10-26T14:30:00Z"` → GMT midnight on the 26th), which is why the tolerant
+path survives the full-timestamp form some endpoints send.
+
+### An `@available(*, unavailable)` overload does not block an existential parameter
+
+*2026-08-21 (#PR_NUMBER).* `APIRequestQueryItems` is
+`[Name: CustomStringConvertible]`, so `queryItems[ifPresent: .startDate] =
+someDate` compiles and stringifies via `Date.description` — putting
+`"2024-01-01 00:00:00 +0000"` on the wire. The obvious structural fix is an
+unavailable overload that makes the mistake a compile error:
+
+```swift
+@available(*, unavailable, message: "Format with DateFormatter.theMovieDatabase")
+subscript(ifPresent _: Key) -> Date? { get { nil } set {} }
+```
+
+**It does not work.** `Date` conforms to `CustomStringConvertible`, so overload
+resolution picks the existential subscript and the unavailable one never
+participates. The guard compiles, every gate stays green, and it prevents
+nothing. Verified with a mutation probe — a file assigning a `Date` built without
+error — and reverted rather than shipped.
+
+Two general lessons:
+
+- **An unavailable overload only fires when it is the *better* match.** Against a
+  parameter whose type the "wrong" argument already satisfies, it is dead code.
+- **Mutation-test a compile-time guard exactly like a test**: write the code that
+  *should* fail to compile and confirm it does. A guard that merely compiles
+  proves nothing — the *detector whose green looks the same when it didn't run*,
+  applied at the type level.
+
+The working alternative in this repo is a `Scripts/check-*.py` guard wired into
+`make lint` **and** CI, in the style of `check-defaulted-witnesses.py`.
 
 ### Extraneous `CodingKeys` cases break synthesized `Encodable`
 
@@ -2172,11 +2264,12 @@ guard fell through and returned a bogus pointer, crashing in `swift_retain`
   running it on a second platform found it.
 
 **Corollary — a fully green `make ci` does not cover this.** `make ci` never
-builds for Linux (see *`make ci` skips the Linux build*), so
-`build-test-linux` is the only gate that can catch platform-dependent UB. For
-any hand-rolled concurrency primitive, run `make test-linux` **before** opening
-the PR: a blind CI round-trip costs ~45 minutes *and* a manual force-cancel,
-because a hang wedges the runner and ignores GitHub's cancel.
+builds for Linux (see *`make ci` skips the Linux build*), so platform-dependent
+UB is caught only by the CI jobs that run there — `build-test-linux`, and
+`unit-test-timezones` for the unit suites. For any hand-rolled concurrency
+primitive, run `make test-linux` **before** opening the PR: a blind CI
+round-trip costs ~45 minutes *and* a manual force-cancel, because a hang wedges
+the runner and ignores GitHub's cancel.
 
 ### `.timeLimit` does not rescue a task parked on an unresumed continuation
 

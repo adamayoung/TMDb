@@ -23,6 +23,17 @@ import Testing
 /// and that is what makes them a test rather than a tautology. Remove that
 /// job and this file silently stops proving anything.
 ///
+/// **Both legs are load-bearing, and they catch different tests.** The
+/// asymmetry is not obvious, so before trimming the matrix:
+///
+/// - The **outbound** tests (`…SendsGMTCalendarDay`) fail only at a
+///   **negative** offset. A GMT-midnight instant formats as the intended day
+///   anywhere east of Greenwich, so Auckland cannot fail them; only LA turns
+///   `2024-01-01T00:00:00Z` into `"2023-12-31"`.
+/// - The **year-boundary** test in `SearchPlanExecutorDateTests` fails only at
+///   a **positive** offset, where `startOfYear` lands in the previous year.
+/// - The inbound and round-trip tests fail at any non-GMT offset.
+///
 @Suite("Day-precision dates are GMT-pinned", .tags(.formatting))
 struct DayPrecisionDateTests {
 
