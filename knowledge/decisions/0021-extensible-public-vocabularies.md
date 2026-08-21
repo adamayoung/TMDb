@@ -48,6 +48,18 @@ and whether it carries a payload:
 | in-process, payload-free, growable | **extensible struct** | `SearchPlan.Intent`, `SearchPlan.ListKind`, `NaturalLanguageSearchAvailability.Reason` |
 | in-process, payload-carrying, growable | enum + **reserved growth slot** | `SearchDegradation.other(String)` |
 
+**The table has three rows, not four, and the missing fourth is deliberate.** A
+*wire-decoded, payload-carrying* vocabulary looks like a gap in the grid, and it
+is not one: that cell is a **media-type discriminator**, and
+[ADR-0019](0019-decode-tolerance-policy.md) limb 1 already governs it — the
+unmodelled value is skipped from its nearest enclosing tolerant array and
+counted, never widened into a growth slot. This ADR covers limb-2 *value* enums
+only. The distinction is easy to lose: while adding `TaggedImageMedia.tvSeries`
+(#437) the plan claimed this fourth row was needed, and two of three plan
+critics agreed before the limb boundary was re-read. If you find yourself
+reaching for a new row here, check first whether what you have is a
+discriminator.
+
 The **extensible struct** is a public struct wrapping an `internal` backing enum:
 
 ```swift

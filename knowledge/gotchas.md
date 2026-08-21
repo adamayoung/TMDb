@@ -756,6 +756,19 @@ cp /abs/literal/worktree/.build/deliver-tmp/run.json /abs/literal/.git/deliver/<
 Whatever route you take, **verify with a `grep` for a string you just wrote**.
 A write to `.git/` that reports nothing has told you nothing.
 
+### `deliver-panel`'s `artifacts` must be an **array**, not a string
+
+*2026-08-21 (#TBD).* `.claude/workflows/deliver-panel.js:94` does
+`(input.artifacts || []).join('\n')`. Pass a newline-joined string — the obvious
+thing, since that is what the jurors end up reading — and `.join` is not a
+function on it, so the workflow throws at `workflow.js:88` **before any juror
+spawns**. The failure surfaces as a dead panel, and a dead panel is a `stop`, so
+a type slip in one argument reads as an adversarial verdict against the work.
+
+The panel's own docs (`SKILL.md`, `references/auto-and-async.md`) list
+`artifacts` among the facts-only arguments without stating its type, which is
+what makes the string look right. Pass `["path", "path"]`.
+
 ### The `Workflow` tool resolves a repo-relative `scriptPath`
 
 *2026-07-29.* The three embedded-script skills describe `scriptPath` only as
@@ -1206,7 +1219,57 @@ any question about whether a custom error survives a given platform's
 `JSONDecoder` — a `DecodingError` is that decoder's own currency, which matters
 because Linux uses swift-corelibs-foundation's separate implementation.
 
+### An all-dropped page doesn't shorten the sequence — it ends it
+
+*2026-08-21 (#TBD).* Decode tolerance and auto-pagination interact, and the
+interaction is worse than either alone. `PagedAsyncSequence` stops when a page
+comes back with an empty `results` array — reasonably, since that is what the
+last page looks like. But a tolerant container drops unmodelled rows *before*
+assembling `results`, so a page whose rows are **all** unmodelled decodes to
+zero results and is indistinguishable from the end of the data.
+
+`allTaggedImages(forPerson:)` did exactly this: person 17419's first page was 18
+`tv` rows out of 20, and pages that were entirely `tv` terminated the sequence
+and discarded every later page. The visible symptom is a short *sequence*, not a
+short page, so it does not look like a decode problem at all.
+
+When you add or reason about a tolerant array, ask whether it sits behind a
+`PagedAsyncSequence`. If it does, "we skip a few rows" is not the worst case —
+"we silently stop" is.
+
 ## Testing
+
+### Capture a fixture *from* the live page — don't paste the page in whole
+
+*2026-08-21 (#TBD).* "Use real API responses, not assumptions" is right about
+*provenance* and says nothing about *size*. A verbatim 20-row tagged-images page
+came to 25KB — twice the largest fixture in the repo and four times the largest
+`*-pageable-list.json` — because 18 of its rows were the same series repeated.
+The bulk bought no extra decoder coverage at all.
+
+Trim to a **row-subset of the captured page**: keep one row per decode branch
+you need to exercise, keep every field of the rows you keep, and change no
+values. That stays measured — every byte still came off the wire — while landing
+in line with its siblings (the trimmed version was 6KB). Deleting whole rows is
+safe; editing fields inside a row is what turns a captured fixture into an
+invented one.
+
+### A captured fixture cannot back a *throwing* decode test
+
+*2026-08-21 (#TBD).* Two rules collide. `decode(_:fromResource:)`
+(`Tests/TMDbTests/TestUtils/JSONDecoder+DecodeFromFile.swift:24`) calls
+`Issue.record` before it rethrows, so a test asserting the decode *throws* fails
+anyway — the recorded issue is a failure even though `#expect(throws:)` was
+satisfied. Sidestepping that by adding the fixture but not loading it through
+the helper leaves it unreferenced, and `Scripts/check-fixtures.py` rejects an
+orphan.
+
+So there is no shape in which a `.json` file under `Resources/json/` can carry a
+throwing case. Use **inline JSON in the test**, pasted from the real captured
+record so it is still measured rather than invented, and decode it with
+`from: Data(json.utf8)`. `MediaListTests` is the worked example. The practical
+consequence when planning: a change needing both a skip case and a throw case
+ships one fewer fixture than it looks like it should.
 
 ### `MockURLProtocol`'s statics are process-global — a test that reads them back is order-dependent
 
