@@ -863,13 +863,19 @@ so it also blocks commands that were never leaving. Seen refusing:
   defeat the static check. Rewrite the pattern without it (here,
   `awk '$4 !~ /^knowledge\//'` over `git ls-tree`'s tab-separated output).
 
-Workarounds, in order of preference: keep each command **single-purpose with
-fully literal paths** (`sed -i '' 's/…/…/' /abs/literal/path` succeeded where the
-`jq`+`mv` equivalent was refused); write scratch output **inside** the worktree
-under `.build/` (gitignored); or delegate the work to a subagent, which is not
-subject to the caller's guard. `Edit`/`Write` on a path outside the worktree are
-refused too, with a pointer to the worktree copy — which is wrong for
-`.git/`-relative state, so reach for `sed` there.
+**For the `/deliver` run file the sanctioned route is now
+`Scripts/deliver-runfile.py`** (ADR-0015 addendum, 2026-08-22):
+`python3 Scripts/deliver-runfile.py set /abs/literal/path <dotted.path> <value>`
+is single-purpose with literal arguments — the shape the guard accepts — and it
+verifies its own postcondition, so a swallowed write exits non-zero instead of
+looking like success. For everything else, workarounds in order of preference:
+keep each command **single-purpose with fully literal paths** (`sed -i ''
+'s/…/…/' /abs/literal/path` succeeded where the `jq`+`mv` equivalent was
+refused); write scratch output **inside** the worktree under `.build/`
+(gitignored); or delegate the work to a subagent, which is not subject to the
+caller's guard. `Edit`/`Write` on a path outside the worktree are refused too,
+with a pointer to the worktree copy — which is wrong for `.git/`-relative
+state, so reach for the script (run file) or `sed` (anything else) there.
 
 **Some refusals are silent — assume nothing landed until you check.** *2026-08-20
 (PR #474).* A `python3 - <<'EOF'` heredoc rewriting the `/deliver` run file in
@@ -888,7 +894,10 @@ cp /abs/literal/worktree/.build/deliver-tmp/run.json /abs/literal/.git/deliver/<
 ```
 
 Whatever route you take, **verify with a `grep` for a string you just wrote**.
-A write to `.git/` that reports nothing has told you nothing.
+A write to `.git/` that reports nothing has told you nothing. For the run file
+that verification is built in now — `Scripts/deliver-runfile.py` re-reads the
+file and exits `2` when the value is not on disk — so the staged-`cp` idiom
+above survives only for *other* out-of-worktree writes.
 
 ### `deliver-panel`'s `artifacts` must be an **array**, not a string
 

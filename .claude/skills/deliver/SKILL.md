@@ -75,7 +75,15 @@ Non-negotiable. Do these by default, without being reminded.
    else did. (Two non-phase writers exist and are documented where they apply:
    an async run writes the file **before** any `ScheduleWakeup`, and Phase 1's
    adopt path flips `entry` before re-locking — see `references/`.) Location and schema:
-   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md). A
+   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
+   **Every run-file write after `EnterWorktree` goes through
+   `Scripts/deliver-runfile.py`** — the worktree guard refuses ad-hoc writes to
+   `.git/deliver/`, sometimes *silently* — and the script verifies its own
+   postcondition: exit 0 prints `verified: …`; anything else means the write
+   did **not** land and is a **hard stop** for the phase making it. Never
+   carry on assuming state you did not read back — the #493 delivery certified
+   a plan revision to the juror panel that two silent refusals had kept off
+   disk. A
    template→replicate delivery adds the **`Phase 4a — reference-unit
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
    keeps one ledger sub-tree per deliverable.
@@ -566,7 +574,7 @@ Invoke **`/implement-plan`** (Canon TDD: list shown first, one failing test
 at a time, done only when the list is empty and both suites green). It
 commits at logical checkpoints — required: Phase 4 reviews **committed**
 history. Don't advance until `/test` **and** `/integration-test` pass and the
-work is committed; re-confirm the weight from the diff. Three hard checkpoints:
+work is committed; re-confirm the weight from the diff. Four hard checkpoints:
 
 - **Run `swift build -c release` before declaring implementation done** —
   **directly via `Bash`, not `/build`**: `tooling-runner` exposes only
@@ -592,6 +600,17 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
   `incomingCalls`, `goToImplementation`), not `grep`: a text pattern
   under-reports silently — ADR-0008's grep recipe found four of eight path
   interpolation sites, and the three it missed carried a credential (#421).
+- **An absence-shaped fix must be proven able to fail.** Trigger: the
+  acceptance criteria are phrased as an absence — *"X no longer appears / is
+  no longer sent / is redacted"*. Every test for such a fix asserts a
+  negative, and a negative passes just as happily when the value was never
+  there, the key was renamed upstream, or the code path is never reached at
+  all. Before declaring the test list empty: unwire the fix (revert its
+  production hunks locally), confirm the new tests go **red**, restore,
+  confirm green, and record the result in the retro. In #469 this one-minute
+  check was the only evidence the two wiring tests' green meant anything.
+  Positive-assertion deliveries skip it — the trigger is the ACs' phrasing,
+  not a blanket rule.
 - **Consult the specialist skills — mandatory, topic-triggered, including for
   fanned-out subagents.** `swift-concurrency` the moment actors,
   `@MainActor`, `Sendable`/`@unchecked Sendable`, locks, `Task`/task groups,
@@ -638,6 +657,19 @@ then stop and surface. **Auto:** panel — proceed (note unresolved findings in
 the PR description) vs stop. Medium/Low: apply the cheap, clearly-correct
 ones; note the rest in the PR description. This is the **single substantive
 review** — `/pr` therefore runs in `reviewed` mode (Phase 9).
+
+**Mutation-check before converging — a reflexive delivery that adds or
+changes a prose-asserting test** (`reflexive: true` *and* the diff touches a
+test asserting on skill/doc prose, e.g. under `Scripts/tests/`): the
+iteration cap is the wrong stopping signal for this class, because a passing
+prose test is not evidence — #482 shipped three assertions that passed while
+testing nothing, and two of its guards started green. So, for each rule the
+new tests guard: confirm the baseline is green, revert **that rule alone** in
+a scratch copy, and confirm the suite goes red *for that rule*; a guard that
+stays green is not a guard. Restore, and record the matrix in the retro. The
+three blind-assertion failure modes and the worked matrix:
+`knowledge/gotchas.md` → *A test that asserts on prose can be blind*. Swift
+suites are exempt — the compiler and `--Werror` already do this work.
 
 ## Phase 5 — Security review + fix loop
 
