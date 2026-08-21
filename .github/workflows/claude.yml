@@ -10,7 +10,6 @@ on:
     # job, which is not path-filtered).
     paths:
       - '**/*.swift'
-      - 'Package.resolved'
   issue_comment:
     types: [created]
   pull_request_review_comment:

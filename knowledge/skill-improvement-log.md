@@ -105,6 +105,23 @@ those two runs stay comparable.
 - **Reconsider when:** a human reviews this entry, or the guard's behaviour
   changes such that `.git/`-adjacent writes stop being refused.
 
+- **Evidence added 2026-08-21 (PR #493), not a new proposal.** A fifth
+  recurrence, and it **falsifies this entry's own severity assessment**: "not a
+  hard block — it is a tax" no longer holds. In that delivery two attempts to
+  write the plan file were refused, and because a refusal has no consequence the
+  run is forced to notice, the conductor carried on believing the write had
+  landed and told the `phase2-blocker` juror panel the plan had been revised
+  while the file on disk was still the unrevised original. The panel returned
+  **stop 1-2** — two jurors ran `grep` on the artifact instead of believing the
+  claim, and one wrote *"the revision the conductor reports as applied is absent
+  from the artifact it told me to check"*. So the failure mode is not slower
+  writes; it is a **false certification to the mechanism that stands in for the
+  user in auto mode**, which the run then had to disclose and re-panel to clear.
+  Weigh option (a) accordingly — and note that whichever option is chosen, the
+  cheap independent mitigation is to have every phase that writes state re-read
+  it and assert the change is present, treating a mismatch as a hard stop. That
+  mitigation is worth applying even if the file never moves.
+
 ### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · deferred
 
 - **Pattern:** the **False green** family, in its absence-assertion form. When a

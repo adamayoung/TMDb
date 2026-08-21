@@ -29,15 +29,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # See the note on ci.yml's `Cache Swift packages`. The `-codeql-` segment is
+      # load-bearing: this step and ci.yml's cache the same two paths, and until
+      # #448 both resolved to the identical constant key `macOS-swift-`, so
+      # whichever job ran first owned the entry and the other restored a tree
+      # built for a different purpose. Hashing THIS file (which carries codeql's
+      # own DEVELOPER_DIR pin at :17) is what makes a toolchain bump invalidate it.
       - name: Cache Swift packages
         uses: actions/cache@v6
         with:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-swift-codeql-${{ hashFiles('.github/workflows/codeql.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
-            ${{ runner.os }}-swift-
+            ${{ runner.os }}-swift-codeql-${{ hashFiles('.github/workflows/codeql.yml') }}-
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4.37.7

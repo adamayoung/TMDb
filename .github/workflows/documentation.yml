@@ -64,6 +64,22 @@ jobs:
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/configure-pages@v6
 
+      # See the note on ci.yml's `Cache Swift packages`. BOTH former restore
+      # tiers are deliberately gone, not just the obvious one:
+      #
+      #   * the cross-workflow `${{ runner.os }}-swift-` fallback, which on a
+      #     docs-cache miss re-imported CI's frozen cache — the exact import the
+      #     key exists to prevent, and wrong anyway because the docs build has its
+      #     own dependency graph (SWIFTCI_DOCC=1 adds swift-docc-plugin,
+      #     Package.swift:74-90);
+      #   * the namespace-wide, hash-free `${{ runner.os }}-docs-` tier. This one
+      #     is a real trade-off and worth stating: keeping it would warm-start the
+      #     build whenever this workflow file changes, but it is precisely the
+      #     "bare prefix" knowledge/gotchas.md warns about — it re-imports the
+      #     pre-bump cache on the very miss the key exists to cause, undoing the
+      #     key's promise one line below it. So an edit to this file now yields a
+      #     cold build. That matches build-platforms (ci.yml), which has had this
+      #     single-tier shape since #416.
       - name: Cache Swift packages
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'
         uses: actions/cache@v6
@@ -71,10 +87,9 @@ jobs:
           path: |
             .build
             ~/Library/Developer/Xcode/DerivedData
-          key: ${{ runner.os }}-docs-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-docs-${{ hashFiles('.github/workflows/documentation.yml') }}-${{ hashFiles('Package.swift') }}
           restore-keys: |
-            ${{ runner.os }}-docs-
-            ${{ runner.os }}-swift-
+            ${{ runner.os }}-docs-${{ hashFiles('.github/workflows/documentation.yml') }}-
 
       - name: Build documentation
         if: needs.changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch'

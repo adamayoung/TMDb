@@ -101,14 +101,22 @@ importable"*.
 *2026-08-20 (PR #476).* Two facts about `.github/workflows/ci.yml` that decide
 whether a check you add actually runs.
 
-**Every step in the `Lint` job — including `Checkout` — is conditioned on
-`needs.changes.outputs.swift == 'true' || workflow_dispatch`,** and the job's
-`runs-on` selects `xcode-27` vs `ubuntu-latest` off the same output. So adding a
-step gated on any *other* filter key gives you a step that runs **with no
-repository checked out**. Widening a step means widening `Checkout` with it.
-That is why the run-list check is gated on `swift || markdown`: its inputs are
-`Scripts/**` (in the `swift` key) *and* `.claude/**/*.md` (in `markdown`), and
-without the widened checkout the prose half would have had nothing to read.
+**Every step in the `Lint` job — `Checkout` included — is conditioned on the
+`changes` job's outputs**, and the job's `runs-on` selects `xcode-27` vs
+`ubuntu-latest` off `swift` alone. So a step gated on a filter key that
+`Checkout` is *not* gated on runs **with no repository checked out**. Widening a
+step means widening `Checkout` with it: `Checkout`'s condition has to be the
+union of every step condition in the job, which is why it reads
+`swift || markdown || versioncheck` today while the swiftlint/swiftformat steps
+stay on `swift` alone.
+
+Two consequences of `runs-on` keying off `swift` by itself. A `markdown`- or
+`versioncheck`-only run lands on `ubuntu-latest` — fine for the stdlib-Python
+checks, and cheaper — but a step gated on a wider key that *needs* Xcode would
+fail there opaquely. `Scripts/tests/test_workflow_gates.py` enforces both halves:
+`test_checkout_condition_covers_every_step_condition` asserts the subset rule, and
+`test_runner_selection_covers_every_step_condition` requires any step gated more
+widely than the runner selection to carry a `# runner-safe:` comment saying why.
 
 **`on.pull_request` carries no `paths:` filter — only `on.push` does.** So every
 PR triggers the workflow regardless, and the `changes` job's `dorny/paths-filter`
@@ -447,16 +455,30 @@ skips the whole job that runs it.
 
 Six checks are mirrored this way today — `check-defaulted-witnesses.py`,
 `check-fixtures.py`, `check-docc-curation.py`, `check-prose-call-forms.py`,
-`check-readme-version.py` (paths-filter input: `CHANGELOG.md`) and
-`run-script-tests.py` (the run-list builder's suite; gated on `swift` **or**
-`markdown`, since its anti-drift cases read `.claude/**/*.md`),
-each a `make lint` prerequisite *and* its own step in the CI `Lint` job. Prefer an **existing**
-paths-filter key over a new `outputs:` entry: a filter key with no matching line
-under `outputs:` makes `needs.changes.outputs.<key>` the empty string, so the
-step never runs while the job reports success — the same false green one level
-down. The curation check reuses the `swift` key for that reason, and its input
-(`Sources/TMDb/TMDb.docc/**`) had to be added to that key — a PR deleting only a
-curation line would otherwise skip the job that would catch it.
+`check-readme-version.py` (gated `swift || versioncheck`; the `versioncheck` key
+is `README.md` + `CHANGELOG.md`) and `run-script-tests.py`, which runs **every**
+suite under `Scripts/tests/` — the run-list builder's, the `/deliver`
+selection-prose cases and the workflow cache-key cases — gated `swift || markdown`
+because its inputs are `Scripts/**` (in `swift`) plus `.claude/**/*.md` and
+`.github/workflows/**` (both in `markdown`). Each is a `make lint` prerequisite
+*and* its own step in the CI `Lint` job.
+
+**Prefer an existing paths-filter key over a new `outputs:` entry**, because a
+filter key with no matching line under `outputs:` makes
+`needs.changes.outputs.<key>` the empty string — the step never runs while the
+job reports success, the same false green one level down. The curation check
+reuses `swift` for that reason, and its input (`Sources/TMDb/TMDb.docc/**`) had
+to be added to that key. Reuse is also why `.github/workflows/**` was folded into
+the existing `markdown` key rather than given its own output.
+
+The exception is when the *point* is to trigger **less**: `versioncheck` exists
+precisely so a `CHANGELOG.md` typo stops firing the Apple build matrix and the
+Linux build, which reusing a coarser key cannot achieve. Adding a key then means
+threading it through four places — `outputs:`, the `No changes detected`
+negative, `Checkout`'s condition and the step's own `if:`.
+`test_every_filter_key_is_exported_as_an_output` and
+`test_every_referenced_output_exists` now make the missing-`outputs:` half of
+that executable rather than remembered.
 
 ### Removing a force-unwrap orphans its `swiftlint:disable` — `--strict` then fails
 
@@ -609,11 +631,105 @@ restore-keys: |
 
 **Put the toolchain-bearing hash in the restore *prefix*, not just the key.** A
 bare prefix re-imports the pre-bump cache on the very miss the key exists to
-cause, so the key's promise is quietly undone one line below it.
+cause, so the key's promise is quietly undone one line below it. The cost of
+that strictness is a genuinely cold build whenever the hashed workflow file
+changes — including a comment-only edit. That is the intended trade.
+
+**This idiom does not make the cache refresh every run, and saying so is an
+overclaim worth avoiding.** The key is still constant *between* changes to the
+files it hashes, so the save recurs **once per (workflow-hash, manifest-hash,
+ref) tuple**. What it buys is that a toolchain bump — which lands in the
+workflow file as `DEVELOPER_DIR` — invalidates the cache by itself, instead of
+the cache being frozen at its first write forever. Both halves are measurable
+(`gh api /repos/adamayoung/TMDb/actions/caches`, see *Proving what an Actions
+cache actually did* below): on 2026-08-21 the pre-fix `macOS-swift-` entry on
+`refs/heads/main` was created **2026-04-26** and had never been re-saved in 117
+days, while the fixed idiom at `build-platforms` held three generations from
+four days of `ci.yml` edits. A `${{ github.run_id }}` component would make the
+save per-run, at the price of a fresh multi-hundred-MB entry every run against
+GitHub's 10 GB LRU-evicted per-repo cap — rejected in PR #493.
 
 Same family as the `git ls-tree` entry below — a hashing primitive that degrades
 to a constant instead of failing. **Sanity-check any computed key against its
-degenerate value before trusting it.**
+degenerate value before trusting it.** `Scripts/tests/test_workflow_gates.py`
+does exactly that as a committed check: it re-evaluates every cache key with
+`hashFiles(g) -> ''` for any glob matching no tracked file, and requires a hash
+to survive. It also requires each key to hash **its own** workflow file, since a
+copy-pasted key that hashes a *different* workflow looks well-formed, passes
+every other assertion, and silently reinstates the staleness.
+
+### A hand-rolled config scanner agrees with itself — cross-check it against raw text
+
+*2026-08-21 (PR #493).* A checker that parses config and then asserts on what it
+parsed has a failure mode a floor does not catch: if the parser silently misses
+an item, the inventory assertion compares only what it *did* find, agrees with
+itself, and goes green. This bit **twice in one delivery**, both times surviving
+into review:
+
+- step discovery keyed on `- name:`, so a step written `- uses: actions/cache@v6`
+  was invisible — and `claude.yml` already writes four steps that way;
+- the `uses:` pattern then required an unquoted value, so
+  `uses: 'actions/cache@v6'` was invisible too.
+
+Both were **silent greens**: with a deliberately broken cache step in the tree in
+either form, the suite reported zero failures.
+
+The fix that works is a cross-check against **raw text the parser cannot
+rewrite** — count lines matching the literal (`uses: actions/cache@`) and assert
+it equals the number of structured records. Anchor it and make it
+quote-tolerant, or it fails in the other direction: these workflows discuss
+`actions/cache` in comments, and a bare substring count turns that prose into a
+false red naming a step that does not exist.
+
+Two corollaries:
+
+- **A floor over several sources must be per-source.** One
+  `assertGreaterEqual(checked, 10)` across six workflows was satisfiable by
+  `ci.yml`'s 16 literal paths alone, so the other five could each parse to zero
+  and still pass. Per-file exact counts fail the moment one file stops parsing.
+  Same argument `Scripts/run-script-tests.py` already makes for
+  `EXPECTED_MINIMUM` — it generalises to any aggregate over multiple inputs.
+- **Give the parser synthetic inputs, not just the real files.** Tested only
+  against the six workflows in the tree, a scanner is only ever tested on the
+  shapes this repo happens to write today, which is exactly how the quoted form
+  survived a full review round. `StepScannerTests` pins the shapes that matter,
+  including the ones that must *not* match.
+
+### Proving what an Actions cache actually did
+
+*2026-08-21 (PR #493).* Reasoning about `actions/cache` from the YAML alone is
+how both a wrong fix and a wrong *refutation* of a fix got proposed in one
+delivery. The repo's cache state is readable:
+
+```bash
+gh api /repos/adamayoung/TMDb/actions/caches --paginate \
+  --jq '.actions_caches[] | [.key, .ref, .size_in_bytes, .created_at, .last_accessed_at] | @tsv'
+gh api /repos/adamayoung/TMDb/actions/cache/usage
+```
+
+Two traps in reading it:
+
+- **Caches are ref-scoped**, so one key legitimately appears more than once —
+  typically `refs/heads/main` plus `refs/pull/N/merge`. "Two entries with the
+  same key" is **not** evidence that a re-save happened; a delivery built a
+  post-merge proof on exactly that and it was invalid in both directions.
+- **`created_at` vs `last_accessed_at` is the signal.** Created once and read for
+  months = written once and never refreshed. A moving `created_at` for a given
+  key = the save is recurring.
+
+The unambiguous positive proof is the cache step's own post-job log:
+`Cache saved with key: …` versus `Cache hit occurred on the primary key …, not
+saving cache`. Read it with `gh run view <id> --log`.
+
+Sizes matter for any change that increases save frequency: entries here are
+65–151 MB and the repo total was 1.80 GB over 22 entries, against a **10 GB
+per-repository cap with LRU eviction** shared across all workflows.
+
+The wider lesson: when a review finding turns on how an external system behaves,
+go and measure that system before accepting *or* rejecting the finding. Here a
+reviewer's blocker cited a live cache entry as proof a fix could not work; the
+same API showed that entry had rotated three times in four days, which settled
+it.
 
 ### `git ls-tree` doesn't support `:!exclude` — and fails into an empty hash
 

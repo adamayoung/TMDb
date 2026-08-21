@@ -42,7 +42,6 @@ jobs:
             swift:
               - '**/*.swift'
               - 'Package.swift'
-              - 'Package.resolved'
               - '.github/workflows/integration.yml'
 
   integration-test:
