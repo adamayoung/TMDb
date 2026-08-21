@@ -647,7 +647,7 @@ cache actually did* below): on 2026-08-21 the pre-fix `macOS-swift-` entry on
 days, while the fixed idiom at `build-platforms` held three generations from
 four days of `ci.yml` edits. A `${{ github.run_id }}` component would make the
 save per-run, at the price of a fresh multi-hundred-MB entry every run against
-GitHub's 10 GB LRU-evicted per-repo cap — rejected in PR #NNN.
+GitHub's 10 GB LRU-evicted per-repo cap — rejected in PR #493.
 
 Same family as the `git ls-tree` entry below — a hashing primitive that degrades
 to a constant instead of failing. **Sanity-check any computed key against its
@@ -660,7 +660,7 @@ every other assertion, and silently reinstates the staleness.
 
 ### A hand-rolled config scanner agrees with itself — cross-check it against raw text
 
-*2026-08-21 (PR #NNN).* A checker that parses config and then asserts on what it
+*2026-08-21 (PR #493).* A checker that parses config and then asserts on what it
 parsed has a failure mode a floor does not catch: if the parser silently misses
 an item, the inventory assertion compares only what it *did* find, agrees with
 itself, and goes green. This bit **twice in one delivery**, both times surviving
@@ -697,7 +697,7 @@ Two corollaries:
 
 ### Proving what an Actions cache actually did
 
-*2026-08-21 (PR #NNN).* Reasoning about `actions/cache` from the YAML alone is
+*2026-08-21 (PR #493).* Reasoning about `actions/cache` from the YAML alone is
 how both a wrong fix and a wrong *refutation* of a fix got proposed in one
 delivery. The repo's cache state is readable:
 

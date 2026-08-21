@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-21 — 🐛 Give each workflow cache key a real hash and its own namespace (`fix/ci-cache-keys`) · full
+## 2026-08-21 — 🐛 Give each workflow cache key a real hash and its own namespace (#493) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; issue #448 taken off
   the board's Ready column, no supplied plan). Full weight — the diff is CI YAML
