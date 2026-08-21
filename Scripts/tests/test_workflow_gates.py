@@ -51,7 +51,12 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 WORKFLOW_DIR = ".github/workflows"
 
 EXPRESSION = re.compile(r"\$\{\{\s*(.*?)\s*\}\}")
-HASHFILES = re.compile(r"^hashFiles\('([^']+)'\)$")
+# Accepts the multi-argument and whitespace-padded forms too — `hashFiles('a', 'b')`
+# is valid and hashes the union. A single-argument-only pattern would not match it,
+# so `evaluate()` would treat a real hash as an opaque placeholder and the
+# degenerate-key test would go red for the wrong reason.
+HASHFILES = re.compile(r"^hashFiles\(\s*(.+?)\s*\)$")
+HASHFILES_ARG = re.compile(r"'([^']+)'")
 OUTPUT_REF = re.compile(r"needs\.changes\.outputs\.([A-Za-z0-9_-]+)")
 
 
@@ -111,7 +116,12 @@ def evaluate(expression: str, tracked: frozenset[str]) -> str:
         inner = match.group(1)
         hashed = HASHFILES.match(inner)
         if hashed:
-            return f"H({hashed.group(1)})" if glob_matches_tracked(hashed.group(1), tracked) else ""
+            globs = HASHFILES_ARG.findall(hashed.group(1))
+            # `hashFiles` hashes the UNION of its arguments, so it returns '' only
+            # when every one of them matches nothing.
+            if globs and any(glob_matches_tracked(g, tracked) for g in globs):
+                return "H(" + ",".join(globs) + ")"
+            return ""
         return f"<{inner}>"
 
     return EXPRESSION.sub(sub, expression)
@@ -122,14 +132,20 @@ def hashfiles_globs(expression: str) -> list[str]:
     for inner in EXPRESSION.findall(expression):
         hashed = HASHFILES.match(inner)
         if hashed:
-            globs.append(hashed.group(1))
+            globs.extend(HASHFILES_ARG.findall(hashed.group(1)))
     return globs
 
 
 def workflow_texts() -> dict[str, str]:
-    """`{filename: text}` for every tracked workflow."""
+    """`{filename: text}` for every tracked workflow.
+
+    Both extensions: GitHub Actions treats `.yaml` and `.yml` identically, so
+    matching only one would make a whole workflow invisible to every test here.
+    """
     names = sorted(
-        p for p in tracked_files() if p.startswith(WORKFLOW_DIR + "/") and p.endswith(".yml")
+        p
+        for p in tracked_files()
+        if p.startswith(WORKFLOW_DIR + "/") and p.endswith((".yml", ".yaml"))
     )
     return {Path(n).name: (ROOT / n).read_text() for n in names}
 
@@ -176,58 +192,85 @@ class CacheStep:
         return f"CacheStep({self.workflow}, {self.name!r}, key={self.key!r})"
 
 
+def step_blocks(lines: list[str]) -> list[list[str]]:
+    """Every `- ...` list item under a `steps:` key, as a normalised block.
+
+    Blocks rather than a line-by-line state machine, and keyed on the list-item
+    dash rather than on `- name:`, because a step is not required to have a name:
+    `- uses: actions/cache@v6` is a perfectly ordinary step, and `claude.yml`
+    already writes four steps that way. A scanner that only recognised the named
+    form skipped such a step *and every field in it* while the inventory
+    assertion — which compares only what was found — stayed green.
+    """
+    blocks: list[list[str]] = []
+    steps_indent: int | None = None
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.strip()
+        if stripped == "steps:":
+            steps_indent = _indent(line)
+            i += 1
+            continue
+        if steps_indent is not None and stripped and _indent(line) <= steps_indent:
+            steps_indent = None
+        if steps_indent is not None and stripped.startswith("- "):
+            item_indent = _indent(line)
+            # Normalise `  - name: x` to `    name: x` so the whole block sits at
+            # one indentation and `_scalar` can read its block scalars.
+            block = [line.replace("- ", "  ", 1)]
+            j = i + 1
+            while j < len(lines):
+                nxt = lines[j]
+                if nxt.strip() and _indent(nxt) <= item_indent:
+                    break
+                block.append(nxt)
+                j += 1
+            blocks.append(block)
+            i = j
+            continue
+        i += 1
+    return blocks
+
+
+CACHE_USES = re.compile(r"^uses:\s*(actions/cache@\S+)")
+
+
 def cache_steps() -> list[CacheStep]:
     """Every `actions/cache` step in every tracked workflow, with its values."""
     found: list[CacheStep] = []
     for filename, text in workflow_texts().items():
-        lines = text.splitlines()
-        step_name = None
-        step_indent = -1
-        i = 0
-        pending: dict[str, object] = {}
-        while i < len(lines):
-            line = lines[i]
-            stripped = line.strip()
-            name_match = re.match(r"^- name:\s*(.+)$", stripped)
-            if name_match:
-                if pending:
-                    found.append(
-                        CacheStep(
-                            filename,
-                            str(pending["name"]),
-                            list(pending.get("path", [])),  # type: ignore[arg-type]
-                            str(pending.get("key", "")),
-                            list(pending.get("restore-keys", [])),  # type: ignore[arg-type]
-                        )
-                    )
-                    pending = {}
-                step_name = name_match.group(1).strip()
-                step_indent = _indent(line)
-                i += 1
+        for block in step_blocks(text.splitlines()):
+            uses = None
+            name = None
+            for line in block:
+                stripped = line.strip()
+                match = CACHE_USES.match(stripped)
+                if match:
+                    uses = match.group(1)
+                elif stripped.startswith("name:"):
+                    name = stripped.split(":", 1)[1].strip()
+            if uses is None:
                 continue
-            if stripped.startswith("uses: actions/cache@"):
-                pending = {"name": step_name}
-                i += 1
-                continue
-            if pending and _indent(line) > step_indent and stripped:
+            fields: dict[str, object] = {}
+            i = 0
+            while i < len(block):
+                stripped = block[i].strip()
                 for field in ("path", "key", "restore-keys"):
                     if stripped.startswith(field + ":"):
-                        joined, items, nxt = _scalar(lines, i)
-                        pending[field] = joined if field == "key" else items
+                        joined, items, nxt = _scalar(block, i)
+                        fields[field] = joined if field == "key" else items
                         i = nxt
                         break
                 else:
                     i += 1
-                continue
-            i += 1
-        if pending:
             found.append(
                 CacheStep(
                     filename,
-                    str(pending["name"]),
-                    list(pending.get("path", [])),  # type: ignore[arg-type]
-                    str(pending.get("key", "")),
-                    list(pending.get("restore-keys", [])),  # type: ignore[arg-type]
+                    name or uses,
+                    list(fields.get("path", [])),  # type: ignore[arg-type]
+                    str(fields.get("key", "")),
+                    list(fields.get("restore-keys", [])),  # type: ignore[arg-type]
                 )
             )
     return found
@@ -261,9 +304,21 @@ def filter_block(text: str) -> dict[str, list[str]]:
 
 
 def push_paths(text: str) -> list[str]:
+    """The `on.push.paths` list, in block *or* flow style.
+
+    Flow style (`paths: ['a', 'b']`) is already used elsewhere in these files —
+    `claude.yml` writes `types: [opened, synchronize]` — so a block-only reader
+    would return `[]` for such a file and silently check nothing in it.
+    """
     lines = text.splitlines()
     for i, line in enumerate(lines):
-        if line.strip() == "paths:":
+        stripped = line.strip()
+        if not stripped.startswith("paths:"):
+            continue
+        inline = stripped.split(":", 1)[1].strip()
+        if inline.startswith("[") and inline.endswith("]"):
+            return [p.strip().strip("'\"") for p in inline[1:-1].split(",") if p.strip()]
+        if not inline:
             _, items, _ = _scalar(lines, i)
             return [it[2:].strip().strip("'\"") for it in items if it.startswith("- ")]
     return []
@@ -321,9 +376,11 @@ def jobs_with_steps() -> dict[str, dict[str, object]]:
         if _indent(line) == 4 and stripped.startswith("runs-on:"):
             joined, _, _ = _scalar(lines, i)
             jobs[job]["runs_on"] = joined  # type: ignore[index]
+            pending_comment = []
             continue
         if _indent(line) == 4 and stripped == "steps:":
             in_steps = True
+            pending_comment = []
             continue
         name_match = re.match(r"^- name:\s*(.+)$", stripped)
         if in_steps and name_match:
@@ -336,6 +393,7 @@ def jobs_with_steps() -> dict[str, dict[str, object]]:
         if in_steps and stripped.startswith("if:") and jobs[job]["steps"]:  # type: ignore[index]
             joined, _, _ = _scalar(lines, i)
             jobs[job]["steps"][-1].condition = joined  # type: ignore[index]
+            pending_comment = []
             continue
         pending_comment = []
     return jobs
@@ -403,6 +461,20 @@ EXPECTED_MARKDOWN_FILTER = [
 
 EXPECTED_VERSIONCHECK_FILTER = ["README.md", "CHANGELOG.md"]
 
+# Per-workflow, not a global total. A single `assertGreaterEqual(checked, 10)`
+# would be satisfied by ci.yml's 16 alone, so the other five files could all
+# parse to zero — the exact slack `run-script-tests.py` argues against. These are
+# also the only assertion covering claude.yml, integration.yml and
+# documentation.yml, which have no `EXPECTED_*_FILTER` pin.
+EXPECTED_LITERAL_PATH_COUNTS = {
+    "ci.yml": 16,
+    "claude.yml": 0,
+    "codeql.yml": 0,
+    "documentation.yml": 2,
+    "integration-failure.yml": 0,
+    "integration.yml": 3,
+}
+
 EXPECTED_LINT_GATE_OUTPUTS = frozenset({"swift", "markdown", "versioncheck"})
 
 
@@ -412,6 +484,19 @@ class CacheKeyTests(unittest.TestCase):
         self.steps = cache_steps()
 
     def test_discovers_the_expected_cache_steps(self):
+        # Cross-check the parse against raw text before trusting it. `uses:
+        # actions/cache@` is a literal the scanner cannot rewrite away, so if the
+        # structured walk misses a step — because it was written in a shape the
+        # walk does not recognise — the two counts diverge and this fails, rather
+        # than every other test in the class quietly iterating a short list.
+        raw = sum(t.count("uses: actions/cache@") for t in workflow_texts().values())
+        self.assertEqual(
+            len(self.steps),
+            raw,
+            "a cache step is declared in a form the scanner cannot read — every "
+            "assertion below would skip it silently",
+        )
+
         found = {(s.workflow, s.name): s for s in self.steps}
         self.assertEqual(
             sorted(found),
@@ -519,15 +604,14 @@ class CacheKeyTests(unittest.TestCase):
                 )
 
     def test_no_config_lists_an_untracked_literal_path(self):
-        checked = 0
+        per_file: dict[str, int] = {}
         for filename, text in workflow_texts().items():
             candidates = list(push_paths(text))
             for patterns in filter_block(text).values():
                 candidates.extend(patterns)
-            for pattern in candidates:
-                if "*" in pattern:
-                    continue
-                checked += 1
+            literals = [p for p in candidates if "*" not in p]
+            per_file[filename] = len(literals)
+            for pattern in literals:
                 with self.subTest(workflow=filename, pattern=pattern):
                     self.assertIn(
                         pattern,
@@ -535,7 +619,12 @@ class CacheKeyTests(unittest.TestCase):
                         f"{filename} lists '{pattern}', which is not tracked, so the "
                         "entry can never fire",
                     )
-        self.assertGreaterEqual(checked, 10, "floor: found no literal paths to check")
+        self.assertEqual(
+            per_file,
+            EXPECTED_LITERAL_PATH_COUNTS,
+            "a workflow's paths/filters stopped parsing (or gained entries) — a file "
+            "that silently yields 0 is checked by nothing",
+        )
 
 
 class ChangeGateTests(unittest.TestCase):

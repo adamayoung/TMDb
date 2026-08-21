@@ -79,12 +79,18 @@ jobs:
               - '**/*.docc/**/*.md'
               - '.claude/**/*.md'
               - 'knowledge/**/*.md'
-              # Widened from `ci.yml` to every workflow so that an edit to
+              # Widened from `ci.yml` to every workflow so that a PR editing
               # codeql.yml or documentation.yml runs the workflow cache-key suite
               # below — they sit in no other filter key. No new output is needed:
               # Checkout and `Run-list builder check` are already gated on
               # `swift || markdown`, and `swift` stays false so Lint still lands
-              # on ubuntu-latest.
+              # on ubuntu-latest. (This covers pull requests, which is where the
+              # gate matters — `on.pull_request` carries no `paths:` filter, so
+              # every PR evaluates these outputs. `on.push.paths` above still
+              # lists only ci.yml, deliberately: widening it would fire the whole
+              # six-job workflow on pushes touching integration.yml or claude.yml,
+              # and every change reaches main through a PR that has already run
+              # this suite.)
               - '.github/workflows/**'
 
   lint:
