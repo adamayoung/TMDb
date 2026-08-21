@@ -517,7 +517,7 @@ assert `nil` rather than emptiness when covering them.
 
 ### The `changes` endpoints tolerate a trailing time on `start_date`/`end_date`
 
-*2026-08-21 (#PR_NUMBER).* `changes/movie/list` returns **byte-identical**
+*2026-08-21 (#490).* `changes/movie/list` returns **byte-identical**
 results for `start_date=2026-08-18` and for
 `start_date=2026-08-18 00:00:00 +0000` — same `total_results`, same pages. TMDb
 parses the leading calendar day and ignores the rest.

@@ -25,7 +25,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-21 — 🐛 Pin day-precision dates to GMT (#PR_NUMBER) · full
+## 2026-08-21 — 🐛 Pin day-precision dates to GMT (#490) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; selection off the
   board's Ready column, no supplied plan). Full weight — the diff is mostly a

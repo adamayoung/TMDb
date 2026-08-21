@@ -410,7 +410,7 @@ and a mis-capture fails loudly instead of passing empty.
 
 ### A new CI job gates nothing unless it is registered in **two** places
 
-*2026-08-21 (#PR_NUMBER).* The branch ruleset requires one check — the aggregate
+*2026-08-21 (#490).* The branch ruleset requires one check — the aggregate
 `ci` job — and that job enumerates its dependencies **by hand, twice**:
 
 1. its `needs: [changes, lint, lint-markdown, build-test, …]` list, and
@@ -1201,7 +1201,7 @@ runner image changes its device names.
 
 ### `Date.ParseStrategy` is lenient; `Date.ISO8601FormatStyle` validates
 
-*2026-08-21 (#PR_NUMBER).* The two date parsers Foundation offers are **not**
+*2026-08-21 (#490).* The two date parsers Foundation offers are **not**
 interchangeable, and the difference is invisible until it corrupts data.
 
 `Date.ParseStrategy(format:)` **rolls out-of-range components over** rather than
@@ -1230,7 +1230,7 @@ path survives the full-timestamp form some endpoints send.
 
 ### An `@available(*, unavailable)` overload does not block an existential parameter
 
-*2026-08-21 (#PR_NUMBER).* `APIRequestQueryItems` is
+*2026-08-21 (#490).* `APIRequestQueryItems` is
 `[Name: CustomStringConvertible]`, so `queryItems[ifPresent: .startDate] =
 someDate` compiles and stringifies via `Date.description` — putting
 `"2024-01-01 00:00:00 +0000"` on the wire. The obvious structural fix is an
