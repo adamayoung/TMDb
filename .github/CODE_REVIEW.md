@@ -73,13 +73,21 @@ inflate nitpicks to Critical.
 
   ```text
   Service (e.g. TMDbMovieService)
-  └── ErrorMappingAPIClient        (maps TMDbAPIError → public TMDbError)
-      └── TMDbAPIClient            (adds api_key, validates status, decodes)
-          └── HTTPClient (protocol)
-              └── CacheHTTPClient          (opt-in)
-                  └── RetryHTTPClient      (opt-in; exponential backoff)
-                      └── URLSessionHTTPClientAdapter  (or user-supplied client)
+  └── APIClient (protocol)
+      └── ErrorMappingAPIClient        (maps TMDbAPIError → public TMDbError)
+          └── UnmappedAPIClient (protocol)
+              └── TMDbAPIClient        (adds api_key, validates status, decodes)
+                  └── HTTPClient (protocol)
+                      └── CacheHTTPClient          (opt-in)
+                          └── RetryHTTPClient      (opt-in; exponential backoff)
+                              └── URLSessionHTTPClientAdapter  (or user-supplied client)
   ```
+
+  The two-protocol split is load-bearing: services depend on `APIClient` and
+  `TMDbAPIClient` conforms only to `UnmappedAPIClient`, so no service can be
+  wired to the unmapped client by accident (ADR-0001). **Check the invariant**:
+  a new service takes `APIClient`, never `UnmappedAPIClient`, and never does its
+  own error translation.
 
 - New services are constructed and exposed in `TMDbClient`'s private init;
   `TMDbFactory` vends only shared plumbing (`makeServiceDependencies`, the API

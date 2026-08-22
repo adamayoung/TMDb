@@ -13,10 +13,11 @@ own requirement), `lint-fixtures` (`check-fixtures.py`, JSON fixture hygiene),
 DocC page), `lint-prose` (`check-prose-call-forms.py`, code samples calling a
 method that does not exist), `lint-readme-version`
 (`check-readme-version.py`, README's `.package(from:)` vs the newest
-`CHANGELOG.md` release) and `lint-run-list` (`run-script-tests.py`, the
-`/triage-issues` run-list builder's own suite, including whether the skill prose
-still agrees with the grammar the builder defines) — then `swiftlint --strict .`,
-then `swiftformat --lint .`.
+`CHANGELOG.md` release) and `lint-run-list` (`run-script-tests.py` — despite
+the target's name, **every** suite under `Scripts/tests/`: the `/triage-issues`
+run-list builder, the `/deliver` selection-prose anti-drift cases, the
+`deliver-runfile.py` writer, and the workflow cache-key/change-gate cases) —
+then `swiftlint --strict .`, then `swiftformat --lint .`.
 
 Each script enforces something no single-file linter can see, and a failure in
 any of them is **not** a formatting problem: `/format` will not fix it.

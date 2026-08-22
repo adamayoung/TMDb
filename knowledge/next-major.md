@@ -7,7 +7,9 @@ them at release time — they missed the 19.0.0 window as a result.
 
 **Read this when:** you open a `[X.0.0]` section in `CHANGELOG.md` (the
 sentinel comment there points here), or a plan already contains one breaking
-change (batch deliberately, or record why not).
+change (batch deliberately, or record why not) — and **`/cut-release` reads it
+before tagging**, which is the backstop for entries queued after the CHANGELOG
+section was already open.
 **Write to it** via `/capture-knowledge` whenever a fix is rejected or
 deferred *because* it is breaking. **Remove an entry when it ships** (the
 CHANGELOG records it) or is rejected outright (record that in
@@ -21,7 +23,7 @@ CHANGELOG records it) or is rejected outright (record that in
 > `skill-improvement-log.md` entry of the same date. Anything added here now is
 > queued for **21.0.0** unless 20.0.0 is still untagged when you read this.
 >
-> **Still untagged as of 2026-08-13** (latest tag is `19.0.0`), so the two
+> **Still untagged as of 2026-08-22** (latest tag is `19.0.0`), so the two
 > `TMDbIntelligence` vocabulary entries added that day are deferred by **scope
 > choice, not by the window** — they were consciously left out of issue #420's
 > delivery to keep its diff focused, and could still land in 20.0.0 if someone

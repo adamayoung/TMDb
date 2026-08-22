@@ -41,7 +41,9 @@ guidelines mark as "tool-permitting / local only":
 - **Apple API specifics** — use the sosumi MCP (`mcp__sosumi__*`) to check
   concurrency safety, availability, and behaviour rather than guessing.
 - **Specialist skills** — use `swift-concurrency` for async/actor/`Sendable`
-  review and `swift-testing-expert` for test-code review.
+  review and `swift-testing-expert` for test-code review. Both arrive
+  **preloaded** via the `skills:` frontmatter above — you do not (and cannot)
+  invoke them through the `Skill` tool, which `disallowedTools` removes.
 - **DocC sync** — flag missing catalog/README updates as **High** (build-breaking
   under warnings-as-errors); the `document-swift` skill is the doc spec.
 - **Do not build or run tests** — reviewing is a reading task, and the caller
@@ -55,7 +57,8 @@ guidelines mark as "tool-permitting / local only":
   **Half of this is enforced, half is not — know which.** The frontmatter's
   `disallowedTools` removes `Edit`/`Write`/`NotebookEdit` (you cannot modify
   the tree, so "produce findings, don't fix" is structural) and `Skill` (so
-  `/build`, `/test` and `/integration-test` are unreachable). `Bash` you keep,
+  `/build`, `/test` and `/integration-test` are unreachable — but the two
+  specialist skills survive, preloaded via `skills:`). `Bash` you keep,
   because you need `git diff` and `git log` — so **`make` and `swift build` are
   still physically reachable and the rule against them rests on you**. That is
   the one prohibition here with nothing behind it.

@@ -9,8 +9,10 @@ Grooms the **Backlog** column of the `TMDb` GitHub Project into a queue someone
 can work from without asking a question first.
 
 The board is at `github.com/users/adamayoung/projects/<n>`; issues live in
-`adamayoung/TMDb`. This skill **owns** the Ready test, the priority and size
-rubrics, and the wontfix rules — nothing else in the repo restates them.
+`adamayoung/TMDb`. This skill **owns** the Ready test, the four exits, the
+wontfix rules and the skip rule; the priority and size rubrics live in
+`.claude/workflows/triage-issues.js` (`RUBRIC`), the copy handed to every
+agent — nothing else in the repo restates any of them.
 Issue *creation* is owned by [`.github/ISSUE_FILING.md`](../../../.github/ISSUE_FILING.md);
 this skill consumes what that produces.
 

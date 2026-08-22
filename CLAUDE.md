@@ -370,9 +370,11 @@ carried a bearer-like credential for two months (issue #421).
 ### Inside Xcode vs. terminal
 
 Outside Xcode (terminal Claude Code), the skills fall back to `make`
-(`make build` / `make test` / `make integration-test`). Inside Xcode (the native
-Claude Agent integration) use the `mcp__xcode-tools__*` tools — **not**
-`mcp__xcode__*` (a separate, redundant server). The full tool list, test-plan
+(`make build` / `make test` / `make integration-test`); the `mcp__xcode__*`
+server that `.mcp.json` registers is what a terminal session gets, but the
+`make` route is preferred there. Inside Xcode (the native
+Claude Agent integration) use the `mcp__xcode-tools__*` tools — which exist
+**only** inside that integration, not in a terminal session. The full tool list, test-plan
 selection (**TMDb** unit / **Integration**), and the xcsift output-formatting
 details (`-f toon` local vs `-f github-actions` CI, `--Werror`, `pipefail`) are in
 [`knowledge/gotchas.md`](knowledge/gotchas.md) under **Tooling**.
@@ -447,9 +449,13 @@ error on *unchanged* files is almost always a version-drift artifact (a
 rule's behaviour changed between versions), not a real violation — check
 `swiftlint version` against the pin before editing the flagged code.
 
-### Auto-formatting on edit (PostToolUse hooks)
+### Edit hooks (PreToolUse guard + PostToolUse auto-formatting)
 
-Two `PostToolUse` hooks (in `.claude/settings.json`) run automatically after every
+Three hooks in `.claude/settings.json` fire around every `Edit`/`Write`. A
+`PreToolUse` hook **refuses any edit while the checkout is on `main`** (exit 2
+with a message) — the enforcement behind the *Branching* rule below, so the
+failure mode is a hard refusal, not a silent bad commit. Two `PostToolUse`
+hooks then run after every
 `Edit`/`Write`, so files are reshaped on disk **after** you write them:
 
 - **`.swift`** → `swiftlint --fix` then `swiftformat`.
@@ -533,8 +539,9 @@ Structural pattern for a new service:
 2. Models in `Domain/Models/` conform to `Codable`, `Equatable`, `Hashable`,
    `Sendable`.
 3. Construct and expose the service in `TMDbClient.swift`'s private init.
-   `TMDbFactory` vends only shared plumbing (`makeServiceDependencies`,
-   `httpClient(wrapping:)`) — services are **not** registered there.
+   `TMDbFactory` vends the shared plumbing — `makeServiceDependencies`,
+   `httpClient(wrapping:)`, and the three API-client factories (`apiClient`,
+   `authAPIClient`, `v4APIClient`) — but services are **not** registered there.
 4. Unit tests with JSON fixtures (`Tests/TMDbTests/Resources/`) **and** integration
    tests (`Tests/TMDbIntegrationTests/`).
 
@@ -584,7 +591,9 @@ declaration has an accurate `///`, and simplify where you can.
 
 **CRITICAL: Never make changes directly on `main`.** All changes —
 features, fixes, documentation, configuration — MUST be made on a
-branch created from `main`.
+branch created from `main`. This is **enforced**, not just stated: a
+`PreToolUse` hook in `.claude/settings.json` refuses `Edit`/`Write` while the
+checkout is on `main`.
 
 Before editing any file, verify you are on a branch other than `main`:
 

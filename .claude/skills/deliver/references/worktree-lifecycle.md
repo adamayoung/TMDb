@@ -146,15 +146,31 @@ loudly instead of silently. **A missing run file at Phase 6 is a hard stop**,
 exactly as a dead grader is not a pass. `rubric: none` (present, empty) is the
 sanctioned rubric-less path and is *not* the same as a missing file.
 
-**Writing it from inside a worktree.** Phase 0 writes the file *before*
-`EnterWorktree`, so no guard applies there. Later updates do: a worktree-isolated
-session refuses `Bash` commands it cannot statically prove stay inside the
-worktree, and `.git/deliver/` is outside it **by design** (it lives in the common
-git dir). `Edit`/`Write` on that path are refused too. Use a single-purpose
-command with a **fully literal** path — `sed -i '' 's/…/…/' /abs/literal/path`
-works where the `jq`-to-temp-then-`mv` idiom is refused. Full workaround list:
-`knowledge/gotchas.md` → *In a worktree session, Bash refuses commands it can't
-prove stay inside it*.
+**Writing it from inside a worktree — use `Scripts/deliver-runfile.py`, and
+never assume a write landed.** Phase 0 writes the file *before* `EnterWorktree`,
+so no guard applies there. Later updates do: a worktree-isolated session refuses
+`Bash` commands it cannot statically prove stay inside the worktree, and
+`.git/deliver/` is outside it **by design** (it lives in the common git dir).
+`Edit`/`Write` on that path are refused too, and some `Bash` refusals are
+**silent** — a heredoc rewrite produced no output, no error and no write
+(PR #474), and in the #493 delivery two unnoticed refusals led the conductor to
+certify a plan revision to the juror panel that was not on disk. So every
+post-Phase-0 run-file update goes through the script (ADR-0015 addendum):
+
+```bash
+python3 Scripts/deliver-runfile.py set /abs/literal/.git/deliver/<id>.json \
+  deliverables.0.stamps.reviewedClean "<content hash>"
+```
+
+Single-purpose, fully literal arguments — the shape the guard accepts — and the
+script **verifies its own postcondition**: it re-reads the file from disk and
+exits non-zero (`2`) if the value is not there, printing `verified: <path> =
+<value>` when it is. **Treat any exit other than 0 as a hard stop on the phase's
+write, never as done** — a run-file write that reports nothing has told you
+nothing, and a phase that carries on regardless ends up certifying state that
+does not exist. Ad-hoc `sed`/heredoc routes are retired; the guard-shape detail
+lives in `knowledge/gotchas.md` → *In a worktree session, Bash refuses commands
+it can't prove stay inside it*.
 
 `rubricProvenance` records where the ACs came from — `supplied` when the plan
 carried them, or `derived — <source>` when Phase 0 derived them from a linked
