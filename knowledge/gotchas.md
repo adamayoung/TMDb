@@ -1,10 +1,12 @@
 # Gotchas & Lookups
 
 Implementation quirks, tooling traps, and things that needed a lookup to resolve.
-Within each section, **dated entries are newest-first** and undated evergreen
-conventions sit at the bottom. Keep each entry short, and **date every entry
-that records an observation** (an undated entry can never be aged out); link an
-ADR if a decision came out of it. Cite the **PR** that did the work, not the
+Entries are **grouped by topic within each section** (not strictly
+newest-first — related traps sit together so a reader finds the family, not
+just the latest instance). Keep each entry short, and **date every entry
+that records an observation** (an undated entry can never be aged out; a few
+undated evergreen conventions exist and are convention-shaped on purpose); link
+an ADR if a decision came out of it. Cite the **PR** that did the work, not the
 issue — see `README.md`.
 
 ## False green — the recurring failure family
@@ -96,7 +98,7 @@ be **importable**, so pass `top_level_dir` equal to the start directory (or add
 an `__init__.py`) — otherwise it fails with *"Start directory is not
 importable"*.
 
-### The `Lint` job gates its own `Checkout` on `swift`, and PRs ignore `on.paths`
+### A `Lint` step gated more widely than `Checkout` runs with no repository — and PRs ignore `on.paths`
 
 *2026-08-20 (PR #476).* Two facts about `.github/workflows/ci.yml` that decide
 whether a check you add actually runs.
@@ -178,7 +180,7 @@ at the moment you notice it, not a tidiness issue.
 - **An enumeration inside a single file.** A third test was added to a section,
   and two other lists in the *same file* still enumerated only the first two.
 
-*Recurred 2026-08-20 (issue 481), four more times, in the delivery whose whole
+*Recurred 2026-08-20 (#482), four more times, in the delivery whose whole
 purpose was closing this class.* The reflexive set turned out to have a **third**
 copy (`deliver/references/worktree-lifecycle.md`) missing `.claude/workflows/**`,
 while `SKILL.md` asserted the set was "quoted in exactly one other place". Then
@@ -220,7 +222,7 @@ copy, so which one wins is unpredictable. Countermeasures, cheapest first:
 
 ### A test that asserts on prose can be blind — mutation-test it, don't read the green
 
-*2026-08-20 (PR for issue 481).* This repo now guards prose rules with tests that
+*2026-08-20 (#482).* This repo now guards prose rules with tests that
 read the skill files off disk (`Scripts/tests/test_deliver_selection_prose.py`,
 `test_build_run_list.py`'s `AntiDriftTests`). Those tests are the countermeasure
 for the entry above — and in one delivery **three** of them passed while checking
@@ -258,8 +260,8 @@ Two of those started GREEN. Prefer asserting a **canonical phrase** (here
 
 ### Anti-drift tests must enumerate with `git ls-files`, never a filesystem glob
 
-*2026-08-20 (PR for issue 481).* `.claude/worktrees/` is gitignored
-(`.gitignore:19`) but **present on disk**, and it holds a complete second copy of
+*2026-08-20 (#482).* `.claude/worktrees/` is gitignored
+(`.gitignore:18`) but **present on disk**, and it holds a complete second copy of
 every skill file — one per in-flight `/deliver` run, and concurrent runs are
 explicitly sanctioned. So a test globbing `.claude/**/*.md` walks *other
 branches'* checkouts: it is red locally and green in CI, non-deterministically,
@@ -429,10 +431,15 @@ while the PR merges green. Adding a job means editing both. This is the same
 hardcoded-in-N-places trap `CLAUDE.md` records for test-target names — which is
 now **five** sites, the fifth being the `unit-test-timezones` matrix job.
 
-Note also that every job is gated on `needs.changes.outputs.swift == 'true'`, and
-the aggregate treats `skipped` as a pass. That is fine for a build job, but it
-means a behaviour change that touches no `*.swift` — a JSON fixture, a workflow —
-is not covered by the jobs that would have proven it.
+Note also that the aggregate treats `skipped` as a pass, so the paths filter
+decides what a green `ci` check actually proved. The `swift` key is deliberately
+wider than `*.swift` — it includes `Tests/TMDbTests/Resources/**` (fixtures are
+a build input of `TMDbTests`), `Package.swift`, `Scripts/**`, `Makefile`,
+`Sources/TMDb/TMDb.docc/**`, `README.md` and `.github/workflows/ci.yml` — so a
+fixture-only or ci.yml-only change *does* run the build/test jobs. The residual
+gap is narrower: a PR touching only a **non-ci** workflow (`claude.yml`,
+`codeql.yml`, `documentation.yml`, `integration*.yml`) sets only `markdown`, so
+the build/test jobs skip and the aggregate passes on skips.
 
 ### No workflow runs `make` — a check added to a `make` target does not reach CI
 

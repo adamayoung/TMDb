@@ -1,10 +1,8 @@
-# 23. Enforce fixture hygiene with an independent strict parser, not a Swift test
+# ADR-0023: Enforce fixture hygiene with an independent strict parser, not a Swift test
 
-Date: 2026-08-14
-
-## Status
-
-Accepted (unreleased — tooling only)
+- **Status:** Accepted (unreleased — tooling only)
+- **Date:** 2026-08-14
+- **Deciders:** Adam Young
 
 ## Context
 

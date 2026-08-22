@@ -4,22 +4,23 @@ The **Lint Markdown** job runs in the
 `ghcr.io/igorshubovych/markdownlint-cli:v0.48.0` container and lints:
 
 ```bash
-markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md"
+markdownlint "README.md" "CLAUDE.md" "**/*.docc/**/*.md" ".claude/**/*.md" "knowledge/**/*.md" ".github/*.md"
 ```
 
-Five path groups: `README.md`, `CLAUDE.md`, DocC catalog markdown
+Six path groups: `README.md`, `CLAUDE.md`, DocC catalog markdown
 (`Sources/**/*.docc/**/*.md`), **every skill and agent file under `.claude/`**,
-and **the knowledge base under `knowledge/`** — the last two are the most
-frequently edited, so a failure here is most often a skill edit or a captured
-entry, not a README one. The job runs only when the `markdown` paths filter
-matched one of those, or on `workflow_dispatch`.
+**the knowledge base under `knowledge/`**, and the top-level `.github/*.md`
+specs (`CODE_REVIEW.md`, `ISSUE_FILING.md`) — the `.claude/` and `knowledge/`
+groups are the most frequently edited, so a failure here is most often a skill
+edit or a captured entry, not a README one. The job runs only when the
+`markdown` paths filter matched one of those, or on `workflow_dispatch`.
 
 `knowledge/skill-improvement-log.md` carries a scoped
 `<!-- markdownlint-disable-file MD001 -->`: its entries are dated `###` headings
 with no `##` sections, which is the documented log shape. That is the only
 per-file exemption — don't add more without saying why in the file.
 
-Config is `.markdownlintrc`, shared by all five groups. Note **`MD013`
+Config is `.markdownlintrc`, shared by all six groups. Note **`MD013`
 (line-length) and `MD041` (first-line heading) are disabled**, so neither can
 be the cause — don't start there.
 
@@ -28,7 +29,6 @@ be the cause — don't start there.
 markdownlint emits `file:line[:col] MD0xx/rule-name <message>`. The `MD0xx`
 code maps to a rule; common ones in this repo:
 
-- **MD013** line-length — a prose line exceeds the configured limit.
 - **MD024** duplicate heading — two headings with the same text in one file.
 - **MD031 / MD032** — fenced code blocks / lists need surrounding blank lines.
 - **MD040** — fenced code block missing a language (` ``` ` → ` ```swift `/` ```text `).
@@ -54,8 +54,9 @@ be the failure. Read it before assuming a default limit applies.
 make lint-markdown
 ```
 
-(runs the same four `markdownlint` invocations as CI — verified identical to
-`.github/workflows/ci.yml`'s `Lint Markdown` step). Fix, re-run until clean.
+(lints the same file set as CI's `Lint Markdown` step, split across five
+`markdownlint` invocations — `Makefile`, target `lint-markdown` — where CI
+passes all six globs to one). Fix, re-run until clean.
 
 ## Output
 

@@ -52,7 +52,7 @@ SAMPLE = {
         {
             "title": "one",
             "issue": 490,
-            "stamps": {"reviewedClean": None, "securityClean": None},
+            "stamps": {"reviewedClean": None, "securityClean": None, "rubricGraded": None},
             "status": "open",
         }
     ],

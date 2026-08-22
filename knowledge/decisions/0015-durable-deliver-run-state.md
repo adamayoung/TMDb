@@ -95,6 +95,10 @@ for anything git can settle.**
 
 ## Addendum (2026-08-22) — writes are script-mediated and self-verifying
 
+*(An extending addendum, per the index README's immutability rule: nothing
+above is reversed — the location and every property chosen for it stand; this
+adds the write route that makes them reachable in practice.)*
+
 The location stands; the write route it implied did not survive contact with
 the worktree guard. A worktree-isolated session's `Bash` guard refuses commands
 it cannot statically prove stay inside the worktree, and `.git/deliver/` is

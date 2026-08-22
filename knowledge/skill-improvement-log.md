@@ -64,6 +64,8 @@ those two runs stay comparable.
 
 ---
 
+### 2026-08-22 — /review-knowledge run · 8 agents · 1364117 tokens · 0 critical / 12 major / 27 minor
+
 ### 2026-08-21 — The run file lives where the worktree guard forbids writing (#490) · applied
 
 - **Pattern:** `/deliver`'s run file is specified to live at
@@ -74,17 +76,19 @@ those two runs stay comparable.
   fights the guard. The friction appears in **four** retro entries
   (`delivery-retros.md`: #432, #476, #486, and this delivery), and #432 states
   the contradiction outright — *"its run-file location is at odds with its
-  worktree isolation"*. It is not in this log, so it has recurred four times
-  without ever being raised as a proposal.
+  worktree isolation"*. It had been raised once before — the 2026-08-12 #440
+  entry below, same root cause, decided together with this one — and recurred
+  four more times in between without the two ever being connected.
 
   The failure is not a hard block — it is a tax. The refusal message asks you to
   "split it into plain, separate commands", so each write becomes write-a-script
   then run-it, and long heredocs are refused where shorter writes to the same
   path succeed (it keys on complexity, not permissions). This delivery paid it
   roughly six times: every `stamps` update, the reconcile record, the rubric,
-  and the plan file. `worktree-lifecycle.md` already documents the workaround —
-  a fully literal path with a single-purpose command — which is evidence the
-  friction is known and has been absorbed rather than fixed.
+  and the plan file. `worktree-lifecycle.md` documented the workaround —
+  a fully literal path with a single-purpose command — which was evidence the
+  friction was known and had been absorbed; it stayed absorbed rather than
+  fixed until this entry's decision.
 
 - **Decision:** **applied** (Adam's review, 2026-08-22, this PR — deciding this
   entry and the 2026-08-12 #440 entry together, same root cause). Option (a)
@@ -126,10 +130,10 @@ those two runs stay comparable.
   from the artifact it told me to check"*. So the failure mode is not slower
   writes; it is a **false certification to the mechanism that stands in for the
   user in auto mode**, which the run then had to disclose and re-panel to clear.
-  Weigh option (a) accordingly — and note that whichever option is chosen, the
-  cheap independent mitigation is to have every phase that writes state re-read
-  it and assert the change is present, treating a mismatch as a hard stop. That
-  mitigation is worth applying even if the file never moves.
+  This recurrence is what forced option (a) — and the independent mitigation it
+  called for (every state write re-read and asserted, mismatch = hard stop) is
+  now the script's own postcondition check, applied whatever happens to the
+  file's location.
 
 ### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · applied
 
@@ -1135,6 +1139,9 @@ those two runs stay comparable.
   wrong.
 - **Reconsider when:** a deliberate major-version bump is on the table for other
   reasons — then reconsider as part of a broader `TMDbError` review, never alone.
+  *Closed retroactively by the 2026-08-12 entry above: the condition was met
+  when issue #419 reopened `TMDbError`, the question was re-examined there, and
+  the merge was rejected outright — never for the merge itself.*
 
 ### 2026-06-30 — Align `Network` to `Company` (rename `homepage`, force `logoPath` non-optional) · rejected
 

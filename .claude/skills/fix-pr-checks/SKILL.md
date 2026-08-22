@@ -117,7 +117,8 @@ Run the script below via the `Workflow` tool with
 the ledger's record for that check (omit on a first attempt). It is embedded
 here, not a file, because it runs **once per invocation** — the same rule that
 keeps `/review-plan`'s and `/review-changes`'s scripts embedded, while
-`deliver-panel.js` lives in `.claude/workflows/` (it runs six times per run).
+`deliver-panel.js` lives in `.claude/workflows/` (it runs at every panel
+decision point — seven of them — in a single run).
 Invoking this skill is itself the opt-in to call `Workflow`.
 
 The guards are **executable `throw`s, not instructions**: a malformed payload
