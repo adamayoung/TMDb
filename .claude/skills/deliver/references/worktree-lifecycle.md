@@ -399,7 +399,8 @@ worktree without it is a worktree that cannot authenticate.
 
 **It carries the credentials, not just permissions.** `TMDB_API_KEY`,
 `TMDB_USERNAME`, `TMDB_PASSWORD` and the two v4 tokens live in its `env` block
-(`CLAUDE.md` → *Shell Environment*), and a fresh checkout has none of them — so
+(`.claude/docs/tooling.md` → *Shell Environment*), and a fresh checkout has
+none of them — so
 without this file `make integration-test` fails at `.check-env-vars` and the v4
 suites skip. Treat it as credential-bearing: never paste its contents, never
 commit it. It stays gitignored inside the worktree.

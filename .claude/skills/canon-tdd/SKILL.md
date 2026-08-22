@@ -81,7 +81,8 @@ Apply the loop with the project's tooling and conventions:
   must exercise **every** decode branch (all N optional appended properties, plus
   a paired "without appended data" test that asserts they're `nil`). Use the TMDb
   MCP server (`mcp__tmdb__*`) to fetch **real** API responses for fixtures rather
-  than inventing JSON — see CLAUDE.md → "Workflow for New Endpoints".
+  than inventing JSON — see `.claude/docs/tmdb-api.md` → "Workflow for New
+  Endpoints".
 - **Bug fixes:** the first item on the list is a test that **reproduces the bug**
   (red), then the fix (green) — never fix first.
 - **New public API:** the test list should include the doc/DocC and README

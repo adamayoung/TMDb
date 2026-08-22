@@ -7,7 +7,7 @@ Package.resolved
 xcuserdata/
 .vscode
 *.xctestplan
-docs/
+/docs/
 info.lcov
 default.profraw
 junit-swift-testing.xml

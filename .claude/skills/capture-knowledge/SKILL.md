@@ -37,7 +37,8 @@ a future me waste time without this?":
 
 Mirror the discipline of a good memory — don't record:
 
-- Anything already in the code, `CLAUDE.md`, the DocC docs, or git history.
+- Anything already in the code, `CLAUDE.md`, the topic docs under
+  `.claude/docs/`, the DocC docs, or git history.
 - Facts that only mattered to this one task and won't recur.
 - Restatements of the obvious. If asked to record something obvious, capture the
   *non-obvious* part (what surprised you) or skip it.

@@ -428,7 +428,8 @@ and a mis-capture fails loudly instead of passing empty.
 
 A job missing from either is invisible to the required check, so it can go red
 while the PR merges green. Adding a job means editing both. This is the same
-hardcoded-in-N-places trap `CLAUDE.md` records for test-target names — which is
+hardcoded-in-N-places trap `.claude/docs/testing.md` records for test-target
+names — which is
 now **five** sites, the fifth being the `unit-test-timezones` matrix job.
 
 Note also that the aggregate treats `skipped` as a pass, so the paths filter
@@ -1830,7 +1831,8 @@ hatch. The synthesised `==` is **not** structural: Swift derives it from
 
 ### `NaturalLanguageSearchService` is not platform-gated — only its `TMDbClient` accessor is
 
-*2026-06-23.* `CLAUDE.md` describes natural-language search as "Apple-platforms
+*2026-06-23.* `.claude/docs/architecture.md` describes natural-language search
+as "Apple-platforms
 only", which is easy to over-apply. In fact the **protocol** and all its types
 (`SearchPlan`, `NaturalLanguageSearchResult`, `NaturalLanguageSearchError`,
 `NaturalLanguageSearchAvailability`) only `import Foundation` — **no
