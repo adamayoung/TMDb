@@ -38,9 +38,9 @@ TESTS = ROOT / "Scripts" / "tests"
 # diff-visible bump in the same commit that adds a test, which is the only
 # enforcement a "remember to update this" comment ever really has.
 #
-# Currently: 38 in test_build_run_list.py + 11 in test_deliver_selection_prose.py
-# + 26 in test_workflow_gates.py.
-EXPECTED_MINIMUM = 75
+# Currently: 38 in test_build_run_list.py + 13 in test_deliver_runfile.py
+# + 11 in test_deliver_selection_prose.py + 26 in test_workflow_gates.py.
+EXPECTED_MINIMUM = 88
 
 
 def main() -> None:

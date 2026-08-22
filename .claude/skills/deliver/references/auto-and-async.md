@@ -3,11 +3,12 @@
 Read on demand when `/deliver auto` is invoked, or when queuing an unattended
 run. The one safety rule that lives in `SKILL.md` regardless: a **data-loss or
 breaking-change plan blocker is always a hard stop, even in auto** — it is
-never delegated to the panel. (Note: as of 2026-07, auto mode has not yet been
-exercised by a real delivery — validate against this spec on first use. The
-panel's two guard rails **have** been exercised: an unlisted `decision` and a
-conductor-supplied `recommendation` each throw before any agent spawns,
-verified 2026-07-29. The jurors themselves remain unexercised.)
+never delegated to the panel. (Auto mode is exercised: real unattended
+deliveries have run it — e.g. PRs #448, #474, #482 and #493 — and the juror
+panel has returned both `proceed` and `stop` verdicts, including #493's
+`phase2-blocker` stop. The panel's two guard rails are exercised too: an
+unlisted `decision` and a conductor-supplied `recommendation` each throw
+before any agent spawns, verified 2026-07-29.)
 
 ## Auto mode (unattended)
 
@@ -130,9 +131,10 @@ If you queue a `/deliver`, mind two things:
 - **Inline the whole plan + acceptance criteria in the trigger prompt.** A
   fresh session has no conversation history, and Phase 0's entry gate
   **requires ACs** — so the plan text and its ACs must travel *in* the prompt,
-  or the run stops at the gate immediately. **a selection run is the exception**, and
-  only in your own environment** — it derives both from the issue it picks, so
-  `/deliver auto merge next` and `/deliver auto merge issue <n>` need no plan in the prompt at all — both derive their ACs from the issue. That works from
+  or the run stops at the gate immediately. **A selection run is the
+  exception, and only in your own environment**: it derives the plan and its
+  ACs from the issue it picks, so `/deliver auto merge next` and
+  `/deliver auto merge issue <n>` need no plan in the prompt. That works from
   a CCR-spawned session, which keeps your user-scoped MCP; it does **not** work
   on a GitHub Actions runner, where the Projects MCP is not mounted and
   `gh project` fails for want of the `read:project` scope

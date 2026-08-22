@@ -8,11 +8,13 @@ matching file.
 
 | Failing job (`name:` in ci.yml) | Reference | When to use |
 |---|---|---|
-| **Lint** | [lint.md](lint.md) | `swiftlint --strict .` or `swiftformat --lint .` failed |
-| **Lint Markdown** | [markdown.md](markdown.md) | `markdownlint` failed on README or a DocC `.md` |
+| **Lint** | [lint.md](lint.md) | `swiftlint --strict .`, `swiftformat --lint .`, or one of the six `Scripts/*.py` gate steps failed |
+| **Lint Markdown** | [markdown.md](markdown.md) | `markdownlint` failed on README, `CLAUDE.md`, a DocC `.md`, `.claude/**`, `knowledge/**` or `.github/*.md` |
 | **Build and Test** (build step) | [build.md](build.md) | `swift build … -warnings-as-errors` failed (error or warning) |
 | **Build and Test** (test step) | [unit-tests.md](unit-tests.md) | `swift test` failed (filter covers all four unit-test targets) |
+| **Build (iOS / tvOS / watchOS / visionOS)** | [build.md](build.md) | the `xcodebuild` simulator matrix failed — platform availability/gating |
 | **Build and Test (Linux)** | [linux.md](linux.md) | Fails in the `swift:6.1-jammy` container but passes on macOS |
+| **Test (America/Los_Angeles or Pacific/Auckland)** | [unit-tests.md](unit-tests.md) | the TZ matrix failed — a date/calendar assertion depends on the runner's zone |
 
 ## By symptom
 
@@ -24,6 +26,9 @@ matching file.
 - SwiftLint `(rule_id)` violation → [lint.md](lint.md)
 - `superfluous_disable_command` on **unchanged** code → [lint.md](lint.md) (version drift)
 - SwiftFormat `--lint` reports a file would change → [lint.md](lint.md)
+- a `python3 Scripts/<name>.py` step failed (fixture / curation / prose / version / run-list) → [lint.md](lint.md)
+- fails only in `Build (<platform>)`, macOS build green → [build.md](build.md) (availability gating)
+- fails only in `Test (<timezone>)` → [unit-tests.md](unit-tests.md) (local-zone date dependency)
 - markdownlint `MD0xx` → [markdown.md](markdown.md)
 
 All paths share the [output format](../SKILL.md#output-format): **Summary / Cause / Fix**.

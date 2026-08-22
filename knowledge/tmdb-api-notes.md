@@ -2,7 +2,11 @@
 
 Behaviours of the **live** TMDb API discovered while implementing — the things the
 docs don't say, or say wrongly. This is an API-client library, so these recur.
-Newest at the top; cite the endpoint and the date observed.
+Newest at the top; cite the endpoint and **the date observed** for every entry
+that records a measurement (a section preamble date counts when it names which
+entries it covers). A handful of undated entries are working *conventions* —
+how to read the spec, how to decide optionality — not observations, and carry
+no date on purpose: a convention cannot go stale the way a measurement can.
 
 ## v4 API
 
@@ -498,7 +502,8 @@ empty strings, not `null` and not absent. `TVSeriesTranslationData` types
 
 ## Response shapes
 
-*All three measured 2026-08-14 while re-capturing orphaned fixtures (#457).*
+*Measured 2026-08-14 while re-capturing orphaned fixtures (#457), except where
+an entry carries its own date.*
 
 ### `/tv/{id}/watch/providers` keys `results` by country — an object, not an array
 

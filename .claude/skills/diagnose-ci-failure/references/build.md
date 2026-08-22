@@ -50,3 +50,23 @@ surface as GitHub `::error::` annotations with `file:line`.
 **Summary:** Build and Test — build step — `error`/`warning` at `file:line`.
 **Cause:** the compile error or `--Werror` warning, tied to a changed file.
 **Fix:** resolve it at `file:line`; reproduce with `/build-for-testing`.
+
+## The `Build (<platform>)` simulator matrix
+
+`Build (iOS)` / `Build (tvOS)` / `Build (watchOS)` / `Build (visionOS)` are one
+matrix job that builds the `TMDb-Package` scheme with **`xcodebuild`** against a
+generic simulator destination — not SwiftPM — so a green `make build` does not
+clear it. A failure here and nowhere else is almost always **platform-specific
+API availability**: a symbol that does not exist on that platform, a missing
+`@available`/`#if canImport(...)` gate (the `TMDbIntelligence` surfaces are the
+usual suspects — `NaturalLanguage` and `FoundationModels` are gated per
+platform), or a watchOS/tvOS-only Foundation difference. `--Werror` applies
+here too, via `xcsift -f github-actions --Werror`.
+
+Reproduce from Xcode (the **TMDb** scheme against that platform's simulator),
+or read the flagged `file:line` — the availability fix is usually evident from
+the diagnostic without a local simulator build.
+
+**Summary:** Build (\<platform\>) — `error` at `file:line`.
+**Cause:** platform-specific availability/gating, tied to a changed file.
+**Fix:** add or correct the `@available` / `#if canImport` gate at `file:line`.

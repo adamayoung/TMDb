@@ -6,7 +6,9 @@ backfilled once the PR opens), newest at the top. A noteworthy watch-phase event
 is appended post-gate as an optional *watch:* line — an uneventful watch adds
 nothing. The point is **continuous improvement**: when the same friction or
 deviation recurs across entries, fold the fix into the relevant skill. Keep each
-entry to a handful of bullets — a log, not a ceremony.
+entry to a handful of bullets — a log, not a ceremony. **Scope: `/deliver` runs
+only** — direct commits, improvement-application PRs and audit PRs deliberately
+write no entry here, so a gap in the dates is not a missing retro.
 
 Format: **Feature / PR** · date · **weight** · *phases completed / skills
 invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *friction*
@@ -901,215 +903,6 @@ the board's Ready execution order.
   but neither covers a one-liner changed in passing. Logged in
   `skill-improvement-log.md`.
 
-## 2026-08-13 — 🔧 Move the `/review-knowledge` audit round to Opus (#451) · full
-
-- **Phases / skills:** 0–8 pre-PR. Full weight and reflexive (`.claude/skills/**`),
-  so Phases 4 and 5 ran with their no-Swift self-skip overridden. Skills:
-  `review-plan`, `review-changes` (`force-review`), `security-review`,
-  `capture-knowledge`.
-  `consulted:` gotchas *False green*, *Edits can land in the main checkout*,
-  *In a worktree session Bash refuses commands it can't prove stay inside it*,
-  *EnterWorktree branch name*, *Workflow resolves a repo-relative scriptPath*,
-  *git ls-tree empty hash*, *markdownlint line-leading number-sign*;
-  **ADR-0014** (governing — both proposed changes contradicted it), ADR-0016;
-  wiki *keep-adversarial-reviewers-independent*,
-  *a-detector-whose-green-looks-the-same-when-it-didnt-run*,
-  *an-unenforceable-process-rule-gets-silently-skipped*.
-  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
-  `swept:` `.claude/skills/review-knowledge/SKILL.md` → 3 `gotchas.md` entries
-  written or extended, 1 factual correction in `decisions/0016` (embedded-script
-  count 3 → 4); historical `skill-improvement-log.md` entries left untouched
-  (append-only decision memory); `gotchas.md:59` re-read, still true.
-- **Worked — Phase 0's knowledge consult caught that the whole plan was
-  ADR-governed.** ADR-0014 pins every model tier in `.claude/`, and both proposed
-  changes contradicted it: one reversed its six-day-old addendum, the other
-  partially re-opened an alternative it had explicitly rejected with a revisit
-  trigger that had not fired. Without that read this would have shipped as a
-  config tweak that silently reversed a recorded decision.
-- **Worked — the plan critics changed the shape of the delivery, not just its
-  details.** They killed `effort: high → xhigh` (thinking bills as output at 5×
-  input, so moving two variables would have made the saving unmeasurable and left
-  a regression with two suspects); caught that a conditional `meta.model` would be
-  a temporal-dead-zone `ReferenceError` shipping unexercised, since a reflexive
-  delivery cannot dogfood; and showed the second change's trigger could never fire
-  for reflexive `.claude/` diffs — the class this repo's defect record is made of.
-  Scope went from two changes to one on that evidence; the dropped one is issue
-  #450.
-- **Worked — the code reviewer caught a falsehood in the durable record.**
-  ADR-0020 and the log both claimed *in the past tense* that a GitHub issue had
-  been filed. None had. In a delivery specifically about sharpening the audit that
-  hunts exactly that class of claim.
-- **Worked — a reviewer conceding cleanly on evidence it lacked.** It flagged
-  `meta.phases[].model` as an invented key (High, correctly, from where it sat —
-  the `code-reviewer` agent has no `Workflow` tool and the schema is documented
-  nowhere in the tree). Given the contract it withdrew in full and named its own
-  reasoning error: it had read *absence of the situation* as *avoidance of the
-  field*. Captured as a gotcha.
-- **Friction — the review machinery cost far more than the change saves.**
-  ~1.36M subagent tokens on the plan review, ~284k across two code-review rounds,
-  ~74k grading — for a 6-file markdown diff whose benefit is roughly a quarter off
-  one periodic skill's run. Full weight was the right call for a reflexive change;
-  the problem is that full weight currently means the same machinery for a
-  6-file prose diff as for a multi-service Swift feature.
-- **Friction — the worktree `Bash` guard cost ~8 extra round trips.** Every
-  run-file update, the content stamp and the script parse-check had to be
-  decomposed into single-purpose commands; `$'\t'` quoting was refused outright.
-  Captured.
-- **Deviations:** (1) the ADR was authored in **Phase 3, inside the diff**, not
-  Phase 7 — on the critics' finding that Phase 7's contract permits writing
-  nothing, so a governance record deferred to it is unenforced. This is the
-  sanctioned inline-capture exception. (2) Phase 5 was analysed directly rather
-  than fanned out: every changed file is markdown and the skill's own rule 16
-  excludes documentation findings, so a fan-out was structurally guaranteed
-  empty. Recorded as a visible choice rather than a silent narrowing.
-- **One improvement:** scale Phase 2 and Phase 4 by **diff shape**, not weight
-  alone. `full` currently fixes both risk *and* machinery, so a reflexive prose
-  change — which genuinely needs the adversarial lens — pays for fan-out breadth
-  sized for a multi-service Swift diff. A reflexive-but-small shape wants the
-  critics (they earned their keep here) at a smaller fan-out. Raise against the
-  binary-weight decision deliberately, since that vocabulary is itself a recorded
-  narrowing.
-- **Also noted:** my own AC3 was written too literally — its second clause
-  required *every* `fable` hit to sit in one of two named buckets, which would
-  have demanded deleting true, unrelated history. The independent grader graded
-  the reasonable reading and disclosed the strict one rather than silently
-  passing. Write rubric clauses that scope to the change, not to the whole tree.
-
-## 2026-08-13 — 🐛 Exclude tvOS/watchOS from the FoundationModels planner (#449) · full
-
-- **Phases / skills:** 0–8 pre-PR. Full weight, but with two pieces of machinery
-  deliberately not used (below): `/review-plan`'s critics and
-  `/review-changes`'s fan-out. Skills: `implement-plan`, `review-changes`,
-  `security-review`, `capture-knowledge`.
-  `consulted:` gotchas *No workflow runs make*, *tooling-runner runs in the main
-  checkout*, *Bash refuses commands it can't prove stay inside the worktree*,
-  *Edits can land in the main checkout*, *EnterWorktree branch name*,
-  *FoundationModels/CoreImage watchOS* (retired by this delivery),
-  *NaturalLanguageSearchService is not platform-gated*, *git ls-tree empty
-  hash*; wiki *before-bumping-a-pinned-ci-toolchain-version-verify-the-runner-
-  image-ships-it*, *a-detector-whose-green-looks-the-same-when-it-didnt-run*,
-  *fix-orphaned-platform-gated-api* (ADR-0010 background).
-  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
-  `swept:` `.github/workflows/ci.yml` → 1 entry retired, 2 rewritten; 5 citing
-  entries re-read and left unchanged.
-- **Worked — probing the platforms before accepting the reported fix found a
-  second break.** The issue proposed `&& !os(tvOS)` at four sites and had
-  verified it on 18.2.0. Building the *unfixed* tree for all five Apple
-  platforms first showed watchOS was also red, and `!os(tvOS)` does not fix it:
-  the SDK's availability is asymmetric per symbol, so only the file touching
-  `SystemLanguageModel` breaks there. Shipping the reported patch verbatim
-  would have left watchOS broken and looked like a complete fix.
-- **Worked — the reviewer found a pre-existing false green two lines from the
-  diff.** The aggregate `ci` job never checked the `changes` job's result, and
-  every job is `if: always()` — so a failed paths-filter left all five jobs
-  exiting `success` having done nothing, on a ruleset that requires `CI`. Fixed
-  here because it is the same failure family the delivery exists to close.
-- **Worked — settling a finding by executing it rather than arguing it.** The
-  reviewer flagged that `xcsift --Werror` on a four-SDK `xcodebuild` might fail
-  on Apple's own header warnings — a false *red*, and explicitly "cannot be
-  settled by reading". One cold piped build per new platform answered it (exit
-  0), which is cheaper than the paragraph of speculation it replaced.
-- **Friction — the weight vocabulary did not fit the diff.** Full weight
-  prescribes the fan-out `/review-changes`, but its five dimensions are all
-  Swift lenses (correctness, concurrency, architecture, testing, api-docs) and
-  the risk in this diff was 74 lines of GitHub Actions YAML. A fan-out would
-  have spent four lenses on a five-line Swift change and still had nobody
-  reviewing the workflow. Took the single-reviewer path with a targeted brief.
-- **Friction — the `markdownlint --fix` hook silently corrupted a knowledge
-  entry** by rewriting a line-leading `#416` into an H1, destroying the
-  sentence and then failing the gate on a heading I never wrote. Captured as a
-  gotcha; it will recur, because this repo cites `#NNN` constantly and wraps
-  prose at 80 columns.
-- **Friction (self-inflicted) — ran `make lint` three times** for a diff of five
-  one-line `#if` changes and a doc comment. The `PostToolUse` hook already
-  formats each file on write; `--strict` is the gate and `make ci` runs it. The
-  user pointed this out mid-run.
-- **Deviations:** (1) skipped `/review-plan`'s critics — the plan had been
-  adversarially verified empirically before `/deliver` was invoked, by testing
-  the reporter's proposed fix and finding it insufficient; (2) single-reviewer
-  `/review-changes` at full weight, per the friction above; (3) skipped the
-  standalone `/integration-test` at Phase 3 — the diff is compile-time-only and
-  a provable macOS no-op, the integration target's *compilation* is proven by
-  `--build-tests`, and `make ci` runs the live suite at Phase 9 anyway (the
-  #401 economy); (4) ran `/security-review` inline rather than via sub-tasks,
-  the surface being one workflow file; (5) let the Phase 6 grader run its own
-  platform builds, against the skill's execution cap — the rubric was
-  build-shaped, so having it trust my logs would have made it non-independent
-  on exactly the criteria that mattered.
-- **One improvement:** `/review-changes`'s fan-out has no dimension for CI /
-  workflow changes, so any diff whose risk is in `.github/workflows/` is either
-  reviewed by five Swift lenses or, as here, routed to the single-reviewer path
-  by hand. A sixth `ci-workflow` dimension (gate integrity, false-green paths,
-  secret exposure, cache keys) would make the fan-out usable for
-  infrastructure diffs instead of only Swift ones.
-
-## 2026-08-12 — 🐛 Surface task cancellation as `TMDbError.cancelled` (#433) · full
-
-- **Phases / skills:** 0–8 pre-PR. Full weight: three-critic `/review-plan`, the
-  fan-out + adversarial-verify `/review-changes`, independent grader.
-  `consulted:` ADR-0001/0003/0012/0013, `next-major.md` (the `invalidRating`
-  entry, settled here), gotchas *Swift concurrency* §853-950 (all four entries),
-  `swift-concurrency` skill; wiki *semantic-errors-not-transport-errors*,
-  *treat-review-findings-as-hypotheses*, *for-a-sendable-test-double-reach-for-a-
-  lock-before-an-actor*.
-- **Worked — the plan critics changed the design, not just the wording.** All
-  three independently found a bug the issue never mentioned: a cancelled
-  natural-language search was wrapped as `.planningFailed`, which `canFallBack`
-  treats as fallback-eligible, so `TMDbIntelligence` issued *three fresh live
-  searches on an already-cancelled task* — the library itself doing the
-  "re-run work the user cancelled" harm #419 was filed about. That became Part 4.
-  They also killed two defects that would have shipped: the detection predicate
-  would have swallowed `URLSession.invalidateAndCancel()` as a user cancellation,
-  and `(error as? URLError)` may not match what corelibs-foundation raises on
-  Linux — where the integration test meant to prove it never runs.
-- **Worked — the simplicity critic reversed my Part 2 design, for the better.**
-  I had planned a waiter registry on the actor. The `DataTaskBox`-style
-  `ResumeOnce` box it proposed instead is smaller, touches none of ADR-0013's
-  commit machinery, and *removes* a hang class (late registration) rather than
-  adding one. Its decisive argument was that `onCancel` is synchronous, so a lock
-  beats an actor — which is the wiki entry I had already read and not applied.
-- **Worked — mutation-testing a review finding.** The fan-out claimed the
-  executor-path `catch` arm was untested. Rather than trust or dismiss it, I
-  mutated the arm and re-ran: it failed with `planningFailed(underlying:
-  .cancelled)`, proving both the finding and, after the fix, the new test.
-- **Friction — `.build` contention shaped the schedule, not just the tokens.**
-  Phases 4 and 5 read the same commits and feel parallel, but one scratch dir
-  means they must be serial; every reviewer prompt needed an explicit "do not
-  build". Worth it: full 5/5 dimension coverage, 1 finding dropped by refutation.
-- **Deviations:** (1) test-first per *cohesive unit*, not per test — the
-  exhaustive switches acted as the red signal for the mapping sites, but that is
-  a looser loop than `canon-tdd` prescribes. (2) I skipped a test my own plan
-  listed (composing `TMDbAPIClient` over `RetryHTTPClient`); the grader caught
-  it. (3) The rubric named AC4 in terms the critics later proved unachievable,
-  so it was narrowed mid-run, and AC8 added for Part 4 — both flagged to the
-  user rather than quietly restated.
-- **One improvement — Phase 6 grades AC-shaped knowledge work that Phase 7 has
-  not done yet.** AC6 ("ADR-0018 exists, ADR-0013 amended, `next-major.md` entry
-  removed") failed the first grading *purely* because capture runs after the
-  rubric gate. The criterion was correct and the ordering is deliberate, but a
-  knowledge-shaped AC is guaranteed to fail its first grading. Either `/deliver`
-  should grade knowledge ACs after Phase 7, or Phase 0 should refuse to accept
-  one — worth a wrap-up scan proposal if it recurs.
-- **`swept:`** one stale claim retired — the prefetch-forwarding testing gotcha
-  still described the `Task.checkCancellation()` guard this change replaced;
-  annotated rather than deleted, since its actor-recorder advice still holds. No
-  `Makefile`/`Package.swift`/workflow/`.claude` changes, so the target-layout
-  half is n/a.
-- **`watch:`** the Linux CI job caught a **production** bug that every other gate
-  missed. In `ResumeOnce.resume(_:)` a local named `continuation` shadowed the
-  stored property *inside its own initialiser*, so `guard let continuation` read
-  uninitialised stack memory. On Darwin that garbage was `nil` and the code
-  behaved perfectly — 3144 macOS tests, `make ci`, two review passes, a security
-  review and an independent grader all green. On Linux it was non-`nil` and
-  segfaulted in `swift_retain`, wedging the runner so hard it ignored both
-  GitHub's concurrency cancel and `gh run cancel`. Three lessons, all captured:
-  a full green `make ci` **never builds for Linux**, so a hand-rolled concurrency
-  primitive needs `make test-linux` *before* the PR; `.timeLimit` cannot rescue a
-  task parked on an unresumed continuation (the timeout blocks with it), so my
-  earlier claim that it "turns a hang into a failure" was overstated and is now
-  corrected in the suite comment; and a diff-reading reviewer cannot see this
-  class of bug — `claude-review` explicitly approved the file.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -1117,6 +910,9 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-13 | #451 | full | Moved `/review-knowledge`'s audit round to Opus (ADR-0020). **Phase 0's knowledge consult caught that the whole plan was ADR-governed**: both proposed changes contradicted ADR-0014 — one reversed its six-day-old addendum, the other re-opened an explicitly rejected alternative — so without that read a config tweak would have silently reversed a recorded decision. The plan critics changed the delivery's shape, killing `effort: high → xhigh` (thinking bills as output at 5× input, so moving two variables at once would have left a regression with two suspects) and dropping the conditional-Fable-escalation half entirely (deferred as issue #450, later closed to the log). The code reviewer caught a **falsehood in the durable record** — ADR-0020 and the log both claimed in the past tense that an issue had been filed; none had. Its lasting friction: ~1.7M review tokens for a 6-file markdown diff, the origin of the "scale machinery by diff shape" thread that landed as `/review-changes`' *Risk overrides size* rule (#462). Also ~8 extra round trips to the worktree `Bash` guard for run-file writes — one of the five recurrences behind `Scripts/deliver-runfile.py`. |
+| 2026-08-13 | #449 | full | Excluded tvOS/watchOS from the FoundationModels planner. **Probing all five platforms before accepting the reported fix found a second break**: the issue's `&& !os(tvOS)` was verified on 18.2.0, but building the unfixed tree everywhere showed watchOS red too, with asymmetric per-symbol SDK availability — the reported patch verbatim would have shipped looking complete while leaving watchOS broken. The reviewer found a pre-existing false green two lines from the diff (the aggregate `ci` job never checked the `changes` job's result, so a failed paths-filter passed all five jobs having done nothing), and a might-be-red finding was settled by **executing it** — one cold piped build per platform — rather than arguing it. Full weight did not fit a diff whose risk was 74 lines of YAML: took the single-reviewer path with a targeted brief, and its "one improvement" — a `ci-workflow` dimension for `/review-changes`' fan-out (gate integrity, false-green paths, secret exposure, cache keys) — **remains open**. Also the `markdownlint --fix` hook rewrote a line-leading `#416` into an H1, corrupting a knowledge entry; captured, and it will recur. |
+| 2026-08-12 | #433 | full | Surfaced task cancellation as `TMDbError.cancelled` (ADR-0018). All three plan critics independently found a bug the issue never mentioned — a cancelled natural-language search wrapped as `.planningFailed` was fallback-eligible, so the library issued three fresh live searches on an already-cancelled task — and the simplicity critic reversed the Part 2 design to a `ResumeOnce` lock-box (`onCancel` is synchronous, so a lock beats an actor), removing a hang class. A review finding was **mutation-tested** rather than trusted or dismissed. Its `watch:` line is the file's starkest lesson: Linux CI caught a **production** bug every other gate missed — a local `continuation` shadowed the stored property inside its own initialiser, reading uninitialised stack memory that was benignly `nil` on Darwin (3144 green macOS tests, two reviews, a security review, an independent grader) and segfaulted in `swift_retain` on Linux — so a hand-rolled concurrency primitive needs `make test-linux` **before** the PR, and a diff-reading reviewer cannot see this class. Its knowledge-shaped AC6 failed the first grading purely by capture-after-grading ordering, which became Phase 0's drop-a-knowledge-shaped-AC rule (#439). |
 | 2026-08-12 | #440 | full | Adopted a single decode-tolerance policy. The lasting practice is **promoting a failure-class sweep from a plan bullet to a blocking ledger task**: all three critics graded the blast-radius audit as revision 1's weakest part because it swept by *name* and missed every synthesized decoder, and the promoted gate is what found the delivery's worst bug — `TVSeriesDetailsResponse.lists` typed `MediaPageableList` when `/tv/{id}/lists` returns summaries with no `media_type`, so tightening tolerance would have turned a silent empty array into a thrown call. A process step that exists only in prose gets skipped under momentum; one that blocks a task does not. The sweep also earned its keep by **excluding**: it disproved the plan's own "one confirmed hardening needed" claim (1,046/1,046 clean) and showed a 9%-null figure recorded for `/company/{id}` does not transfer to `/search/company`. Three of the author's load-bearing claims were each caught by a different stage (critic, reviewer, security), and a peer session landed #436 into `main` mid-flight, costing a rebase. Its "one improvement" — `/test` should confirm new tests **by name**, not by aggregate count, since "3147 passed" reads identically whether a new test ran or never compiled in — remains open. |
 | 2026-08-12 | #432 | full | Decoded empty-string credit dates as nil. **The #404 population sweep paid in both directions**: 300 live `/credit/{id}` records both *cleared* five URL decodes with a measurement (`null`-bearing, never `""`) and *found a bug the issue never mentioned* — `credit_type: "creator"` threw. A sweep earns its keep by excluding as much as by finding. The critics caught a false green the author built in: **no fixture omitted `character`**, so a `decode`-instead-of-`decodeIfPresent` slip would have compiled, passed everything, and broken 36% of live credits — fixed for free by re-sourcing both blank-date fixtures to *crew* credits, which omit `character` entirely. A 2-vs-1 critic split was reconciled **on evidence, not vote**: *Guard consistently within a type* is about one value class diverging, not a date differing from a URL, and guarding would have made `CreditMovie` the lone divergence across ~20 models. Two lasting frictions: the worktree Bash guard refuses commands it cannot prove stay inside the worktree (which blocks writing `/deliver`'s own run file under `.git/deliver/` — its run-file location is at odds with its worktree isolation), and **a subagent asserted a green it could not see** (the tooling-runner reported a named test passed, but xcsift logs carry only aggregate counts; its report shape cannot distinguish *ran and passed* from *never ran*). Its "one improvement" — sanction *deriving* ACs with recorded provenance when a plan states observable before/after behaviour in the wrong shape — **shipped**, and is the entry gate's `derived` branch and `rubricProvenance` field today. |
 | 2026-08-07 | #412 | lite | Renamed `Network.homepage` to `homepageURL`, the second firing of the `next-major.md` queue: the item was deferred out of 19.0.0 on 2026-07-27 as cosmetic scope creep on a bug fix, and shipped here because the file was read when the 20.0.0 window opened — the deferral mechanism working end to end. Equally deliberate was the entry that did **not** ship: `TMDbError.invalidRating` stayed deferred because its own condition (a wider `TMDbError` review) was unmet, and that was recorded rather than skipped, so a later reader can tell "considered and declined" from "missed". Stacked on `feature/v4-lists` rather than branched from `main`, since both edit the same `CHANGELOG` section. Its "one improvement" — have `next-major.md` carry a status line naming the open major window, so an entry cannot be filed against a version that already shipped — **shipped**, and `/capture-knowledge` asserts it on every addition today. |

@@ -67,7 +67,8 @@ Non-negotiable. Do these by default, without being reminded.
    weight); the **run file** is the durable one, because the ledger does not
    survive `EnterWorktree`, an MCP reconnect, or a plan-mode exit. Phase 0
    writes it, Phase 1 records the reconcile into it, **Phases 4/5/6 each stamp
-   it on convergence** (`stamps.reviewedClean` / `securityClean` — that is what
+   it on convergence** (`stamps.reviewedClean` / `securityClean` /
+   `rubricGraded` — that is what
    makes a resume able to skip a pass already done), and **Phase 6 reads the
    rubric from it** — so a skipped step fails loudly at a later phase instead of
    silently. **Every phase that writes is named here**, so if a phase you are in
@@ -75,13 +76,25 @@ Non-negotiable. Do these by default, without being reminded.
    else did. (Two non-phase writers exist and are documented where they apply:
    an async run writes the file **before** any `ScheduleWakeup`, and Phase 1's
    adopt path flips `entry` before re-locking — see `references/`.) Location and schema:
-   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md). A
+   [`references/worktree-lifecycle.md`](references/worktree-lifecycle.md).
+   **Every run-file write after `EnterWorktree` goes through
+   `Scripts/deliver-runfile.py`** — the worktree guard refuses ad-hoc writes to
+   `.git/deliver/`, sometimes *silently* — and the script verifies its own
+   postcondition: exit 0 prints `verified: …`; anything else means the write
+   did **not** land and is a **hard stop** for the phase making it. Never
+   carry on assuming state you did not read back — the #493 delivery certified
+   a plan revision to the juror panel that two silent refusals had kept off
+   disk. A
    template→replicate delivery adds the **`Phase 4a — reference-unit
    review`** gate task, which **blocks Phase 9**. A multi-deliverable plan
    keeps one ledger sub-tree per deliverable.
 7. **Jot knowledge candidates the moment a learning occurs** (a lookup, a
    gotcha, a live-API surprise, a non-obvious decision) — one line each
-   (`<category>: <gist> [where]`), in the ledger. Phase 7 curates them;
+   (`<category>: <gist> [where]`), in the ledger. Mirror the list into the run
+   file (`deliverables.<n>.knowledgeCandidates`, via `deliver-runfile.py`) at
+   Phase 7 entry at the latest — the ledger does not survive `EnterWorktree`,
+   and the resume rule restores candidates from the file, so an unmirrored
+   list is one a resumed run silently loses. Phase 7 curates them;
    reconstruction later loses the best material.
 8. **Auto-start after plan-mode approval.** `ExitPlanMode` approval IS the
    start signal — invoke `/deliver` immediately; pause first only if
@@ -299,7 +312,8 @@ implementation = separate `/deliver` sessions.)
   moves it to **In progress** and Phase 10 to **In review**, so an unrecorded
   issue is one the board silently never reflects. It goes in the run file rather
   than the ledger for the usual reason — `EnterWorktree` clears the ledger.
-  A `next` run has already made the **In progress** move itself, at the pick —
+  A selection run — under either policy — has already made the **In progress**
+  move itself, at the pick —
   it has to claim the issue before the drafting window, or a concurrent session
   delivers the same one. Phase 1's move then finds it already set and no-ops.
   The claim carries an obligation: **any stop before the PR opens releases it
@@ -566,23 +580,23 @@ Invoke **`/implement-plan`** (Canon TDD: list shown first, one failing test
 at a time, done only when the list is empty and both suites green). It
 commits at logical checkpoints — required: Phase 4 reviews **committed**
 history. Don't advance until `/test` **and** `/integration-test` pass and the
-work is committed; re-confirm the weight from the diff. Three hard checkpoints:
+work is committed; re-confirm the weight from the diff. Four hard checkpoints:
 
 - **Run `swift build -c release` before declaring implementation done** —
   **directly via `Bash`, not `/build`**: `tooling-runner` exposes only
-  `build`, `build-tests`, `test` and `integration-test`, so there is no
+  `build`, `build-for-testing`, `test` and `integration-test`, so there is no
   delegated runner for the release build and asking for one silently gets
-  you a debug build. Use `make build-release`.
-  debug-green is not evidence the release gate passes. `swift build`,
+  you a debug build. Use `make build-release` — a green debug build is not
+  evidence the release gate passes. `swift build`,
   `--build-tests` and both suites all compile the package with
   `-enable-testing`; the release build does not, so **access-level and
   `@testable` mistakes fail there and nowhere else** — precisely what target
   extractions, new non-test targets, and visibility changes are made of. It is
   a ~30s check that guards `make build-release`, `make ci`, and the *Build for
   Release* steps of both CI Build and Test jobs. (Incident: PR #398 shipped a
-  `@testable import` inside a new non-test fixtures target; debug, `--build-tests`, 2869 unit and 291
-  integration tests all passed while release was red — caught only in code
-  review. See `knowledge/gotchas.md`.)
+  `@testable import` inside a new non-test fixtures target; the debug build,
+  `--build-tests` and both full suites were green while release was red —
+  caught only in code review. See `knowledge/gotchas.md`.)
 
 - **"Fix every instance of pattern X" → enumerate ALL sites up front** with a
   single **type-driven sweep**, listed in the test list before implementing —
@@ -592,6 +606,17 @@ work is committed; re-confirm the weight from the diff. Three hard checkpoints:
   `incomingCalls`, `goToImplementation`), not `grep`: a text pattern
   under-reports silently — ADR-0008's grep recipe found four of eight path
   interpolation sites, and the three it missed carried a credential (#421).
+- **An absence-shaped fix must be proven able to fail.** Trigger: the
+  acceptance criteria are phrased as an absence — *"X no longer appears / is
+  no longer sent / is redacted"*. Every test for such a fix asserts a
+  negative, and a negative passes just as happily when the value was never
+  there, the key was renamed upstream, or the code path is never reached at
+  all. Before declaring the test list empty: unwire the fix (revert its
+  production hunks locally), confirm the new tests go **red**, restore,
+  confirm green, and record the result in the retro. In #469 this one-minute
+  check was the only evidence the two wiring tests' green meant anything.
+  Positive-assertion deliveries skip it — the trigger is the ACs' phrasing,
+  not a blanket rule.
 - **Consult the specialist skills — mandatory, topic-triggered, including for
   fanned-out subagents.** `swift-concurrency` the moment actors,
   `@MainActor`, `Sendable`/`@unchecked Sendable`, locks, `Task`/task groups,
@@ -637,7 +662,26 @@ still-broken); re-invoke; repeat until none remain. **Cap at 3 iterations**,
 then stop and surface. **Auto:** panel — proceed (note unresolved findings in
 the PR description) vs stop. Medium/Low: apply the cheap, clearly-correct
 ones; note the rest in the PR description. This is the **single substantive
-review** — `/pr` therefore runs in `reviewed` mode (Phase 9).
+review** — `/pr` therefore runs in `reviewed` mode (Phase 9). **On
+convergence, stamp the run file**:
+`python3 Scripts/deliver-runfile.py set <run file>
+deliverables.<n>.stamps.reviewedClean "<content hash>"` (hash recipe:
+[`references/worktree-lifecycle.md`](references/worktree-lifecycle.md)), and
+mirror any findings left unresolved into `deliverables.<n>.openFindings` in
+the same way — the ledger copy dies with the session.
+
+**Mutation-check before converging — a reflexive delivery that adds or
+changes a prose-asserting test** (`reflexive: true` *and* the diff touches a
+test asserting on skill/doc prose, e.g. under `Scripts/tests/`): the
+iteration cap is the wrong stopping signal for this class, because a passing
+prose test is not evidence — #482 shipped three assertions that passed while
+testing nothing, and two of its guards started green. So, for each rule the
+new tests guard: confirm the baseline is green, revert **that rule alone** in
+a scratch copy, and confirm the suite goes red *for that rule*; a guard that
+stays green is not a guard. Restore, and record the matrix in the retro. The
+three blind-assertion failure modes and the worked matrix:
+`knowledge/gotchas.md` → *A test that asserts on prose can be blind*. Swift
+suites are exempt — the compiler and `--Werror` already do this work.
 
 ## Phase 5 — Security review + fix loop
 
@@ -650,7 +694,8 @@ converge with the Phase 4 loop: fix each **High** (and any Medium with a
 concrete attack path) test-first where reproducible, commit, re-invoke, cap
 at 3. **Auto:** panel — but a **credential leak or clear exploit is a hard
 stop even in auto**. This is the pipeline's **only** security gate (CI has no
-SAST). Surfaces that bite:
+SAST). On convergence, stamp `deliverables.<n>.stamps.securityClean` exactly
+as Phase 4 does. Surfaces that bite:
 [`references/review-loops.md`](references/review-loops.md).
 
 ## Phase 6 — Rubric verification (exit gate)
@@ -708,10 +753,12 @@ How it is graded depends on weight:
     Left unsaid, a thorough grader will run the whole of `make ci` — one did,
     for 72 minutes, including the 300-test live suite.
 
-Satisfied → mark off. Not → fix test-first, commit, re-verify (full weight:
-re-run the grader); a gap needing a plan change is noted in the PR
-description. *"Did we build what the plan said?"*, not *"did the build
-pass?"*.
+Satisfied → mark off, and stamp `deliverables.<n>.stamps.rubricGraded` with
+the same content hash and script as Phases 4 and 5 — the resume rule reads
+all three stamps, and an unstamped grade is one a resumed run repeats. Not →
+fix test-first, commit, re-verify (full weight: re-run the grader); a gap
+needing a plan change is noted in the PR description. *"Did we build what the
+plan said?"*, not *"did the build pass?"*.
 
 ## Phase 7 — Capture learnings
 
@@ -865,11 +912,14 @@ after the gate**. Guidance:
 - **Update the personal wiki** — best-effort, `propose_entry` only (never
   autonomous writes); degrade silently if absent.
 - **Recurring-pattern scan**: friction/deviations recurring across the last
-  ~12 retro entries → numbered proposals. **Consult
-  `skill-improvement-log.md` first** and skip anything already decided;
-  **wait for explicit approval on each proposal — never edit a skill file
-  unasked**; record **every** decision in the log (five-field format). No new
-  recurrence → say so and stop. **Auto:** **not delegable** — the panel has no
+  ~12 retro entries → numbered proposals — **plus every retro's "one
+  improvement" with no entry at all in the log, recurring or not**
+  (singletons included; the procedure is in `references/wrap-up.md`).
+  **Consult `skill-improvement-log.md` first** and skip anything already
+  decided; **wait for explicit approval on each proposal — never edit a skill
+  file unasked**; record **every** decision in the log (five-field format).
+  Neither a new recurrence nor an unrecorded one-improvement → say so and
+  stop. **Auto:** **not delegable** — the panel has no
   Phase 11 decision point and the script throws if asked for one. An unattended
   run must never edit and push the repo's own skill files (least of all the
   panel script itself), so in auto mode it **records every proposal in

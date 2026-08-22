@@ -13,10 +13,13 @@ caused by the change under review** — a lint violation, a compile warning/erro
 a broken unit test, or a Linux-portability gap. Start from the diff, not from
 "maybe it's flaky".
 
-CI fans out into four real jobs (plus a `ci` gate job that only aggregates
-results). The diagnosis differs per job, so this skill is a **router**: identify
-the failing job, then follow the matching reference file for that job's causes,
-fixes, and local-reproduction command.
+CI fans out into six real jobs (plus a `changes` paths-filter job and a `ci`
+gate job that only aggregates results): `Lint`, `Lint Markdown`,
+`Build and Test` (macOS), `Build (<platform>)` (an iOS/tvOS/watchOS/visionOS
+simulator-build matrix), `Build and Test (Linux)`, and `Test (<timezone>)` (a
+time-zone matrix re-running the unit suites). The diagnosis differs per job, so
+this skill is a **router**: identify the failing job, then follow the matching
+reference file for that job's causes, fixes, and local-reproduction command.
 
 > **Wrong suite?** If the **Integration** workflow (the live-API suite from
 > `integration.yml`) failed — not a CI job — use `/diagnose-integration-failure`
@@ -26,8 +29,8 @@ fixes, and local-reproduction command.
 ## Agent Behaviour Contract
 
 1. **Identify the failing job first** — `Lint`, `Lint Markdown`, `Build and Test`
-   (macOS), or `Build and Test (Linux)`. Don't guess the cause before you know
-   the job.
+   (macOS), `Build (<platform>)`, `Build and Test (Linux)`, or
+   `Test (<timezone>)`. Don't guess the cause before you know the job.
 2. **Assume the change caused it.** CI gates the PR; read the diff and tie the
    failure to a changed file. Don't open with "transient" or "flaky".
 3. **Treat warnings as errors.** Build steps use `-warnings-as-errors` / `--Werror`
@@ -58,16 +61,24 @@ Use the first that applies:
 
 Once you know which job failed:
 
-- **Lint** (`swiftlint --strict` / `swiftformat --lint`)?
-  └─ `references/lint.md` — style/format violations + the version-drift gotcha
+- **Lint** (`swiftlint --strict` / `swiftformat --lint` / one of the six
+  `Scripts/*.py` gate steps)?
+  └─ `references/lint.md` — style/format violations, the Python gates, and the
+  version-drift gotcha
 - **Lint Markdown** (`markdownlint`)?
-  └─ `references/markdown.md` — README / DocC markdown rules
+  └─ `references/markdown.md` — README / DocC / `.claude/` / `knowledge/` rules
 - **Build and Test** — the **build** step failed?
   └─ `references/build.md` — compile errors and `--Werror` warnings
 - **Build and Test** — the **test** step failed?
   └─ `references/unit-tests.md` — failing `Suite/test`, fixture/model mismatch
+- **Build (iOS / tvOS / watchOS / visionOS)** — a simulator matrix build failed?
+  └─ `references/build.md` — platform-specific API availability; it is
+  `xcodebuild`, not SwiftPM, so `make build` green does not clear it
 - **Build and Test (Linux)** — fails on Linux but passes on macOS?
   └─ `references/linux.md` — Apple-only API gating, Foundation differences
+- **Test (America/Los_Angeles or Pacific/Auckland)** — the TZ matrix failed?
+  └─ `references/unit-tests.md` — a date/calendar assertion depending on the
+  runner's zone; reproduce with `TZ=<zone> make test`
 
 ## Triage-first playbook
 
@@ -101,8 +112,8 @@ directly):
 | File | Failing job | Covers |
 |------|-------------|--------|
 | `references/_index.md` | — | Navigation index by symptom |
-| `references/lint.md` | Lint | SwiftLint `--strict`, SwiftFormat `--lint`, pinned versions, drift |
-| `references/markdown.md` | Lint Markdown | markdownlint on README + DocC `.md` |
-| `references/build.md` | Build and Test (build step) | compile errors, `--Werror` warnings, release build |
-| `references/unit-tests.md` | Build and Test (test step) | Swift Testing failures, JSON fixture/model mismatch |
+| `references/lint.md` | Lint | SwiftLint `--strict`, SwiftFormat `--lint`, the six `Scripts/*.py` gates, pinned versions, drift |
+| `references/markdown.md` | Lint Markdown | markdownlint on README, `CLAUDE.md`, DocC, `.claude/`, `knowledge/`, `.github/*.md` |
+| `references/build.md` | Build and Test (build step); Build (\<platform\>) | compile errors, `--Werror` warnings, release build, simulator-matrix availability |
+| `references/unit-tests.md` | Build and Test (test step); Test (\<timezone\>) | Swift Testing failures, JSON fixture/model mismatch, TZ-matrix date dependencies |
 | `references/linux.md` | Build and Test (Linux) | Apple-only API gating, Foundation portability |

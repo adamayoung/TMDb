@@ -53,3 +53,24 @@ annotations with the failing `Suite/test` and `file:line`.
 **Summary:** Build and Test — test step — `Suite/test` at `file:line`.
 **Cause:** the assertion or fixture/model mismatch (name the fixture + model).
 **Fix:** update fixture `X.json` / model `Y` (or the assertion); re-run `/test`.
+
+## The `Test (<timezone>)` matrix
+
+`Test (America/Los_Angeles)` and `Test (Pacific/Auckland)` re-run the same four
+unit-test targets in the Linux container with `TZ` forced to a non-UTC zone —
+one behind UTC, one ahead, so a date that rolls over a midnight boundary fails
+in at least one of them. A failure **only** here is a time-zone dependency, not
+a general test failure: a `Date`/`Calendar` assertion that implicitly assumed
+the runner's zone, a fixture date decoded with day precision but compared
+through a local-zone calendar, or a formatter without an explicit
+`timeZone`/`calendar`.
+
+Reproduce locally with the zone that failed:
+
+```bash
+TZ=Pacific/Auckland make test
+```
+
+**Summary:** Test (\<timezone\>) — `Suite/test` at `file:line`.
+**Cause:** the assertion's implicit local-zone dependency (name the date and the boundary it crosses).
+**Fix:** pin the calendar/zone in the code or the test (GMT for day-precision dates — see `knowledge/gotchas.md`); re-run under both zones.

@@ -12,7 +12,13 @@ once both numbered `0010`; the model-tier one was renumbered to `0014` by the
 mind — write a new one and mark the old **Superseded by [ADR-XXXX]**, with a
 forward link in the superseded file and a back link in the new one. Correcting a
 factual error, a stale status, or a broken link is *not* a change of mind and is
-always fair game.
+always fair game. **A dated addendum is also fair game, within one boundary**:
+it may *extend or harden* the recorded decision (a new mechanism serving the
+same choice, evidence that firmed it up, an implementation route the original
+left open) but must not *reverse* any part of it — the moment an addendum would
+change what was decided, it is a new ADR that supersedes or amends the old one.
+ADR-0014, ADR-0015 and ADR-0016 all carry addenda of this extending kind; this
+paragraph is what sanctions them (2026-08-22 audit).
 
 ## Index
 

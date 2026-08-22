@@ -52,11 +52,13 @@ caller has decided the change carries risk the file extensions don't show.
 `/deliver` passes it for a **reflexive delivery** — one that rewrites the
 skills, agents or review spec the pipeline itself runs, where the diff is
 markdown but the blast radius is the pipeline (#407 shipped three defects
-exactly there). Take the §2a single-reviewer path with a brief aimed at the
-change's own subject matter: which rule changed, whether anything still
-depends on the old wording, and whether the new rule is enforced or merely
-stated. Without this the gate and the caller contradict each other and the
-skip silently wins.
+exactly there). **This override lifts the gate; it does not choose a path** —
+§1 still decides, and a caller-stated `full` weight still takes §2b (*Risk
+overrides size*), however prose-shaped the diff. Whichever path runs, aim its
+brief at the change's own subject matter: which rule changed, whether
+anything still depends on the old wording, and whether the new rule is
+enforced or merely stated. Without this the gate and the caller contradict
+each other and the skip silently wins.
 
 **If the only reviewable change is a script** (`.claude/workflows/` or
 `Scripts/`), take the §2a single-reviewer path with a **script-focused brief**

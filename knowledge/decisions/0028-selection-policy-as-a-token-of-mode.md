@@ -1,7 +1,8 @@
 # ADR-0028: A selection policy is a token of `mode`, not a field beside it
 
-**Status:** Accepted (2026-08-20)
-**Context:** issue 481 — `/deliver` gains `issue <n>` alongside `next`
+- **Status:** Accepted (unreleased — tooling only)
+- **Date:** 2026-08-20
+- **Deciders:** Adam Young (issue 481 — `/deliver` gains `issue <n>` alongside `next`)
 
 ## Context
 

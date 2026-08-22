@@ -64,7 +64,9 @@ those two runs stay comparable.
 
 ---
 
-### 2026-08-21 — The run file lives where the worktree guard forbids writing (#490) · deferred
+### 2026-08-22 — /review-knowledge run · 8 agents · 1364117 tokens · 0 critical / 12 major / 27 minor
+
+### 2026-08-21 — The run file lives where the worktree guard forbids writing (#490) · applied
 
 - **Pattern:** `/deliver`'s run file is specified to live at
   `.git/deliver/<id>.json` — deliberately, so it cannot enter a diff and
@@ -74,36 +76,47 @@ those two runs stay comparable.
   fights the guard. The friction appears in **four** retro entries
   (`delivery-retros.md`: #432, #476, #486, and this delivery), and #432 states
   the contradiction outright — *"its run-file location is at odds with its
-  worktree isolation"*. It is not in this log, so it has recurred four times
-  without ever being raised as a proposal.
+  worktree isolation"*. It had been raised once before — the 2026-08-12 #440
+  entry below, same root cause, decided together with this one — and recurred
+  four more times in between without the two ever being connected.
 
   The failure is not a hard block — it is a tax. The refusal message asks you to
   "split it into plain, separate commands", so each write becomes write-a-script
   then run-it, and long heredocs are refused where shorter writes to the same
   path succeed (it keys on complexity, not permissions). This delivery paid it
   roughly six times: every `stamps` update, the reconcile record, the rubric,
-  and the plan file. `worktree-lifecycle.md` already documents the workaround —
-  a fully literal path with a single-purpose command — which is evidence the
-  friction is known and has been absorbed rather than fixed.
+  and the plan file. `worktree-lifecycle.md` documented the workaround —
+  a fully literal path with a single-purpose command — which was evidence the
+  friction was known and had been absorbed; it stayed absorbed rather than
+  fixed until this entry's decision.
 
-- **Decision:** **deferred — raised unattended, needs review.** This run was
-  `/deliver auto next`; Phase 11 is not a delegable decision point, and a
-  proposal that would edit the pipeline's own skills must not be applied by an
-  unattended run.
+- **Decision:** **applied** (Adam's review, 2026-08-22, this PR — deciding this
+  entry and the 2026-08-12 #440 entry together, same root cause). Option (a)
+  plus the independent mitigation the evidence below called for:
+  `Scripts/deliver-runfile.py` is the sanctioned route for every
+  post-`EnterWorktree` run-file write — a single-purpose, literal-argument
+  command the guard accepts — and it **verifies its own postcondition** (re-reads
+  the file from disk, exits `2` when the value is not there), with callers
+  treating any non-zero exit as a hard stop. Landed in
+  `Scripts/deliver-runfile.py` + a `Scripts/tests/test_deliver_runfile.py`
+  suite (including a mutation case proving the verifier can fail),
+  `deliver/SKILL.md` Contract §6, `references/worktree-lifecycle.md`,
+  `knowledge/gotchas.md`, and an ADR-0015 addendum. The file stays at
+  `.git/deliver/` — the batch/teardown survival properties ADR-0015 chose are
+  kept.
 
-- **Rationale:** four recurrences without a log entry is exactly the shape this
-  log exists to stop — each delivery re-derives the same workaround from
-  scratch. Three shapes are worth weighing, and the choice is a real judgement
-  rather than an obvious fix: (a) keep the location and make the workaround
-  first-class — a tiny `Scripts/deliver-runfile.py` with a fixed literal path
-  that the guard accepts, called by every phase that stamps; (b) move the file
-  inside the worktree and accept losing the batch/teardown survival properties
-  ADR-0015 chose it for; (c) leave it, and treat the tax as the cost of the
-  isolation guarantee. (a) looks cheapest and preserves the ADR's reasoning, but
-  it adds a script to the reflexive set.
+- **Rationale:** of the three shapes weighed at deferral — (a) make the
+  workaround first-class as a script; (b) move the file into the worktree,
+  losing ADR-0015's batch properties; (c) absorb the tax — (a) is the only one
+  that keeps the ADR's structural guarantee *and* closes the #493 failure mode,
+  because the postcondition check turns a silent refusal into a loud stop
+  wherever the file lives. The script does join the pipeline's reflexive
+  surface; its own test suite (run by `make lint` via
+  `Scripts/run-script-tests.py`) is the compensating gate.
 
-- **Reconsider when:** a human reviews this entry, or the guard's behaviour
-  changes such that `.git/`-adjacent writes stop being refused.
+- **Reconsider when:** n/a (applied). If the guard ever refuses the script
+  invocation itself, the fallback is delegating the write to a subagent (not
+  subject to the caller's guard) — never an unverified ad-hoc write.
 
 - **Evidence added 2026-08-21 (PR #493), not a new proposal.** A fifth
   recurrence, and it **falsifies this entry's own severity assessment**: "not a
@@ -117,12 +130,12 @@ those two runs stay comparable.
   from the artifact it told me to check"*. So the failure mode is not slower
   writes; it is a **false certification to the mechanism that stands in for the
   user in auto mode**, which the run then had to disclose and re-panel to clear.
-  Weigh option (a) accordingly — and note that whichever option is chosen, the
-  cheap independent mitigation is to have every phase that writes state re-read
-  it and assert the change is present, treating a mismatch as a hard stop. That
-  mitigation is worth applying even if the file never moves.
+  This recurrence is what forced option (a) — and the independent mitigation it
+  called for (every state write re-read and asserted, mismatch = hard stop) is
+  now the script's own postcondition check, applied whatever happens to the
+  file's location.
 
-### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · deferred
+### 2026-08-20 — Prove an absence-shaped test fails without the fix (#469) · applied
 
 - **Pattern:** the **False green** family, in its absence-assertion form. When a
   fix means "this value must no longer appear", every test asserts a negative —
@@ -136,19 +149,53 @@ those two runs stay comparable.
   "found" and "nothing found" were byte-identical; a cached SwiftLint false
   green; a check re-read from an earlier tip) and heads `gotchas.md`, but every
   instance so far has been caught after the fact rather than by a step.
-- **Decision:** **deferred — raised unattended, needs review.** Nothing applied.
-  The candidate is a Phase 3 checkpoint for redaction/absence-shaped work:
-  before declaring implementation done, unwire the fix, confirm the new tests
-  fail, restore. Scope is the open question — a blanket rule would be noise on
-  the many deliveries whose assertions are positive, so it likely wants a
-  trigger ("the acceptance criteria are phrased as *X no longer appears*")
-  rather than an unconditional step.
-- **Rationale:** raised by an autonomous `/deliver auto` run, which must not
-  edit the pipeline's own skills without review. Recording it here rather than
-  applying it is the Phase 11 contract for auto mode.
-- **Reconsider when:** Adam reviews this entry — or when a second delivery whose
-  fix is an absence ships a test that would have passed without the fix, which
-  would make the trigger condition concrete rather than hypothetical.
+- **Decision:** **applied** (Adam's review, 2026-08-22, this PR). `/deliver`
+  Phase 3 gains a fourth hard checkpoint — *An absence-shaped fix must be
+  proven able to fail* — with exactly the trigger this entry proposed: it fires
+  only when the acceptance criteria are phrased as an absence (*"X no longer
+  appears / is no longer sent / is redacted"*). Before declaring the test list
+  empty: unwire the fix, confirm the new tests go red, restore, confirm green,
+  record in the retro. Positive-assertion deliveries pay nothing.
+- **Rationale:** a negative assertion passes just as happily when the value was
+  never there, the key was renamed upstream, or the code path is never reached
+  — so for this class the revert-and-demand-red minute is the only evidence
+  that separates "the fix works" from "the test cannot tell". Scoping by the
+  ACs' phrasing keeps it off the majority of deliveries, whose assertions are
+  positive and already policed by the compiler and the existing gates.
+- **Reconsider when:** n/a (applied). If the trigger proves too narrow — an
+  absence-shaped fix arriving without absence-phrased ACs — widen the trigger
+  wording, not the checkpoint into a blanket rule.
+
+### 2026-08-20 — Mutation-check a reflexive delivery's anti-drift tests · applied
+
+- **Pattern:** a **fifth** instance of the partial-sweep family, but with a new
+  twist that none of the four existing rules reach: in PR #482 the sweep *was*
+  performed and the executable check *was* added — and the check was **blind**.
+  Three assertions passed while testing nothing (a line window bleeding into the
+  neighbouring bullet; a string-replace that updated a docstring but not the
+  regex it described; narrative prose about a past drift supplying the very
+  token under test). Two only broke once deliberately broken. Meanwhile rounds 2
+  and 3 of the review each found defects **in the previous round's fixes**, so
+  Phase 4's 3-iteration cap was measuring the wrong thing.
+- **Decision:** **applied** (Adam's review, 2026-08-22, this PR — closes issue
+  #485, which carried the fix sketch). `/deliver` Phase 4 gains a
+  *mutation-check before converging* step, scoped exactly as filed: it fires
+  only when `reflexive: true` **and** the diff adds or changes a
+  prose-asserting test. For each rule the new tests guard — baseline green,
+  revert that rule alone in a scratch copy, demand red *for that rule*,
+  restore — with the matrix recorded in the retro, and
+  `knowledge/gotchas.md` → *A test that asserts on prose can be blind* linked
+  rather than restated. Swift suites stay exempt.
+- **Rationale:** the four existing sweep rules all assume that *doing* the sweep
+  is the hard part. This class is different — the sweep was done and encoded in a
+  test, and the test was the thing that lied. The countermeasure is cheap
+  (revert each guarded rule, demand red, confirm the baseline is green) and it is
+  the only evidence that separates "fixed" from "looks fixed" when the deliverable
+  is prose. Recorded in `knowledge/gotchas.md` → *A test that asserts on prose can
+  be blind* with the worked matrix.
+- **Reconsider when:** n/a (applied). The scope stands as filed — widening it
+  to every delivery would demand a mutation pass on Swift suites, where the
+  compiler and `--Werror` already do this work.
 
 ### 2026-08-14 — Review granularity keys on risk surface, not diff shape · applied
 
@@ -252,35 +299,6 @@ those two runs stay comparable.
   general rule: for a named "every instance of X" task, require the enumeration
   to be pasted into the test list with its source (LSP query vs grep), so the
   instrument is visible in review rather than inferred.
-
----
-
-### 2026-08-20 — Mutation-check a reflexive delivery's anti-drift tests · deferred
-
-- **Pattern:** a **fifth** instance of the partial-sweep family, but with a new
-  twist that none of the four existing rules reach: in PR #482 the sweep *was*
-  performed and the executable check *was* added — and the check was **blind**.
-  Three assertions passed while testing nothing (a line window bleeding into the
-  neighbouring bullet; a string-replace that updated a docstring but not the
-  regex it described; narrative prose about a past drift supplying the very
-  token under test). Two only broke once deliberately broken. Meanwhile rounds 2
-  and 3 of the review each found defects **in the previous round's fixes**, so
-  Phase 4's 3-iteration cap was measuring the wrong thing.
-- **Decision:** **deferred — raised unattended, needs review.** `/deliver auto`
-  must not edit and push the repo's own skill files, so no skill file was
-  touched. Filed as issue #485 with the fix sketch instead, so the proposal is
-  actionable rather than only logged.
-- **Rationale:** the four existing sweep rules all assume that *doing* the sweep
-  is the hard part. This class is different — the sweep was done and encoded in a
-  test, and the test was the thing that lied. The countermeasure is cheap
-  (revert each guarded rule, demand red, confirm the baseline is green) and it is
-  the only evidence that separates "fixed" from "looks fixed" when the deliverable
-  is prose. Recorded in `knowledge/gotchas.md` → *A test that asserts on prose can
-  be blind* with the worked matrix.
-- **Reconsider when:** Adam reviews issue #485. Keep it scoped to
-  `reflexive: true` deliveries that add or change a prose-asserting test —
-  widening it to every delivery would demand a mutation pass on Swift suites,
-  where the compiler and `--Werror` already do this work.
 
 ---
 
@@ -522,7 +540,7 @@ those two runs stay comparable.
   ACs to be quoted in the PR body for inspection, not merely disclosed as
   derived.
 
-### 2026-08-12 — ADR-0015's run-file location is unreachable from a background delivery (#440) · deferred
+### 2026-08-12 — ADR-0015's run-file location is unreachable from a background delivery (#440) · applied
 
 - **Pattern:** first occurrence, but structural rather than incidental, so it will
   recur on every background `/deliver`. [ADR-0015](decisions/0015-durable-deliver-run-state.md)
@@ -533,24 +551,25 @@ those two runs stay comparable.
   tool, and then blocked a Bash heredoc to the same path. So the location the ADR
   mandates is unreachable exactly when `/deliver` runs unattended, which is the
   case the durable file exists for.
-- **Decision:** **deferred — raised in an unattended background run, needs
-  review; nothing applied.** Worked around by writing to
-  `<worktree>/.build/deliver-run.json` (gitignored via `/.build`, untouched by any
-  `make ci` step since `clean` is a separate target) and recording a
-  `locationDeviation` field in the file itself. Options for review: (a) teach the
-  isolation guard that the repo's *common git dir* is a sanctioned write target;
-  (b) amend ADR-0015 to put the file under the worktree with an explicit
-  cross-worktree-batch caveat; (c) leave it, and have `/deliver` fall back with a
-  recorded deviation, which is what happened here.
+- **Decision:** **applied 2026-08-22** — closed by the same decision as the
+  2026-08-21 #490 entry (same root cause): every post-`EnterWorktree` run-file
+  write now goes through `Scripts/deliver-runfile.py`, which the guard accepts
+  and which verifies its own postcondition; the location is unchanged, so
+  ADR-0015's batch properties survive. Of the three options this entry listed —
+  (a) teach the guard about the common git dir; (b) move the file under the
+  worktree; (c) keep the recorded-deviation fallback — none was taken as
+  written: (a) is harness behaviour, not this repo's to change, and the script
+  achieves its effect from inside the repo. At the time, the run worked around
+  it by writing to `<worktree>/.build/deliver-run.json` (gitignored via
+  `/.build`) with a `locationDeviation` field recorded in the file itself.
 - **Rationale:** the workaround is sound for a single-deliverable run — the file
   survives the whole delivery and Phase 6 read the rubric from it as designed.
   It is only *unsound for a batch*, where ADR-0015's whole point is that
   deliverable 1's `ExitWorktree(remove)` must not destroy deliverables 2..N's
   state. That case did not arise here, so applying a fix blind would be guessing
   at which of three quite different remedies the user wants.
-- **Reconsider when:** a multi-deliverable `/deliver` runs in a background
-  session — where the workaround is genuinely wrong, not merely non-canonical —
-  or the user picks one of the three options.
+- **Reconsider when:** n/a (applied — see the 2026-08-21 entry for the decision
+  and where it landed).
 
 ### 2026-08-12 — A well-formed tooling-runner report can still assert an unobserved green (#432) · applied
 
@@ -1120,6 +1139,9 @@ those two runs stay comparable.
   wrong.
 - **Reconsider when:** a deliberate major-version bump is on the table for other
   reasons — then reconsider as part of a broader `TMDbError` review, never alone.
+  *Closed retroactively by the 2026-08-12 entry above: the condition was met
+  when issue #419 reopened `TMDbError`, the question was re-examined there, and
+  the merge was rejected outright — never for the merge itself.*
 
 ### 2026-06-30 — Align `Network` to `Company` (rename `homepage`, force `logoPath` non-optional) · rejected
 
@@ -1350,13 +1372,21 @@ those two runs stay comparable.
   critics may cite" (never "load opinions to agree with"), and only after
   confirming wiki MCP reachability inside the review-plan Workflow.
 
-### 2026-06-18 — File-based `.claude/deliver-state.json` ledger · deferred
+### 2026-06-18 — File-based `.claude/deliver-state.json` ledger · applied
 
 - **Pattern:** the `TaskCreate` phase ledger is ephemeral; a long interrupted
   session has no durable recovery path beyond "read the ledger if it survived".
-- **Decision:** **deferred.** Not implemented.
-- **Rationale:** `TaskCreate` + the checkpoint commits + git history already give
-  a real recovery path; a committed JSON state file adds PR noise (or, if
-  gitignored, isn't on the branch for anyone else).
-- **Reconsider when:** interruptions actually bite — and even then prefer the
-  lighter "checkpoint the ledger into the PR description" over a new state machine.
+- **Decision:** originally **deferred** (not implemented) — and **closed as
+  applied on 2026-08-22**: [ADR-0015](decisions/0015-durable-deliver-run-state.md)
+  (2026-07-29) built the durable state this entry deferred, as a run file at
+  `.git/deliver/<id>.json` rather than a committed working-tree file — which
+  also dissolves this entry's PR-noise objection, since `.git/` cannot enter a
+  diff. Later hardened with script-mediated, self-verifying writes (the
+  2026-08-21 entry above).
+- **Rationale:** the reconsider condition ("interruptions actually bite") was
+  met by the evidence that drove ADR-0015 — four of eleven analysed sessions
+  ended "partially achieved" because work outran the transcript — and nobody
+  came back to close this entry.
+- **Reconsider when:** n/a (applied via ADR-0015). *Closed retroactively by the
+  2026-08-22 log review — a stale `deferred` in this file is a live defect: the
+  scan reads it as the current state of a settled question.*

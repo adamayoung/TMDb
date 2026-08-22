@@ -1,7 +1,8 @@
-# 0027 — Compute the triage run-list in `Scripts/`, not in a workflow
+# ADR-0027: Compute the triage run-list in `Scripts/`, not in a workflow
 
-* **Status:** Accepted (unreleased — tooling only)
-* **Date:** 2026-08-20
+- **Status:** Accepted (unreleased — tooling only)
+- **Date:** 2026-08-20
+- **Deciders:** Adam Young
 
 ## Context
 
@@ -57,11 +58,11 @@ the same single-ownership rule `/triage-issues` already applies to its rubrics.
 **The ordering is now testable, and two defects fell out of testing it that had
 been specified wrongly in prose for as long as the prose existed:**
 
-* *A topological sort does not satisfy "a P2 that unblocks a P0 goes first."*
+- *A topological sort does not satisfy "a P2 that unblocks a P0 goes first."*
   Precedence is not promotion — greedy Kahn's keyed on own priority emits an
   independent P1 before a P2 unblocker. The script computes an **effective
   priority** (`min(own, best over transitive dependents)`) before sorting.
-* *Separating two contending issues by swapping them is a no-op* — they stay
+- *Separating two contending issues by swapping them is a no-op* — they stay
   adjacent. The primitive is a **move**, and its priority-band check must cover
   the whole **jumped range**, not just the new neighbour, or the separator
   overtakes a higher-priority issue with no dependency edge to disclose it.
@@ -110,9 +111,9 @@ moves the drift one step back rather than removing it.
 
 ## Related
 
-* [0016](0016-panel-jurors-and-workflows-directory.md) — why `.claude/workflows/`
+- [0016](0016-panel-jurors-and-workflows-directory.md) — why `.claude/workflows/`
   exists and what belongs there.
-* [0023](0023-python-strict-parser-for-fixture-hygiene.md) — the same choice of
+- [0023](0023-python-strict-parser-for-fixture-hygiene.md) — the same choice of
   an independent Python checker over an in-language test.
-* [0026](0026-unattended-selection-needs-an-author-check.md) — the authorisation
+- [0026](0026-unattended-selection-needs-an-author-check.md) — the authorisation
   gate that sits upstream of this ordering, in `next-mode.md` §2.
