@@ -465,14 +465,37 @@ change unattended; the machine must not choose it for them.
 Phase 0 already computes `reflexive` for the drafted plan, so **Phase 10 drops
 the `merge` opt-in** whenever the run file says `reflexive: true` and its `mode`
 names a **selection-policy token** (`next` or `explicit`), or it carries a
-`selection.policy` — belt and braces, in
-case the fix sketch understated the
-footprint. Phase 10 drops it on a second condition too (`selection.mergeRefused`
-present); `SKILL.md` Phase 10 is the full statement. The run still delivers; it just stops at the gate. **This must stay
+`selection.policy` — belt and braces, in case the fix sketch understated the
+footprint. Phase 10 drops it on two further conditions (`selection.mergeRefused`
+present, and the raw-facts re-derivation); `SKILL.md` Phase 10 is the full
+statement. The run still delivers; it just stops at the gate. **This must stay
 in step with [`SKILL.md`](../SKILL.md) Phase 10** — keying it on `next` alone
 would exempt every `explicit` run from the backstop, which is precisely the case
 where no `selection.mergeRefused` exists because selection saw nothing to
 refuse.
+
+> **Two witnesses for "is this a selection run", deliberately.** `mode` is
+> written by hand at Phase 0 and a mis-written one silently disables the gate —
+> that has already happened once, on the first `explicit` run ever performed,
+> which recorded `mode: "auto"` with a full `selection` block. Phase 1 and
+> Phase 10 both read a *completed* `selection`, so `selection.policy` is a free
+> second witness and either suffices. Only Phase 6's **selection gate** cannot
+> use it — that gate fires precisely when `selection` is **absent**, so it has
+> no second witness to read and stays keyed on `mode` alone. Phase 6's
+> **`planReview` stop** is not exempt: it fires on a run whose `selection`
+> block is present and complete, so it takes the second witness like Phase 1
+> and Phase 10. Getting that wrong would let an unattended, self-drafted plan
+> whose forced critics never ran pass the exit gate green.
+>
+> **The reflexive condition and `mergeRefused` are both needed; neither
+> subsumes the other.** §5b refuses a reflexive candidate at *selection* time,
+> judging from the issue's own fix sketch, and sets `mergeRefused`. The
+> `reflexive: true` condition is the backstop for when that sketch
+> **understated** the footprint and Phase 0 discovered the truth only from the
+> drafted plan — there is no `mergeRefused` in that case, because selection saw
+> nothing to refuse. Dropping it in favour of the `mergeRefused` disjunct alone
+> would let `/deliver auto merge issue <n>` squash-merge a rewrite of
+> `.claude/skills/**` that nobody read.
 
 ### 5c — An issue this repo's maintainers didn't write
 
@@ -591,44 +614,23 @@ pick is two deliveries of one issue. Phase 1's write then finds the item already
 **A claim must be releasable.** Nothing else in the repo moves an issue *out* of
 `In progress`, so on **any stop before the PR opens** — a rejected plan, a
 `/review-plan` blocker, a red gate, a panel `stop` — move the issue back to
-**`selection.claimedFrom`**, the column it was claimed from (Priority and Size
-untouched), and say so in the stop report. That is `Ready` for a
-`top-of-run-list` pick and for every run file written before `claimedFrom`
-existed, and it may be **Backlog** under `explicit` — returning a
-Backlog-claimed issue to `Ready` would promote untriaged work past the Ready
-test. Skipping
-this drains the queue into a column `next` can never see again and
-`/triage-issues` is forbidden to touch. `/deliver` owns this reverse transition;
-it is in the lifecycle table with the others.
+**`selection.claimedFrom`** (Priority and Size untouched) and say so in the
+stop report; step 2's note above is why it is the origin column, never a
+blanket `Ready`. Skipping this drains the queue into a column `next` can never
+see again and `/triage-issues` is forbidden to touch. `/deliver` owns this
+reverse transition; it is in the lifecycle table with the others.
 
-**And a release that depends on a live conductor is not enough.** The rule above
-presupposes reaching a stop report; the commonest end of an unattended run —
-context exhaustion, a killed session, a dropped MCP — reaches none, and leaves
-the claim held forever. So the recovery is **also** owned by the next run's
-Phase 1 reconcile sweep, which releases the issue of any selection run that never
-opened a PR **and whose `conductorPid` is dead**
-([`worktree-lifecycle.md`](worktree-lifecycle.md)).
-
-That sweep **stamps `claimHandedBack` on the deliverable it released** (not on
-the run file as a whole — a batch releases each qualifying deliverable
-independently), and skips any deliverable already carrying it — so the release
-happens once. Left unstamped, the
-sweep's predicate is still true afterwards and every later run re-releases the
-same issue; the moment it has been legitimately re-claimed, that repeat takes it
-away from a live delivery. It also skips any run recording
-`selection.claimed: false`, which never held the issue at all.
-
-Two owners for one release is deliberate, and it is not the ambiguity the
-one-owner rule guards against — but only because of that PID test, so do not
-weaken it to something cheaper. They cannot both fire: the first runs only
-while the conductor is alive, the second only once it is **proven** dead. The
-worktree buckets look like they would serve and do not: `settled` performs no
-liveness test at all, and a `next` claim is held from Phase 0, *before any
-worktree exists*. A bucket-keyed sweep would therefore either release a live
-conductor's claim while it sits at the approval stop — handing the issue to a
-concurrent run, which is the double-delivery the early claim exists to
-prevent — or never see the pre-worktree window, which is where the claim
-actually lives.
+**And a release that depends on a live conductor is not enough** — the
+commonest end of an unattended run (context exhaustion, a killed session, a
+dropped MCP) reaches no stop report at all. So the recovery is **also** owned
+by the next run's Phase 1 reconcile sweep, which releases the issue of any
+selection run that never opened a PR **and whose `conductorPid` is proven
+dead**. The full predicate, the `claimHandedBack` stamp that makes it
+idempotent, and the PID-not-buckets rationale live in
+[`worktree-lifecycle.md`](worktree-lifecycle.md) step 3. Two owners for one
+release is deliberate, and safe *only because of that PID test* — they cannot
+both fire (one runs while the conductor is alive, the other once it is proven
+dead), so do not weaken it to something cheaper.
 
 **Draft with the `Plan` agent**, given the issue body, the verifier's findings,
 and the `knowledge/` entries Phase 0's consult surfaced. From the issue:
@@ -714,11 +716,10 @@ Phase 1's sweep returns a stranded claim to `claimedFrom`, and Phase 10 drops
 the `merge` opt-in when `mergeRefused` is present. Both must therefore be
 written at the moment they are known, not reconstructed at the end.
 
-`claimed` is **not** decoration. It is read by Phase 1's reconcile sweep, which
-skips any run file recording `claimed: false` — that run never held the issue,
-so there is nothing to hand back, and by the time the sweep runs someone else
-may legitimately hold it. Write it on every selection run, under either policy,
-both values.
+`claimed` is **not** decoration: Phase 1's sweep skips any run file recording
+`claimed: false` — that run never held the issue
+([`worktree-lifecycle.md`](worktree-lifecycle.md) step 3). Write it on every
+selection run, under either policy, both values.
 
 Note what the two lists mean, because the distinction is load-bearing:
 `rejected` holds candidates a **verifier** ruled on — each one was demoted and

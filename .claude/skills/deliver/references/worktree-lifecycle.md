@@ -50,23 +50,57 @@ git worktree list --porcelain | awk -v r="$main_root/.claude/worktrees/" \
    Rows 2 and 6 make this total: **nothing can fail to classify**, so the sweep
    can never brick the pipeline on an unrecognised state.
 
-3. **Release stranded selection claims.** For every run file whose `mode` names a
+3. **Release stranded selection claims** — the canonical procedure; `SKILL.md`
+   Phase 1 summarises it. For every run file whose `mode` names a
    **selection-policy token** (`next` or `explicit`) **or which carries a
    `selection.policy`** — two witnesses, because a hand-written `mode` has
-   already been observed missing its token on a real run —
-   `pr: null`, `status: open`, no `claimHandedBack`, and `selection.claimed` not
-   `false`, test its `conductorPid` with `kill -0`. Dead → move that issue back
-   to **`selection.claimedFrom`** (defaulting to **Ready** when absent, which is
-   every pre-change run file — an `explicit` pick may have come from Backlog, and
-   returning it to Ready would promote untriaged work),
-   stamp `claimHandedBack: <iso8601>` on the deliverable, and count
-   it. Alive, `EPERM`, or no parseable PID → leave it and report it. Key this on
-   the **PID**, never on the worktree buckets: `settled` tests no liveness, and
-   a selection run holds its claim from Phase 0, *before any worktree exists*.
-   The `claimHandedBack` stamp is what makes this **idempotent** — without it the
-   predicate stays true after the release, so every later run re-releases the
-   same issue, and once it has been legitimately re-claimed the repeat release
-   takes it out from under a live delivery.
+   already been observed missing its token on a real run — with `pr: null`,
+   `status: open`, no `claimHandedBack`, and `selection.claimed` not `false`:
+   test its `conductorPid` with `kill -0`. **Dead** → move that issue back to
+   **`selection.claimedFrom`** (defaulting to **Ready** when the field is
+   absent, which is every pre-change run file), stamp
+   `claimHandedBack: <iso8601>` on the deliverable, and count it. **Alive,
+   `EPERM`, or no parseable PID** → leave it and report it, cross-checking a
+   suspiciously old PID against `ps -p <pid> -o lstart=` exactly as the
+   lock-liveness rule does. Every clause is load-bearing:
+
+   + **Release to `claimedFrom`, never unconditionally to `Ready`.** An
+     `explicit` pick may have been claimed out of **Backlog**, and returning
+     that to `Ready` would promote untriaged work past `/triage-issues`' Ready
+     test with no Priority or Size — giving that column a second owner and
+     feeding unvetted work to the next unattended `next` run. This sweep runs
+     in a *later, different session* than the run it cleans up, so the origin
+     column has to have been persisted at claim time
+     ([`next-mode.md`](next-mode.md) §6); it cannot be inferred here.
+   + **`selection.claimed` not `false`** — that run's claim write failed and it
+     proceeded unclaimed ([`next-mode.md`](next-mode.md) §6). It never held the
+     issue, so there is nothing to give back — and by now another run may
+     legitimately hold it.
+   + **`claimHandedBack` makes the release idempotent.** The predicate is
+     otherwise still true after a release, so every later run re-releases the
+     same issue — and once anyone has legitimately re-claimed it, that repeat
+     is a theft rather than a recovery. Nothing else closes the file: bucket 4
+     explicitly permits a dead run file to be left standing.
+   + **Evaluate the predicate at two scopes** — it mixes them, and only looks
+     unambiguous at one deliverable. `mode`, `conductorPid` and
+     `selection.claimed` are **run**-scoped; `pr`, `status`, `issue` and
+     `claimHandedBack` are **per-deliverable**. Walk the deliverables and
+     release + stamp **each qualifying one independently**, rather than asking
+     whether "the run" has a PR — a batch where deliverable 1 has merged and
+     2–3 are still open otherwise either never releases anything or strands
+     the rest behind one stamp. (A selection pick *can* decompose: Phase 0's
+     decomposition runs after selection.) One corollary: `claimed: false`
+     suppresses the release of `selection.picked`'s issue **only** — a batch's
+     other issues reached **In progress** via Phase 1 step 5, not via the
+     claim, so that flag never described them.
+   + **Key on the PID, never on the worktree buckets.** `resumable` tests the
+     PID, but `settled` tests no liveness at all — and, decisively, a selection
+     run holds its claim from **Phase 0, before any worktree exists to
+     classify**. A bucket-keyed rule therefore either releases a **live**
+     conductor's claim while it waits at the approval stop (re-opening the
+     double-delivery the claim prevents, in the exact window it was designed
+     for) or never releases it at all. The PID test is the only thing that
+     separates those two.
 4. Record one ledger line: `reconciled: <n> in scope / <k> reclaimed / <r>
    resumable / <o> reported / <c> claims released`, and carry it into the retro
    (Phase 8). **Claims released needs its own slot**, not a share of an existing
@@ -288,12 +322,8 @@ remembered: Phase 6's `planReview` stop runs past an `EnterWorktree`, and Phase
 10's merge-drop runs in the background, potentially in a resumed session. A
 keyword kept only in the ledger is a keyword those two phases silently no-op on.
 
-**`conductorPid`** is this session's PID, and it is what makes a stranded claim
-recoverable. Phase 1 releases a dead `next` run's issue **on the PID test
-alone** — never on the worktree buckets, because `settled` performs no liveness
-test and, more importantly, a `next` run holds its claim from Phase 0, *before
-any worktree exists to classify*. Without a PID, that window is either swept as
-dead while a conductor is live at its approval stop, or never swept at all.
+**`conductorPid`** is what makes a stranded claim recoverable — step 3 above
+owns the sweep it feeds and the PID-not-buckets rationale.
 
 `selection` records how the issue was chosen —
 the ordering source and its sha, the sha every candidate was re-verified
@@ -307,12 +337,11 @@ sweep reads `claimed` to decide whether this run has a claim worth releasing at
 all. Both fields are absent on an ordinary run, and a policy token without
 `selection` is the failure the gate exists to catch — not a default.
 
-**`claimHandedBack`** sits on the **deliverable**, not here, because it is written
-by a *later* run than the one it describes: Phase 1's sweep stamps it when it
-hands a dead run's issue back to its `claimedFrom` column. Its presence excludes that run file
-from the sweep for good, which is what stops the release repeating and
-eventually taking an issue away from whoever legitimately re-claimed it. An
-adopt of a run carrying it must re-claim before resuming (`SKILL.md` Phase 1).
+**`claimHandedBack`** sits on the **deliverable**, not here, because it is
+written by a *later* run than the one it describes: Phase 1's sweep stamps it
+when it hands a dead run's issue back to its `claimedFrom` column (step 3 above
+owns the idempotency rationale). An adopt of a run carrying it must re-claim
+before resuming (`SKILL.md` Phase 1).
 
 `rubricProvenance` on a selection run is always `derived — issue <number>`; see
 the note above on why it is never `supplied`.
