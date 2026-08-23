@@ -291,9 +291,9 @@ implementation = separate `/deliver` sessions.)
   opens releases it back to `selection.claimedFrom`** — the column it was
   claimed from ([`references/next-mode.md`](references/next-mode.md) §6).
 - **Flag a reflexive delivery.** If the plan touches any of the **reflexive
-  set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
-  `.github/CODE_REVIEW.md` — this run is **rewriting the machinery that runs
-  it**. Record `reflexive: true` in the run file. **When in doubt about a path,
+  set** — `.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**`,
+  `.claude/docs/**` or `.github/CODE_REVIEW.md` — this run is **rewriting the
+  machinery that runs it**. Record `reflexive: true` in the run file. **When in doubt about a path,
   resolve it as reflexive** — a false positive costs one human merge; a false
   negative is the pipeline silently editing its own gates.
 

@@ -264,8 +264,8 @@ run, not a deliverable. **`consulted`** is Phase 0's knowledge-consult proof —
 the ledger that would otherwise hold it does not survive `EnterWorktree`, so
 this is its durable home, and Phase 8 copies it into the retro.
 **`reflexive`** is true when the diff touches the **reflexive set** —
-`.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**` or
-`.github/CODE_REVIEW.md` — which changes what Phases 4
+`.claude/skills/**`, `.claude/agents/**`, `.claude/workflows/**`,
+`.claude/docs/**` or `.github/CODE_REVIEW.md` — which changes what Phases 4
 and 5 do (see `SKILL.md` Phase 0). That set is **defined** in `SKILL.md`
 Phase 0 and quoted here and in [`next-mode.md`](next-mode.md) §5b; all three
 must match exactly — **change all three or none**.
@@ -429,8 +429,8 @@ worktree without it is a worktree that cannot authenticate.
 **It carries the credentials, not just permissions.** `TMDB_API_KEY`,
 `TMDB_USERNAME`, `TMDB_PASSWORD` and the two v4 tokens live in its `env` block
 (`.claude/docs/tooling.md` → *Shell Environment*), and a fresh checkout has
-none of them — so
-without this file `make integration-test` fails at `.check-env-vars` and the v4
+none of them — so without this file `make integration-test` fails at
+`.check-env-vars` and the v4
 suites skip. Treat it as credential-bearing: never paste its contents, never
 commit it. It stays gitignored inside the worktree.
 

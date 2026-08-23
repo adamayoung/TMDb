@@ -210,8 +210,9 @@ providers endpoint", "✅ Cover decode branches for …", "♻️ Extract …").
   public symbol you added is documented.
 
 If an increment isn't green yet, finish it (or stash the unfinished part) before
-committing — a commit is a *working* state. Use a gitmoji-prefixed message (see
-`CLAUDE.md`). Committing as you go means that by the time the test list is empty,
+committing — a commit is a *working* state. Use a gitmoji-prefixed message (the
+convention lives in the `/pr` skill). Committing as you go means that by the
+time the test list is empty,
 the work is fully committed — ready for review and PR with a clean history.
 
 ## Document every public declaration

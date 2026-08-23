@@ -75,7 +75,7 @@ Two trees. First, everything under `knowledge/`:
 | `README.md` | The stated policy no longer matching what the files actually do. |
 
 Also in scope: **`CLAUDE.md` and everything under `.claude/`** — skills, agents,
-`workflows/`, and `.github/CODE_REVIEW.md`. This tree is *larger and more
+`workflows/`, the topic docs under `docs/`, and `.github/CODE_REVIEW.md`. This tree is *larger and more
 normative* than `knowledge/`, decays the same way, and until 2026-08-12 had no
 periodic audit at all — an audit that month found most of its defects here, not
 in `knowledge/`.

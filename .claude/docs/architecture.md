@@ -135,11 +135,3 @@ Structural pattern for a new service:
 Drive it test-first with `canon-tdd`; keep DocC + `README.md` in sync via
 `/document-swift`. A new method on an existing service follows the same testing
 and documentation rules.
-
-### Duplicate typealias ambiguity
-
-When adding a typealias, check for an existing one with the same underlying
-type: two typealiases resolving to the same type (e.g. `MediaListPageableList`
-and `MediaListSummaryPageableList`, both `PageableListResult<MediaListSummary>`)
-create ambiguous mock methods. Use the existing typealias instead of creating a
-duplicate.

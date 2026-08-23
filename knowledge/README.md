@@ -2,9 +2,11 @@
 
 Durable, project-specific knowledge for the TMDb Swift package — the things worth
 remembering between tasks so they don't have to be re-learned or re-discovered.
-This is **reference** material (why/what/gotcha), distinct from `CLAUDE.md`, which
-is **imperative** (how to work here). `CLAUDE.md` carries only a thin index into
-this directory; the detail lives here and is read on demand.
+This is **reference** material (why/what/gotcha), distinct from the
+**imperative** how-to-work-here instructions: `CLAUDE.md` (the always-on core)
+and the topic docs under `.claude/docs/` (imperative detail, read per area).
+`CLAUDE.md` carries only a thin index into this directory; the detail lives
+here and is read on demand.
 
 ## What goes where
 

@@ -439,7 +439,8 @@ stops at the gate, which is exactly where a compatibility call belongs.
 ### 5b — A reflexive change
 
 An issue whose fix touches the **reflexive set** — `.claude/skills/**`,
-`.claude/agents/**`, `.claude/workflows/**` or `.github/CODE_REVIEW.md` — is
+`.claude/agents/**`, `.claude/workflows/**`, `.claude/docs/**` or
+`.github/CODE_REVIEW.md` — is
 **not selectable in `merge` mode either**, whatever its Breaking class. Judge it
 from the issue's own fix sketch and the files it names, at the same moment as
 the class, and **resolve any doubt as reflexive**.
