@@ -14,8 +14,9 @@
 # Xcode test plans (ignored at .gitignore:9, so absent from every fresh
 # checkout). `make`/CI drive SwiftPM directly and never read these, but without
 # them a worktree opened in Xcode has no TMDb (unit) or Integration test plan,
-# so the simulator route documented in CLAUDE.md is unavailable there. Both are
-# under 1 KB and hold no absolute paths — their `container:` refs are relative,
+# so the simulator route documented in .claude/docs/tooling.md is unavailable
+# there. Both are under 1 KB and hold no absolute paths — their `container:`
+# refs are relative,
 # so a copy works in any checkout.
 #
 # NOTE: `Integration.xctestplan` stores TMDB_API_KEY / TMDB_USERNAME /

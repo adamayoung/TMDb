@@ -24,8 +24,9 @@ whole value:
      fresh from disk and asserts the value at the path is the one requested;
      a mismatch is a loud non-zero exit, never a shrug. A run-file write that
      reports nothing has told you nothing (`knowledge/gotchas.md` → the silent
-     heredoc refusal), and CLAUDE.md's probe rule applies to state writers
-     too: a script must verify the state it claims to have left.
+     heredoc refusal), and the probe rule (`.claude/docs/tmdb-api.md`) applies
+     to state writers too: a script must verify the state it claims to have
+     left.
 
 Design rules, learned the hard way elsewhere in Scripts/:
 

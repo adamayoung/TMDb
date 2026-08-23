@@ -75,7 +75,7 @@ Two trees. First, everything under `knowledge/`:
 | `README.md` | The stated policy no longer matching what the files actually do. |
 
 Also in scope: **`CLAUDE.md` and everything under `.claude/`** — skills, agents,
-`workflows/`, and `.github/CODE_REVIEW.md`. This tree is *larger and more
+`workflows/`, the topic docs under `docs/`, and `.github/CODE_REVIEW.md`. This tree is *larger and more
 normative* than `knowledge/`, decays the same way, and until 2026-08-12 had no
 periodic audit at all — an audit that month found most of its defects here, not
 in `knowledge/`.
@@ -143,7 +143,7 @@ const TREES = [
   {
     key: 'claude',
     title: 'the operating instructions in CLAUDE.md, .claude/ and .github/CODE_REVIEW.md',
-    scope: `CLAUDE.md, every SKILL.md and reference file under .claude/skills/, .claude/agents/*.md, .claude/workflows/*.js, .claude/settings.json, and .github/CODE_REVIEW.md. This tree is LARGER and MORE NORMATIVE than knowledge/ and decays the same way. Its decay modes, in the order they have actually bitten this repo: a rule stated in two or three places where the copies drift apart; a rule stated as advice where a gate, hook or frontmatter tools-allowlist could enforce it; a precedence clause ("if your memory and the file disagree, the file wins") pointing at a file that no longer says what the caller assumes, leaving the rule inert; two rules sharing one key, so the loser vanishes while the slot still looks filled; a skill delegating to another without passing the argument that skill needs, so it silently falls back to a default the caller just forbade; a phase mandated to write state that no phase actually writes; and a claimed mechanism that does not exist.`,
+    scope: `CLAUDE.md, the topic docs under .claude/docs/, every SKILL.md and reference file under .claude/skills/, .claude/agents/*.md, .claude/workflows/*.js, .claude/settings.json, and .github/CODE_REVIEW.md. This tree is LARGER and MORE NORMATIVE than knowledge/ and decays the same way. Its decay modes, in the order they have actually bitten this repo: a rule stated in two or three places where the copies drift apart; a rule stated as advice where a gate, hook or frontmatter tools-allowlist could enforce it; a precedence clause ("if your memory and the file disagree, the file wins") pointing at a file that no longer says what the caller assumes, leaving the rule inert; two rules sharing one key, so the loser vanishes while the slot still looks filled; a skill delegating to another without passing the argument that skill needs, so it silently falls back to a default the caller just forbade; a phase mandated to write state that no phase actually writes; and a claimed mechanism that does not exist.`,
   },
 ]
 
