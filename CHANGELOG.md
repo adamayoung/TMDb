@@ -49,6 +49,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   either wait for a model download that was never pending, or tell the user to
   upgrade an OS that is already current.
 
+- `TVSeason.showID` — the identifier of the season's parent TV series, where
+  TMDb sends one. It appears on every surface carrying a `TVSeason`:
+  `TVSeasonDetailsResponse.season`, `TVSeries.seasons`,
+  `FindResults.tvSeasonResults`, and the new `TaggedImageMedia.tvSeason`.
+
+  It is `nil` wherever the endpoint omits it, which is most of them — a season
+  fetched as `tvSeasons.details(forSeason:inTVSeries:)` or read off a series
+  already knows its parent, so TMDb does not repeat it. The two endpoints that
+  do send it are `/find` and `/person/{id}/tagged_images`, where a season
+  arrives with no surrounding context.
+
 ### Fixed
 
 - **Breaking:** `TaggedImageMedia` gains a `tvSeries(TVSeriesListItem)` case, and
@@ -72,8 +83,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   episode", or that funnels the unexpected through a `default:` arm, changes
   behaviour with nothing to stop it compiling.
 
-  A nested `media_type` this library still does not model — `tv_season` does
-  occur, rarely — is unaffected: it is skipped while decoding, exactly as before.
+  The two nested `media_type` values still unmodelled when this landed —
+  `tv_season` and `collection` — are modelled by the entry below, in the same
+  release.
+
+- **Breaking:** `TaggedImageMedia` gains `tvSeason(TVSeason)` and
+  `collection(CollectionListItem)` cases, and tagged images attached to a single
+  season or to a movie collection stop being thrown away. This closes the same
+  gap as the entry above for the last two media types TMDb is known to send on
+  `/person/{id}/tagged_images`; the endpoint's observed vocabulary is now fully
+  modelled.
+
+  Both are rarer than `tv`: across a live sweep of 900 people and 3,386 tagged
+  images, `tv_season` accounted for 29 rows (0.86%) and `collection` for 1
+  (0.03%). Rarity is the point — the loss was silent, so it never surfaced as a
+  complaint.
+
+  It was worse than a short page, for the same reason as above: rows are dropped
+  *before* the results array is assembled, so a page whose images were all of one
+  unmodelled type decoded to **no results at all**, and an empty page ends a
+  `PagedAsyncSequence` — truncating `allTaggedImages(forPerson:)` rather than
+  merely shortening it.
+
+  This affects you at compile time only if you switch **exhaustively** over
+  `TaggedImageMedia` — add `.tvSeason` and `.collection` branches, or a
+  `default`. Two silent changes to watch for as well. Pages that were quietly
+  short now return the missing rows, so result counts grow. And
+  `TaggedImageMedia.id` for a `.tvSeason` is the **season's** identifier, not its
+  parent series' — code that learned from the `.tvSeries` case above to read a
+  series id off `media.id` will now sometimes get a season id instead. Use
+  `TVSeason.showID` to reach the series.
+
+  A nested `media_type` this library does not model is still skipped while
+  decoding rather than failing the page, exactly as before. Nothing here proves
+  TMDb will not add a sixth: a 12-person sweep once found three types, 30 found
+  four, and 900 found five.
 
 - **Breaking:** Day-precision dates are now interpreted at **GMT** instead of
   the machine's current time zone, in both directions.

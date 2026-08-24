@@ -78,6 +78,40 @@ struct FindResultsTests {
         #expect(result.tvEpisodeResults.isEmpty)
     }
 
+    ///
+    /// Every other `find-*.json` fixture has `"tv_season_results": []`, so this
+    /// array had never decoded a real row — an empty array covers no branch.
+    /// It matters now that `TVSeason` carries `showID`: `/find` is the one
+    /// endpoint besides tagged images that sends `show_id` on a season, so
+    /// without this fixture the property would start populating on a live path
+    /// with no test over it.
+    ///
+    /// Captured from `/find/522572?external_source=tvdb_id` — the same
+    /// *True Detective* season 1 the tagged-images fixture uses, reached by a
+    /// different endpoint.
+    ///
+    @Test("JSON decoding of FindResults with a TV season result")
+    func decodeReturnsFindResultsWithTVSeasonResult() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            FindResults.self,
+            fromResource: "find-tvdb-id-tv-season"
+        )
+
+        let tvSeason = try #require(result.tvSeasonResults.first)
+        #expect(result.tvSeasonResults.count == 1)
+        #expect(tvSeason.id == 59780)
+        #expect(tvSeason.name == "Season 1")
+        #expect(tvSeason.seasonNumber == 1)
+        #expect(tvSeason.showID == 46648)
+        #expect(tvSeason.episodeCount == 8)
+        #expect(tvSeason.airDate == Date(iso8601: "2014-01-12T00:00:00Z"))
+
+        #expect(result.movieResults.isEmpty)
+        #expect(result.personResults.isEmpty)
+        #expect(result.tvResults.isEmpty)
+        #expect(result.tvEpisodeResults.isEmpty)
+    }
+
 }
 
 extension FindResultsTests {

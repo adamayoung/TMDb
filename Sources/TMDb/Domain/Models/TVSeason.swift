@@ -28,6 +28,14 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let seasonNumber: Int
 
     ///
+    /// Identifier of the parent TV series.
+    ///
+    /// Only some endpoints send this — `/tv/{id}/season/{n}` and a series'
+    /// own `seasons` do not, because the parent is already known there.
+    ///
+    public let showID: Int?
+
+    ///
     /// Overview of TV season.
     ///
     public let overview: String?
@@ -73,6 +81,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
     ///    - id: TV season identifier.
     ///    - name: TV season name.
     ///    - seasonNumber: TV season number.
+    ///    - showID: Identifier of the parent TV series.
     ///    - overview: Overview of TV season.
     ///    - airDate: TV season's air date.
     ///    - posterPath: TV season's poster path.
@@ -85,6 +94,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         id: Int,
         name: String,
         seasonNumber: Int,
+        showID: Int? = nil,
         overview: String? = nil,
         airDate: Date? = nil,
         posterPath: URL? = nil,
@@ -96,6 +106,7 @@ public struct TVSeason: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.id = id
         self.name = name
         self.seasonNumber = seasonNumber
+        self.showID = showID
         self.overview = overview
         self.airDate = airDate
         self.posterPath = posterPath
@@ -113,6 +124,7 @@ extension TVSeason {
         case id
         case name
         case seasonNumber
+        case showID = "showId"
         case overview
         case airDate
         case posterPath
@@ -139,6 +151,7 @@ extension TVSeason {
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.seasonNumber = try container.decode(Int.self, forKey: .seasonNumber)
+        self.showID = try container.decodeIfPresent(Int.self, forKey: .showID)
         self.overview = try container.decodeIfPresent(String.self, forKey: .overview)
         self.airDate = try container.decodeNonEmptyDateIfPresent(forKey: .airDate)
         self.posterPath = try container.decodeIfPresent(URL.self, forKey: .posterPath)

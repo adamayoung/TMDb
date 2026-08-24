@@ -1,0 +1,24 @@
+{
+  "aspect_ratio": 0.701,
+  "file_path": "/hoTLlTIohrzQ13HQVkZrDlvffuT.jpg",
+  "height": 1426,
+  "id": "635117c8076ce8007f0053ce",
+  "iso_3166_1": "US",
+  "iso_639_1": "en",
+  "vote_average": 3.334,
+  "vote_count": 2,
+  "width": 1000,
+  "image_type": "poster",
+  "media": {
+    "adult": false,
+    "backdrop_path": "/vq340s8DxA5Q209FT8PHA6CXYOx.jpg",
+    "id": 558216,
+    "title": "Venom Collection",
+    "original_title": "Venom Collection",
+    "overview": "A frustrated journalist named Eddie Brock and a carnivorous black symbiote unite to become the monstrous antihero Venom and battle both good and evil alike. Based on the Marvel Comics character.",
+    "poster_path": "/unpRHoS5df7VEukeukCAgHU1sV2.jpg",
+    "media_type": "collection",
+    "original_language": "en"
+  },
+  "media_type": null
+}

@@ -134,9 +134,12 @@ struct PersonIntegrationTests {
     /// those rows was silently discarded before `TaggedImageMedia.tvSeries`
     /// existed.
     ///
-    /// The drop count is deliberately not asserted here. `tv_season` also occurs
-    /// on this endpoint and is still unmodelled, so an exact count against live
-    /// data would fail for something the library is designed to skip.
+    /// The drop count is deliberately not asserted here, and that is not because
+    /// of any particular unmodelled type — every value measured on this endpoint
+    /// is now modelled. It is ADR-0019's carve-out: the vocabulary has never been
+    /// provably closed (a 12-person sweep found three types, 30 found four, 900
+    /// found five), so an exact live count would turn the weekly cron red for
+    /// exactly the behaviour the library is designed to tolerate.
     ///
     @Test("taggedImages for a person tagged against whole TV series")
     func taggedImagesForPersonTaggedAgainstTVSeries() async throws {
@@ -151,6 +154,41 @@ struct PersonIntegrationTests {
                 if case .tvSeries = $0.media { true } else { false }
             }
         )
+    }
+
+    ///
+    /// Person 57755 is tagged against *True Detective* season 1 — a `tv_season`
+    /// row, which was silently discarded before `TaggedImageMedia.tvSeason`
+    /// existed. `showID` is asserted because it is the only field on the row
+    /// that the library did not previously model at all.
+    ///
+    /// **This anchor is one row of twenty**, where the TV-series test above
+    /// covers eighteen of twenty. `tv_season` is genuinely rare — 29 rows in a
+    /// 3,386-row sweep across 900 people — so if this test starts failing, the
+    /// first hypothesis is that the single user-contributed image was deleted or
+    /// retagged, **not** that decoding regressed. The remedy is to re-sweep
+    /// `/person/{id}/tagged_images` for another person carrying a `tv_season`
+    /// row and re-point this test, not to change the decoder.
+    ///
+    @Test("taggedImages for a person tagged against a TV season")
+    func taggedImagesForPersonTaggedAgainstTVSeason() async throws {
+        let personID = 57755
+
+        let taggedImageList = try await personService
+            .taggedImages(forPerson: personID)
+
+        #expect(!taggedImageList.results.isEmpty)
+
+        let tvSeasons = taggedImageList.results.compactMap { taggedImage -> TVSeason? in
+            guard case .tvSeason(let tvSeason) = taggedImage.media else {
+                return nil
+            }
+
+            return tvSeason
+        }
+
+        let tvSeason = try #require(tvSeasons.first)
+        #expect(tvSeason.showID != nil)
     }
 
     @Test("translations")
