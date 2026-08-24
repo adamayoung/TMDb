@@ -24,7 +24,7 @@ Sendable {
     ///
     /// This is always the identifier of the media the image is tagged against,
     /// which for ``tvSeason(_:)`` is the **season's** identifier rather than
-    /// its parent series'. Use `TVSeason.showID` to reach the series.
+    /// its parent series'. Use ``TVSeason/showID`` to reach the series.
     ///
     public var id: Int {
         switch self {
