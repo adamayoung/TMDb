@@ -47,6 +47,26 @@ struct FindIntegrationTests {
         #expect(results.tvResults.first?.name == "Breaking Bad")
     }
 
+    ///
+    /// `tv_season_results` was empty in every captured fixture until now, so it
+    /// had never decoded a real row. It matters because `/find` is one of only
+    /// two endpoints that send `show_id` on a season — the other being
+    /// `/person/{id}/tagged_images` — so this is the live check behind
+    /// `TVSeason.showID` on this surface.
+    ///
+    @Test("find TV season by TVDB ID")
+    func findTVSeasonByTVDBID() async throws {
+        // True Detective season 1
+        let externalID = "522572"
+
+        let results = try await findService.find(externalID: externalID, externalSource: .tvdbID)
+
+        let tvSeason = try #require(results.tvSeasonResults.first)
+        #expect(tvSeason.id == 59780)
+        #expect(tvSeason.seasonNumber == 1)
+        #expect(tvSeason.showID == 46648)
+    }
+
     @Test("find returns empty results for non-existent ID")
     func findReturnsEmptyResultsForNonExistentID() async throws {
         let externalID = "tt0000000000"

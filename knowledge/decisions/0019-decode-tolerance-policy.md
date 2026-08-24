@@ -123,8 +123,19 @@ into "swallow anything".
   **Settled 2026-08-20 (#486):** that decision was taken — `TaggedImageMedia`
   gained a `tvSeries(TVSeriesListItem)` case in 20.0.0, so `tv` now decodes
   rather than being counted. This is limb 1 continuing to work, not a change to
-  it: `tv_season` was found on the same endpoint in the same sweep, is still
-  unmodelled, and is still skipped and counted.
+  it: `tv_season` was found on the same endpoint in the same sweep, and remained
+  unmodelled, skipped and counted.
+  **Completed 2026-08-24 (#487/#489):** `tvSeason(TVSeason)` and
+  `collection(CollectionListItem)` followed, so every media type measured on this
+  endpoint now decodes. Two things this does **not** mean. It is not a claim that
+  the vocabulary is closed — 12 people found three types, 30 found four, 900
+  found five — so the exact-count carve-out above still applies to this endpoint.
+  And it is not a retreat from limb 1: an unmodelled sixth type would still be
+  skipped and counted, which is the behaviour that kept three successive coverage
+  gaps from being outages. What limb 1 does **not** bound is the *amplifier* —
+  a page emptied entirely by skipping still ends a `PagedAsyncSequence`
+  (`PagedAsyncSequence.swift:186-189`), truncating the walk rather than
+  shortening it. That is tracked separately.
 
 ## Alternatives considered
 

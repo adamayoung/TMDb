@@ -428,7 +428,7 @@ Not measurable here: the whole **v4** surface (no MCP tooling) and the
 `PageableListResult<TVEpisode>` and `<MediaListSummary>` have never decoded a
 real row in CI.
 
-### `TaggedImageMedia` dropped every `tv` row until 20.0.0
+### `/person/{id}/tagged_images`: the nested `media_type` vocabulary, and what it dropped
 
 *2026-08-12, N=229 across 11 people.* The nested `media.media_type` was `movie`
 165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page was
@@ -443,19 +443,72 @@ page too.
 `tv_episode` 53 — and **`tv_season` 1** (person 57755, *True Detective* S1). The
 vocabulary on this endpoint is **not** closed at three: a 12-person / 378-row
 sweep the same day found only movie/tv/tv_episode and looked conclusive, and
-widening it to 30 people falsified that. `tv_season` remains unmodelled and is
-still skipped. Two consequences worth keeping: **do not** assert an exact
-`droppedItemCount` against this endpoint live (ADR-0019's carve-out applies), and
-the 56 `tv` rows span 13 distinct series with all five of `TVSeriesListItem`'s
-non-optional fields present and non-null on every one.
+widening it to 30 people falsified that. Two consequences worth keeping: **do
+not** assert an exact `droppedItemCount` against this endpoint live (ADR-0019's
+carve-out applies), and the 56 `tv` rows span 13 distinct series with all five of
+`TVSeriesListItem`'s non-optional fields present and non-null on every one.
+
+*2026-08-24, N=3,386 across 900 popular people (#487/#489).* `movie` 2284,
+`tv_episode` 745, `tv` 327, **`tv_season` 29** (0.86%), **`collection` 1**
+(0.03%). Five values — and the sweep before this one, at 300 people, returned the
+same five, so the pattern of each widening finding a new type has (for now)
+stopped. **Both remaining types are modelled in 20.0.0**: `tvSeason(TVSeason)`
+and `collection(CollectionListItem)`. Every value measured on this endpoint now
+decodes.
+
+That is **not** a claim the vocabulary is closed — 12 people found three types,
+30 found four, 900 found five — so the carve-out above still stands and no live
+`droppedItemCount` assertion should be added.
+
+Field detail from that sweep, since these decode into shared public models:
+
+- **`tv_season` rows carry exactly 10 keys**, identical on all 29: `id`,
+  `media_type`, `name`, `overview`, `poster_path`, `season_number`, `show_id`,
+  `episode_count`, `air_date`, `vote_average`. **Nothing is ever `null`.**
+  `overview` is `""` on 11 of 29; `air_date` and `poster_path` are never empty,
+  which matters because `TVSeason.posterPath` uses plain
+  `decodeIfPresent(URL.self,…)` and would throw on `""`.
+- **`show_id` is the only key `TVSeason` did not model**, which is why
+  `TVSeason.showID: Int?` was added rather than a `TVSeasonListItem` sibling —
+  the other nine map onto existing stored properties.
+- **`collection` could not be bounded by sampling.** Tripling the sweep
+  (1,479 → 3,386 rows) found **zero** additional collection rows — still the one
+  *Venom Collection* row on person 2524. It was bounded a different way instead:
+  `CollectionListItem` is already the payload of `Media.collection`, and
+  `/search/multi` **does** return collection rows (2 in 2,897 sampled, all four
+  of its non-optional `String`s present and non-null). Those fields are therefore
+  already load-bearing on a shipped path, so modelling the tagged-images row adds
+  no new failure class. Collection `poster_path`/`backdrop_path` *are* nullable
+  (1 of 2 on `/search/multi`); both are already `Optional`.
 
 The endpoint also **ignores the `page` query parameter**: `?page=1`, `?page=2`
 and `?page=3` return identical result ids, and the `page` field is always `0`
 despite a `total_pages` above 1. `allTaggedImages` therefore yields duplicates.
 
 Note also that the **top-level** `media_type` on a tagged image uses a *different
-vocabulary* from the nested one: `episode` where the nested object says
-`tv_episode`. Only the nested key is decoded.
+vocabulary* from the nested one, with three known divergences: `episode` where
+the nested object says `tv_episode`, `season` where it says `tv_season`, and
+**`null`** where it says `collection`. Only the nested key is decoded.
+
+### `/find` sends `show_id` on a season result
+
+*2026-08-24 (#487).* `/find/{external_id}?external_source=tvdb_id` populates
+`tv_season_results` with the **same 10-key season shape** the tagged-images
+endpoint sends, `show_id` included — verified on tvdb_id `522572` → season 59780,
+`show_id` 46648. It is the only endpoint besides `/person/{id}/tagged_images`
+known to send it: `/tv/{id}/season/{n}` and a series' own `seasons` array both
+omit it, because the parent is already known there. That asymmetry is why
+`TVSeason.showID` is `Optional`.
+
+A third emitter exists but nothing decodes it: **`/credit/{id}` carries
+`media.seasons[]`** whose entries have the same season shape — `media_type:
+"tv_season"`, `show_id`, `episode_count` — but **null** `air_date` and
+`poster_path`, where the tagged-images rows are never null (see
+`Tests/TMDbTests/Resources/json/credit-tv-blank-first-air-date.json`).
+`CreditTVSeries` does not model `seasons`, so those keys are ignored today. If
+that ever changes, note that the nullability does **not** transfer from the
+tagged-images measurements above — `TVSeason` already treats both as optional,
+so it would decode, but the sparse variant is the one to test against.
 
 ### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
 

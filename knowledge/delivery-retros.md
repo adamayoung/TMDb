@@ -27,6 +27,71 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
+## 2026-08-24 — 🐛 Model tagged images attached to a TV season or a collection (#504) · full
+
+- **Phases / skills:** 0–8 pre-PR, attended, plan approved from plan mode.
+  Full weight — `Decodable`/`CodingKeys` surface plus new source-breaking public
+  API, so §2b applied however small the diff. Skills: `review-plan` (3 critics,
+  all `sound-with-fixes`), `implement-plan`, `review-changes` (fan-out +
+  adversarial verify), `security-review`, independent rubric grader (9/9),
+  `capture-knowledge`. Closes two issues in one PR (#487 `tv_season`, #489
+  `collection`) — a scope widening the user chose at the entry gate.
+- `consulted:` gotchas §*Extraneous `CodingKeys` cases*, §*A camelCase key in a
+  fixture is invisible*, §*A captured fixture cannot back a throwing decode
+  test*, §*`#expect(throws:)` is a false green twice over*, §*"Redundant
+  fixture" is a decoder-branch question*, §*A fixture the author invented*,
+  §*Capture a fixture from the live page*, §*An all-dropped page doesn't shorten
+  the sequence*, §*`make test` compiles with `-warnings-as-errors`*; ADR-0019,
+  ADR-0021, ADR-0029; `tmdb-api-notes` tagged-images section; wiki entries
+  *a-public-enum-you-expect-to-grow…*, *carry-a-decode-tolerance-marker…*,
+  *a-fixture-you-invented-tests-your-belief…*.
+- `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported / 0 claims
+  released.
+- `swept:` n/a (no infra files in the diff) → citation scan of `knowledge/` and
+  `.claude/` for `TaggedImageMedia`/tagged-images; 1 heading rewritten
+  (`tmdb-api-notes` "dropped every `tv` row" → vocabulary-scoped),
+  `next-major.md:70` reviewed and left (still true), ADR-0019 reconciled in the
+  implementation commit.
+- **What worked — pre-arming the plan against a known critic failure.**
+  ADR-0021 records that during #486 two of three critics wanted a growth-slot
+  case on this very enum before the limb boundary was re-read. The plan cited
+  that ADR in a *do not relitigate* section, and **no critic raised it** — one
+  explicitly declined to. Writing the known-wrong objection into the plan, with
+  the citation that settles it, is cheaper than adjudicating it a second time.
+- **What worked — bounding a risk the sweep could not.** `collection` stayed at
+  **one** row through 3,386 sampled rows, so "sample the population" had nothing
+  left to give. The risk was settled by asking where `CollectionListItem`
+  *already* decodes (`/search/multi`, a shipped path), which is now a gotcha.
+  The Phase 0 gate earned its keep by changing the *argument*, not the outcome.
+- **What worked — a one-minute mutation check on the one unenforced site.** A
+  critic flagged that the `id` switch is compiler-checked for exhaustiveness
+  only. Swapping the `.tvSeason` arm to return `showID` made exactly the two
+  `media.id` assertions go red — so those assertions are guards, not decoration.
+- **Friction — two interacting `AskUserQuestion` questions produced a
+  contradiction.** Q1 (fold #489 in?) and Q2 (which unmodelled-type example?)
+  were asked together; "fold in" made Q2's chosen answer impossible, because
+  modelling `collection` removes it as an unmodelled example. I resolved it
+  unilaterally and said so. Both answers were individually reasonable; the tool
+  gave no way to express the dependency.
+- **Friction — the issue's own triage comment named a type that does not
+  exist.** The plan inherited `TVSeriesDetails.seasons[]` from it; there is no
+  `TVSeriesDetails`, and the real surface (`TVSeries.seasons`) was consequently
+  missing from the widened-surface list until two critics caught it. Issue-body
+  symbol names are hypotheses, exactly as review findings are.
+- **Deviations — none from the skill.** One judgement call worth recording: the
+  plan deferred `/find`'s `showID` coverage to a follow-up issue, and a critic
+  used that deferral as its main argument for dropping `showID` altogether. One
+  live call showed `/find` really does send `show_id`, so the coverage landed in
+  this PR and the issue was never filed. A deferral that weakens the change it
+  is deferred from is usually cheaper to just do.
+- **One improvement:** `AskUserQuestion` has no way to say "Q2's options depend
+  on Q1's answer". `/deliver`'s entry gate should either ask dependent questions
+  in sequence, or state the dependency in the dependent question's option text —
+  otherwise the conductor silently arbitrates a contradiction the user did not
+  know they were creating.
+
+---
+
 ## 2026-08-21 — 🐛 Give each workflow cache key a real hash and its own namespace (#493) · full
 
 - **Phases / skills:** 0–8 pre-PR, `auto next` (unattended; issue #448 taken off
@@ -819,90 +884,6 @@ the board's Ready execution order.
   it; encoding it in the artifact the next person actually follows does.**
   ADR-0008's recipe is now type-driven.
 
-## 2026-08-13 — ♻️ TMDbIntelligence vocabulary growth valves + `searchFailed` (#452) · full
-
-- **Phases / skills:** 0–8 pre-PR. Full weight (new + breaking public API, error
-  paths, 15 Swift files, +664/−36), **with `/review-plan`'s critics skipped** —
-  the plan had already taken an adversarial pass this session whose findings were
-  applied. Skills: `implement-plan`, `review-changes` (5-dimension fan-out),
-  `security-review`, `capture-knowledge`.
-  `consulted:` gotchas *Public enums are not implicitly `Sendable`* (:1429),
-  *DocC symbol links don't resolve across modules* (:504 + its 2026-07-24
-  update), *A `package` symbol cannot be referenced by a DocC link* (:761),
-  *The build/test tooling-runner runs in the main checkout* (:265),
-  *A `RawRepresentable` enum … gets rawValue equality* (:1001),
-  *`NaturalLanguageSearchService` is not platform-gated* (:1018),
-  *Renaming a method's internal parameter name* (:1116); **ADR-0018**,
-  **ADR-0019** (both governing), ADR-0010; wiki
-  *treat-review-findings-as-hypotheses-not-approved-work*.
-  `reconciled:` 0 in scope / 0 reclaimed / 0 resumable / 0 reported.
-  `swept:` n/a (no infra files in the diff) → fell back to neighbouring entries:
-  ADR-0019 limb 2 rewritten (its "existing codebase-wide idiom" claim was going
-  stale), ADR-0018 read in full and verified still true, gotchas :504/:761/:1001/
-  :1018 re-read, still true.
-- **Worked — verifying the issue's premises before planning changed the plan.**
-  Per the wiki heuristic, all three of issue #420's load-bearing claims were
-  checked and **three were wrong**: ADR-0019's `.unknown` idiom does not transfer
-  (every instance exists because the value is wire-decoded; none of these types
-  are `Codable`), Half 2 was already half-landed by ADR-0018's
-  `catch TMDbError.cancelled`, and — the one that mattered — **a catch-all case
-  does not on its own prevent the source break**. The issue's literal fix would
-  have shipped a valve that didn't valve: adding `.other` stops nothing unless all
-  future growth is routed through it. That reframing is what turned the change
-  into extensible structs, and became ADR-0021.
-- **Worked — the plan's adversarial pass caught two *silent* breaks.** A
-  payload-free enum is implicitly `Hashable`, and an enum interpolates as its bare
-  case name; a struct is neither. Neither loss produces a diagnostic at the
-  conversion site, and the interpolation one would have compiled while silently
-  destroying the dictionary keys and column alignment of
-  `NaturalLanguageSearchPlannerEvalTests`' accuracy report. Both are now declared,
-  tested, and recorded in `gotchas.md`.
-- **Worked — spending one 30s gate on the biggest unknown first.** Converting
-  `Reason` alone (4 statics) and running `make build-docs` settled whether
-  `` ``Intent/byPerson`` ``-style links survive against a `public static let`
-  before the bulk conversion multiplied the cost of a wrong answer. They do, so
-  zero doc-link churn was needed — evidence rather than the `RetryableErrors`
-  precedent's promise.
-- **Friction — I asserted a compiler behaviour I had not verified, and two agents
-  then disagreed about it.** I told the user the catch-arm ordering was gated by
-  *"case will never be executed"*; the security reviewer said it was unenforced
-  and rested only on a comment. Settled by reversing the two arms and building: it
-  **is** gated, as a hard error under `--Werror`. Cheap to check, expensive to be
-  wrong about — a claim about *what enforces an invariant* deserves the same
-  evidence bar as a claim about behaviour.
-- **Friction — fixed a stale string in one file and didn't sweep for its
-  siblings.** `README.md:154` called `search("…")` where the label is
-  `search(matching:)`; the review found the **identical** call in
-  `TMDbIntelligence.docc` and `TMDbIntelligenceTesting.docc`. DocC code fences
-  aren't compiled, so no gate catches them. Same shape as the recurring
-  "sweep the rule's whole footprint, not the file you opened" defect.
-- **Friction — a test comment claimed to pin an invariant it never reached.** My
-  execution-failure test asserted `searchAllQueries.isEmpty` and commented "pins
-  `canFallBack` → false", but `canFallBack` is only consulted for errors from
-  `planner.plan(for:)`; that failure comes from `executor.execute`, outside the
-  inner `do`. The new arm could have been flipped to `true` with nothing failing.
-  Fixed by raising `.searchFailed` from the *planning* stage instead. **A comment
-  asserting coverage is not coverage** — the reviewer had to catch it because the
-  green suite looked identical either way (**False green**).
-- **Deviations:** (1) Phase 2 critics skipped, as above — recorded as full with
-  the skipped machinery noted. (2) The plan sequenced `ListKind` and `Intent` as
-  separate build cycles; both were done in one, since their switch sites live in
-  *different* files so an error stayed attributable — one build saved, and it
-  compiled clean first time. (3) The `reviewedClean` stamp used the `Sources`/
-  `Tests` **tree hashes** rather than the documented
-  `git ls-tree … | git hash-object` pipe, which the worktree Bash guard refuses as
-  unverifiable; same property, no pipe.
-- **One improvement — applied in this PR.** `swept:` disciplines `knowledge/`, but
-  both of this delivery's doc misses were **source-tree** sweep failures a
-  reviewer caught, not the author. `/implement-plan`'s *Done* checklist gained a
-  step 3: *changed a literal string, symbol name or code sample? grep the tree for
-  the old text before calling it done* — the `.docc` catalogs and `README.md`
-  being the habitual blind spot because **no gate compiles a code sample**. The
-  gap it fills is the *incidental* fix: the reflexivity footprint sweep covers
-  `.claude/` diffs and the type-driven enumeration covers tasks framed as sweeps,
-  but neither covers a one-liner changed in passing. Logged in
-  `skill-improvement-log.md`.
-
 ## Archive (distilled)
 
 Older entries condensed per the rolling window (`knowledge/README.md` →
@@ -910,6 +891,7 @@ Older entries condensed per the rolling window (`knowledge/README.md` →
 
 | Date | PR | Weight | Outcome |
 | --- | --- | --- | --- |
+| 2026-08-13 | #452 | full | `TMDbIntelligence` vocabulary growth valves + `searchFailed`, the delivery that produced ADR-0021. Verifying the issue's premises first is what changed the design: **a catch-all case does not on its own prevent a source break** — `.other` valves nothing unless *all* future growth is routed through it — which turned the fix from catch-all cases into extensible structs. Its adversarial plan pass caught two *silent* breaks (a payload-free enum is implicitly `Hashable` and interpolates as its bare case name; a struct is neither, and neither loss warns at the conversion site). Two frictions that generalise: I asserted a compiler behaviour I had not verified and two agents then disagreed until a build settled it, and a test comment claimed to pin an invariant it never reached (**False green**). Its "one improvement" — grep the tree for a changed literal's siblings, `.docc` and `README.md` being the blind spot since no gate compiles a code sample — **shipped in that same PR** as `/implement-plan`'s *Done* step 3. |
 | 2026-08-13 | #451 | full | Moved `/review-knowledge`'s audit round to Opus (ADR-0020). **Phase 0's knowledge consult caught that the whole plan was ADR-governed**: both proposed changes contradicted ADR-0014 — one reversed its six-day-old addendum, the other re-opened an explicitly rejected alternative — so without that read a config tweak would have silently reversed a recorded decision. The plan critics changed the delivery's shape, killing `effort: high → xhigh` (thinking bills as output at 5× input, so moving two variables at once would have left a regression with two suspects) and dropping the conditional-Fable-escalation half entirely (deferred as issue #450, later closed to the log). The code reviewer caught a **falsehood in the durable record** — ADR-0020 and the log both claimed in the past tense that an issue had been filed; none had. Its lasting friction: ~1.7M review tokens for a 6-file markdown diff, the origin of the "scale machinery by diff shape" thread that landed as `/review-changes`' *Risk overrides size* rule (#462). Also ~8 extra round trips to the worktree `Bash` guard for run-file writes — one of the five recurrences behind `Scripts/deliver-runfile.py`. |
 | 2026-08-13 | #449 | full | Excluded tvOS/watchOS from the FoundationModels planner. **Probing all five platforms before accepting the reported fix found a second break**: the issue's `&& !os(tvOS)` was verified on 18.2.0, but building the unfixed tree everywhere showed watchOS red too, with asymmetric per-symbol SDK availability — the reported patch verbatim would have shipped looking complete while leaving watchOS broken. The reviewer found a pre-existing false green two lines from the diff (the aggregate `ci` job never checked the `changes` job's result, so a failed paths-filter passed all five jobs having done nothing), and a might-be-red finding was settled by **executing it** — one cold piped build per platform — rather than arguing it. Full weight did not fit a diff whose risk was 74 lines of YAML: took the single-reviewer path with a targeted brief, and its "one improvement" — a `ci-workflow` dimension for `/review-changes`' fan-out (gate integrity, false-green paths, secret exposure, cache keys) — **remains open**. Also the `markdownlint --fix` hook rewrote a line-leading `#416` into an H1, corrupting a knowledge entry; captured, and it will recur. |
 | 2026-08-12 | #433 | full | Surfaced task cancellation as `TMDbError.cancelled` (ADR-0018). All three plan critics independently found a bug the issue never mentioned — a cancelled natural-language search wrapped as `.planningFailed` was fallback-eligible, so the library issued three fresh live searches on an already-cancelled task — and the simplicity critic reversed the Part 2 design to a `ResumeOnce` lock-box (`onCancel` is synchronous, so a lock beats an actor), removing a hang class. A review finding was **mutation-tested** rather than trusted or dismissed. Its `watch:` line is the file's starkest lesson: Linux CI caught a **production** bug every other gate missed — a local `continuation` shadowed the stored property inside its own initialiser, reading uninitialised stack memory that was benignly `nil` on Darwin (3144 green macOS tests, two reviews, a security review, an independent grader) and segfaulted in `swift_retain` on Linux — so a hand-rolled concurrency primitive needs `make test-linux` **before** the PR, and a diff-reading reviewer cannot see this class. Its knowledge-shaped AC6 failed the first grading purely by capture-after-grading ordering, which became Phase 0's drop-a-knowledge-shaped-AC rule (#439). |

@@ -41,6 +41,57 @@ struct TVSeasonTests {
         #expect(result.networks?.first?.id == 49)
     }
 
+    ///
+    /// `/tv/{id}/season/{n}` does not send `show_id` — the parent series is
+    /// already known from the request — so this pins the **absent** branch of
+    /// `showID`'s `decodeIfPresent`. The present branch is covered by
+    /// `TaggedImageTests` and `FindResultsTests`.
+    ///
+    /// Asserted directly rather than through the `tvSeason` expectation constant
+    /// below: comparing `result.showID == tvSeason.showID` would be `nil == nil`,
+    /// which stays green even if `showID` were dropped from `init(from:)`
+    /// altogether.
+    ///
+    @Test("JSON decoding of TVSeason without a show id returns nil show id", .tags(.decoding))
+    func decodeWithoutShowIDReturnsNilShowID() throws {
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TVSeason.self, fromResource: "tv-season"
+        )
+
+        #expect(result.showID == nil)
+    }
+
+    ///
+    /// `TVSeason`'s `encode(to:)` is compiler-synthesised, which emits an
+    /// Optional via `encodeIfPresent` — so a nil `showID` writes no key at all.
+    /// That is what makes the property additive rather than a wire change for
+    /// every other `TVSeason` surface, so it is pinned rather than assumed.
+    ///
+    @Test("JSON encoding of TVSeason without a show id omits the key", .tags(.encoding))
+    func encodeWithoutShowIDOmitsShowIDKey() throws {
+        let season = TVSeason(id: 3624, name: "Season 1", seasonNumber: 1)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(season)
+        let object = try #require(
+            try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        )
+
+        #expect(object["show_id"] == nil)
+        #expect(object.keys.contains("show_id") == false)
+    }
+
+    @Test("JSON encoding of TVSeason with a show id writes the key", .tags(.encoding))
+    func encodeWithShowIDWritesShowIDKey() throws {
+        let season = TVSeason(id: 59780, name: "Season 1", seasonNumber: 1, showID: 46648)
+
+        let data = try JSONEncoder.theMovieDatabase.encode(season)
+        let object = try #require(
+            try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        )
+
+        #expect(object["show_id"] as? Int == 46648)
+    }
+
     @Test("JSON decoding of TVSeason without networks returns nil networks", .tags(.decoding))
     func decodeWithoutNetworksReturnsNilNetworks() throws {
         let result = try JSONDecoder.theMovieDatabase.decode(

@@ -85,10 +85,87 @@ struct TaggedImagePageableListTests {
     }
 
     ///
-    /// `tv_season` is a real nested `media_type` on this endpoint — measured on
-    /// person 57755 (*True Detective* season 1) — that the library still does
-    /// not model. The values below are that row's, so this exercises a media
-    /// type TMDb actually sends rather than an invented one.
+    /// A `tv_season` row used to be dropped from the page entirely — 29 rows in
+    /// a 3,386-row live sweep, and the drop happened *before* the results array
+    /// was assembled, so a page of nothing but season artwork decoded to zero
+    /// results and ended the `PagedAsyncSequence` walking it.
+    ///
+    /// The nested media object below is the genuine person-57755 row
+    /// (*True Detective* season 1). The outer image envelope around it is
+    /// trimmed, so assert only on the nested values.
+    ///
+    /// `media.id` is asserted deliberately: the `id` switch in
+    /// `TaggedImageMedia` is checked by the compiler for *exhaustiveness* only,
+    /// so an arm returning `showID` (the series) instead of the season's own id
+    /// would compile and satisfy every other assertion here.
+    ///
+    @Test(
+        "JSON decoding of TaggedImagePageableList with a TV season result",
+        .tags(.decoding)
+    )
+    func decodeReturnsTaggedImagePageableListWithTVSeasonResult() throws {
+        let json = """
+        {
+          "page": 0,
+          "results": [
+            {
+              "id": "52dbf5ab760ee3248d01db10",
+              "aspect_ratio": 0.692,
+              "file_path": "/ssnqv0NQ4BOpLKng78DelTH5XbA.jpg",
+              "height": 578,
+              "width": 400,
+              "image_type": "poster",
+              "vote_average": 0.166,
+              "vote_count": 3,
+              "media": {
+                "id": 59780,
+                "name": "Season 1",
+                "media_type": "tv_season",
+                "season_number": 1,
+                "show_id": 46648,
+                "episode_count": 8,
+                "air_date": "2014-01-12",
+                "vote_average": 8.7
+              }
+            }
+          ],
+          "total_pages": 1,
+          "total_results": 1
+        }
+        """
+
+        let result = try JSONDecoder.theMovieDatabase.decode(
+            TaggedImagePageableList.self,
+            from: Data(json.utf8)
+        )
+
+        #expect(result.results.count == 1)
+        #expect(result.droppedItemCount == 0)
+
+        let taggedImage = try #require(result.results.first)
+        #expect(taggedImage.media.id == 59780)
+
+        guard case .tvSeason(let tvSeason) = taggedImage.media else {
+            Issue.record("Expected tvSeason media type")
+            return
+        }
+
+        #expect(tvSeason.id == 59780)
+        #expect(tvSeason.seasonNumber == 1)
+        #expect(tvSeason.showID == 46648)
+    }
+
+    ///
+    /// ADR-0019 limb 1. A nested `media_type` this library does not model is
+    /// skipped from the enclosing page and counted, rather than failing the
+    /// whole page — and this is the only test that pins `droppedItemCount`
+    /// actually incrementing.
+    ///
+    /// `"podcast"` is the repo-wide stand-in for an out-of-vocabulary
+    /// `media_type` (`KeyedDecodingContainerMediaTypeTests`,
+    /// `MediaListItemTests`, `MediaListTests`, `PersonCombinedCreditsTests`,
+    /// `V4ListTests`). It is chosen because it can never become a real case —
+    /// every value TMDb actually sends on this endpoint is now modelled.
     ///
     @Test(
         "JSON decoding of TaggedImagePageableList skips a result with an unmodelled media type",
@@ -110,13 +187,8 @@ struct TaggedImagePageableListTests {
               "vote_count": 0,
               "media": {
                 "id": 59780,
-                "name": "Season 1",
-                "media_type": "tv_season",
-                "season_number": 1,
-                "show_id": 46648,
-                "episode_count": 8,
-                "air_date": "2014-01-12",
-                "vote_average": 8.7
+                "name": "A Future Thing",
+                "media_type": "podcast"
               }
             }
           ],
@@ -193,12 +265,8 @@ struct TaggedImagePageableListTests {
         let json = """
         {
           "id": 59780,
-          "name": "Season 1",
-          "media_type": "tv_season",
-          "season_number": 1,
-          "show_id": 46648,
-          "episode_count": 8,
-          "air_date": "2014-01-12"
+          "name": "A Future Thing",
+          "media_type": "podcast"
         }
         """
 
@@ -215,7 +283,7 @@ struct TaggedImagePageableListTests {
             return
         }
         #expect(
-            decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "tv_season")
+            decodingError.unknownMediaType == UnknownMediaTypeError(rawValue: "podcast")
         )
     }
 
