@@ -1719,6 +1719,56 @@ shipped with its own integration test still failing.
   review instead of merely asserted — a measured "we checked, it isn't in the
   class" survives a reviewer; "the API probably never sends that" does not.
 
+### When a shape is too rare to sample, bound it by where the model already decodes
+
+*2026-08-24 (PR #504).* The entry above says sample the population rather than
+spot-check. Sometimes the population will not yield, and then that advice has
+nothing left to give — you need a different question, not a bigger sweep.
+
+Modelling `collection` on `/person/{id}/tagged_images` needed to know whether
+`CollectionListItem`'s four non-optional `String`s (`title`, `original_title`,
+`original_language`, `overview`) are safe there. It matters because
+[ADR-0019](decisions/0019-decode-tolerance-policy.md) limb 3 flips the failure
+mode on modelling: an *unmodelled* type is skipped and counted, but a
+**modelled** type whose payload is malformed fails the **whole page**. So the
+sample has to clear the required fields, not merely find the row.
+
+Tripling the sweep — 1,479 → 3,386 rows, 300 → 900 people — found **zero**
+additional `collection` rows. Still exactly one, the same one. No amount of
+further sampling was going to turn N=1 into evidence.
+
+What settled it was asking **where else that model already decodes**:
+`CollectionListItem` is the payload of `Media.collection` (`Media.swift`),
+`Media` decodes from `/search/multi` (`MultiSearchRequest.swift`), and that
+endpoint *does* return collection rows — 2 in 2,897 sampled, all four required
+strings present and non-null. Those fields are therefore **already load-bearing
+on a shipped path**, so modelling the tagged-images row adds no *new* failure
+class. If TMDb ever nulls `overview` on a collection, `/search/multi` breaks
+today, with or without the change.
+
+The generalisable move: **"is this safe to model?" is usually the easier
+question "is this model already exposed to this failure mode?"** — and the
+answer lives in the type's existing decode sites, which are enumerable in
+seconds, rather than in a population that may never produce a second sample.
+Record the non-probative sample honestly (`tmdb-api-notes.md` says one row in
+3,386, not "measured clean"), so the next reader does not mistake a lucky
+singleton for clearance.
+
+### `"podcast"` is the repo's stand-in for an unmodelled `media_type`
+
+A test that needs a `media_type` the library does **not** model uses
+`"podcast"` — an out-of-vocabulary value TMDb never sends, so it can never
+become a real case and the test never needs re-pointing. It is used in six
+files: `KeyedDecodingContainerMediaTypeTests`, `MediaListItemTests`,
+`MediaListTests`, `PersonCombinedCreditsTests`, `V4ListTests` and
+`TaggedImagePageableListTests`.
+
+Reach for it rather than inventing one. Picking a *real* TMDb type that merely
+looks inapplicable (`"person"` on a tagged image, say) reads as clever and is
+worse: it needs a paragraph of justification, and it breaks the day someone
+models that type — which is exactly what happened to the two tagged-image tests
+that used `tv_season` as their example until `tv_season` was modelled (PR #504).
+
 ### An `async let` binding cannot be captured by `#expect(throws:)`
 
 *2026-07-27 (#401).* Awaiting an `async let` inside the `#expect(throws:)`

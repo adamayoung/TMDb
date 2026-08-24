@@ -428,7 +428,7 @@ Not measurable here: the whole **v4** surface (no MCP tooling) and the
 `PageableListResult<TVEpisode>` and `<MediaListSummary>` have never decoded a
 real row in CI.
 
-### `TaggedImageMedia` dropped every `tv` row until 20.0.0
+### `/person/{id}/tagged_images`: the nested `media_type` vocabulary, and what it dropped
 
 *2026-08-12, N=229 across 11 people.* The nested `media.media_type` was `movie`
 165, **`tv` 31**, `tv_episode` 33 — so ~13.5% of every tagged-images page was
@@ -499,6 +499,16 @@ endpoint sends, `show_id` included — verified on tvdb_id `522572` → season 5
 known to send it: `/tv/{id}/season/{n}` and a series' own `seasons` array both
 omit it, because the parent is already known there. That asymmetry is why
 `TVSeason.showID` is `Optional`.
+
+A third emitter exists but nothing decodes it: **`/credit/{id}` carries
+`media.seasons[]`** whose entries have the same season shape — `media_type:
+"tv_season"`, `show_id`, `episode_count` — but **null** `air_date` and
+`poster_path`, where the tagged-images rows are never null (see
+`Tests/TMDbTests/Resources/json/credit-tv-blank-first-air-date.json`).
+`CreditTVSeries` does not model `seasons`, so those keys are ignored today. If
+that ever changes, note that the nullability does **not** transfer from the
+tagged-images measurements above — `TVSeason` already treats both as optional,
+so it would decode, but the sparse variant is the one to test against.
 
 ### `/company/{id}`: `logo_path` and `origin_country` are frequently `null`
 
