@@ -27,7 +27,7 @@ invoked* · `consulted:` · `reconciled:` · `swept:` · *what worked* · *frict
 
 ---
 
-## 2026-08-24 — 🐛 Model tagged images attached to a TV season or a collection (`fix/tagged-image-media-tv-season-collection`) · full
+## 2026-08-24 — 🐛 Model tagged images attached to a TV season or a collection (#504) · full
 
 - **Phases / skills:** 0–8 pre-PR, attended, plan approved from plan mode.
   Full weight — `Decodable`/`CodingKeys` surface plus new source-breaking public
