@@ -51,8 +51,17 @@ jobs:
           languages: swift
           config-file: ./.github/codeql/codeql-config.yml
 
+      # `--disable-sandbox`: SwiftPM runs the compiled manifest under
+      # /usr/bin/sandbox-exec, a SIP-protected system binary the CodeQL tracer can
+      # only inject into by relaunching a copy of it. On macOS 27 GA (runner image
+      # 20260921+) that binary ships arm64e-only, the relaunch fails with
+      # `posix_spawn error: Bad CPU type in executable (86)` before anything
+      # compiles, and pinning an older CodeQL bundle does not help. Unsandboxed, the
+      # manifest runs directly as the arm64 binary SwiftPM just built. Nothing in
+      # this build needs the sandbox: no macros, and the DocC plugin only loads
+      # under SWIFTCI_DOCC.
       - name: Build
-        run: swift build
+        run: swift build --disable-sandbox
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4.39.0
