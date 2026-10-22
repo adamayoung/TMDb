@@ -442,6 +442,36 @@ gap is narrower: a PR touching only a **non-ci** workflow (`claude.yml`,
 `codeql.yml`, `documentation.yml`, `integration*.yml`) sets only `markdown`, so
 the build/test jobs skip and the aggregate passes on skips.
 
+### CodeQL's traced `swift build` needs `--disable-sandbox` on macOS 27 — and it wasn't the Dependabot bump
+
+*2026-10-22 (PR #513).* From 2026-09-24 every CodeQL run on `main` failed in
+`swift build` before anything compiled, with `posix_spawn error: Bad CPU type in
+executable (86)` naming `/usr/bin/sandbox-exec … tmdb-manifest`. SwiftPM runs
+the compiled manifest under `sandbox-exec`, which is a SIP-protected binary, so
+the CodeQL tracer can only hook it by relaunching a copy. On macOS 27 GA (runner
+image `20260921.*`, build 26A428; the last green run was on beta 26A5406e) that
+binary ships arm64e-only, and the copy is rejected.
+
+- **The timing points at the wrong suspect.** The first red run was the push of
+  a Dependabot `codeql-action` bump (4.37.8 → 4.38.1, CLI 2.27.0 → 2.27.1), but
+  other projects pinned to older bundles hit the identical error. Reverting or
+  pinning the action fixes nothing; diff the runner image version in the
+  `Set up job` log before blaming the bump.
+- **Fix:** `swift build --disable-sandbox` in `codeql.yml` only. It disables
+  only SwiftPM's manifest/plugin sandbox; every Swift file is still compiled
+  under the tracer, so coverage was unchanged (the database stayed at ~7.8 MiB
+  of relations). It is safe here because no macros or build plugins run in a
+  normal build (the DocC plugin loads only under `SWIFTCI_DOCC`). If either
+  arrives, re-check it, and an `xcodebuild`-driven CodeQL build would need
+  Xcode's own sandbox settings disabled too.
+- **When to remove it:** only once a CodeQL release can trace arm64e system
+  binaries; whether one has shipped was not checked. Test the removal with a
+  `workflow_dispatch` run on the branch first.
+- **A PR can't prove a `codeql.yml` change.** The workflow triggers only on push
+  to `main`, the weekly schedule and `workflow_dispatch`, and the CI paths
+  filter skips build/test for it (entry above). Run it on the branch via
+  `workflow_dispatch` before merging, or the first real test is on `main`.
+
 ### No workflow runs `make` — a check added to a `make` target does not reach CI
 
 *2026-08-07.* The `Makefile` and CI are **parallel implementations**, not one
